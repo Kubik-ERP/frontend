@@ -12,6 +12,10 @@ import pinia from './app/store';
 // Plugins
 import eventBus from './plugins/mitt';
 
+// Primevue
+import PrimeVue from 'primevue/config';
+import Aura from '@primeuix/themes/aura';
+
 // Stylesheets
 import './style.css';
 
@@ -21,6 +25,21 @@ import 'virtual:svg-icons-register';
 const initialize = async () => {
   const app = createApp(App);
   const router = await loadAllRoutes();
+
+  /**
+   * @description Initialize primevue and set the configurations on it
+   */
+  app.use(PrimeVue, {
+    theme: {
+      preset: Aura,
+      options: {
+        cssLayer: {
+          name: 'primevue',
+          order: 'theme, base, primevue',
+        },
+      },
+    },
+  });
 
   // Use everything what we have
   app.use(pinia);

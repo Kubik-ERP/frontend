@@ -4,6 +4,7 @@
   ================================ TailwindCSS ================================
 */
 @import 'tailwindcss';
+@import 'tailwindcss-primeui';
 @plugin '@tailwindcss/forms';
 
 /**
