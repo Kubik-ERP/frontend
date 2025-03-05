@@ -1,11 +1,11 @@
-// Composables
-import { useHttpAbort } from '@/app/composables';
-
 // Constants
 import { AUTHENTICATION_LOGIN_REQUEST } from '../constants';
 
 // Interfaces
-import type { IAuthenticationLoginFormData, IAuthenticationLoginProvided } from '../interfaces/authentication-login.interface';
+import type {
+  IAuthenticationLoginFormData,
+  IAuthenticationLoginProvided,
+} from '../interfaces/authentication-login.interface';
 
 // Store / Pinia
 import { storeToRefs } from 'pinia';
@@ -14,10 +14,6 @@ import { useAuthenticationStore } from '../store';
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
 import { email, required } from '@vuelidate/validators';
-import { computed, reactive } from 'vue';
-
-// Vue Router
-import { useRouter } from 'vue-router';
 
 /**
  * @description Closure function that returns everything what we need into an object
