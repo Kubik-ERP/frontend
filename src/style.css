@@ -1,4 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
+/*
+  ================================ External Fonts ================================
+*/
+@font-face {
+  font-family: 'Inter';
+  src: url('/src/app/assets/fonts/inter/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/src/app/assets/fonts/inter/Inter-Italic-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+}
 
 /**
   ================================ TailwindCSS ================================
@@ -8,30 +23,31 @@
 @plugin '@tailwindcss/forms';
 
 /**
-  ================================ Custom CSS ================================
+  ================================ Custom TailwindCSS ================================
 */
-.font-be-vietnam {
-  font-family: 'Be Vietnam Pro', sans-serif;
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    font-variation-settings: 'opsz' 14;
+  }
 }
-:root {
-  --dark-1: #08090d;
-  --dark-2: #001d01;
-  --champ-green: #0ddb93;
-  --tile-grey: #939ea3;
-  --border-grey: #304454;
+
+@layer components {
+  .default-wrapper {
+    @apply relative inset-0 z-0;
+  }
+
+  .default-wrapper-fullscreen {
+    @apply relative inset-0 z-0 w-dvw h-dvh;
+  }
+
+  .grid-wrapper-fullscreen {
+    @apply grid grid-rows-1 grid-cols-12 relative inset-0 z-0 w-dvw h-dvh;
+  }
 }
-.bg-dark-1 {
-  background-color: var(--dark-1);
-}
-.bg-champ-green {
-  background-color: var(--champ-green);
-}
-.text-dark-1 {
-  color: var(--dark-1);
-}
-.text-dark-2 {
-  color: var(--dark-2);
-}
-.text-tile-grey {
-  color: var(--tile-grey);
+
+@theme {
+  --color-blue-primary: #18618b;
+  --color-grayscale-20: #d9d9d9;
+  --font-sans: 'Inter', sans-serif;
 }

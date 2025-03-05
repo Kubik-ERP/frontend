@@ -43,7 +43,15 @@ export default [
       'vue/component-tags-order': [
         'error',
         {
-          order: ['template', 'script', 'style'],
+          order: ['script', 'template', 'style'],
+        },
+      ],
+      'vue/html-self-closing': ['off'],
+      'vue/multi-word-component-names': ['off'],
+      'vue/no-mutating-props': [
+        'error',
+        {
+          shallowOnly: true,
         },
       ],
     },

@@ -48,7 +48,7 @@ export const useAuthenticationStore = defineStore('authentication', {
   },
   persist: {
     key: 'authentication',
-    paths: ['authentication_token'],
+    pick: ['authentication_token'],
     storage: sessionStorage,
   },
 });
