@@ -18,6 +18,7 @@ declare module 'vue' {
     PrimeVueInputIcon: typeof import('primevue/inputicon')['default']
     PrimeVueInputText: typeof import('primevue/inputtext')['default']
     PrimeVueMessage: typeof import('primevue/message')['default']
+    PrimeVuePassword: typeof import('primevue/password')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
