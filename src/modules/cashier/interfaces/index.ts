@@ -1,8 +1,8 @@
 export interface ICashierStateStore {
-  cashier_category: ICashierCategory[];
-  cashier_featured_product: ICashierProduct[];
-  cashier_food: ICashierProduct[];
-  cashier_drink: ICashierProduct[];
+  cashier_listCategory: ICashierCategory[];
+  cashier_listFeaturedProduct: ICashierProduct[];
+  cashier_listFood: ICashierProduct[];
+  cashier_listDrink: ICashierProduct[];
 }
 
 export interface ICashierCategory {
@@ -15,6 +15,6 @@ export interface ICashierProduct {
   name: string;
   category: string;
   price: string;
-  discounted_price: string;
+  discountedPrice: string;
   image: string;
 }

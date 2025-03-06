@@ -14,11 +14,11 @@ export const useCashierProductService = (): ICashierProductProvided => {
    */
   const store = useCashierStore();
 
-  const { cashier_food, cashier_featured_product, cashier_drink } = storeToRefs(store);
+  const { cashier_listFood, cashier_listFeaturedProduct, cashier_listDrink } = storeToRefs(store);
 
   return {
-    cashier_food,
-    cashier_featured_product,
-    cashier_drink,
+    cashier_listDrink,
+    cashier_listFeaturedProduct,
+    cashier_listFood,
   };
 };

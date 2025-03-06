@@ -11,11 +11,19 @@ const props = defineProps({
 
 <template>
   <section id="cashier-product-card">
-    <PrimeVueCard>
+    <PrimeVueCard
+      :unstyled="true"
+      :pt="{
+        body: 'rounded-sm bg-white border border-grayscale-10 shadow-none drop-shadow-none p-2',
+      }"
+    >
       <template #content>
-        <section id="cashier-card-content" class="flex flex-col p-2 gap-2">
+        <section id="cashier-card-content" class="flex flex-col gap-2">
           <img :src="props.product.image" class="h-[98px] w-full object-cover" />
-          <span class="font-semibold text-sm">{{ props.product.name }}</span>
+
+          <p class="font-semibold text-sm h-9 line-clamp-2">
+            {{ props.product.name }}
+          </p>
 
           <div class="flex w-full mt-2 justify-between items-end">
             <div class="bg-primary-background p-1 h-fit rounded-full">
@@ -23,7 +31,7 @@ const props = defineProps({
             </div>
             <div class="flex flex-col">
               <span class="text-disabled line-through text-[10px]">{{ props.product.price }}</span>
-              <span class="font-semibold">{{ props.product.discounted_price }}</span>
+              <span class="font-semibold">{{ props.product.discountedPrice }}</span>
             </div>
           </div>
         </section>
