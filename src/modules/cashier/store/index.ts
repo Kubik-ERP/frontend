@@ -5,6 +5,8 @@ import { ICashierStateStore } from '../interfaces';
 export const useCashierStore = defineStore('cashier', {
   state: (): ICashierStateStore => ({
     cashier_listCategory: [],
+
+    // TEMP: Hardcoded data, will be replaced with actual data from API
     cashier_listFeaturedProduct: [
       {
         id: 1,
@@ -55,6 +57,8 @@ export const useCashierStore = defineStore('cashier', {
         image: 'https://foodish-api.com/images/butter-chicken/butter-chicken5.jpg',
       },
     ],
+
+    // TEMP: Hardcoded data, will be replaced with actual data from API
     cashier_listFood: [
       {
         id: 1,
@@ -105,6 +109,8 @@ export const useCashierStore = defineStore('cashier', {
         image: 'https://foodish-api.com/images/pasta/pasta6.jpg',
       },
     ],
+
+    // TEMP: Hardcoded data, will be replaced with actual data from API
     cashier_listDrink: [
       {
         id: 1,
