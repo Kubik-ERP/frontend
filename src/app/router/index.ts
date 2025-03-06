@@ -50,7 +50,7 @@ const loadAllRoutes = async (): Promise<Router> => {
     const authenticationStore = useAuthenticationStore();
 
     if (to.meta.requiresAuthorization && !authenticationStore.authentication_token) {
-      next({ name: 'login' });
+      next({ name: 'sign-in' });
     } else {
       next();
     }
