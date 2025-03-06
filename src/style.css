@@ -48,6 +48,9 @@
 
 @theme {
   --color-blue-primary: #18618b;
+  --color-disabled: #8e8e8e;
+  --color-gray: #434343;
   --color-grayscale-20: #d9d9d9;
+  --color-grayscale-30: #b4b4b4;
   --font-sans: 'Inter', sans-serif;
 }

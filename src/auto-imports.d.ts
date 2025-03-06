@@ -8,6 +8,7 @@ export {}
 declare global {
   const AppLayoutDefault: typeof import('./app/components/layouts/index')['AppLayoutDefault']
   const AppLayoutEmpty: typeof import('./app/components/layouts/index')['AppLayoutEmpty']
+  const COUNTRY_INFORMATIONS: typeof import('./app/constants/country.constant')['COUNTRY_INFORMATIONS']
   const DEFAULT_CURRENCY_OPTIONS: typeof import('./app/constants/useText.constant')['DEFAULT_CURRENCY_OPTIONS']
   const EToastPosition: typeof import('./app/constants/toast.constant')['EToastPosition']
   const EToastType: typeof import('./app/constants/toast.constant')['EToastType']
@@ -17,6 +18,15 @@ declare global {
   const LAYOUT_EMPTY: typeof import('./app/constants/layout.constant')['LAYOUT_EMPTY']
   const LAYOUT_OPTIONS: typeof import('./app/constants/layout.constant')['LAYOUT_OPTIONS']
   const LAYOUT_PUBLIC: typeof import('./app/constants/layout.constant')['LAYOUT_PUBLIC']
+  const REGEX_ANY_CHAR: typeof import('./app/constants/regex.constant')['REGEX_ANY_CHAR']
+  const REGEX_DIGIT: typeof import('./app/constants/regex.constant')['REGEX_DIGIT']
+  const REGEX_LOWERCASE: typeof import('./app/constants/regex.constant')['REGEX_LOWERCASE']
+  const REGEX_NO_PERIOD_OR_NEWLINE: typeof import('./app/constants/regex.constant')['REGEX_NO_PERIOD_OR_NEWLINE']
+  const REGEX_PASSWORD: typeof import('./app/constants/regex.constant')['REGEX_PASSWORD']
+  const REGEX_PHONE_CODE: typeof import('./app/constants/regex.constant')['REGEX_PHONE_CODE']
+  const REGEX_PHONE_NUMBER: typeof import('./app/constants/regex.constant')['REGEX_PHONE_NUMBER']
+  const REGEX_SPECIAL_CHAR: typeof import('./app/constants/regex.constant')['REGEX_SPECIAL_CHAR']
+  const REGEX_UPPERCASE: typeof import('./app/constants/regex.constant')['REGEX_UPPERCASE']
   const VALIDATION_MESSAGE: typeof import('./app/constants/validation.constant')['VALIDATION_MESSAGE']
   const computed: typeof import('vue')['computed']
   const createApp: typeof import('vue')['createApp']
@@ -28,6 +38,9 @@ declare global {
   const getCurrentScope: typeof import('vue')['getCurrentScope']
   const h: typeof import('vue')['h']
   const inject: typeof import('vue')['inject']
+  const isPasswordValid: typeof import('./app/helpers/validations.helper')['isPasswordValid']
+  const isPhoneCodeValid: typeof import('./app/helpers/validations.helper')['isPhoneCodeValid']
+  const isPhoneNumberValid: typeof import('./app/helpers/validations.helper')['isPhoneNumberValid']
   const isProxy: typeof import('vue')['isProxy']
   const isReactive: typeof import('vue')['isReactive']
   const isReadonly: typeof import('vue')['isReadonly']
@@ -107,6 +120,7 @@ import { UnwrapRef } from 'vue'
 declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
+    readonly COUNTRY_INFORMATIONS: UnwrapRef<typeof import('./app/constants/country.constant')['COUNTRY_INFORMATIONS']>
     readonly DEFAULT_CURRENCY_OPTIONS: UnwrapRef<typeof import('./app/constants/useText.constant')['DEFAULT_CURRENCY_OPTIONS']>
     readonly EToastPosition: UnwrapRef<typeof import('./app/constants/toast.constant')['EToastPosition']>
     readonly EToastType: UnwrapRef<typeof import('./app/constants/toast.constant')['EToastType']>
@@ -116,6 +130,15 @@ declare module 'vue' {
     readonly LAYOUT_EMPTY: UnwrapRef<typeof import('./app/constants/layout.constant')['LAYOUT_EMPTY']>
     readonly LAYOUT_OPTIONS: UnwrapRef<typeof import('./app/constants/layout.constant')['LAYOUT_OPTIONS']>
     readonly LAYOUT_PUBLIC: UnwrapRef<typeof import('./app/constants/layout.constant')['LAYOUT_PUBLIC']>
+    readonly REGEX_ANY_CHAR: UnwrapRef<typeof import('./app/constants/regex.constant')['REGEX_ANY_CHAR']>
+    readonly REGEX_DIGIT: UnwrapRef<typeof import('./app/constants/regex.constant')['REGEX_DIGIT']>
+    readonly REGEX_LOWERCASE: UnwrapRef<typeof import('./app/constants/regex.constant')['REGEX_LOWERCASE']>
+    readonly REGEX_NO_PERIOD_OR_NEWLINE: UnwrapRef<typeof import('./app/constants/regex.constant')['REGEX_NO_PERIOD_OR_NEWLINE']>
+    readonly REGEX_PASSWORD: UnwrapRef<typeof import('./app/constants/regex.constant')['REGEX_PASSWORD']>
+    readonly REGEX_PHONE_CODE: UnwrapRef<typeof import('./app/constants/regex.constant')['REGEX_PHONE_CODE']>
+    readonly REGEX_PHONE_NUMBER: UnwrapRef<typeof import('./app/constants/regex.constant')['REGEX_PHONE_NUMBER']>
+    readonly REGEX_SPECIAL_CHAR: UnwrapRef<typeof import('./app/constants/regex.constant')['REGEX_SPECIAL_CHAR']>
+    readonly REGEX_UPPERCASE: UnwrapRef<typeof import('./app/constants/regex.constant')['REGEX_UPPERCASE']>
     readonly VALIDATION_MESSAGE: UnwrapRef<typeof import('./app/constants/validation.constant')['VALIDATION_MESSAGE']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
@@ -127,6 +150,9 @@ declare module 'vue' {
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
+    readonly isPasswordValid: UnwrapRef<typeof import('./app/helpers/validations.helper')['isPasswordValid']>
+    readonly isPhoneCodeValid: UnwrapRef<typeof import('./app/helpers/validations.helper')['isPhoneCodeValid']>
+    readonly isPhoneNumberValid: UnwrapRef<typeof import('./app/helpers/validations.helper')['isPhoneNumberValid']>
     readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
     readonly isReactive: UnwrapRef<typeof import('vue')['isReactive']>
     readonly isReadonly: UnwrapRef<typeof import('vue')['isReadonly']>

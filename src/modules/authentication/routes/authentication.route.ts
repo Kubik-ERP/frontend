@@ -30,6 +30,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'register',
+        name: 'register',
+        component: () => import('../views/AuthenticationRegisterUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.EMPTY,
+        },
+      },
+      {
         path: 'reset-password',
         name: 'reset-password',
         component: () => import('../views/AuthenticationResetPasswordUI.vue'),
