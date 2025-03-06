@@ -12,9 +12,27 @@ const routes: RouteRecordRaw[] = [
     component: AppBaseWrapper,
     children: [
       {
+        path: 'create-new-password',
+        name: 'create-new-password',
+        component: () => import('../views/AuthenticationCreateNewPasswordUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.EMPTY,
+        },
+      },
+      {
         path: 'login',
-        name: 'authenticationLogin',
+        name: 'login',
         component: () => import('../views/AuthenticationLoginUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.EMPTY,
+        },
+      },
+      {
+        path: 'reset-password',
+        name: 'reset-password',
+        component: () => import('../views/AuthenticationResetPasswordUI.vue'),
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.EMPTY,

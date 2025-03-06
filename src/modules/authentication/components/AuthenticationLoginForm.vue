@@ -74,7 +74,7 @@ const {
         </PrimeVueIconField>
       </AppBaseFormGroup>
 
-      <RouterLink to="/authentication/forgot-password" class="font-semibold text-blue-primary text-sm text-end">
+      <RouterLink :to="{ name: 'reset-password' }" class="font-semibold text-blue-primary text-sm text-end">
         Reset Password
       </RouterLink>
     </section>
@@ -84,6 +84,7 @@ const {
         <PrimeVueButton
           class="bg-blue-primary border-none text-sm py-[10px]"
           label="Submit"
+          type="submit"
           :disabled="authenticationLogin_formValidations.$invalid"
         />
 

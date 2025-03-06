@@ -3,7 +3,7 @@
 import AuthenticationLoginContent from '../components/AuthenticationLoginContent.vue';
 
 // Services
-import { useAuthenticationLoginService } from '../services/useAuthenticationLogin.service';
+import { useAuthenticationLoginService } from '../services/authentication-login.service';
 
 /**
  * @description Destructure all the data and methods what we need
