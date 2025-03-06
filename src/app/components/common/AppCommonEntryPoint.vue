@@ -2,7 +2,7 @@
 const router = useRouter();
 
 router.replace({
-  name: 'authenticationLogin',
+  name: 'login',
 });
 </script>
 

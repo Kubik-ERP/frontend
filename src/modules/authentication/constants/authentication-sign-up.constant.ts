@@ -1,6 +1,6 @@
 // Components
-import AuthenticationRegisterForm from "../components/AuthenticationRegisterForm.vue"
-import AuthenticationRegisterOtpCode from "../components/AuthenticationRegisterOtpCode.vue"
+import AuthenticationRegisterForm from "../components/AuthenticationSignUpForm.vue"
+import AuthenticationRegisterOtpCode from "../components/AuthenticationSignUpOtpCode.vue"
 
 export const AUTHENTICATION_REGISTER_STEPPER = [
   {

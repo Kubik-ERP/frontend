@@ -3,22 +3,22 @@
 import Select from 'primevue/select';
 
 // Interfaces
-import type { IAuthenticationRegisterProvided } from '../interfaces/authentication-register.interface';
+import type { IAuthenticationSignUpProvided } from '../interfaces/authentication-sign-up.interface';
 
 /**
  * @description Inject all the data and methods what we need
  */
 const {
-  authenticationRegister_formData,
-  authenticationRegister_formValidations,
-  authenticationRegister_isAcceptTnc,
-  authenticationRegister_isLoading,
-  authenticationRegister_onSubmit,
-} = inject<IAuthenticationRegisterProvided>('authenticationRegister')!;
+  authenticationSignUp_formData,
+  authenticationSignUp_formValidations,
+  authenticationSignUp_isAcceptTnc,
+  authenticationSignUp_isLoading,
+  authenticationSignUp_onSubmit,
+} = inject<IAuthenticationSignUpProvided>('authenticationRegister')!;
 </script>
 
 <template>
-  <form class="form-group flex flex-col gap-10" @submit.prevent="authenticationRegister_onSubmit">
+  <form class="form-group flex flex-col gap-10" @submit.prevent="authenticationSignUp_onSubmit">
     <section id="greeting-text" class="flex items-end justify-between">
       <section id="text-information" class="flex flex-col gap-3">
         <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
@@ -42,7 +42,7 @@ const {
         label-for="email"
         name="Email"
         spacing-bottom="mb-0"
-        :validators="authenticationRegister_formValidations.email"
+        :validators="authenticationSignUp_formValidations.email"
         v-slot="{ classes }"
       >
         <PrimeVueIconField>
@@ -53,9 +53,9 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVueInputText
-            v-on="useListenerForm(authenticationRegister_formValidations, 'email')"
-            v-model="authenticationRegister_formData.email"
-            :loading="authenticationRegister_isLoading"
+            v-on="useListenerForm(authenticationSignUp_formValidations, 'email')"
+            v-model="authenticationSignUp_formData.email"
+            :loading="authenticationSignUp_isLoading"
             placeholder="Input your registered email"
             class="text-sm w-full"
             :class="{ ...classes }"
@@ -71,12 +71,12 @@ const {
             label-for="phoneCode"
             name="Phone Code"
             spacing-bottom="mb-0"
-            :validators="authenticationRegister_formValidations.email"
+            :validators="authenticationSignUp_formValidations.email"
             v-slot="{ classes }"
           >
             <Select
-              v-model="authenticationRegister_formData.phoneCode"
-              v-on="useListenerForm(authenticationRegister_formValidations, 'phoneCode')"
+              v-model="authenticationSignUp_formData.phoneCode"
+              v-on="useListenerForm(authenticationSignUp_formValidations, 'phoneCode')"
               id="phoneCode"
               filter
               :options="COUNTRY_INFORMATIONS"
@@ -108,13 +108,13 @@ const {
             label-for="phoneNumber"
             name="Phone Number"
             spacing-bottom="mb-0"
-            :validators="authenticationRegister_formValidations.phoneNumber"
+            :validators="authenticationSignUp_formValidations.phoneNumber"
             v-slot="{ classes }"
           >
             <PrimeVueInputText
-              v-on="useListenerForm(authenticationRegister_formValidations, 'phoneNumber')"
-              v-model="authenticationRegister_formData.phoneNumber"
-              :loading="authenticationRegister_isLoading"
+              v-on="useListenerForm(authenticationSignUp_formValidations, 'phoneNumber')"
+              v-model="authenticationSignUp_formData.phoneNumber"
+              :loading="authenticationSignUp_isLoading"
               placeholder="Input your phone number"
               class="text-sm w-full"
               :class="{ ...classes }"
@@ -130,7 +130,7 @@ const {
         label-for="password"
         name="Password"
         spacing-bottom="mb-0"
-        :validators="authenticationRegister_formValidations.password"
+        :validators="authenticationSignUp_formValidations.password"
         v-slot="{ classes }"
       >
         <PrimeVueIconField>
@@ -141,13 +141,13 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVuePassword
-            v-on="useListenerForm(authenticationRegister_formValidations, 'password')"
-            v-model="authenticationRegister_formData.password"
+            v-on="useListenerForm(authenticationSignUp_formValidations, 'password')"
+            v-model="authenticationSignUp_formData.password"
             placeholder="Input your new password"
             class="text-sm w-full"
             toggle-mask
             :class="{ ...classes }"
-            :loading="authenticationRegister_isLoading"
+            :loading="authenticationSignUp_isLoading"
             :pt="{
               root: '[&>input]:text-sm [&>input]:w-full',
             }"
@@ -161,7 +161,7 @@ const {
         label-for="passwordConfirmation"
         name="Password Confirmation"
         spacing-bottom="mb-0"
-        :validators="authenticationRegister_formValidations.passwordConfirmation"
+        :validators="authenticationSignUp_formValidations.passwordConfirmation"
         v-slot="{ classes }"
       >
         <PrimeVueIconField>
@@ -172,13 +172,13 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVuePassword
-            v-on="useListenerForm(authenticationRegister_formValidations, 'passwordConfirmation')"
-            v-model="authenticationRegister_formData.passwordConfirmation"
+            v-on="useListenerForm(authenticationSignUp_formValidations, 'passwordConfirmation')"
+            v-model="authenticationSignUp_formData.passwordConfirmation"
             placeholder="Input your new password again"
             class="text-sm w-full"
             toggle-mask
             :class="{ ...classes }"
-            :loading="authenticationRegister_isLoading"
+            :loading="authenticationSignUp_isLoading"
             :pt="{
               root: '[&>input]:text-sm [&>input]:w-full',
             }"
@@ -187,7 +187,7 @@ const {
       </AppBaseFormGroup>
 
       <section id="terms-and-condition" class="flex items-center gap-2">
-        <PrimeVueCheckbox v-model="authenticationRegister_isAcceptTnc" binary />
+        <PrimeVueCheckbox v-model="authenticationSignUp_isAcceptTnc" binary />
 
         <span class="font-normal text-sm">
           By signing up, you are agree to Cubic’s
@@ -201,8 +201,8 @@ const {
       class="bg-blue-primary border-none text-sm py-[10px]"
       label="Sign Up"
       type="submit"
-      :disabled="authenticationRegister_formValidations.$invalid"
-      :loading="authenticationRegister_isLoading"
+      :disabled="authenticationSignUp_formValidations.$invalid"
+      :loading="authenticationSignUp_isLoading"
     />
   </form>
 </template>

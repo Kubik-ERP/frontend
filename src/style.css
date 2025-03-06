@@ -20,7 +20,6 @@
 */
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
-@plugin '@tailwindcss/forms';
 
 /**
   ================================ Custom TailwindCSS ================================
@@ -50,6 +49,11 @@
   --color-blue-primary: #18618b;
   --color-disabled: #8e8e8e;
   --color-gray: #434343;
+  --color-primary-background: #edf6fc;
+  --color-background: #f9fafb;
+  --color-text-disabled: #8e8e8e;
+  --color-disabled: #d9d9d9;
+  --color-grayscale-10: #ededed;
   --color-grayscale-20: #d9d9d9;
   --color-grayscale-30: #b4b4b4;
   --font-sans: 'Inter', sans-serif;

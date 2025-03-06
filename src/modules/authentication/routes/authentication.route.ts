@@ -23,7 +23,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'login',
         name: 'login',
-        component: () => import('../views/AuthenticationLoginUI.vue'),
+        component: () => import('../views/AuthenticationSignInUI.vue'),
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.EMPTY,
@@ -32,7 +32,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'register',
         name: 'register',
-        component: () => import('../views/AuthenticationRegisterUI.vue'),
+        component: () => import('../views/AuthenticationSignUpUI.vue'),
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.EMPTY,
