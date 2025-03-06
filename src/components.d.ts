@@ -13,6 +13,7 @@ declare module 'vue' {
     AppBaseToast: typeof import('@components/base/AppBaseToast.vue')['default']
     PrimeVueAvatar: typeof import('primevue/avatar')['default']
     PrimeVueButton: typeof import('primevue/button')['default']
+    PrimeVueCard: typeof import('primevue/card')['default']
     PrimeVueDivider: typeof import('primevue/divider')['default']
     PrimeVueIconField: typeof import('primevue/iconfield')['default']
     PrimeVueInputIcon: typeof import('primevue/inputicon')['default']
