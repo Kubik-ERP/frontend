@@ -13,8 +13,17 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: 'login',
-        name: 'authenticationLogin',
+        name: 'login',
         component: () => import('../views/AuthenticationLoginUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.EMPTY,
+        },
+      },
+      {
+        path: 'reset-password',
+        name: 'reset-password',
+        component: () => import('../views/AuthenticationResetPasswordUI.vue'),
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.EMPTY,
