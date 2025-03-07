@@ -8,15 +8,15 @@ import CashierProductCard from './CashierProductCard.vue';
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashier_listFood } = inject<ICashierProductProvided>('cashierProduct')!;
+const { cashierProduct_listFood } = inject<ICashierProductProvided>('cashierProduct')!;
 </script>
 
 <template>
   <section id="cashier-list-featured-product" class="flex flex-col gap-2">
-    <h2 class="text-xs text-disabled">Food</h2>
+    <h2 class="text-xs text-text-disabled">Food</h2>
 
-    <div class="product-list grid grid-cols-4 gap-4">
-      <CashierProductCard v-for="product in cashier_listFood" :key="product.id" :product="product" />
+    <div class="grid grid-cols-4 gap-4">
+      <CashierProductCard v-for="product in cashierProduct_listFood" :key="product.id" :product="product" />
     </div>
   </section>
 </template>

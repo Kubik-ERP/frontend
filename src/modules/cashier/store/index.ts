@@ -4,10 +4,107 @@ import { ICashierStateStore } from '../interfaces';
 
 export const useCashierStore = defineStore('cashier', {
   state: (): ICashierStateStore => ({
-    cashier_listCategory: [],
+    cashierProduct_listCategory: [
+      {
+        id: 1,
+        name: 'Food',
+        total: 120,
+        image: 'https://foodish-api.com/images/pasta/pasta10.jpg',
+      },
+      {
+        id: 2,
+        name: 'Beverage',
+        total: 120,
+        image: 'https://foodish-api.com/images/pizza/pizza10.jpg',
+      },
+      {
+        id: 3,
+        name: 'Pastry',
+        total: 120,
+        image: 'https://foodish-api.com/images/samosa/samosa10.jpg',
+      },
+      {
+        id: 4,
+        name: 'Drinks',
+        total: 120,
+        image: 'https://foodish-api.com/images/burger/burger10.jpg',
+      },
+      {
+        id: 5,
+        name: 'Pasta',
+        total: 120,
+        image: 'https://foodish-api.com/images/butter-chicken/butter-chicken10.jpg',
+      },
+      {
+        id: 6,
+        name: 'Pizza',
+        total: 120,
+        image: 'https://foodish-api.com/images/pizza/pizza10.jpg',
+      },
+      {
+        id: 7,
+        name: 'Burger',
+        total: 120,
+        image: 'https://foodish-api.com/images/burger/burger10.jpg',
+      },
+      {
+        id: 8,
+        name: 'Butter Chicken',
+        total: 120,
+        image: 'https://foodish-api.com/images/butter-chicken/butter-chicken10.jpg',
+      },
+      {
+        id: 1,
+        name: 'Food',
+        total: 120,
+        image: 'https://foodish-api.com/images/pasta/pasta10.jpg',
+      },
+      {
+        id: 2,
+        name: 'Beverage',
+        total: 120,
+        image: 'https://foodish-api.com/images/pizza/pizza10.jpg',
+      },
+      {
+        id: 3,
+        name: 'Pastry',
+        total: 120,
+        image: 'https://foodish-api.com/images/samosa/samosa10.jpg',
+      },
+      {
+        id: 4,
+        name: 'Drinks',
+        total: 120,
+        image: 'https://foodish-api.com/images/burger/burger10.jpg',
+      },
+      {
+        id: 5,
+        name: 'Pasta',
+        total: 120,
+        image: 'https://foodish-api.com/images/butter-chicken/butter-chicken10.jpg',
+      },
+      {
+        id: 6,
+        name: 'Pizza',
+        total: 120,
+        image: 'https://foodish-api.com/images/pizza/pizza10.jpg',
+      },
+      {
+        id: 7,
+        name: 'Burger',
+        total: 120,
+        image: 'https://foodish-api.com/images/burger/burger10.jpg',
+      },
+      {
+        id: 8,
+        name: 'Butter Chicken',
+        total: 120,
+        image: 'https://foodish-api.com/images/butter-chicken/butter-chicken10.jpg',
+      },
+    ],
 
     // TEMP: Hardcoded data, will be replaced with actual data from API
-    cashier_listFeaturedProduct: [
+    cashierProduct_listFeaturedProduct: [
       {
         id: 1,
         name: 'Featured Product 1',
@@ -59,7 +156,7 @@ export const useCashierStore = defineStore('cashier', {
     ],
 
     // TEMP: Hardcoded data, will be replaced with actual data from API
-    cashier_listFood: [
+    cashierProduct_listFood: [
       {
         id: 1,
         name: 'Featured Product 1',
@@ -111,7 +208,7 @@ export const useCashierStore = defineStore('cashier', {
     ],
 
     // TEMP: Hardcoded data, will be replaced with actual data from API
-    cashier_listDrink: [
+    cashierProduct_listDrink: [
       {
         id: 1,
         name: 'Featured Product 1',
@@ -167,5 +264,16 @@ export const useCashierStore = defineStore('cashier', {
      * @description Usually, we define getters if the getter name is different from the state name.
      */
   },
-  actions: {},
+  actions: {
+    /**
+     * @description Handle fetch api cashier search.
+     * @url /cashier/search
+     * @method GET
+     * @access public
+     */
+    async cashierProduct_fetchSearch(searchData: string): Promise<void> {
+      // TODO: Fetch API when the endpoint is ready
+      console.log(searchData);
+    },
+  },
 });

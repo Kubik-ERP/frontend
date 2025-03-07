@@ -14,7 +14,7 @@ const props = defineProps({
     <PrimeVueCard
       :unstyled="true"
       :pt="{
-        body: 'rounded-sm bg-white border border-grayscale-10 shadow-none drop-shadow-none p-2',
+        body: 'rounded-sm bg-white border border-grayscale-10 shadow-none drop-shadow-none p-2 cursor-pointer hover:border-grayscale-20 active:bg-grayscale-10/5',
       }"
     >
       <template #content>
