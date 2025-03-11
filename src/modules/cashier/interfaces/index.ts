@@ -1,6 +1,8 @@
 export interface ICashierCategory {
+  id: number;
   name: string;
   total: number;
+  image: string;
 }
 
 export interface ICashierProduct {
@@ -8,13 +10,13 @@ export interface ICashierProduct {
   name: string;
   category: string;
   price: string;
-  discountedPrice: string;
+  discountedPrice: string | null;
   image: string;
 }
 
 export interface ICashierStateStore {
-  cashier_listCategory: ICashierCategory[];
-  cashier_listFeaturedProduct: ICashierProduct[];
-  cashier_listFood: ICashierProduct[];
-  cashier_listDrink: ICashierProduct[];
+  cashierProduct_listCategory: ICashierCategory[];
+  cashierProduct_listFeaturedProduct: ICashierProduct[];
+  cashierProduct_listFood: ICashierProduct[];
+  cashierProduct_listDrink: ICashierProduct[];
 }
