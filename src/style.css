@@ -49,6 +49,8 @@
 @theme {
   --color-blue-primary: #18618b;
   --color-primary-background: #edf6fc;
+  --color-primary-border: #8cc8eb;
+  --color-primary-hover: #0f3c56;
   --color-background: #f9fafb;
   --color-text-disabled: #8e8e8e;
   --color-disabled: #d9d9d9;
