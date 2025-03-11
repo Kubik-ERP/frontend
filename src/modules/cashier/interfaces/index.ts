@@ -10,7 +10,7 @@ export interface ICashierProduct {
   name: string;
   category: string;
   price: string;
-  discountedPrice: string;
+  discountedPrice: string | null;
   image: string;
 }
 

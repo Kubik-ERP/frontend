@@ -37,30 +37,28 @@ const displayedPrice = computed(() => props.product.discountedPrice ?? props.pro
       @click="cashierProduct_handleSelectProduct(props.product)"
     >
       <template #content>
-        <section id="cashier-card-content" class="flex flex-col gap-2 relative">
-          <img :src="props.product.image" class="h-[98px] w-full object-cover" />
+        <section id="cashier-card-content" class="flex justify-between w-full gap-2 relative">
+          <div class="flex gap-2">
+            <PrimeVueCheckbox v-model="isProductActive" binary />
 
-          <div
-            v-if="isProductActive"
-            class="absolute py-1 px-1.5 border border-primary-border bg-blue-primary left-0 ml-1 mt-1 rounded-full flex gap-2"
-          >
-            <AppBaseSvg name="check" class="h-w-2.5" />
-            <span class="text-xs text-white font-semibold"> Selected </span>
+            <div class="flex flex-col gap-1">
+              <p class="font-semibold text-sm">
+                {{ props.product.name }}
+              </p>
+
+              <div class="bg-primary-background p-1 h-fit rounded-full w-max">
+                <span class="text-xs text-text-disabled">{{ props.product.category }}</span>
+              </div>
+            </div>
           </div>
 
-          <p class="font-semibold text-sm h-10 line-clamp-2">
-            {{ props.product.name }}
-          </p>
-
-          <div class="flex w-full mt-2 justify-between items-end">
-            <div class="bg-primary-background p-1 h-fit rounded-full">
-              <span class="text-xs text-text-disabled">{{ props.product.category }}</span>
-            </div>
+          <div class="flex mt-2 justify-between">
             <div class="flex flex-col">
+              <span class="font-semibold text-sm text-primary-hover">Rp.{{ displayedPrice }}</span>
+
               <span v-if="props.product.discountedPrice" class="text-disabled line-through text-[10px] text-right"
                 >Rp.{{ props.product.price }}</span
               >
-              <span class="font-semibold text-right">Rp.{{ displayedPrice }}</span>
             </div>
           </div>
         </section>

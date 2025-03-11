@@ -4,6 +4,7 @@ import { useCashierStore } from '../store';
 
 // interfaces
 import type { ICashierProductProvided } from '../interfaces/cashier-product-service';
+import type { ICashierProduct } from '../interfaces';
 
 // Vue
 import { ref } from 'vue';
@@ -29,6 +30,11 @@ export const useCashierProductService = (): ICashierProductProvided => {
    */
   const cashierProduct_searchData = ref<string>('');
   const cashierProduct_isLoading = ref<boolean>(false);
+
+  const cashierProduct_selectedView = ref<'image' | 'grid' | 'inline'>('image');
+  const cashierProduct_selectedProduct = ref<ICashierProduct[]>([]);
+  const cashierProduct_selectedCategory = ref<string[]>([]);
+
   /**
    * @description Handle fetch api cashier search. We call the fetchCashierSearch function from the store to handle the request.
    */
@@ -40,6 +46,32 @@ export const useCashierProductService = (): ICashierProductProvided => {
     }
   };
 
+  /**
+   * @description Handle select category, add or remove the category from selected category
+   * @param {string} category
+   */
+  const cashierProduct_handleSelectCategory = (category: string) => {
+    if (cashierProduct_selectedCategory.value.includes(category)) {
+      cashierProduct_selectedCategory.value = cashierProduct_selectedCategory.value.filter(
+        item => item !== category,
+      );
+    } else {
+      cashierProduct_selectedCategory.value.push(category);
+    }
+  };
+
+  /**
+   * @description Handle select product, add or remove the product from selected product
+   * @param {ICashierProduct} product
+   */
+  const cashierProduct_handleSelectProduct = (product: ICashierProduct) => {
+    if (cashierProduct_selectedProduct.value.includes(product)) {
+      cashierProduct_selectedProduct.value = cashierProduct_selectedProduct.value.filter(item => item !== product);
+    } else {
+      cashierProduct_selectedProduct.value.push(product);
+    }
+  };
+
   return {
     cashierProduct_isLoading,
     cashierProduct_searchData,
@@ -48,6 +80,13 @@ export const useCashierProductService = (): ICashierProductProvided => {
     cashierProduct_listDrink,
     cashierProduct_listFeaturedProduct,
     cashierProduct_listFood,
+
+    cashierProduct_selectedCategory,
+    cashierProduct_selectedView,
+    cashierProduct_selectedProduct,
+
+    cashierProduct_handleSelectCategory,
+    cashierProduct_handleSelectProduct,
 
     cashierProduct_onSearchData,
   };

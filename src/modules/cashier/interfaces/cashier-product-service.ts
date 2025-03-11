@@ -9,5 +9,12 @@ export interface ICashierProductProvided {
   cashierProduct_listFeaturedProduct: Ref<ICashierProduct[], ICashierProduct[]>;
   cashierProduct_listDrink: Ref<ICashierProduct[], ICashierProduct[]>;
 
+  cashierProduct_selectedProduct: Ref<ICashierProduct[]>;
+  cashierProduct_selectedCategory: Ref<string[]>;
+  cashierProduct_selectedView: Ref<'image' | 'grid' | 'inline'>;
+
+  cashierProduct_handleSelectCategory: (category: string) => void;
+  cashierProduct_handleSelectProduct: (product: ICashierProduct) => void;
+
   cashierProduct_onSearchData: (searchData: string) => Promise<void>;
 }
