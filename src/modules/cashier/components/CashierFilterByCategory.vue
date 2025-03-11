@@ -14,7 +14,7 @@ let scrollLeft: number;
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierProduct_listCategory, cashierProduct_onSearchData } =
+const { cashierProduct_listCategory, cashierProduct_handleSelectCategory, cashierProduct_selectedCategory } =
   inject<ICashierProductProvided>('cashierProduct')!;
 
 /**
@@ -67,7 +67,11 @@ const moveDragging = (e: PointerEvent) => {
           body: 'rounded-sm bg-white border border-grayscale-10 shadow-none drop-shadow-none p-2 hover:border-grayscale-20 active:bg-grayscale-10/5',
         }"
         class="flex-shrink-0 w-[calc(100%/7)] cursor-pointer"
-        @click="cashierProduct_onSearchData(category.name)"
+        :class="{
+          'border-primary-border border rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]':
+            cashierProduct_selectedCategory.includes(category.name),
+        }"
+        @click="cashierProduct_handleSelectCategory(category.name)"
       >
         <template #content>
           <section id="cashier-card-content" class="flex flex-col gap-[3px]">
