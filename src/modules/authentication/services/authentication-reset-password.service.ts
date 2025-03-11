@@ -49,7 +49,7 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
   );
 
   /**
-   * @description Handle fetch api authentication login. We call the fetchAuthenticationLogin function from the store to handle the request.
+   * @description Handle fetch api authentication login. We call the fetchauthenticationSignIn function from the store to handle the request.
    */
   const authenticationResetPassword_fetchAuthenticationResetPassword = async () => {
     try {

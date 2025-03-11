@@ -95,6 +95,19 @@
     "onWatcherCleanup": true,
     "useId": true,
     "useModel": true,
-    "useTemplateRef": true
+    "useTemplateRef": true,
+    "COUNTRY_INFORMATIONS": true,
+    "REGEX_ANY_CHAR": true,
+    "REGEX_DIGIT": true,
+    "REGEX_LOWERCASE": true,
+    "REGEX_NO_PERIOD_OR_NEWLINE": true,
+    "REGEX_PASSWORD": true,
+    "REGEX_PHONE_CODE": true,
+    "REGEX_PHONE_NUMBER": true,
+    "REGEX_SPECIAL_CHAR": true,
+    "REGEX_UPPERCASE": true,
+    "isPasswordValid": true,
+    "isPhoneCodeValid": true,
+    "isPhoneNumberValid": true
   }
 }
