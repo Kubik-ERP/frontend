@@ -50,7 +50,7 @@ export const useAuthenticationCreateNewPasswordService = (): IAuthenticationCrea
   );
 
   /**
-   * @description Handle fetch api authentication login. We call the fetchAuthenticationLogin function from the store to handle the request.
+   * @description Handle fetch api authentication login. We call the fetchauthenticationSignIn function from the store to handle the request.
    */
   const authenticationCreateNewPassword_fetchAuthenticationCreateNewPassword = async () => {
     try {

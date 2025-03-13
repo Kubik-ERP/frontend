@@ -1,11 +1,11 @@
 // Constants
-import { AUTHENTICATION_LOGIN_REQUEST } from '../constants';
+import { AUTHENTICATION_SIGN_IN_REQUEST } from '../constants';
 
 // Interfaces
 import type {
-  IAuthenticationLoginFormData,
-  IAuthenticationLoginProvided,
-} from '../interfaces/authentication-login.interface';
+  IAuthenticationSignInFormData,
+  IAuthenticationSignInProvided,
+} from '../interfaces/authentication-sign-in.interface';
 
 // Store / Pinia
 import { storeToRefs } from 'pinia';
@@ -18,7 +18,7 @@ import { email, required } from '@vuelidate/validators';
 /**
  * @description Closure function that returns everything what we need into an object
  */
-export const useAuthenticationLoginService = (): IAuthenticationLoginProvided => {
+export const useAuthenticationSignInService = (): IAuthenticationSignInProvided => {
   /**
    * @description Injected variables
    */
@@ -30,7 +30,7 @@ export const useAuthenticationLoginService = (): IAuthenticationLoginProvided =>
   /**
    * @description Reactive data binding
    */
-  const authenticationLogin_formData = reactive<IAuthenticationLoginFormData>({
+  const authenticationSignIn_formData = reactive<IAuthenticationSignInFormData>({
     email: '',
     password: '',
   });
@@ -38,25 +38,25 @@ export const useAuthenticationLoginService = (): IAuthenticationLoginProvided =>
   /**
    * @description Form validations
    */
-  const authenticationLogin_formRules = computed(() => ({
+  const authenticationSignIn_formRules = computed(() => ({
     email: { email, required },
     password: { required },
   }));
-  const authenticationLogin_formValidations = useVuelidate(
-    authenticationLogin_formRules,
-    authenticationLogin_formData,
+  const authenticationSignIn_formValidations = useVuelidate(
+    authenticationSignIn_formRules,
+    authenticationSignIn_formData,
     {
       $autoDirty: true,
     },
   );
 
   /**
-   * @description Handle fetch api authentication login. We call the fetchAuthenticationLogin function from the store to handle the request.
+   * @description Handle fetch api authentication login. We call the fetchauthenticationSignIn function from the store to handle the request.
    */
-  const authenticationLogin_fetchAuthenticationLogin = async () => {
+  const authenticationSignIn_fetchAuthenticationSignIn = async () => {
     try {
-      const result = await store.fetchAuthentication_login(authenticationLogin_formData, {
-        ...httpAbort_registerAbort(AUTHENTICATION_LOGIN_REQUEST),
+      const result = await store.fetchAuthentication_login(authenticationSignIn_formData, {
+        ...httpAbort_registerAbort(AUTHENTICATION_SIGN_IN_REQUEST),
       });
       router.push({ name: 'dashboard' });
 
@@ -73,12 +73,12 @@ export const useAuthenticationLoginService = (): IAuthenticationLoginProvided =>
   /**
    * @description Handle action on submit form.
    */
-  const authenticationLogin_onSubmit = async (): Promise<void> => {
-    authenticationLogin_formValidations.value.$touch();
-    if (authenticationLogin_formValidations.value.$invalid) return;
+  const authenticationSignIn_onSubmit = async (): Promise<void> => {
+    authenticationSignIn_formValidations.value.$touch();
+    if (authenticationSignIn_formValidations.value.$invalid) return;
 
     try {
-      await authenticationLogin_fetchAuthenticationLogin();
+      await authenticationSignIn_fetchAuthenticationSignIn();
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -89,9 +89,9 @@ export const useAuthenticationLoginService = (): IAuthenticationLoginProvided =>
   };
 
   return {
-    authenticationLogin_formData,
-    authenticationLogin_formValidations,
-    authenticationLogin_isLoading: authentication_isLoading,
-    authenticationLogin_onSubmit,
+    authenticationSignIn_formData,
+    authenticationSignIn_formValidations,
+    authenticationSignIn_isLoading: authentication_isLoading,
+    authenticationSignIn_onSubmit,
   };
 };

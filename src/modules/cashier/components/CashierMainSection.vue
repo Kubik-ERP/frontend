@@ -2,6 +2,8 @@
 // Components
 import CashierFilterByCategory from './CashierFilterByCategory.vue';
 import CashierSearchProductCategory from './CashierSearchProductCategory.vue';
+import CashierAddEditProduct from './ListProduct/CashierAddEditProduct.vue';
+import CashierChangeView from './ListProduct/CashierChangeView.vue';
 import CashierListDrink from './ListProduct/CashierListDrink.vue';
 import CashierListFeaturedProduct from './ListProduct/CashierListFeaturedProduct.vue';
 import CashierListFood from './ListProduct/CashierListFood.vue';
@@ -13,11 +15,15 @@ import CashierListFood from './ListProduct/CashierListFood.vue';
 
     <CashierFilterByCategory />
 
+    <CashierChangeView />
+
     <CashierListFeaturedProduct />
 
     <CashierListFood />
 
     <CashierListDrink />
+
+    <CashierAddEditProduct />
   </section>
 </template>
 

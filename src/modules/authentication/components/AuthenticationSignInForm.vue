@@ -1,20 +1,20 @@
 <script setup lang="ts">
 // Interfaces
-import type { IAuthenticationLoginProvided } from '../interfaces/authentication-login.interface';
+import type { IAuthenticationSignInProvided } from '../interfaces/authentication-sign-in.interface';
 
 /**
  * @description Inject all the data and methods what we need
  */
 const {
-  authenticationLogin_formData,
-  authenticationLogin_formValidations,
-  authenticationLogin_isLoading,
-  authenticationLogin_onSubmit,
-} = inject<IAuthenticationLoginProvided>('authenticationLogin')!;
+  authenticationSignIn_formData,
+  authenticationSignIn_formValidations,
+  authenticationSignIn_isLoading,
+  authenticationSignIn_onSubmit,
+} = inject<IAuthenticationSignInProvided>('authenticationSignIn')!;
 </script>
 
 <template>
-  <form class="flex flex-col gap-10 w-full max-w-sm" @submit.prevent="authenticationLogin_onSubmit">
+  <form class="flex flex-col gap-10 w-full max-w-sm" @submit.prevent="authenticationSignIn_onSubmit">
     <section id="greeting-text" class="flex flex-col gap-2">
       <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
 
@@ -27,7 +27,7 @@ const {
         is-name-as-label
         label-for="email"
         name="Email"
-        :validators="authenticationLogin_formValidations.email"
+        :validators="authenticationSignIn_formValidations.email"
         v-slot="{ classes }"
       >
         <PrimeVueIconField>
@@ -38,9 +38,9 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVueInputText
-            v-on="useListenerForm(authenticationLogin_formValidations, 'email')"
-            v-model="authenticationLogin_formData.email"
-            :loading="authenticationLogin_isLoading"
+            v-on="useListenerForm(authenticationSignIn_formValidations, 'email')"
+            v-model="authenticationSignIn_formData.email"
+            :loading="authenticationSignIn_isLoading"
             placeholder="Input your registered email"
             class="text-sm w-full"
             :class="{ ...classes }"
@@ -53,7 +53,7 @@ const {
         is-name-as-label
         label-for="password"
         name="Password"
-        :validators="authenticationLogin_formValidations.password"
+        :validators="authenticationSignIn_formValidations.password"
         v-slot="{ classes }"
       >
         <PrimeVueIconField>
@@ -64,9 +64,9 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVueInputText
-            v-on="useListenerForm(authenticationLogin_formValidations, 'password')"
-            v-model="authenticationLogin_formData.password"
-            :loading="authenticationLogin_isLoading"
+            v-on="useListenerForm(authenticationSignIn_formValidations, 'password')"
+            v-model="authenticationSignIn_formData.password"
+            :loading="authenticationSignIn_isLoading"
             placeholder="Input your password"
             class="text-sm w-full"
             :class="{ ...classes }"
@@ -85,7 +85,7 @@ const {
           class="bg-blue-primary border-none text-sm py-[10px]"
           label="Submit"
           type="submit"
-          :disabled="authenticationLogin_formValidations.$invalid"
+          :disabled="authenticationSignIn_formValidations.$invalid"
         />
 
         <PrimeVueButton class="w-full" severity="secondary" variant="outlined">

@@ -33,6 +33,7 @@ const initialize = async () => {
     theme: {
       preset: Aura,
       options: {
+        darkModeSelector: 'class',
         cssLayer: {
           name: 'primevue',
           order: 'theme, base, primevue',

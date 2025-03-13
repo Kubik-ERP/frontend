@@ -21,18 +21,27 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'login',
-        name: 'login',
-        component: () => import('../views/AuthenticationLoginUI.vue'),
+        path: 'reset-password',
+        name: 'reset-password',
+        component: () => import('../views/AuthenticationResetPasswordUI.vue'),
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.EMPTY,
         },
       },
       {
-        path: 'reset-password',
-        name: 'reset-password',
-        component: () => import('../views/AuthenticationResetPasswordUI.vue'),
+        path: 'sign-in',
+        name: 'sign-in',
+        component: () => import('../views/AuthenticationSignInUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.EMPTY,
+        },
+      },
+      {
+        path: 'sign-up',
+        name: 'sign-up',
+        component: () => import('../views/AuthenticationSignUpUI.vue'),
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.EMPTY,

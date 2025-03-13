@@ -12,15 +12,51 @@ import CashierOrderSummary from '../components/CashierOrderSummary.vue';
 /**
  * @description Destructure all the data and methods what we need
  */
-const { cashier_listDrink, cashier_listFeaturedProduct, cashier_listFood } = useCashierProductService();
+const {
+  cashierProduct_isLoading,
+  cashierProduct_searchData,
+  cashierProduct_listCategory,
+
+  cashierProduct_modalAddEditItem,
+
+  cashierProduct_listDrink,
+  cashierProduct_listFeaturedProduct,
+  cashierProduct_listFood,
+
+  cashierProduct_selectedCategory,
+  cashierProduct_selectedProduct,
+  cashierProduct_selectedView,
+
+  cashierProduct_handleSelectCategory,
+  cashierProduct_handleSelectProduct,
+  cashierProduct_onSearchData,
+
+  isProductActive,
+} = useCashierProductService();
 
 /**
  * @description Provide all the data and methods what we need
  */
 provide<ICashierProductProvided>('cashierProduct', {
-  cashier_listDrink,
-  cashier_listFeaturedProduct,
-  cashier_listFood,
+  cashierProduct_isLoading,
+  cashierProduct_searchData,
+  cashierProduct_listCategory,
+
+  cashierProduct_modalAddEditItem,
+
+  cashierProduct_listDrink,
+  cashierProduct_listFeaturedProduct,
+  cashierProduct_listFood,
+
+  cashierProduct_selectedCategory,
+  cashierProduct_selectedProduct,
+  cashierProduct_selectedView,
+
+  cashierProduct_handleSelectCategory,
+  cashierProduct_handleSelectProduct,
+  cashierProduct_onSearchData,
+
+  isProductActive,
 });
 </script>
 

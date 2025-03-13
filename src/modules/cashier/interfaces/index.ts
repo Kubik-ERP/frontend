@@ -1,6 +1,20 @@
 export interface ICashierCategory {
+  id: number;
   name: string;
   total: number;
+  image: string;
+}
+
+export interface ICashierVariant {
+  id: number;
+  name: string;
+  price: number;
+}
+
+export interface ICashierModalAddProductItem {
+  qty: string;
+  variant: ICashierVariant;
+  notes: string;
 }
 
 export interface ICashierProduct {
@@ -8,8 +22,30 @@ export interface ICashierProduct {
   name: string;
   category: string;
   price: string;
-  discountedPrice: string;
+  discountedPrice: string | null;
   image: string;
+  variant: ICashierVariant[];
+}
+
+export interface ICashierSelected {
+  product: ICashierProduct;
+  variant: ICashierVariant;
+  qty: string;
+  notes: string;
+}
+
+export interface ICashierModalAddProduct {
+  show: boolean;
+  isAddNotesActive: boolean;
+  product: ICashierProduct | null;
+  item: ICashierModalAddProductItem | null;
+}
+
+export interface ICashierStateStore {
+  cashierProduct_listCategory: ICashierCategory[];
+  cashierProduct_listFeaturedProduct: ICashierProduct[];
+  cashierProduct_listFood: ICashierProduct[];
+  cashierProduct_listDrink: ICashierProduct[];
 }
 
 export interface ICashierStateStore {

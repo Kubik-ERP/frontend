@@ -4,6 +4,15 @@ import { useCashierStore } from '../store';
 
 // interfaces
 import type { ICashierProductProvided } from '../interfaces/cashier-product-service';
+import type {
+  ICashierModalAddProduct,
+  ICashierModalAddProductItem,
+  ICashierProduct,
+  ICashierSelected,
+} from '../interfaces';
+
+// Vue
+import { ref } from 'vue';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -14,11 +23,117 @@ export const useCashierProductService = (): ICashierProductProvided => {
    */
   const store = useCashierStore();
 
-  const { cashier_listFood, cashier_listFeaturedProduct, cashier_listDrink } = storeToRefs(store);
+  const {
+    cashierProduct_listCategory,
+    cashierProduct_listFood,
+    cashierProduct_listFeaturedProduct,
+    cashierProduct_listDrink,
+  } = storeToRefs(store);
+
+  /**
+   * @description Reactive data binding
+   */
+  const cashierProduct_searchData = ref<string>('');
+  const cashierProduct_isLoading = ref<boolean>(false);
+
+  const cashierProduct_selectedView = ref<'image' | 'grid' | 'inline'>('image');
+  const cashierProduct_selectedProduct = ref<ICashierSelected[]>([]);
+  const cashierProduct_selectedCategory = ref<string[]>([]);
+
+  const cashierProduct_modalAddEditItem = ref<ICashierModalAddProduct>({
+    show: false,
+    isAddNotesActive: false,
+    product: null,
+    item: {
+      qty: '1',
+      variant: {
+        id: 1,
+        name: '',
+        price: 0,
+      },
+      notes: '',
+    },
+  });
+
+  /**
+   * @description Handle fetch api cashier search. We call the fetchCashierSearch function from the store to handle the request.
+   */
+  const cashierProduct_onSearchData = async (searchData: string) => {
+    try {
+      await store.cashierProduct_fetchSearch(searchData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  /**
+   * @description Handle select category, add or remove the category from selected category
+   * @param {string} category
+   */
+  const cashierProduct_handleSelectCategory = (category: string) => {
+    if (cashierProduct_selectedCategory.value.includes(category)) {
+      cashierProduct_selectedCategory.value = cashierProduct_selectedCategory.value.filter(
+        item => item !== category,
+      );
+    } else {
+      cashierProduct_selectedCategory.value.push(category);
+    }
+  };
+
+  /**
+   * @description Adds a product to the selected list.
+   * If a prodiuct with the same variant alreed already exists, increment the quantity by 1
+   *  If not, add a new product with an initial quantity of 1.
+   * @param {ICashierProduct} product
+   * @param {ICashierVariant} variant
+   */
+  const cashierProduct_handleSelectProduct = (product?: ICashierProduct, item?: ICashierModalAddProductItem) => {
+    if (product && item) {
+      const existingProduct = cashierProduct_selectedProduct.value.find(
+        val => val.product.id === product?.id && item?.variant.id === val.variant.id,
+      );
+
+      if (existingProduct) {
+        existingProduct.qty += 1;
+      } else {
+        cashierProduct_selectedProduct.value.push({
+          product,
+          ...item,
+        });
+      }
+    }
+  };
+
+  /**
+   * @description Checks if a product is currently selected.
+   *
+   * @param {ICashierProduct} product
+   * @returns {boolan}
+   */
+  const isProductActive = (product: ICashierProduct): boolean => {
+    return !!cashierProduct_selectedProduct.value.find(val => val.product.id == product.id);
+  };
 
   return {
-    cashier_listDrink,
-    cashier_listFeaturedProduct,
-    cashier_listFood,
+    cashierProduct_isLoading,
+    cashierProduct_searchData,
+    cashierProduct_listCategory,
+
+    cashierProduct_modalAddEditItem,
+
+    cashierProduct_listDrink,
+    cashierProduct_listFeaturedProduct,
+    cashierProduct_listFood,
+
+    cashierProduct_selectedCategory,
+    cashierProduct_selectedView,
+    cashierProduct_selectedProduct,
+
+    cashierProduct_handleSelectCategory,
+    cashierProduct_handleSelectProduct,
+
+    cashierProduct_onSearchData,
+
+    isProductActive,
   };
 };
