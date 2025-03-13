@@ -24,6 +24,9 @@
 /**
   ================================ Custom TailwindCSS ================================
 */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   html {
     font-family: var(--font-sans);
@@ -46,9 +49,11 @@
 }
 
 @theme {
+  --color-primary: #18618b;
   --color-blue-primary: #18618b;
   --color-disabled: #8e8e8e;
   --color-gray: #434343;
+  --color-error-main: #e57171;
   --color-primary-background: #edf6fc;
   --color-primary-border: #8cc8eb;
   --color-primary-hover: #0f3c56;
