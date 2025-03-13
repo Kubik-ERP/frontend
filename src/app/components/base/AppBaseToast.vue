@@ -114,12 +114,12 @@ eventBus.on(EToastType.DANGER, (params: unknown) => {
 <template>
   <Transition>
     <div
+      v-if="toast.isOpen"
       :id="toastId"
       class="fixed flex items-center w-full max-w-xs p-4 space-x-4 divide-gray-200 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800 space-x"
       :class="classNameBasedOnPositionToast"
       role="alert"
       v-bind="toast"
-      v-if="toast.isOpen"
     >
       <div
         class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8"

@@ -25,12 +25,12 @@ const {
     </section>
 
     <AppBaseFormGroup
+      v-slot="{ classes }"
       class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
       is-name-as-label
       label-for="email"
       name="Email"
       :validators="authenticationResetPassword_formValidations.email"
-      v-slot="{ classes }"
     >
       <PrimeVueIconField>
         <PrimeVueInputIcon>
@@ -40,12 +40,12 @@ const {
         </PrimeVueInputIcon>
 
         <PrimeVueInputText
-          v-on="useListenerForm(authenticationResetPassword_formValidations, 'email')"
           v-model="authenticationResetPassword_formData.email"
           :loading="authenticationResetPassword_isLoading"
           placeholder="Input your registered email"
           class="text-sm w-full"
           :class="{ ...classes }"
+          v-on="useListenerForm(authenticationResetPassword_formValidations, 'email')"
         />
       </PrimeVueIconField>
     </AppBaseFormGroup>

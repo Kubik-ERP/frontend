@@ -11,8 +11,8 @@ const { cashierProduct_modalAddEditItem, cashierProduct_handleSelectProduct } =
 
 <template>
   <PrimeVueDialog
-    v-model:visible="cashierProduct_modalAddEditItem.show"
     v-if="cashierProduct_modalAddEditItem.item"
+    v-model:visible="cashierProduct_modalAddEditItem.show"
     modal
     :style="{ width: '34rem' }"
   >
@@ -44,9 +44,9 @@ const { cashierProduct_modalAddEditItem, cashierProduct_handleSelectProduct } =
               "
             />
             <PrimeVueInputText
+              v-model="cashierProduct_modalAddEditItem.item.qty"
               class="w-14 justify-items-center"
               type="number"
-              v-model="cashierProduct_modalAddEditItem.item.qty"
             />
             <PrimeVueButton
               type="button"
@@ -73,7 +73,7 @@ const { cashierProduct_modalAddEditItem, cashierProduct_handleSelectProduct } =
           >
             <PrimeVueRadioButton
               v-model="cashierProduct_modalAddEditItem.item.variant"
-              :inputId="category.name"
+              :input-id="category.name"
               name="dynamic"
               :value="category.name"
             />
@@ -82,9 +82,9 @@ const { cashierProduct_modalAddEditItem, cashierProduct_handleSelectProduct } =
         </div>
 
         <PrimeVueButton
+          v-if="!cashierProduct_modalAddEditItem.isAddNotesActive"
           variant="text"
           class="w-fit"
-          v-if="!cashierProduct_modalAddEditItem.isAddNotesActive"
           @click="cashierProduct_modalAddEditItem.isAddNotesActive = true"
         >
           <AppBaseSvg name="add-notes" />
@@ -101,7 +101,7 @@ const { cashierProduct_modalAddEditItem, cashierProduct_handleSelectProduct } =
             rows="4"
           />
 
-          <section class="flex w-full justify-end" id="cashier-add-edit-product-delete-notes">
+          <section id="cashier-add-edit-product-delete-notes" class="flex w-full justify-end">
             <PrimeVueButton
               text
               class="text-error-main"

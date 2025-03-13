@@ -18,21 +18,21 @@ const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
 
       <section id="outlet-address" class="col-span-full md:col-span-6">
         <AppBaseFormGroup
+          v-slot="{ classes }"
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="address"
           name="Address"
           :validators="outletCreateEdit_formValidations.address"
-          v-slot="{ classes }"
         >
           <PrimeVueIconField>
             <PrimeVueTextarea
-              v-on="useListenerForm(outletCreateEdit_formValidations, 'address')"
               v-model="outletCreateEdit_formData.address"
               placeholder="Input your store address"
               class="text-sm w-full"
               :class="{ ...classes }"
               rows="5"
+              v-on="useListenerForm(outletCreateEdit_formValidations, 'address')"
             />
           </PrimeVueIconField>
         </AppBaseFormGroup>
@@ -40,20 +40,20 @@ const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
 
       <section id="outlet-city" class="col-span-full md:col-span-6">
         <AppBaseFormGroup
+          v-slot="{ classes }"
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="city"
           name="City"
           :validators="outletCreateEdit_formValidations.city"
-          v-slot="{ classes }"
         >
           <PrimeVueIconField>
             <PrimeVueInputText
-              v-on="useListenerForm(outletCreateEdit_formValidations, 'city')"
               v-model="outletCreateEdit_formData.city"
               placeholder="Input your store city"
               class="text-sm w-full"
               :class="{ ...classes }"
+              v-on="useListenerForm(outletCreateEdit_formValidations, 'city')"
             />
           </PrimeVueIconField>
         </AppBaseFormGroup>
@@ -61,20 +61,20 @@ const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
 
       <section id="outlet-postal-code" class="col-span-full md:col-span-6">
         <AppBaseFormGroup
+          v-slot="{ classes }"
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="postalCode"
           name="Postal Code"
           :validators="outletCreateEdit_formValidations.postalCode"
-          v-slot="{ classes }"
         >
           <PrimeVueIconField>
             <PrimeVueInputText
-              v-on="useListenerForm(outletCreateEdit_formValidations, 'postalCode')"
               v-model="outletCreateEdit_formData.postalCode"
               placeholder="Input your store postal code"
               class="text-sm w-full"
               :class="{ ...classes }"
+              v-on="useListenerForm(outletCreateEdit_formValidations, 'postalCode')"
             />
           </PrimeVueIconField>
         </AppBaseFormGroup>
@@ -82,20 +82,20 @@ const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
 
       <section id="outlet-building" class="col-span-full md:col-span-6">
         <AppBaseFormGroup
+          v-slot="{ classes }"
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="building"
           name="Building"
           :validators="outletCreateEdit_formValidations.building"
-          v-slot="{ classes }"
         >
           <PrimeVueIconField>
             <PrimeVueInputText
-              v-on="useListenerForm(outletCreateEdit_formValidations, 'building')"
               v-model="outletCreateEdit_formData.building"
               placeholder="Input your store building"
               class="text-sm w-full"
               :class="{ ...classes }"
+              v-on="useListenerForm(outletCreateEdit_formValidations, 'building')"
             />
           </PrimeVueIconField>
         </AppBaseFormGroup>

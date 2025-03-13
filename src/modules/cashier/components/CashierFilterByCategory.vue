@@ -51,8 +51,8 @@ const moveDragging = (e: PointerEvent) => {
   <section id="cashier-filter-by-category" class="flex flex-col gap-2 mb-6 mt-2">
     <h2 class="text-xs text-text-disabled">Filter by Category</h2>
     <section
-      ref="containerRef"
       id="cashier-filter-by-category-card"
+      ref="containerRef"
       class="flex gap-4 overflow-x-auto whitespace-nowrap cursor-grab select-none"
       @pointerdown="startDragging"
       @pointerleave="stopDragging"

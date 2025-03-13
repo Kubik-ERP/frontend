@@ -2,8 +2,8 @@
   <section id="outlet-available-list" class="grid grid-rows-1 grid-cols-10 gap-4">
     <section
       v-for="index in 6"
-      :key="index"
       id="outlet"
+      :key="index"
       class="col-span-2 relative inset-0 z-0 flex flex-col items-center gap-4 p-2 rounded-lg cursor-pointer basic-smooth-animation hover:bg-primary-background hover:[&>svg]:opacity-100"
     >
       <AppBaseSvg
