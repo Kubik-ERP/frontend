@@ -3,9 +3,6 @@
 import type { ICashierProduct } from '../../interfaces';
 import type { ICashierProductProvided } from '../../interfaces/cashier-product-service';
 
-// Vue
-import { computed } from 'vue';
-
 const props = defineProps({
   product: {
     type: Object as PropType<ICashierProduct>,
