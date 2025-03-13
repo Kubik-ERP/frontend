@@ -43,7 +43,7 @@ const wrapperClass = computed(() => {
 
 <template>
   <section id="cashier-list-drink" class="flex flex-col gap-2">
-    <h2 class="text-xs text-text-disabled">Food</h2>
+    <h2 class="text-xs text-text-disabled">Drinks</h2>
 
     <section id="cahshier-list-wrapper-class" :class="wrapperClass">
       <component
