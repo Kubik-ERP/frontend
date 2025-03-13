@@ -45,9 +45,9 @@ export const useCashierProductService = (): ICashierProductProvided => {
     isAddNotesActive: false,
     product: null,
     item: {
-      qty: '1',
+      qty: 1,
       variant: {
-        id: 1,
+        id: 0,
         name: '',
         price: 0,
       },
@@ -94,7 +94,8 @@ export const useCashierProductService = (): ICashierProductProvided => {
       );
 
       if (existingProduct) {
-        existingProduct.qty += 1;
+        existingProduct.qty = item.qty;
+        existingProduct.notes = item.notes;
       } else {
         cashierProduct_selectedProduct.value.push({
           product,
@@ -114,6 +115,109 @@ export const useCashierProductService = (): ICashierProductProvided => {
     return !!cashierProduct_selectedProduct.value.find(val => val.product.id == product.id);
   };
 
+  /**
+   * @description Increase or decrease the quantity of the product
+   * @param {ICashierProduct} product
+   * @param {number} qty
+   * @param {'increase' | 'decrease'}
+   */
+  const cashierProduct_handleQuantity = (type: 'increase' | 'decrease') => {
+    if (cashierProduct_modalAddEditItem.value.item) {
+      if (type === 'increase') {
+        cashierProduct_modalAddEditItem.value.item.qty++;
+      } else {
+        cashierProduct_modalAddEditItem.value.item.qty--;
+      }
+    }
+  };
+
+  /**
+   * @description computed getters setters, convert qty to string for the v-model purpose
+   */
+  const cashierProduct_selectedProductQty = computed({
+    get: () => cashierProduct_modalAddEditItem.value.item?.qty.toString(),
+    set: (value: string) => {
+      const qty = parseInt(value);
+      const productQty = cashierProduct_modalAddEditItem.value.product?.qty || 1;
+
+      if (qty > productQty) {
+        cashierProduct_modalAddEditItem.value.item.qty = productQty;
+      } else if (qty < 1) {
+        cashierProduct_modalAddEditItem.value.item.qty = 1;
+      } else {
+        cashierProduct_modalAddEditItem.value.item.qty = parseInt(value);
+      }
+    },
+  });
+
+  /**
+   * @description watch variant changes
+   */
+  watch(
+    () => cashierProduct_modalAddEditItem.value.item.variant,
+    newValue => {
+      const productExist = cashierProduct_selectedProduct.value.find(val => {
+        return (
+          val.product.id === cashierProduct_modalAddEditItem.value.product?.id && val.variant.id === newValue.id
+        );
+      });
+
+      if (productExist) {
+        cashierProduct_modalAddEditItem.value.item.qty = productExist.qty;
+        cashierProduct_modalAddEditItem.value.item.notes = productExist.notes;
+      } else {
+        cashierProduct_modalAddEditItem.value.item.qty = 1;
+      }
+    },
+  );
+
+  /**
+   * @description reset modal add product
+   */
+  const cashierProduct_resetModalAddProduct = () => {
+    cashierProduct_modalAddEditItem.value.show = false;
+    cashierProduct_modalAddEditItem.value.isAddNotesActive = false;
+    cashierProduct_modalAddEditItem.value.product = null;
+    cashierProduct_modalAddEditItem.value.item = {
+      qty: 1,
+      variant: {
+        id: 0,
+        name: '',
+        price: 0,
+      },
+      notes: '',
+    };
+  };
+
+  /**
+   * @description handle open modal add product
+   * @param {ICashierProduct} product
+   */
+  const cashierProduct_handleOpenModalAddProduct = (product: ICashierProduct) => {
+    cashierProduct_resetModalAddProduct();
+
+    cashierProduct_modalAddEditItem.value.product = product;
+    cashierProduct_modalAddEditItem.value.show = true;
+
+    const existingProduct = cashierProduct_selectedProduct.value.find(val => val.product.id === product?.id);
+
+    if (existingProduct) {
+      cashierProduct_modalAddEditItem.value.item = {
+        qty: existingProduct.qty,
+        variant: {
+          id: existingProduct.variant.id,
+          name: existingProduct.variant.name,
+          price: existingProduct.variant.price,
+        },
+        notes: existingProduct.notes,
+      };
+
+      if (existingProduct.notes) {
+        cashierProduct_modalAddEditItem.value.isAddNotesActive = true;
+      }
+    }
+  };
+
   return {
     cashierProduct_isLoading,
     cashierProduct_searchData,
@@ -129,11 +233,15 @@ export const useCashierProductService = (): ICashierProductProvided => {
     cashierProduct_selectedView,
     cashierProduct_selectedProduct,
 
+    cashierProduct_selectedProductQty,
+
     cashierProduct_handleSelectCategory,
     cashierProduct_handleSelectProduct,
 
     cashierProduct_onSearchData,
 
     isProductActive,
+    cashierProduct_handleQuantity,
+    cashierProduct_handleOpenModalAddProduct,
   };
 };
