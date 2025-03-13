@@ -17,6 +17,8 @@ const {
   cashierProduct_searchData,
   cashierProduct_listCategory,
 
+  cashierProduct_modalAddEditItem,
+
   cashierProduct_listDrink,
   cashierProduct_listFeaturedProduct,
   cashierProduct_listFood,
@@ -28,6 +30,8 @@ const {
   cashierProduct_handleSelectCategory,
   cashierProduct_handleSelectProduct,
   cashierProduct_onSearchData,
+
+  isProductActive,
 } = useCashierProductService();
 
 /**
@@ -38,6 +42,8 @@ provide<ICashierProductProvided>('cashierProduct', {
   cashierProduct_searchData,
   cashierProduct_listCategory,
 
+  cashierProduct_modalAddEditItem,
+
   cashierProduct_listDrink,
   cashierProduct_listFeaturedProduct,
   cashierProduct_listFood,
@@ -49,6 +55,8 @@ provide<ICashierProductProvided>('cashierProduct', {
   cashierProduct_handleSelectCategory,
   cashierProduct_handleSelectProduct,
   cashierProduct_onSearchData,
+
+  isProductActive,
 });
 </script>
 

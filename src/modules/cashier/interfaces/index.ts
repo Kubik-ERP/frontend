@@ -5,6 +5,18 @@ export interface ICashierCategory {
   image: string;
 }
 
+export interface ICashierVariant {
+  id: number;
+  name: string;
+  price: number;
+}
+
+export interface ICashierModalAddProductItem {
+  qty: string;
+  variant: ICashierVariant;
+  notes: string;
+}
+
 export interface ICashierProduct {
   id: number;
   name: string;
@@ -12,6 +24,21 @@ export interface ICashierProduct {
   price: string;
   discountedPrice: string | null;
   image: string;
+  variant: ICashierVariant[];
+}
+
+export interface ICashierSelected {
+  product: ICashierProduct;
+  variant: ICashierVariant;
+  qty: string;
+  notes: string;
+}
+
+export interface ICashierModalAddProduct {
+  show: boolean;
+  isAddNotesActive: boolean;
+  product: ICashierProduct | null;
+  item: ICashierModalAddProductItem | null;
 }
 
 export interface ICashierStateStore {

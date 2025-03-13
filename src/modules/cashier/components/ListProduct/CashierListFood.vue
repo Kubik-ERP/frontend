@@ -42,7 +42,7 @@ const wrapperClass = computed(() => {
 </script>
 
 <template>
-  <section id="cashier-list-featured-product" class="flex flex-col gap-2">
+  <section id="cashier-list-food" class="flex flex-col gap-2">
     <h2 class="text-xs text-text-disabled">Food</h2>
 
     <section id="cahshier-list-wrapper-class" :class="wrapperClass">

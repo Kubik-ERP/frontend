@@ -45,7 +45,7 @@ const wrapperClass = computed(() => {
   <section id="cashier-list-featured-product" class="flex flex-col gap-2">
     <h2 class="text-xs text-text-disabled">Food</h2>
 
-    <section id="cahshier-list-wrapper-class" :class="wrapperClass">
+    <section id="cashier-list-wrapper-class" :class="wrapperClass">
       <component
         :is="selectedComponent"
         v-for="product in cashierProduct_listFeaturedProduct"

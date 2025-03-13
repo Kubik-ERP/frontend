@@ -3,9 +3,6 @@
 import type { ICashierProduct } from '../../interfaces';
 import type { ICashierProductProvided } from '../../interfaces/cashier-product-service';
 
-// Vue
-import { computed } from 'vue';
-
 const props = defineProps({
   product: {
     type: Object as PropType<ICashierProduct>,
@@ -16,12 +13,7 @@ const props = defineProps({
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierProduct_selectedProduct, cashierProduct_handleSelectProduct } =
-  inject<ICashierProductProvided>('cashierProduct')!;
-
-// Computed properties
-const isProductActive = computed(() => cashierProduct_selectedProduct.value.includes(props.product));
-const displayedPrice = computed(() => props.product.discountedPrice ?? props.product.price);
+const { cashierProduct_modalAddEditItem, isProductActive } = inject<ICashierProductProvided>('cashierProduct')!;
 </script>
 
 <template>
@@ -32,16 +24,21 @@ const displayedPrice = computed(() => props.product.discountedPrice ?? props.pro
         body: 'rounded-sm bg-white border border-grayscale-10 shadow-none drop-shadow-none p-2 cursor-pointer hover:border-grayscale-20 active:bg-grayscale-10/5',
       }"
       :class="{
-        'border-primary-border border rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]': isProductActive,
+        'border-primary-border border rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]': isProductActive(
+          props.product,
+        ),
       }"
-      @click="cashierProduct_handleSelectProduct(props.product)"
+      @click="
+        cashierProduct_modalAddEditItem.show = true;
+        cashierProduct_modalAddEditItem.product = props.product;
+      "
     >
       <template #content>
         <section id="cashier-card-content" class="flex flex-col gap-2 relative">
           <img :src="props.product.image" class="h-[98px] w-full object-cover" />
 
           <div
-            v-if="isProductActive"
+            v-if="isProductActive(props.product)"
             class="absolute py-1 px-1.5 border border-primary-border bg-blue-primary left-0 ml-1 mt-1 rounded-full flex gap-2"
           >
             <AppBaseSvg name="check" class="h-w-2.5" />
@@ -60,7 +57,9 @@ const displayedPrice = computed(() => props.product.discountedPrice ?? props.pro
               <span v-if="props.product.discountedPrice" class="text-disabled line-through text-[10px] text-right"
                 >Rp.{{ props.product.price }}</span
               >
-              <span class="font-semibold text-right">Rp.{{ displayedPrice }}</span>
+              <span class="font-semibold text-right"
+                >Rp.{{ props.product.discountedPrice ?? props.product.price }}</span
+              >
             </div>
           </div>
         </section>

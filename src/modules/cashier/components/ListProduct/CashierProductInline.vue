@@ -16,12 +16,7 @@ const props = defineProps({
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierProduct_selectedProduct, cashierProduct_handleSelectProduct } =
-  inject<ICashierProductProvided>('cashierProduct')!;
-
-// Computed properties
-const isProductActive = computed(() => cashierProduct_selectedProduct.value.includes(props.product));
-const displayedPrice = computed(() => props.product.discountedPrice ?? props.product.price);
+const { cashierProduct_modalAddEditItem, isProductActive } = inject<ICashierProductProvided>('cashierProduct')!;
 </script>
 
 <template>
@@ -32,14 +27,19 @@ const displayedPrice = computed(() => props.product.discountedPrice ?? props.pro
         body: 'rounded-sm bg-white border border-grayscale-10 shadow-none drop-shadow-none p-2 cursor-pointer hover:border-grayscale-20 active:bg-grayscale-10/5',
       }"
       :class="{
-        'border-primary-border border rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]': isProductActive,
+        'border-primary-border border rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]': isProductActive(
+          props.product,
+        ),
       }"
-      @click="cashierProduct_handleSelectProduct(props.product)"
+      @click="
+        cashierProduct_modalAddEditItem.show = true;
+        cashierProduct_modalAddEditItem.product = props.product;
+      "
     >
       <template #content>
         <section id="cashier-card-content" class="flex justify-between w-full gap-2 relative">
           <div class="flex gap-2">
-            <PrimeVueCheckbox v-model="isProductActive" binary />
+            <PrimeVueCheckbox :model-value="isProductActive(props.product)" binary />
 
             <div class="flex flex-col gap-1">
               <p class="font-semibold text-sm">
@@ -54,7 +54,9 @@ const displayedPrice = computed(() => props.product.discountedPrice ?? props.pro
 
           <div class="flex mt-2 justify-between">
             <div class="flex flex-col">
-              <span class="font-semibold text-sm text-primary-hover">Rp.{{ displayedPrice }}</span>
+              <span class="font-semibold text-sm text-primary-hover"
+                >Rp.{{ props.product.discountedPrice ?? props.product.price }}</span
+              >
 
               <span v-if="props.product.discountedPrice" class="text-disabled line-through text-[10px] text-right"
                 >Rp.{{ props.product.price }}</span

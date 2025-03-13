@@ -4,7 +4,12 @@ import { useCashierStore } from '../store';
 
 // interfaces
 import type { ICashierProductProvided } from '../interfaces/cashier-product-service';
-import type { ICashierProduct } from '../interfaces';
+import type {
+  ICashierModalAddProduct,
+  ICashierModalAddProductItem,
+  ICashierProduct,
+  ICashierSelected,
+} from '../interfaces';
 
 // Vue
 import { ref } from 'vue';
@@ -32,8 +37,23 @@ export const useCashierProductService = (): ICashierProductProvided => {
   const cashierProduct_isLoading = ref<boolean>(false);
 
   const cashierProduct_selectedView = ref<'image' | 'grid' | 'inline'>('image');
-  const cashierProduct_selectedProduct = ref<ICashierProduct[]>([]);
+  const cashierProduct_selectedProduct = ref<ICashierSelected[]>([]);
   const cashierProduct_selectedCategory = ref<string[]>([]);
+
+  const cashierProduct_modalAddEditItem = ref<ICashierModalAddProduct>({
+    show: false,
+    isAddNotesActive: false,
+    product: null,
+    item: {
+      qty: '1',
+      variant: {
+        id: 1,
+        name: '',
+        price: 0,
+      },
+      notes: '',
+    },
+  });
 
   /**
    * @description Handle fetch api cashier search. We call the fetchCashierSearch function from the store to handle the request.
@@ -61,21 +81,45 @@ export const useCashierProductService = (): ICashierProductProvided => {
   };
 
   /**
-   * @description Handle select product, add or remove the product from selected product
+   * @description Adds a product to the selected list.
+   * If a prodiuct with the same variant alreed already exists, increment the quantity by 1
+   *  If not, add a new product with an initial quantity of 1.
    * @param {ICashierProduct} product
+   * @param {ICashierVariant} variant
    */
-  const cashierProduct_handleSelectProduct = (product: ICashierProduct) => {
-    if (cashierProduct_selectedProduct.value.includes(product)) {
-      cashierProduct_selectedProduct.value = cashierProduct_selectedProduct.value.filter(item => item !== product);
-    } else {
-      cashierProduct_selectedProduct.value.push(product);
+  const cashierProduct_handleSelectProduct = (product?: ICashierProduct, item?: ICashierModalAddProductItem) => {
+    if (product && item) {
+      const existingProduct = cashierProduct_selectedProduct.value.find(
+        val => val.product.id === product?.id && item?.variant.id === val.variant.id,
+      );
+
+      if (existingProduct) {
+        existingProduct.qty += 1;
+      } else {
+        cashierProduct_selectedProduct.value.push({
+          product,
+          ...item,
+        });
+      }
     }
+  };
+
+  /**
+   * @description Checks if a product is currently selected.
+   *
+   * @param {ICashierProduct} product
+   * @returns {boolan}
+   */
+  const isProductActive = (product: ICashierProduct): boolean => {
+    return !!cashierProduct_selectedProduct.value.find(val => val.product.id == product.id);
   };
 
   return {
     cashierProduct_isLoading,
     cashierProduct_searchData,
     cashierProduct_listCategory,
+
+    cashierProduct_modalAddEditItem,
 
     cashierProduct_listDrink,
     cashierProduct_listFeaturedProduct,
@@ -89,5 +133,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
     cashierProduct_handleSelectProduct,
 
     cashierProduct_onSearchData,
+
+    isProductActive,
   };
 };
