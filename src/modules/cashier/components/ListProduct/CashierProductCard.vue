@@ -13,7 +13,8 @@ const props = defineProps({
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierProduct_modalAddEditItem, isProductActive } = inject<ICashierProductProvided>('cashierProduct')!;
+const { cashierProduct_handleOpenModalAddProduct, isProductActive } =
+  inject<ICashierProductProvided>('cashierProduct')!;
 </script>
 
 <template>
@@ -28,10 +29,7 @@ const { cashierProduct_modalAddEditItem, isProductActive } = inject<ICashierProd
           props.product,
         ),
       }"
-      @click="
-        cashierProduct_modalAddEditItem.show = true;
-        cashierProduct_modalAddEditItem.product = props.product;
-      "
+      @click="cashierProduct_handleOpenModalAddProduct(props.product)"
     >
       <template #content>
         <section id="cashier-card-content" class="flex flex-col gap-2 relative">
@@ -54,11 +52,15 @@ const { cashierProduct_modalAddEditItem, isProductActive } = inject<ICashierProd
               <span class="text-xs text-text-disabled">{{ props.product.category }}</span>
             </div>
             <div class="flex flex-col">
-              <span v-if="props.product.discountedPrice" class="text-disabled line-through text-[10px] text-right"
-                >Rp.{{ props.product.price }}</span
+              <span
+                v-if="props.product.discountedPrice"
+                class="h-4 text-disabled line-through text-[10px] text-right"
+                >Rp{{ props.product.price }}</span
               >
+              <span v-else class="h-4"></span>
+
               <span class="font-semibold text-right"
-                >Rp.{{ props.product.discountedPrice ?? props.product.price }}</span
+                >Rp{{ props.product.discountedPrice ?? props.product.price }}</span
               >
             </div>
           </div>
