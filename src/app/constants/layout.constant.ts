@@ -8,4 +8,5 @@ export enum LAYOUT_OPTIONS {
   PUBLIC = 'public',
   AUTHENTICATION = 'authentication',
   DEFAULT = 'AppLayoutDefault',
+  OUTLET = 'AppLayoutOutlet',
 }
