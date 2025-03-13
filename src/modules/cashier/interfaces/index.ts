@@ -12,7 +12,7 @@ export interface ICashierVariant {
 }
 
 export interface ICashierModalAddProductItem {
-  qty: string;
+  qty: number;
   variant: ICashierVariant;
   notes: string;
 }
@@ -24,13 +24,14 @@ export interface ICashierProduct {
   price: string;
   discountedPrice: string | null;
   image: string;
+  qty: number;
   variant: ICashierVariant[];
 }
 
 export interface ICashierSelected {
   product: ICashierProduct;
   variant: ICashierVariant;
-  qty: string;
+  qty: number;
   notes: string;
 }
 
@@ -38,7 +39,7 @@ export interface ICashierModalAddProduct {
   show: boolean;
   isAddNotesActive: boolean;
   product: ICashierProduct | null;
-  item: ICashierModalAddProductItem | null;
+  item: ICashierModalAddProductItem;
 }
 
 export interface ICashierStateStore {

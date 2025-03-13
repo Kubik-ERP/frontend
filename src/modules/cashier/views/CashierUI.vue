@@ -27,11 +27,15 @@ const {
   cashierProduct_selectedProduct,
   cashierProduct_selectedView,
 
+  cashierProduct_selectedProductQty,
+
   cashierProduct_handleSelectCategory,
   cashierProduct_handleSelectProduct,
   cashierProduct_onSearchData,
 
   isProductActive,
+  cashierProduct_handleQuantity,
+  cashierProduct_handleOpenModalAddProduct,
 } = useCashierProductService();
 
 /**
@@ -52,11 +56,15 @@ provide<ICashierProductProvided>('cashierProduct', {
   cashierProduct_selectedProduct,
   cashierProduct_selectedView,
 
+  cashierProduct_selectedProductQty,
+
   cashierProduct_handleSelectCategory,
   cashierProduct_handleSelectProduct,
   cashierProduct_onSearchData,
 
   isProductActive,
+  cashierProduct_handleQuantity,
+  cashierProduct_handleOpenModalAddProduct,
 });
 </script>
 

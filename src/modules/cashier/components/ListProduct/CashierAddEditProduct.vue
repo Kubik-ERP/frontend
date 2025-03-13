@@ -5,8 +5,12 @@ import { ICashierProductProvided } from '../../interfaces/cashier-product-servic
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierProduct_modalAddEditItem, cashierProduct_handleSelectProduct } =
-  inject<ICashierProductProvided>('cashierProduct')!;
+const {
+  cashierProduct_modalAddEditItem,
+  cashierProduct_selectedProductQty,
+  cashierProduct_handleQuantity,
+  cashierProduct_handleSelectProduct,
+} = inject<ICashierProductProvided>('cashierProduct')!;
 </script>
 
 <template>
@@ -17,8 +21,8 @@ const { cashierProduct_modalAddEditItem, cashierProduct_handleSelectProduct } =
     :style="{ width: '34rem' }"
   >
     <template #container="{ closeCallback }">
-      <div class="font-semibold overflow-auto flex flex-col gap-6 text-lg p-6">
-        <div class="">Add Item</div>
+      <div class="overflow-auto flex flex-col gap-6 text-lg p-6">
+        <div class="font-semibold">Add Item</div>
 
         <div class="flex w-full items-center justify-between">
           <div class="flex items-center gap-4">
@@ -26,7 +30,7 @@ const { cashierProduct_modalAddEditItem, cashierProduct_handleSelectProduct } =
 
             <div class="flex flex-col gap-1">
               <span class="font-semibold">{{ cashierProduct_modalAddEditItem.product?.name }}</span>
-              <span class="text-sm">Rp.{{ cashierProduct_modalAddEditItem.product?.price }}</span>
+              <span class="text-sm">Rp{{ cashierProduct_modalAddEditItem.product?.price }}</span>
             </div>
           </div>
 
@@ -36,48 +40,50 @@ const { cashierProduct_modalAddEditItem, cashierProduct_handleSelectProduct } =
               class="border border-primary text-primary px-4"
               variant="outlined"
               label="-"
-              @click="
-                cashierProduct_modalAddEditItem.item &&
-                (cashierProduct_modalAddEditItem.item.qty = (
-                  +cashierProduct_modalAddEditItem.item.qty - 1
-                ).toString())
-              "
+              :disabled="Number(cashierProduct_modalAddEditItem.item.qty) <= 1"
+              @click="cashierProduct_handleQuantity('decrease')"
             />
             <PrimeVueInputText
               class="w-14 justify-items-center"
               type="number"
-              v-model="cashierProduct_modalAddEditItem.item.qty"
+              v-model="cashierProduct_selectedProductQty"
             />
             <PrimeVueButton
               type="button"
               class="border border-primary text-primary px-4"
               variant="outlined"
               label="+"
-              @click="
-                cashierProduct_modalAddEditItem.item &&
-                (cashierProduct_modalAddEditItem.item.qty = (
-                  +cashierProduct_modalAddEditItem.item.qty + 1
-                ).toString())
+              :disabled="
+                Number(cashierProduct_modalAddEditItem.item.qty) >=
+                (cashierProduct_modalAddEditItem.product?.qty ?? 0)
               "
+              @click="cashierProduct_handleQuantity('increase')"
             />
           </div>
         </div>
 
         <span class="font-semibold">Variant</span>
 
-        <div class="border rounded-md border-grayscale-10 overflow-auto h-44">
+        <div class="border rounded-md border-grayscale-10 overflow-auto min-h-44 h-44">
           <div
             v-for="category in cashierProduct_modalAddEditItem.product?.variant"
             :key="category.id"
-            class="flex items-center gap-2 p-2"
+            class="flex justify-between w-full p-2"
           >
-            <PrimeVueRadioButton
-              v-model="cashierProduct_modalAddEditItem.item.variant"
-              :inputId="category.name"
-              name="dynamic"
-              :value="category.name"
-            />
-            <label :for="category.name">{{ category.name }}</label>
+            <div class="flex items-center gap-2">
+              <PrimeVueRadioButton
+                v-model="cashierProduct_modalAddEditItem.item.variant"
+                :inputId="category.name"
+                name="dynamic"
+                :value="category"
+              />
+
+              <label :for="category.name">{{ category.name }}</label>
+            </div>
+
+            <span class="text-sm text-text-disabled">{{
+              category.price == 0 ? 'Free' : `+ Rp ${category.price}`
+            }}</span>
           </div>
         </div>
 
@@ -105,7 +111,10 @@ const { cashierProduct_modalAddEditItem, cashierProduct_handleSelectProduct } =
             <PrimeVueButton
               text
               class="text-error-main"
-              @click="cashierProduct_modalAddEditItem.isAddNotesActive = false"
+              @click="
+                cashierProduct_modalAddEditItem.isAddNotesActive = false;
+                cashierProduct_modalAddEditItem.item.notes = '';
+              "
             >
               <template #default>
                 <div class="flex gap-2 items-center">
