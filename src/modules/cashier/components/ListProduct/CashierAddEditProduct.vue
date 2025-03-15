@@ -15,8 +15,8 @@ const {
 
 <template>
   <PrimeVueDialog
-    v-model:visible="cashierProduct_modalAddEditItem.show"
     v-if="cashierProduct_modalAddEditItem.item"
+    v-model:visible="cashierProduct_modalAddEditItem.show"
     modal
     :style="{ width: '34rem' }"
   >
@@ -88,9 +88,9 @@ const {
         </div>
 
         <PrimeVueButton
+          v-if="!cashierProduct_modalAddEditItem.isAddNotesActive"
           variant="text"
           class="w-fit"
-          v-if="!cashierProduct_modalAddEditItem.isAddNotesActive"
           @click="cashierProduct_modalAddEditItem.isAddNotesActive = true"
         >
           <AppBaseSvg name="add-notes" />
@@ -107,7 +107,7 @@ const {
             rows="4"
           />
 
-          <section class="flex w-full justify-end" id="cashier-add-edit-product-delete-notes">
+          <section id="cashier-add-edit-product-delete-notes" class="flex w-full justify-end">
             <PrimeVueButton
               text
               class="text-error-main"

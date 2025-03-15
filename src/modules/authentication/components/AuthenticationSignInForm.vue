@@ -23,12 +23,12 @@ const {
 
     <section id="form-inputs" class="flex flex-col">
       <AppBaseFormGroup
+        v-slot="{ classes }"
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="email"
         name="Email"
         :validators="authenticationSignIn_formValidations.email"
-        v-slot="{ classes }"
       >
         <PrimeVueIconField>
           <PrimeVueInputIcon>
@@ -38,23 +38,23 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVueInputText
-            v-on="useListenerForm(authenticationSignIn_formValidations, 'email')"
             v-model="authenticationSignIn_formData.email"
             :loading="authenticationSignIn_isLoading"
             placeholder="Input your registered email"
             class="text-sm w-full"
             :class="{ ...classes }"
+            v-on="useListenerForm(authenticationSignIn_formValidations, 'email')"
           />
         </PrimeVueIconField>
       </AppBaseFormGroup>
 
       <AppBaseFormGroup
+        v-slot="{ classes }"
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="password"
         name="Password"
         :validators="authenticationSignIn_formValidations.password"
-        v-slot="{ classes }"
       >
         <PrimeVueIconField>
           <PrimeVueInputIcon>
@@ -64,12 +64,12 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVueInputText
-            v-on="useListenerForm(authenticationSignIn_formValidations, 'password')"
             v-model="authenticationSignIn_formData.password"
             :loading="authenticationSignIn_isLoading"
             placeholder="Input your password"
             class="text-sm w-full"
             :class="{ ...classes }"
+            v-on="useListenerForm(authenticationSignIn_formValidations, 'password')"
           />
         </PrimeVueIconField>
       </AppBaseFormGroup>

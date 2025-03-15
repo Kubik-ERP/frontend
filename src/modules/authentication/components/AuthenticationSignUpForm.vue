@@ -37,13 +37,13 @@ const {
       <span id="description" class="font-normal text-base text-disabled">Please enter your account details</span>
 
       <AppBaseFormGroup
+        v-slot="{ classes }"
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="email"
         name="Email"
         spacing-bottom="mb-0"
         :validators="authenticationSignUp_formValidations.email"
-        v-slot="{ classes }"
       >
         <PrimeVueIconField>
           <PrimeVueInputIcon>
@@ -53,12 +53,12 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVueInputText
-            v-on="useListenerForm(authenticationSignUp_formValidations, 'email')"
             v-model="authenticationSignUp_formData.email"
             :loading="authenticationSignUp_isLoading"
             placeholder="Input your registered email"
             class="text-sm w-full"
             :class="{ ...classes }"
+            v-on="useListenerForm(authenticationSignUp_formValidations, 'email')"
           />
         </PrimeVueIconField>
       </AppBaseFormGroup>
@@ -66,24 +66,24 @@ const {
       <section id="phone-information" class="flex items-center gap-3">
         <section id="phone-code" class="w-fit">
           <AppBaseFormGroup
+            v-slot="{ classes }"
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="phoneCode"
             name="Phone Code"
             spacing-bottom="mb-0"
-            :validators="authenticationSignUp_formValidations.email"
-            v-slot="{ classes }"
+            :validators="authenticationSignUp_formValidations.phoneCode"
           >
             <Select
-              v-model="authenticationSignUp_formData.phoneCode"
-              v-on="useListenerForm(authenticationSignUp_formValidations, 'phoneCode')"
               id="phoneCode"
+              v-model="authenticationSignUp_formData.phoneCode"
               filter
               :options="COUNTRY_INFORMATIONS"
               option-value="dialCodes"
               placeholder="+62"
               class="text-sm h-full min-h-9 w-full"
               :class="{ ...classes }"
+              v-on="useListenerForm(authenticationSignUp_formValidations, 'phoneCode')"
             >
               <template #option="{ option }">
                 <section id="phone-option" class="flex items-center gap-1">
@@ -103,35 +103,35 @@ const {
 
         <section id="phone-number" class="w-full">
           <AppBaseFormGroup
+            v-slot="{ classes }"
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="phoneNumber"
             name="Phone Number"
             spacing-bottom="mb-0"
             :validators="authenticationSignUp_formValidations.phoneNumber"
-            v-slot="{ classes }"
           >
             <PrimeVueInputText
-              v-on="useListenerForm(authenticationSignUp_formValidations, 'phoneNumber')"
               v-model="authenticationSignUp_formData.phoneNumber"
               :loading="authenticationSignUp_isLoading"
               placeholder="Input your phone number"
               class="text-sm w-full"
               :class="{ ...classes }"
               type="tel"
+              v-on="useListenerForm(authenticationSignUp_formValidations, 'phoneNumber')"
             />
           </AppBaseFormGroup>
         </section>
       </section>
 
       <AppBaseFormGroup
+        v-slot="{ classes }"
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="password"
         name="Password"
         spacing-bottom="mb-0"
         :validators="authenticationSignUp_formValidations.password"
-        v-slot="{ classes }"
       >
         <PrimeVueIconField>
           <PrimeVueInputIcon>
@@ -141,7 +141,6 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVuePassword
-            v-on="useListenerForm(authenticationSignUp_formValidations, 'password')"
             v-model="authenticationSignUp_formData.password"
             placeholder="Input your new password"
             class="text-sm w-full"
@@ -151,18 +150,19 @@ const {
             :pt="{
               root: '[&>input]:text-sm [&>input]:w-full',
             }"
+            v-on="useListenerForm(authenticationSignUp_formValidations, 'password')"
           />
         </PrimeVueIconField>
       </AppBaseFormGroup>
 
       <AppBaseFormGroup
+        v-slot="{ classes }"
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="passwordConfirmation"
         name="Password Confirmation"
         spacing-bottom="mb-0"
         :validators="authenticationSignUp_formValidations.passwordConfirmation"
-        v-slot="{ classes }"
       >
         <PrimeVueIconField>
           <PrimeVueInputIcon>
@@ -172,7 +172,6 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVuePassword
-            v-on="useListenerForm(authenticationSignUp_formValidations, 'passwordConfirmation')"
             v-model="authenticationSignUp_formData.passwordConfirmation"
             placeholder="Input your new password again"
             class="text-sm w-full"
@@ -182,6 +181,7 @@ const {
             :pt="{
               root: '[&>input]:text-sm [&>input]:w-full',
             }"
+            v-on="useListenerForm(authenticationSignUp_formValidations, 'passwordConfirmation')"
           />
         </PrimeVueIconField>
       </AppBaseFormGroup>

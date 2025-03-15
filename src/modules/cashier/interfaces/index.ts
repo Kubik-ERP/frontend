@@ -48,3 +48,10 @@ export interface ICashierStateStore {
   cashierProduct_listFood: ICashierProduct[];
   cashierProduct_listDrink: ICashierProduct[];
 }
+
+export interface ICashierStateStore {
+  cashier_listCategory: ICashierCategory[];
+  cashier_listFeaturedProduct: ICashierProduct[];
+  cashier_listFood: ICashierProduct[];
+  cashier_listDrink: ICashierProduct[];
+}

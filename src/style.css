@@ -35,12 +35,24 @@
 }
 
 @layer components {
+  .basic-smooth-animation {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .button-shadow {
+    box-shadow: 0px 1px 2px 0px #1018280d;
+  }
+
+  .container {
+    @apply w-dvw h-dvh max-w-full md:max-w-4xl xl:max-w-6xl mx-auto px-4;
+  }
+
   .default-wrapper {
     @apply relative inset-0 z-0;
   }
 
   .default-wrapper-fullscreen {
-    @apply relative inset-0 z-0 w-dvw h-dvh;
+    @apply relative inset-0 z-0 w-dvw h-dvh overflow-x-hidden;
   }
 
   .grid-wrapper-fullscreen {
@@ -49,6 +61,7 @@
 }
 
 @theme {
+  --color-black-secondary: #434343;
   --color-primary: #18618b;
   --color-blue-primary: #18618b;
   --color-disabled: #8e8e8e;
