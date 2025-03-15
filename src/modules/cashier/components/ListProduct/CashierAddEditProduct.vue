@@ -44,9 +44,9 @@ const {
               @click="cashierProduct_handleQuantity('decrease')"
             />
             <PrimeVueInputText
+              v-model="cashierProduct_selectedProductQty"
               class="w-14 justify-items-center"
               type="number"
-              v-model="cashierProduct_selectedProductQty"
             />
             <PrimeVueButton
               type="button"
@@ -73,7 +73,7 @@ const {
             <div class="flex items-center gap-2">
               <PrimeVueRadioButton
                 v-model="cashierProduct_modalAddEditItem.item.variant"
-                :inputId="category.name"
+                :input-id="category.name"
                 name="dynamic"
                 :value="category"
               />

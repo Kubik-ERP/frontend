@@ -40,6 +40,8 @@ export default [
       'no-unsafe-optional-chaining': 'error',
       'no-useless-catch': 'error',
       'no-use-before-define': 'error',
+      'vue/attribute-hyphenation': ['error', 'always'],
+      'vue/attributes-order': 'error',
       'vue/component-tags-order': [
         'error',
         {
