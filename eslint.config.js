@@ -42,7 +42,7 @@ export default [
       'no-use-before-define': 'error',
       'vue/attribute-hyphenation': ['error', 'always'],
       'vue/attributes-order': 'error',
-      'vue/block-order': [
+      'vue/component-tags-order': [
         'error',
         {
           order: [['script', 'template'], 'style'],
