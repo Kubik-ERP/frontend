@@ -124,9 +124,9 @@ export const useCashierProductService = (): ICashierProductProvided => {
   const cashierProduct_handleQuantity = (type: 'increase' | 'decrease') => {
     if (cashierProduct_modalAddEditItem.value.item) {
       if (type === 'increase') {
-        cashierProduct_modalAddEditItem.value.item.qty++;
+        cashierProduct_modalAddEditItem.value.item.qty += 1;
       } else {
-        cashierProduct_modalAddEditItem.value.item.qty--;
+        cashierProduct_modalAddEditItem.value.item.qty -= 1;
       }
     }
   };

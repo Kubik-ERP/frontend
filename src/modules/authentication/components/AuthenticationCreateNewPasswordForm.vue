@@ -24,12 +24,12 @@ const {
 
     <section id="form-inputs" class="flex flex-col">
       <AppBaseFormGroup
+        v-slot="{ classes }"
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="email"
         name="Email"
         :validators="authenticationCreateNewPassword_formValidations.email"
-        v-slot="{ classes }"
       >
         <PrimeVueIconField>
           <PrimeVueInputIcon>
@@ -39,24 +39,24 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVueInputText
-            v-on="useListenerForm(authenticationCreateNewPassword_formValidations, 'email')"
             v-model="authenticationCreateNewPassword_formData.email"
             placeholder="Input your registered email"
             class="text-sm w-full"
             disabled
             :class="{ ...classes }"
             :loading="authenticationCreateNewPassword_isLoading"
+            v-on="useListenerForm(authenticationCreateNewPassword_formValidations, 'email')"
           />
         </PrimeVueIconField>
       </AppBaseFormGroup>
 
       <AppBaseFormGroup
+        v-slot="{ classes }"
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="password"
         name="Password"
         :validators="authenticationCreateNewPassword_formValidations.password"
-        v-slot="{ classes }"
       >
         <PrimeVueIconField>
           <PrimeVueInputIcon>
@@ -66,7 +66,6 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVuePassword
-            v-on="useListenerForm(authenticationCreateNewPassword_formValidations, 'password')"
             v-model="authenticationCreateNewPassword_formData.password"
             placeholder="Input your new password"
             class="text-sm w-full"
@@ -76,17 +75,18 @@ const {
             :pt="{
               root: '[&>input]:text-sm [&>input]:w-full',
             }"
+            v-on="useListenerForm(authenticationCreateNewPassword_formValidations, 'password')"
           />
         </PrimeVueIconField>
       </AppBaseFormGroup>
 
       <AppBaseFormGroup
+        v-slot="{ classes }"
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="passwordConfirmation"
         name="Password Confirmation"
         :validators="authenticationCreateNewPassword_formValidations.passwordConfirmation"
-        v-slot="{ classes }"
       >
         <PrimeVueIconField>
           <PrimeVueInputIcon>
@@ -96,7 +96,6 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVuePassword
-            v-on="useListenerForm(authenticationCreateNewPassword_formValidations, 'passwordConfirmation')"
             v-model="authenticationCreateNewPassword_formData.passwordConfirmation"
             placeholder="Input your new password again"
             class="text-sm w-full"
@@ -106,6 +105,7 @@ const {
             :pt="{
               root: '[&>input]:text-sm [&>input]:w-full',
             }"
+            v-on="useListenerForm(authenticationCreateNewPassword_formValidations, 'passwordConfirmation')"
           />
         </PrimeVueIconField>
       </AppBaseFormGroup>
