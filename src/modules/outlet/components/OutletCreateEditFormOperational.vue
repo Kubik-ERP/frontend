@@ -1,7 +1,4 @@
 <script setup lang="ts">
-// Components
-import DatePicker from 'primevue/datepicker';
-
 // Constants
 import { OUTLET_CREATE_EDIT_BUSINESS_HOURS } from '../constants/outlet-create-edit.constant';
 
@@ -36,8 +33,12 @@ import { OUTLET_CREATE_EDIT_BUSINESS_HOURS } from '../constants/outlet-create-ed
         </section>
 
         <section :id="`business-hour-${businessHourIndex}`" class="flex items-center gap-4">
-          <DatePicker :id="`datepicker-business-start-hour-${businessHourIndex}-timeonly`" fluid time-only />
-          <DatePicker :id="`datepicker-business-end-hour-${businessHourIndex}-timeonly`" fluid time-only />
+          <PrimeVueDatePicker
+            :id="`datepicker-business-start-hour-${businessHourIndex}-timeonly`"
+            fluid
+            time-only
+          />
+          <PrimeVueDatePicker :id="`datepicker-business-end-hour-${businessHourIndex}-timeonly`" fluid time-only />
         </section>
       </section>
     </template>

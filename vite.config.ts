@@ -31,7 +31,7 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
  * @note We should know, if we can't use the dynamic component registration with the Vite plugin. So we need to register the components manually. Please check out this issue: https://github.com/unplugin/unplugin-vue-components/issues/643
  */
 import Components from 'unplugin-vue-components/vite';
-import { PrimeVueResolver } from 'unplugin-vue-components/resolvers';
+import { PrimeVueResolver } from '@primevue/auto-import-resolver';
 
 /**
  * @description Vite plugin to minify images using imagemin.
@@ -59,7 +59,7 @@ export default defineConfig({
       eslintrc: {
         enabled: true, // <-- this
       },
-      imports: ['vue', 'vue-router'],
+      imports: ['pinia', 'vue', 'vue-router'],
       vueTemplate: true,
     }),
     createSvgIconsPlugin({
@@ -101,7 +101,9 @@ export default defineConfig({
           }
         },
         PrimeVueResolver({
-          prefix: 'PrimeVue',
+          components: {
+            prefix: 'PrimeVue',
+          },
         }),
       ],
 

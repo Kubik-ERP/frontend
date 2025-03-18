@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Components
 import Avatar from 'primevue/avatar';
+import AppBaseSvg from '../base/AppBaseSvg.vue';
 </script>
 
 <template>

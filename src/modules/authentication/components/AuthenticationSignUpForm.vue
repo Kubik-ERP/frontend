@@ -1,7 +1,4 @@
 <script setup lang="ts">
-// Components
-import Select from 'primevue/select';
-
 // Interfaces
 import type { IAuthenticationSignUpProvided } from '../interfaces/authentication-sign-up.interface';
 
@@ -74,7 +71,7 @@ const {
             spacing-bottom="mb-0"
             :validators="authenticationSignUp_formValidations.phoneCode"
           >
-            <Select
+            <PrimeVueSelect
               id="phoneCode"
               v-model="authenticationSignUp_formData.phoneCode"
               filter
@@ -97,7 +94,7 @@ const {
                   <span class="text-sm">{{ value }}</span>
                 </section>
               </template>
-            </Select>
+            </PrimeVueSelect>
           </AppBaseFormGroup>
         </section>
 
