@@ -18,6 +18,8 @@ declare global {
   const LAYOUT_EMPTY: typeof import('./app/constants/layout.constant')['LAYOUT_EMPTY']
   const LAYOUT_OPTIONS: typeof import('./app/constants/layout.constant')['LAYOUT_OPTIONS']
   const LAYOUT_PUBLIC: typeof import('./app/constants/layout.constant')['LAYOUT_PUBLIC']
+  const LIST_ADDITIONAL_MENUS: typeof import('./app/constants/menus.constant')['LIST_ADDITIONAL_MENUS']
+  const LIST_SIDEBAR_MENUS: typeof import('./app/constants/menus.constant')['LIST_SIDEBAR_MENUS']
   const REGEX_ANY_CHAR: typeof import('./app/constants/regex.constant')['REGEX_ANY_CHAR']
   const REGEX_DIGIT: typeof import('./app/constants/regex.constant')['REGEX_DIGIT']
   const REGEX_LOWERCASE: typeof import('./app/constants/regex.constant')['REGEX_LOWERCASE']
@@ -130,6 +132,8 @@ declare module 'vue' {
     readonly LAYOUT_EMPTY: UnwrapRef<typeof import('./app/constants/layout.constant')['LAYOUT_EMPTY']>
     readonly LAYOUT_OPTIONS: UnwrapRef<typeof import('./app/constants/layout.constant')['LAYOUT_OPTIONS']>
     readonly LAYOUT_PUBLIC: UnwrapRef<typeof import('./app/constants/layout.constant')['LAYOUT_PUBLIC']>
+    readonly LIST_ADDITIONAL_MENUS: UnwrapRef<typeof import('./app/constants/menus.constant')['LIST_ADDITIONAL_MENUS']>
+    readonly LIST_SIDEBAR_MENUS: UnwrapRef<typeof import('./app/constants/menus.constant')['LIST_SIDEBAR_MENUS']>
     readonly REGEX_ANY_CHAR: UnwrapRef<typeof import('./app/constants/regex.constant')['REGEX_ANY_CHAR']>
     readonly REGEX_DIGIT: UnwrapRef<typeof import('./app/constants/regex.constant')['REGEX_DIGIT']>
     readonly REGEX_LOWERCASE: UnwrapRef<typeof import('./app/constants/regex.constant')['REGEX_LOWERCASE']>

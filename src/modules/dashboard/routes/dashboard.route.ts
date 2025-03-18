@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/DashboardUI.vue'),
         meta: {
           requiresAuthorization: false,
-          layout: LAYOUT_OPTIONS.EMPTY,
+          layout: LAYOUT_OPTIONS.DEFAULT,
         },
       },
     ],

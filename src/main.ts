@@ -17,6 +17,7 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 
 // Stylesheets
+import 'primeicons/primeicons.css';
 import './style.css';
 
 // SVG Icons

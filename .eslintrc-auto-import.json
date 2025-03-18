@@ -108,6 +108,8 @@
     "REGEX_UPPERCASE": true,
     "isPasswordValid": true,
     "isPhoneCodeValid": true,
-    "isPhoneNumberValid": true
+    "isPhoneNumberValid": true,
+    "LIST_ADDITIONAL_MENUS": true,
+    "LIST_SIDEBAR_MENUS": true
   }
 }

@@ -52,7 +52,7 @@
   }
 
   .default-wrapper-fullscreen {
-    @apply relative inset-0 z-0 w-dvw h-dvh overflow-x-hidden;
+    @apply relative inset-0 z-0 h-full w-dvw min-h-dvh overflow-x-hidden;
   }
 
   .grid-wrapper-fullscreen {
@@ -76,5 +76,6 @@
   --color-grayscale-10: #ededed;
   --color-grayscale-20: #d9d9d9;
   --color-grayscale-30: #b4b4b4;
+  --color-success: #80c684;
   --font-sans: 'Inter', sans-serif;
 }
