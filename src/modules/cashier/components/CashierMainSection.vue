@@ -10,7 +10,7 @@ import CashierListFood from './ListProduct/CashierListFood.vue';
 </script>
 
 <template>
-  <section id="cashier-main-section" class="col-span-8 flex flex-col gap-4 px-10 py-6">
+  <section id="cashier-main-section" class="col-span-8 h-full overflow-x-auto flex flex-col gap-4 px-10 py-6">
     <CashierSearchProductCategory />
 
     <CashierFilterByCategory />
