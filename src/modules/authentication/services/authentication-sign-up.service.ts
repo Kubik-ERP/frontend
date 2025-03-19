@@ -29,7 +29,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
   /**
    * @description Reactive data binding
    */
-  const authenticationSignUp_activeStep = ref<number>(1);
+  const authenticationSignUp_activeStep = ref<number>(0);
   const authenticationSignUp_formData = reactive<IAuthenticationSignUpFormData>({
     email: '',
     phoneCode: '+62',
@@ -45,7 +45,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
    */
   const authenticationSignUp_formRules = computed(() => ({
     email: { email, required },
-    phoneCode: { required, isPhoneCodeValid },
+    phoneCode: { required, isPhoneCodeValid: isPhoneCodeValid },
     phoneNumber: { required, isPhoneNumberValid },
     password: { required, isPasswordValid },
     passwordConfirmation: { required, sameAs: sameAs(() => authenticationSignUp_formData.password) },

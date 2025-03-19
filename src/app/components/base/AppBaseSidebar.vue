@@ -43,19 +43,19 @@ import { LIST_ADDITIONAL_MENUS, LIST_SIDEBAR_MENUS } from '@/app/constants/menus
             {{ menuCategory.name }}
           </span>
 
-          <template v-for="(menu, menuIndex) in menuCategory.menus" :key="`menu-${menuIndex}`">
-            <RouterLink
-              id="menu"
-              :to="menu.path"
-              class="flex items-center gap-2 p-2 basic-smooth-animation hover:bg-grayscale-10 cursor-pointer rounded-md"
-            >
-              <AppBaseSvg :name="menu.iconName" class="!w-5 !h-5" />
+          <RouterLink
+            v-for="(menu, menuIndex) in menuCategory.menus"
+            id="menu"
+            :key="`menu-${menuIndex}`"
+            :to="menu.path"
+            class="flex items-center gap-2 p-2 basic-smooth-animation hover:bg-grayscale-10 cursor-pointer rounded-md"
+          >
+            <AppBaseSvg :name="menu.iconName" class="!w-5 !h-5" />
 
-              <p class="font-normal text-base text-black">
-                {{ menu.name }}
-              </p>
-            </RouterLink>
-          </template>
+            <p class="font-normal text-base text-black">
+              {{ menu.name }}
+            </p>
+          </RouterLink>
         </section>
       </template>
     </section>

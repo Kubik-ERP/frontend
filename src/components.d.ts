@@ -8,20 +8,19 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AppBaseFormGroup: typeof import('@components/base/AppBaseFormGroup.vue')['default']
     AppBaseSvg: typeof import('@components/base/AppBaseSvg.vue')['default']
     AppBaseToast: typeof import('@components/base/AppBaseToast.vue')['default']
     PrimeVueAvatar: typeof import('primevue/avatar')['default']
     PrimeVueBreadcrumb: typeof import('primevue/breadcrumb')['default']
     PrimeVueButton: typeof import('primevue/button')['default']
-    PrimeVueCheckbox: typeof import('primevue/checkbox')['default']
+    PrimeVueChart: typeof import('primevue/chart')['default']
+    PrimeVueChip: typeof import('primevue/chip')['default']
+    PrimeVueDatePicker: typeof import('primevue/datepicker')['default']
     PrimeVueDivider: typeof import('primevue/divider')['default']
-    PrimeVueFileUpload: typeof import('primevue/fileupload')['default']
     PrimeVueIconField: typeof import('primevue/iconfield')['default']
     PrimeVueInputIcon: typeof import('primevue/inputicon')['default']
     PrimeVueInputText: typeof import('primevue/inputtext')['default']
-    PrimeVueRadioButton: typeof import('primevue/radiobutton')['default']
-    PrimeVueTextarea: typeof import('primevue/textarea')['default']
+    PrimeVueMeterGroup: typeof import('primevue/metergroup')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

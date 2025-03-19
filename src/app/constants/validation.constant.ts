@@ -26,4 +26,7 @@ export const VALIDATION_MESSAGE: Record<string, string> = {
   available: '{attribute} already exists',
   moreThanMin: '{attribute} must be more than {min}',
   lessThanMax: '{attribute} must be less than {max}',
+  isPhoneCodeValid: 'Phone code is invalid',
+  isPhoneNumberValid: 'Phone number is invalid',
+  isPasswordValid: 'Password must contain capital letter, number, and symbol',
 };

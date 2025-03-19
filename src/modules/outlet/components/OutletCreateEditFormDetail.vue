@@ -1,7 +1,4 @@
 <script setup lang="ts">
-// Components
-import Select from 'primevue/select';
-
 // Constants
 import { OUTLET_CREATE_EDIT_BUSINESS_TYPES } from '../constants/outlet-create-edit.constant';
 
@@ -74,7 +71,7 @@ const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
               spacing-bottom="mb-0"
               :validators="outletCreateEdit_formValidations.phoneCode"
             >
-              <Select
+              <PrimeVueSelect
                 id="phoneCode"
                 v-model="outletCreateEdit_formData.phoneCode"
                 filter
@@ -97,7 +94,7 @@ const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
                     <span class="text-sm">{{ value }}</span>
                   </section>
                 </template>
-              </Select>
+              </PrimeVueSelect>
             </AppBaseFormGroup>
           </section>
 
