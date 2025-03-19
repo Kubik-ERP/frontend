@@ -7,7 +7,7 @@ import CashierSummaryTotal from './OrderSummary/CashierSummaryTotal.vue';
 </script>
 
 <template>
-  <section id="order-summary" class="col-span-4 overflow-y-auto bg-white w-full h-full">
+  <section id="order-summary" class="col-span-4 pb-4 overflow-y-auto bg-white w-full h-full flex flex-col">
     <CashierSummarySection />
     <CashierSummaryProductList />
     <CashierSummaryPromoPayment />

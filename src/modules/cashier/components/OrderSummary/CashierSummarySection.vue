@@ -28,9 +28,9 @@ const { cashierOrderSummary_data } = inject<ICashierOrderSummaryProvided>('cashi
       <PrimeVueIconField class="flex w-full">
         <PrimeVueInputIcon class="pi pi-user" />
         <PrimeVueInputText
-          class="w-full"
           id="customer-name"
           v-model="cashierOrderSummary_data.customerName"
+          class="w-full"
           placeholder="Please input Customer Name"
         />
       </PrimeVueIconField>

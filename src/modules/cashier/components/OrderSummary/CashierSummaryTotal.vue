@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <section class="p-4 border-b-2 border-b-grayscale-10" id="cashier-summary-total">
+  <section id="cashier-summary-total" class="p-4 border-b-2 border-b-grayscale-10">
     <div class="flex flex-col gap-1 pb-2 border-b-2 border-b-grayscale-10">
       <div class="flex justify-between text-sm font-semibold">
         <span>Sub Total</span>
