@@ -64,7 +64,7 @@ const {
 
         <span class="font-semibold">Variant</span>
 
-        <div class="border rounded-md border-grayscale-10 overflow-auto min-h-44 h-44">
+        <div class="border rounded-md border-grayscale-10 overflow-auto flex flex-col max-h-48 flex-grow">
           <div
             v-for="category in cashierProduct_modalAddEditItem.product?.variant"
             :key="category.id"
