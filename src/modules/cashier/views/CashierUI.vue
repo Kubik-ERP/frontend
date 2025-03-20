@@ -1,13 +1,15 @@
 <script setup lang="ts">
 // Components
 import CashierMainSection from '../components/CashierMainSection.vue';
+import CashierOrderSummary from '../components/CashierOrderSummary.vue';
 
 // interfaces
 import type { ICashierProductProvided } from '../interfaces/cashier-product-service';
 
 // Services
 import { useCashierProductService } from '../services/useCashierProduct.service';
-import CashierOrderSummary from '../components/CashierOrderSummary.vue';
+import { useCashierOrderSummaryService } from '../services/useCashierOrderSummary.service';
+import { ICashierOrderSummaryProvided } from '../interfaces/cashier-order-summary';
 
 /**
  * @description Destructure all the data and methods what we need
@@ -38,6 +40,8 @@ const {
   cashierProduct_handleOpenModalAddProduct,
 } = useCashierProductService();
 
+const { cashierOrderSummary_data, cashierOrderSummary_calculation } = useCashierOrderSummaryService();
+
 /**
  * @description Provide all the data and methods what we need
  */
@@ -66,12 +70,17 @@ provide<ICashierProductProvided>('cashierProduct', {
   cashierProduct_handleQuantity,
   cashierProduct_handleOpenModalAddProduct,
 });
+
+provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
+  cashierOrderSummary_data,
+  cashierOrderSummary_calculation,
+});
 </script>
 
 <template>
   <section
     id="cashier"
-    class="grid-wrapper-fullscreen bg-background min-h-screen h-full default-wrapper-fullscreen"
+    class="grid-wrapper-fullscreen bg-background min-h-screen h-screen default-wrapper-fullscreen"
   >
     <CashierMainSection />
 

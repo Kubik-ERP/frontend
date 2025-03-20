@@ -10,21 +10,30 @@ import CashierListFood from './ListProduct/CashierListFood.vue';
 </script>
 
 <template>
-  <section id="cashier-main-section" class="col-span-8 flex flex-col gap-4 px-10 py-6">
+  <section id="cashier-main-section" class="col-span-8 h-full overflow-y-auto flex flex-col gap-4 px-10 py-6">
     <CashierSearchProductCategory />
 
     <CashierFilterByCategory />
 
     <CashierChangeView />
 
-    <CashierListFeaturedProduct />
+    <section id="cashier-main-section-list-product" class="flex flex-col overflow-y-auto flex-grow">
+      <CashierListFeaturedProduct />
 
-    <CashierListFood />
+      <CashierListFood />
 
-    <CashierListDrink />
+      <CashierListDrink />
+    </section>
 
     <CashierAddEditProduct />
   </section>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* Adjust scrollbar */
+
+#cashier-main-section {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-grayscale-10) var(--color-grayscale-5);
+}
+</style>
