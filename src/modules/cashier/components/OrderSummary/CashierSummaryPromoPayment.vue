@@ -1,10 +1,26 @@
 <script setup lang="ts"></script>
 
 <template>
-  <section id="cashier-summary-promo-payment" class="border-b-2 border-b-grayscale-10">
-    <div class="flex w-full p-4 gap-4">
-      <PrimeVueButton class="w-1/2" outlined>Promo / Voucher</PrimeVueButton>
-      <PrimeVueButton class="w-1/2" outlined>Payment Methiod</PrimeVueButton>
+  <section id="cashier-summary-promo-payment" class="border-b-2 border-b-grayscale-10 p-2">
+    <div class="flex w-full p-2 gap-4 bg-primary-background">
+      <PrimeVueButton class="w-1/2 py-3 border border-primary-border text-primary" outlined>
+        <template #default>
+          <section class="flex justify-between px-5 w-full items-center">
+            <span class="font-semibold"> Promo / Voucher </span>
+
+            <AppBaseSvg name="voucher" class="!h-5 !w-5" />
+          </section>
+        </template>
+      </PrimeVueButton>
+      <PrimeVueButton class="w-1/2 py-3 border border-primary-border text-primary" outlined>
+        <template #default>
+          <section class="flex justify-between px-5 w-full items-center">
+            <span class="font-semibold"> Payment Method </span>
+
+            <i class="pi pi-chevron-right" />
+          </section>
+        </template>
+      </PrimeVueButton>
     </div>
   </section>
 </template>

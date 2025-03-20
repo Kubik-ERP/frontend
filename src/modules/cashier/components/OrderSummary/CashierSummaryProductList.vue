@@ -1,12 +1,80 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+// Interfaces
+import { ICashierProductProvided } from '../../interfaces/cashier-product-service';
+
+/**
+ * @description Inject all the data and methods what we need
+ */
+const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cashierProduct')!;
+</script>
 
 <template>
   <section
     id="cashier-summary-product-list"
-    class="flex flex-col flex-grow border-b-grayscale-10 border-t-2 border-b-2 border-t-grayscale-10 justify-center items-center"
+    class="flex flex-col flex-grow border-b-grayscale-10 border-t-2 border-b-2 p-4 border-t-grayscale-10 justify-center items-center"
+    :class="cashierProduct_selectedProduct.length === 0 ? 'justify-center' : 'justify-start'"
   >
-    <div class="">
+    <div v-if="cashierProduct_selectedProduct.length === 0" class="">
       <span class="text-grayscale-20">No item selected</span>
+    </div>
+    <div v-else>
+      <div class="grid grid-cols-12 gap-4" v-for="(item, key) in cashierProduct_selectedProduct" :key="key">
+        <div class="w-min h-min p-2 rounded-full bg-error-background">
+          <AppBaseSvg name="trash" class="!h-4 !w-4" />
+        </div>
+        <div class="col-span-7 flex flex-col gap-4">
+          <div class="flex gap-4">
+            <img :src="item.product.image" alt="product" class="w-10 h-10 object-cover" />
+
+            <div class="flex flex-col">
+              <span class="text-sm font-semibold">{{ item.product.name }}</span>
+              <div class="flex flex-col w-fit">
+                <span class="text-xs">Rp {{ item.product.discountedPrice ?? item.product.price }}</span>
+                <span
+                  class="text-text-disabled text-[10px] line-through text-right"
+                  v-if="item.product.discountedPrice"
+                  >Rp {{ item.product.price }}</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <div v-if="item.variant">
+              <p class="font-semibold text-xs text-text-disabled">Variant</p>
+              <p class="text-sm">{{ item.variant.name }}</p>
+            </div>
+
+            <div v-if="item.notes">
+              <p class="font-semibold text-xs text-text-disabled">Notes</p>
+              <p class="text-sm">{{ item.notes }}</p>
+            </div>
+
+            <PrimeVueButton variant="text" class="w-fit">
+              <AppBaseSvg name="add-notes" />
+
+              <span class="font-semibold text-primary">Add Notes</span>
+            </PrimeVueButton>
+          </div>
+        </div>
+        <div class="col-span-4">
+          <div class="flex items-center gap-2">
+            <PrimeVueButton
+              type="button"
+              class="border border-primary text-primary px-4"
+              variant="outlined"
+              label="-"
+            />
+            <PrimeVueInputText class="w-14 justify-items-center" type="number" />
+            <PrimeVueButton
+              type="button"
+              class="border border-primary text-primary px-4"
+              variant="outlined"
+              label="+"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </template>

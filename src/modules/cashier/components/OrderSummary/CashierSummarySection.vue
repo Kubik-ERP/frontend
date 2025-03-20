@@ -39,8 +39,20 @@ const { cashierOrderSummary_data } = inject<ICashierOrderSummaryProvided>('cashi
 
   <div class="border-t-2 border-t-grayscale-10">
     <div class="flex justify-between items-center p-4 gap-2">
-      <PrimeVueButton outlined class="w-1/2 border border-grayscale-30">Order Type</PrimeVueButton>
-      <PrimeVueButton outlined class="w-1/2 border border-grayscale-30">Table No</PrimeVueButton>
+      <button
+        class="flex w-1/2 border cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 text-text-disabled border-text-disabled rounded-sm p-2.5 justify-between items-center"
+      >
+        Order Type
+
+        <AppBaseSvg name="order" class="!h-5 !w-5" />
+      </button>
+      <button
+        class="flex w-1/2 border cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 text-text-disabled border-text-disabled rounded-sm p-2.5 justify-between items-center"
+      >
+        Table No.
+
+        <AppBaseSvg name="table" class="!h-5 !w-5" />
+      </button>
     </div>
   </div>
 </template>
