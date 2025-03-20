@@ -18,7 +18,7 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
       <span class="text-grayscale-20">No item selected</span>
     </div>
     <div v-else>
-      <div class="grid grid-cols-12 gap-4" v-for="(item, key) in cashierProduct_selectedProduct" :key="key">
+      <div v-for="(item, key) in cashierProduct_selectedProduct" :key="key" class="grid grid-cols-12 gap-4">
         <div class="w-min h-min p-2 rounded-full bg-error-background">
           <AppBaseSvg name="trash" class="!h-4 !w-4" />
         </div>
@@ -31,8 +31,8 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
               <div class="flex flex-col w-fit">
                 <span class="text-xs">Rp {{ item.product.discountedPrice ?? item.product.price }}</span>
                 <span
-                  class="text-text-disabled text-[10px] line-through text-right"
                   v-if="item.product.discountedPrice"
+                  class="text-text-disabled text-[10px] line-through text-right"
                   >Rp {{ item.product.price }}</span
                 >
               </div>
