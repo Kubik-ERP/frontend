@@ -11,17 +11,22 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
 <template>
   <section
     id="cashier-summary-product-list"
-    class="flex flex-col flex-grow border-b-grayscale-10 border-t-2 border-b-2 p-4 border-t-grayscale-10 justify-center items-center"
+    class="flex flex-col max-h-[210px] overflow-y-auto flex-grow border-b-grayscale-10 border-t-2 border-b-2 p-4 border-t-grayscale-10 justify-center items-center"
     :class="cashierProduct_selectedProduct.length === 0 ? 'justify-center' : 'justify-start'"
   >
     <div v-if="cashierProduct_selectedProduct.length === 0" class="">
       <span class="text-grayscale-20">No item selected</span>
     </div>
     <div v-else>
-      <div v-for="(item, key) in cashierProduct_selectedProduct" :key="key" class="grid grid-cols-12 gap-4">
-        <div class="w-min h-min p-2 rounded-full bg-error-background">
+      <div
+        v-for="(item, key) in cashierProduct_selectedProduct"
+        :key="key"
+        class="grid grid-cols-12 gap-4"
+        :class="{ 'mb-4': key !== cashierProduct_selectedProduct.length - 1 }"
+      >
+        <button class="cursor-pointer w-min h-min p-2 rounded-full bg-error-background">
           <AppBaseSvg name="trash" class="!h-4 !w-4" />
-        </div>
+        </button>
         <div class="col-span-7 flex flex-col gap-4">
           <div class="flex gap-4">
             <img :src="item.product.image" alt="product" class="w-10 h-10 object-cover" />
@@ -40,7 +45,7 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
           </div>
 
           <div class="flex flex-col gap-1">
-            <div v-if="item.variant">
+            <div v-if="item.variant.id">
               <p class="font-semibold text-xs text-text-disabled">Variant</p>
               <p class="text-sm">{{ item.variant.name }}</p>
             </div>
@@ -64,16 +69,23 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
               class="border border-primary text-primary px-4"
               variant="outlined"
               label="-"
+              @click="item.qty -= 1"
             />
-            <PrimeVueInputText class="w-14 justify-items-center" type="number" />
+            <PrimeVueInputNumber v-model="item.qty" inputClass="w-14 justify-items-center" />
             <PrimeVueButton
               type="button"
               class="border border-primary text-primary px-4"
               variant="outlined"
               label="+"
+              @click="item.qty += 1"
             />
           </div>
         </div>
+
+        <div
+          v-if="key !== cashierProduct_selectedProduct.length - 1"
+          class="border col-span-12 border-dashed border-b-2 border-grayscale-10 w-full"
+        ></div>
       </div>
     </div>
   </section>
