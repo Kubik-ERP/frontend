@@ -1,17 +1,22 @@
 <script setup lang="ts">
+// Components
+import CashierSummaryAddEditNotes from './CashierSummaryAddEditNotes.vue';
+
 // Interfaces
 import { ICashierProductProvided } from '../../interfaces/cashier-product-service';
+import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-summary';
 
 /**
  * @description Inject all the data and methods what we need
  */
 const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cashierProduct')!;
+const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 
 <template>
   <section
     id="cashier-summary-product-list"
-    class="flex flex-col max-h-[210px] overflow-y-auto flex-grow border-b-grayscale-10 border-t-2 border-b-2 p-4 border-t-grayscale-10 justify-center items-center"
+    class="flex flex-col max-h-[410px] overflow-y-auto flex-grow border-b-grayscale-10 border-t-2 border-b-2 p-4 border-t-grayscale-10 justify-center items-center"
     :class="cashierProduct_selectedProduct.length === 0 ? 'justify-center' : 'justify-start'"
   >
     <div v-if="cashierProduct_selectedProduct.length === 0" class="">
@@ -24,7 +29,10 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
         class="grid grid-cols-12 gap-4"
         :class="{ 'mb-4': key !== cashierProduct_selectedProduct.length - 1 }"
       >
-        <button class="cursor-pointer w-min h-min p-2 rounded-full bg-error-background">
+        <button
+          @click="cashierProduct_selectedProduct.splice(key, 1)"
+          class="cursor-pointer w-min h-min p-2 rounded-full bg-error-background"
+        >
           <AppBaseSvg name="trash" class="!h-4 !w-4" />
         </button>
         <div class="col-span-7 flex flex-col gap-4">
@@ -55,10 +63,17 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
               <p class="text-sm">{{ item.notes }}</p>
             </div>
 
-            <PrimeVueButton variant="text" class="w-fit">
+            <PrimeVueButton
+              variant="text"
+              class="w-fit"
+              @click="
+                cashierOrderSummary_modalAddEditNotes.show = true;
+                cashierOrderSummary_modalAddEditNotes.item = key;
+              "
+            >
               <AppBaseSvg name="add-notes" />
 
-              <span class="font-semibold text-primary">Add Notes</span>
+              <span class="font-semibold text-primary">{{ item.notes ? 'Edit' : 'Add Notes' }}</span>
             </PrimeVueButton>
           </div>
         </div>
@@ -71,7 +86,7 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
               label="-"
               @click="item.qty -= 1"
             />
-            <PrimeVueInputNumber v-model="item.qty" inputClass="w-14 justify-items-center" />
+            <PrimeVueInputNumber v-model="item.qty" input-class="w-14 justify-items-center" />
             <PrimeVueButton
               type="button"
               class="border border-primary text-primary px-4"
@@ -89,4 +104,6 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
       </div>
     </div>
   </section>
+
+  <CashierSummaryAddEditNotes />
 </template>

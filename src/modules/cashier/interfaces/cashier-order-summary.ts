@@ -1,3 +1,5 @@
+import { MenuContext } from 'primevue';
+
 export interface ICashierOrderSummaryData {
   orderId: string;
   customerName: string;
@@ -14,7 +16,16 @@ export interface ICashierOrderSummaryCalculation {
   total: number;
 }
 
+export interface ICashierOrderSummaryModalAddEdit {
+  show: boolean;
+  item: number | null;
+  tempValue: string;
+}
+
 export interface ICashierOrderSummaryProvided {
+  cashierOrderSummary_menuOrder: Ref<MenuContext>;
+  cashierOrderSummary_menuOrderItem: Ref<{ label: string }[]>;
   cashierOrderSummary_data: Ref<ICashierOrderSummaryData>;
   cashierOrderSummary_calculation: Ref<ICashierOrderSummaryCalculation>;
+  cashierOrderSummary_modalAddEditNotes: Ref<ICashierOrderSummaryModalAddEdit>;
 }

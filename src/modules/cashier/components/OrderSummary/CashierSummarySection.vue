@@ -4,7 +4,8 @@ import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-sum
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_data } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierOrderSummary_menuOrderItem, cashierOrderSummary_data, cashierOrderSummary_menuOrder } =
+  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 
 <template>
@@ -12,11 +13,24 @@ const { cashierOrderSummary_data } = inject<ICashierOrderSummaryProvided>('cashi
     <div class="flex justify-between items-center">
       <span class="font-semibold text-lg">Order Summary</span>
 
-      <PrimeVueButton text>
+      <PrimeVueButton
+        text
+        aria-haspopup="true"
+        aria-controls="overlay_menu_summary_order"
+        @click="cashierOrderSummary_menuOrder.toggle($event)"
+      >
         <i class="pi pi-ellipsis-h text-primary"></i>
 
         <span class="text-text-disabled text-xs">More</span>
       </PrimeVueButton>
+
+      <PrimeVueMenu
+        id="overlay_menu_summary_order"
+        ref="cashierOrderSummary_menuOrder"
+        append-to="body"
+        :model="cashierOrderSummary_menuOrderItem"
+      >
+      </PrimeVueMenu>
     </div>
 
     <div class="flex flex-col gap-2 w-full">

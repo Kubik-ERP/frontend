@@ -40,7 +40,13 @@ const {
   cashierProduct_handleOpenModalAddProduct,
 } = useCashierProductService();
 
-const { cashierOrderSummary_data, cashierOrderSummary_calculation } = useCashierOrderSummaryService();
+const {
+  cashierOrderSummary_menuOrder,
+  cashierOrderSummary_menuOrderItem,
+  cashierOrderSummary_data,
+  cashierOrderSummary_calculation,
+  cashierOrderSummary_modalAddEditNotes,
+} = useCashierOrderSummaryService();
 
 /**
  * @description Provide all the data and methods what we need
@@ -72,8 +78,11 @@ provide<ICashierProductProvided>('cashierProduct', {
 });
 
 provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
+  cashierOrderSummary_menuOrder,
+  cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
   cashierOrderSummary_calculation,
+  cashierOrderSummary_modalAddEditNotes,
 });
 </script>
 
