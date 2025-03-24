@@ -4,11 +4,10 @@
       <PrimeVueDataTable
         v-model:selection="selectedProducts"
         :value="products"
-        paginator
         :rows="10"
-        table-style="min-width: 50rem"
         :filters="filters"
         data-key="ID"
+        paginator
         :loading="loading"
       >
         <template #header>
@@ -38,23 +37,26 @@
         <template #empty> No products found. </template>
         <template #loading> Loading products data. Please wait. </template>
 
-        <PrimeVueColumn selection-mode="multiple" header-style="width: 3rem"> </PrimeVueColumn>
-        <PrimeVueColumn sortable field="product_id" header="Product ID" style="width: 25%"></PrimeVueColumn>
-        <PrimeVueColumn sortable field="name" header="Name" style="width: 25%"></PrimeVueColumn>
-        <PrimeVueColumn sortable field="category" header="Category" style="width: 25%"></PrimeVueColumn>
-        <PrimeVueColumn sortable field="variant" header="Variants" style="width: 25%">
+        <PrimeVueColumn selection-mode="multiple" header-style="width: 3rem"></PrimeVueColumn>
+        <PrimeVueColumn sortable field="product_id" header="Product ID" style="width: 15%"></PrimeVueColumn>
+        <PrimeVueColumn sortable field="name" header="Name" style="width: 30%"></PrimeVueColumn>
+        <PrimeVueColumn sortable field="category" header="Category" style="width: 15%"></PrimeVueColumn>
+        <PrimeVueColumn sortable field="variant" header="Variants" style="width: 20%">
           <template #body="{ data }">
-            <ProductVariantPill :variants=data.variant />
+            <ProductVariantPill :variants="data.variant" />
             <!-- {{ data.variant }} -->
           </template>
         </PrimeVueColumn>
-        <PrimeVueColumn sortable field="price" header="Price" style="width: 25%"></PrimeVueColumn>
-        <PrimeVueColumn
-          sortable
-          field="discount_price"
-          header="Discount Price"
-          style="width: 25%"
-        ></PrimeVueColumn>
+        <PrimeVueColumn sortable field="price" header="Price" style="width: 25%">
+          <template #body="{ data }">
+            {{ formatCurrency(data.price) }}
+          </template>
+        </PrimeVueColumn>
+        <PrimeVueColumn sortable field="discount_price" header="Discount Price" style="width: 25%">
+          <template #body="{ data }">
+            {{ formatCurrency(data.discount_price) }}
+          </template>
+        </PrimeVueColumn>
         <PrimeVueColumn>
           <template #body="slotProps">
             <PrimeVueButton
@@ -65,6 +67,44 @@
             ></PrimeVueButton>
           </template>
         </PrimeVueColumn>
+
+        <template #paginatorcontainer="{ page, pageCount, prevPageCallback, nextPageCallback }">
+          <div class="flex items-center gap-2 justify-between w-full py-2">
+            <!-- Previous Page Button -->
+            <PrimeVueButton
+              icon="pi pi-angle-left"
+              variant="text"
+              label="Previous"
+              class="border border-primary text-primary hover:bg-transparent"
+              @click="prevPageCallback"
+            />
+
+            <div>
+              <template v-for="p in pageCount" :key="p">
+                <PrimeVueButton
+                  :label="p.toString()"
+                  class="border-none aspect-square p-4"
+                  :class="
+                    page === p - 1
+                      ? 'bg-blue-secondary-background text-primary'
+                      : 'bg-transparent text-grayscale-20'
+                  "
+                  @click="goToPage(p - 1)"
+                />
+              </template>
+            </div>
+            <!-- Page Numbers -->
+
+            <!-- Next Page Button -->
+            <PrimeVueButton
+              icon="pi pi-angle-right"
+              variant="text"
+              label="Next"
+              class="border border-primary text-primary hover:bg-transparent flex-row-reverse"
+              @click="nextPageCallback"
+            />
+          </div>
+        </template>
       </PrimeVueDataTable>
 
       <PrimeVuePopover ref="op">
@@ -152,6 +192,13 @@
 import { ref } from 'vue';
 import { FilterMatchMode } from '@primevue/core/api';
 import ProductVariantPill from '../components/ProductVariantPill.vue';
+
+function formatCurrency(value) {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' })
+    .format(value)
+    .replace('Rp', 'Rp ')
+    .replace(',00', '');
+}
 
 const isAddOpen = ref(false);
 const selectedProduct = ref(null);
@@ -433,6 +480,54 @@ const products = ref([
     variant: ['Extra Shrimp', 'No Sauce'],
     price: 140000,
     discount_price: 70000,
+  },
+  {
+    product_id: '#031',
+    name: 'Beef Steak',
+    category: 'Western Food',
+    variant: ['Medium Rare', 'Well Done', 'Extra Sauce'],
+    price: 250000,
+    discount_price: 125000,
+  },
+  {
+    product_id: '#032',
+    name: 'BBQ Ribs',
+    category: 'Western Food',
+    variant: ['BBQ Sauce', 'Honey Glazed', 'Spicy'],
+    price: 280000,
+    discount_price: 140000,
+  },
+  {
+    product_id: '#033',
+    name: 'Tom Yum Soup',
+    category: 'Thai Food',
+    variant: ['Spicy', 'Mild'],
+    price: 130000,
+    discount_price: 65000,
+  },
+  {
+    product_id: '#034',
+    name: 'Sushi Platter',
+    category: 'Japanese Food',
+    variant: ['Salmon', 'Tuna', 'Eel', 'Vegie', 'Shrimp', 'Crab'],
+    price: 250000,
+    discount_price: 125000,
+  },
+  {
+    product_id: '#035',
+    name: 'Steak',
+    category: 'Western Food',
+    variant: [
+      'Medium Rare',
+      'Well Done',
+      'Extra Sauce',
+      'Garlic Butter',
+      'Mushroom Sauce',
+      'Black Pepper Sauce',
+      'Cheese Topping',
+    ],
+    price: 300000,
+    discount_price: 150000,
   },
 ]);
 </script>
