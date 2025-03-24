@@ -29,6 +29,15 @@ const routes: RouteRecordRaw[] = [
           layout: LAYOUT_OPTIONS.DEFAULT,
         },
       },
+      {
+        path: 'products/add-product',
+        name: 'add-product',
+        component: () => import('../views/AddProductUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.DEFAULT,
+        },
+      },
     ],
   },
 ];

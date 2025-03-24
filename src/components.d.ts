@@ -13,6 +13,7 @@ declare module 'vue' {
     PrimeVueAvatar: typeof import('primevue/avatar')['default']
     PrimeVueBreadcrumb: typeof import('primevue/breadcrumb')['default']
     PrimeVueButton: typeof import('primevue/button')['default']
+    PrimeVueCheckbox: typeof import('primevue/checkbox')['default']
     PrimeVueColumn: typeof import('primevue/column')['default']
     PrimeVueDataTable: typeof import('primevue/datatable')['default']
     PrimeVueDialog: typeof import('primevue/dialog')['default']
@@ -20,8 +21,10 @@ declare module 'vue' {
     PrimeVueIconField: typeof import('primevue/iconfield')['default']
     PrimeVueInputIcon: typeof import('primevue/inputicon')['default']
     PrimeVueInputText: typeof import('primevue/inputtext')['default']
+    PrimeVuePaginator: typeof import('primevue/paginator')['default']
     PrimeVuePopover: typeof import('primevue/popover')['default']
     PrimeVueTextarea: typeof import('primevue/textarea')['default']
+    PrimeVueToggleSwitch: typeof import('primevue/toggleswitch')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

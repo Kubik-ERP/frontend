@@ -89,7 +89,6 @@
                       ? 'bg-blue-secondary-background text-primary'
                       : 'bg-transparent text-grayscale-20'
                   "
-                  @click="goToPage(p - 1)"
                 />
               </template>
             </div>
@@ -166,16 +165,17 @@
           <div class="w-[35rem] p-8">
             <div class="flex flex-col items-center gap-4 text-center">
               <span><i class="pi pi-trash" style="font-size: 2.5rem"></i></span>
-              <h1 class="text-2xl font-semibold">Are you sure you want to delete this product product?</h1>
-              <p>This will affect the categorization of products that have already been created</p>
+              <h1 class="text-2xl font-semibold">Are you sure you want to delete this product?</h1>
+              <p>This action cannot be undone, and the product will be removed from catalog</p>
               <div class="flex items-center justify-between gap-4">
                 <PrimeVueButton
                   class="text-lg w-56"
                   variant="outlined"
+                  icon="pi pi-trash"
+                  label="Delete Category"
                   severity="danger"
                   @click="isDeleteOpen = false"
-                  >Delete Product</PrimeVueButton
-                >
+                />
                 <PrimeVueButton class="w-56 text-lg bg-primary border-primary" @click="isDeleteOpen = false"
                   >Cancel</PrimeVueButton
                 >
