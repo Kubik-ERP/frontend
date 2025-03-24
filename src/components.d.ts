@@ -24,6 +24,7 @@ declare module 'vue' {
     PrimeVueInputIcon: typeof import('primevue/inputicon')['default']
     PrimeVueInputText: typeof import('primevue/inputtext')['default']
     PrimeVueMeterGroup: typeof import('primevue/metergroup')['default']
+    PrimeVuePaginator: typeof import('primevue/paginator')['default']
     PrimeVuePopover: typeof import('primevue/popover')['default']
     PrimeVueTextarea: typeof import('primevue/textarea')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

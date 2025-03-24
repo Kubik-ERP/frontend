@@ -29,6 +29,7 @@
                 severity="info"
                 label="Add Category"
                 icon="pi pi-plus"
+                class="bg-primary border-primary"
                 @click="isAddOpen = true"
               />
             </div>
@@ -38,9 +39,9 @@
         <template #loading> Loading categories data. Please wait. </template>
 
         <PrimeVueColumn selection-mode="multiple" header-style="width: 3rem"> </PrimeVueColumn>
-        <PrimeVueColumn sortable field="ID" header="Name" style="width: 25%"></PrimeVueColumn>
+        <PrimeVueColumn sortable field="ID" header="Category ID" style="width: 25%"></PrimeVueColumn>
         <PrimeVueColumn sortable field="Category" header="Category" style="width: 25%"></PrimeVueColumn>
-        <PrimeVueColumn sortable field="Description" header="Notes" style="width: 25%"></PrimeVueColumn>
+        <PrimeVueColumn sortable field="Description" header="Description" style="width: 25%"></PrimeVueColumn>
         <PrimeVueColumn>
           <template #body="slotProps">
             <PrimeVueButton
@@ -94,13 +95,13 @@
               label="Cancel"
               severity="info"
               variant="outlined"
-              class="w-48 text-[#18618B] border-[#18618B]"
+              class="w-48 text-primary border-primary"
               @click="isAddOpen = false"
             ></PrimeVueButton>
             <PrimeVueButton
               type="submit"
               label="Add"
-              class="w-48 bg-[#18618B] border-[#18618B]"
+              class="w-48 bg-primary border-primary"
               @click="isAddOpen = false"
             ></PrimeVueButton>
           </div>
@@ -122,7 +123,7 @@
                   @click="isDeleteOpen = false"
                   >Delete Category</PrimeVueButton
                 >
-                <PrimeVueButton class="w-56 text-lg bg-[#18618B] border-[#18618B]" @click="isDeleteOpen = false"
+                <PrimeVueButton class="w-56 text-lg bg-primary border-primary" @click="isDeleteOpen = false"
                   >Cancel</PrimeVueButton
                 >
               </div>
@@ -140,7 +141,7 @@ import { FilterMatchMode } from '@primevue/core/api';
 
 
 const isAddOpen = ref(false);
-const selectedCategory = ref(null);
+const selected = ref(null);
 
 const name = ref('');
 const notes = ref('');
@@ -151,15 +152,15 @@ const isDeleteOpen = ref(false);
 
 const displayEdit = () => {
   isAddOpen.value = true;
-  // console.log('category', selectedCategory.value);
-  const data = selectedCategory.value;
+  // console.log('category', selected.value);
+  const data = selected.value;
   name.value = data.Category;
   notes.value = data.Description;
   op.value.hide();
 };
 
 const displayPopover = (event, category) => {
-  selectedCategory.value = category;
+  selected.value = category;
   op.value.show(event);
   // console.log('category', category);
 };
