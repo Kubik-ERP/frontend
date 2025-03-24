@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Components
-import CashierSummaryAddEditNotes from './CashierSummaryAddEditNotes.vue';
+import CashierSummaryModalAddEditNotes from './Modal/CashierSummaryModalAddEditNotes.vue';
 
 // Interfaces
 import { ICashierProductProvided } from '../../interfaces/cashier-product-service';
@@ -30,8 +30,8 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
         :class="{ 'mb-4': key !== cashierProduct_selectedProduct.length - 1 }"
       >
         <button
-          @click="cashierProduct_selectedProduct.splice(key, 1)"
           class="cursor-pointer w-min h-min p-2 rounded-full bg-error-background"
+          @click="cashierProduct_selectedProduct.splice(key, 1)"
         >
           <AppBaseSvg name="trash" class="!h-4 !w-4" />
         </button>
@@ -105,5 +105,5 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
     </div>
   </section>
 
-  <CashierSummaryAddEditNotes />
+  <CashierSummaryModalAddEditNotes />
 </template>

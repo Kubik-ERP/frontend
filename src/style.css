@@ -67,6 +67,7 @@
   --color-disabled: #8e8e8e;
   --color-error-background: #fbebeb;
   --color-error-hover: #981c1c;
+  --color-text-action-error: #e57171;
   --color-gray: #434343;
   --color-error-main: #e57171;
   --color-error-background: #fbebeb;
@@ -87,5 +88,8 @@
   --color-warning-background: #fff5e6;
   --color-warning-main: #ffb84d;
   --color-success: #80c684;
+  --color-coplementary-border: #e0a8cb;
+  --color-complementary-background: #f7e9f2;
+  --color-complementary-main: #c964a2;
   --font-sans: 'Inter', sans-serif;
 }

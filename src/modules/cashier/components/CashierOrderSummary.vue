@@ -4,6 +4,15 @@ import CashierSummaryProductList from './OrderSummary/CashierSummaryProductList.
 import CashierSummaryPromoPayment from './OrderSummary/CashierSummaryPromoPayment.vue';
 import CashierSummarySection from './OrderSummary/CashierSummarySection.vue';
 import CashierSummaryTotal from './OrderSummary/CashierSummaryTotal.vue';
+
+import CashierSummaryModalCancelOrder from './OrderSummary/Modal/CashierSummaryModalCancelOrder.vue';
+import CashierSummaryModalInvoiceDetail from './OrderSummary/Modal/CashierSummaryModalInvoiceDetail.vue';
+import CashierSummaryModalOrderType from './OrderSummary/Modal/CashierSummaryModalOrderType.vue';
+import CashierSummaryModalPaymentMethod from './OrderSummary/Modal/CashierSummaryModalPaymentMethod.vue';
+import CashierSummaryModalPlaceOrderConfirmation from './OrderSummary/Modal/CashierSummaryModalPlaceOrderConfirmation.vue';
+import CashierSummaryModalPlaceOrderDetail from './OrderSummary/Modal/CashierSummaryModalPlaceOrderDetail.vue';
+import CashierSummaryModalSelectTable from './OrderSummary/Modal/CashierSummaryModalSelectTable.vue';
+import CashierSummaryModalVoucher from './OrderSummary/Modal/CashierSummaryModalVoucher.vue';
 </script>
 
 <template>
@@ -13,6 +22,19 @@ import CashierSummaryTotal from './OrderSummary/CashierSummaryTotal.vue';
     <CashierSummaryPromoPayment />
     <CashierSummaryTotal />
     <CashierSummaryButtonAction />
+
+    <section id="order-summary-modal">
+      <CashierSummaryModalCancelOrder />
+      <CashierSummaryModalInvoiceDetail />
+
+      <CashierSummaryModalOrderType />
+      <CashierSummaryModalSelectTable />
+
+      <CashierSummaryModalVoucher />
+      <CashierSummaryModalPaymentMethod />
+      <CashierSummaryModalPlaceOrderDetail />
+      <CashierSummaryModalPlaceOrderConfirmation />
+    </section>
   </section>
 </template>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Interfaces
-import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-summary';
-import { ICashierProductProvided } from '../../interfaces/cashier-product-service';
+import { ICashierOrderSummaryProvided } from '../../../interfaces/cashier-order-summary';
+import { ICashierProductProvided } from '../../../interfaces/cashier-product-service';
 
 /**
  * @description Inject all the data and methods what we need
@@ -12,8 +12,8 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
 
 <template>
   <PrimeVueDialog
-    v-model:visible="cashierOrderSummary_modalAddEditNotes.show"
     v-if="cashierOrderSummary_modalAddEditNotes.item !== null"
+    v-model:visible="cashierOrderSummary_modalAddEditNotes.show"
     modal
     :style="{ width: '34rem' }"
   >

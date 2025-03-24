@@ -45,7 +45,18 @@ const {
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
   cashierOrderSummary_calculation,
+
   cashierOrderSummary_modalAddEditNotes,
+  cashierOrderSummary_modalCancelOrder,
+  cashierOrderSummary_modalInvoiceDetail,
+  cashierOrderSummary_modalOrderType,
+  cashierOrderSummary_modalPaymentMethod,
+  cashierOrderSummary_modalPlaceOrderConfirmation,
+  cashierOrderSummary_modalPlaceOrderDetail,
+  cashierOrderSummary_modalSelectTable,
+  cashierOrderSummary_modalVoucher,
+
+  cashierOrderSummary_handleOrderType,
 } = useCashierOrderSummaryService();
 
 /**
@@ -82,7 +93,18 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
   cashierOrderSummary_calculation,
+
   cashierOrderSummary_modalAddEditNotes,
+  cashierOrderSummary_modalCancelOrder,
+  cashierOrderSummary_modalInvoiceDetail,
+  cashierOrderSummary_modalOrderType,
+  cashierOrderSummary_modalPaymentMethod,
+  cashierOrderSummary_modalPlaceOrderConfirmation,
+  cashierOrderSummary_modalPlaceOrderDetail,
+  cashierOrderSummary_modalSelectTable,
+  cashierOrderSummary_modalVoucher,
+
+  cashierOrderSummary_handleOrderType,
 });
 </script>
 

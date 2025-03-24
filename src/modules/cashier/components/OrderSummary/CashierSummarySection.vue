@@ -4,13 +4,17 @@ import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-sum
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_menuOrderItem, cashierOrderSummary_data, cashierOrderSummary_menuOrder } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const {
+  cashierOrderSummary_modalOrderType,
+  cashierOrderSummary_menuOrderItem,
+  cashierOrderSummary_data,
+  cashierOrderSummary_menuOrder,
+} = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 
 <template>
   <section id="cashier-summary-section" class="flex flex-col gap-2 p-4">
-    <div class="flex justify-between items-center">
+    <section id="cashier-summary-section-header" class="flex justify-between items-center">
       <span class="font-semibold text-lg">Order Summary</span>
 
       <PrimeVueButton
@@ -28,10 +32,11 @@ const { cashierOrderSummary_menuOrderItem, cashierOrderSummary_data, cashierOrde
         id="overlay_menu_summary_order"
         ref="cashierOrderSummary_menuOrder"
         append-to="body"
+        :popup="true"
         :model="cashierOrderSummary_menuOrderItem"
       >
       </PrimeVueMenu>
-    </div>
+    </section>
 
     <div class="flex flex-col gap-2 w-full">
       <span class="text-text-disabled text-xs"
@@ -55,6 +60,7 @@ const { cashierOrderSummary_menuOrderItem, cashierOrderSummary_data, cashierOrde
     <div class="flex justify-between items-center p-4 gap-2">
       <button
         class="flex w-1/2 border cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 text-text-disabled border-text-disabled rounded-sm p-2.5 justify-between items-center"
+        @click="cashierOrderSummary_modalOrderType.show = true"
       >
         Order Type
 
@@ -70,3 +76,9 @@ const { cashierOrderSummary_menuOrderItem, cashierOrderSummary_data, cashierOrde
     </div>
   </div>
 </template>
+
+<style>
+.text-text-action-error .p-menu-item-content {
+  color: var(--color-text-action-error) !important;
+}
+</style>
