@@ -63,12 +63,17 @@ export interface ICashierOrderSummaryModalSelectTable {
 
 export interface ICashierOrderSummaryModalPaymentMethod {
   show: boolean;
+  selectedPaymentMethod: number;
+  data: ICashierOrderSummaryPaymentMethod[];
+}
+
+export interface ICashierOrderSummaryModalPlaceOrder {
+  show: boolean;
   form: {
     payment_method: string;
     amount: number;
     notes: string;
   };
-  data: ICashierOrderSummaryPaymentMethod[];
 }
 
 export interface ICashierOrderSummaryModalVoucher {

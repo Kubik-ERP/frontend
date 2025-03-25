@@ -10,6 +10,7 @@ import {
   ICashierOrderSummaryModalInvoiceDetail,
   ICashierOrderSummaryModalOrderType,
   ICashierOrderSummaryModalPaymentMethod,
+  ICashierOrderSummaryModalPlaceOrder,
   ICashierOrderSummaryModalSelectTable,
   ICashierOrderSummaryModalVoucher,
   ICashierOrderSummaryProvided,
@@ -60,22 +61,30 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_modalPaymentMethod = ref<ICashierOrderSummaryModalPaymentMethod>({
     show: false,
-    form: {
-      payment_method: '',
-      amount: 0,
-      notes: '',
-    },
+    selectedPaymentMethod: 0,
     data: [
       {
         code: 1,
         icon: 'cash',
-        label: 'Cash',
+        label: 'cash',
         available: true,
       },
       {
         code: 2,
-        icon: 'credit_card',
-        label: 'Debit Card',
+        icon: 'debit',
+        label: 'Debit',
+        available: true,
+      },
+      {
+        code: 3,
+        icon: 'credit',
+        label: 'Credit',
+        available: false,
+      },
+      {
+        code: 4,
+        icon: 'qris',
+        label: 'QRIS',
         available: false,
       },
     ],
@@ -83,18 +92,24 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_handlePaymentMethod = () => {};
 
-  const cashierOrderSummary_modalPlaceOrderConfirmation = ref<ICashierOrderSummaryModalCancelOrder>({
-    show: false,
-  });
-
-  const cashierOrderSummary_handlePlaceOrderConfirmation = () => {};
-
   const cashierOrderSummary_modalPlaceOrderDetail = ref<ICashierOrderSummaryModalCancelOrder>({
     show: false,
   });
 
-  const cashierOrderSummary_handlePlaceOrderDetail = () => {
-    cashierOrderSummary_modalPlaceOrderConfirmation.value.show = true;
+  const cashierOrderSummary_handlePlaceOrderDetail = () => {};
+
+  const cashierOrderSummary_modalPlaceOrderConfirmation = ref<ICashierOrderSummaryModalPlaceOrder>({
+    show: false,
+    form: {
+      payment_method: '',
+      amount: 0,
+      notes: '',
+    },
+  });
+
+  const cashierOrderSummary_handlePlaceOrderConfirmation = () => {
+    cashierOrderSummary_modalPlaceOrderConfirmation.value.show = false;
+    cashierOrderSummary_modalPlaceOrderDetail.value.show = true;
   };
 
   const cashierOrderSummary_modalSelectTable = ref<ICashierOrderSummaryModalSelectTable>({
@@ -182,7 +197,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     {
       label: 'Add Invoice Detail',
       command: () => {
-        cashierOrderSummary_data.value.customerName = 'SANDIAGA UNO';
+        cashierOrderSummary_modalInvoiceDetail.value.show = true;
       },
     },
   ]);
@@ -210,12 +225,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       }
     },
   );
-
-  watchEffect(() => {
-    if (cashierOrderSummary_modalAddEditNotes.value.show) {
-      cashierOrderSummary_modalAddEditNotes.value.tempValue = '';
-    }
-  });
 
   return {
     cashierOrderSummary_menuOrder,
