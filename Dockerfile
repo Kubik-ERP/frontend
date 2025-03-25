@@ -23,7 +23,7 @@ COPY . .
 RUN npm run build
 
 # Expose port aplikasi
-EXPOSE 8080
+EXPOSE 80
 
 # Jalankan aplikasi
 CMD [ "http-server", "dist"]
