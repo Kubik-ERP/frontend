@@ -31,7 +31,7 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
   const authenticationResetPassword_formData = reactive<IAuthenticationResetPasswordFormData>({
     email: '',
   });
-  const authenticationResetPassword_isSuccess = ref<boolean>(true);
+  const authenticationResetPassword_isSuccess = ref<boolean>(false);
 
   /**
    * @description Form validations
