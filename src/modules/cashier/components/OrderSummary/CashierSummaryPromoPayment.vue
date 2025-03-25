@@ -5,7 +5,8 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalVoucher } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod } =
+  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 
 <template>
@@ -24,7 +25,11 @@ const { cashierOrderSummary_modalVoucher } = inject<ICashierOrderSummaryProvided
           </section>
         </template>
       </PrimeVueButton>
-      <PrimeVueButton class="w-1/2 py-2 border border-primary-border text-primary" outlined>
+      <PrimeVueButton
+        class="w-1/2 py-2 border border-primary-border text-primary"
+        outlined
+        @click="cashierOrderSummary_modalPaymentMethod.show = true"
+      >
         <template #default>
           <section class="flex justify-between px-5 w-full items-center">
             <span class="font-semibold"> Payment Method </span>

@@ -69,6 +69,7 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
               @click="
                 cashierOrderSummary_modalAddEditNotes.show = true;
                 cashierOrderSummary_modalAddEditNotes.item = key;
+                cashierOrderSummary_modalAddEditNotes.tempValue = item.notes;
               "
             >
               <AppBaseSvg name="add-notes" />
