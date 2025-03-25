@@ -3,7 +3,7 @@ name: Build & Deploy to Server
 on:
   push:
     branches:
-      - staging
+      - chore/test-deployment
 
 jobs:
   deploy:
@@ -20,7 +20,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "."
-          target: "~/app"
+          target: "~/app_frontend"
 
       - name: SSH and Build Docker on Server
         uses: appleboy/ssh-action@v1
@@ -29,8 +29,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cp ~/.env ~/app
-            cd ~/app
+            cd ~/app_frontend
             docker build -t kubik-frontend .
             docker stop kubik-frontend || true
             docker rm kubik-frontend || true

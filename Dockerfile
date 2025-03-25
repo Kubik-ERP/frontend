@@ -2,7 +2,7 @@
 FROM node:22
 
 # Set working directory dalam container
-WORKDIR /app-frontend
+WORKDIR /app_frontend
 
 # Salin code ke dalam container
 COPY ./ ./
