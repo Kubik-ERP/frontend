@@ -14,11 +14,12 @@
           :select-all="false"
           variant="outlined"
         />
+        {{ product }}
         <div class="grid grid-cols-2 w-full gap-8 mt-8">
           <div class="flex flex-col">
             <label for="name">Product Name</label>
             <PrimeVueInputText
-              id="name"
+              v-model="product.name"
               type="text"
               class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
             />
@@ -26,69 +27,113 @@
           <div class="flex flex-col">
             <label for="category">Category</label>
             <PrimeVueMultiSelect
-              v-model="selectedCategories"
+              v-model="product.category"
               display="chip"
               :options="categories"
               filter
               option-label="name"
               placeholder="Select"
               class="w-full text-primary"
+              dropdown-icon="pi pi-circle"
             />
           </div>
           <div class="flex flex-col">
             <label for="price">Price</label>
             <PrimeVueInputNumber
-              id="price"
-              type="number"
+              v-model="product.price"
               prefix="Rp "
               fluid
               class="border shadow-xs border-grayscale-30 rounded-lg"
-            />
-          </div>
-          <div class="flex items-center gap-2 col-span-2">
-            <PrimeVueCheckbox v-model="isDiscount" binary />
-            <label for="isDiscount" class="font-bold"> Add Discount Price </label>
-          </div>
-          <div class="flex flex-col" :class="isDiscount ? 'block' : 'hidden'">
-            <label for="price">Discount Price</label>
-            <PrimeVueInputNumber
-              id="discount_price"
-              class="border w-full shadow-xs border-grayscale-30 rounded-lg"
+              @change="calculateDiscount"
             />
           </div>
           <span></span>
-          <div>
+        </div>
+        <div class="grid grid-cols-2 h-fit w-full gap-x-8 mt-8">
+          <div class="flex items-center gap-2 col-span-2">
+            <PrimeVueCheckbox v-model="product.isDiscount" binary @change="calculateDiscount" />
+            <label for="product.isDiscount" class="font-bold"> Add Discount Price </label>
+          </div>
+          <div class="flex flex-col mt-4" :class="product.isDiscount ? 'block' : 'hidden'">
+            <label for="price">Discount Price</label>
             <div class="relative w-full">
-              <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden w-full">
-                <!-- Number Input -->
+              <div
+                class="flex items-center border shadow-xs border-grayscale-30 rounded-lg overflow-hidden w-full"
+              >
                 <PrimeVueInputNumber
-                  v-model="numberValue"
-                  class="flex-1 ring-0 border-none focus:ring-0"
-                  input-class="w-full px-2 py-1 pr-10"
+                  v-model="product.discount_value"
+                  class="w-full"
+                  :prefix="product.discount_unit === 'Rp' ? 'Rp ' : ''"
+                  :suffix="product.discount_unit === '%' ? ' %' : ''"
+                  @change="calculateDiscount"
                 />
-
-                <!-- Dropdown inside the input box (Absolute positioned) -->
-                <div class="absolute right-2 flex items-center">
-                  <PrimeVueDropdown
-                    v-model="selectedDiscountUnit"
+                <div class="absolute right-0 flex items-center rounded-lg border-none ring-0">
+                  <PrimeVueSelect
+                    v-model="product.discount_unit"
                     :options="['Rp', '%']"
-                    class=" border-none w-fit bg-transparent text-gray-600"
+                    class="border-none bg-transparent"
                     dropdown-icon="pi pi-circle"
+                    @update:modelValue="calculateDiscount"
                   >
-                    <template #value="data">
-                      <div>
-                        {{data.value}}
-                      </div>
+                    <template #option="{ option }">
+                      {{ option }}
                     </template>
-                    <template #option="data">
-                      <div class="w-fit ">
-                        {{data.option}}
-                      </div>
-                    </template>
-                  </PrimeVueDropdown>
+                  </PrimeVueSelect>
+                </div>
+              </div>
+              <span
+                >Total Price After Discount : <b> Rp {{ product.discount_price }}</b></span
+              >
+            </div>
+          </div>
+          <span></span>
+        </div>
+
+        <div class="flex flex-col w-full gap-8 mt-8">
+          <div class="flex gap-4">
+            <label for="variant"><b>Variant</b></label>
+            <PrimeVueToggleSwitch v-model="toggleVariant" />
+          </div>
+
+          <div v-if="toggleVariant" class="flex flex-col">
+            <div class="flex flex-col gap-4">
+              <div v-for="(variant, index) in product.variants" :key="index" class="grid grid-cols-2 gap-x-8">
+                <div class="flex flex-col">
+                  <label for="name">Variant Name</label>
+                  <PrimeVueInputText v-model="variant.name" type="text" />
+                </div>
+                <div class="flex flex-col">
+                  <label for="price">Variant Price</label>
+                  <div class="flex gap-2">
+                    <PrimeVueInputNumber v-model="variant.price" prefix="Rp " fluid />
+                    <PrimeVueButton
+                      icon="pi pi-times"
+                      variant="text"
+                      severity="danger"
+                      @click="removeVariant(index)"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
+            <PrimeVueButton
+              label="Add Variant"
+              icon="pi pi-plus"
+              class="mt-4 col-span-2 w-fit text-xl px-8 py-2 text-primary pl-4 bg-transparent border-none font-semibold flex items-center justify-center gap-2"
+              @click="addVariant"
+            />
+          </div>
+          <div class="flex gap-4">
+            <PrimeVueButton
+              label="Cancel"
+              class="text-xl w-48 py-2 border-2 border-primary rounded-lg text-primary bg-transparent font-semibold"
+              unstyled
+            />
+            <PrimeVueButton
+              label="Add Product"
+              class="text-xl w-48 py-2 border-2 border-primary rounded-lg text-white bg-primary font-semibold"
+              unstyled
+            />
           </div>
         </div>
       </div>
@@ -97,8 +142,6 @@
 </template>
 
 <script setup>
-const isDiscount = ref(false);
-const selectedCategories = ref();
 const categories = ref([
   { name: 'Category 1' },
   { name: 'Category 2' },
@@ -112,9 +155,50 @@ const categories = ref([
   { name: 'Category 10' },
 ]);
 
-const selectedDiscountUnit = ref()
+const product = reactive({
+  image: '',
+  name: '',
+  category: [],
+  price: 0,
+  isDiscount: false,
+  discount_value: 0,
+  discount_unit: 'Rp',
+  discount_price: 0,
+  variants: [],
+});
 
+const toggleVariant = ref(false);
+
+const addVariant = () => {
+  console.log('add variant');
+  product.variants.push({
+    name: '',
+    price: 0,
+  });
+};
+
+const removeVariant = index => {
+  product.variants.splice(index, 1);
+};
+
+const calculateDiscount = () => {
+  if (!product.isDiscount) {
+    product.discount_price = 0;
+  }
+
+  if (product.isDiscount) {
+    if (product.discount_unit === 'Rp') {
+      product.discount_price = product.price - product.discount_value;
+    } else {
+      product.discount_price = product.price - (product.price * product.discount_value) / 100;
+    }
+  }
+};
+watch(product, () => {
+  calculateDiscount();
+});
 </script>
+
 
 <style lang="scss" scoped>
 </style>
