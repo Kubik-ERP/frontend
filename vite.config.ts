@@ -37,7 +37,7 @@ import { PrimeVueResolver } from '@primevue/auto-import-resolver';
  * @description Vite plugin to minify images using imagemin.
  * @see https://github.com/unplugin/unplugin-imagemin
  */
-import imagemin from 'unplugin-imagemin/vite';
+// import imagemin from 'unplugin-imagemin/vite';
 
 /**
  * @description Vite plugin to remove console.log and other console.* calls from your code.
@@ -115,7 +115,7 @@ export default defineConfig({
         },
       ],
     }),
-    imagemin(),
+    // imagemin(),
     removeConsole(),
     tailwindcss(),
     viteCompression(),
