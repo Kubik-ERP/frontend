@@ -1,4 +1,58 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+// Interface
+import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+
+/**
+ * @description Inject all the data and methods what we need
+ */
+const { cashierOrderSummary_modalPlaceOrderConfirmation, cashierOrderSummary_handlePlaceOrderConfirmation } =
+  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+</script>
 <template>
-  <section id="cashier-summary-modal-place-order-confirmation"></section>
+  <section id="cashier-summary-modal-place-order-confirmation">
+    <PrimeVueDialog
+      v-model:visible="cashierOrderSummary_modalPlaceOrderConfirmation.show"
+      modal
+      :style="{ width: '31rem' }"
+    >
+      <template #container="{ closeCallback }">
+        <section id="cashier-summary-modal-place-order-confirmation-content" class="flex flex-col gap-6 p-6">
+          <section
+            id="cashier-summary-modal-place-order-confirmation-content-body"
+            class="flex flex-col gap-4 items-center"
+          >
+            <AppBaseSvg name="confirmation" class="!w-14 !h-14" />
+
+            <div class="flex flex-col gap-3 p-2 items-center">
+              <span class="font-semibold text-lg">Are you sure want to place this order?</span>
+              <div class="grid grid-cols-12 py-2.5 px-4 mx-2 bg-secondary/80 rounded-xl">
+                <AppBaseSvg name="info" class="!w-3 !h-3 col-span-1 mt-1 text-secondary" />
+                <span class="text-sm text-secondary-hover text-justify col-span-11"
+                  >Ensure the payment has been successfully processed before proceeding with the order and printing
+                  the invoice</span
+                >
+              </div>
+            </div>
+          </section>
+
+          <div class="flex justify-end gap-6">
+            <PrimeVueButton
+              class="text-primary border-primary w-1/2 py-2.5 px-14"
+              type="button"
+              label="Cancel"
+              outlined
+              @click="closeCallback"
+            ></PrimeVueButton>
+
+            <PrimeVueButton
+              class="bg-primary w-1/2 py-2.5 px-14"
+              type="button"
+              label="Place Order"
+              @click="cashierOrderSummary_handlePlaceOrderConfirmation()"
+            ></PrimeVueButton>
+          </div>
+        </section>
+      </template>
+    </PrimeVueDialog>
+  </section>
 </template>
