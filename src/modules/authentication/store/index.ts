@@ -1,12 +1,26 @@
-import { defineStore } from 'pinia';
+// Constants
+import {
+  AUTHENTICATION_ENDPOINT_RESET_PASSWORD,
+  AUTHENTICATION_ENDPOINT_SEND_OTP,
+  AUTHENTICATION_ENDPOINT_SIGN_IN,
+  AUTHENTICATION_ENDPOINT_SIGN_UP,
+  AUTHENTICATION_ENDPOINT_VERIFY_OTP,
+} from '../constants';
 
 // Interfaces
-import { AxiosRequestConfig } from 'axios';
-import { IAuthenticationResponse, IAuthenticationStateStore } from '../interfaces';
+import type { AxiosRequestConfig } from 'axios';
+import type {
+  IAuthenticationCreateNewPasswordFormData,
+  IAuthenticationResetPasswordFormData,
+  IAuthenticationVerifyOtpFormData,
+  IAuthenticationSignInFormData,
+  IAuthenticationSignUpFormData,
+  IAuthenticationStateStore,
+  IAuthenticationSendOtpFormData,
+} from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
-import { AUTHENTICATION_ENDPOINT_LOGIN } from '../constants';
 
 export const useAuthenticationStore = defineStore('authentication', {
   state: (): IAuthenticationStateStore => ({
@@ -21,26 +35,175 @@ export const useAuthenticationStore = defineStore('authentication', {
   },
   actions: {
     /**
-     * @description Handle fetch api authentication login.
+     * @description Handle fetch api authentication create new password.
+     * @url /authentication/forgot-password
+     * @method PUT
+     * @access public
+     */
+    async fetchAuthentication_createNewPassword(
+      payload: IAuthenticationCreateNewPasswordFormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.authentication_isLoading = true;
+
+      try {
+        const response = await httpClient.put<unknown>(AUTHENTICATION_ENDPOINT_RESET_PASSWORD, payload, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.authentication_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api authentication reset password.
+     * @url /authentication/forgot-password
+     * @method POST
+     * @access public
+     */
+    async fetchAuthentication_resetPassword(
+      payload: IAuthenticationResetPasswordFormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.authentication_isLoading = true;
+
+      try {
+        const response = await httpClient.post<unknown>(AUTHENTICATION_ENDPOINT_RESET_PASSWORD, payload, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.authentication_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api authentication send otp.
+     * @url /authentication/otp/generate
+     * @method POST
+     * @access public
+     */
+    async fetchAuthentication_sendOtp(
+      payload: IAuthenticationSendOtpFormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.authentication_isLoading = true;
+
+      try {
+        const response = await httpClient.post<unknown>(AUTHENTICATION_ENDPOINT_SEND_OTP, payload, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.authentication_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api authentication sign in.
      * @url /authentication/login
      * @method POST
      * @access public
      */
-    async fetchAuthentication_login(
-      payload: unknown,
+    async fetchAuthentication_signIn(
+      payload: IAuthenticationSignInFormData,
       requestConfigurations: AxiosRequestConfig,
-    ): Promise<IAuthenticationResponse> {
+    ): Promise<unknown> {
       this.authentication_isLoading = true;
 
       try {
-        const response = await httpClient.post<IAuthenticationResponse>(AUTHENTICATION_ENDPOINT_LOGIN, payload, {
+        const response = await httpClient.post<unknown>(AUTHENTICATION_ENDPOINT_SIGN_IN, payload, {
           ...requestConfigurations,
         });
-        this.authentication_token = response.data.token;
+        this.authentication_token = (response.data as { token: string }).token; // Refactor this type
 
         return Promise.resolve(response.data);
-      } catch (error) {
-        return Promise.reject(error);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.authentication_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api authentication sign up.
+     * @url /authentication/register
+     * @method POST
+     * @access public
+     */
+    async fetchAuthentication_signUp(
+      payload: IAuthenticationSignUpFormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.authentication_isLoading = true;
+
+      try {
+        const response = await httpClient.post<unknown>(AUTHENTICATION_ENDPOINT_SIGN_UP, payload, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.authentication_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api authentication verify otp.
+     * @url /authentication/otp/verify
+     * @method POST
+     * @access public
+     */
+    async fetchAuthentication_verifyOtp(
+      payload: IAuthenticationVerifyOtpFormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.authentication_isLoading = true;
+
+      try {
+        const response = await httpClient.post<unknown>(AUTHENTICATION_ENDPOINT_VERIFY_OTP, payload, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
       } finally {
         this.authentication_isLoading = false;
       }

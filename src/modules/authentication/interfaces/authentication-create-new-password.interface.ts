@@ -5,6 +5,7 @@ export interface IAuthenticationCreateNewPasswordFormData {
   email: string;
   password: string;
   passwordConfirmation: string;
+  token: string;
 }
 
 export interface IAuthenticationCreateNewPasswordProvided {

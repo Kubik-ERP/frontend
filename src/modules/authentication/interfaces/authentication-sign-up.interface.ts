@@ -1,16 +1,17 @@
 // Interfaces
 import type { Validation } from '@vuelidate/core';
 import type { ShallowRef } from 'vue';
+import type { IAuthenticationStepper } from './index';
 
-export interface IAuthenticationSignUpStepper {
-  id: string;
-  title: string;
-  component: unknown;
+export interface IAuthenticationVerifyOtpFormData {
+  email: string;
+  otp: string;
+  type: string;
 }
 
 export interface IAuthenticationSignUpFormData {
   email: string;
-  phoneCode: string;
+  phoneCountryCode: string;
   phoneNumber: string;
   password: string;
   passwordConfirmation: string;
@@ -18,10 +19,15 @@ export interface IAuthenticationSignUpFormData {
 
 export interface IAuthenticationSignUpProvided {
   authenticationSignUp_activeStep: Ref<number>;
+  authenticationSignUp_durationOtpFormatted: globalThis.ComputedRef<string | undefined>;
   authenticationSignUp_formData: IAuthenticationSignUpFormData;
   authenticationSignUp_formValidations: globalThis.Ref<Validation>;
+  authenticationSignUp_formValidationsOfVerifyOtp: globalThis.Ref<Validation>;
   authenticationSignUp_isAcceptTnc: Ref<boolean>;
   authenticationSignUp_isLoading: globalThis.Ref<boolean>;
-  authenticationSignUp_stepper: ShallowRef<IAuthenticationSignUpStepper[]>;
+  authenticationSignUp_maskedPhoneNumber: Ref<string>;
+  authenticationSignUp_stepper: ShallowRef<IAuthenticationStepper[]>;
+  authenticationSignUp_onResendOtp: () => Promise<void>;
   authenticationSignUp_onSubmit: () => Promise<void>;
+  authenticationSignUp_verifyOtpFormData: IAuthenticationVerifyOtpFormData;
 }
