@@ -10,7 +10,7 @@ try {
 
   // If no errors, run the start:dev script
   console.log(chalk.green('Eslint passed. Starting the app...'));
-  execSync('vite', { stdio: 'inherit' });
+  execSync('vite --host', { stdio: 'inherit' });
 } catch {
   console.error(chalk.red('Eslint failed. Please fix the issues before starting the app.'));
   process.exit(1);

@@ -40,7 +40,31 @@ const {
   cashierProduct_handleOpenModalAddProduct,
 } = useCashierProductService();
 
-const { cashierOrderSummary_data, cashierOrderSummary_calculation } = useCashierOrderSummaryService();
+const {
+  cashierOrderSummary_menuOrder,
+  cashierOrderSummary_menuOrderItem,
+  cashierOrderSummary_data,
+  cashierOrderSummary_calculation,
+
+  cashierOrderSummary_modalAddEditNotes,
+  cashierOrderSummary_modalCancelOrder,
+  cashierOrderSummary_modalInvoiceDetail,
+  cashierOrderSummary_modalOrderType,
+  cashierOrderSummary_modalPaymentMethod,
+  cashierOrderSummary_modalPlaceOrderConfirmation,
+  cashierOrderSummary_modalPlaceOrderDetail,
+  cashierOrderSummary_modalSelectTable,
+  cashierOrderSummary_modalVoucher,
+
+  cashierOrderSummary_handleOrderType,
+  cashierOrderSummary_handleInvoiceDetail,
+  cashierOrderSummary_handleCancelOrder,
+  cashierOrderSummary_handlePaymentMethod,
+  cashierOrderSummary_handlePlaceOrderConfirmation,
+  cashierOrderSummary_handlePlaceOrderDetail,
+  cashierOrderSummary_handleSelectTable,
+  cashierOrderSummary_handleVoucher,
+} = useCashierOrderSummaryService();
 
 /**
  * @description Provide all the data and methods what we need
@@ -72,8 +96,29 @@ provide<ICashierProductProvided>('cashierProduct', {
 });
 
 provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
+  cashierOrderSummary_menuOrder,
+  cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
   cashierOrderSummary_calculation,
+
+  cashierOrderSummary_modalAddEditNotes,
+  cashierOrderSummary_modalCancelOrder,
+  cashierOrderSummary_modalInvoiceDetail,
+  cashierOrderSummary_modalOrderType,
+  cashierOrderSummary_modalPaymentMethod,
+  cashierOrderSummary_modalPlaceOrderConfirmation,
+  cashierOrderSummary_modalPlaceOrderDetail,
+  cashierOrderSummary_modalSelectTable,
+  cashierOrderSummary_modalVoucher,
+
+  cashierOrderSummary_handleOrderType,
+  cashierOrderSummary_handleInvoiceDetail,
+  cashierOrderSummary_handleCancelOrder,
+  cashierOrderSummary_handlePaymentMethod,
+  cashierOrderSummary_handlePlaceOrderConfirmation,
+  cashierOrderSummary_handlePlaceOrderDetail,
+  cashierOrderSummary_handleSelectTable,
+  cashierOrderSummary_handleVoucher,
 });
 </script>
 
