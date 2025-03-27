@@ -7,8 +7,7 @@ import type {
   IAuthenticationSignInProvided,
 } from '../interfaces/authentication-sign-in.interface';
 
-// Store / Pinia
-import { storeToRefs } from 'pinia';
+// Stores
 import { useAuthenticationStore } from '../store';
 
 // Vuelidate
@@ -55,7 +54,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
    */
   const authenticationSignIn_fetchAuthenticationSignIn = async () => {
     try {
-      const result = await store.fetchAuthentication_login(authenticationSignIn_formData, {
+      const result = await store.fetchAuthentication_signIn(authenticationSignIn_formData, {
         ...httpAbort_registerAbort(AUTHENTICATION_SIGN_IN_REQUEST),
       });
       router.push({ name: 'dashboard' });
