@@ -66,21 +66,21 @@ const {
             v-slot="{ classes }"
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
-            label-for="phoneCode"
+            label-for="phoneCountryCode"
             name="Phone Code"
             spacing-bottom="mb-0"
-            :validators="authenticationSignUp_formValidations.phoneCode"
+            :validators="authenticationSignUp_formValidations.phoneCountryCode"
           >
             <PrimeVueSelect
-              id="phoneCode"
-              v-model="authenticationSignUp_formData.phoneCode"
+              id="phoneCountryCode"
+              v-model="authenticationSignUp_formData.phoneCountryCode"
               filter
               :options="COUNTRY_INFORMATIONS"
               option-value="dialCodes"
               placeholder="+62"
               class="text-sm h-full min-h-9 w-full"
               :class="{ ...classes }"
-              v-on="useListenerForm(authenticationSignUp_formValidations, 'phoneCode')"
+              v-on="useListenerForm(authenticationSignUp_formValidations, 'phoneCountryCode')"
             >
               <template #option="{ option }">
                 <section id="phone-option" class="flex items-center gap-1">

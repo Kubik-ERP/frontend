@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // Components
-import AuthenticationResetPasswordForm from '../components/AuthenticationResetPasswordForm.vue';
 import AuthenticationResetPasswordSuccess from '../components/AuthenticationResetPasswordSuccess.vue';
 
 // Services
@@ -10,11 +9,15 @@ import { useAuthenticationResetPasswordService } from '../services/authenticatio
  * @description Destructure all the data and methods what we need
  */
 const {
+  authenticationResetPassword_activeStep,
   authenticationResetPassword_formData,
   authenticationResetPassword_formValidations,
+  authenticationResetPassword_formValidationsOfVerifyOtp,
   authenticationResetPassword_isLoading,
   authenticationResetPassword_isSuccess,
   authenticationResetPassword_onSubmit,
+  authenticationResetPassword_stepper,
+  authenticationResetPassword_verifyOtpFormData,
 } = useAuthenticationResetPasswordService();
 
 /**
@@ -23,8 +26,10 @@ const {
 provide('authenticationResetPassword', {
   authenticationResetPassword_formData,
   authenticationResetPassword_formValidations,
+  authenticationResetPassword_formValidationsOfVerifyOtp,
   authenticationResetPassword_isLoading,
   authenticationResetPassword_onSubmit,
+  authenticationResetPassword_verifyOtpFormData,
 });
 </script>
 
@@ -36,7 +41,7 @@ provide('authenticationResetPassword', {
       </template>
 
       <template v-else>
-        <AuthenticationResetPasswordForm />
+        <component :is="authenticationResetPassword_stepper[authenticationResetPassword_activeStep].component" />
       </template>
     </section>
   </section>
