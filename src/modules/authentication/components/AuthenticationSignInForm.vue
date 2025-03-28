@@ -63,12 +63,17 @@ const {
             </template>
           </PrimeVueInputIcon>
 
-          <PrimeVueInputText
+          <PrimeVuePassword
             v-model="authenticationSignIn_formData.password"
-            :loading="authenticationSignIn_isLoading"
-            placeholder="Input your password"
+            placeholder="Input your new password"
             class="text-sm w-full"
+            toggle-mask
             :class="{ ...classes }"
+            :feedback="false"
+            :loading="authenticationSignIn_isLoading"
+            :pt="{
+              root: '[&>input]:text-sm [&>input]:w-full',
+            }"
             v-on="useListenerForm(authenticationSignIn_formValidations, 'password')"
           />
         </PrimeVueIconField>
@@ -86,6 +91,7 @@ const {
           label="Submit"
           type="submit"
           :disabled="authenticationSignIn_formValidations.$invalid"
+          :loading="authenticationSignIn_isLoading"
         />
 
         <PrimeVueButton class="w-full" severity="secondary" variant="outlined">
@@ -103,7 +109,7 @@ const {
       <span class="font-normal text-sm">
         Doesn’t have an account?
 
-        <RouterLink to="/authentication/register" class="font-semibold text-blue-primary"> Register </RouterLink>
+        <RouterLink :to="{ name: 'sign-up' }" class="font-semibold text-blue-primary"> Register </RouterLink>
       </span>
     </section>
   </form>

@@ -7,23 +7,33 @@ import { useAuthenticationRegisterService } from '../services/authentication-sig
  */
 const {
   authenticationSignUp_activeStep,
+  authenticationSignUp_durationOtpFormatted,
   authenticationSignUp_formData,
   authenticationSignUp_formValidations,
+  authenticationSignUp_formValidationsOfVerifyOtp,
   authenticationSignUp_isAcceptTnc,
   authenticationSignUp_isLoading,
+  authenticationSignUp_maskedPhoneNumber,
+  authenticationSignUp_onResendOtp,
   authenticationSignUp_onSubmit,
   authenticationSignUp_stepper,
+  authenticationSignUp_verifyOtpFormData,
 } = useAuthenticationRegisterService();
 
 /**
  * @description Provide all the data and methods what we need
  */
 provide('authenticationRegister', {
+  authenticationSignUp_durationOtpFormatted,
   authenticationSignUp_formData,
   authenticationSignUp_formValidations,
+  authenticationSignUp_formValidationsOfVerifyOtp,
   authenticationSignUp_isAcceptTnc,
   authenticationSignUp_isLoading,
+  authenticationSignUp_maskedPhoneNumber,
+  authenticationSignUp_onResendOtp,
   authenticationSignUp_onSubmit,
+  authenticationSignUp_verifyOtpFormData,
 });
 </script>
 

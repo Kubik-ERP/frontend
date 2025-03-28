@@ -6,15 +6,15 @@ import type { IAuthenticationResetPasswordProvided } from '../interfaces/authent
  * @description Inject all the data and methods what we need
  */
 const {
-  authenticationResetPassword_formData,
-  authenticationResetPassword_formValidations,
+  authenticationResetPassword_formValidationsOfVerifyOtp,
   authenticationResetPassword_isLoading,
   authenticationResetPassword_onSubmit,
+  authenticationResetPassword_verifyOtpFormData,
 } = inject<IAuthenticationResetPasswordProvided>('authenticationResetPassword')!;
 </script>
 
 <template>
-  <form class="form-group flex flex-col gap-10" @submit.prevent="authenticationResetPassword_onSubmit">
+  <form class="form-group flex flex-col gap-10 w-fit" @submit.prevent="authenticationResetPassword_onSubmit">
     <section id="greeting-text" class="flex flex-col gap-6">
       <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
 
@@ -30,44 +30,34 @@ const {
             </template>
           </PrimeVueButton>
 
-          <h1 class="font-bold text-2xl leading-8">Reset Password</h1>
+          <h1 class="font-bold text-2xl leading-8">Enter Your PIN</h1>
         </div>
 
-        <p id="subtitle" class="font-normal text-base">Enter your registered email to reset password</p>
+        <p id="subtitle" class="font-normal text-base">For security, please enter your PIN to proceed</p>
       </section>
     </section>
 
     <AppBaseFormGroup
       v-slot="{ classes }"
       class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-      is-name-as-label
-      label-for="email"
-      name="Email"
-      :validators="authenticationResetPassword_formValidations.email"
+      label-for="otp"
+      name="OTP Code"
+      spacing-bottom="mb-0"
+      :validators="authenticationResetPassword_formValidationsOfVerifyOtp.otp"
     >
-      <PrimeVueIconField>
-        <PrimeVueInputIcon>
-          <template #default>
-            <AppBaseSvg name="mail" />
-          </template>
-        </PrimeVueInputIcon>
-
-        <PrimeVueInputText
-          v-model="authenticationResetPassword_formData.email"
-          :loading="authenticationResetPassword_isLoading"
-          placeholder="Input your registered email"
-          class="text-sm w-full"
-          :class="{ ...classes }"
-          v-on="useListenerForm(authenticationResetPassword_formValidations, 'email')"
-        />
-      </PrimeVueIconField>
+      <PrimeVueInputOtp
+        v-model="authenticationResetPassword_verifyOtpFormData.otp"
+        :class="{ ...classes }"
+        class="[&>input]:bg-white [&>input]:border-grayscale-30 [&>input]:font-bold [&>input]:text-2xl [&>input]:w-16 [&>input]:h-16!"
+        :length="6"
+      />
     </AppBaseFormGroup>
 
     <PrimeVueButton
       class="bg-blue-primary border-none text-sm py-[10px]"
       label="Submit"
       type="submit"
-      :disabled="authenticationResetPassword_formValidations.$invalid"
+      :disabled="authenticationResetPassword_formValidationsOfVerifyOtp.$invalid"
       :loading="authenticationResetPassword_isLoading"
     />
   </form>

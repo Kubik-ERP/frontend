@@ -1,5 +1,14 @@
 // Constants
-// import { AUTHENTICATION_RESET_PASSWORD_REQUEST } from '../constants';
+import {
+  AUTHENTICATION_RESET_PASSWORD_REQUEST,
+  AUTHENTICATION_RESET_PASSWORD_STEPPER,
+  AUTHENTICATION_SEND_OTP_REQUEST,
+} from '../constants';
+import {
+  IAuthenticationSendOtpFormData,
+  IAuthenticationStepper,
+  IAuthenticationVerifyOtpFormData,
+} from '../interfaces';
 
 // Interfaces
 import type {
@@ -7,8 +16,7 @@ import type {
   IAuthenticationResetPasswordProvided,
 } from '../interfaces/authentication-reset-password.interface';
 
-// Store / Pinia
-import { storeToRefs } from 'pinia';
+// Stores
 import { useAuthenticationStore } from '../store';
 
 // Vuelidate
@@ -24,20 +32,33 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
    */
   const store = useAuthenticationStore(); // Instance of the store
   const { authentication_isLoading } = storeToRefs(store);
+  const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
    * @description Reactive data binding
    */
+  const authenticationResetPassword_activeStep = ref<number>(0);
   const authenticationResetPassword_formData = reactive<IAuthenticationResetPasswordFormData>({
     email: '',
   });
   const authenticationResetPassword_isSuccess = ref<boolean>(false);
+  const authenticationResetPassword_stepper = shallowRef<IAuthenticationStepper[]>(
+    AUTHENTICATION_RESET_PASSWORD_STEPPER,
+  );
+  const authenticationResetPassword_verifyOtpFormData = reactive<IAuthenticationVerifyOtpFormData>({
+    email: '',
+    otp: '',
+    type: 'FORGOT_PASSWORD',
+  });
 
   /**
    * @description Form validations
    */
   const authenticationResetPassword_formRules = computed(() => ({
     email: { email, required },
+  }));
+  const authenticationResetPassword_formRulesOfVerifyOtp = computed(() => ({
+    otp: { required },
   }));
 
   const authenticationResetPassword_formValidations = useVuelidate(
@@ -47,13 +68,60 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
       $autoDirty: true,
     },
   );
+  const authenticationResetPassword_formValidationsOfVerifyOtp = useVuelidate(
+    authenticationResetPassword_formRulesOfVerifyOtp,
+    authenticationResetPassword_verifyOtpFormData,
+    {
+      $autoDirty: true,
+    },
+  );
 
   /**
-   * @description Handle fetch api authentication login. We call the fetchauthenticationSignIn function from the store to handle the request.
+   * @description Handle fetch api authentication reset password. We call the fetchAuthentication_sendOtp function from the store to handle the request.
+   */
+  const authenticationResetPassword_fetchAuthenticationSendOtp = async () => {
+    try {
+      const payload: IAuthenticationSendOtpFormData = {
+        email: authenticationResetPassword_formData.email,
+      };
+
+      await store.fetchAuthentication_sendOtp(payload, {
+        ...httpAbort_registerAbort(AUTHENTICATION_SEND_OTP_REQUEST),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api authentication reset password. We call the fetchAuthentication_verifyOtp function from the store to handle the request.
+   */
+  const authenticationResetPassword_fetchAuthenticationVerifyOtp = async () => {
+    try {
+      await store.fetchAuthentication_verifyOtp(authenticationResetPassword_verifyOtpFormData, {
+        ...httpAbort_registerAbort(AUTHENTICATION_SEND_OTP_REQUEST),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api authentication reset password. We call the fetchAuthentication_resetPassword function from the store to handle the request.
    */
   const authenticationResetPassword_fetchAuthenticationResetPassword = async () => {
     try {
-      console.log('Fetch api here...');
+      await store.fetchAuthentication_resetPassword(authenticationResetPassword_formData, {
+        ...httpAbort_registerAbort(AUTHENTICATION_RESET_PASSWORD_REQUEST),
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -67,11 +135,25 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
    * @description Handle action on submit form.
    */
   const authenticationResetPassword_onSubmit = async (): Promise<void> => {
-    authenticationResetPassword_formValidations.value.$touch();
-    if (authenticationResetPassword_formValidations.value.$invalid) return;
+    if (authenticationResetPassword_activeStep.value === 0) {
+      authenticationResetPassword_formValidations.value.$touch();
+      if (authenticationResetPassword_formValidations.value.$invalid) return;
+    } else {
+      authenticationResetPassword_formValidationsOfVerifyOtp.value.$touch();
+      if (authenticationResetPassword_formValidationsOfVerifyOtp.value.$invalid) return;
+    }
 
     try {
-      await authenticationResetPassword_fetchAuthenticationResetPassword();
+      if (authenticationResetPassword_activeStep.value === 0) {
+        await authenticationResetPassword_fetchAuthenticationResetPassword();
+        await authenticationResetPassword_fetchAuthenticationSendOtp();
+        authenticationResetPassword_activeStep.value = 1;
+      } else {
+        authenticationResetPassword_verifyOtpFormData.email = authenticationResetPassword_formData.email;
+
+        await authenticationResetPassword_fetchAuthenticationVerifyOtp();
+        authenticationResetPassword_isSuccess.value = true;
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -82,10 +164,14 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
   };
 
   return {
+    authenticationResetPassword_activeStep,
     authenticationResetPassword_formData,
     authenticationResetPassword_formValidations,
+    authenticationResetPassword_formValidationsOfVerifyOtp,
     authenticationResetPassword_isLoading: authentication_isLoading,
     authenticationResetPassword_isSuccess,
     authenticationResetPassword_onSubmit,
+    authenticationResetPassword_stepper,
+    authenticationResetPassword_verifyOtpFormData,
   };
 };
