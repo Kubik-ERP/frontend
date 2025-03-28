@@ -1,23 +1,30 @@
-# Gunakan image Node.js sebagai base
-FROM node:22
+# 1. Build Vue.js menggunakan Node.js
+FROM node:22 AS build-stage
 
-# Set working directory dalam container
-WORKDIR /app-frontend
+# Set working directory
+WORKDIR /app_frontend
 
-# Salin code ke dalam container
-COPY ./ ./
-
-# Install dependencies
+# Copy package.json dan install dependencies
+COPY package*.json ./
 RUN npm install --no-fund --no-audit
 
-# Salin semua file proyek
+# Copy semua source code ke dalam container
 COPY . .
 
-# Build aplikasi
+# Build Vue.js
 RUN npm run build
 
-# Expose port aplikasi
+# 2. Gunakan Nginx sebagai web server untuk production
+FROM nginx:alpine AS production-stage
+
+# Copy konfigurasi Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy hasil build dari tahap sebelumnya ke dalam Nginx
+COPY --from=build-stage /app_frontend/dist /usr/share/nginx/html
+
+# Expose port 8090
 EXPOSE 8090
 
-# Jalankan aplikasi
-CMD ["npm", "preview"]
+# Jalankan Nginx
+CMD ["nginx", "-g", "daemon off;"]
