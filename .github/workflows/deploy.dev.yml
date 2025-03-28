@@ -3,7 +3,7 @@ name: Build & Deploy to Server
 on:
   push:
     branches:
-      - chore/test-deployment
+      - staging
 
 jobs:
   deploy:
