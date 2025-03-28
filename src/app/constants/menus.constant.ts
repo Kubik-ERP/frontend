@@ -22,7 +22,7 @@ export const LIST_SIDEBAR_MENUS = [
       {
         name: 'Cashier',
         iconName: 'cashier',
-        path: '/',
+        path: '/cashier',
       },
     ],
   },
@@ -32,21 +32,21 @@ export const LIST_SIDEBAR_MENUS = [
       {
         name: 'Sales Order',
         iconName: 'sales',
-        path: '/',
+        path: '/sales-order',
         isHaveSubMenus: false,
         subMenus: [],
       },
       {
         name: 'Report',
         iconName: 'report',
-        path: '/',
+        path: '/report',
         isHaveSubMenus: false,
         subMenus: [],
       },
       {
         name: 'Catalog',
         iconName: 'catalog',
-        path: '',
+        path: '/catalog',
         isHaveSubMenus: true,
         subMenus: [
           {
@@ -67,28 +67,28 @@ export const LIST_SIDEBAR_MENUS = [
       {
         name: 'Store',
         iconName: 'store',
-        path: '/',
+        path: '/store',
         isHaveSubMenus: false,
         subMenus: [],
       },
       {
         name: 'Inventory',
         iconName: 'inventory',
-        path: '/',
+        path: '/inventory',
         isHaveSubMenus: false,
         subMenus: [],
       },
       {
         name: 'Marketing',
         iconName: 'marketing',
-        path: '/',
+        path: '/marketing',
         isHaveSubMenus: false,
         subMenus: [],
       },
       {
         name: 'Staff',
         iconName: 'staff',
-        path: '/',
+        path: '/staff',
         isHaveSubMenus: true,
         subMenus: [
           {
@@ -112,7 +112,7 @@ export const LIST_SIDEBAR_MENUS = [
       {
         name: 'Purchasing',
         iconName: 'receipt',
-        path: '/',
+        path: '/purchasing',
         isHaveSubMenus: false,
         subMenus: [],
       },
@@ -124,21 +124,21 @@ export const LIST_SIDEBAR_MENUS = [
       {
         name: 'Account',
         iconName: 'account-company',
-        path: '/',
+        path: '/company-account',
         isHaveSubMenus: false,
         subMenus: [],
       },
       {
         name: 'Point of Sales',
         iconName: 'sales',
-        path: '/',
+        path: '/point-of-sales',
         isHaveSubMenus: false,
         subMenus: [],
       },
       {
         name: 'Integrations',
         iconName: 'integrations',
-        path: '/',
+        path: '/integrations',
         isHaveSubMenus: false,
         subMenus: [],
       },
