@@ -1,5 +1,6 @@
 import { MenuPassThroughAttributes } from 'primevue';
 import { MenuItem } from 'primevue/menuitem';
+import { ICashierProduct, ICashierSelected } from '.';
 
 export interface ICashierOrderType {
   code: number;
@@ -107,6 +108,20 @@ export interface ICashierOrderSummaryModalAddEdit {
   tempValue: string;
 }
 
+export interface ICashierOrderSummary {
+  provider: string;
+  orderType: string;
+  invoiceDetail: {
+    receivedBy: string;
+    notes: string;
+  };
+  paymentMethod: string;
+  tableCode: number[];
+  selectedVoucher: number;
+  customerName: string;
+  product: ICashierSelected[];
+}
+
 export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_menuOrder: Ref<MenuPassThroughAttributes>;
   cashierOrderSummary_menuOrderItem: Ref<MenuItem[]>;
@@ -122,6 +137,8 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_modalSelectTable: Ref<ICashierOrderSummaryModalSelectTable>;
   cashierOrderSummary_modalPlaceOrderConfirmation: Ref<ICashierOrderSummaryModalCancelOrder>;
   cashierOrderSummary_modalPlaceOrderDetail: Ref<ICashierOrderSummaryModalCancelOrder>;
+
+  cashierOrderSummary_summary: Ref<ICashierOrderSummary>;
 
   cashierOrderSummary_handleOrderType: () => void;
   cashierOrderSummary_handleVoucher: () => void;
