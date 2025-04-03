@@ -8,16 +8,17 @@ import type { IAuthenticationSignUpProvided } from '../interfaces/authentication
 const {
   authenticationSignUp_durationOtpFormatted,
   authenticationSignUp_formData,
+  authenticationSignUp_formDataOfVerifyOtp,
   authenticationSignUp_formValidationsOfVerifyOtp,
+  authenticationSignUp_isLoading,
   authenticationSignUp_maskedPhoneNumber,
   authenticationSignUp_onResendOtp,
   authenticationSignUp_onSubmit,
-  authenticationSignUp_verifyOtpFormData,
 } = inject<IAuthenticationSignUpProvided>('authenticationRegister')!;
 </script>
 
 <template>
-  <form class="form-group flex flex-col gap-10 w-sm" @submit.prevent="authenticationSignUp_onSubmit">
+  <form class="form-group flex flex-col gap-10 w-md" @submit.prevent="authenticationSignUp_onSubmit">
     <section id="greeting-text" class="flex flex-col gap-3">
       <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
 
@@ -45,7 +46,7 @@ const {
         :validators="authenticationSignUp_formValidationsOfVerifyOtp.otp"
       >
         <PrimeVueInputOtp
-          v-model="authenticationSignUp_verifyOtpFormData.otp"
+          v-model="authenticationSignUp_formDataOfVerifyOtp.otp"
           :class="{ ...classes }"
           class="[&>input]:bg-white [&>input]:border-grayscale-30 [&>input]:font-bold [&>input]:text-2xl [&>input]:w-16 [&>input]:h-16!"
         />
@@ -68,6 +69,12 @@ const {
       </span>
     </section>
 
-    <PrimeVueButton class="bg-blue-primary border-none text-sm py-[10px]" label="Continue" type="submit" />
+    <PrimeVueButton
+      class="bg-blue-primary border-none text-sm py-[10px]"
+      label="Continue"
+      type="submit"
+      :disabled="authenticationSignUp_formValidationsOfVerifyOtp.$invalid"
+      :loading="authenticationSignUp_isLoading"
+    />
   </form>
 </template>

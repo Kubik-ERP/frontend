@@ -12,6 +12,7 @@ export interface IAuthenticationResetPasswordProvided {
   authenticationResetPassword_formData: IAuthenticationResetPasswordFormData;
   authenticationResetPassword_formValidations: globalThis.Ref<Validation>;
   authenticationResetPassword_formValidationsOfVerifyOtp: globalThis.Ref<Validation>;
+  authenticationResetPassword_isPinInvalid: globalThis.Ref<boolean>;
   authenticationResetPassword_isLoading: globalThis.Ref<boolean>;
   authenticationResetPassword_isSuccess: Ref<boolean>;
   authenticationResetPassword_onSubmit: () => Promise<void>;

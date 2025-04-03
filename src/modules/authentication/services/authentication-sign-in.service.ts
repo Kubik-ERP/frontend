@@ -33,6 +33,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     email: '',
     password: '',
   });
+  const authenticationSignIn_isNotAuthenticated = ref<boolean>(true);
 
   /**
    * @description Form validations
@@ -79,6 +80,8 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     try {
       await authenticationSignIn_fetchAuthenticationSignIn();
     } catch (error: unknown) {
+      authenticationSignIn_isNotAuthenticated.value = true;
+
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -87,10 +90,26 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     }
   };
 
+  /**
+   * @description Handle side effects when the user fills the form.
+   */
+  watch(
+    authenticationSignIn_formData,
+    () => {
+      if (authenticationSignIn_isNotAuthenticated.value) {
+        authenticationSignIn_isNotAuthenticated.value = false;
+      }
+    },
+    {
+      deep: true,
+    },
+  );
+
   return {
     authenticationSignIn_formData,
     authenticationSignIn_formValidations,
     authenticationSignIn_isLoading: authentication_isLoading,
+    authenticationSignIn_isNotAuthenticated,
     authenticationSignIn_onSubmit,
   };
 };
