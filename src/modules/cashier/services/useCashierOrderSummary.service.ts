@@ -136,6 +136,28 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     show: false,
     selectedTable: [],
     activeFloor: 1,
+    listFloor: [
+      {
+        value: 1,
+        label: 'Floor 1',
+        available: true,
+      },
+      {
+        value: 2,
+        label: 'Floor 2',
+        available: false,
+      },
+      {
+        value: 3,
+        label: 'Floor 3',
+        available: true,
+      },
+      {
+        value: 4,
+        label: 'Floor 4',
+        available: false,
+      },
+    ],
     data: [
       {
         value: 1,
@@ -252,7 +274,25 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     ],
   });
 
+  const cashierOrderSummary_handleToggleSelectTable = (table: number) => {
+    const index = cashierOrderSummary_modalSelectTable.value.selectedTable.indexOf(table);
+
+    if (index === -1) {
+      cashierOrderSummary_modalSelectTable.value.selectedTable.push(table);
+    } else {
+      cashierOrderSummary_modalSelectTable.value.selectedTable.splice(index, 1);
+    }
+  };
+
   const cashierOrderSummary_handleSelectTable = () => {};
+
+  const cashierOrderSummary_getListActiveFloor = computed(() => {
+    const activeFloor = cashierOrderSummary_modalSelectTable.value.data.filter(
+      data => data.floor === cashierOrderSummary_modalSelectTable.value.activeFloor,
+    );
+
+    return activeFloor;
+  });
 
   const cashierOrderSummary_modalVoucher = ref<ICashierOrderSummaryModalVoucher>({
     show: false,
@@ -363,7 +403,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       tableCode: cashierOrderSummary_modalSelectTable.value.selectedTable,
       selectedVoucher: cashierOrderSummary_modalVoucher.value.form.voucher_code,
       customerName: cashierOrderSummary_data.value.customerName,
-      product: cashierProduct_selectedProduct,
+      product: cashierProduct_selectedProduct.value,
     };
 
     return summary;
@@ -385,6 +425,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_modalPlaceOrderDetail,
     cashierOrderSummary_modalCancelOrder,
 
+    cashierOrderSummary_getListActiveFloor,
     cashierOrderSummary_summary,
 
     cashierOrderSummary_handleOrderType,
@@ -395,5 +436,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_handlePlaceOrderDetail,
     cashierOrderSummary_handleSelectTable,
     cashierOrderSummary_handleVoucher,
+    cashierOrderSummary_handleToggleSelectTable,
   };
 };

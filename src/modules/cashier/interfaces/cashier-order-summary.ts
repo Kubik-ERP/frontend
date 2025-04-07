@@ -1,6 +1,6 @@
 import { MenuPassThroughAttributes } from 'primevue';
 import { MenuItem } from 'primevue/menuitem';
-import { ICashierProduct, ICashierSelected } from '.';
+import { ICashierSelected } from '.';
 
 export interface ICashierOrderType {
   code: number;
@@ -55,10 +55,17 @@ export interface ICashierListTable {
   floor: number;
 }
 
+export interface ICashierOrderSummarylistFloor {
+  value: number;
+  label: string;
+  available: boolean;
+}
+
 export interface ICashierOrderSummaryModalSelectTable {
   show: boolean;
   selectedTable: number[];
   activeFloor: number;
+  listFloor: ICashierOrderSummarylistFloor[];
   data: ICashierListTable[];
 }
 
@@ -139,6 +146,7 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_modalPlaceOrderDetail: Ref<ICashierOrderSummaryModalCancelOrder>;
 
   cashierOrderSummary_summary: Ref<ICashierOrderSummary>;
+  cashierOrderSummary_getListActiveFloor: ComputedRef<ICashierListTable[]>;
 
   cashierOrderSummary_handleOrderType: () => void;
   cashierOrderSummary_handleVoucher: () => void;
@@ -148,4 +156,6 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_handleSelectTable: () => void;
   cashierOrderSummary_handlePlaceOrderConfirmation: () => void;
   cashierOrderSummary_handlePlaceOrderDetail: () => void;
+
+  cashierOrderSummary_handleToggleSelectTable: (table: number) => void;
 }
