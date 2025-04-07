@@ -1,7 +1,7 @@
 // Constants
 import {
   AUTHENTICATION_SIGN_UP_REQUEST,
-  AUTHENTICATION_REGISTER_STEPPER,
+  AUTHENTICATION_SIGN_UP_STEPPER,
   AUTHENTICATION_SEND_OTP_REQUEST,
 } from '../constants';
 import { IAuthenticationSendOtpFormData, IAuthenticationVerifyOtpFormData } from '../interfaces';
@@ -44,14 +44,20 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     password: '',
     passwordConfirmation: '',
   });
-  const authenticationSignUp_isAcceptTnc = ref<boolean>(false);
-  const authenticationSignUp_maskedPhoneNumber = ref<string>('');
-  const authenticationSignUp_stepper = shallowRef<IAuthenticationStepper[]>(AUTHENTICATION_REGISTER_STEPPER);
-  const authenticationSignUp_verifyOtpFormData = reactive<IAuthenticationVerifyOtpFormData>({
+  const authenticationSignUp_formDataOfSetUpPin = reactive({
+    pin: '',
+  });
+  const authenticationSignUp_formDataOfVerifyOtp = reactive<IAuthenticationVerifyOtpFormData>({
     email: '',
     otp: '',
     type: 'REGISTER',
   });
+  const authenticationSignUp_formDataOfVerifyPin = reactive({
+    pin: '',
+  });
+  const authenticationSignUp_isAcceptTnc = ref<boolean>(false);
+  const authenticationSignUp_maskedPhoneNumber = ref<string>('');
+  const authenticationSignUp_stepper = shallowRef<IAuthenticationStepper[]>(AUTHENTICATION_SIGN_UP_STEPPER);
 
   /**
    * @description Form validations
@@ -66,6 +72,12 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
   const authenticationSignUp_formRulesOfVerifyOtp = computed(() => ({
     otp: { required },
   }));
+  const authenticationSignUp_formRulesOfSetUpPin = computed(() => ({
+    pin: { required },
+  }));
+  const authenticationSignUp_formRulesOfVerifyPin = computed(() => ({
+    pin: { required },
+  }));
 
   const authenticationSignUp_formValidations = useVuelidate(
     authenticationSignUp_formRules,
@@ -74,9 +86,23 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
       $autoDirty: true,
     },
   );
+  const authenticationSignUp_formValidationsOfSetUpPin = useVuelidate(
+    authenticationSignUp_formRulesOfSetUpPin,
+    authenticationSignUp_formDataOfSetUpPin,
+    {
+      $autoDirty: true,
+    },
+  );
   const authenticationSignUp_formValidationsOfVerifyOtp = useVuelidate(
     authenticationSignUp_formRulesOfVerifyOtp,
-    authenticationSignUp_verifyOtpFormData,
+    authenticationSignUp_formDataOfVerifyOtp,
+    {
+      $autoDirty: true,
+    },
+  );
+  const authenticationSignUp_formValidationsOfVerifyPin = useVuelidate(
+    authenticationSignUp_formRulesOfVerifyPin,
+    authenticationSignUp_formDataOfVerifyPin,
     {
       $autoDirty: true,
     },
@@ -174,7 +200,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
    */
   const authenticationSignUp_fetchAuthenticationVerifyOtp = async () => {
     try {
-      await store.fetchAuthentication_verifyOtp(authenticationSignUp_verifyOtpFormData, {
+      await store.fetchAuthentication_verifyOtp(authenticationSignUp_formDataOfVerifyOtp, {
         ...httpAbort_registerAbort(AUTHENTICATION_SEND_OTP_REQUEST),
       });
     } catch (error: unknown) {
@@ -212,7 +238,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
         authenticationSignUp_maskPhoneNumber();
         authenticationSignUp_activeStep.value = 1;
       } else {
-        authenticationSignUp_verifyOtpFormData.email = authenticationSignUp_formData.email;
+        authenticationSignUp_formDataOfVerifyOtp.email = authenticationSignUp_formData.email;
 
         await authenticationSignUp_fetchAuthenticationVerifyOtp();
         router.push({ name: 'sign-in' });
@@ -230,14 +256,18 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     authenticationSignUp_activeStep,
     authenticationSignUp_durationOtpFormatted,
     authenticationSignUp_formData,
+    authenticationSignUp_formDataOfSetUpPin,
+    authenticationSignUp_formDataOfVerifyOtp,
+    authenticationSignUp_formDataOfVerifyPin,
     authenticationSignUp_formValidations,
+    authenticationSignUp_formValidationsOfSetUpPin,
     authenticationSignUp_formValidationsOfVerifyOtp,
+    authenticationSignUp_formValidationsOfVerifyPin,
     authenticationSignUp_isAcceptTnc,
     authenticationSignUp_isLoading: authentication_isLoading,
     authenticationSignUp_maskedPhoneNumber,
     authenticationSignUp_stepper,
     authenticationSignUp_onResendOtp,
     authenticationSignUp_onSubmit,
-    authenticationSignUp_verifyOtpFormData,
   };
 };

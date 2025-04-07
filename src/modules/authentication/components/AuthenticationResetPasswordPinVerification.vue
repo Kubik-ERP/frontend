@@ -8,6 +8,7 @@ import type { IAuthenticationResetPasswordProvided } from '../interfaces/authent
 const {
   authenticationResetPassword_formValidationsOfVerifyOtp,
   authenticationResetPassword_isLoading,
+  authenticationResetPassword_isPinInvalid,
   authenticationResetPassword_onSubmit,
   authenticationResetPassword_verifyOtpFormData,
 } = inject<IAuthenticationResetPasswordProvided>('authenticationResetPassword')!;
@@ -47,10 +48,18 @@ const {
     >
       <PrimeVueInputOtp
         v-model="authenticationResetPassword_verifyOtpFormData.otp"
-        :class="{ ...classes }"
         class="[&>input]:bg-white [&>input]:border-grayscale-30 [&>input]:font-bold [&>input]:text-2xl [&>input]:w-16 [&>input]:h-16!"
+        :class="[classes, authenticationResetPassword_isPinInvalid ? '[&>input]:!border-border-error' : '']"
         :length="6"
+        mask
       />
+
+      <span
+        v-if="authenticationResetPassword_isPinInvalid"
+        class="inline-block font-normal text-error-main text-sm text-center w-full mt-3"
+      >
+        Incorrect PIN. Please try again
+      </span>
     </AppBaseFormGroup>
 
     <PrimeVueButton
