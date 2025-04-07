@@ -9,6 +9,7 @@ const {
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
   cashierOrderSummary_menuOrder,
+  cashierOrderSummary_modalSelectTable,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 
@@ -68,6 +69,7 @@ const {
       </button>
       <button
         class="flex w-1/2 border cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 text-text-disabled border-text-disabled rounded-sm p-2.5 justify-between items-center"
+        @click="cashierOrderSummary_modalSelectTable.show = true"
       >
         Table No.
 
