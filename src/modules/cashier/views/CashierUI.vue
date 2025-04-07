@@ -45,6 +45,7 @@ const {
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
   cashierOrderSummary_calculation,
+  cashierOrderSummary_summary,
 
   cashierOrderSummary_modalAddEditNotes,
   cashierOrderSummary_modalCancelOrder,
@@ -56,6 +57,8 @@ const {
   cashierOrderSummary_modalSelectTable,
   cashierOrderSummary_modalVoucher,
 
+  cashierOrderSummary_getListActiveFloor,
+
   cashierOrderSummary_handleOrderType,
   cashierOrderSummary_handleInvoiceDetail,
   cashierOrderSummary_handleCancelOrder,
@@ -64,6 +67,7 @@ const {
   cashierOrderSummary_handlePlaceOrderDetail,
   cashierOrderSummary_handleSelectTable,
   cashierOrderSummary_handleVoucher,
+  cashierOrderSummary_handleToggleSelectTable,
 } = useCashierOrderSummaryService();
 
 /**
@@ -100,6 +104,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
   cashierOrderSummary_calculation,
+  cashierOrderSummary_summary,
 
   cashierOrderSummary_modalAddEditNotes,
   cashierOrderSummary_modalCancelOrder,
@@ -110,6 +115,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_modalPlaceOrderDetail,
   cashierOrderSummary_modalSelectTable,
   cashierOrderSummary_modalVoucher,
+  cashierOrderSummary_getListActiveFloor,
 
   cashierOrderSummary_handleOrderType,
   cashierOrderSummary_handleInvoiceDetail,
@@ -119,6 +125,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_handlePlaceOrderDetail,
   cashierOrderSummary_handleSelectTable,
   cashierOrderSummary_handleVoucher,
+  cashierOrderSummary_handleToggleSelectTable,
 });
 </script>
 

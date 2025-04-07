@@ -1,5 +1,6 @@
 import { MenuPassThroughAttributes } from 'primevue';
 import { MenuItem } from 'primevue/menuitem';
+import { ICashierSelected } from '.';
 
 export interface ICashierOrderType {
   code: number;
@@ -54,10 +55,17 @@ export interface ICashierListTable {
   floor: number;
 }
 
+export interface ICashierOrderSummarylistFloor {
+  value: number;
+  label: string;
+  available: boolean;
+}
+
 export interface ICashierOrderSummaryModalSelectTable {
   show: boolean;
   selectedTable: number[];
   activeFloor: number;
+  listFloor: ICashierOrderSummarylistFloor[];
   data: ICashierListTable[];
 }
 
@@ -107,6 +115,20 @@ export interface ICashierOrderSummaryModalAddEdit {
   tempValue: string;
 }
 
+export interface ICashierOrderSummary {
+  provider: string;
+  orderType: string;
+  invoiceDetail: {
+    receivedBy: string;
+    notes: string;
+  };
+  paymentMethod: string;
+  tableCode: number[];
+  selectedVoucher: number;
+  customerName: string;
+  product: ICashierSelected[];
+}
+
 export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_menuOrder: Ref<MenuPassThroughAttributes>;
   cashierOrderSummary_menuOrderItem: Ref<MenuItem[]>;
@@ -123,6 +145,9 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_modalPlaceOrderConfirmation: Ref<ICashierOrderSummaryModalCancelOrder>;
   cashierOrderSummary_modalPlaceOrderDetail: Ref<ICashierOrderSummaryModalCancelOrder>;
 
+  cashierOrderSummary_summary: Ref<ICashierOrderSummary>;
+  cashierOrderSummary_getListActiveFloor: ComputedRef<ICashierListTable[]>;
+
   cashierOrderSummary_handleOrderType: () => void;
   cashierOrderSummary_handleVoucher: () => void;
   cashierOrderSummary_handlePaymentMethod: () => void;
@@ -131,4 +156,6 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_handleSelectTable: () => void;
   cashierOrderSummary_handlePlaceOrderConfirmation: () => void;
   cashierOrderSummary_handlePlaceOrderDetail: () => void;
+
+  cashierOrderSummary_handleToggleSelectTable: (table: number) => void;
 }
