@@ -7,21 +7,20 @@ export enum EOutletBusinessType {
 }
 
 export interface IOutletOperational {
-  name: string;
-  startTime: string;
-  endTime: string;
+  day: string;
+  openTime: string;
+  closeTime: string;
   isOpen: boolean;
 }
 
 export interface IOutletCreateEditFormData {
-  name: string;
+  storeName: string;
   email: string;
   phoneCode: string;
   phoneNumber: string;
   businessType: EOutletBusinessType;
-  address: string;
+  streetAddress: string;
   photo: string;
-  location: string;
   city: string;
   postalCode: string;
   building: string;
