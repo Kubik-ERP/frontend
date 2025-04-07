@@ -9,15 +9,19 @@ const {
   authenticationSignUp_activeStep,
   authenticationSignUp_durationOtpFormatted,
   authenticationSignUp_formData,
+  authenticationSignUp_formDataOfSetUpPin,
+  authenticationSignUp_formDataOfVerifyOtp,
+  authenticationSignUp_formDataOfVerifyPin,
   authenticationSignUp_formValidations,
+  authenticationSignUp_formValidationsOfSetUpPin,
   authenticationSignUp_formValidationsOfVerifyOtp,
+  authenticationSignUp_formValidationsOfVerifyPin,
   authenticationSignUp_isAcceptTnc,
   authenticationSignUp_isLoading,
   authenticationSignUp_maskedPhoneNumber,
   authenticationSignUp_onResendOtp,
   authenticationSignUp_onSubmit,
   authenticationSignUp_stepper,
-  authenticationSignUp_verifyOtpFormData,
 } = useAuthenticationRegisterService();
 
 /**
@@ -26,14 +30,18 @@ const {
 provide('authenticationRegister', {
   authenticationSignUp_durationOtpFormatted,
   authenticationSignUp_formData,
+  authenticationSignUp_formDataOfSetUpPin,
+  authenticationSignUp_formDataOfVerifyOtp,
+  authenticationSignUp_formDataOfVerifyPin,
   authenticationSignUp_formValidations,
+  authenticationSignUp_formValidationsOfSetUpPin,
   authenticationSignUp_formValidationsOfVerifyOtp,
+  authenticationSignUp_formValidationsOfVerifyPin,
   authenticationSignUp_isAcceptTnc,
   authenticationSignUp_isLoading,
   authenticationSignUp_maskedPhoneNumber,
   authenticationSignUp_onResendOtp,
   authenticationSignUp_onSubmit,
-  authenticationSignUp_verifyOtpFormData,
 });
 </script>
 

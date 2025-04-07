@@ -29,4 +29,5 @@ export const VALIDATION_MESSAGE: Record<string, string> = {
   isPhoneCodeValid: 'Phone code is invalid',
   isPhoneNumberValid: 'Phone number is invalid',
   isPasswordValid: 'Password must contain capital letter, number, and symbol',
+  isPinInvalid: 'Incorrect PIN. Please try again',
 };

@@ -12,6 +12,7 @@ const {
   authenticationSignIn_formData,
   authenticationSignIn_formValidations,
   authenticationSignIn_isLoading,
+  authenticationSignIn_isNotAuthenticated,
   authenticationSignIn_onSubmit,
 } = useAuthenticationSignInService();
 
@@ -22,6 +23,7 @@ provide('authenticationSignIn', {
   authenticationSignIn_formData,
   authenticationSignIn_formValidations,
   authenticationSignIn_isLoading,
+  authenticationSignIn_isNotAuthenticated,
   authenticationSignIn_onSubmit,
 });
 </script>

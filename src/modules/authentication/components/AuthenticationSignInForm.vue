@@ -9,12 +9,13 @@ const {
   authenticationSignIn_formData,
   authenticationSignIn_formValidations,
   authenticationSignIn_isLoading,
+  authenticationSignIn_isNotAuthenticated,
   authenticationSignIn_onSubmit,
 } = inject<IAuthenticationSignInProvided>('authenticationSignIn')!;
 </script>
 
 <template>
-  <form class="flex flex-col gap-10 w-full max-w-sm" @submit.prevent="authenticationSignIn_onSubmit">
+  <form class="flex flex-col gap-10 w-full max-w-md" @submit.prevent="authenticationSignIn_onSubmit">
     <section id="greeting-text" class="flex flex-col gap-2">
       <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
 
@@ -42,7 +43,7 @@ const {
             :loading="authenticationSignIn_isLoading"
             placeholder="Input your registered email"
             class="text-sm w-full"
-            :class="{ ...classes }"
+            :class="[classes, authenticationSignIn_isNotAuthenticated ? 'border-red-600' : '']"
             v-on="useListenerForm(authenticationSignIn_formValidations, 'email')"
           />
         </PrimeVueIconField>
@@ -68,7 +69,7 @@ const {
             placeholder="Input your new password"
             class="text-sm w-full"
             toggle-mask
-            :class="{ ...classes }"
+            :class="[classes, authenticationSignIn_isNotAuthenticated ? '[&>input]:border-red-600' : '']"
             :feedback="false"
             :loading="authenticationSignIn_isLoading"
             :pt="{
@@ -82,6 +83,10 @@ const {
       <RouterLink :to="{ name: 'reset-password' }" class="font-semibold text-blue-primary text-sm text-end">
         Reset Password
       </RouterLink>
+
+      <span v-if="authenticationSignIn_isNotAuthenticated" class="font-normal text-error-main text-sm mt-4">
+        We couldn’t find an account with that email. Please check or sign up for a new account.
+      </span>
     </section>
 
     <section id="button-actions" class="flex flex-col items-center gap-2">
@@ -109,7 +114,7 @@ const {
       <span class="font-normal text-sm">
         Doesn’t have an account?
 
-        <RouterLink :to="{ name: 'sign-up' }" class="font-semibold text-blue-primary"> Register </RouterLink>
+        <RouterLink :to="{ name: 'sign-up' }" class="font-semibold text-blue-primary"> Create Account </RouterLink>
       </span>
     </section>
   </form>

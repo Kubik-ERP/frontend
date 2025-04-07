@@ -1,6 +1,6 @@
 // Components
 import AuthenticationResetPasswordForm from '../components/AuthenticationResetPasswordForm.vue';
-import AuthenticationResetPasswordOtpCode from '../components/AuthenticationResetPasswordOtpCode.vue';
+import AuthenticationResetPasswordPinVerification from '../components/AuthenticationResetPasswordPinVerification.vue';
 
 export const AUTHENTICATION_RESET_PASSWORD_STEPPER = [
   {
@@ -9,8 +9,8 @@ export const AUTHENTICATION_RESET_PASSWORD_STEPPER = [
     component: AuthenticationResetPasswordForm,
   },
   {
-    id: 'otp-code',
-    title: 'OTP Code',
-    component: AuthenticationResetPasswordOtpCode,
+    id: 'pin-verification',
+    title: 'PIN Verification',
+    component: AuthenticationResetPasswordPinVerification,
   },
 ];

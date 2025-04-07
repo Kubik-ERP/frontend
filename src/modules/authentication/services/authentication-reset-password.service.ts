@@ -41,6 +41,7 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
   const authenticationResetPassword_formData = reactive<IAuthenticationResetPasswordFormData>({
     email: '',
   });
+  const authenticationResetPassword_isPinInvalid = ref<boolean>(true);
   const authenticationResetPassword_isSuccess = ref<boolean>(false);
   const authenticationResetPassword_stepper = shallowRef<IAuthenticationStepper[]>(
     AUTHENTICATION_RESET_PASSWORD_STEPPER,
@@ -58,7 +59,9 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
     email: { email, required },
   }));
   const authenticationResetPassword_formRulesOfVerifyOtp = computed(() => ({
-    otp: { required },
+    otp: {
+      required,
+    },
   }));
 
   const authenticationResetPassword_formValidations = useVuelidate(
@@ -102,10 +105,16 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
    */
   const authenticationResetPassword_fetchAuthenticationVerifyOtp = async () => {
     try {
+      if (!authenticationResetPassword_verifyOtpFormData.email) {
+        authenticationResetPassword_verifyOtpFormData.email = authenticationResetPassword_formData.email;
+      }
+
       await store.fetchAuthentication_verifyOtp(authenticationResetPassword_verifyOtpFormData, {
         ...httpAbort_registerAbort(AUTHENTICATION_SEND_OTP_REQUEST),
       });
     } catch (error: unknown) {
+      authenticationResetPassword_isPinInvalid.value = true;
+
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -149,8 +158,6 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
         await authenticationResetPassword_fetchAuthenticationSendOtp();
         authenticationResetPassword_activeStep.value = 1;
       } else {
-        authenticationResetPassword_verifyOtpFormData.email = authenticationResetPassword_formData.email;
-
         await authenticationResetPassword_fetchAuthenticationVerifyOtp();
         authenticationResetPassword_isSuccess.value = true;
       }
@@ -163,12 +170,29 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
     }
   };
 
+  /**
+   * @description Handle side effect after fill the otp form
+   */
+  watch(
+    () => authenticationResetPassword_verifyOtpFormData.otp,
+    value => {
+      if (authenticationResetPassword_isPinInvalid.value) {
+        authenticationResetPassword_isPinInvalid.value = false;
+      }
+
+      if (value.length === 6) {
+        authenticationResetPassword_onSubmit();
+      }
+    },
+  );
+
   return {
     authenticationResetPassword_activeStep,
     authenticationResetPassword_formData,
     authenticationResetPassword_formValidations,
     authenticationResetPassword_formValidationsOfVerifyOtp,
     authenticationResetPassword_isLoading: authentication_isLoading,
+    authenticationResetPassword_isPinInvalid,
     authenticationResetPassword_isSuccess,
     authenticationResetPassword_onSubmit,
     authenticationResetPassword_stepper,
