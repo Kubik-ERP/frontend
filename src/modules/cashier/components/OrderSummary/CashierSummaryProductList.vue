@@ -85,15 +85,20 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
               class="border border-primary text-primary px-4"
               variant="outlined"
               label="-"
-              @click="item.qty -= 1"
+              @click="item.qty > 1 ? (item.qty -= 1) : (item.qty = 1)"
             />
-            <PrimeVueInputNumber v-model="item.qty" input-class="w-14 justify-items-center" />
+            <PrimeVueInputNumber
+              v-model="item.qty"
+              input-class="w-14 justify-items-center"
+              :min="1"
+              :max="item.product.qty"
+            />
             <PrimeVueButton
               type="button"
               class="border border-primary text-primary px-4"
               variant="outlined"
               label="+"
-              @click="item.qty += 1"
+              @click="item.qty == item.product.qty ? item.qty : (item.qty += 1)"
             />
           </div>
         </div>
