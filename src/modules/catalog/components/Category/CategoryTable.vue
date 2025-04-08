@@ -229,7 +229,7 @@ const handleDeleteCategory = () => {
   try {
     if (selected.value) {
       deleteCategory(selected.value.id);
-      categories.value = categories.value.filter(cat => cat.id !== selected.value.id);
+      categories.value = categories.value.filter(cat => cat.id !== selected.value?.id);
     }
   } catch (error) {
     console.error('Failed to delete category:', error);
