@@ -14,7 +14,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'categories',
         name: 'categories',
-        component: () => import('../views/CategoriesUI.vue'),
+        component: () => import('../views/Category/CategoriesUI.vue'),
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.DEFAULT,
