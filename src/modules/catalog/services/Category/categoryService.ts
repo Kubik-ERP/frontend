@@ -9,7 +9,7 @@ export const getAllCategories = async (): Promise<Category[]> => {
 
   return categories.map(item => ({
     ID: item.id,
-    Category: item.name,
+    Category: item.category,
     Description: item.description ?? '-',
   }));
 };
@@ -20,7 +20,7 @@ export const createCategory = async (payload: { name: string; description?: stri
 
   return {
     ID: data.id,
-    Category: data.name,
+    Category: data.category,
     Description: data.description ?? '-',
   };
 };
