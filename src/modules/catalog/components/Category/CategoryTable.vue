@@ -82,7 +82,12 @@
         </div>
         <div class="flex justify-end gap-2">
           <PrimeVueButton label="Cancel" severity="info" variant="outlined" class="w-48" @click="isAddOpen = false" />
-          <PrimeVueButton label="Add" class="w-48 bg-primary border-primary" @click="isAddOpen = false" />
+          <PrimeVueButton
+            label="Add"
+            class="w-48 bg-primary border-primary"
+            @click="handleAddCategory"
+          />
+
         </div>
       </form>
     </PrimeVueDialog>
@@ -109,7 +114,7 @@ import { ref, onMounted } from 'vue';
 import { FilterMatchMode } from '@primevue/core/api';
 
 
-import { getAllCategories } from '@/modules/catalog/services/Category/categoryService.ts';
+import { createCategory, getAllCategories } from '@/modules/catalog/services/Category/categoryService.ts';
 import { Category } from '@/modules/catalog/interfaces/Category/CategoryInterface.ts';
 
 const isAddOpen = ref(false);
@@ -119,6 +124,7 @@ const categories = ref<Category[]>([]);
 const selected = ref<Category | null>(null);
 const loading = ref(false);
 const name = ref('');
+
 const notes = ref('');
 const op = ref();
 
@@ -126,6 +132,30 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
+
+
+const handleAddCategory = async () => {
+  if (!name.value.trim()) {
+
+    alert('Category name is required!');
+    return;
+  }
+
+  try {
+    const newCategory = await createCategory({
+      name: name.value,
+      notes: notes.value || '',
+    });
+
+    categories.value.push(newCategory);
+    isAddOpen.value = false;
+    name.value = '';
+    notes.value = '';
+  } catch (error) {
+    console.error('Failed to create category:', error);
+    alert('Something went wrong while creating the category.');
+  }
+};
 const loadCategories = async () => {
   loading.value = true;
   try {

@@ -7,9 +7,20 @@ export const getAllCategories = async (): Promise<Category[]> => {
   const response = await axios.get(API_URL);
   const categories: Category[] = response.data.data;
 
-  return categories.map((item) => ({
+  return categories.map(item => ({
     ID: item.id,
     Category: item.name,
     Description: item.notes ?? '-',
   }));
+};
+
+export const createCategory = async (payload: { name: string; notes?: string }): Promise<Category> => {
+  const response = await axios.post(API_URL, payload);
+  const data: CategoryResponse = response.data.data;
+
+  return {
+    ID: data.id,
+    Category: data.name,
+    Description: data.notes ?? '-',
+  };
 };
