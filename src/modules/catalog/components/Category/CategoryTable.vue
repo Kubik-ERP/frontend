@@ -21,7 +21,7 @@
             <PrimeVueButton
               type="button"
               severity="info"
-              label="Add Category"
+              label="Add ICategory"
               icon="pi pi-plus"
               class="bg-primary border-primary"
               @click="isAddOpen = true"
@@ -34,9 +34,9 @@
       <template #loading>Loading categories data. Please wait.</template>
 
       <PrimeVueColumn selection-mode="multiple" header-style="width: 3rem" />
-      <PrimeVueColumn sortable field="ID" header="Category ID" style="width: 25%" />
-      <PrimeVueColumn sortable field="Category" header="Category" style="width: 25%" />
-      <PrimeVueColumn sortable field="Description" header="Description" style="width: 25%" />
+      <PrimeVueColumn sortable field="id" header="ICategory ID" style="width: 25%" />
+      <PrimeVueColumn sortable field="category" header="ICategory" style="width: 25%" />
+      <PrimeVueColumn sortable field="description" header="Description" style="width: 25%" />
       <PrimeVueColumn>
         <template #body="slotProps">
           <PrimeVueButton
@@ -70,10 +70,10 @@
     </PrimeVuePopover>
 
     <!-- Add Dialog -->
-    <PrimeVueDialog v-model:visible="isAddOpen" modal header="Add Category" class="w-[45rem]">
+    <PrimeVueDialog v-model:visible="isAddOpen" modal header="Add ICategory" class="w-[45rem]">
       <form @submit.prevent>
         <div class="mb-4">
-          <label for="name">Category Name <sup class="text-red-500">*</sup></label>
+          <label for="name">ICategory Name <sup class="text-red-500">*</sup></label>
           <PrimeVueInputText v-model="category" class="w-full" autocomplete="off" />
         </div>
         <div class="mb-8">
@@ -114,17 +114,17 @@
 import { ref, onMounted } from 'vue';
 import { FilterMatchMode } from '@primevue/core/api';
 
-import { createCategory, getAllCategories } from '@/modules/catalog/services/Category/categoryService.ts';
-import { Category } from '@/modules/catalog/interfaces/Category/CategoryInterface.ts';
+import { createCategory, getAllCategories } from '@/modules/catalog/services/Category/categoryService';
+import { ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
 
 const isAddOpen = ref(false);
 const isDeleteOpen = ref(false);
-const selectedCategories = ref<Category[]>([]);
-const categories = ref<Category[]>([]);
-const selected = ref<Category | null>(null);
+const selectedCategories = ref<ICategory[]>([]);
+const categories = ref<ICategory[]>([]);
+const selected = ref<ICategory | null>(null);
 const loading = ref(false);
-const category = ref('');
 
+const category = ref('');
 const description = ref('');
 const op = ref();
 
@@ -134,7 +134,7 @@ const filters = ref({
 
 const handleAddCategory = async () => {
   if (!category.value.trim()) {
-    alert('Category name is required!');
+    alert('ICategory name is required!');
     return;
   }
 
@@ -157,6 +157,7 @@ const loadCategories = async () => {
   loading.value = true;
   try {
     categories.value = await getAllCategories();
+    console.log(categories.value);
   } catch (err) {
     console.error('Failed to fetch categories:', err);
   } finally {
@@ -164,7 +165,7 @@ const loadCategories = async () => {
   }
 };
 
-const displayPopover = (event: Event, category: Category) => {
+const displayPopover = (event: Event, category: ICategory) => {
   selected.value = category;
   op.value?.show(event);
 };
@@ -172,7 +173,7 @@ const displayPopover = (event: Event, category: Category) => {
 const displayEdit = () => {
   if (selected.value) {
     category.value = selected.value.category;
-    description.value = selected.value.Description;
+    description.value = selected.value.description ?? '';
     isAddOpen.value = true;
     op.value?.hide();
   }
