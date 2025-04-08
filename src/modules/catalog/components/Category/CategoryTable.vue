@@ -7,7 +7,7 @@
       :rows="10"
       table-style="min-width: 50rem"
       :filters="filters"
-      data-key="ID"
+      data-key="id"
       :loading="loading"
     >
       <template #header>
@@ -21,7 +21,7 @@
             <PrimeVueButton
               type="button"
               severity="info"
-              label="Add ICategory"
+              label="Add Category"
               icon="pi pi-plus"
               class="bg-primary border-primary"
               @click="isAddOpen = true"
@@ -34,7 +34,7 @@
       <template #loading>Loading categories data. Please wait.</template>
 
       <PrimeVueColumn selection-mode="multiple" header-style="width: 3rem" />
-      <PrimeVueColumn sortable field="id" header="ICategory ID" style="width: 25%" />
+      <PrimeVueColumn sortable field="id" header="Category ID" style="width: 25%" />
       <PrimeVueColumn sortable field="category" header="ICategory" style="width: 25%" />
       <PrimeVueColumn sortable field="description" header="Description" style="width: 25%" />
       <PrimeVueColumn>
@@ -70,10 +70,10 @@
     </PrimeVuePopover>
 
     <!-- Add Dialog -->
-    <PrimeVueDialog v-model:visible="isAddOpen" modal header="Add ICategory" class="w-[45rem]">
+    <PrimeVueDialog v-model:visible="isAddOpen" modal header="Add Category" class="w-[45rem]">
       <form @submit.prevent>
         <div class="mb-4">
-          <label for="name">ICategory Name <sup class="text-red-500">*</sup></label>
+          <label for="name">Category Name <sup class="text-red-500">*</sup></label>
           <PrimeVueInputText v-model="category" class="w-full" autocomplete="off" />
         </div>
         <div class="mb-8">
@@ -93,6 +93,30 @@
       </form>
     </PrimeVueDialog>
 
+    <!-- Edit Dialog -->
+    <PrimeVueDialog v-model:visible="isEditOpen" modal header="Edit Category" class="w-[45rem]">
+      <form @submit.prevent>
+        <div class="mb-4">
+          <label for="name">Category Name <sup class="text-red-500">*</sup></label>
+          <PrimeVueInputText v-model="category" class="w-full" autocomplete="off" />
+        </div>
+        <div class="mb-8">
+          <label for="description">description (Optional)</label>
+          <PrimeVueTextarea v-model="description" auto-resize rows="5" class="w-full" />
+        </div>
+        <div class="flex justify-end gap-2">
+          <PrimeVueButton
+            label="Cancel"
+            severity="info"
+            variant="outlined"
+            class="w-48"
+            @click="isEditOpen = false"
+          />
+          <PrimeVueButton label="Edit" class="w-48 bg-primary border-primary" @click="handleEditCategory" />
+        </div>
+      </form>
+    </PrimeVueDialog>
+
     <!-- Delete Confirmation -->
     <PrimeVueDialog v-model:visible="isDeleteOpen" modal header="">
       <template #container>
@@ -101,7 +125,7 @@
           <h1 class="text-2xl font-semibold mb-2">Are you sure you want to delete this category?</h1>
           <p class="mb-6">This will affect products that use this category.</p>
           <div class="flex justify-center gap-4">
-            <PrimeVueButton label="Delete" severity="danger" class="w-40" @click="isDeleteOpen = false" />
+            <PrimeVueButton label="Delete" severity="danger" class="w-40" @click="handleDeleteCategory()" />
             <PrimeVueButton label="Cancel" class="w-40 bg-primary border-primary" @click="isDeleteOpen = false" />
           </div>
         </div>
@@ -114,10 +138,16 @@
 import { ref, onMounted } from 'vue';
 import { FilterMatchMode } from '@primevue/core/api';
 
-import { createCategory, getAllCategories } from '@/modules/catalog/services/Category/categoryService';
+import {
+  createCategory,
+  getAllCategories,
+  updateCategory,
+  deleteCategory,
+} from '@/modules/catalog/services/Category/categoryService';
 import { ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
 
 const isAddOpen = ref(false);
+const isEditOpen = ref(false);
 const isDeleteOpen = ref(false);
 const selectedCategories = ref<ICategory[]>([]);
 const categories = ref<ICategory[]>([]);
@@ -141,7 +171,7 @@ const handleAddCategory = async () => {
   try {
     const newCategory = await createCategory({
       category: category.value,
-      description: description.value || '',
+      description: description.value || '-',
     });
 
     categories.value.push(newCategory);
@@ -174,10 +204,40 @@ const displayEdit = () => {
   if (selected.value) {
     category.value = selected.value.category;
     description.value = selected.value.description ?? '';
-    isAddOpen.value = true;
+    isEditOpen.value = true;
     op.value?.hide();
   }
 };
+
+const handleEditCategory = async () => {
+  if (selected.value) {
+    try {
+      const updatedCategory = await updateCategory(selected.value.id, {
+        category: category.value,
+        description: description.value || '-',
+      });
+      categories.value = categories.value.map(cat => (cat.id === updatedCategory.id ? updatedCategory : cat));
+      isEditOpen.value = false;
+    } catch (error) {
+      console.error('Failed to update category:', error);
+      alert('Something went wrong while updating the category.');
+    }
+  }
+};
+
+const handleDeleteCategory = () => {
+  try {
+    if (selected.value) {
+      deleteCategory(selected.value.id);
+      categories.value = categories.value.filter(cat => cat.id !== selected.value.id);
+    }
+  } catch (error) {
+    console.error('Failed to delete category:', error);
+  }
+
+  isDeleteOpen.value = false;
+};
+
 
 onMounted(() => {
   loadCategories();

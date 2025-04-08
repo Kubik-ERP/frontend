@@ -21,6 +21,21 @@ export const createCategory = async (payload: { category: string; description?: 
   return {
     id: data.id,
     category: data.category,
-    description: data.description ?? '-',
+    description: data.description || '-',
   };
+};
+
+export const updateCategory = async (id: string, payload: { category: string; description?: string }): Promise<ICategory> => {
+  const response = await axios.patch(`${API_URL}/${id}`, payload);
+  const data: ICategory = response.data.data;
+
+  return {  
+    id: data.id,
+    category: data.category,  
+    description: data.description || '-',
+  };
+};
+
+export const deleteCategory = async (id: string): Promise<void> => {
+  await axios.delete(`${API_URL}/${id}`);
 };
