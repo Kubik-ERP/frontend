@@ -108,8 +108,9 @@
 import { ref, onMounted } from 'vue';
 import { FilterMatchMode } from '@primevue/core/api';
 
-import type { Category } from '@/interfaces/Category';
+
 import { getAllCategories } from '@/modules/catalog/services/Category/categoryService.ts';
+import { Category } from '@/modules/catalog/interfaces/Category/CategoryInterface.ts';
 
 const isAddOpen = ref(false);
 const isDeleteOpen = ref(false);
