@@ -74,20 +74,21 @@
       <form @submit.prevent>
         <div class="mb-4">
           <label for="name">Category Name <sup class="text-red-500">*</sup></label>
-          <PrimeVueInputText v-model="name" class="w-full" autocomplete="off" />
+          <PrimeVueInputText v-model="category" class="w-full" autocomplete="off" />
         </div>
         <div class="mb-8">
           <label for="description">description (Optional)</label>
           <PrimeVueTextarea v-model="description" auto-resize rows="5" class="w-full" />
         </div>
         <div class="flex justify-end gap-2">
-          <PrimeVueButton label="Cancel" severity="info" variant="outlined" class="w-48" @click="isAddOpen = false" />
           <PrimeVueButton
-            label="Add"
-            class="w-48 bg-primary border-primary"
-            @click="handleAddCategory"
+            label="Cancel"
+            severity="info"
+            variant="outlined"
+            class="w-48"
+            @click="isAddOpen = false"
           />
-
+          <PrimeVueButton label="Add" class="w-48 bg-primary border-primary" @click="handleAddCategory" />
         </div>
       </form>
     </PrimeVueDialog>
@@ -113,7 +114,6 @@
 import { ref, onMounted } from 'vue';
 import { FilterMatchMode } from '@primevue/core/api';
 
-
 import { createCategory, getAllCategories } from '@/modules/catalog/services/Category/categoryService.ts';
 import { Category } from '@/modules/catalog/interfaces/Category/CategoryInterface.ts';
 
@@ -123,7 +123,7 @@ const selectedCategories = ref<Category[]>([]);
 const categories = ref<Category[]>([]);
 const selected = ref<Category | null>(null);
 const loading = ref(false);
-const name = ref('');
+const category = ref('');
 
 const description = ref('');
 const op = ref();
@@ -132,24 +132,21 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-
-
 const handleAddCategory = async () => {
-  if (!name.value.trim()) {
-
+  if (!category.value.trim()) {
     alert('Category name is required!');
     return;
   }
 
   try {
     const newCategory = await createCategory({
-      name: name.value,
+      category: category.value,
       description: description.value || '',
     });
 
     categories.value.push(newCategory);
     isAddOpen.value = false;
-    name.value = '';
+    category.value = '';
     description.value = '';
   } catch (error) {
     console.error('Failed to create category:', error);
@@ -174,7 +171,7 @@ const displayPopover = (event: Event, category: Category) => {
 
 const displayEdit = () => {
   if (selected.value) {
-    name.value = selected.value.Category;
+    category.value = selected.value.category;
     description.value = selected.value.Description;
     isAddOpen.value = true;
     op.value?.hide();
