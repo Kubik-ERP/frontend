@@ -23,14 +23,15 @@
                 <PrimeVueInputText v-model="filters['global'].value" placeholder="Keyword Search" />
               </PrimeVueIconField>
 
-              <PrimeVueButton
-                type="button"
-                severity="info"
-                label="Add Product"
-                icon="pi pi-plus"
-                class="bg-primary border-primary"
-                @click="isAddOpen = true"
-              />
+              <router-link to="products/add-product">
+                <PrimeVueButton
+                  type="button"
+                  severity="info"
+                  label="Add Product"
+                  icon="pi pi-plus"
+                  class="bg-primary border-primary"
+                />
+              </router-link>
             </div>
           </div>
         </template>
@@ -191,7 +192,7 @@
 <script setup>
 import { ref } from 'vue';
 import { FilterMatchMode } from '@primevue/core/api';
-import ProductVariantPill from '../components/ProductVariantPill.vue';
+import ProductVariantPill from '../../components/ProductVariantPill.vue';
 
 function formatCurrency(value) {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' })

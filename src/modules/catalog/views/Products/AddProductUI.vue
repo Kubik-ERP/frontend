@@ -5,7 +5,7 @@
       <h2 class="text-xl font-semibold">Product Information</h2>
 
       <div class="flex flex-col items-center justify-center">
-        <p>Photo (Optional)</p>
+        <!-- <p>Photo (Optional)</p>
         <img class="rounded-lg mt-2" src="https://placehold.co/250" alt="Photo" />
         <PrimeVueButton
           label="Select Image"
@@ -13,8 +13,28 @@
           class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
           :select-all="false"
           variant="outlined"
+        /> -->
+        <p>Photo (Optional)</p>
+
+        <img
+          class="rounded-lg mt-2 w-64 h-64 object-cover"
+          :src="previewImage || 'https://placehold.co/250'"
+          alt="Photo"
         />
-        {{ product }}
+
+        <!-- Hidden File Input -->
+        <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
+
+        <!-- PrimeVue Button as file selector -->
+        <PrimeVueButton
+          label="Select Image"
+          icon="pi pi-image"
+          class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
+          variant="outlined"
+          @click="triggerFileInput"
+        />
+
+        <!-- {{ product }} -->
         <div class="grid grid-cols-2 w-full gap-8 mt-8">
           <div class="flex flex-col">
             <label for="name">Product Name</label>
@@ -167,6 +187,24 @@
 </template>
 
 <script setup>
+const previewImage = ref(null);
+const fileInput = ref(null);
+
+const triggerFileInput = () => {
+  fileInput.value?.click();
+};
+
+const handleImageUpload = event => {
+  const file = event.target.files?.[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      previewImage.value = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
 const categories = ref([
   { name: 'Category 1' },
   { name: 'Category 2' },
