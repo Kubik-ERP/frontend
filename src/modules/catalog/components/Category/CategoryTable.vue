@@ -77,8 +77,8 @@
           <PrimeVueInputText v-model="name" class="w-full" autocomplete="off" />
         </div>
         <div class="mb-8">
-          <label for="notes">Notes (Optional)</label>
-          <PrimeVueTextarea v-model="notes" auto-resize rows="5" class="w-full" />
+          <label for="description">description (Optional)</label>
+          <PrimeVueTextarea v-model="description" auto-resize rows="5" class="w-full" />
         </div>
         <div class="flex justify-end gap-2">
           <PrimeVueButton label="Cancel" severity="info" variant="outlined" class="w-48" @click="isAddOpen = false" />
@@ -125,7 +125,7 @@ const selected = ref<Category | null>(null);
 const loading = ref(false);
 const name = ref('');
 
-const notes = ref('');
+const description = ref('');
 const op = ref();
 
 const filters = ref({
@@ -144,13 +144,13 @@ const handleAddCategory = async () => {
   try {
     const newCategory = await createCategory({
       name: name.value,
-      notes: notes.value || '',
+      description: description.value || '',
     });
 
     categories.value.push(newCategory);
     isAddOpen.value = false;
     name.value = '';
-    notes.value = '';
+    description.value = '';
   } catch (error) {
     console.error('Failed to create category:', error);
     alert('Something went wrong while creating the category.');
@@ -175,7 +175,7 @@ const displayPopover = (event: Event, category: Category) => {
 const displayEdit = () => {
   if (selected.value) {
     name.value = selected.value.Category;
-    notes.value = selected.value.Description;
+    description.value = selected.value.Description;
     isAddOpen.value = true;
     op.value?.hide();
   }
