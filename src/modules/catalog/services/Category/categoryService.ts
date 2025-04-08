@@ -5,7 +5,7 @@ const API_URL = `${import.meta.env.VITE_API_URL}/api/categories`;
 
 export const getAllCategories = async (): Promise<Category[]> => {
   const response = await axios.get(API_URL);
-  const categories: CategoryResponse[] = response.data.data;
+  const categories: Category[] = response.data.data;
 
   return categories.map((item) => ({
     ID: item.id,
