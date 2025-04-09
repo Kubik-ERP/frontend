@@ -143,7 +143,7 @@ import {
   getAllCategories,
   updateCategory,
   deleteCategory,
-} from '@/modules/catalog/services/Category/categoryService';
+} from '@/modules/catalog/services/Category/CategoryService.ts';
 import { ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
 
 const isAddOpen = ref(false);
