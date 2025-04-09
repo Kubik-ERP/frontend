@@ -16,6 +16,7 @@ declare global {
   const LAYOUT_AUTHENTICATION: typeof import('./app/constants/layout.constant')['LAYOUT_AUTHENTICATION']
   const LAYOUT_DEFAULT: typeof import('./app/constants/layout.constant')['LAYOUT_DEFAULT']
   const LAYOUT_EMPTY: typeof import('./app/constants/layout.constant')['LAYOUT_EMPTY']
+  const LAYOUT_NAVBAR: typeof import('./app/constants/layout.constant')['LAYOUT_NAVBAR']
   const LAYOUT_OPTIONS: typeof import('./app/constants/layout.constant')['LAYOUT_OPTIONS']
   const LAYOUT_PUBLIC: typeof import('./app/constants/layout.constant')['LAYOUT_PUBLIC']
   const LIST_ADDITIONAL_MENUS: typeof import('./app/constants/menus.constant')['LIST_ADDITIONAL_MENUS']
@@ -142,6 +143,7 @@ declare module 'vue' {
     readonly LAYOUT_AUTHENTICATION: UnwrapRef<typeof import('./app/constants/layout.constant')['LAYOUT_AUTHENTICATION']>
     readonly LAYOUT_DEFAULT: UnwrapRef<typeof import('./app/constants/layout.constant')['LAYOUT_DEFAULT']>
     readonly LAYOUT_EMPTY: UnwrapRef<typeof import('./app/constants/layout.constant')['LAYOUT_EMPTY']>
+    readonly LAYOUT_NAVBAR: UnwrapRef<typeof import('./app/constants/layout.constant')['LAYOUT_NAVBAR']>
     readonly LAYOUT_OPTIONS: UnwrapRef<typeof import('./app/constants/layout.constant')['LAYOUT_OPTIONS']>
     readonly LAYOUT_PUBLIC: UnwrapRef<typeof import('./app/constants/layout.constant')['LAYOUT_PUBLIC']>
     readonly LIST_ADDITIONAL_MENUS: UnwrapRef<typeof import('./app/constants/menus.constant')['LIST_ADDITIONAL_MENUS']>
