@@ -1,7 +1,7 @@
 import type { App } from 'vue';
 
 // Layouts
-import { AppLayoutDefault, AppLayoutEmpty, AppLayoutOutlet } from './layouts';
+import { AppLayoutDefault, AppLayoutEmpty, AppLayoutNavbar, AppLayoutOutlet } from './layouts';
 
 /**
  * @description Register the components for make it globally available.
@@ -13,4 +13,5 @@ export default (app: App): void => {
   app.component('AppLayoutDefault', AppLayoutDefault);
   app.component('AppLayoutEmpty', AppLayoutEmpty);
   app.component('AppLayoutOutlet', AppLayoutOutlet);
+  app.component('AppLayoutNavbar', AppLayoutNavbar);
 };
