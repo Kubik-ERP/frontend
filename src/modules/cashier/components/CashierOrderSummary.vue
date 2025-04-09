@@ -16,7 +16,10 @@ import CashierSummaryModalVoucher from './OrderSummary/Modal/CashierSummaryModal
 </script>
 
 <template>
-  <section id="order-summary" class="col-span-4 pb-4 overflow-y-auto bg-white w-full h-full flex flex-col">
+  <section
+    id="order-summary"
+    class="xl:col-span-4 col-span-6 pb-4 overflow-y-auto bg-white w-full h-full flex flex-col"
+  >
     <CashierSummarySection />
     <CashierSummaryProductList />
     <CashierSummaryPromoPayment />

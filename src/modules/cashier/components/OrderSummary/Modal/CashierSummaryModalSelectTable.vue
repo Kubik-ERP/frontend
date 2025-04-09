@@ -17,7 +17,7 @@ const {
     <PrimeVueDialog
       v-model:visible="cashierOrderSummary_modalSelectTable.show"
       modal
-      :style="{ width: '75%', minHeight: '500px', maxHeight: 'calc(100vh - 50px)' }"
+      :style="{ width: '85%', minHeight: '500px', maxHeight: 'calc(100vh - 50px)' }"
     >
       <template #container="{ closeCallback }">
         <section id="cashier-summary-modal-select-table" class="flex flex-col gap-6 p-6 flex-1 min-h-0">
@@ -30,9 +30,11 @@ const {
           </section>
 
           <!-- Body -->
-          <section id="cashier-summary-modall-select-table-body" class="gap-4 grid grid-cols-12 flex-1 min-h-0">
+          <section id="cashier-summary-modal-select-table-body" class="gap-4 grid grid-cols-12 flex-1 min-h-0">
             <!-- Left Section -->
-            <div class="col-span-9 border border-grayscale-10 flex flex-col gap-4 rounded-xs p-2 flex-1 min-h-0">
+            <div
+              class="col-span-7 xl:col-span-9 border border-grayscale-10 flex flex-col gap-4 rounded-xs p-2 flex-1 min-h-0"
+            >
               <div class="flex gap-4 items-center">
                 <span class="font-semibold">Floor</span>
 
@@ -88,7 +90,7 @@ const {
 
             <!-- Right Section -->
             <div
-              class="col-span-3 flex-1 overflow-auto border border-grayscale-10 flex flex-col gap-4 rounded-xs p-2"
+              class="col-span-5 xl:col-span-3 flex-1 overflow-auto border border-grayscale-10 flex flex-col gap-4 rounded-xs p-2"
             >
               <span class="text-lg font-semibold">Available Table</span>
 

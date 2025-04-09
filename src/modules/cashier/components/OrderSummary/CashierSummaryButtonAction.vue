@@ -14,7 +14,7 @@ const { cashierOrderSummary_modalPlaceOrderConfirmation } =
       <RouterLink :to="{ name: 'invoice' }" v-bind="slotProps" class="p-3 w-1/2 border border-primary">
         <section class="flex gap-2 justify-center w-full items-center">
           <AppBaseSvg name="order-primary" class="!h-5 !w-5" />
-          <span class="font-semibold text-primary">Save Unpaid Order</span>
+          <span class="font-semibold text-primary truncate">Save Unpaid Order</span>
         </section>
       </RouterLink>
     </PrimeVueButton>
