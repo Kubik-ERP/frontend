@@ -18,12 +18,12 @@ export const getAllProducts = async (): Promise<IProduct[]> => {
   }));
 };
 
-export const createProducts = async (payload: CreateProductPayload): Promise<IProduct> => {
+export const createProduct = async (payload: CreateProductPayload): Promise<IProduct> => {
   const response = await axios.post(API_URL, payload);
   return response.data.data;
 };
 
-export const updateProducts = async (id: string, payload: CreateProductPayload): Promise<IProduct> => {
+export const updateProduct = async (id: string, payload: CreateProductPayload): Promise<IProduct> => {
   const response = await axios.patch(`${API_URL}/${id}`, payload);
   const data: IProduct = response.data.data;
 
@@ -37,6 +37,6 @@ export const updateProducts = async (id: string, payload: CreateProductPayload):
   };
 };
 
-export const deleteProducts = async (id: string): Promise<void> => {
+export const deleteProduct = async (id: string): Promise<void> => {
   await axios.delete(`${API_URL}/${id}`);
 };

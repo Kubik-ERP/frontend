@@ -3,19 +3,9 @@
     <div class="flex flex-col gap-4">
       <h1 class="text-2xl font-bold">Products Detail</h1>
       <h2 class="text-xl font-semibold">Product Information</h2>
-
       <div class="flex flex-col items-center justify-center">
-        <!-- <p>Photo (Optional)</p>
-        <img class="rounded-lg mt-2" src="https://placehold.co/250" alt="Photo" />
-        <PrimeVueButton
-          label="Select Image"
-          icon="pi pi-image"
-          class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
-          :select-all="false"
-          variant="outlined"
-        /> -->
         <p>Photo (Optional)</p>
-
+        {{ product }}
         <img
           class="rounded-lg mt-2 w-64 h-64 object-cover"
           :src="previewImage || 'https://placehold.co/250'"
@@ -34,7 +24,6 @@
           @click="triggerFileInput"
         />
 
-        <!-- {{ product }} -->
         <div class="grid grid-cols-2 w-full gap-8 mt-8">
           <div class="flex flex-col">
             <label for="name">Product Name</label>
@@ -51,7 +40,6 @@
               display="chip"
               :options="categories"
               filter
-              option-label="name"
               placeholder="Select"
               class="w-full text-primary"
               dropdown-icon="pi pi-circle"
@@ -153,6 +141,7 @@
               label="Add Product"
               class="text-xl w-48 py-2 border-2 border-primary rounded-lg text-white bg-primary font-semibold"
               unstyled
+              @click="handleCreateProduct"
             />
           </div>
         </div>
@@ -187,36 +176,8 @@
 </template>
 
 <script setup>
-const previewImage = ref(null);
-const fileInput = ref(null);
-
-const triggerFileInput = () => {
-  fileInput.value?.click();
-};
-
-const handleImageUpload = event => {
-  const file = event.target.files?.[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      previewImage.value = reader.result;
-    };
-    reader.readAsDataURL(file);
-  }
-};
-
-const categories = ref([
-  { name: 'Category 1' },
-  { name: 'Category 2' },
-  { name: 'Category 3' },
-  { name: 'Category 4' },
-  { name: 'Category 5' },
-  { name: 'Category 6' },
-  { name: 'Category 7' },
-  { name: 'Category 8' },
-  { name: 'Category 9' },
-  { name: 'Category 10' },
-]);
+import { createProduct } from '@/modules/catalog/services/Product/ProductServices';
+import { getAllCategories } from '@/modules/catalog/services/Category/categoryService';
 
 const product = reactive({
   image: '',
@@ -229,6 +190,37 @@ const product = reactive({
   discount_price: 0,
   variants: [],
 });
+
+const previewImage = ref(null);
+const fileInput = ref(null);
+
+const triggerFileInput = () => {
+  fileInput.value?.click();
+};
+
+
+const handleImageUpload = event => {
+  const file = event.target.files?.[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      previewImage.value = reader.result;
+      // product.image = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const handleCreateProduct = async () => {
+  try {
+    const response = await createProduct(product);
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const categories = ref([]);
 
 const toggleVariant = ref(false);
 
@@ -275,6 +267,19 @@ const confirmLeave = () => {
     router.push(targetRoute);
   }
 };
+
+const loadCategories = async () => {
+  try {
+    const response = await getAllCategories();
+    categories.value = response.map(item => item.category);
+  } catch (error) {
+    console.error('Failed to load categories:', error);
+  }
+};
+
+onMounted(async () => {
+  loadCategories();
+});
 
 const cancelLeave = () => {
   isLeavingModal.value = false;
