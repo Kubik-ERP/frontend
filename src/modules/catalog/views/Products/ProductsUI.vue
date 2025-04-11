@@ -43,11 +43,11 @@
         <PrimeVueColumn sortable field="id" header="Product ID" style="width: 15%"></PrimeVueColumn>
         <PrimeVueColumn sortable field="name" header="Name" style="width: 30%"></PrimeVueColumn>
         <PrimeVueColumn sortable field="category" header="Category" style="width: 14%"></PrimeVueColumn>
-        <!-- <PrimeVueColumn sortable field="variant" header="Variants" style="width: 20%">
+        <PrimeVueColumn sortable field="variant" header="Variants" style="width: 20%">
           <template #body="{ data }">
             <ProductVariantPill :variants="data.variant" />
           </template>
-        </PrimeVueColumn> -->
+        </PrimeVueColumn>
         <PrimeVueColumn sortable field="price" header="Price" style="width: 25%">
           <template #body="{ data }">
             {{ formatCurrency(data.price) }}
