@@ -359,12 +359,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         cashierOrderSummary_modalCancelOrder.value.show = true;
       },
     },
-    {
-      label: 'Add Invoice Detail',
-      command: () => {
-        cashierOrderSummary_modalInvoiceDetail.value.show = true;
-      },
-    },
+    // {
+    //   label: 'Add Invoice Detail',
+    //   command: () => {
+    //     cashierOrderSummary_modalInvoiceDetail.value.show = true;
+    //   },
+    // },
   ]);
 
   const cashierOrderSummary_handleVoucher = () => {};

@@ -99,7 +99,7 @@ const {
         </PrimeVueButton>
 
         <section v-else id="cashier-add-edit-product-notes" class="flex flex-col gap-2">
-          <label class="font-semibold"> Variant </label>
+          <label class="font-semibold"> Notes </label>
 
           <PrimeVueTextarea
             v-model="cashierProduct_modalAddEditItem.item.notes"
