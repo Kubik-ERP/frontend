@@ -8,28 +8,38 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AppBaseDialog: typeof import('@components/base/AppBaseDialog.vue')['default']
     AppBaseFormGroup: typeof import('@components/base/AppBaseFormGroup.vue')['default']
     AppBaseSvg: typeof import('@components/base/AppBaseSvg.vue')['default']
     AppBaseToast: typeof import('@components/base/AppBaseToast.vue')['default']
     PrimeVueAvatar: typeof import('primevue/avatar')['default']
     PrimeVueBreadcrumb: typeof import('primevue/breadcrumb')['default']
     PrimeVueButton: typeof import('primevue/button')['default']
+    PrimeVueCard: typeof import('primevue/card')['default']
     PrimeVueChart: typeof import('primevue/chart')['default']
     PrimeVueCheckbox: typeof import('primevue/checkbox')['default']
     PrimeVueChip: typeof import('primevue/chip')['default']
     PrimeVueDatePicker: typeof import('primevue/datepicker')['default']
     PrimeVueDialog: typeof import('primevue/dialog')['default']
     PrimeVueDivider: typeof import('primevue/divider')['default']
+    PrimeVueDrawer: typeof import('primevue/drawer')['default']
+    PrimeVueFileUpload: typeof import('primevue/fileupload')['default']
     PrimeVueIconField: typeof import('primevue/iconfield')['default']
     PrimeVueInputIcon: typeof import('primevue/inputicon')['default']
+    PrimeVueInputNumber: typeof import('primevue/inputnumber')['default']
     PrimeVueInputOtp: typeof import('primevue/inputotp')['default']
     PrimeVueInputText: typeof import('primevue/inputtext')['default']
+    PrimeVueMenu: typeof import('primevue/menu')['default']
     PrimeVueMeterGroup: typeof import('primevue/metergroup')['default']
-    PrimeVueMultiSelect: typeof import('primevue/multiselect')['default']
     PrimeVuePassword: typeof import('primevue/password')['default']
+    PrimeVueRadioButton: typeof import('primevue/radiobutton')['default']
     PrimeVueSelect: typeof import('primevue/select')['default']
     PrimeVueTextarea: typeof import('primevue/textarea')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+  }
+  export interface ComponentCustomProperties {
+    Ripple: typeof import('primevue/ripple')['default']
+    StyleClass: typeof import('primevue/styleclass')['default']
   }
 }

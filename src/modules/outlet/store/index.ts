@@ -3,13 +3,13 @@ import { OUTLET_BASE_ENDPOINT } from '../constants/outlet-api.constant';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
+import type { IOutletDetailResponse, IOutletListResponse, IOutletStateStore } from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
-import { IOutletCreateEditFormData } from '../interfaces/outlet-create-edit.interface';
 
 export const useOutletStore = defineStore('outlet', {
-  state: () => ({
+  state: (): IOutletStateStore => ({
     outlet_detail: null,
     outlet_isLoading: false,
     outlet_lists: [],
@@ -27,7 +27,7 @@ export const useOutletStore = defineStore('outlet', {
      * @access private
      */
     async fetchOutlet_createNewOutlet(
-      payload: IOutletCreateEditFormData,
+      payload: FormData,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
       this.outlet_isLoading = true;
@@ -80,13 +80,15 @@ export const useOutletStore = defineStore('outlet', {
      * @method GET
      * @access private
      */
-    async fetchOutlet_detail(outletId: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async fetchOutlet_detail(outletId: string, requestConfigurations: AxiosRequestConfig): Promise<IOutletDetailResponse> {
       this.outlet_isLoading = true;
 
       try {
-        const response = await httpClient.get<unknown>(`${OUTLET_BASE_ENDPOINT}/${outletId}`, {
+        const response = await httpClient.get<IOutletDetailResponse>(`${OUTLET_BASE_ENDPOINT}/${outletId}`, {
           ...requestConfigurations,
         });
+
+        this.outlet_detail = response.data.data;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -106,12 +108,14 @@ export const useOutletStore = defineStore('outlet', {
      * @method GET
      * @access private
      */
-    async fetchOutlet_lists(requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async fetchOutlet_lists(requestConfigurations: AxiosRequestConfig): Promise<IOutletListResponse> {
       this.outlet_isLoading = true;
       try {
-        const response = await httpClient.get<unknown>(OUTLET_BASE_ENDPOINT, {
+        const response = await httpClient.get<IOutletListResponse>(OUTLET_BASE_ENDPOINT, {
           ...requestConfigurations,
         });
+
+        this.outlet_lists = response.data.data;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -133,7 +137,7 @@ export const useOutletStore = defineStore('outlet', {
      */
     async fetchOutlet_updateOutlet(
       outletId: string,
-      payload: IOutletCreateEditFormData,
+      payload: FormData,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
       this.outlet_isLoading = true;

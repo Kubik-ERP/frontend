@@ -13,14 +13,14 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        redirect: { name: 'list' },
+        redirect: { name: 'outlet.list' },
       },
       {
         path: 'create',
         name: 'outlet.create',
         component: () => import('../views/OutletCreateEditUI.vue'),
         meta: {
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           layout: LAYOUT_OPTIONS.OUTLET,
         },
       },
@@ -29,16 +29,16 @@ const routes: RouteRecordRaw[] = [
         name: 'outlet.edit',
         component: () => import('../views/OutletCreateEditUI.vue'),
         meta: {
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           layout: LAYOUT_OPTIONS.OUTLET,
         },
       },
       {
         path: 'list',
-        name: 'list',
+        name: 'outlet.list',
         component: () => import('../views/OutletListUI.vue'),
         meta: {
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           layout: LAYOUT_OPTIONS.OUTLET,
         },
       },
