@@ -2,6 +2,7 @@ export const LAYOUT_EMPTY = 'AppLayoutEmpty';
 export const LAYOUT_PUBLIC = 'public';
 export const LAYOUT_AUTHENTICATION = 'authentication';
 export const LAYOUT_DEFAULT = 'AppLayoutDefault';
+export const LAYOUT_NAVBAR = 'AppLayoutNavbar';
 
 export enum LAYOUT_OPTIONS {
   EMPTY = 'AppLayoutEmpty',
@@ -9,4 +10,5 @@ export enum LAYOUT_OPTIONS {
   AUTHENTICATION = 'authentication',
   DEFAULT = 'AppLayoutDefault',
   OUTLET = 'AppLayoutOutlet',
+  NAVBAR = 'AppLayoutNavbar',
 }
