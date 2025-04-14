@@ -19,9 +19,11 @@ const {
     v-model:visible="cashierProduct_modalAddEditItem.show"
     modal
     :style="{ width: '34rem' }"
+    :position="'bottom'"
+    class="p-0 m-0"
   >
     <template #container="{ closeCallback }">
-      <div class="overflow-auto flex flex-col gap-6 text-lg p-6">
+      <div class="overflow-auto flex flex-col gap-6 text-sm lg:text-lg p-6">
         <div class="font-semibold">Add Item</div>
 
         <div class="flex w-full items-center justify-between">

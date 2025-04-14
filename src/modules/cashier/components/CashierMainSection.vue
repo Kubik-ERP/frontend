@@ -7,12 +7,14 @@ import CashierChangeView from './ListProduct/CashierChangeView.vue';
 import CashierListDrink from './ListProduct/CashierListDrink.vue';
 import CashierListFeaturedProduct from './ListProduct/CashierListFeaturedProduct.vue';
 import CashierListFood from './ListProduct/CashierListFood.vue';
+import CashierMobileButtonCategory from './OrderSummary/CashierMobileButtonCategory.vue';
+import CashierMobileButtonCheckout from './OrderSummary/CashierMobileButtonCheckout.vue';
 </script>
 
 <template>
   <section
     id="cashier-main-section"
-    class="xl:col-span-8 col-span-6 h-full overflow-y-auto flex flex-col gap-4 px-10 py-6"
+    class="col-span-12 xl:col-span-8 lg:col-span-6 h-full overflow-y-auto flex flex-col gap-4 px-4 lg:px-10 py-6"
   >
     <CashierSearchProductCategory />
 
@@ -29,12 +31,15 @@ import CashierListFood from './ListProduct/CashierListFood.vue';
     </section>
 
     <CashierModalAddEditProduct />
+
+    <CashierMobileButtonCategory />
+
+    <CashierMobileButtonCheckout />
   </section>
 </template>
 
 <style scoped>
 /* Adjust scrollbar */
-
 #cashier-main-section {
   scrollbar-width: thin;
   scrollbar-color: var(--color-grayscale-10) var(--color-grayscale-5);
