@@ -3,7 +3,14 @@ import type { Validation } from '@vuelidate/core';
 
 export interface IAuthenticationSignInFormData {
   email: string;
+  username?: string;
   password: string;
+}
+
+export interface IAuthenticationSignInResponse {
+  data: {
+    accessToken: string;
+  };
 }
 
 export interface IAuthenticationSignInProvided {

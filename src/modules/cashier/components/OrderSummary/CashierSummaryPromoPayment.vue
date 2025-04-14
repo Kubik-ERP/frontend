@@ -19,7 +19,7 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
       >
         <template #default>
           <section class="flex justify-between px-5 w-full items-center">
-            <span class="font-semibold"> Promo / Voucher </span>
+            <span class="font-semibold truncate"> Promo / Voucher </span>
 
             <AppBaseSvg name="voucher" class="!h-5 !w-5" />
           </section>
@@ -32,7 +32,7 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
       >
         <template #default>
           <section class="flex justify-between px-5 w-full items-center">
-            <span class="font-semibold"> Payment Method </span>
+            <span class="font-semibold truncate"> Payment Method </span>
 
             <i class="pi pi-chevron-right" />
           </section>

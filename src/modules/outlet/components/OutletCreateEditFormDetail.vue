@@ -8,8 +8,12 @@ import type { IOutletCreateEditProvided } from '../interfaces/outlet-create-edit
 /**
  * @description Inject all the data and methods what we need
  */
-const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
-  inject<IOutletCreateEditProvided>('outletCreateEdit')!;
+const {
+  outletCreateEdit_formData,
+  outletCreateEdit_formValidations,
+  outletCreateEdit_onRemovePhoto,
+  outletCreateEdit_onUploadPhoto,
+} = inject<IOutletCreateEditProvided>('outletCreateEdit')!;
 </script>
 
 <template>
@@ -24,15 +28,15 @@ const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
           is-name-as-label
           label-for="name"
           name="Store Name"
-          :validators="outletCreateEdit_formValidations.name"
+          :validators="outletCreateEdit_formValidations.storeName"
         >
           <PrimeVueIconField>
             <PrimeVueInputText
-              v-model="outletCreateEdit_formData.name"
+              v-model="outletCreateEdit_formData.storeName"
               placeholder="Input your store name"
               class="text-sm w-full"
               :class="{ ...classes }"
-              v-on="useListenerForm(outletCreateEdit_formValidations, 'name')"
+              v-on="useListenerForm(outletCreateEdit_formValidations, 'storeName')"
             />
           </PrimeVueIconField>
         </AppBaseFormGroup>
@@ -111,7 +115,7 @@ const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
               <PrimeVueInputText
                 v-model="outletCreateEdit_formData.phoneNumber"
                 placeholder="Input your phone number"
-                class="text-sm w-full mt-2"
+                class="text-sm w-full"
                 :class="{ ...classes }"
                 type="tel"
                 v-on="useListenerForm(outletCreateEdit_formValidations, 'phoneNumber')"
@@ -141,45 +145,56 @@ const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
                 :input-id="`business-type-${businessTypeIndex}`"
                 name="businessType"
                 class="text-sm"
-                :value="businessType"
+                :value="businessType.value"
                 :class="{ ...classes }"
                 v-on="useListenerForm(outletCreateEdit_formValidations, 'businessType')"
               />
 
-              <label :label-for="`business-type-${businessTypeIndex}`" class="font-normal text-black text-sm">
-                {{ businessType }}
+              <label :for="`business-type-${businessTypeIndex}`" class="font-normal text-black text-sm">
+                {{ businessType.label }}
               </label>
             </template>
           </div>
         </AppBaseFormGroup>
       </section>
 
-      <section id="outlet-photo" class="col-span-full md:col-span-6">
+      <section id="outlet-photo" class="col-span-full md:col-span-6 relative inset-0 z-0">
         <PrimeVueFileUpload
+          v-model="outletCreateEdit_formData.photo"
           url="/api/upload"
           accept="image/*"
+          custom-upload
           :max-file-size="1000000"
           :show-cancel-button="false"
           :show-upload-button="false"
           :pt="{
-            header: '!hidden',
-            root: 'border-2 border-dashed border-grayscale-30 bg-primary-background flex flex-col items-center justify-center py-10',
+            root: 'border-2 border-dashed border-grayscale-30 bg-primary-background flex flex-col items-center justify-center py-10 relative inset-0 z-0',
+            header: `relative inset-0 z-[1] ${outletCreateEdit_formData.photo ? '[&>button]:hidden' : ''}`,
+            content: '[&>.p-progressbar]:hidden',
+            fileInfo: 'hidden',
+            file: '[&>span]:hidden [&>img]:w-fit [&>img]:h-fit [&>img]:max-w-[200px] [&>img]:max-h-[200px] [&>img]:object-cover',
           }"
+          @select="outletCreateEdit_onUploadPhoto"
+          @remove="outletCreateEdit_onRemovePhoto"
         >
-          <template #empty>
-            <section id="main-content" class="flex flex-col items-center gap-2">
-              <PrimeVueButton
-                class="bg-white button-shadow border-none font-semibold text-blue-primary text-sm py-[10px] w-full max-w-36"
-              >
-                <template #default>
-                  <section id="content" class="flex items-center gap-2">
-                    <AppBaseSvg name="image" class="!w-4 !h-4" />
-                    <span class="font-normal text-sm">Select Image</span>
-                  </section>
-                </template>
-              </PrimeVueButton>
+          <template #header="{ chooseCallback }">
+            <PrimeVueButton
+              v-if="!outletCreateEdit_formData.photo"
+              class="bg-white button-shadow border-none font-semibold text-blue-primary text-sm py-[10px] w-full max-w-36"
+              @click="chooseCallback()"
+            >
+              <template #default>
+                <section id="content" class="flex items-center gap-2">
+                  <AppBaseSvg name="image" class="!w-4 !h-4" />
+                  <span class="font-normal text-sm">Select Image</span>
+                </section>
+              </template>
+            </PrimeVueButton>
+          </template>
 
-              <span class="font-normal text-black-secondary text-xs">
+          <template #empty>
+            <section id="main-content" class="flex flex-col items-center gap-2 absolute inset-0 z-0 w-full h-full">
+              <span class="absolute top-28 font-normal text-black-secondary text-xs">
                 or
                 <span class="font-semibold"> Drop Image here </span>
               </span>

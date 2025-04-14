@@ -132,7 +132,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
 <template>
   <section
     id="cashier"
-    class="grid-wrapper-fullscreen bg-background min-h-screen h-screen default-wrapper-fullscreen"
+    class="grid grid-cols-12 bg-background min-h-[calc(100dvh-85px)] h-[90vh] default-wrapper-fullscreen"
   >
     <CashierMainSection />
 

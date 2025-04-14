@@ -38,6 +38,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
   const authenticationSignUp_activeStep = ref<number>(0);
   const authenticationSignUp_durationOtp = ref<number>(0);
   const authenticationSignUp_formData = reactive<IAuthenticationSignUpFormData>({
+    fullName: '',
     email: '',
     phoneCountryCode: '+62',
     phoneNumber: '',
@@ -63,6 +64,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
    * @description Form validations
    */
   const authenticationSignUp_formRules = computed(() => ({
+    fullName: { required },
     email: { email, required },
     phoneCountryCode: { required, isPhoneCodeValid: isPhoneCodeValid },
     phoneNumber: { required, isPhoneNumberValid: isPhoneNumberValid },

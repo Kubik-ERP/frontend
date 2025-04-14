@@ -25,10 +25,22 @@ declare global {
     currency: string;
   }
 
+  interface IObjectFileUpload extends File {
+    objectURL: string;
+  }
+
   interface IPagination {
     total: number;
     skip: number;
     limit: number;
+  }
+
+  interface IPropsDialog {
+    isDraggable?: boolean;
+    isUsingBackdrop?: boolean;
+    isUsingClosableButton?: boolean;
+    isOpen: boolean;
+    width?: string;
   }
 
   interface IPropsFormGroup {

@@ -33,7 +33,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     email: '',
     password: '',
   });
-  const authenticationSignIn_isNotAuthenticated = ref<boolean>(true);
+  const authenticationSignIn_isNotAuthenticated = ref<boolean>(false);
 
   /**
    * @description Form validations
@@ -55,10 +55,16 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
    */
   const authenticationSignIn_fetchAuthenticationSignIn = async () => {
     try {
-      const result = await store.fetchAuthentication_signIn(authenticationSignIn_formData, {
-        ...httpAbort_registerAbort(AUTHENTICATION_SIGN_IN_REQUEST),
-      });
-      router.push({ name: 'dashboard' });
+      const result = await store.fetchAuthentication_signIn(
+        {
+          ...authenticationSignIn_formData,
+          username: authenticationSignIn_formData.email,
+        },
+        {
+          ...httpAbort_registerAbort(AUTHENTICATION_SIGN_IN_REQUEST),
+        },
+      );
+      router.push({ name: 'outlet.list' });
 
       return Promise.resolve(result);
     } catch (error: unknown) {

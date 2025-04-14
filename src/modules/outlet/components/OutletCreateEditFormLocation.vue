@@ -14,8 +14,6 @@ const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
     <h5 class="font-semibold text-black text-lg">Location</h5>
 
     <section id="form-inputs" class="grid grid-rows-1 grid-cols-12 gap-4">
-      <section id="outlet-name" class="col-span-full md:col-span-6">Location GMaps</section>
-
       <section id="outlet-address" class="col-span-full md:col-span-6">
         <AppBaseFormGroup
           v-slot="{ classes }"
@@ -23,20 +21,22 @@ const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
           is-name-as-label
           label-for="address"
           name="Address"
-          :validators="outletCreateEdit_formValidations.address"
+          :validators="outletCreateEdit_formValidations.streetAddress"
         >
           <PrimeVueIconField>
             <PrimeVueTextarea
-              v-model="outletCreateEdit_formData.address"
+              v-model="outletCreateEdit_formData.streetAddress"
               placeholder="Input your store address"
               class="text-sm w-full"
               :class="{ ...classes }"
               rows="5"
-              v-on="useListenerForm(outletCreateEdit_formValidations, 'address')"
+              v-on="useListenerForm(outletCreateEdit_formValidations, 'streetAddress')"
             />
           </PrimeVueIconField>
         </AppBaseFormGroup>
       </section>
+
+      <section id="outlet-name" class="col-span-full md:col-span-6">&nbsp;</section>
 
       <section id="outlet-city" class="col-span-full md:col-span-6">
         <AppBaseFormGroup

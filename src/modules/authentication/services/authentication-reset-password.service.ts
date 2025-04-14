@@ -41,7 +41,7 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
   const authenticationResetPassword_formData = reactive<IAuthenticationResetPasswordFormData>({
     email: '',
   });
-  const authenticationResetPassword_isPinInvalid = ref<boolean>(true);
+  const authenticationResetPassword_isPinInvalid = ref<boolean>(false);
   const authenticationResetPassword_isSuccess = ref<boolean>(false);
   const authenticationResetPassword_stepper = shallowRef<IAuthenticationStepper[]>(
     AUTHENTICATION_RESET_PASSWORD_STEPPER,

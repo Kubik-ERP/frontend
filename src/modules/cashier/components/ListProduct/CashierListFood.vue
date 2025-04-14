@@ -34,7 +34,7 @@ const selectedComponent = computed(() => {
  */
 const wrapperClass = computed(() => {
   return {
-    'grid grid-cols-4 gap-4':
+    'grid grid-cols-2 xl:grid-cols-4 gap-4':
       cashierProduct_selectedView.value === 'image' || cashierProduct_selectedView.value === 'grid',
     'flex flex-col gap-4': cashierProduct_selectedView.value === 'inline',
   };
