@@ -14,6 +14,7 @@ export interface IAuthenticationVerifyOtpFormData {
 }
 
 export interface IAuthenticationSignUpFormData {
+  fullName: string;
   email: string;
   phoneCountryCode: string;
   phoneNumber: string;

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// Plugins
 import eventBus from '@/plugins/mitt';
 
 // Interfaces
@@ -105,8 +106,7 @@ const onClose = (): void => {
   toast.value.isOpen = false;
 };
 
-eventBus.on(EToastType.DANGER, (params: unknown) => {
-  console.log('params', params);
+eventBus.on('AppBaseToast', (params: unknown) => {
   toast.value = params as IProps;
 });
 </script>
