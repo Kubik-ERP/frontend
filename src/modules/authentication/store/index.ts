@@ -17,6 +17,7 @@ import type {
   IAuthenticationSignUpFormData,
   IAuthenticationStateStore,
   IAuthenticationSendOtpFormData,
+  IAuthenticationSignInResponse,
 } from '../interfaces';
 
 // Plugins
@@ -130,14 +131,18 @@ export const useAuthenticationStore = defineStore('authentication', {
     async fetchAuthentication_signIn(
       payload: IAuthenticationSignInFormData,
       requestConfigurations: AxiosRequestConfig,
-    ): Promise<unknown> {
+    ): Promise<IAuthenticationSignInResponse> {
       this.authentication_isLoading = true;
 
       try {
-        const response = await httpClient.post<unknown>(AUTHENTICATION_ENDPOINT_SIGN_IN, payload, {
-          ...requestConfigurations,
-        });
-        this.authentication_token = (response.data as { token: string }).token; // Refactor this type
+        const response = await httpClient.post<IAuthenticationSignInResponse>(
+          AUTHENTICATION_ENDPOINT_SIGN_IN,
+          payload,
+          {
+            ...requestConfigurations,
+          },
+        );
+        this.authentication_token = response.data.data.accessToken;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {

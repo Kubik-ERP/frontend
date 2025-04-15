@@ -14,6 +14,7 @@ const {
   authenticationResetPassword_formValidations,
   authenticationResetPassword_formValidationsOfVerifyOtp,
   authenticationResetPassword_isLoading,
+  authenticationResetPassword_isPinInvalid,
   authenticationResetPassword_isSuccess,
   authenticationResetPassword_onSubmit,
   authenticationResetPassword_stepper,
@@ -28,6 +29,7 @@ provide('authenticationResetPassword', {
   authenticationResetPassword_formValidations,
   authenticationResetPassword_formValidationsOfVerifyOtp,
   authenticationResetPassword_isLoading,
+  authenticationResetPassword_isPinInvalid,
   authenticationResetPassword_onSubmit,
   authenticationResetPassword_verifyOtpFormData,
 });

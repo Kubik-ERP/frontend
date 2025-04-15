@@ -3,6 +3,7 @@ import { ref } from 'vue';
 
 // interfaces
 import {
+  ICashierOrderSummary,
   ICashierOrderSummaryCalculation,
   ICashierOrderSummaryData,
   ICashierOrderSummaryModalAddEdit,
@@ -20,7 +21,20 @@ import type { MenuPassThroughAttributes } from 'primevue';
 
 import { MenuItem } from 'primevue/menuitem';
 
+// Router
+import { useRouter } from 'vue-router';
+
+// Services
+import { useCashierProductService } from '../services/useCashierProduct.service';
+
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
+  // Router
+  const router = useRouter();
+
+  // Services
+  const { cashierProduct_selectedProduct } = useCashierProductService();
+
+  // Reactive data binding
   const cashierOrderSummary_modalOrderType = ref<ICashierOrderSummaryModalOrderType>({
     show: false,
     selectedOrderType: 0,
@@ -96,7 +110,13 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     show: false,
   });
 
-  const cashierOrderSummary_handlePlaceOrderDetail = () => {};
+  const cashierOrderSummary_handlePlaceOrderDetail = () => {
+    cashierOrderSummary_modalPlaceOrderDetail.value.show = false;
+
+    router.push({
+      name: 'invoice',
+    });
+  };
 
   const cashierOrderSummary_modalPlaceOrderConfirmation = ref<ICashierOrderSummaryModalPlaceOrder>({
     show: false,
@@ -116,6 +136,28 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     show: false,
     selectedTable: [],
     activeFloor: 1,
+    listFloor: [
+      {
+        value: 1,
+        label: 'Floor 1',
+        available: true,
+      },
+      {
+        value: 2,
+        label: 'Floor 2',
+        available: false,
+      },
+      {
+        value: 3,
+        label: 'Floor 3',
+        available: true,
+      },
+      {
+        value: 4,
+        label: 'Floor 4',
+        available: false,
+      },
+    ],
     data: [
       {
         value: 1,
@@ -124,10 +166,133 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         totalSeat: 4,
         floor: 1,
       },
+      {
+        value: 2,
+        label: 'Table 2',
+        available: false,
+        totalSeat: 8,
+        floor: 1,
+      },
+      {
+        value: 3,
+        label: 'Table 3',
+        available: true,
+        totalSeat: 12,
+        floor: 1,
+      },
+      {
+        value: 4,
+        label: 'Table 4',
+        available: false,
+        totalSeat: 6,
+        floor: 1,
+      },
+      {
+        value: 5,
+        label: 'Table 5',
+        available: false,
+        totalSeat: 6,
+        floor: 1,
+      },
+      {
+        value: 6,
+        label: 'Table 6',
+        available: false,
+        totalSeat: 6,
+        floor: 2,
+      },
+      {
+        value: 7,
+        label: 'Table 7',
+        available: false,
+        totalSeat: 6,
+        floor: 2,
+      },
+      {
+        value: 8,
+        label: 'Table 8',
+        available: false,
+        totalSeat: 6,
+        floor: 2,
+      },
+      {
+        value: 9,
+        label: 'Table 9',
+        available: false,
+        totalSeat: 6,
+        floor: 2,
+      },
+      {
+        value: 10,
+        label: 'Table 10',
+        available: false,
+        totalSeat: 12,
+        floor: 2,
+      },
+      {
+        value: 11,
+        label: 'Table 11',
+        available: false,
+        totalSeat: 2,
+        floor: 2,
+      },
+      {
+        value: 12,
+        label: 'Table 12',
+        available: false,
+        totalSeat: 2,
+        floor: 2,
+      },
+      {
+        value: 13,
+        label: 'Table 13',
+        available: false,
+        totalSeat: 2,
+        floor: 2,
+      },
+      {
+        value: 14,
+        label: 'Table 14',
+        available: false,
+        totalSeat: 2,
+        floor: 2,
+      },
+      {
+        value: 15,
+        label: 'Table 15',
+        available: false,
+        totalSeat: 2,
+        floor: 2,
+      },
+      {
+        value: 16,
+        label: 'Table 16',
+        available: false,
+        totalSeat: 2,
+        floor: 2,
+      },
     ],
   });
 
+  const cashierOrderSummary_handleToggleSelectTable = (table: number) => {
+    const index = cashierOrderSummary_modalSelectTable.value.selectedTable.indexOf(table);
+
+    if (index === -1) {
+      cashierOrderSummary_modalSelectTable.value.selectedTable.push(table);
+    } else {
+      cashierOrderSummary_modalSelectTable.value.selectedTable.splice(index, 1);
+    }
+  };
+
   const cashierOrderSummary_handleSelectTable = () => {};
+
+  const cashierOrderSummary_getListActiveFloor = computed(() => {
+    const activeFloor = cashierOrderSummary_modalSelectTable.value.data.filter(
+      data => data.floor === cashierOrderSummary_modalSelectTable.value.activeFloor,
+    );
+
+    return activeFloor;
+  });
 
   const cashierOrderSummary_modalVoucher = ref<ICashierOrderSummaryModalVoucher>({
     show: false,
@@ -226,6 +391,24 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     },
   );
 
+  const cashierOrderSummary_summary = computed(() => {
+    const summary: ICashierOrderSummary = {
+      provider: 'midtrans',
+      orderType: cashierOrderSummary_data.value.orderType,
+      invoiceDetail: {
+        receivedBy: cashierOrderSummary_modalInvoiceDetail.value.form.received_by,
+        notes: cashierOrderSummary_modalInvoiceDetail.value.form.notes,
+      },
+      paymentMethod: cashierOrderSummary_data.value.paymentMethod,
+      tableCode: cashierOrderSummary_modalSelectTable.value.selectedTable,
+      selectedVoucher: cashierOrderSummary_modalVoucher.value.form.voucher_code,
+      customerName: cashierOrderSummary_data.value.customerName,
+      product: cashierProduct_selectedProduct.value,
+    };
+
+    return summary;
+  });
+
   return {
     cashierOrderSummary_menuOrder,
     cashierOrderSummary_menuOrderItem,
@@ -242,6 +425,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_modalPlaceOrderDetail,
     cashierOrderSummary_modalCancelOrder,
 
+    cashierOrderSummary_getListActiveFloor,
+    cashierOrderSummary_summary,
+
     cashierOrderSummary_handleOrderType,
     cashierOrderSummary_handleInvoiceDetail,
     cashierOrderSummary_handleCancelOrder,
@@ -250,5 +436,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_handlePlaceOrderDetail,
     cashierOrderSummary_handleSelectTable,
     cashierOrderSummary_handleVoucher,
+    cashierOrderSummary_handleToggleSelectTable,
   };
 };

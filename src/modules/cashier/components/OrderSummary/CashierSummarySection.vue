@@ -9,6 +9,7 @@ const {
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
   cashierOrderSummary_menuOrder,
+  cashierOrderSummary_modalSelectTable,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 
@@ -59,7 +60,7 @@ const {
   <div class="border-t-2 border-t-grayscale-10">
     <div class="flex justify-between items-center p-4 gap-2">
       <button
-        class="flex w-1/2 border cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 text-text-disabled border-text-disabled rounded-sm p-2.5 justify-between items-center"
+        class="flex w-1/2 border truncate cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 text-text-disabled border-text-disabled rounded-sm p-2.5 justify-between items-center"
         @click="cashierOrderSummary_modalOrderType.show = true"
       >
         Order Type
@@ -67,7 +68,8 @@ const {
         <AppBaseSvg name="order" class="!h-5 !w-5" />
       </button>
       <button
-        class="flex w-1/2 border cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 text-text-disabled border-text-disabled rounded-sm p-2.5 justify-between items-center"
+        class="flex w-1/2 border truncate cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 text-text-disabled border-text-disabled rounded-sm p-2.5 justify-between items-center"
+        @click="cashierOrderSummary_modalSelectTable.show = true"
       >
         Table No.
 

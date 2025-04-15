@@ -33,6 +33,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     email: '',
     password: '',
   });
+  const authenticationSignIn_isNotAuthenticated = ref<boolean>(false);
 
   /**
    * @description Form validations
@@ -54,10 +55,16 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
    */
   const authenticationSignIn_fetchAuthenticationSignIn = async () => {
     try {
-      const result = await store.fetchAuthentication_signIn(authenticationSignIn_formData, {
-        ...httpAbort_registerAbort(AUTHENTICATION_SIGN_IN_REQUEST),
-      });
-      router.push({ name: 'dashboard' });
+      const result = await store.fetchAuthentication_signIn(
+        {
+          ...authenticationSignIn_formData,
+          username: authenticationSignIn_formData.email,
+        },
+        {
+          ...httpAbort_registerAbort(AUTHENTICATION_SIGN_IN_REQUEST),
+        },
+      );
+      router.push({ name: 'outlet.list' });
 
       return Promise.resolve(result);
     } catch (error: unknown) {
@@ -79,6 +86,8 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     try {
       await authenticationSignIn_fetchAuthenticationSignIn();
     } catch (error: unknown) {
+      authenticationSignIn_isNotAuthenticated.value = true;
+
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -87,10 +96,26 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     }
   };
 
+  /**
+   * @description Handle side effects when the user fills the form.
+   */
+  watch(
+    authenticationSignIn_formData,
+    () => {
+      if (authenticationSignIn_isNotAuthenticated.value) {
+        authenticationSignIn_isNotAuthenticated.value = false;
+      }
+    },
+    {
+      deep: true,
+    },
+  );
+
   return {
     authenticationSignIn_formData,
     authenticationSignIn_formValidations,
     authenticationSignIn_isLoading: authentication_isLoading,
+    authenticationSignIn_isNotAuthenticated,
     authenticationSignIn_onSubmit,
   };
 };

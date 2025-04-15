@@ -16,7 +16,7 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
 <template>
   <section
     id="cashier-summary-product-list"
-    class="flex flex-col max-h-[410px] overflow-y-auto flex-grow border-b-grayscale-10 border-t-2 border-b-2 p-4 border-t-grayscale-10 justify-center items-center"
+    class="flex flex-col overflow-y-auto flex-grow border-b-grayscale-10 border-t-2 border-b-2 p-4 border-t-grayscale-10 justify-center items-center"
     :class="cashierProduct_selectedProduct.length === 0 ? 'justify-center' : 'justify-start'"
   >
     <div v-if="cashierProduct_selectedProduct.length === 0" class="">
@@ -35,7 +35,7 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
         >
           <AppBaseSvg name="trash" class="!h-4 !w-4" />
         </button>
-        <div class="col-span-7 flex flex-col gap-4">
+        <div class="col-span-6 xl:col-span-7 flex flex-col gap-4">
           <div class="flex gap-4">
             <img :src="item.product.image" alt="product" class="w-10 h-10 object-cover" />
 
@@ -78,22 +78,27 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
             </PrimeVueButton>
           </div>
         </div>
-        <div class="col-span-4">
+        <div class="col-span-5 xl:col-span-4">
           <div class="flex items-center gap-2">
             <PrimeVueButton
               type="button"
               class="border border-primary text-primary px-4"
               variant="outlined"
               label="-"
-              @click="item.qty -= 1"
+              @click="item.qty > 1 ? (item.qty -= 1) : (item.qty = 1)"
             />
-            <PrimeVueInputNumber v-model="item.qty" input-class="w-14 justify-items-center" />
+            <PrimeVueInputNumber
+              v-model="item.qty"
+              input-class="w-14 justify-items-center"
+              :min="1"
+              :max="item.product.qty"
+            />
             <PrimeVueButton
               type="button"
               class="border border-primary text-primary px-4"
               variant="outlined"
               label="+"
-              @click="item.qty += 1"
+              @click="item.qty == item.product.qty ? item.qty : (item.qty += 1)"
             />
           </div>
         </div>

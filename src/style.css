@@ -62,6 +62,7 @@
 
 @theme {
   --color-black-secondary: #434343;
+  --color-border-error: #F0AFAF;
   --color-primary: #18618b;
   --color-blue-primary: #18618b;
   --color-green-primary: #64c9b1;
