@@ -30,6 +30,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd ~/app_frontend
+            cp ~/.env-fe ~/app_frontend/.env
             docker build -t kubik-frontend .
             docker stop kubik-frontend || true
             docker rm kubik-frontend || true
