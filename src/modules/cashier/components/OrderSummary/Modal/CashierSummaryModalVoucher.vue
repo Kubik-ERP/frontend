@@ -7,13 +7,18 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
  */
 const { cashierOrderSummary_modalVoucher, cashierOrderSummary_handleVoucher } =
   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+
+// Composables
+import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 </script>
 <template>
   <section id="cashier-summary-modal-voucher">
     <PrimeVueDialog
       v-model:visible="cashierOrderSummary_modalVoucher.show"
       modal
-      :style="{ width: '34rem', height: '80vh' }"
+      :position="useIsMobile() || useIsTablet() ? 'bottom' : 'center'"
+      :style="{ width: '34rem', height: '80dvh' }"
+      class="p-0 m-0"
     >
       <template #container="{ closeCallback }">
         <section id="cashier-summary-modal-voucher-content" class="flex flex-col gap-6 p-6 h-full">

@@ -11,6 +11,9 @@ const {
   cashierProduct_handleQuantity,
   cashierProduct_handleSelectProduct,
 } = inject<ICashierProductProvided>('cashierProduct')!;
+
+// Composables
+import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 </script>
 
 <template>
@@ -19,7 +22,8 @@ const {
     v-model:visible="cashierProduct_modalAddEditItem.show"
     modal
     :style="{ width: '34rem' }"
-    :position="'bottom'"
+    :dismissable-mask="useIsMobile() || useIsTablet()"
+    :position="useIsMobile() || useIsTablet() ? 'bottom' : 'center'"
     class="p-0 m-0"
   >
     <template #container="{ closeCallback }">
@@ -47,7 +51,7 @@ const {
             />
             <PrimeVueInputText
               v-model="cashierProduct_selectedProductQty"
-              class="w-14 justify-items-center"
+              class="w-14 justify-items-center text-center"
               type="number"
             />
             <PrimeVueButton
@@ -92,7 +96,7 @@ const {
         <PrimeVueButton
           v-if="!cashierProduct_modalAddEditItem.isAddNotesActive"
           variant="text"
-          class="w-fit"
+          class="w-fit hidden lg:block"
           @click="cashierProduct_modalAddEditItem.isAddNotesActive = true"
         >
           <AppBaseSvg name="add-notes" />
@@ -129,9 +133,17 @@ const {
           </section>
         </section>
 
-        <section id="cashier-add-edit-product"></section>
+        <div class="lg:hidden flex flex-col gap-2 justify-end">
+          <label class="font-normal"> Notes <span class="text-text-disabled">(optional)</span> </label>
 
-        <div class="flex justify-end gap-2">
+          <PrimeVueTextarea
+            v-model="cashierProduct_modalAddEditItem.item.notes"
+            placeholder="Describe order notes here"
+            rows="4"
+          />
+        </div>
+
+        <div class="lg:flex justify-end gap-2 hidden">
           <PrimeVueButton
             class="border-primary text-primary py-2.5 px-14"
             type="button"
@@ -155,6 +167,21 @@ const {
             "
           ></PrimeVueButton>
         </div>
+
+        <PrimeVueButton
+          class="lg:hidden flex bg-primary border-none text-white py-2.5 px-14"
+          type="button"
+          label="Add Item"
+          :disabled="!cashierProduct_modalAddEditItem.item?.variant"
+          @click="
+            cashierProduct_handleSelectProduct(
+              cashierProduct_modalAddEditItem.product!,
+              cashierProduct_modalAddEditItem.item!,
+            );
+
+            closeCallback();
+          "
+        ></PrimeVueButton>
       </div>
     </template>
   </PrimeVueDialog>

@@ -34,6 +34,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   // Services
   const { cashierProduct_selectedProduct } = useCashierProductService();
 
+  const cashierOrderSummary_modalOrderSummary = ref({
+    show: false,
+  });
+
   // Reactive data binding
   const cashierOrderSummary_modalOrderType = ref<ICashierOrderSummaryModalOrderType>({
     show: false,
@@ -415,6 +419,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_data,
     cashierOrderSummary_calculation,
 
+    cashierOrderSummary_modalOrderSummary,
     cashierOrderSummary_modalAddEditNotes,
     cashierOrderSummary_modalPaymentMethod,
     cashierOrderSummary_modalSelectTable,

@@ -25,7 +25,7 @@ provide<IInvoiceProvided>('invoice', {
   <section id="invoice" class="default-wrapper-fullscreen">
     <InvoiceHeader />
 
-    <section id="content" class="grid grid-rows-1 grid-cols-12 h-[calc(100vh-4rem)]">
+    <section id="content" class="grid grid-rows-1 grid-cols-12 h-[calc(100dvh-4rem)]">
       <InvoicePaper />
       <InvoiceStatus />
     </section>

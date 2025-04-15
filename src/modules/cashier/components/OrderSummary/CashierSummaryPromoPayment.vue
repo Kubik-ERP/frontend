@@ -11,9 +11,9 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
 
 <template>
   <section id="cashier-summary-promo-payment" class="border-b-2 border-b-grayscale-10 p-2">
-    <div class="flex w-full p-2 gap-4 bg-primary-background">
+    <div class="flex flex-col lg:flex-row w-full p-2 gap-4 bg-primary-background">
       <PrimeVueButton
-        class="w-1/2 py-2 border border-primary-border text-primary"
+        class="w-full lg:w-1/2 py-2 border border-primary-border text-primary"
         outlined
         @click="cashierOrderSummary_modalVoucher.show = true"
       >
@@ -26,7 +26,7 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
         </template>
       </PrimeVueButton>
       <PrimeVueButton
-        class="w-1/2 py-2 border border-primary-border text-primary"
+        class="w-full lg:w-1/2 py-2 border border-primary-border text-primary"
         outlined
         @click="cashierOrderSummary_modalPaymentMethod.show = true"
       >

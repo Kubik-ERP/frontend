@@ -16,7 +16,7 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
 <template>
   <section
     id="cashier-summary-product-list"
-    class="flex flex-col overflow-y-auto flex-grow border-b-grayscale-10 border-t-2 border-b-2 p-4 border-t-grayscale-10 justify-center items-center"
+    class="flex flex-col overflow-y-auto flex-grow border-t-0 border-b-grayscale-10 lg:border-t-2 border-b-2 p-4 border-t-grayscale-10 justify-center items-center"
     :class="cashierProduct_selectedProduct.length === 0 ? 'justify-center' : 'justify-start'"
   >
     <div v-if="cashierProduct_selectedProduct.length === 0" class="">
@@ -89,7 +89,7 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
             />
             <PrimeVueInputNumber
               v-model="item.qty"
-              input-class="w-14 justify-items-center"
+              input-class="w-14 h-8 lg:h-10 justify-items-center"
               :min="1"
               :max="item.product.qty"
             />

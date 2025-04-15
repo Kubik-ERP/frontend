@@ -17,7 +17,7 @@ const {
     <PrimeVueDialog
       v-model:visible="cashierOrderSummary_modalSelectTable.show"
       modal
-      :style="{ width: '85%', minHeight: '500px', maxHeight: 'calc(100vh - 50px)' }"
+      :style="{ width: '85%', minHeight: '500px', maxHeight: 'calc(100dvh - 50px)' }"
     >
       <template #container="{ closeCallback }">
         <section id="cashier-summary-modal-select-table" class="flex flex-col gap-6 p-6 flex-1 min-h-0">

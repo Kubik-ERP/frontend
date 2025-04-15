@@ -9,6 +9,8 @@ import CashierListFeaturedProduct from './ListProduct/CashierListFeaturedProduct
 import CashierListFood from './ListProduct/CashierListFood.vue';
 import CashierMobileButtonCategory from './OrderSummary/CashierMobileButtonCategory.vue';
 import CashierMobileButtonCheckout from './OrderSummary/CashierMobileButtonCheckout.vue';
+import CashierModalCategory from './ListProduct/CashierModalCategory.vue';
+import CashierSummaryModalOrderSummary from './OrderSummary/Modal/CashierSummaryModalOrderSummary.vue';
 </script>
 
 <template>
@@ -31,6 +33,10 @@ import CashierMobileButtonCheckout from './OrderSummary/CashierMobileButtonCheck
     </section>
 
     <CashierModalAddEditProduct />
+
+    <CashierModalCategory />
+
+    <CashierSummaryModalOrderSummary />
 
     <CashierMobileButtonCategory />
 

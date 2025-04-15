@@ -20,6 +20,7 @@ const {
   cashierProduct_listCategory,
 
   cashierProduct_modalAddEditItem,
+  cashierProduct_modalCategory,
 
   cashierProduct_listDrink,
   cashierProduct_listFeaturedProduct,
@@ -47,6 +48,7 @@ const {
   cashierOrderSummary_calculation,
   cashierOrderSummary_summary,
 
+  cashierOrderSummary_modalOrderSummary,
   cashierOrderSummary_modalAddEditNotes,
   cashierOrderSummary_modalCancelOrder,
   cashierOrderSummary_modalInvoiceDetail,
@@ -79,6 +81,7 @@ provide<ICashierProductProvided>('cashierProduct', {
   cashierProduct_listCategory,
 
   cashierProduct_modalAddEditItem,
+  cashierProduct_modalCategory,
 
   cashierProduct_listDrink,
   cashierProduct_listFeaturedProduct,
@@ -106,6 +109,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_calculation,
   cashierOrderSummary_summary,
 
+  cashierOrderSummary_modalOrderSummary,
   cashierOrderSummary_modalAddEditNotes,
   cashierOrderSummary_modalCancelOrder,
   cashierOrderSummary_modalInvoiceDetail,
@@ -132,7 +136,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
 <template>
   <section
     id="cashier"
-    class="grid grid-cols-12 bg-background min-h-[calc(100dvh-85px)] h-[90vh] default-wrapper-fullscreen"
+    class="grid grid-cols-12 bg-background min-h-[calc(100dvh-85px)] h-[90dvh] default-wrapper-fullscreen"
   >
     <CashierMainSection />
 

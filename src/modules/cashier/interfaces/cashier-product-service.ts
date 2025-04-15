@@ -12,6 +12,7 @@ export interface ICashierProductProvided {
   cashierProduct_listCategory: Ref<ICashierCategory[], ICashierCategory[]>;
 
   cashierProduct_modalAddEditItem: Ref<ICashierModalAddProduct>;
+  cashierProduct_modalCategory: Ref<{ show: boolean }>;
 
   cashierProduct_listFood: Ref<ICashierProduct[], ICashierProduct[]>;
   cashierProduct_listFeaturedProduct: Ref<ICashierProduct[], ICashierProduct[]>;

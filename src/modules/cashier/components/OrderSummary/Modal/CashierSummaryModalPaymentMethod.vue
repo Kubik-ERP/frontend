@@ -14,6 +14,8 @@ const { cashierOrderSummary_modalPaymentMethod, cashierOrderSummary_handlePaymen
       v-model:visible="cashierOrderSummary_modalPaymentMethod.show"
       modal
       :style="{ width: '32rem' }"
+      :position="useIsMobile() || useIsTablet() ? 'bottom' : 'center'"
+      class="p-0 m-0"
     >
       <template #container="{ closeCallback }">
         <section id="cashier-summary-modal-payment-method" class="flex flex-col gap-6 p-6">

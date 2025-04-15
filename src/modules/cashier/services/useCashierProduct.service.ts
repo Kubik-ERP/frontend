@@ -55,6 +55,10 @@ export const useCashierProductService = (): ICashierProductProvided => {
     },
   });
 
+  const cashierProduct_modalCategory = ref({
+    show: false,
+  });
+
   /**
    * @description Handle fetch api cashier search. We call the fetchCashierSearch function from the store to handle the request.
    */
@@ -224,6 +228,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
     cashierProduct_listCategory,
 
     cashierProduct_modalAddEditItem,
+    cashierProduct_modalCategory,
 
     cashierProduct_listDrink,
     cashierProduct_listFeaturedProduct,
