@@ -1,7 +1,7 @@
 <template>
   <div class="">
     {{ customer }}
-    <form class="grid grid-cols-2 gap-8">
+    <form class="grid grid-cols-2 gap-8" @submit.prevent>
       <div class="flex flex-col">
         <label for="name">Customer Name</label>
         <PrimeVueInputText
@@ -90,14 +90,7 @@
       <div class="flex flex-col">
         <label for="name">Tag</label>
         <div class="w-full">
-          <PrimeVueMultiSelect
-            v-model="customer.tags"
-            :options="tags"
-            option-label="name"
-            display="chip"
-            placeholder="Select Tags"
-            class="w-full"
-          />
+          <CustomerTags v-model="customer.tags" />
         </div>
       </div>
 
@@ -120,14 +113,16 @@
           variant="outlined"
           class="w-48 text-primary border-primary"
         ></PrimeVueButton>
-        <PrimeVueButton type="submit" label="Add" class="w-48 bg-primary border-primary"></PrimeVueButton>
+        <PrimeVueButton type="submit" label="Add Customer" class="w-48 bg-primary border-primary"></PrimeVueButton>
       </div>
     </form>
   </div>
 </template>
 
 <script setup>
-const tags = ref([{ name: 'Member' }, { name: 'VIP' }, { name: 'Super VIP' }, { name: 'Customer' }]);
+
+import CustomerTags from '@/modules/customer/components/addCustomer/tags.vue'
+
 const country_codes = ref([
   {
     name: 'Afghanistan',
@@ -1340,7 +1335,6 @@ const country_codes = ref([
     code: 'ZW',
   },
 ]);
-
 const customer = reactive({
   name: '',
   gender: '',
@@ -1351,9 +1345,13 @@ const customer = reactive({
   },
   email: '',
   id: '',
-  tags: '',
+  tags: [],
   address: '',
 });
+
+
+
+
 </script>
 
 <style lang="scss" scoped>
