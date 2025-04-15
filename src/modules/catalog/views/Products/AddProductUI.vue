@@ -147,7 +147,7 @@
         </div>
       </div>
     </div>
-    <PrimeVueDialog v-model:visible="isLeavingModal" modal header="">
+    <PrimeVueDialog :visible="isLeavingModal" modal header="">
       <template #container>
         <div class="w-[35rem] p-8">
           <div class="flex flex-col items-center gap-4 text-center">

@@ -1,7 +1,7 @@
 <template>
   <div class="m-4 p-1 border border-gray rounded-lg shadow-2xl">
     <PrimeVueDataTable
-      v-model:selection="selectedCategories"
+      :selection="selectedCategories"
       :value="categories"
       paginator
       :rows="10"
@@ -70,7 +70,7 @@
     </PrimeVuePopover>
 
     <!-- Add Dialog -->
-    <PrimeVueDialog v-model:visible="isAddOpen" modal header="Add Category" class="w-[45rem]">
+    <PrimeVueDialog :visible="isAddOpen" modal header="Add Category" class="w-[45rem]">
       <form @submit.prevent>
         <div class="mb-4">
           <label for="name">Category Name <sup class="text-red-500">*</sup></label>
@@ -94,7 +94,7 @@
     </PrimeVueDialog>
 
     <!-- Edit Dialog -->
-    <PrimeVueDialog v-model:visible="isEditOpen" modal header="Edit Category" class="w-[45rem]">
+    <PrimeVueDialog :visible="isEditOpen" modal header="Edit Category" class="w-[45rem]">
       <form @submit.prevent>
         <div class="mb-4">
           <label for="name">Category Name <sup class="text-red-500">*</sup></label>
@@ -118,7 +118,7 @@
     </PrimeVueDialog>
 
     <!-- Delete Confirmation -->
-    <PrimeVueDialog v-model:visible="isDeleteOpen" modal header="">
+    <PrimeVueDialog :visible="isDeleteOpen" modal header="">
       <template #container>
         <div class="w-[35rem] p-8 text-center">
           <i class="pi pi-trash text-4xl mb-4 text-red-500" />
@@ -237,7 +237,6 @@ const handleDeleteCategory = () => {
 
   isDeleteOpen.value = false;
 };
-
 
 onMounted(() => {
   loadCategories();

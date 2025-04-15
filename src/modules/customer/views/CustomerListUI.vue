@@ -3,7 +3,7 @@
     <!-- {{ customers }} -->
     <div>
       <PrimeVueDataTable
-        v-model:selection="selectedCustomer"
+        :selection="selectedCustomer"
         :value="customers"
         :rows="10"
         :filters="filters"
@@ -15,7 +15,9 @@
           <div class="flex justify-between">
             <div class="flex items-center justify-center gap-2">
               <h1 class="text-2xl font-bold">Customers</h1>
-              <p class="text-green-primary bg-green-primary/50 py-1 px-2 text-xs rounded-full">{{ customers.length }} Members</p>
+              <p class="text-green-primary bg-green-primary/50 py-1 px-2 text-xs rounded-full">
+                {{ customers.length }} Members
+              </p>
             </div>
             <div class="flex gap-4 justify-end">
               <PrimeVueIconField>
@@ -25,7 +27,7 @@
                 <PrimeVueInputText v-model="filters['global'].value" placeholder="Keyword Search" />
               </PrimeVueIconField>
 
-              <router-link to="customers/add-customer">
+              <router-link to="add-customer">
                 <PrimeVueButton
                   type="button"
                   severity="info"
@@ -48,12 +50,13 @@
         <PrimeVueColumn sortable field="points" header="Loyalty Point" style="width: 15%">
           <template #body="{ data }">
             <div class="flex gap-2">
-            {{data.points}} <p class="text-gray-400">Points</p>
+              {{ data.points }}
+              <p class="text-gray-400">Points</p>
             </div>
           </template>
         </PrimeVueColumn>
         <PrimeVueColumn sortable field="latestVisit" header="Lastest Visit" style="width: 15%" />
-        
+
         <PrimeVueColumn>
           <template #body="slotProps">
             <PrimeVueButton
@@ -106,7 +109,13 @@
       <PrimeVuePopover ref="op">
         <div class="flex flex-col items-start">
           <PrimeVueButton variant="text" label="Edit" icon="pi pi-pen-to-square" class="text-black" />
-          <PrimeVueButton variant="text" label="Delete" icon="pi pi-trash" class="text-red-500" />
+          <PrimeVueButton
+            variant="text"
+            label="Delete"
+            icon="pi pi-trash"
+            class="text-red-500"
+            @click="isDeleteOpen = true"
+          />
         </div>
       </PrimeVuePopover>
 
@@ -145,7 +154,7 @@
         </form>
       </PrimeVueDialog> -->
 
-      <!-- <PrimeVueDialog v-model:visible="isDeleteOpen" modal header="">
+      <PrimeVueDialog :visible="isDeleteOpen" modal header="">
         <template #container>
           <div class="w-[35rem] p-8">
             <div class="flex flex-col items-center gap-4 text-center">
@@ -168,7 +177,7 @@
             </div>
           </div>
         </template>
-      </PrimeVueDialog> -->
+      </PrimeVueDialog>
     </div>
   </div>
 </template>
@@ -182,6 +191,8 @@ const filters = ref({
 const selectedCustomer = ref(null);
 
 const isLoading = ref(false);
+
+const isDeleteOpen = ref(false);
 
 const op = ref();
 const displayPopover = (event, product) => {

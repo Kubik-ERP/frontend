@@ -20,6 +20,15 @@ const routes: RouteRecordRaw[] = [
           layout: LAYOUT_OPTIONS.DEFAULT,
         },
       },
+      {
+        path: 'add-customer',
+        name: 'addcustomer',
+        component: () => import('../views/AddCustomerUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.DEFAULT,
+        },
+      },
     ],
   },
 ];
