@@ -1,6 +1,9 @@
 <script setup lang="ts"></script>
 <template>
-  <section id="table-ticket" class="bg-white flex text-xs flex-col items-center gap-2 w-full max-w-md p-4">
+  <section
+    id="table-ticket"
+    class="bg-white flex text-sm flex-col items-center gap-2 w-full max-w-xs lg:max-w-md p-4"
+  >
     <div class="invoice-name">
       <span class="font-bold w-full flex justify-center">George</span>
       <span class="w-full flex justify-center text-[10px]">Table Checker</span>
@@ -62,5 +65,11 @@
   display: block;
   text-align: center;
   color: #000; /* Adjust color */
+}
+
+@media (max-width: 1024px) {
+  .invoice-name::after {
+    content: '====================================';
+  }
 }
 </style>

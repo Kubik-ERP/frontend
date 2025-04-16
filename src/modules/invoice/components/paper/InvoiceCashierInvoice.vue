@@ -1,6 +1,6 @@
 <script setup lang="ts"></script>
 <template>
-  <section id="invoice-paper" class="bg-white flex flex-col items-center gap-2 w-full max-w-md p-4">
+  <section id="invoice-paper" class="bg-white flex flex-col items-center gap-2 w-full max-w-xs lg:max-w-md p-4">
     <section id="logo" class="w-20 h-20 bg-grayscale-10">&nbsp;</section>
     <h6 id="outlet-name" class="font-semibold text-black text-sm">Lawson Kaliurang</h6>
     <p id="outlet-address" class="font-normal text-black text-center text-sm px-4">
@@ -107,20 +107,28 @@
   font-size: 12px;
 }
 
-/* Top border */
 .invoice-datetime-or-status::before {
-  content: '===================================================='; /* Adjust length as needed */
+  content: '====================================================';
   display: block;
   text-align: center;
-  color: #000; /* Adjust color */
+  color: #000;
 }
 
-/* Bottom border */
 .invoice-datetime-or-status::after {
-  content: '===================================================='; /* Adjust length as needed */
+  content: '====================================================';
   display: block;
   text-align: center;
-  color: #000; /* Adjust color */
+  color: #000;
+}
+
+@media (max-width: 1024px) {
+  .invoice-datetime-or-status::before {
+    content: '====================================';
+  }
+
+  .invoice-datetime-or-status::after {
+    content: '====================================';
+  }
 }
 
 /* Content styling with flexbox for alignment */

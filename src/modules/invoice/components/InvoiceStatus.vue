@@ -1,7 +1,7 @@
 <template>
   <section
     id="invoice-status"
-    class="col-span-4 relative inset-0 z-0 bg-white border-l border-solid border-grayscale-10 flex flex-col items-center px-4 py-5 gap-6"
+    class="hidden lg:flex col-span-4 relative inset-0 z-0 bg-white border-l border-solid border-grayscale-10 flex-col items-center px-4 py-5 gap-6"
   >
     <section id="invoice-id" class="flex flex-col items-center">
       <p id="label-invoice-id" class="font-normal text-text-disabled text-sm">Invoice ID</p>

@@ -1,8 +1,11 @@
 <script setup lang="ts"></script>
 <template>
-  <section id="kitchen-invoice" class="bg-white flex text-xs flex-col items-center gap-2 w-full max-w-md p-4">
+  <section
+    id="kitchen-invoice"
+    class="bg-white flex text-xs flex-col items-center gap-2 w-full max-w-xs lg:max-w-md p-4"
+  >
     <div class="invoice-name">
-      <span class="font-bold w-full flex justify-center">George</span>
+      <span class="font-bold w-full flex justify-center text-sm">George</span>
     </div>
 
     <section id="cashier-information" class="flex items-center justify-between w-full">
@@ -116,5 +119,11 @@
   display: block;
   text-align: center;
   color: #000; /* Adjust color */
+}
+
+@media (max-width: 1024px) {
+  .invoice-name::after {
+    content: '====================================';
+  }
 }
 </style>
