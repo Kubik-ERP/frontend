@@ -89,7 +89,8 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
             />
             <PrimeVueInputNumber
               v-model="item.qty"
-              input-class="w-14 h-8 lg:h-10 justify-items-center"
+              class="!w-14"
+              input-class="!w-14 justify-items-center text-center"
               :min="1"
               :max="item.product.qty"
             />

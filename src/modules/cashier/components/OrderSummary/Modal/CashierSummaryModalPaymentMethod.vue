@@ -15,7 +15,7 @@ const { cashierOrderSummary_modalPaymentMethod, cashierOrderSummary_handlePaymen
       modal
       :style="{ width: '32rem' }"
       :position="useIsMobile() || useIsTablet() ? 'bottom' : 'center'"
-      class="p-0 m-0"
+      class="p-0 m-0 rounded-t-4xl lg:rounded-lg"
     >
       <template #container="{ closeCallback }">
         <section id="cashier-summary-modal-payment-method" class="flex flex-col gap-6 p-6">

@@ -48,6 +48,7 @@ const {
   cashierOrderSummary_calculation,
   cashierOrderSummary_summary,
 
+  cashierOrderSummary_modalMenuOrderItem,
   cashierOrderSummary_modalOrderSummary,
   cashierOrderSummary_modalAddEditNotes,
   cashierOrderSummary_modalCancelOrder,
@@ -109,6 +110,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_calculation,
   cashierOrderSummary_summary,
 
+  cashierOrderSummary_modalMenuOrderItem,
   cashierOrderSummary_modalOrderSummary,
   cashierOrderSummary_modalAddEditNotes,
   cashierOrderSummary_modalCancelOrder,

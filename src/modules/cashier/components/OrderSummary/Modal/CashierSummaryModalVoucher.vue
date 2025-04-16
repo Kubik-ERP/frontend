@@ -17,8 +17,12 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
       v-model:visible="cashierOrderSummary_modalVoucher.show"
       modal
       :position="useIsMobile() || useIsTablet() ? 'bottom' : 'center'"
-      :style="{ width: '34rem', height: '80dvh' }"
-      class="p-0 m-0"
+      :style="{
+        width: '34rem',
+        height: useIsMobile() || useIsTablet() ? '100dvh' : '80dvh',
+        maxHeight: useIsMobile() || useIsTablet() ? '100dvh' : '80dvh',
+      }"
+      class="p-0 m-0 rounded-none lg:rounded-lg"
     >
       <template #container="{ closeCallback }">
         <section id="cashier-summary-modal-voucher-content" class="flex flex-col gap-6 p-6 h-full">
@@ -27,8 +31,23 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
             class="flex flex-col gap-5 flex-grow overflow-y-auto"
           >
             <div class="flex flex-col gap-2">
-              <span class="text-lg font-semibold">Voucher</span>
-              <span class="text-grayscale-70 text-sm">Select or search voucher code</span>
+              <div class="flex justify-between">
+                <div class="flex gap-2 items-center">
+                  <AppBaseSvg
+                    name="chevron-left"
+                    class="!h-4 !w-4 block lg:hidden cursor-pointer"
+                    @click="closeCallback"
+                  />
+
+                  <span class="text-lg font-semibold">Voucher</span>
+                </div>
+
+                <section id="status" class="flex lg:hidden items-center gap-2">
+                  <section id="dot-status" class="w-2 h-2 rounded-full bg-success">&nbsp;</section>
+                  <span class="font-normal text-disabled text-xs">Online</span>
+                </section>
+              </div>
+              <span class="hidden lg:block text-grayscale-70 text-sm">Select or search voucher code</span>
             </div>
 
             <PrimeVueIconField class="flex w-full">
@@ -62,7 +81,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                 }"
                 @click="cashierOrderSummary_modalVoucher.form.voucher_code = item.code"
               >
-                <div class="flex items-center justify-between">
+                <div class="flex lg:flex-row flex-col items-start lg:items-center gap-2 justify-between">
                   <div class="flex flex-col gap-1">
                     <span class="font-semibold">{{ item.label }}</span>
 
@@ -110,7 +129,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                       Rp 100.000</span
                     >
                   </div>
-                  <div class="flex flex-col text-right gap-1">
+                  <div class="flex flex-col lg:text-right text-start gap-1">
                     <span class="text-xs text-text-disabled">Discount</span>
                     <span class="font-semibold">Rp 100.000</span>
                   </div>
@@ -121,7 +140,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 
           <div class="flex justify-end gap-4">
             <PrimeVueButton
-              class="border-primary text-primary py-2.5 px-8"
+              class="border-primary hidden lg:block text-primary py-2.5 px-8"
               type="button"
               label="Cancel"
               outlined
@@ -129,7 +148,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
             ></PrimeVueButton>
 
             <PrimeVueButton
-              class="bg-primary border-none text-white py-2.5 px-8"
+              class="bg-primary w-full lg:w-fit border-none text-white py-2.5 px-8"
               type="button"
               label="Apply Promo"
               :disabled="!cashierOrderSummary_modalVoucher.form.voucher_code"

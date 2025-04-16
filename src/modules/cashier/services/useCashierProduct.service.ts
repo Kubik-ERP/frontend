@@ -139,7 +139,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @description computed getters setters, convert qty to string for the v-model purpose
    */
   const cashierProduct_selectedProductQty = computed({
-    get: () => cashierProduct_modalAddEditItem.value.item?.qty.toString(),
+    get: () => cashierProduct_modalAddEditItem.value.item?.qty,
     set: (value: string) => {
       const qty = parseInt(value);
       const productQty = cashierProduct_modalAddEditItem.value.product?.qty || 1;

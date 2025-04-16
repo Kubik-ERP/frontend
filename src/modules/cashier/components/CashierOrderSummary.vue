@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// Components
 import CashierSummaryButtonAction from './OrderSummary/CashierSummaryButtonAction.vue';
 import CashierSummaryProductList from './OrderSummary/CashierSummaryProductList.vue';
 import CashierSummaryPromoPayment from './OrderSummary/CashierSummaryPromoPayment.vue';
@@ -7,6 +8,7 @@ import CashierSummaryTotal from './OrderSummary/CashierSummaryTotal.vue';
 
 import CashierSummaryModalCancelOrder from './OrderSummary/Modal/CashierSummaryModalCancelOrder.vue';
 import CashierSummaryModalInvoiceDetail from './OrderSummary/Modal/CashierSummaryModalInvoiceDetail.vue';
+import CashierSummaryModalMoreOptionsMobile from './OrderSummary/Modal/CashierSummaryModalMoreOptionsMobile.vue';
 import CashierSummaryModalOrderType from './OrderSummary/Modal/CashierSummaryModalOrderType.vue';
 import CashierSummaryModalPaymentMethod from './OrderSummary/Modal/CashierSummaryModalPaymentMethod.vue';
 import CashierSummaryModalPlaceOrderConfirmation from './OrderSummary/Modal/CashierSummaryModalPlaceOrderConfirmation.vue';
@@ -32,6 +34,8 @@ import CashierSummaryModalVoucher from './OrderSummary/Modal/CashierSummaryModal
 
       <CashierSummaryModalOrderType />
       <CashierSummaryModalSelectTable />
+
+      <CashierSummaryModalMoreOptionsMobile />
 
       <CashierSummaryModalVoucher />
       <CashierSummaryModalPaymentMethod />

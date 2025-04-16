@@ -135,6 +135,7 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_data: Ref<ICashierOrderSummaryData>;
   cashierOrderSummary_calculation: Ref<ICashierOrderSummaryCalculation>;
 
+  cashierOrderSummary_modalMenuOrderItem: Ref<{ show: boolean }>;
   cashierOrderSummary_modalOrderSummary: Ref<{ show: boolean }>;
   cashierOrderSummary_modalAddEditNotes: Ref<ICashierOrderSummaryModalAddEdit>;
   cashierOrderSummary_modalOrderType: Ref<ICashierOrderSummaryModalOrderType>;

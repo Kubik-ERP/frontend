@@ -22,7 +22,7 @@ export interface ICashierProductProvided {
   cashierProduct_selectedCategory: Ref<string[]>;
   cashierProduct_selectedView: Ref<'image' | 'grid' | 'inline'>;
 
-  cashierProduct_selectedProductQty: WritableComputedRef<string, string>;
+  cashierProduct_selectedProductQty: WritableComputedRef<number, number>;
 
   cashierProduct_handleSelectCategory: (category: string) => void;
   cashierProduct_handleSelectProduct: (product: ICashierProduct, item: ICashierModalAddProductItem) => void;

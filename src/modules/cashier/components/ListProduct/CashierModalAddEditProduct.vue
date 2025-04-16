@@ -24,7 +24,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
     :style="{ width: '34rem' }"
     :dismissable-mask="useIsMobile() || useIsTablet()"
     :position="useIsMobile() || useIsTablet() ? 'bottom' : 'center'"
-    class="p-0 m-0"
+    class="p-0 m-0 rounded-t-4xl lg:rounded-lg"
   >
     <template #container="{ closeCallback }">
       <div class="overflow-auto flex flex-col gap-6 text-sm lg:text-lg p-6">
@@ -49,10 +49,12 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               :disabled="Number(cashierProduct_modalAddEditItem.item.qty) <= 1"
               @click="cashierProduct_handleQuantity('decrease')"
             />
-            <PrimeVueInputText
+            <PrimeVueInputNumber
               v-model="cashierProduct_selectedProductQty"
-              class="w-14 justify-items-center text-center"
+              input-class="w-14 text-center justify-items-center"
               type="number"
+              :min="1"
+              :max="cashierProduct_modalAddEditItem.product?.qty ?? 0"
             />
             <PrimeVueButton
               type="button"

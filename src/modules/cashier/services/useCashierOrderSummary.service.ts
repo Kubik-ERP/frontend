@@ -355,6 +355,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_menuOrder = ref<MenuPassThroughAttributes>({} as MenuPassThroughAttributes);
 
+  const cashierOrderSummary_modalMenuOrderItem = ref({
+    show: false,
+  });
+
   const cashierOrderSummary_menuOrderItem = ref<MenuItem[]>([
     {
       label: 'Cancel Order',
@@ -419,6 +423,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_data,
     cashierOrderSummary_calculation,
 
+    cashierOrderSummary_modalMenuOrderItem,
     cashierOrderSummary_modalOrderSummary,
     cashierOrderSummary_modalAddEditNotes,
     cashierOrderSummary_modalPaymentMethod,

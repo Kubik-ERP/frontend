@@ -18,7 +18,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
       modal
       :style="{ width: '34rem' }"
       :position="useIsMobile() || useIsTablet() ? 'bottom' : 'center'"
-      class="p-0 m-0"
+      class="p-0 m-0 rounded-t-4xl lg:rounded-lg"
     >
       <template #container="{ closeCallback }">
         <section id="cashier-summary-modal-order-type" class="flex flex-col gap-6 p-6">

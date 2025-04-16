@@ -6,12 +6,17 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
 import CashierSummaryProductList from '../CashierSummaryProductList.vue';
 import CashierSummaryPromoPayment from '../CashierSummaryPromoPayment.vue';
 import CashierSummaryTotal from '../CashierSummaryTotal.vue';
+import CashierSummaryButtonOrderTable from '../CashierSummaryButtonOrderTable.vue';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalOrderSummary, cashierOrderSummary_modalOrderType, cashierOrderSummary_data } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const {
+  cashierOrderSummary_modalOrderSummary,
+  cashierOrderSummary_data,
+  cashierOrderSummary_modalMenuOrderItem,
+  cashierOrderSummary_modalPlaceOrderConfirmation,
+} = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 <template>
   <section id="cashier-summary-modal-order-summary">
@@ -23,11 +28,19 @@ const { cashierOrderSummary_modalOrderSummary, cashierOrderSummary_modalOrderTyp
     >
       <template #container="{ closeCallback }">
         <section id="cashier-summary-modal-order-summary" class="flex flex-col bg-[#F9FAFB]">
-          <section id="cashier-summary-modal-order-summary-header" class="p-4 bg-white">
+          <section
+            id="cashier-summary-modal-order-summary-header"
+            class="p-4 bg-white flex items-center justify-between"
+          >
             <div class="flex items-center gap-2" @click="cashierOrderSummary_modalOrderSummary.show = false">
               <AppBaseSvg name="chevron-left" class="!h-4 !w-4 cursor-pointer" @click="closeCallback" />
               <span class="text-lg font-semibold">Cart</span>
             </div>
+
+            <section id="status" class="flex lg:hidden items-center gap-2">
+              <section id="dot-status" class="w-2 h-2 rounded-full bg-success">&nbsp;</section>
+              <span class="font-normal text-disabled text-xs">Online</span>
+            </section>
           </section>
 
           <hr class="border-b border-grayscale-10" />
@@ -54,19 +67,9 @@ const { cashierOrderSummary_modalOrderSummary, cashierOrderSummary_modalOrderTyp
                 placeholder="Please input Customer Name"
               />
             </div>
-
-            <div class="py-1 bg-[#F9FAFB] p-0" />
-
-            <PrimeVueButton
-              class="flex w-full truncate cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 text-text-disabled border border-text-disabled rounded-sm p-2.5 justify-between items-center"
-              variant="outlined"
-              @click="cashierOrderSummary_modalOrderType.show = true"
-            >
-              Order Type
-
-              <AppBaseSvg name="order" class="!h-5 !w-5" />
-            </PrimeVueButton>
           </section>
+
+          <CashierSummaryButtonOrderTable />
 
           <hr class="border-b border-grayscale-10" />
 
@@ -85,16 +88,27 @@ const { cashierOrderSummary_modalOrderSummary, cashierOrderSummary_modalOrderTyp
           id="cashier-summary-modal-order-summary-footer"
           class="bottom-0 w-full flex flex-col gap-2 p-4 bg-white border-t border-grayscale-10"
         >
-          <div class="flex gap-2 items-center">
-            <AppBaseSvg name="cash" class="!h-6 !w-6" />
-            <span class="font-semibold text-sm">Rp.120.000</span>
+          <div class="flex justify-between items-center">
+            <div class="flex gap-2 items-center">
+              <AppBaseSvg name="cash" class="!h-6 !w-6" />
+              <span class="font-semibold text-sm">Rp.120.000</span>
+            </div>
+
+            <PrimeVueButton
+              text
+              aria-haspopup="true"
+              aria-controls="overlay_menu_summary_order"
+              @click="cashierOrderSummary_modalMenuOrderItem.show = true"
+            >
+              <i class="pi pi-ellipsis-h text-primary"></i>
+            </PrimeVueButton>
           </div>
 
           <PrimeVueButton
             class="py-2.5 px-14"
             type="button"
             label="Place Order"
-            @click="cashierOrderSummary_modalOrderSummary.show = false"
+            @click="cashierOrderSummary_modalPlaceOrderConfirmation.show = true"
           ></PrimeVueButton>
         </section>
       </template>

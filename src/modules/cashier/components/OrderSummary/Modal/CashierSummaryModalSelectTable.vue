@@ -11,21 +11,42 @@ const {
   cashierOrderSummary_handleSelectTable,
   cashierOrderSummary_handleToggleSelectTable,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+
+// Composables
+import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 </script>
 <template>
   <section id="cashier-summary-modal-select-table">
     <PrimeVueDialog
       v-model:visible="cashierOrderSummary_modalSelectTable.show"
       modal
-      :style="{ width: '85%', minHeight: '500px', maxHeight: 'calc(100dvh - 50px)' }"
+      :style="{
+        width: useIsMobile() || useIsTablet() ? '100dvw' : '85%',
+        minHeight: '500px',
+        maxHeight: useIsMobile() || useIsTablet() ? '100dvh' : 'calc(100dvh - 50px)',
+      }"
+      class="p-0 m-0 rounded-none lg:rounded-lg"
     >
       <template #container="{ closeCallback }">
         <section id="cashier-summary-modal-select-table" class="flex flex-col gap-6 p-6 flex-1 min-h-0">
           <!-- Form -->
           <section id="cashier-summary-modal-select-table-form" class="flex flex-col gap-3">
             <section id="cashier-summary-modal-select-table-form-title" class="flex flex-col gap-2">
-              <span class="font-semibold text-lg">Table</span>
-              <span class="text-sm text-grayscale-70">Select Table</span>
+              <div class="flex justify-between">
+                <div class="flex gap-2 items-center">
+                  <AppBaseSvg
+                    name="chevron-left"
+                    class="!h-4 !w-4 block lg:hidden cursor-pointer"
+                    @click="closeCallback"
+                  />
+                  <span class="font-semibold text-lg">Table</span>
+                </div>
+                <section id="status" class="flex lg:hidden items-center gap-2">
+                  <section id="dot-status" class="w-2 h-2 rounded-full bg-success">&nbsp;</section>
+                  <span class="font-normal text-disabled text-xs">Online</span>
+                </section>
+              </div>
+              <span class="hidden lg:block text-sm text-grayscale-70">Select Table</span>
             </section>
           </section>
 
@@ -33,7 +54,7 @@ const {
           <section id="cashier-summary-modal-select-table-body" class="gap-4 grid grid-cols-12 flex-1 min-h-0">
             <!-- Left Section -->
             <div
-              class="col-span-7 xl:col-span-9 border border-grayscale-10 flex flex-col gap-4 rounded-xs p-2 flex-1 min-h-0"
+              class="col-span-12 lg:col-span-7 xl:col-span-9 border border-grayscale-10 flex flex-col gap-4 rounded-xs p-2 flex-1 min-h-0"
             >
               <div class="flex gap-4 items-center">
                 <span class="font-semibold">Floor</span>
@@ -78,9 +99,11 @@ const {
                       ]"
                       @click="item.available ? cashierOrderSummary_handleToggleSelectTable(item.value) : null"
                     >
-                      <span class="font-semibold">{{ item.label }}</span>
-                      <span class="text-sm">{{ item.available ? 'Available' : 'Unavailable' }}</span>
-                      <span v-if="item.available" class="text-sm">{{ item.totalSeat }} seats</span>
+                      <span class="text-xs lg:text-base font-semibold">{{ item.label }}</span>
+                      <span class="text-[10px] lg:text-sm">{{
+                        item.available ? 'Available' : 'Unavailable'
+                      }}</span>
+                      <span v-if="item.available" class="text-[10px] lg:text-sm">{{ item.totalSeat }} seats</span>
                     </div>
                   </div>
                 </template>
@@ -90,11 +113,11 @@ const {
 
             <!-- Right Section -->
             <div
-              class="col-span-5 xl:col-span-3 flex-1 overflow-auto border border-grayscale-10 flex flex-col gap-4 rounded-xs p-2"
+              class="col-span-12 lg:col-span-5 xl:col-span-3 flex-1 overflow-auto border border-grayscale-10 flex flex-col gap-2 lg:gap-4 rounded-xs p-2"
             >
-              <span class="text-lg font-semibold">Available Table</span>
+              <span class="text-sm lg:text-lg font-semibold">Available Table</span>
 
-              <span class="text-xs text-text-disabled"
+              <span class="text-[10px] lg:text-xs text-text-disabled"
                 >Floor {{ cashierOrderSummary_modalSelectTable.activeFloor }}</span
               >
 
@@ -140,7 +163,7 @@ const {
           <!-- Footer -->
           <div class="flex justify-end gap-2">
             <PrimeVueButton
-              class="border-primary text-primary py-2.5 px-14"
+              class="border-primary hidden lg:block text-primary py-2.5 px-14"
               type="button"
               label="Cancel"
               outlined
@@ -148,7 +171,7 @@ const {
             ></PrimeVueButton>
 
             <PrimeVueButton
-              class="bg-primary border-none text-white py-2.5 px-14"
+              class="bg-primary w-full lg:w-fit border-none text-white py-2.5 px-14"
               type="button"
               label="Select Table"
               :disabled="!cashierOrderSummary_modalSelectTable.selectedTable"
