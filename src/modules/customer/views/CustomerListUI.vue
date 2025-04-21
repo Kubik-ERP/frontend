@@ -188,6 +188,10 @@ import { FilterMatchMode } from '@primevue/core/api';
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
+
+import { getAllCustomers } from '../services/CustomersService';
+
+
 const selectedCustomer = ref(null);
 
 const isLoading = ref(false);
@@ -200,88 +204,106 @@ const displayPopover = (event, product) => {
   op.value.show(event);
   // console.log('product', product);
 };
-const customers = ref([
-  {
-    id: '00105789127009831',
-    name: 'Bessie Cooper',
-    email: 'bcopper@gmail.com',
-    phone: '0876-5432-1098',
-    points: 100,
-    latestVisit: '01/08/2024',
-  },
-  {
-    id: '00105789127009832',
-    name: 'Esther Howard',
-    email: 'ehoward@gmail.com',
-    phone: '0856-7890-4321',
-    points: 100,
-    latestVisit: '01/08/2024',
-  },
-  {
-    id: '00105789127009833',
-    name: 'Brooklyn Simmons',
-    email: 'bsimmons@gmail.com',
-    phone: '0812-3456-7890',
-    points: 100,
-    latestVisit: '01/08/2024',
-  },
-  {
-    id: '00105789127009834',
-    name: 'Cameron Williamson',
-    email: 'cwilliamson@gmail.com',
-    phone: '0834-5678-1234',
-    points: 100,
-    latestVisit: '01/08/2024',
-  },
-  {
-    id: '00105789127009835',
-    name: 'Leslie Alexander',
-    email: 'lalexander@gmail.com',
-    phone: '0833-2468-1357',
-    points: 100,
-    latestVisit: '01/08/2024',
-  },
-  {
-    id: '00105789127009836',
-    name: 'Guy Hawkins',
-    email: 'ghawkins@gmail.com',
-    phone: '0896-1092-8473',
-    points: 100,
-    latestVisit: '01/08/2024',
-  },
-  {
-    id: '00105789127009837',
-    name: 'Floyd Miles',
-    email: 'fmiles@gmail.com',
-    phone: '0852-8023-5432',
-    points: 100,
-    latestVisit: '01/08/2024',
-  },
-  {
-    id: '00105789127009838',
-    name: 'Marvin McKinney',
-    email: 'mmckinney@gmail.com',
-    phone: '0821-0987-6543',
-    points: 100,
-    latestVisit: '01/08/2024',
-  },
-  {
-    id: '00105789127009839',
-    name: 'Robert Fox',
-    email: 'rfox@gmail.com',
-    phone: '0822-4093-1765',
-    points: 100,
-    latestVisit: '01/08/2024',
-  },
-  {
-    id: '00105789127009830',
-    name: 'Jacob Jones',
-    email: 'jones@gmail.com',
-    phone: '0851-8462-3190',
-    points: 100,
-    latestVisit: '01/08/2024',
-  },
-]);
+// const customers = ref([
+//   {
+//     id: '00105789127009831',
+//     name: 'Bessie Cooper',
+//     email: 'bcopper@gmail.com',
+//     phone: '0876-5432-1098',
+//     points: 100,
+//     latestVisit: '01/08/2024',
+//   },
+//   {
+//     id: '00105789127009832',
+//     name: 'Esther Howard',
+//     email: 'ehoward@gmail.com',
+//     phone: '0856-7890-4321',
+//     points: 100,
+//     latestVisit: '01/08/2024',
+//   },
+//   {
+//     id: '00105789127009833',
+//     name: 'Brooklyn Simmons',
+//     email: 'bsimmons@gmail.com',
+//     phone: '0812-3456-7890',
+//     points: 100,
+//     latestVisit: '01/08/2024',
+//   },
+//   {
+//     id: '00105789127009834',
+//     name: 'Cameron Williamson',
+//     email: 'cwilliamson@gmail.com',
+//     phone: '0834-5678-1234',
+//     points: 100,
+//     latestVisit: '01/08/2024',
+//   },
+//   {
+//     id: '00105789127009835',
+//     name: 'Leslie Alexander',
+//     email: 'lalexander@gmail.com',
+//     phone: '0833-2468-1357',
+//     points: 100,
+//     latestVisit: '01/08/2024',
+//   },
+//   {
+//     id: '00105789127009836',
+//     name: 'Guy Hawkins',
+//     email: 'ghawkins@gmail.com',
+//     phone: '0896-1092-8473',
+//     points: 100,
+//     latestVisit: '01/08/2024',
+//   },
+//   {
+//     id: '00105789127009837',
+//     name: 'Floyd Miles',
+//     email: 'fmiles@gmail.com',
+//     phone: '0852-8023-5432',
+//     points: 100,
+//     latestVisit: '01/08/2024',
+//   },
+//   {
+//     id: '00105789127009838',
+//     name: 'Marvin McKinney',
+//     email: 'mmckinney@gmail.com',
+//     phone: '0821-0987-6543',
+//     points: 100,
+//     latestVisit: '01/08/2024',
+//   },
+//   {
+//     id: '00105789127009839',
+//     name: 'Robert Fox',
+//     email: 'rfox@gmail.com',
+//     phone: '0822-4093-1765',
+//     points: 100,
+//     latestVisit: '01/08/2024',
+//   },
+//   {
+//     id: '00105789127009830',
+//     name: 'Jacob Jones',
+//     email: 'jones@gmail.com',
+//     phone: '0851-8462-3190',
+//     points: 100,
+//     latestVisit: '01/08/2024',
+//   },
+// ]);
+
+const customers = ref([]);
+
+const loadCustomers = async () => {
+  isLoading.value = true;
+  try {
+    customers.value = await getAllCustomers();
+  } catch (error) {
+    console.error('Failed to fetch customers:', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+onMounted(() => {
+  loadCustomers();
+  console.log('customers', customers.value);
+});
 </script>
 
 <style lang="scss" scoped>
