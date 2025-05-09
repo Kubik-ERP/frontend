@@ -44,6 +44,8 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     phoneNumber: '',
     password: '',
     passwordConfirmation: '',
+    pin: '',
+    pin_confirmation: '',
   });
   const authenticationSignUp_formDataOfSetUpPin = reactive({
     pin: '',
@@ -78,7 +80,10 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     pin: { required },
   }));
   const authenticationSignUp_formRulesOfVerifyPin = computed(() => ({
-    pin: { required },
+    pin: {
+      required,
+      sameAs: sameAs(authenticationSignUp_formDataOfSetUpPin.pin),
+    },
   }));
 
   const authenticationSignUp_formValidations = useVuelidate(
@@ -202,15 +207,73 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
    */
   const authenticationSignUp_fetchAuthenticationVerifyOtp = async () => {
     try {
-      await store.fetchAuthentication_verifyOtp(authenticationSignUp_formDataOfVerifyOtp, {
-        ...httpAbort_registerAbort(AUTHENTICATION_SEND_OTP_REQUEST),
-      });
+      await store.fetchAuthentication_verifyOtp(
+        {
+          ...authenticationSignUp_formDataOfVerifyOtp,
+          email: authenticationSignUp_formData.email,
+        },
+        {
+          ...httpAbort_registerAbort(AUTHENTICATION_SEND_OTP_REQUEST),
+        },
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
         return Promise.reject(new Error(String(error)));
       }
+    }
+  };
+
+  /**
+   * @description Handle dynamic validation for forms
+   */
+  const authenticationSignUp_dynamicValidation = (): void => {
+    switch (authenticationSignUp_activeStep.value) {
+      case 0:
+        authenticationSignUp_formValidations.value.$touch();
+        if (authenticationSignUp_formValidations.value.$invalid) return;
+        break;
+      case 1:
+        authenticationSignUp_formValidationsOfSetUpPin.value.$touch();
+        if (authenticationSignUp_formValidationsOfSetUpPin.value.$invalid) return;
+        break;
+      case 2:
+        authenticationSignUp_formValidationsOfVerifyPin.value.$touch();
+        if (authenticationSignUp_formValidationsOfVerifyPin.value.$invalid) return;
+        break;
+      default:
+        break;
+    }
+  };
+
+  /**
+   * @description Handle dynamic business logic for forms
+   */
+  const authenticationSignUp_dynamicBusinessLogic = (): void => {
+    switch (authenticationSignUp_activeStep.value) {
+      case 0:
+        authenticationSignUp_fetchAuthenticationSendOtp();
+        authenticationSignUp_maskPhoneNumber();
+        authenticationSignUp_activeStep.value += 1;
+
+        break;
+      case 1:
+        authenticationSignUp_fetchAuthenticationVerifyOtp();
+        authenticationSignUp_activeStep.value += 1;
+
+        break;
+      case 2:
+        authenticationSignUp_activeStep.value += 1;
+
+        break;
+      case 3:
+        authenticationSignUp_fetchAuthenticationSignUp();
+        router.push({ name: 'sign-in' });
+
+        break;
+      default:
+        break;
     }
   };
 
@@ -225,26 +288,10 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
    * @description Handle action on submit form.
    */
   const authenticationSignUp_onSubmit = async (): Promise<void> => {
-    if (authenticationSignUp_activeStep.value === 0) {
-      authenticationSignUp_formValidations.value.$touch();
-      if (authenticationSignUp_formValidations.value.$invalid) return;
-    } else {
-      authenticationSignUp_formValidationsOfVerifyOtp.value.$touch();
-      if (authenticationSignUp_formValidationsOfVerifyOtp.value.$invalid) return;
-    }
+    authenticationSignUp_dynamicValidation();
 
     try {
-      if (authenticationSignUp_activeStep.value === 0) {
-        await authenticationSignUp_fetchAuthenticationSignUp();
-        await authenticationSignUp_fetchAuthenticationSendOtp();
-        authenticationSignUp_maskPhoneNumber();
-        authenticationSignUp_activeStep.value = 1;
-      } else {
-        authenticationSignUp_formDataOfVerifyOtp.email = authenticationSignUp_formData.email;
-
-        await authenticationSignUp_fetchAuthenticationVerifyOtp();
-        router.push({ name: 'sign-in' });
-      }
+      authenticationSignUp_dynamicBusinessLogic();
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);

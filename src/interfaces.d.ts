@@ -43,6 +43,23 @@ declare global {
     width?: string;
   }
 
+  interface IPropsDialogConfirmation {
+    description?: string;
+    iconName?: string;
+    isLoading?: boolean;
+    isOpen?: boolean;
+    isUsingIcon?: boolean;
+    isUsingButtonActions?: boolean;
+    isUsingButtonSecondary?: boolean;
+    onClickButtonPrimary?: () => void;
+    onClickButtonSecondary?: () => void;
+    textButtonPrimary?: string;
+    textButtonSecondary?: string;
+    title?: string;
+    type?: 'error' | 'info';
+    width?: string;
+  }
+
   interface IPropsFormGroup {
     isNameAsLabel: boolean;
     isNameAsPlaceholder: boolean;

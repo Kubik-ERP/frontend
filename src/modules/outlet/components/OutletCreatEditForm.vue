@@ -20,21 +20,37 @@ const { outletCreateEdit_isLoading, outletCreateEdit_onCancel, outletCreateEdit_
     <OutletCreateEditFormLocation />
     <OutletCreateEditFormOperational />
 
-    <section id="button-actions" class="flex items-center gap-4 mt-4">
-      <PrimeVueButton
-        class="border-blue-primary bg-transparent font-semibold text-base text-blue-primary w-full max-w-36"
-        label="Cancel"
-        severity="secondary"
-        variant="outlined"
-        @click="outletCreateEdit_onCancel()"
-      />
+    <section id="button-actions" class="flex items-center justify-between mt-4">
+      <section id="left-contents" class="flex items-center gap-4 w-fit">
+        <PrimeVueButton
+          class="border-blue-primary bg-transparent font-semibold text-base text-blue-primary w-36 basic-smooth-animation hover:bg-grayscale-10"
+          label="Cancel"
+          severity="secondary"
+          variant="outlined"
+          @click="outletCreateEdit_onCancel()"
+        />
 
-      <PrimeVueButton
-        class="bg-blue-primary border-none text-sm py-[10px] w-full max-w-36"
-        label="Create Store"
-        type="submit"
-        :loading="outletCreateEdit_isLoading"
-      />
+        <PrimeVueButton
+          class="bg-blue-primary border-none text-sm py-[10px] w-36"
+          label="Create Store"
+          type="submit"
+          :loading="outletCreateEdit_isLoading"
+        />
+      </section>
+
+      <section id="right-contents" class="flex items-center gap-4">
+        <PrimeVueButton
+          class="w-36 border-none bg-transparent basic-smooth-animation hover:bg-grayscale-10"
+          severity="secondary"
+        >
+          <template #default>
+            <section id="content" class="flex items-center gap-2">
+              <AppBaseSvg name="delete" />
+              <span class="font-semibol text-base text-error-main">Delete Store</span>
+            </section>
+          </template>
+        </PrimeVueButton>
+      </section>
     </section>
   </form>
 </template>

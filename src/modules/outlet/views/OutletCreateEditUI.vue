@@ -55,8 +55,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section id="outlet-create-edit" class="w-full">
+  <section id="outlet-create-edit" class="w-full pb-5">
     <OutletCreatEditForm />
     <OutletCreateEditDialogPIN />
+    <AppBaseDialogConfirmation />
   </section>
 </template>

@@ -123,6 +123,9 @@
     "setActivePinia": true,
     "setMapStoreSuffix": true,
     "storeToRefs": true,
-    "LAYOUT_NAVBAR": true
+    "LAYOUT_NAVBAR": true,
+    "APP_BASE_URL": true,
+    "Slot": true,
+    "Slots": true
   }
 }

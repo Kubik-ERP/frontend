@@ -37,6 +37,7 @@ export interface IOutletCreateEditProvided {
   outletCreateEdit_onCloseDialogVerifyPIN: () => void;
   outletCreateEdit_onDeleteOutlet: (outletId: string) => Promise<unknown>;
   outletCreateEdit_onRemovePhoto: () => void;
+  outletCreateEdit_onShowDialogDeleteOutlet: () => Promise<void>;
   outletCreateEdit_onSubmit: () => Promise<unknown>;
   outletCreateEdit_onSubmitDialogVerifyPIN: () => Promise<unknown>;
   outletCreateEdit_onUploadPhoto: (event: FileUploadSelectEvent) => void;

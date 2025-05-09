@@ -31,7 +31,13 @@ const {
         <AppBaseSvg name="edit" class="relative inset-0 w-4 h-4 basic-smooth-animation cursor-pointer" />
       </RouterLink>
 
-      <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
+      <template v-if="outlet.photo">
+        <PrimeVueAvatar class="mr-2" :image="APP_BASE_URL + outlet.photo" size="xlarge" shape="circle" />
+      </template>
+
+      <template v-else>
+        <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
+      </template>
 
       <section id="information" class="flex flex-col items-center gap-2">
         <h5 class="font-semibold text-base text-black">
