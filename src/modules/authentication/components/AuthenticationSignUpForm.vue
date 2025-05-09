@@ -18,7 +18,7 @@ const {
   <form class="form-group flex flex-col gap-10 w-full max-w-md" @submit.prevent="authenticationSignUp_onSubmit">
     <section id="greeting-text" class="flex items-end justify-between">
       <section id="text-information" class="flex flex-col gap-3">
-        <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
+        <img src="@/app/assets/images/app-logo.png" alt="app-logo" class="w-fit h-fit" />
         <h1 class="font-bold text-2xl leading-8">Create Account</h1>
       </section>
 
@@ -52,7 +52,7 @@ const {
           <PrimeVueInputText
             v-model="authenticationSignUp_formData.fullName"
             :loading="authenticationSignUp_isLoading"
-            placeholder="input your full name"
+            placeholder="Input your full name"
             class="text-sm w-full"
             :class="{ ...classes }"
             v-on="useListenerForm(authenticationSignUp_formValidations, 'fullName')"
