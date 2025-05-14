@@ -10,7 +10,7 @@ const router = useRouter();
     class="bg-white border border-solid border-grayscale-10 flex gap-4 items-center justify-between lg:justify-center relative inset-0 z-0 px-4 lg:px-12 py-6 w-full"
   >
     <div class="flex gap-4 items-center">
-      <AppBaseSvg name="close" class="!h-3.5 !w-3.5" @click="router.go(-1)" />
+      <AppBaseSvg name="close" class="block lg:hidden !h-3.5 !w-3.5" @click="router.go(-1)" />
 
       <h1 class="font-semibold text-black text-base lg:text-lg">Invoice Detail</h1>
     </div>

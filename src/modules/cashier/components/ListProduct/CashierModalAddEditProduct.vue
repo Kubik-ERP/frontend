@@ -98,7 +98,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
         <PrimeVueButton
           v-if="!cashierProduct_modalAddEditItem.isAddNotesActive"
           variant="text"
-          class="w-fit hidden lg:block"
+          class="w-fit hidden lg:flex"
           @click="cashierProduct_modalAddEditItem.isAddNotesActive = true"
         >
           <AppBaseSvg name="add-notes" />
