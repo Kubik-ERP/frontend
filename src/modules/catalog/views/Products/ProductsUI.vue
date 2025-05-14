@@ -43,7 +43,9 @@
         <PrimeVueColumn sortable field="id" header="Product ID" style="width: 15%"></PrimeVueColumn>
         <PrimeVueColumn sortable field="name" header="Name" style="width: 30%"></PrimeVueColumn>
         <PrimeVueColumn sortable field="categories" header="Category" style="width: 14%">
-
+          <template #body="{ data }">
+            <CategoryPill :categories="data.categories" />
+          </template>
         </PrimeVueColumn>
         <PrimeVueColumn sortable field="variants" header="Variants" style="width: 20%">
           <template #body="{ data }">
@@ -198,6 +200,7 @@ import { FilterMatchMode } from '@primevue/core/api';
 import ProductVariantPill from '../../components/ProductVariantPill.vue';
 
 import { getAllProducts } from '@/modules/catalog/services/Product/ProductServices';
+import CategoryPill from '@/modules/catalog/components/Category/CategoryPill.vue';
 
 function formatCurrency(value) {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' })
