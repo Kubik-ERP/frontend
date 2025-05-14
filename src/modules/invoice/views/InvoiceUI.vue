@@ -28,7 +28,7 @@ provide<IInvoiceProvided>('invoice', {
 
     <InvoiceStatusMobile />
 
-    <section id="content" class="grid grid-rows-1 grid-cols-12 h-[calc(100dvh-4rem)]">
+    <section id="content" class="relative grid grid-rows-1 grid-cols-12 h-[calc(100dvh-5rem)]">
       <InvoicePaper />
       <InvoiceStatus />
     </section>

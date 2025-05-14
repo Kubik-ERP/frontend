@@ -9,7 +9,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
     },
     {
       id: 2,
-      name: 'Kitchen Invoice',
+      name: 'Kitchen Ticket',
     },
     {
       id: 3,
