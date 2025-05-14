@@ -11,21 +11,27 @@ export const getAllCustomers = async (): Promise<ICustomer[]> => {
     id: item.id,
     name: item.name,
     email: item.email,
-    phone: item.phone || '-',
+    code: item.code,
+    phone: item.number || '-',
     points: item.points || 0,
     latestVisit: item.latestVisit || '-',
   }));
 };
 
-export const createCustomer = async (payload: { name: string; email: string; phone?: string }): Promise<ICustomer> => {
+export const createCustomer = async (payload: {
+  name: string;
+  email: string;
+  phone?: string;
+}): Promise<ICustomer> => {
   const response = await axios.post(API_URL, payload);
   const data: ICustomer = response.data.data;
   return {
     id: data.id,
     name: data.name,
     email: data.email,
-    phone: data.phone || '-',
+    code: data.code,
+    number: data.number || '-',
     points: data.points || 0,
     latestVisit: data.latestVisit || '-',
   };
-}
+};
