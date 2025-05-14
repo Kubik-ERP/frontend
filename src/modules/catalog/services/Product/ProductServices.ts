@@ -14,7 +14,8 @@ export const getAllProducts = async (): Promise<IProduct[]> => {
     price: item.price,
     discount_price: item.discount_price || 0,
     picture_url: item.picture_url || '-',
-    categories_has_products: item.categories_has_products || [],
+    categories: item.categories_has_products?.map((v: any) => v.categories) || [],
+    variants: item.variant_has_products?.map((v: any) => v.variant) || [],
   }));
 };
 

@@ -1,7 +1,6 @@
 import { ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface.ts';
 
 export interface IProduct {
-
   id: string;
   name: string;
   price: number;

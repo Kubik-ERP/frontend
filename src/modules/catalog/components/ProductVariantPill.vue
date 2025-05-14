@@ -6,7 +6,7 @@
         :key="variant"
         class="text-primary bg-blue-secondary-background rounded-full px-2 py-1 w-fit whitespace-nowrap text-center text-xs"
       >
-        {{ variant }}
+        {{ variant.name }}
       </div>
     </div>
     <div v-else-if="props.variants.length > 3" class="flex gap-2 flex-wrap">
@@ -15,7 +15,7 @@
         :key="variant"
         class="text-primary bg-blue-secondary-background rounded-full px-2 py-1 w-fit whitespace-nowrap text-center text-xs"
       >
-        {{ variant }}
+        {{ variant.name }}
       </div>
 
       <div class="text-primary bg-grayscale-10 rounded-full px-2 py-1 w-fit whitespace-nowrap text-center text-xs">
