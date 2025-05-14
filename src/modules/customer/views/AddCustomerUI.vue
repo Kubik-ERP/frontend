@@ -33,7 +33,7 @@
         <label for="name">Phone Number</label>
         <div class="flex gap-4">
           <PrimeVueSelect
-            v-model="customer.phone.code"
+            v-model="customer.code"
             :options="country_codes"
             option-value="dial_code"
             option-label="name"
@@ -60,7 +60,7 @@
             </template>
           </PrimeVueSelect>
           <PrimeVueInputNumber
-            v-model="customer.phone.number"
+            v-model="customer.number"
             input-id="withoutgrouping"
             :use-grouping="false"
             fluid
@@ -120,8 +120,7 @@
 </template>
 
 <script setup>
-
-import CustomerTags from '@/modules/customer/components/addCustomer/tags.vue'
+import CustomerTags from '@/modules/customer/components/addCustomer/tags.vue';
 
 const country_codes = ref([
   {
@@ -1339,19 +1338,13 @@ const customer = reactive({
   name: '',
   gender: '',
   dob: '',
-  phone: {
-    code: '',
-    number: '',
-  },
+  code: '',
+  number: '',
   email: '',
   id: '',
   tags: [],
   address: '',
 });
-
-
-
-
 </script>
 
 <style lang="scss" scoped>
