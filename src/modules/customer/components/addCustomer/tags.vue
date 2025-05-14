@@ -65,14 +65,22 @@ const emit = defineEmits(['update:modelValue']);
 
 const selectedTags = ref([...props.modelValue]);
 
-watch(selectedTags, (val) => {
+watch(selectedTags, val => {
   emit('update:modelValue', val);
 });
 
-
-
 const search = ref('');
-const tags = ref([{ name: 'Member' }, { name: 'VIP' }, { name: 'Super VIP' }, { name: 'Customer' }]);
+const tags = ref([]);
+
+onMounted(async () => {
+  try {
+    const response = await getTags();
+    tags.value = response.data;
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // const selectedTags = ref([]);
 const isListBoxOpen = ref(false);
 const filteredTags = ref([...tags.value]);
