@@ -39,11 +39,16 @@
               v-model="product.category"
               display="chip"
               :options="categories"
+              option-label="category"
               filter
               placeholder="Select"
               class="w-full text-primary"
               dropdown-icon="pi pi-circle"
-            />
+            >
+              <template #option="{ option }">
+                {{ option.category }}
+              </template>
+            </PrimeVueMultiSelect>
           </div>
           <div class="flex flex-col">
             <label for="price">Price</label>
@@ -198,7 +203,6 @@ const triggerFileInput = () => {
   fileInput.value?.click();
 };
 
-
 const handleImageUpload = event => {
   const file = event.target.files?.[0];
   if (file) {
@@ -271,7 +275,7 @@ const confirmLeave = () => {
 const loadCategories = async () => {
   try {
     const response = await getAllCategories();
-    categories.value = response.map(item => item.category);
+    categories.value = response;
   } catch (error) {
     console.error('Failed to load categories:', error);
   }
