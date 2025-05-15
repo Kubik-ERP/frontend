@@ -1,4 +1,5 @@
 import { BaseValidation } from '@vuelidate/core';
+import type { Component } from 'vue';
 
 export {};
 
@@ -15,6 +16,12 @@ declare global {
     autocomplete: string;
   }
 
+  interface IColumnDataTable {
+    label: string;
+    sortable: boolean;
+    value: string;
+  }
+
   interface IComponentComposableOptions {
     clearBeforeUnmount?: boolean;
   }
@@ -23,6 +30,11 @@ declare global {
     minimumFractionDigits: number;
     style: string;
     currency: string;
+  }
+
+  interface IDropdownItem {
+    label: string;
+    value: string | number;
   }
 
   interface IObjectFileUpload extends File {
@@ -68,6 +80,18 @@ declare global {
     name: string;
     spacingBottom: string;
     validators: BaseValidation;
+  }
+
+  interface ISplitButton {
+    iconName?: string;
+    label: string;
+    command?: () => void;
+  }
+
+  interface ITabs {
+    component: Component;
+    label: string;
+    value: string;
   }
 
   interface IResponseListenerForm {
