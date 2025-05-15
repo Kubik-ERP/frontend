@@ -22,6 +22,21 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: '/self-order',
+    component: AppBaseWrapper,
+    children: [
+      {
+        path: '',
+        name: 'self-order',
+        component: () => import('../views/CashierUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.NAVBAR,
+        },
+      },
+    ],
+  },
 ];
 
 export default routes;

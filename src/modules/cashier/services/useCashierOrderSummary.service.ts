@@ -22,7 +22,7 @@ import type { MenuPassThroughAttributes } from 'primevue';
 import { MenuItem } from 'primevue/menuitem';
 
 // Router
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 // Services
 import { useCashierProductService } from '../services/useCashierProduct.service';
@@ -30,9 +30,14 @@ import { useCashierProductService } from '../services/useCashierProduct.service'
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   // Router
   const router = useRouter();
+  const route = useRoute();
 
   // Services
   const { cashierProduct_selectedProduct } = useCashierProductService();
+
+  const cashierOrderSummary_modalOrderSummary = ref({
+    show: false,
+  });
 
   // Reactive data binding
   const cashierOrderSummary_modalOrderType = ref<ICashierOrderSummaryModalOrderType>({
@@ -102,6 +107,20 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         available: false,
       },
     ],
+    dataSelfOrder: [
+      {
+        code: 1,
+        icon: 'cash',
+        label: 'Pay at Cashier',
+        available: true,
+      },
+      {
+        code: 4,
+        icon: 'qris',
+        label: 'QRIS',
+        available: false,
+      },
+    ],
   });
 
   const cashierOrderSummary_handlePaymentMethod = () => {};
@@ -113,9 +132,15 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_handlePlaceOrderDetail = () => {
     cashierOrderSummary_modalPlaceOrderDetail.value.show = false;
 
-    router.push({
-      name: 'invoice',
-    });
+    if (route.name === 'cashier') {
+      router.push({
+        name: 'invoice',
+      });
+    } else {
+      router.push({
+        name: 'self-order-invoice',
+      });
+    }
   };
 
   const cashierOrderSummary_modalPlaceOrderConfirmation = ref<ICashierOrderSummaryModalPlaceOrder>({
@@ -351,6 +376,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_menuOrder = ref<MenuPassThroughAttributes>({} as MenuPassThroughAttributes);
 
+  const cashierOrderSummary_modalMenuOrderItem = ref({
+    show: false,
+  });
+
   const cashierOrderSummary_menuOrderItem = ref<MenuItem[]>([
     {
       label: 'Cancel Order',
@@ -359,12 +388,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         cashierOrderSummary_modalCancelOrder.value.show = true;
       },
     },
-    {
-      label: 'Add Invoice Detail',
-      command: () => {
-        cashierOrderSummary_modalInvoiceDetail.value.show = true;
-      },
-    },
+    // {
+    //   label: 'Add Invoice Detail',
+    //   command: () => {
+    //     cashierOrderSummary_modalInvoiceDetail.value.show = true;
+    //   },
+    // },
   ]);
 
   const cashierOrderSummary_handleVoucher = () => {};
@@ -415,6 +444,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_data,
     cashierOrderSummary_calculation,
 
+    cashierOrderSummary_modalMenuOrderItem,
+    cashierOrderSummary_modalOrderSummary,
     cashierOrderSummary_modalAddEditNotes,
     cashierOrderSummary_modalPaymentMethod,
     cashierOrderSummary_modalSelectTable,

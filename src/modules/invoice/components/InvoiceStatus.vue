@@ -1,7 +1,7 @@
 <template>
   <section
     id="invoice-status"
-    class="col-span-4 relative inset-0 z-0 bg-white border-l border-solid border-grayscale-10 flex flex-col items-center px-4 py-5 gap-6"
+    class="overflow-y-auto hidden lg:flex col-span-4 relative inset-0 z-0 bg-white border-l border-solid border-grayscale-10 flex-col items-center px-4 py-5 gap-6"
   >
     <section id="invoice-id" class="flex flex-col items-center">
       <p id="label-invoice-id" class="font-normal text-text-disabled text-sm">Invoice ID</p>
@@ -69,7 +69,7 @@
       </tfoot>
     </table>
 
-    <PrimeVueDivider class="border-grayscale-10 py-8" />
+    <PrimeVueDivider class="border-grayscale-10 py-4" />
 
     <section id="btn-actions" class="flex flex-col items-center gap-4 w-full">
       <section id="primary-buttons" class="flex items-center gap-4 w-full">

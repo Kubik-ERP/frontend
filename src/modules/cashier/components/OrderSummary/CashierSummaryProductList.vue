@@ -16,17 +16,17 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
 <template>
   <section
     id="cashier-summary-product-list"
-    class="flex flex-col overflow-y-auto flex-grow border-b-grayscale-10 border-t-2 border-b-2 p-4 border-t-grayscale-10 justify-center items-center"
+    class="flex flex-col overflow-y-auto flex-grow border-t-0 border-b-grayscale-10 lg:border-t-2 border-b-2 p-4 border-t-grayscale-10 justify-center items-center"
     :class="cashierProduct_selectedProduct.length === 0 ? 'justify-center' : 'justify-start'"
   >
     <div v-if="cashierProduct_selectedProduct.length === 0" class="">
       <span class="text-grayscale-20">No item selected</span>
     </div>
-    <div v-else>
+    <div v-else class="flex flex-col w-full justify-center items-center">
       <div
         v-for="(item, key) in cashierProduct_selectedProduct"
         :key="key"
-        class="grid grid-cols-12 gap-4"
+        class="grid grid-cols-12 gap-4 w-full justify-items-center"
         :class="{ 'mb-4': key !== cashierProduct_selectedProduct.length - 1 }"
       >
         <button
@@ -89,7 +89,8 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
             />
             <PrimeVueInputNumber
               v-model="item.qty"
-              input-class="w-14 justify-items-center"
+              class="!w-14"
+              input-class="!w-14 justify-items-center text-center"
               :min="1"
               :max="item.product.qty"
             />

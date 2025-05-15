@@ -55,6 +55,10 @@ export const useCashierProductService = (): ICashierProductProvided => {
     },
   });
 
+  const cashierProduct_modalCategory = ref({
+    show: false,
+  });
+
   /**
    * @description Handle fetch api cashier search. We call the fetchCashierSearch function from the store to handle the request.
    */
@@ -135,7 +139,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @description computed getters setters, convert qty to string for the v-model purpose
    */
   const cashierProduct_selectedProductQty = computed({
-    get: () => cashierProduct_modalAddEditItem.value.item?.qty.toString(),
+    get: () => cashierProduct_modalAddEditItem.value.item?.qty,
     set: (value: string) => {
       const qty = parseInt(value);
       const productQty = cashierProduct_modalAddEditItem.value.product?.qty || 1;
@@ -224,6 +228,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
     cashierProduct_listCategory,
 
     cashierProduct_modalAddEditItem,
+    cashierProduct_modalCategory,
 
     cashierProduct_listDrink,
     cashierProduct_listFeaturedProduct,
