@@ -46,7 +46,7 @@ const { outletCreateEdit_isLoading, outletCreateEdit_onCancel, outletCreateEdit_
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="delete" />
-              <span class="font-semibol text-base text-error-main">Delete Store</span>
+              <span class="font-semibold text-base text-error-main">Delete Store</span>
             </section>
           </template>
         </PrimeVueButton>
