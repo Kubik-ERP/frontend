@@ -55,7 +55,7 @@
 
     <div class="mt-5 p-2 flex items-center justify-between border border-primary-border rounded-lg">
       <div class="flex gap-2 items-center">
-        <AppBaseSvg name="order" class="!w-6 !h-6" />
+        <AppBaseSvg name="order-primary" class="!w-6 !h-6" />
         <span class="text-sm">Your queue number is</span>
       </div>
       <span class="text-sm font-semibold">59</span>

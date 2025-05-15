@@ -11,6 +11,7 @@ import InvoiceTotal from '../components/self-order/InvoiceTotal.vue';
 import InvoiceCustomerDetails from '../components/self-order/InvoiceCustomerDetails.vue';
 
 import InvoiceStatusMobile from '../components/InvoiceStatusMobile.vue';
+import InvoiceMobileButtonAction from '../components/InvoiceMobileButtonAction.vue';
 
 // Interfaces
 import type { IInvoiceProvided } from '../interfaces/index';
@@ -44,6 +45,7 @@ provide<IInvoiceProvided>('invoice', {
       <section id="content" class="relative grid grid-rows-1 grid-cols-12 h-[calc(100dvh-5rem)]">
         <InvoicePaper />
         <InvoiceStatus />
+        <InvoiceMobileButtonAction />
       </section>
     </template>
     <template v-else>

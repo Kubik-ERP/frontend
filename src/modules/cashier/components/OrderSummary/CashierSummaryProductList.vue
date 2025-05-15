@@ -22,11 +22,11 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
     <div v-if="cashierProduct_selectedProduct.length === 0" class="">
       <span class="text-grayscale-20">No item selected</span>
     </div>
-    <div v-else>
+    <div v-else class="flex flex-col w-full justify-center items-center">
       <div
         v-for="(item, key) in cashierProduct_selectedProduct"
         :key="key"
-        class="grid grid-cols-12 gap-4"
+        class="grid grid-cols-12 gap-4 w-full justify-items-center"
         :class="{ 'mb-4': key !== cashierProduct_selectedProduct.length - 1 }"
       >
         <button

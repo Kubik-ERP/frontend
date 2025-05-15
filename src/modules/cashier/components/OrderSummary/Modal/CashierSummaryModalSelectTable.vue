@@ -22,7 +22,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
       modal
       :style="{
         width: useIsMobile() || useIsTablet() ? '100dvw' : '85%',
-        minHeight: '500px',
+        minHeight: useIsMobile() || useIsTablet() ? '100dvh' : '500px',
         maxHeight: useIsMobile() || useIsTablet() ? '100dvh' : 'calc(100dvh - 50px)',
       }"
       class="p-0 m-0 rounded-none lg:rounded-lg"

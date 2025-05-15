@@ -8,6 +8,10 @@ import CashierSummaryPromoPayment from '../CashierSummaryPromoPayment.vue';
 import CashierSummaryTotal from '../CashierSummaryTotal.vue';
 import CashierSummaryButtonOrderTable from '../CashierSummaryButtonOrderTable.vue';
 
+// Route
+import { useRoute } from 'vue-router';
+const route = useRoute();
+
 /**
  * @description Inject all the data and methods what we need
  */
@@ -103,6 +107,15 @@ const {
               <i class="pi pi-ellipsis-h text-primary"></i>
             </PrimeVueButton>
           </div>
+
+          <PrimeVueButton v-if="route.name === 'cashier'" v-slot="slotProps" as-child outlined class="w-full">
+            <RouterLink :to="{ name: 'invoice' }" v-bind="slotProps" class="p-3 w-full border border-primary">
+              <section class="flex gap-2 justify-center w-full items-center">
+                <AppBaseSvg name="order-primary" class="!h-5 !w-5" />
+                <span class="font-semibold text-primary truncate">Save Unpaid Order</span>
+              </section>
+            </RouterLink>
+          </PrimeVueButton>
 
           <PrimeVueButton
             class="py-2.5 px-14"

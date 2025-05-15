@@ -22,7 +22,7 @@ const route = useRoute();
       id="box-icon"
       class="hidden lg:block absolute top-5 left-5 bg-transparent basic-smooth-animation hover:bg-grayscale-10 p-2 rounded-md cursor-pointer"
     >
-      <AppBaseSvg name="close" />
+      <AppBaseSvg name="close" @click="router.go(-1)" />
     </section>
 
     <section id="status" class="flex lg:hidden items-center gap-2">
