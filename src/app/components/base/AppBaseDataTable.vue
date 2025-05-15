@@ -9,7 +9,10 @@ interface IProps {
   headerTitle?: string;
   isUsingBtnCtaCreate?: boolean;
   isUsingCustomBody?: boolean;
+  isUsingCustomFilter?: boolean;
   isUsingCustomHeader?: boolean;
+  isUsingCustomHeaderPrefix?: boolean;
+  isUsingCustomHeaderSuffix?: boolean;
   isUsingFilter?: boolean;
   isUsingHeader?: boolean;
   isUsingPagination?: boolean;
@@ -27,7 +30,10 @@ const props = withDefaults(defineProps<IProps>(), {
   headerTitle: '',
   isUsingBtnCtaCreate: false,
   isUsingCustomBody: false,
+  isUsingCustomFilter: false,
   isUsingCustomHeader: false,
+  isUsingCustomHeaderPrefix: false,
+  isUsingCustomHeaderSuffix: false,
   isUsingHeader: true,
   isUsingFilter: true,
   isUsingPagination: true,
@@ -61,39 +67,57 @@ const emits = defineEmits(['clickBtnCtaCreate']);
               id="title-and-cta"
               class="flex items-center justify-between w-full border-b border-solid border-grayscale-20 px-6 py-5"
             >
-              <h6 class="font-semibold text-gray-900 text-xl">
-                {{ props.headerTitle }}
-              </h6>
+              <template v-if="props.isUsingCustomHeaderPrefix">
+                <slot name="header-prefix" />
+              </template>
 
-              <template v-if="props.isUsingBtnCtaCreate">
-                <PrimeVueButton
-                  class="bg-primary border-none w-fit px-5"
-                  severity="secondary"
-                  @click="emits('clickBtnCtaCreate')"
-                >
-                  <template #default>
-                    <section id="content" class="flex items-center gap-2">
-                      <AppBaseSvg name="plus-line-white" />
+              <template v-else>
+                <h6 class="font-semibold text-gray-900 text-xl">
+                  {{ props.headerTitle }}
+                </h6>
+              </template>
 
-                      <span class="font-semibold text-base text-white">
-                        {{ props.btnCtaCreateTitle }}
-                      </span>
-                    </section>
-                  </template>
-                </PrimeVueButton>
+              <template v-if="props.isUsingCustomHeaderSuffix">
+                <slot name="header-suffix" />
+              </template>
+
+              <template v-else>
+                <template v-if="props.isUsingBtnCtaCreate">
+                  <PrimeVueButton
+                    class="bg-primary border-none w-fit px-5"
+                    severity="secondary"
+                    @click="emits('clickBtnCtaCreate')"
+                  >
+                    <template #default>
+                      <section id="content" class="flex items-center gap-2">
+                        <AppBaseSvg name="plus-line-white" />
+
+                        <span class="font-semibold text-base text-white">
+                          {{ props.btnCtaCreateTitle }}
+                        </span>
+                      </section>
+                    </template>
+                  </PrimeVueButton>
+                </template>
               </template>
             </section>
 
-            <section id="filter" class="flex items-center gap-4 px-6 py-5">
-              <span class="font-semibold text-gray-900 text-base">Filter by</span>
+            <section v-if="props.isUsingFilter" id="filter" class="flex items-center gap-4 px-6 py-5">
+              <template v-if="props.isUsingCustomFilter">
+                <slot name="filter" />
+              </template>
 
-              <PrimeVueDatePicker
-                class="w-full max-w-80"
-                placeholder="Last 7 days "
-                show-on-focus
-                show-icon
-                fluid
-              />
+              <template v-else>
+                <span class="font-semibold text-gray-900 text-base">Filter by</span>
+
+                <PrimeVueDatePicker
+                  class="w-full max-w-80"
+                  placeholder="Last 7 days "
+                  show-on-focus
+                  show-icon
+                  fluid
+                />
+              </template>
             </section>
           </header>
         </template>
@@ -153,9 +177,9 @@ const emits = defineEmits(['clickBtnCtaCreate']);
           <slot name="body" :data="data" :column="column" />
         </template>
 
-        <Template v-else>
+        <template v-else>
           <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
-        </Template>
+        </template>
       </template>
     </PrimeVueColumn>
   </PrimeVueDataTable>
