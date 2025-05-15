@@ -153,9 +153,9 @@ const emits = defineEmits(['clickBtnCtaCreate']);
           <slot name="body" :data="data" :column="column" />
         </template>
 
-        <Template v-else>
+        <template v-else>
           <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
-        </Template>
+        </template>
       </template>
     </PrimeVueColumn>
   </PrimeVueDataTable>
