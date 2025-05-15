@@ -4,7 +4,7 @@ import SalesOrderCashInOut from '../components/SalesOrderCashInOut.vue';
 import SalesOrderDailySales from '../components/SalesOrderDailySales.vue';
 import SalesOrderVoucher from '../components/SalesOrderVoucher.vue';
 
-export const LIST_COLUMNS_OF_CASH_IN_OUT = [
+export const LIST_COLUMNS_OF_CASH_IN_OUT: IColumnDataTable[] = [
   {
     label: 'Date',
     sortable: true,
@@ -34,6 +34,54 @@ export const LIST_COLUMNS_OF_CASH_IN_OUT = [
     label: '',
     sortable: false,
     value: 'createdBy',
+  },
+  {
+    label: '',
+    sortable: false,
+    value: 'action',
+  },
+];
+
+export const LIST_COLUMNS_OF_DAILY_SALES: IColumnDataTable[] = [
+  {
+    label: 'Invoice ID',
+    sortable: true,
+    value: 'invoiceId',
+  },
+  {
+    label: 'Purchase Date',
+    sortable: true,
+    value: 'createdAt',
+  },
+  {
+    label: 'Customer',
+    sortable: true,
+    value: 'customer',
+  },
+  {
+    label: 'Table Number',
+    sortable: true,
+    value: 'tableNumber',
+  },
+  {
+    label: 'Total Price',
+    sortable: true,
+    value: 'price',
+  },
+  {
+    label: 'Order Type',
+    sortable: true,
+    value: 'orderType',
+  },
+  {
+    label: 'Payment Status',
+    sortable: true,
+    value: 'paymentStatus',
+  },
+  {
+    label: 'Order Status',
+    sortable: true,
+    value: 'orderStatus',
   },
   {
     label: '',
@@ -87,6 +135,59 @@ export const LIST_TYPES_OF_CASH_IN_OUT: IDropdownItem[] = [
   },
 ];
 
+export const LIST_TYPES_OF_ORDER_TYPE: IDropdownItem[] = [
+  {
+    label: 'Dine In',
+    value: 'Dine In',
+  },
+  {
+    label: 'Takeaway',
+    value: 'Takeaway',
+  },
+  {
+    label: 'Self Order',
+    value: 'Self Order',
+  },
+];
+
+export const LIST_TYPES_OF_PAYMENT_STATUS: IDropdownItem[] = [
+  {
+    label: 'Paid',
+    value: 'Paid',
+  },
+  {
+    label: 'Unpaid',
+    value: 'Unpaid',
+  },
+  {
+    label: 'Cancelled',
+    value: 'Cancelled',
+  },
+  {
+    label: 'Refunded',
+    value: 'Refunded',
+  },
+];
+
+export const LIST_TYPES_OF_ORDER_STATUS: IDropdownItem[] = [
+  {
+    label: 'In Progress',
+    value: 'In Progress',
+  },
+  {
+    label: 'Waiting',
+    value: 'Waiting',
+  },
+  {
+    label: 'Served',
+    value: 'Served',
+  },
+  {
+    label: 'Cancelled',
+    value: 'Cancelled',
+  },
+];
+
 export const LIST_VALUES_OF_CASH_IN_OUT = [
   {
     type: 'Cash Out',
@@ -103,5 +204,48 @@ export const LIST_VALUES_OF_CASH_IN_OUT = [
     amount: 50000,
     createdAt: '01/08/2024 10:00 AM',
     createdBy: 'John Doe',
+  },
+];
+
+export const LIST_VALUES_OF_DAILY_SALES = [
+  {
+    invoiceId: '#202408010010',
+    createdAt: '01/08/2024',
+    customer: 'Bessie Cooper',
+    tableNumber: 'A1, A2',
+    price: 100000,
+    orderType: 'Dine In',
+    paymentStatus: 'Paid',
+    orderStatus: 'Waiting',
+  },
+  {
+    invoiceId: '#202408010009',
+    createdAt: '01/08/2024',
+    customer: 'Esther Howard',
+    tableNumber: 'A2',
+    price: 200000,
+    orderType: 'Takeaway',
+    paymentStatus: 'Unpaid',
+    orderStatus: 'In Progress',
+  },
+  {
+    invoiceId: '#202408010008',
+    createdAt: '01/08/2024',
+    customer: 'Eleanor Pena',
+    tableNumber: 'A1',
+    price: 150000,
+    orderType: 'Self Order',
+    paymentStatus: 'Cancelled',
+    orderStatus: 'Served',
+  },
+  {
+    invoiceId: '#202408010007',
+    createdAt: '01/08/2024',
+    customer: 'Jacob Jones',
+    tableNumber: 'B1, B9, B10',
+    price: 300000,
+    orderType: 'Dine In',
+    paymentStatus: 'Paid',
+    orderStatus: 'Cancelled',
   },
 ];
