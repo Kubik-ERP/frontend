@@ -40,7 +40,7 @@ const props = ref<IProps>({
 eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
   props.value = {
     ...props.value,
-    ...params as IProps
+    ...(params as IProps),
   };
 });
 </script>
@@ -81,7 +81,7 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
               <template #default>
                 <section id="content" class="flex items-center gap-2">
                   <AppBaseSvg name="delete" />
-                  <span class="font-semibol text-base text-error-main">
+                  <span class="font-semibold text-base text-error-main">
                     {{ props.textButtonSecondary }}
                   </span>
                 </section>

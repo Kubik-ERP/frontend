@@ -21,6 +21,21 @@
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
 
+/** 
+ =============================== PrimeVue Color Overiding   ================================ 
+ */
+
+:root {
+  --p-primary-50: var(--color-primary-50);
+  --p-primary-100: var(--color-primary-100);
+  --p-primary-200: var(--color-primary-200);
+  --p-primary-300: var(--color-primary-300);
+  --p-primary-400: var(--color-primary-400);
+  --p-primary-500: var(--color-primary-500);
+  --p-primary-600: var(--color-primary-600);
+  --p-primary-700: var(--color-primary-700);
+}
+
 /**
   ================================ Custom TailwindCSS ================================
 */
@@ -64,10 +79,17 @@
   --color-black-secondary: #434343;
   --color-border-error: #f0afaf;
   --color-primary: #18618b;
+  --color-primary-50: #e5f1f7;
+  --color-primary-100: #b8d9e9;
+  --color-primary-200: #8ac0da;
+  --color-primary-300: #5ca8cb;
+  --color-primary-400: #2f8fbd;
+  --color-primary-500: #18618b;
+  --color-primary-600: #144e71;
+  --color-primary-700: #103b57;
   --color-blue-primary: #18618b;
   --color-green-primary: #64c9b1;
   --color-disabled: #8e8e8e;
-  --color-error-background: #fbebeb;
   --color-error-hover: #981c1c;
   --color-text-action-error: #e57171;
   --color-gray: #434343;

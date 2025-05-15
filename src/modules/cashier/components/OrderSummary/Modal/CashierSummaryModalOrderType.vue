@@ -7,10 +7,19 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
  */
 const { cashierOrderSummary_modalOrderType, cashierOrderSummary_handleOrderType } =
   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+
+// Composables
+import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 </script>
 <template>
   <section id="cashier-summary-modal-order-type">
-    <PrimeVueDialog v-model:visible="cashierOrderSummary_modalOrderType.show" modal :style="{ width: '34rem' }">
+    <PrimeVueDialog
+      v-model:visible="cashierOrderSummary_modalOrderType.show"
+      modal
+      :style="{ width: '34rem' }"
+      :position="useIsMobile() || useIsTablet() ? 'bottom' : 'center'"
+      class="p-0 m-0 rounded-t-4xl lg:rounded-lg"
+    >
       <template #container="{ closeCallback }">
         <section id="cashier-summary-modal-order-type" class="flex flex-col gap-6 p-6">
           <section id="cashier-summary-modal-order-type-form" class="flex flex-col gap-3">

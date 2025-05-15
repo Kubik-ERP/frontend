@@ -103,6 +103,9 @@ declare global {
   const useCurrencyFormat: typeof import('./app/composables/useText')['useCurrencyFormat']
   const useHttpAbort: typeof import('./app/composables/useHttpAbort')['useHttpAbort']
   const useId: typeof import('vue')['useId']
+  const useIsDesktop: typeof import('./app/composables/useBreakpoint')['useIsDesktop']
+  const useIsMobile: typeof import('./app/composables/useBreakpoint')['useIsMobile']
+  const useIsTablet: typeof import('./app/composables/useBreakpoint')['useIsTablet']
   const useLink: typeof import('vue-router')['useLink']
   const useListenerForm: typeof import('./app/composables/useValidateForm')['useListenerForm']
   const useModel: typeof import('vue')['useModel']
@@ -231,6 +234,9 @@ declare module 'vue' {
     readonly useCurrencyFormat: UnwrapRef<typeof import('./app/composables/useText')['useCurrencyFormat']>
     readonly useHttpAbort: UnwrapRef<typeof import('./app/composables/useHttpAbort')['useHttpAbort']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
+    readonly useIsDesktop: UnwrapRef<typeof import('./app/composables/useBreakpoint')['useIsDesktop']>
+    readonly useIsMobile: UnwrapRef<typeof import('./app/composables/useBreakpoint')['useIsMobile']>
+    readonly useIsTablet: UnwrapRef<typeof import('./app/composables/useBreakpoint')['useIsTablet']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
     readonly useListenerForm: UnwrapRef<typeof import('./app/composables/useValidateForm')['useListenerForm']>
     readonly useModel: UnwrapRef<typeof import('vue')['useModel']>

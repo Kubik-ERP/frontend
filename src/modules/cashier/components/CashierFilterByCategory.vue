@@ -48,7 +48,7 @@ const moveDragging = (e: PointerEvent) => {
 </script>
 
 <template>
-  <section id="cashier-filter-by-category" class="flex flex-col gap-2 mb-6 mt-2">
+  <section id="cashier-filter-by-category" class="hidden lg:flex flex-col gap-2 mb-6 mt-2">
     <h2 class="text-xs text-text-disabled">Filter by Category</h2>
     <section
       id="cashier-filter-by-category-card"
