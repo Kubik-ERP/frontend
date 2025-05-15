@@ -1,5 +1,7 @@
-// Interfaces
+// Constants
 import { AUTHENTICATION_CREATE_NEW_PASSWORD_REQUEST } from '../constants';
+
+// Interfaces
 import type {
   IAuthenticationCreateNewPasswordFormData,
   IAuthenticationCreateNewPasswordProvided,
