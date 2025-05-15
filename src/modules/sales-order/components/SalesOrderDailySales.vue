@@ -1,0 +1,1 @@
+<template>Daily Sales</template>

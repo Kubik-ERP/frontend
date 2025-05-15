@@ -17,7 +17,7 @@ const {
 <template>
   <form class="flex flex-col gap-10 w-full max-w-md" @submit.prevent="authenticationSignIn_onSubmit">
     <section id="greeting-text" class="flex flex-col gap-2">
-      <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
+      <img src="@/app/assets/images/app-logo.png" alt="app-logo" class="w-fit h-fit" />
 
       <h1 class="font-bold text-2xl leading-8">Hi! Welcome Back 👋</h1>
     </section>

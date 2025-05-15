@@ -20,7 +20,7 @@ const {
 <template>
   <form class="form-group flex flex-col gap-10 w-md" @submit.prevent="authenticationSignUp_onSubmit">
     <section id="greeting-text" class="flex flex-col gap-3">
-      <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
+      <img src="@/app/assets/images/app-logo.png" alt="app-logo" class="w-fit h-fit" />
 
       <h1 class="font-bold text-2xl leading-8">We sent you a code</h1>
       <section id="text-information" class="flex flex-col">

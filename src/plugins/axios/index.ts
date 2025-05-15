@@ -11,10 +11,9 @@ import { useAuthenticationStore } from '@/modules/authentication/store';
 import eventBus from '../mitt';
 
 const httpClient: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_APP_BASE_API_URL ? `${import.meta.env.VITE_APP_BASE_API_URL}` : '/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL: import.meta.env.VITE_APP_BASE_API_URL
+    ? `${import.meta.env.VITE_APP_BASE_API_URL}${import.meta.env.VITE_APP_BASE_API_PREFIX}`
+    : '/api',
 });
 
 httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {

@@ -116,9 +116,7 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
         });
       } else {
         if (typedKey === 'photo' && value instanceof Blob) {
-          const file = value as unknown as IObjectFileUpload;
-
-          formData.append(typedKey, file.objectURL); // Handle Blob/File for photo
+          formData.append('file', value); // Handle Blob/File for photo
         }
 
         if (typeof value === 'string') {
@@ -261,6 +259,37 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
   };
 
   /**
+   * @description Handle business logic for showing dialog confirmation delete outlet
+   */
+  const outletCreateEdit_onShowDialogDeleteOutlet = async (): Promise<void> => {
+    const argsEventEmitter: IPropsDialogConfirmation = {
+      description:
+        'Deleting this store will permanently remove all related data, including transactions and inventory. This action cannot be undone.',
+      iconName: 'delete-polygon',
+      isOpen: true,
+      isUsingButtonSecondary: true,
+      onClickButtonPrimary: () => {
+        const argsEventEmitter: IPropsDialogConfirmation = {
+          isOpen: false,
+        };
+
+        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+      },
+      onClickButtonSecondary: async () => {
+        await outletCreateEdit_onDeleteOutlet(route.params.id as string);
+
+        router.push({ name: 'outlet.list' });
+      },
+      textButtonPrimary: 'Cancel',
+      textButtonSecondary: 'Delete Store',
+      title: 'Are you sure want to delete this store?',
+      type: 'error',
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
+  /**
    * @description Handle action on submit form.
    */
   const outletCreateEdit_onSubmit = async (): Promise<void> => {
@@ -322,6 +351,7 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
     outletCreateEdit_onCloseDialogVerifyPIN,
     outletCreateEdit_onDeleteOutlet,
     outletCreateEdit_onRemovePhoto,
+    outletCreateEdit_onShowDialogDeleteOutlet,
     outletCreateEdit_onSubmit,
     outletCreateEdit_onSubmitDialogVerifyPIN,
     outletCreateEdit_onUploadPhoto,

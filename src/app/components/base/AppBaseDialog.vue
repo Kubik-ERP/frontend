@@ -32,6 +32,7 @@ eventBus.on('AppBaseDialog', (params: unknown) => {
     :dismissable-mask="false"
     :modal="props.isUsingBackdrop"
     :visible="props.isOpen"
+    :style="`width: ${props.width}`"
     :pt="{
       content: 'px-0',
       header: 'px-0 pt-0',

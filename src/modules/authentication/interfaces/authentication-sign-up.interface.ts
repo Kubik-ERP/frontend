@@ -20,6 +20,8 @@ export interface IAuthenticationSignUpFormData {
   phoneNumber: string;
   password: string;
   passwordConfirmation: string;
+  pin: string;
+  pin_confirmation: string;
 }
 
 export interface IAuthenticationSignUpProvided {
