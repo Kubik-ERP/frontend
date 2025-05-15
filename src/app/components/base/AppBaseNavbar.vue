@@ -8,7 +8,7 @@
         <AppBaseSvg name="chevron-left" class="!w-[18px] !h-[18px]" />
       </section>
 
-      <h2 class="font-semibold text-black text-lg">Dashboard</h2>
+      <h2 class="font-semibold text-black text-lg">Sales Order</h2>
     </section>
 
     <PrimeVueIconField class="hidden lg:block">

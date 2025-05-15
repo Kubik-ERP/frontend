@@ -124,8 +124,8 @@
     "setMapStoreSuffix": true,
     "storeToRefs": true,
     "LAYOUT_NAVBAR": true,
-    "useIsDesktop": true,
-    "useIsMobile": true,
-    "useIsTablet": true
+    "APP_BASE_URL": true,
+    "Slot": true,
+    "Slots": true
   }
 }

@@ -6,6 +6,7 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const APP_BASE_URL: typeof import('./app/constants/index')['APP_BASE_URL']
   const AppLayoutDefault: typeof import('./app/components/layouts/index')['AppLayoutDefault']
   const AppLayoutEmpty: typeof import('./app/components/layouts/index')['AppLayoutEmpty']
   const COUNTRY_INFORMATIONS: typeof import('./app/constants/country.constant')['COUNTRY_INFORMATIONS']
@@ -123,7 +124,7 @@ declare global {
 // for type re-export
 declare global {
   // @ts-ignore
-  export type { Component, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
+  export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
   export type { LAYOUT_OPTIONS, LAYOUT_OPTIONS } from './app/constants/layout.constant'
@@ -138,6 +139,7 @@ import { UnwrapRef } from 'vue'
 declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
+    readonly APP_BASE_URL: UnwrapRef<typeof import('./app/constants/index')['APP_BASE_URL']>
     readonly COUNTRY_INFORMATIONS: UnwrapRef<typeof import('./app/constants/country.constant')['COUNTRY_INFORMATIONS']>
     readonly DEFAULT_CURRENCY_OPTIONS: UnwrapRef<typeof import('./app/constants/useText.constant')['DEFAULT_CURRENCY_OPTIONS']>
     readonly EToastPosition: UnwrapRef<typeof import('./app/constants/toast.constant')['EToastPosition']>

@@ -2,7 +2,7 @@
 const home = ref({
   icon: 'pi pi-home',
 });
-const items = ref([{ label: 'Dashboard' }]);
+const items = ref([{ label: 'Sales Order' }]);
 </script>
 
 <template>

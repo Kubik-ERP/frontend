@@ -16,7 +16,7 @@ const {
 <template>
   <form class="form-group flex flex-col gap-10 w-md" @submit.prevent="authenticationSignUp_onSubmit">
     <section id="greeting-text" class="flex flex-col gap-3">
-      <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
+      <img src="@/app/assets/images/app-logo.png" alt="app-logo" class="w-fit h-fit" />
 
       <h1 class="font-bold text-2xl leading-8">Set Up Your PIN</h1>
       <p id="subtitle" class="font-normal text-base text-disabled">

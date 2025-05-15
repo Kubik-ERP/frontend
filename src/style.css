@@ -107,6 +107,8 @@
   --color-text-disabled: #8e8e8e;
   --color-text-primary: #070707;
   --color-disabled: #d9d9d9;
+  --color-gray-400: #98a2b3;
+  --color-gray-900: #101828;
   --color-grayscale-10: #ededed;
   --color-grayscale-20: #d9d9d9;
   --color-grayscale-30: #b4b4b4;
@@ -119,4 +121,8 @@
   --color-complementary-background: #f7e9f2;
   --color-complementary-main: #c964a2;
   --font-sans: 'Inter', sans-serif;
+}
+
+span.p-datatable-column-title {
+  @apply font-normal;
 }

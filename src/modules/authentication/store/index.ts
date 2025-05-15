@@ -135,9 +135,13 @@ export const useAuthenticationStore = defineStore('authentication', {
       this.authentication_isLoading = true;
 
       try {
-        const response = await httpClient.post<IAuthenticationSignInResponse>(AUTHENTICATION_ENDPOINT_SIGN_IN, payload, {
-          ...requestConfigurations,
-        });
+        const response = await httpClient.post<IAuthenticationSignInResponse>(
+          AUTHENTICATION_ENDPOINT_SIGN_IN,
+          payload,
+          {
+            ...requestConfigurations,
+          },
+        );
         this.authentication_token = response.data.data.accessToken;
 
         return Promise.resolve(response.data);
