@@ -126,6 +126,9 @@
     "LAYOUT_NAVBAR": true,
     "APP_BASE_URL": true,
     "Slot": true,
-    "Slots": true
+    "Slots": true,
+    "useIsDesktop": true,
+    "useIsMobile": true,
+    "useIsTablet": true
   }
 }

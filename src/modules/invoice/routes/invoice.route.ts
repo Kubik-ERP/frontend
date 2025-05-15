@@ -22,6 +22,21 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: '/self-order/invoice',
+    component: AppBaseWrapper,
+    children: [
+      {
+        path: '',
+        name: 'self-order-invoice',
+        component: () => import('../views/InvoiceUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.EMPTY,
+        },
+      },
+    ],
+  },
 ];
 
 export default routes;

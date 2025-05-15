@@ -22,7 +22,7 @@ import type { MenuPassThroughAttributes } from 'primevue';
 import { MenuItem } from 'primevue/menuitem';
 
 // Router
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 // Services
 import { useCashierProductService } from '../services/useCashierProduct.service';
@@ -30,6 +30,7 @@ import { useCashierProductService } from '../services/useCashierProduct.service'
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   // Router
   const router = useRouter();
+  const route = useRoute();
 
   // Services
   const { cashierProduct_selectedProduct } = useCashierProductService();
@@ -106,6 +107,20 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         available: false,
       },
     ],
+    dataSelfOrder: [
+      {
+        code: 1,
+        icon: 'cash',
+        label: 'Pay at Cashier',
+        available: true,
+      },
+      {
+        code: 4,
+        icon: 'qris',
+        label: 'QRIS',
+        available: false,
+      },
+    ],
   });
 
   const cashierOrderSummary_handlePaymentMethod = () => {};
@@ -117,9 +132,15 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_handlePlaceOrderDetail = () => {
     cashierOrderSummary_modalPlaceOrderDetail.value.show = false;
 
-    router.push({
-      name: 'invoice',
-    });
+    if (route.name === 'cashier') {
+      router.push({
+        name: 'invoice',
+      });
+    } else {
+      router.push({
+        name: 'self-order-invoice',
+      });
+    }
   };
 
   const cashierOrderSummary_modalPlaceOrderConfirmation = ref<ICashierOrderSummaryModalPlaceOrder>({

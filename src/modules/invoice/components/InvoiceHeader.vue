@@ -1,8 +1,9 @@
 <script setup lang="ts">
 // Router
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
+const route = useRoute();
 </script>
 
 <template>
@@ -12,7 +13,9 @@ const router = useRouter();
     <div class="flex gap-4 items-center">
       <AppBaseSvg name="close" class="block lg:hidden !h-3.5 !w-3.5" @click="router.go(-1)" />
 
-      <h1 class="font-semibold text-black text-base lg:text-lg">Invoice Detail</h1>
+      <h1 class="font-semibold text-black text-base lg:text-lg">
+        {{ route.name === 'invoice' ? 'Invoice Detail' : 'Order Summary' }}
+      </h1>
     </div>
 
     <section

@@ -73,6 +73,7 @@ export interface ICashierOrderSummaryModalPaymentMethod {
   show: boolean;
   selectedPaymentMethod: number;
   data: ICashierOrderSummaryPaymentMethod[];
+  dataSelfOrder: ICashierOrderSummaryPaymentMethod[];
 }
 
 export interface ICashierOrderSummaryModalPlaceOrder {
