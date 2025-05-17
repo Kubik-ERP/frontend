@@ -143,7 +143,7 @@
               unstyled
             />
             <PrimeVueButton
-              label="Add Product"
+              :label="product.id ? 'Edit Product' : 'Add Product'"
               class="text-xl w-48 py-2 border-2 border-primary rounded-lg text-white bg-primary font-semibold"
               unstyled
               @click="handleCreateProduct"
@@ -184,7 +184,11 @@
 import { createProduct } from '@/modules/catalog/services/Product/ProductServices';
 import { getAllCategories } from '@/modules/catalog/services/Category/categoryService';
 
+const route = useRoute();
+// const router = useRouter();
+
 const product = reactive({
+  id: null,
   image: '',
   name: '',
   category: [],
@@ -272,6 +276,15 @@ const confirmLeave = () => {
   }
 };
 
+// const loadProduct = async () => {
+//   try {
+//     const response = await getProductByID();
+//     products.value = response;
+//   } catch (error) {
+//     console.error('Failed to load products:', error);
+//   }
+// };
+
 const loadCategories = async () => {
   try {
     const response = await getAllCategories();
@@ -283,6 +296,8 @@ const loadCategories = async () => {
 
 onMounted(async () => {
   loadCategories();
+  product.id = route.params.id || null;
+  // loadProduct();
 });
 
 const cancelLeave = () => {

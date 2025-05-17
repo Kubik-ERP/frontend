@@ -38,6 +38,16 @@ const routes: RouteRecordRaw[] = [
           layout: LAYOUT_OPTIONS.DEFAULT,
         },
       },
+      {
+        path: 'products/edit-product/:id',
+        name: 'edit-product',
+        props: route => ({ id: route.params.id }),
+        component: () => import('../views/Products/AddProductUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.DEFAULT,
+        },
+      },
     ],
   },
 ];
