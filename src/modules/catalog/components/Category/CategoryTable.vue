@@ -24,7 +24,7 @@
               label="Add Category"
               icon="pi pi-plus"
               class="bg-primary border-primary"
-              @click="isAddOpen = true"
+              @click="openAddDialog()"
             />
           </div>
         </div>
@@ -35,18 +35,51 @@
 
       <PrimeVueColumn selection-mode="multiple" header-style="width: 3rem" />
       <PrimeVueColumn sortable field="id" header="Category ID" style="width: 25%" />
-      <PrimeVueColumn sortable field="category" header="ICategory" style="width: 25%" />
+      <PrimeVueColumn sortable field="category" header="Category" style="width: 25%" />
       <PrimeVueColumn sortable field="description" header="Description" style="width: 25%" />
       <PrimeVueColumn>
         <template #body="slotProps">
           <PrimeVueButton
-            type="text"
             icon="pi pi-ellipsis-v"
             class="bg-transparent text-gray-500 border-none float-end"
             @click="displayPopover($event, slotProps.data)"
           />
         </template>
       </PrimeVueColumn>
+      <template #paginatorcontainer="{ page, pageCount, prevPageCallback, nextPageCallback }">
+        <div class="flex items-center gap-2 justify-between w-full py-2">
+          <!-- Previous Page Button -->
+          <PrimeVueButton
+            icon="pi pi-angle-left"
+            variant="text"
+            label="Previous"
+            class="border border-primary text-primary hover:bg-transparent"
+            @click="prevPageCallback"
+          />
+
+          <div>
+            <PrimeVueButton
+              v-for="p in pageCount"
+              :key="p"
+              :label="p.toString()"
+              class="border-none aspect-square p-4"
+              :class="
+                page === p - 1 ? 'bg-blue-secondary-background text-primary' : 'bg-transparent text-grayscale-20'
+              "
+            />
+          </div>
+          <!-- Page Numbers -->
+
+          <!-- Next Page Button -->
+          <PrimeVueButton
+            icon="pi pi-angle-right"
+            variant="text"
+            label="Next"
+            class="border border-primary text-primary hover:bg-transparent flex-row-reverse"
+            @click="nextPageCallback"
+          />
+        </div>
+      </template>
     </PrimeVueDataTable>
 
     <!-- Popover -->
@@ -70,15 +103,18 @@
     </PrimeVuePopover>
 
     <!-- Add Dialog -->
-    <PrimeVueDialog :visible="isAddOpen" modal header="Add Category" class="w-[45rem]">
-      <form @submit.prevent>
+    <PrimeVueDialog v-model:visible="isAddOpen" modal header="Add Category" class="w-[45rem]">
+      <PrimeVueForm v-slot="$form" :initial-values="category" :resolver="resolver" @submit="handleAddCategory">
         <div class="mb-4">
           <label for="name">Category Name <sup class="text-red-500">*</sup></label>
-          <PrimeVueInputText v-model="category" class="w-full" autocomplete="off" />
+          <PrimeVueInputText v-model="category.name" name="name" type="text" class="w-full" fluid />
+          <PrimeVueMessage v-if="$form.name?.invalid" severity="error" size="small" variant="simple">{{
+            $form.name.error?.message
+          }}</PrimeVueMessage>
         </div>
         <div class="mb-8">
           <label for="description">description (Optional)</label>
-          <PrimeVueTextarea v-model="description" auto-resize rows="5" class="w-full" />
+          <PrimeVueTextarea v-model="category.description" auto-resize rows="5" class="w-full" />
         </div>
         <div class="flex justify-end gap-2">
           <PrimeVueButton
@@ -88,21 +124,24 @@
             class="w-48"
             @click="isAddOpen = false"
           />
-          <PrimeVueButton label="Add" class="w-48 bg-primary border-primary" @click="handleAddCategory" />
+          <PrimeVueButton label="Add" class="w-48 bg-primary border-primary" type="submit" />
         </div>
-      </form>
+      </PrimeVueForm>
     </PrimeVueDialog>
 
     <!-- Edit Dialog -->
-    <PrimeVueDialog :visible="isEditOpen" modal header="Edit Category" class="w-[45rem]">
-      <form @submit.prevent>
+    <PrimeVueDialog v-model:visible="isEditOpen" modal header="Edit Category" class="w-[45rem]">
+      <PrimeVueForm v-slot="$form" :initial-values="category" :resolver="resolver" @submit="handleEditCategory">
         <div class="mb-4">
           <label for="name">Category Name <sup class="text-red-500">*</sup></label>
-          <PrimeVueInputText v-model="category" class="w-full" autocomplete="off" />
+          <PrimeVueInputText v-model="category.name" name="name" type="text" class="w-full" fluid />
+          <PrimeVueMessage v-if="$form.name?.invalid" severity="error" size="small" variant="simple">{{
+            $form.name.error?.message
+          }}</PrimeVueMessage>
         </div>
         <div class="mb-8">
           <label for="description">description (Optional)</label>
-          <PrimeVueTextarea v-model="description" auto-resize rows="5" class="w-full" />
+          <PrimeVueTextarea v-model="category.description" auto-resize rows="5" class="w-full" />
         </div>
         <div class="flex justify-end gap-2">
           <PrimeVueButton
@@ -112,9 +151,9 @@
             class="w-48"
             @click="isEditOpen = false"
           />
-          <PrimeVueButton label="Edit" class="w-48 bg-primary border-primary" @click="handleEditCategory" />
+          <PrimeVueButton label="Edit" class="w-48 bg-primary border-primary" type="submit" />
         </div>
-      </form>
+      </PrimeVueForm>
     </PrimeVueDialog>
 
     <!-- Delete Confirmation -->
@@ -135,7 +174,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
 import { FilterMatchMode } from '@primevue/core/api';
 
 import {
@@ -154,33 +192,53 @@ const categories = ref<ICategory[]>([]);
 const selected = ref<ICategory | null>(null);
 const loading = ref(false);
 
-const category = ref('');
-const description = ref('');
+const category = reactive({
+  name: '',
+  description: '',
+});
+
+// const category = ref('');
+// const description = ref('');
 const op = ref();
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-const handleAddCategory = async () => {
-  if (!category.value.trim()) {
-    alert('ICategory name is required!');
-    return;
+const resolver = ({ values }) => {
+  const errors = {};
+
+  if (!values.name) {
+    errors.name = [{ message: 'Category name is required.' }];
   }
 
-  try {
-    const newCategory = await createCategory({
-      category: category.value,
-      description: description.value || '-',
-    });
+  return {
+    values,
+    errors,
+  };
+};
 
-    categories.value.push(newCategory);
-    isAddOpen.value = false;
-    category.value = '';
-    description.value = '';
-  } catch (error) {
-    console.error('Failed to create category:', error);
-    alert('Something went wrong while creating the category.');
+const handleAddCategory = async ({ valid }: { valid: boolean }) => {
+  if (valid) {
+    if (!category.name.trim()) {
+      alert('ICategory name is required!');
+      return;
+    }
+
+    try {
+      const newCategory = await createCategory({
+        category: category.name,
+        description: category.description || '-',
+      });
+
+      categories.value.push(newCategory);
+      isAddOpen.value = false;
+      category.name = '';
+      category.description = '';
+    } catch (error) {
+      console.error('Failed to create category:', error);
+      alert('Something went wrong while creating the category.');
+    }
   }
 };
 const loadCategories = async () => {
@@ -195,6 +253,12 @@ const loadCategories = async () => {
   }
 };
 
+const openAddDialog = () => {
+  isAddOpen.value = true;
+  category.name = '';
+  category.description = '';
+};
+
 const displayPopover = (event: Event, category: ICategory) => {
   selected.value = category;
   op.value?.show(event);
@@ -202,25 +266,27 @@ const displayPopover = (event: Event, category: ICategory) => {
 
 const displayEdit = () => {
   if (selected.value) {
-    category.value = selected.value.category;
-    description.value = selected.value.description ?? '';
+    category.name = selected.value.category;
+    category.description = selected.value.description ?? '';
     isEditOpen.value = true;
     op.value?.hide();
   }
 };
 
-const handleEditCategory = async () => {
-  if (selected.value) {
-    try {
-      const updatedCategory = await updateCategory(selected.value.id, {
-        category: category.value,
-        description: description.value || '-',
-      });
-      categories.value = categories.value.map(cat => (cat.id === updatedCategory.id ? updatedCategory : cat));
-      isEditOpen.value = false;
-    } catch (error) {
-      console.error('Failed to update category:', error);
-      alert('Something went wrong while updating the category.');
+const handleEditCategory = async ({ valid }: { valid: boolean }) => {
+  if (valid) {
+    if (selected.value) {
+      try {
+        const updatedCategory = await updateCategory(selected.value.id, {
+          category: category.name,
+          description: category.description || '-',
+        });
+        categories.value = categories.value.map(cat => (cat.id === updatedCategory.id ? updatedCategory : cat));
+        isEditOpen.value = false;
+      } catch (error) {
+        console.error('Failed to update category:', error);
+        alert('Something went wrong while updating the category.');
+      }
     }
   }
 };
