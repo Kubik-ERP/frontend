@@ -46,7 +46,7 @@
       </thead>
 
       <tbody class="border-b border-solid border-black">
-        <tr v-for="index in 6" :key="index">
+        <tr v-for="index in 2" :key="index">
           <td class="font-normal text-black text-sm py-2">Blueberry Pancake</td>
           <td class="font-normal text-black text-sm text-center py-2">1</td>
           <td class="font-normal text-black text-sm text-center py-2">100.000.000</td>

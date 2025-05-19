@@ -47,6 +47,62 @@
     font-family: var(--font-sans);
     font-variation-settings: 'opsz' 14;
   }
+
+  @media print {
+    body #main-content {
+      display: none !important;
+    }
+
+    body #print-invoice-paper {
+      display: block !important;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: white;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    #invoice-paper {
+      margin: 0 auto;
+      width: 100%;
+      max-width: 800px;
+      padding: 20px;
+      box-sizing: border-box;
+      page-break-after: always;
+    }
+
+    #invoice-paper * {
+      box-sizing: border-box;
+    }
+
+    #invoice-paper section,
+    #invoice-paper table {
+      page-break-inside: avoid;
+    }
+
+    #box-paper,
+    #invoice-change-paper,
+    .PrimeVueTabs,
+    .PrimeVueTabList {
+      all: unset;
+    }
+
+    table,
+    section,
+    .invoice-table,
+    .invoice-detail {
+      page-break-inside: avoid;
+    }
+  }
 }
 
 @layer components {
