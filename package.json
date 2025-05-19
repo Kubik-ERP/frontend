@@ -23,6 +23,7 @@
     "chalk": "^5.4.1",
     "chart.js": "^4.4.9",
     "cz-conventional-changelog": "^3.3.0",
+    "html2pdf.js": "^0.10.3",
     "mitt": "^3.0.1",
     "pinia": "^3.0.2",
     "pinia-plugin-persistedstate": "^4.2.0",

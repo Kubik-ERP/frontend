@@ -33,6 +33,16 @@ provide<IInvoiceProvided>('invoice', {
   invoice_activeInvoice,
   invoice_listInvoice,
 });
+
+const invoicePaperRef = ref();
+
+const handlePrint = () => {
+  invoicePaperRef.value?.print();
+};
+
+const handleDownload = () => {
+  invoicePaperRef.value?.download();
+};
 </script>
 
 <template>
@@ -43,9 +53,9 @@ provide<IInvoiceProvided>('invoice', {
       <InvoiceStatusMobile />
 
       <section id="content" class="relative grid grid-rows-1 grid-cols-12 h-[calc(100dvh-5rem)]">
-        <InvoicePaper />
-        <InvoiceStatus />
-        <InvoiceMobileButtonAction />
+        <InvoicePaper ref="invoicePaperRef" />
+        <InvoiceStatus @download="handleDownload" @print="handlePrint" />
+        <InvoiceMobileButtonAction @download="handleDownload" @print="handlePrint" />
       </section>
     </template>
     <template v-else>
