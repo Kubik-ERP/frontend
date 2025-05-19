@@ -22,10 +22,15 @@ export interface ICashierVoucher {
 }
 
 export interface ICashierOrderSummaryPaymentMethod {
-  code: number;
-  icon: string;
-  label: string;
-  available: boolean;
+  id: string;
+  name: string;
+  iconName: string;
+  sortNo: number;
+  isAvailable: boolean;
+}
+
+export interface ICashierOrderSummaryPaymentMethodResponse {
+  data: ICashierOrderSummaryPaymentMethod[];
 }
 
 export interface ICashierOrderSummaryModalOrderType {
@@ -71,7 +76,8 @@ export interface ICashierOrderSummaryModalSelectTable {
 
 export interface ICashierOrderSummaryModalPaymentMethod {
   show: boolean;
-  selectedPaymentMethod: number;
+  isLoading: boolean;
+  selectedPaymentMethod: string;
   data: ICashierOrderSummaryPaymentMethod[];
   dataSelfOrder: ICashierOrderSummaryPaymentMethod[];
 }
@@ -153,6 +159,7 @@ export interface ICashierOrderSummaryProvided {
 
   cashierOrderSummary_handleOrderType: () => void;
   cashierOrderSummary_handleVoucher: () => void;
+  cashierOrderSummary_handleFetchPaymentMethod: () => void;
   cashierOrderSummary_handlePaymentMethod: () => void;
   cashierOrderSummary_handleInvoiceDetail: () => void;
   cashierOrderSummary_handleCancelOrder: () => void;
