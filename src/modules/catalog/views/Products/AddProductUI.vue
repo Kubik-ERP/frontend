@@ -3,9 +3,16 @@
     <div class="flex flex-col gap-4">
       <h1 class="text-2xl font-bold">Products Detail</h1>
       <h2 class="text-xl font-semibold">Product Information</h2>
-      <div class="flex flex-col items-center justify-center">
+      {{ product }}
+      <PrimeVueForm
+        v-slot="$form"
+        :initial-values="product"
+        :resolver="resolver"
+        :validate-on-blur="true"
+        class="flex flex-col items-center justify-center"
+        @submit="handleCreateProduct"
+      >
         <p>Photo (Optional)</p>
-        {{ product }}
         <img
           class="rounded-lg mt-2 w-64 h-64 object-cover"
           :src="previewImage || 'https://placehold.co/250'"
@@ -29,14 +36,19 @@
             <label for="name">Product Name</label>
             <PrimeVueInputText
               v-model="product.name"
+              name="name"
               type="text"
               class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
             />
+            <PrimeVueMessage v-if="$form.name?.invalid" severity="error" size="small" variant="simple">{{
+              $form.name.error?.message
+            }}</PrimeVueMessage>
           </div>
           <div class="flex flex-col">
             <label for="category">Category</label>
             <PrimeVueMultiSelect
               v-model="product.category"
+              name="category"
               display="chip"
               :options="categories"
               option-label="category"
@@ -49,18 +61,24 @@
                 {{ option.category }}
               </template>
             </PrimeVueMultiSelect>
+            <PrimeVueMessage v-if="$form.category?.invalid" severity="error" size="small" variant="simple">{{
+              $form.category.error?.message
+            }}</PrimeVueMessage>
           </div>
           <div class="flex flex-col">
             <label for="price">Price</label>
             <PrimeVueInputNumber
               v-model="product.price"
               prefix="Rp "
+              name="price"
               fluid
               class="border shadow-xs border-grayscale-30 rounded-lg"
               @change="calculateDiscount"
             />
+            <PrimeVueMessage v-if="$form.price?.invalid" severity="error" size="small" variant="simple">{{
+              $form.price.error?.message
+            }}</PrimeVueMessage>
           </div>
-          <span></span>
         </div>
         <div class="grid grid-cols-2 h-fit w-full gap-x-8 mt-8">
           <div class="flex items-center gap-2 col-span-2">
@@ -76,6 +94,7 @@
                 <PrimeVueInputNumber
                   v-model="product.discount_value"
                   class="w-full"
+                  name="discount_value"
                   :prefix="product.discount_unit === 'Rp' ? 'Rp ' : ''"
                   :suffix="product.discount_unit === '%' ? ' %' : ''"
                   @change="calculateDiscount"
@@ -94,6 +113,13 @@
                   </PrimeVueSelect>
                 </div>
               </div>
+              <PrimeVueMessage
+                v-if="$form.discount_value?.invalid"
+                severity="error"
+                size="small"
+                variant="simple"
+                >{{ $form.discount_value.error?.message }}</PrimeVueMessage
+              >
               <span
                 >Total Price After Discount : <b> Rp {{ product.discount_price }}</b></span
               >
@@ -112,13 +138,32 @@
             <div class="flex flex-col gap-4">
               <div v-for="(variant, index) in product.variants" :key="index" class="grid grid-cols-2 gap-x-8">
                 <div class="flex flex-col">
-                  <label for="name">Variant Name</label>
-                  <PrimeVueInputText v-model="variant.name" type="text" />
+                  <label :for="`variant-name-${index}`">Variant Name</label>
+                  <PrimeVueInputText
+                    :id="`variant-name-${index}`"
+                    v-model="variant.name"
+                    :name="`variants.${index}.name`"
+                  />
+                  <PrimeVueMessage
+                    v-if="$form.variants[index]?.name?.invalid"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                  >
+                    {{ $form.variants[index]?.name?.error?.message }}
+                  </PrimeVueMessage>
                 </div>
+
                 <div class="flex flex-col">
-                  <label for="price">Variant Price</label>
+                  <label :for="`variant-price-${index}`">Variant Price</label>
                   <div class="flex gap-2">
-                    <PrimeVueInputNumber v-model="variant.price" prefix="Rp " fluid />
+                    <PrimeVueInputNumber
+                      :id="`variant-price-${index}`"
+                      v-model="variant.price"
+                      prefix="Rp "
+                      fluid
+                      :name="`variants.${index}.price`"
+                    />
                     <PrimeVueButton
                       icon="pi pi-times"
                       variant="text"
@@ -126,9 +171,18 @@
                       @click="removeVariant(index)"
                     />
                   </div>
+                  <PrimeVueMessage
+                    v-if="$form.variants[index]?.price?.invalid"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                  >
+                    {{ $form.variants[index]?.price?.error?.message }}
+                  </PrimeVueMessage>
                 </div>
               </div>
             </div>
+
             <PrimeVueButton
               label="Add Variant"
               icon="pi pi-plus"
@@ -136,7 +190,7 @@
               @click="addVariant"
             />
           </div>
-          <div class="flex gap-4">
+          <div class="flex gap-4 mb-8">
             <PrimeVueButton
               label="Cancel"
               class="text-xl w-48 py-2 border-2 border-primary rounded-lg text-primary bg-transparent font-semibold"
@@ -146,11 +200,10 @@
               :label="product.id ? 'Edit Product' : 'Add Product'"
               class="text-xl w-48 py-2 border-2 border-primary rounded-lg text-white bg-primary font-semibold"
               unstyled
-              @click="handleCreateProduct"
             />
           </div>
         </div>
-      </div>
+      </PrimeVueForm>
     </div>
     <PrimeVueDialog :visible="isLeavingModal" modal header="">
       <template #container>
@@ -199,6 +252,44 @@ const product = reactive({
   discount_price: 0,
   variants: [],
 });
+
+const resolver = ({ values }) => {
+  const errors = {};
+
+  if (!values.username) {
+    errors.name = [{ message: 'Name is required.' }];
+  }
+  if (!values.category || values.category.length === 0) {
+    errors.category = [{ message: 'Category is required.' }];
+  }
+  if (!values.price) {
+    errors.price = [{ message: 'Price is required.' }];
+  }
+  if (product.isDiscount) {
+    if (!values.discount_value) {
+      errors.discount_value = [{ message: 'Discount value is required.' }];
+    }
+    if (!values.discount_unit) {
+      errors.discount_unit = [{ message: 'Discount unit is required.' }];
+    }
+  }
+
+  values.variants?.forEach((v, i) => {
+    if (!v.name) {
+      errors[`variants.${i}.name`] = [{ message: 'Variant name is required.' }];
+    }
+    if (!v.price) {
+      errors[`variants.${i}.price`] = [{ message: 'Variant price is required.' }];
+    }
+  });
+
+  console.log('errors:', errors);
+
+  return {
+    values,
+    errors,
+  };
+};
 
 const previewImage = ref(null);
 const fileInput = ref(null);
