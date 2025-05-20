@@ -107,6 +107,20 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         isAvailable: false,
       },
     ],
+    dataSelfOrder: [
+      {
+        code: 1,
+        icon: 'cash',
+        label: 'Pay at Cashier',
+        available: true,
+      },
+      {
+        code: 4,
+        icon: 'qris',
+        label: 'QRIS',
+        available: false,
+      },
+    ],
   });
 
   const cashierOrderSummary_handleFetchPaymentMethod = async () => {
