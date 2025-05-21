@@ -31,3 +31,5 @@ dist-ssr
 .env.test.local
 .env.production.local
 
+# Generated d.ts files
+src/components.d.ts
