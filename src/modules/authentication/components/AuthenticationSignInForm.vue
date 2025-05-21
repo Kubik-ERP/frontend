@@ -10,6 +10,7 @@ const {
   authenticationSignIn_formValidations,
   authenticationSignIn_isLoading,
   authenticationSignIn_isNotAuthenticated,
+  authenticationSignIn_onSsoWithGoogle,
   authenticationSignIn_onSubmit,
 } = inject<IAuthenticationSignInProvided>('authenticationSignIn')!;
 </script>
@@ -99,7 +100,12 @@ const {
           :loading="authenticationSignIn_isLoading"
         />
 
-        <PrimeVueButton class="w-full" severity="secondary" variant="outlined">
+        <PrimeVueButton
+          class="w-full"
+          severity="secondary"
+          variant="outlined"
+          @click="authenticationSignIn_onSsoWithGoogle"
+        >
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="google" />
