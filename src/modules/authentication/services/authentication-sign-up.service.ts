@@ -4,12 +4,15 @@ import {
   AUTHENTICATION_SIGN_UP_STEPPER,
   AUTHENTICATION_SEND_OTP_REQUEST,
 } from '../constants';
-import { IAuthenticationSendOtpFormData, IAuthenticationVerifyOtpFormData } from '../interfaces';
+import { IAuthenticationVerifyOtpFormData } from '../interfaces';
 
 // Interfaces
 import type {
+  IAuthenticationSendOtpFormData,
   IAuthenticationSignUpFormData,
   IAuthenticationSignUpProvided,
+  IAuthenticationSignUpSetUpPinFormData,
+  IAuthenticationSignUpVerifyPinFormData,
   IAuthenticationStepper,
 } from '../interfaces';
 
@@ -44,10 +47,8 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     phoneNumber: '',
     password: '',
     passwordConfirmation: '',
-    pin: '',
-    pin_confirmation: '',
   });
-  const authenticationSignUp_formDataOfSetUpPin = reactive({
+  const authenticationSignUp_formDataOfSetUpPin = reactive<IAuthenticationSignUpSetUpPinFormData>({
     pin: '',
   });
   const authenticationSignUp_formDataOfVerifyOtp = reactive<IAuthenticationVerifyOtpFormData>({
@@ -55,11 +56,11 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     otp: '',
     type: 'REGISTER',
   });
-  const authenticationSignUp_formDataOfVerifyPin = reactive({
-    pin: '',
+  const authenticationSignUp_formDataOfVerifyPin = reactive<IAuthenticationSignUpVerifyPinFormData>({
+    pinConfirmation: '',
   });
   const authenticationSignUp_isAcceptTnc = ref<boolean>(false);
-  const authenticationSignUp_maskedPhoneNumber = ref<string>('');
+  const authenticationSignUp_maskedEmail = ref<string>('');
   const authenticationSignUp_stepper = shallowRef<IAuthenticationStepper[]>(AUTHENTICATION_SIGN_UP_STEPPER);
 
   /**
@@ -80,7 +81,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     pin: { required },
   }));
   const authenticationSignUp_formRulesOfVerifyPin = computed(() => ({
-    pin: {
+    pinConfirmation: {
       required,
       sameAs: sameAs(authenticationSignUp_formDataOfSetUpPin.pin),
     },
@@ -132,11 +133,15 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
   /**
    * @description Handle business logic for masking phone numbers.
    */
-  const authenticationSignUp_maskPhoneNumber = () => {
-    const phoneNumber = authenticationSignUp_formData.phoneNumber;
-    const maskedPhoneNumber =
-      phoneNumber.substring(0, 3) + '******' + phoneNumber.substring(phoneNumber.length - 2);
-    authenticationSignUp_maskedPhoneNumber.value = maskedPhoneNumber;
+  const authenticationSignUp_maskEmail = () => {
+    const email = authenticationSignUp_formData.email;
+    const maskedEmail = email.replace(/(.{2})(.*)(.{2}@.*)/, (match, p1, p2, p3) => {
+      console.log(match);
+
+      return `${p1}${'*'.repeat(p2.length)}${p3}`;
+    });
+
+    authenticationSignUp_maskedEmail.value = maskedEmail;
   };
 
   /**
@@ -168,8 +173,33 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
         ...httpAbort_registerAbort(AUTHENTICATION_SEND_OTP_REQUEST),
       });
 
+      authenticationSignUp_activeStep.value += 1;
       authenticationSignUp_durationOtp.value = 60 * 5; // 5 minutes
       authenticationSignUp_startCountdownOtp();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api authentication sign up. We call the fetchAuthentication_pin function from the store to handle the request.
+   */
+  const authenticationSignUp_fetchAuthenticationSetUpPin = async () => {
+    try {
+      const payload: ISetUnsetPin = {
+        pin: authenticationSignUp_formDataOfSetUpPin.pin,
+        pinConfirmation: authenticationSignUp_formDataOfVerifyPin.pinConfirmation,
+      };
+
+      await store.fetchAuthentication_pin('set', payload, {
+        ...httpAbort_registerAbort(AUTHENTICATION_SIGN_UP_REQUEST),
+      });
+
+      authenticationSignUp_activeStep.value += 1;
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -216,6 +246,8 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
           ...httpAbort_registerAbort(AUTHENTICATION_SEND_OTP_REQUEST),
         },
       );
+
+      authenticationSignUp_activeStep.value += 1;
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -253,14 +285,13 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
   const authenticationSignUp_dynamicBusinessLogic = (): void => {
     switch (authenticationSignUp_activeStep.value) {
       case 0:
+        authenticationSignUp_fetchAuthenticationSignUp();
         authenticationSignUp_fetchAuthenticationSendOtp();
-        authenticationSignUp_maskPhoneNumber();
-        authenticationSignUp_activeStep.value += 1;
+        authenticationSignUp_maskEmail();
 
         break;
       case 1:
         authenticationSignUp_fetchAuthenticationVerifyOtp();
-        authenticationSignUp_activeStep.value += 1;
 
         break;
       case 2:
@@ -268,7 +299,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
 
         break;
       case 3:
-        authenticationSignUp_fetchAuthenticationSignUp();
+        authenticationSignUp_fetchAuthenticationSetUpPin();
         router.push({ name: 'sign-in' });
 
         break;
@@ -314,7 +345,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     authenticationSignUp_formValidationsOfVerifyPin,
     authenticationSignUp_isAcceptTnc,
     authenticationSignUp_isLoading: authentication_isLoading,
-    authenticationSignUp_maskedPhoneNumber,
+    authenticationSignUp_maskedEmail,
     authenticationSignUp_stepper,
     authenticationSignUp_onResendOtp,
     authenticationSignUp_onSubmit,

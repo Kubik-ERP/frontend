@@ -18,7 +18,7 @@ const {
   authenticationSignUp_formValidationsOfVerifyPin,
   authenticationSignUp_isAcceptTnc,
   authenticationSignUp_isLoading,
-  authenticationSignUp_maskedPhoneNumber,
+  authenticationSignUp_maskedEmail,
   authenticationSignUp_onResendOtp,
   authenticationSignUp_onSubmit,
   authenticationSignUp_stepper,
@@ -39,7 +39,7 @@ provide('authenticationRegister', {
   authenticationSignUp_formValidationsOfVerifyPin,
   authenticationSignUp_isAcceptTnc,
   authenticationSignUp_isLoading,
-  authenticationSignUp_maskedPhoneNumber,
+  authenticationSignUp_maskedEmail,
   authenticationSignUp_onResendOtp,
   authenticationSignUp_onSubmit,
 });
