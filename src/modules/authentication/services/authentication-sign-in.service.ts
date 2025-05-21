@@ -22,6 +22,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
    * @description Injected variables
    */
   const store = useAuthenticationStore(); // Instance of the store
+  const route = useRoute(); // Instance of the route
   const router = useRouter(); // Instance of the router
   const { authentication_isLoading } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
@@ -55,12 +56,11 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
    */
   const authenticationSignIn_fetchAuthenticationGoogleRedirect = async () => {
     try {
-      const result = await store.fetchAuthentication_googleRedirect({
+      await store.fetchAuthentication_googleRedirect(route.query, {
         ...httpAbort_registerAbort(AUTHENTICATION_GOOGLE_REDIRECT_REQUEST),
       });
-      router.push({ name: 'outlet.list' });
 
-      return Promise.resolve(result);
+      router.push({ name: 'outlet.list' });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
