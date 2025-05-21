@@ -30,7 +30,7 @@ const onChange = (value: string | number) => {
 </script>
 
 <template>
-  <PrimeVueTabs :value="localValue" @update:value="value => onChange(value)">
+  <PrimeVueTabs :value="localValue" @update:value="(value: string | number) => onChange(value)">
     <PrimeVueTabList
       :pt="{
         activeBar: 'hidden',
