@@ -7,7 +7,57 @@ import InvoiceCashierInvoice from './paper/InvoiceCashierInvoice.vue';
 import InvoiceKitchenTicket from './paper/InvoiceKitchenTicket.vue';
 import InvoiceTableTicket from './paper/InvoiceTableTicket.vue';
 
+// HTML2PDF
+import html2pdf from 'html2pdf.js';
+
 const { invoice_activeInvoice, invoice_listInvoice } = inject<IInvoiceProvided>('invoice')!;
+
+/**
+ * @description Ref for invoice paper
+ */
+const invoiceRef = ref<HTMLElement | null>(null);
+
+/**
+ * @description Print function
+ */
+const print = () => {
+  if (!invoiceRef.value) return;
+
+  invoiceRef.value.classList.remove('hidden');
+  invoiceRef.value.classList.add('flex');
+
+  window.print();
+
+  setTimeout(() => {
+    invoiceRef?.value?.classList.add('hidden');
+  }, 1000);
+};
+
+const download = () => {
+  if (!invoiceRef.value) return;
+
+  invoiceRef.value?.classList.remove('hidden');
+
+  html2pdf()
+    .from(invoiceRef.value)
+    .set({
+      margin: 0,
+      filename: 'invoice.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+    })
+    .save()
+    .then(() => {
+      invoiceRef.value?.classList.add('hidden');
+    });
+};
+
+/**
+ * @description Define expose for print function
+ */
+
+defineExpose({ invoiceRef, print, download });
 </script>
 
 <template>
@@ -47,6 +97,16 @@ const { invoice_activeInvoice, invoice_listInvoice } = inject<IInvoiceProvided>(
           </PrimeVueTabPanel>
         </PrimeVueTabPanels>
       </PrimeVueTabs>
+
+      <Teleport to="body">
+        <div
+          id="print-invoice-paper"
+          ref="invoiceRef"
+          class="hidden relative inset-0 mx-auto min-h-svh min-w-svw m-0 p-0 w-full h-full items-center justify-center"
+        >
+          <InvoiceCashierInvoice />
+        </div>
+      </Teleport>
     </section>
   </section>
 </template>

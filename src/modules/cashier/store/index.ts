@@ -1,6 +1,13 @@
 import { defineStore } from 'pinia';
 
+// Interfaces
+import type { AxiosRequestConfig } from 'axios';
 import { ICashierStateStore } from '../interfaces';
+
+// Plugins
+import httpClient from '@/plugins/axios';
+import { CASHIER_ENDPOINT_PAYMENT_METHOD } from '../constants/cashierApi.constant';
+import { ICashierOrderSummaryPaymentMethodResponse } from '../interfaces/cashier-order-summary';
 
 export const useCashierStore = defineStore('cashier', {
   state: (): ICashierStateStore => ({
@@ -378,6 +385,33 @@ export const useCashierStore = defineStore('cashier', {
     async cashierProduct_fetchSearch(searchData: string): Promise<void> {
       // TODO: Fetch API when the endpoint is ready
       console.log(searchData);
+    },
+
+    /**
+     * @description Handle fetch get payment method.
+     * @url /cashier/product
+     * @method GET
+     * @access public
+     */
+    async cashierProduct_fetchPaymentMethod(
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<ICashierOrderSummaryPaymentMethodResponse> {
+      try {
+        const response = await httpClient.get<ICashierOrderSummaryPaymentMethodResponse>(
+          CASHIER_ENDPOINT_PAYMENT_METHOD,
+          {
+            ...requestConfigurations,
+          },
+        );
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
     },
   },
 });

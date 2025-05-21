@@ -1,3 +1,8 @@
+<script setup lang="ts">
+// emits
+const emit = defineEmits(['print', 'download']);
+</script>
+
 <template>
   <section
     id="invoice-status"
@@ -73,7 +78,7 @@
 
     <section id="btn-actions" class="flex flex-col items-center gap-4 w-full">
       <section id="primary-buttons" class="flex items-center gap-4 w-full">
-        <PrimeVueButton class="w-full py-4" severity="secondary" variant="outlined">
+        <PrimeVueButton class="w-full py-4" severity="secondary" variant="outlined" @click="emit('download')">
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="download" class="!w-6 !h-6" />
@@ -82,7 +87,7 @@
           </template>
         </PrimeVueButton>
 
-        <PrimeVueButton class="bg-blue-primary border-none w-full py-4" severity="primary">
+        <PrimeVueButton class="bg-blue-primary border-none w-full py-4" severity="primary" @click="emit('print')">
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="printer" class="!w-6 !h-6" />

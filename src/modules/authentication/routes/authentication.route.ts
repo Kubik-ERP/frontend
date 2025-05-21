@@ -21,6 +21,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'redirect/google',
+        name: 'redirect-google',
+        component: () => import('../views/AuthenticationSignInRedirectGoogleUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.EMPTY,
+        },
+      },
+      {
         path: 'reset-password',
         name: 'reset-password',
         component: () => import('../views/AuthenticationResetPasswordUI.vue'),

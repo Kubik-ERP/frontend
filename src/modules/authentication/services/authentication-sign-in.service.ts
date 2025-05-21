@@ -1,5 +1,5 @@
 // Constants
-import { AUTHENTICATION_SIGN_IN_REQUEST } from '../constants';
+import { AUTHENTICATION_GOOGLE_REDIRECT_REQUEST, AUTHENTICATION_SIGN_IN_REQUEST } from '../constants';
 
 // Interfaces
 import type {
@@ -51,6 +51,26 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
   );
 
   /**
+   * @description Handle fetch api authentication login. We call the fetchAuthentication_googleRedirect function from the store to handle the request.
+   */
+  const authenticationSignIn_fetchAuthenticationGoogleRedirect = async () => {
+    try {
+      const result = await store.fetchAuthentication_googleRedirect({
+        ...httpAbort_registerAbort(AUTHENTICATION_GOOGLE_REDIRECT_REQUEST),
+      });
+      router.push({ name: 'outlet.list' });
+
+      return Promise.resolve(result);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
    * @description Handle fetch api authentication login. We call the fetchauthenticationSignIn function from the store to handle the request.
    */
   const authenticationSignIn_fetchAuthenticationSignIn = async () => {
@@ -74,6 +94,13 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
         return Promise.reject(new Error(String(error)));
       }
     }
+  };
+
+  /**
+   * @description Handle business logic to direct user to the sso authentication
+   */
+  const authenticationSignIn_onSsoWithGoogle = async (): Promise<void> => {
+    window.location.href = `${import.meta.env.VITE_APP_BASE_API_URL}${import.meta.env.VITE_APP_BASE_API_PREFIX}/authentication/google`;
   };
 
   /**
@@ -112,10 +139,12 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
   );
 
   return {
+    authenticationSignIn_fetchAuthenticationGoogleRedirect,
     authenticationSignIn_formData,
     authenticationSignIn_formValidations,
     authenticationSignIn_isLoading: authentication_isLoading,
     authenticationSignIn_isNotAuthenticated,
+    authenticationSignIn_onSsoWithGoogle,
     authenticationSignIn_onSubmit,
   };
 };

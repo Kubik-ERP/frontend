@@ -82,6 +82,10 @@ declare global {
     validators: BaseValidation;
   }
 
+  interface ISetUnsetPin {
+    pin: string;
+    pinConfirmation: string;
+  }
   interface ISplitButton {
     iconName?: string;
     label: string;

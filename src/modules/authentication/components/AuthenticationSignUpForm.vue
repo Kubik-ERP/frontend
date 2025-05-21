@@ -27,6 +27,8 @@ const {
         label="Sign In"
         severity="secondary"
         variant="outlined"
+        as="a"
+        href="/authentication/sign-in"
       />
     </section>
 

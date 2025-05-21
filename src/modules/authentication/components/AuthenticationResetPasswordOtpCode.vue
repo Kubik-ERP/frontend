@@ -23,7 +23,7 @@ const {
           <PrimeVueButton
             class="bg-transparent border border-solid border-blue-primary p-2 basic-smooth-animation hover:bg-grayscale-10"
             as="a"
-            href="/authentication/login"
+            href="/authentication/sign-in"
           >
             <template #default>
               <AppBaseSvg name="arrow-left" class="w-4 h-4" />

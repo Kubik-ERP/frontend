@@ -27,6 +27,9 @@ import { useRouter, useRoute } from 'vue-router';
 // Services
 import { useCashierProductService } from '../services/useCashierProduct.service';
 
+// Stores
+import { useCashierStore } from '../store';
+
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   // Router
   const router = useRouter();
@@ -38,6 +41,11 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_modalOrderSummary = ref({
     show: false,
   });
+
+  /**
+   * @description Injected variables
+   */
+  const store = useCashierStore();
 
   // Reactive data binding
   const cashierOrderSummary_modalOrderType = ref<ICashierOrderSummaryModalOrderType>({
@@ -80,31 +88,23 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_modalPaymentMethod = ref<ICashierOrderSummaryModalPaymentMethod>({
     show: false,
-    selectedPaymentMethod: 0,
-    data: [
+    isLoading: false,
+    selectedPaymentMethod: '',
+    data: [],
+    dataSelfOrder: [
       {
-        code: 1,
-        icon: 'cash',
-        label: 'cash',
-        available: true,
+        sortNo: 1,
+        id: '1',
+        iconName: 'cash',
+        name: 'Pay at Cashier',
+        isAvailable: true,
       },
       {
-        code: 2,
-        icon: 'debit',
-        label: 'Debit',
-        available: true,
-      },
-      {
-        code: 3,
-        icon: 'credit',
-        label: 'Credit',
-        available: false,
-      },
-      {
-        code: 4,
-        icon: 'qris',
-        label: 'QRIS',
-        available: false,
+        sortNo: 4,
+        id: '4',
+        iconName: 'qris',
+        name: 'QRIS',
+        isAvailable: false,
       },
     ],
     dataSelfOrder: [
@@ -123,7 +123,35 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     ],
   });
 
-  const cashierOrderSummary_handlePaymentMethod = () => {};
+  const cashierOrderSummary_handleFetchPaymentMethod = async () => {
+    cashierOrderSummary_modalPaymentMethod.value.isLoading = true;
+
+    try {
+      const response = await store.cashierProduct_fetchPaymentMethod({});
+
+      cashierOrderSummary_modalPaymentMethod.value.data = response.data;
+      cashierOrderSummary_modalPaymentMethod.value.show = true;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      cashierOrderSummary_modalPaymentMethod.value.isLoading = false;
+    }
+  };
+
+  const cashierOrderSummary_handlePaymentMethod = async () => {};
+
+  watch(
+    () => cashierOrderSummary_modalPaymentMethod.value.show,
+    value => {
+      if (value) {
+        cashierOrderSummary_handleFetchPaymentMethod();
+      }
+    },
+  );
 
   const cashierOrderSummary_modalPlaceOrderDetail = ref<ICashierOrderSummaryModalCancelOrder>({
     show: false,
@@ -462,6 +490,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_handleOrderType,
     cashierOrderSummary_handleInvoiceDetail,
     cashierOrderSummary_handleCancelOrder,
+    cashierOrderSummary_handleFetchPaymentMethod,
     cashierOrderSummary_handlePaymentMethod,
     cashierOrderSummary_handlePlaceOrderConfirmation,
     cashierOrderSummary_handlePlaceOrderDetail,

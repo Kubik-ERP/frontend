@@ -14,9 +14,11 @@ export interface IAuthenticationSignInResponse {
 }
 
 export interface IAuthenticationSignInProvided {
+  authenticationSignIn_fetchAuthenticationGoogleRedirect: () => Promise<unknown>;
   authenticationSignIn_formData: IAuthenticationSignInFormData;
   authenticationSignIn_formValidations: globalThis.Ref<Validation>;
   authenticationSignIn_isLoading: globalThis.Ref<boolean>;
   authenticationSignIn_isNotAuthenticated: globalThis.Ref<boolean>;
+  authenticationSignIn_onSsoWithGoogle: () => Promise<void>;
   authenticationSignIn_onSubmit: () => Promise<void>;
 }

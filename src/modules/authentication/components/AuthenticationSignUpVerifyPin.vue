@@ -42,10 +42,10 @@ const {
         label-for="otp"
         name="OTP Code"
         spacing-bottom="mb-0"
-        :validators="authenticationSignUp_formValidationsOfVerifyPin.pin"
+        :validators="authenticationSignUp_formValidationsOfVerifyPin.pinConfirmation"
       >
         <PrimeVueInputOtp
-          v-model="authenticationSignUp_formDataOfVerifyPin.pin"
+          v-model="authenticationSignUp_formDataOfVerifyPin.pinConfirmation"
           :class="{ ...classes }"
           class="[&>input]:bg-white [&>input]:border-grayscale-30 [&>input]:font-bold [&>input]:text-2xl [&>input]:w-16 [&>input]:h-16!"
           :length="6"

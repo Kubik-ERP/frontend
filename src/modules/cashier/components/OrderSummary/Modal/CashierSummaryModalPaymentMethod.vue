@@ -30,40 +30,52 @@ const { cashierOrderSummary_modalPaymentMethod, cashierOrderSummary_handlePaymen
               <span class="text-sm text-grayscale-70"> Select Payment Method </span>
             </div>
 
-            <div
-              v-for="category in route.name === 'cashier'
-                ? cashierOrderSummary_modalPaymentMethod.data
-                : cashierOrderSummary_modalPaymentMethod.dataSelfOrder"
-              :key="category.code"
-              class="flex items-center gap-2 rounded-xs px-3 py-4"
-              :class="{
-                'cursor-pointer': category.available,
-                'border border-primary-border bg-primary-background drop-shadow-sm':
-                  cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod === category.code,
-                'hover:bg-grayscale-10/25 border border-grayscale-20':
-                  cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod !== category.code &&
-                  category.available,
-                'cursor-not-allowed bg-grayscale-20 text-text-disabled': category.available === false,
-              }"
-              @click="
-                category.available
-                  ? (cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod = category.code)
-                  : null
-              "
-            >
-              <PrimeVueRadioButton
-                v-model="cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod"
-                :input-id="category.label"
-                name="dynamic"
-                :disabled="category.available === false"
-                :value="category.code"
-              />
-              <section id="cashier-summary-modal-order-type" class="flex gap-2 items-center">
-                <AppBaseSvg :name="category.icon" class="!h-6 !w-6" />
-                <label class="font-semibold" :for="category.label">{{ category.label }}</label>
-                <span v-if="!category.available" class="text-xs">Unavailable</span>
+            <template v-if="cashierOrderSummary_modalPaymentMethod.isLoading">
+              <section
+                id="cashier-summary-modal-payment-method-loading"
+                class="flex items-center justify-center w-full"
+              >
+                <div class="flex flex-col w-full gap-3">
+                  <PrimeVueSkeleton v-for="id in 4" :key="id" height="3rem"></PrimeVueSkeleton>
+                </div>
               </section>
-            </div>
+            </template>
+            <template v-else>
+              <div
+                v-for="category in route.name === 'cashier'
+                  ? cashierOrderSummary_modalPaymentMethod.data
+                  : cashierOrderSummary_modalPaymentMethod.dataSelfOrder"
+                :key="category.id"
+                class="flex items-center gap-2 rounded-xs px-3 py-4"
+                :class="{
+                  'cursor-pointer': category.isAvailable,
+                  'border border-primary-border bg-primary-background drop-shadow-sm':
+                    cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod === category.id,
+                  'hover:bg-grayscale-10/25 border border-grayscale-20':
+                    cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod !== category.id &&
+                    category.isAvailable,
+                  'cursor-not-allowed bg-grayscale-20 text-text-disabled': category.isAvailable === false,
+                }"
+                @click="
+                  category.isAvailable
+                    ? (cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod = category.id)
+                    : null
+                "
+              >
+                <PrimeVueRadioButton
+                  v-model="cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod"
+                  :input-id="category.name"
+                  name="dynamic"
+                  :disabled="category.isAvailable === false"
+                  :value="category.id"
+                />
+                <section id="cashier-summary-modal-order-type" class="flex gap-2 items-center">
+                  <AppBaseSvg :name="category.iconName" class="!h-6 !w-6" />
+                  <label class="font-semibold" :for="category.name">{{ category.name }}</label>
+                  <span v-if="!category.isAvailable" class="text-xs">Unavailable</span>
+                </section>
+              </div>
+            </template>
           </section>
 
           <div class="flex justify-end gap-4">
