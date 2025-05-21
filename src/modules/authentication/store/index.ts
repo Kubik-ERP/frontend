@@ -11,6 +11,7 @@ import {
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
+import type { LocationQuery } from 'vue-router';
 import type {
   IAuthenticationCreateNewPasswordFormData,
   IAuthenticationResetPasswordFormData,
@@ -68,17 +69,26 @@ export const useAuthenticationStore = defineStore('authentication', {
 
     /**
      * @description Handle fetch api authentication google redirect.
-     * @url /authentication/google/redirect
+     * @url /authentication/google/redirect?{restQueryParams}
      * @method GET
      * @access public
      */
-    async fetchAuthentication_googleRedirect(requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async fetchAuthentication_googleRedirect(
+      restQueryParams: LocationQuery,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IAuthenticationSignInResponse> {
       this.authentication_isLoading = true;
 
       try {
-        const response = await httpClient.get<unknown>(AUTHENTICATION_ENDPOINT_GOOGLE_REDIRECT, {
-          ...requestConfigurations,
-        });
+        const response = await httpClient.get<IAuthenticationSignInResponse>(
+          AUTHENTICATION_ENDPOINT_GOOGLE_REDIRECT,
+          {
+            params: restQueryParams,
+            ...requestConfigurations,
+          },
+        );
+
+        this.authentication_token = response.data.data.accessToken;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
