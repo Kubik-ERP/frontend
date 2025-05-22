@@ -9,7 +9,7 @@ const {
   authenticationResetPassword_formValidationsOfVerifyOtp,
   authenticationResetPassword_isLoading,
   authenticationResetPassword_onSubmit,
-  authenticationResetPassword_verifyOtpFormData,
+  authenticationSignUp_formDataOfVerifyPin,
 } = inject<IAuthenticationResetPasswordProvided>('authenticationResetPassword')!;
 </script>
 
@@ -46,7 +46,7 @@ const {
       :validators="authenticationResetPassword_formValidationsOfVerifyOtp.otp"
     >
       <PrimeVueInputOtp
-        v-model="authenticationResetPassword_verifyOtpFormData.otp"
+        v-model="authenticationSignUp_formDataOfVerifyPin.otp"
         :class="{ ...classes }"
         class="[&>input]:bg-white [&>input]:border-grayscale-30 [&>input]:font-bold [&>input]:text-2xl [&>input]:w-16 [&>input]:h-16!"
         :length="6"

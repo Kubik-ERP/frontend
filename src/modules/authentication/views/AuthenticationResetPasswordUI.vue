@@ -11,6 +11,7 @@ import { useAuthenticationResetPasswordService } from '../services/authenticatio
 const {
   authenticationResetPassword_activeStep,
   authenticationResetPassword_formData,
+  authenticationResetPassword_formDataOfVerifyPin,
   authenticationResetPassword_formValidations,
   authenticationResetPassword_formValidationsOfVerifyOtp,
   authenticationResetPassword_isLoading,
@@ -18,7 +19,6 @@ const {
   authenticationResetPassword_isSuccess,
   authenticationResetPassword_onSubmit,
   authenticationResetPassword_stepper,
-  authenticationResetPassword_verifyOtpFormData,
 } = useAuthenticationResetPasswordService();
 
 /**
@@ -26,12 +26,12 @@ const {
  */
 provide('authenticationResetPassword', {
   authenticationResetPassword_formData,
+  authenticationResetPassword_formDataOfVerifyPin,
   authenticationResetPassword_formValidations,
   authenticationResetPassword_formValidationsOfVerifyOtp,
   authenticationResetPassword_isLoading,
   authenticationResetPassword_isPinInvalid,
   authenticationResetPassword_onSubmit,
-  authenticationResetPassword_verifyOtpFormData,
 });
 </script>
 

@@ -109,6 +109,7 @@ export const useAuthenticationStore = defineStore('authentication', {
      * @access public
      */
     async fetchAuthentication_resetPassword(
+      pin: string,
       payload: IAuthenticationResetPasswordFormData,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
@@ -116,6 +117,9 @@ export const useAuthenticationStore = defineStore('authentication', {
 
       try {
         const response = await httpClient.post<unknown>(AUTHENTICATION_ENDPOINT_RESET_PASSWORD, payload, {
+          headers: {
+            pin: pin,
+          },
           ...requestConfigurations,
         });
 
