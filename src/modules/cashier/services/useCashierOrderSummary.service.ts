@@ -24,7 +24,7 @@ import type { MenuPassThroughAttributes } from 'primevue';
 import { MenuItem } from 'primevue/menuitem';
 
 // Router
-// import { useRouter, useRoute } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 // Stores
 import { useCashierStore } from '../store';
@@ -34,8 +34,8 @@ import { ref } from 'vue';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   // Router
-  // const router = useRouter();
-  // const route = useRoute();
+  const router = useRouter();
+  const route = useRoute();
 
   /**
    * @description Injected variables
@@ -505,15 +505,15 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
       cashierOrderSummary_modalPlaceOrderDetail.value.data = response;
 
-      // if (route.name === 'cashier') {
-      //   router.push({
-      //     name: 'invoice',
-      //   });
-      // } else {
-      //   router.push({
-      //     name: 'self-order-invoice',
-      //   });
-      // }
+      if (route.name === 'cashier') {
+        router.push({
+          name: 'invoice',
+        });
+      } else {
+        router.push({
+          name: 'self-order-invoice',
+        });
+      }
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
