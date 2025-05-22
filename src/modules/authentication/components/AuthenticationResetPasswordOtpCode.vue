@@ -6,10 +6,10 @@ import type { IAuthenticationResetPasswordProvided } from '../interfaces/authent
  * @description Inject all the data and methods what we need
  */
 const {
+  authenticationResetPassword_formDataOfVerifyPin,
   authenticationResetPassword_formValidationsOfVerifyOtp,
   authenticationResetPassword_isLoading,
   authenticationResetPassword_onSubmit,
-  authenticationSignUp_formDataOfVerifyPin,
 } = inject<IAuthenticationResetPasswordProvided>('authenticationResetPassword')!;
 </script>
 
@@ -43,10 +43,10 @@ const {
       label-for="otp"
       name="OTP Code"
       spacing-bottom="mb-0"
-      :validators="authenticationResetPassword_formValidationsOfVerifyOtp.otp"
+      :validators="authenticationResetPassword_formValidationsOfVerifyOtp.pinConfirmation"
     >
       <PrimeVueInputOtp
-        v-model="authenticationSignUp_formDataOfVerifyPin.otp"
+        v-model="authenticationResetPassword_formDataOfVerifyPin.pinConfirmation"
         :class="{ ...classes }"
         class="[&>input]:bg-white [&>input]:border-grayscale-30 [&>input]:font-bold [&>input]:text-2xl [&>input]:w-16 [&>input]:h-16!"
         :length="6"
