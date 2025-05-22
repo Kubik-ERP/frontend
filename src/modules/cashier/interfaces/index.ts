@@ -43,6 +43,7 @@ export interface ICashierModalAddProduct {
 }
 
 export interface ICashierStateStore {
+  cashierProduct_selectedProduct: ICashierSelected[];
   cashierProduct_listCategory: ICashierCategory[];
   cashierProduct_listFeaturedProduct: ICashierProduct[];
   cashierProduct_listFood: ICashierProduct[];

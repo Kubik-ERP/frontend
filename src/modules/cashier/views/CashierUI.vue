@@ -61,6 +61,7 @@ const {
   cashierOrderSummary_modalVoucher,
 
   cashierOrderSummary_getListActiveFloor,
+  cashierOrderSummary_isButtonPlaceOrderDisabled,
 
   cashierOrderSummary_handleOrderType,
   cashierOrderSummary_handleInvoiceDetail,
@@ -124,6 +125,8 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_modalVoucher,
   cashierOrderSummary_getListActiveFloor,
 
+  cashierOrderSummary_isButtonPlaceOrderDisabled,
+
   cashierOrderSummary_handleOrderType,
   cashierOrderSummary_handleInvoiceDetail,
   cashierOrderSummary_handleCancelOrder,
@@ -140,7 +143,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
 <template>
   <section
     id="cashier"
-    class="grid grid-cols-12 bg-background min-h-[calc(100dvh-85px)] h-[90dvh] default-wrapper-fullscreen"
+    class="grid grid-cols-12 bg-background min-h-[calc(100dvh-85px)] h-[88dvh] default-wrapper-fullscreen"
   >
     <CashierMainSection />
 

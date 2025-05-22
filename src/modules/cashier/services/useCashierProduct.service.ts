@@ -1,15 +1,13 @@
-// Store / Pinia
-import { storeToRefs } from 'pinia';
-import { useCashierStore } from '../store';
+// Helpers
+import { debounce } from '@/app/helpers/debounce.helper';
 
 // interfaces
 import type { ICashierProductProvided } from '../interfaces/cashier-product-service';
-import type {
-  ICashierModalAddProduct,
-  ICashierModalAddProductItem,
-  ICashierProduct,
-  ICashierSelected,
-} from '../interfaces';
+import type { ICashierModalAddProduct, ICashierModalAddProductItem, ICashierProduct } from '../interfaces';
+
+// Store / Pinia
+import { storeToRefs } from 'pinia';
+import { useCashierStore } from '../store';
 
 // Vue
 import { ref } from 'vue';
@@ -24,6 +22,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
   const store = useCashierStore();
 
   const {
+    cashierProduct_selectedProduct,
     cashierProduct_listCategory,
     cashierProduct_listFood,
     cashierProduct_listFeaturedProduct,
@@ -37,7 +36,6 @@ export const useCashierProductService = (): ICashierProductProvided => {
   const cashierProduct_isLoading = ref<boolean>(false);
 
   const cashierProduct_selectedView = ref<'image' | 'grid' | 'inline'>('image');
-  const cashierProduct_selectedProduct = ref<ICashierSelected[]>([]);
   const cashierProduct_selectedCategory = ref<string[]>([]);
 
   const cashierProduct_modalAddEditItem = ref<ICashierModalAddProduct>({
@@ -63,12 +61,77 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @description Handle fetch api cashier search. We call the fetchCashierSearch function from the store to handle the request.
    */
   const cashierProduct_onSearchData = async (searchData: string) => {
+    cashierProduct_isLoading.value = true;
     try {
       await store.cashierProduct_fetchSearch(searchData);
     } catch (error) {
       console.error(error);
+    } finally {
+      cashierProduct_isLoading.value = false;
     }
   };
+
+  /**
+   * @description debounce function to handle search data
+   */
+  const debouncedSearch = debounce(val => cashierProduct_onSearchData(val), 500);
+
+  /**
+   * @description watch search data changes
+   */
+  watch(
+    () => cashierProduct_searchData.value,
+    newValue => {
+      debouncedSearch(newValue);
+    },
+  );
+
+  /**
+    @description Handle fetch category
+    @param {string} category
+  */
+  const cashierProduct_handleFetchCategory = async () => {
+    cashierProduct_isLoading.value = true;
+    try {
+      await store.cashierProduct_fetchCategory(cashierProduct_selectedCategory.value[0] || '');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      cashierProduct_isLoading.value = false;
+    }
+  };
+
+  cashierProduct_handleFetchCategory();
+
+  /**
+    @description Handle fetch product category
+    @param {string} category
+  */
+  const cashierProduct_handleFetchProductCategory = async () => {
+    cashierProduct_isLoading.value = true;
+    try {
+      await store.cashierProduct_fetchCategory(cashierProduct_selectedCategory.value[0] || '');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      cashierProduct_isLoading.value = false;
+    }
+  };
+
+  cashierProduct_handleFetchProductCategory();
+
+  /**
+   * @description watch selected category changes
+   */
+  watch(
+    () => cashierProduct_selectedCategory.value,
+    newValue => {
+      if (newValue.length > 0) {
+        cashierProduct_handleFetchProductCategory();
+      }
+    },
+    { immediate: true, deep: true },
+  );
 
   /**
    * @description Handle select category, add or remove the category from selected category
@@ -80,7 +143,8 @@ export const useCashierProductService = (): ICashierProductProvided => {
         item => item !== category,
       );
     } else {
-      cashierProduct_selectedCategory.value.push(category);
+      // cashierProduct_selectedCategory.value.push(category);
+      cashierProduct_selectedCategory.value = [category];
     }
   };
 
