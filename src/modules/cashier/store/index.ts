@@ -2,15 +2,27 @@ import { defineStore } from 'pinia';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import { ICashierStateStore } from '../interfaces';
+import { ICashierProduct, ICashierSelected, ICashierStateStore } from '../interfaces';
+import {
+  ICashierCalculateEstimation,
+  ICashierOrderSummaryPaymentMethodResponse,
+} from '../interfaces/cashier-order-summary';
 
 // Plugins
 import httpClient from '@/plugins/axios';
-import { CASHIER_ENDPOINT_PAYMENT_METHOD } from '../constants/cashierApi.constant';
-import { ICashierOrderSummaryPaymentMethodResponse } from '../interfaces/cashier-order-summary';
+
+// Constants
+import {
+  CASHIER_ENDPOINT_CATEGORIES,
+  CASHIER_ENDPOINT_PAYMENT_CALCULATE_ESTIMATION,
+  CASHIER_ENDPOINT_PAYMENT_METHOD,
+  CASHIER_ENDPOINT_PAYMENT_PROCESS,
+  CASHIER_ENDPOINT_PRODUCTS,
+} from '../constants/cashierApi.constant';
 
 export const useCashierStore = defineStore('cashier', {
   state: (): ICashierStateStore => ({
+    cashierProduct_selectedProduct: [],
     cashierProduct_listCategory: [
       {
         id: 1,
@@ -378,13 +390,129 @@ export const useCashierStore = defineStore('cashier', {
   actions: {
     /**
      * @description Handle fetch api cashier search.
-     * @url /cashier/search
+     * @url /api/products
      * @method GET
      * @access public
      */
-    async cashierProduct_fetchSearch(searchData: string): Promise<void> {
-      // TODO: Fetch API when the endpoint is ready
-      console.log(searchData);
+    async cashierProduct_fetchSearch(searchData: string): Promise<ICashierProduct[]> {
+      try {
+        const response = await httpClient.get<ICashierProduct[]>(CASHIER_ENDPOINT_PRODUCTS + '/' + searchData);
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
+
+    /**
+     * @description Handle fetch api cashier product category
+     * @url /api/categories
+     * @method GET
+     * @access public
+     */
+    async cashierProduct_fetchCategory(
+      categoryId: string,
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<ICashierProduct[]> {
+      try {
+        const response = await httpClient.get<ICashierProduct[]>(CASHIER_ENDPOINT_CATEGORIES + '/' + categoryId, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
+
+    /**
+     * @description Handle fetch api product per category
+     * @url /api/categories/:categoryId
+     * @method GET
+     * @access public
+     */
+    async cashierProduct_fetchCategoryById(
+      categoryId: string,
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<ICashierProduct[]> {
+      try {
+        const response = await httpClient.get<ICashierProduct[]>(CASHIER_ENDPOINT_CATEGORIES + '/' + categoryId, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
+
+    /**
+     * @description Handle calculate payment estimation.
+     * @url /payment/calculate/estimation
+     * @method POST
+     * @access public
+     */
+    async cashierProduct_calculateEstimation(
+      payload: unknown,
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<ICashierCalculateEstimation> {
+      try {
+        const response = await httpClient.post<ICashierCalculateEstimation>(
+          CASHIER_ENDPOINT_PAYMENT_CALCULATE_ESTIMATION,
+          payload,
+          {
+            ...requestConfigurations,
+          },
+        );
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
+
+    /**
+     * @description Handle payment process.
+     * @url /payment/process
+     * @method POST
+     * @access public
+     */
+    async cashierProduct_paymentProcess(
+      payload: unknown,
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<ICashierOrderSummaryPaymentMethodResponse> {
+      try {
+        const response = await httpClient.post<ICashierOrderSummaryPaymentMethodResponse>(
+          CASHIER_ENDPOINT_PAYMENT_PROCESS,
+          payload,
+          {
+            ...requestConfigurations,
+          },
+        );
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
     },
 
     /**
@@ -394,7 +522,7 @@ export const useCashierStore = defineStore('cashier', {
      * @access public
      */
     async cashierProduct_fetchPaymentMethod(
-      requestConfigurations: AxiosRequestConfig,
+      requestConfigurations: AxiosRequestConfig = {},
     ): Promise<ICashierOrderSummaryPaymentMethodResponse> {
       try {
         const response = await httpClient.get<ICashierOrderSummaryPaymentMethodResponse>(
