@@ -1,14 +1,6 @@
 // Constants
-import {
-  AUTHENTICATION_RESET_PASSWORD_REQUEST,
-  AUTHENTICATION_RESET_PASSWORD_STEPPER,
-  AUTHENTICATION_SEND_OTP_REQUEST,
-} from '../constants';
-import {
-  IAuthenticationSendOtpFormData,
-  IAuthenticationStepper,
-  IAuthenticationVerifyOtpFormData,
-} from '../interfaces';
+import { AUTHENTICATION_RESET_PASSWORD_REQUEST, AUTHENTICATION_RESET_PASSWORD_STEPPER } from '../constants';
+import { IAuthenticationStepper } from '../interfaces';
 
 // Interfaces
 import type {
@@ -46,10 +38,8 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
   const authenticationResetPassword_stepper = shallowRef<IAuthenticationStepper[]>(
     AUTHENTICATION_RESET_PASSWORD_STEPPER,
   );
-  const authenticationResetPassword_verifyOtpFormData = reactive<IAuthenticationVerifyOtpFormData>({
-    email: '',
-    otp: '',
-    type: 'FORGOT_PASSWORD',
+  const authenticationResetPassword_formDataOfVerifyPin = reactive<IAuthenticationVerifyPinFormData>({
+    pinConfirmation: '',
   });
 
   /**
@@ -58,8 +48,8 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
   const authenticationResetPassword_formRules = computed(() => ({
     email: { email, required },
   }));
-  const authenticationResetPassword_formRulesOfVerifyOtp = computed(() => ({
-    otp: {
+  const authenticationResetPassword_formRulesOfVerifyPin = computed(() => ({
+    pinConfirmation: {
       required,
     },
   }));
@@ -72,66 +62,30 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
     },
   );
   const authenticationResetPassword_formValidationsOfVerifyOtp = useVuelidate(
-    authenticationResetPassword_formRulesOfVerifyOtp,
-    authenticationResetPassword_verifyOtpFormData,
+    authenticationResetPassword_formRulesOfVerifyPin,
+    authenticationResetPassword_formDataOfVerifyPin,
     {
       $autoDirty: true,
     },
   );
 
   /**
-   * @description Handle fetch api authentication reset password. We call the fetchAuthentication_sendOtp function from the store to handle the request.
-   */
-  const authenticationResetPassword_fetchAuthenticationSendOtp = async () => {
-    try {
-      const payload: IAuthenticationSendOtpFormData = {
-        email: authenticationResetPassword_formData.email,
-      };
-
-      await store.fetchAuthentication_sendOtp(payload, {
-        ...httpAbort_registerAbort(AUTHENTICATION_SEND_OTP_REQUEST),
-      });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        return Promise.reject(error);
-      } else {
-        return Promise.reject(new Error(String(error)));
-      }
-    }
-  };
-
-  /**
-   * @description Handle fetch api authentication reset password. We call the fetchAuthentication_verifyOtp function from the store to handle the request.
-   */
-  const authenticationResetPassword_fetchAuthenticationVerifyOtp = async () => {
-    try {
-      if (!authenticationResetPassword_verifyOtpFormData.email) {
-        authenticationResetPassword_verifyOtpFormData.email = authenticationResetPassword_formData.email;
-      }
-
-      await store.fetchAuthentication_verifyOtp(authenticationResetPassword_verifyOtpFormData, {
-        ...httpAbort_registerAbort(AUTHENTICATION_SEND_OTP_REQUEST),
-      });
-    } catch (error: unknown) {
-      authenticationResetPassword_isPinInvalid.value = true;
-
-      if (error instanceof Error) {
-        return Promise.reject(error);
-      } else {
-        return Promise.reject(new Error(String(error)));
-      }
-    }
-  };
-
-  /**
    * @description Handle fetch api authentication reset password. We call the fetchAuthentication_resetPassword function from the store to handle the request.
    */
   const authenticationResetPassword_fetchAuthenticationResetPassword = async () => {
     try {
-      await store.fetchAuthentication_resetPassword(authenticationResetPassword_formData, {
-        ...httpAbort_registerAbort(AUTHENTICATION_RESET_PASSWORD_REQUEST),
-      });
+      await store.fetchAuthentication_resetPassword(
+        authenticationResetPassword_formDataOfVerifyPin.pinConfirmation,
+        authenticationResetPassword_formData,
+        {
+          ...httpAbort_registerAbort(AUTHENTICATION_RESET_PASSWORD_REQUEST),
+        },
+      );
+
+      authenticationResetPassword_isSuccess.value = true;
     } catch (error: unknown) {
+      authenticationResetPassword_isPinInvalid.value = true;
+
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -154,12 +108,9 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
 
     try {
       if (authenticationResetPassword_activeStep.value === 0) {
-        await authenticationResetPassword_fetchAuthenticationResetPassword();
-        await authenticationResetPassword_fetchAuthenticationSendOtp();
         authenticationResetPassword_activeStep.value = 1;
       } else {
-        await authenticationResetPassword_fetchAuthenticationVerifyOtp();
-        authenticationResetPassword_isSuccess.value = true;
+        await authenticationResetPassword_fetchAuthenticationResetPassword();
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -170,25 +121,10 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
     }
   };
 
-  /**
-   * @description Handle side effect after fill the otp form
-   */
-  watch(
-    () => authenticationResetPassword_verifyOtpFormData.otp,
-    value => {
-      if (authenticationResetPassword_isPinInvalid.value) {
-        authenticationResetPassword_isPinInvalid.value = false;
-      }
-
-      if (value.length === 6) {
-        authenticationResetPassword_onSubmit();
-      }
-    },
-  );
-
   return {
     authenticationResetPassword_activeStep,
     authenticationResetPassword_formData,
+    authenticationResetPassword_formDataOfVerifyPin,
     authenticationResetPassword_formValidations,
     authenticationResetPassword_formValidationsOfVerifyOtp,
     authenticationResetPassword_isLoading: authentication_isLoading,
@@ -196,6 +132,5 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
     authenticationResetPassword_isSuccess,
     authenticationResetPassword_onSubmit,
     authenticationResetPassword_stepper,
-    authenticationResetPassword_verifyOtpFormData,
   };
 };

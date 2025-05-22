@@ -7,6 +7,14 @@ export {};
  * @description Here's a way to extend the global interfaces.
  */
 declare global {
+  export interface IAuthenticationSetUpPinFormData {
+    pin: string;
+  }
+
+  export interface IAuthenticationVerifyPinFormData {
+    pinConfirmation: string;
+  }
+
   interface IBindStateForm {
     solo: boolean;
     flat: boolean;

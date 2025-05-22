@@ -6,11 +6,11 @@ import type { IAuthenticationResetPasswordProvided } from '../interfaces/authent
  * @description Inject all the data and methods what we need
  */
 const {
+  authenticationResetPassword_formDataOfVerifyPin,
   authenticationResetPassword_formValidationsOfVerifyOtp,
   authenticationResetPassword_isLoading,
   authenticationResetPassword_isPinInvalid,
   authenticationResetPassword_onSubmit,
-  authenticationResetPassword_verifyOtpFormData,
 } = inject<IAuthenticationResetPasswordProvided>('authenticationResetPassword')!;
 </script>
 
@@ -41,13 +41,13 @@ const {
     <AppBaseFormGroup
       v-slot="{ classes }"
       class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-      label-for="otp"
-      name="OTP Code"
+      label-for="pin"
+      name="PIN"
       spacing-bottom="mb-0"
-      :validators="authenticationResetPassword_formValidationsOfVerifyOtp.otp"
+      :validators="authenticationResetPassword_formValidationsOfVerifyOtp.pinConfirmation"
     >
       <PrimeVueInputOtp
-        v-model="authenticationResetPassword_verifyOtpFormData.otp"
+        v-model="authenticationResetPassword_formDataOfVerifyPin.pinConfirmation"
         class="[&>input]:bg-white [&>input]:border-grayscale-30 [&>input]:font-bold [&>input]:text-2xl [&>input]:w-16 [&>input]:h-16!"
         :class="[classes, authenticationResetPassword_isPinInvalid ? '[&>input]:!border-border-error' : '']"
         :length="6"
