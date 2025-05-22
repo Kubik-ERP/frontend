@@ -16,7 +16,8 @@
     "noEmit": true,
     "jsx": "preserve",
     "esModuleInterop": true,
-    "types": ["vite/client", "vite-plugin-svg-icons/client", "vitest"],
+    // "types": ["vite/client", "vite-plugin-svg-icons/client", "vitest"],
+    "typeRoots": ["./node_modules/@types", "./src/types", "vite/client", "vitest", "vite-plugin-svg-icons/client"],
 
     /* Linting */
     "strict": true,

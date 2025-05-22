@@ -7,11 +7,10 @@ import type { IAuthenticationSignUpProvided } from '../interfaces/authentication
  */
 const {
   authenticationSignUp_durationOtpFormatted,
-  authenticationSignUp_formData,
   authenticationSignUp_formDataOfVerifyOtp,
   authenticationSignUp_formValidationsOfVerifyOtp,
   authenticationSignUp_isLoading,
-  authenticationSignUp_maskedPhoneNumber,
+  authenticationSignUp_maskedEmail,
   authenticationSignUp_onResendOtp,
   authenticationSignUp_onSubmit,
 } = inject<IAuthenticationSignUpProvided>('authenticationRegister')!;
@@ -28,8 +27,7 @@ const {
 
         <section id="phone-number" class="flex items-center gap-1">
           <p id="phone-number" class="font-normal text-base">
-            {{ authenticationSignUp_formData.phoneCountryCode }}
-            {{ authenticationSignUp_maskedPhoneNumber }}
+            {{ authenticationSignUp_maskedEmail }}
           </p>
           <AppBaseSvg name="edit" class="cursor-pointer" />
         </section>

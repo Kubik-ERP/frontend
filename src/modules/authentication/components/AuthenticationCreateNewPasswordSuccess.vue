@@ -13,7 +13,7 @@
       class="bg-blue-primary border-none text-sm py-[10px]"
       label="Sign In"
       as="a"
-      href="/authentication/login"
+      href="/authentication/sign-in"
     />
   </section>
 </template>
