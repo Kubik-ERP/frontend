@@ -11,8 +11,6 @@ import type {
   IAuthenticationSendOtpFormData,
   IAuthenticationSignUpFormData,
   IAuthenticationSignUpProvided,
-  IAuthenticationSignUpSetUpPinFormData,
-  IAuthenticationSignUpVerifyPinFormData,
   IAuthenticationStepper,
 } from '../interfaces';
 
@@ -48,7 +46,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     password: '',
     passwordConfirmation: '',
   });
-  const authenticationSignUp_formDataOfSetUpPin = reactive<IAuthenticationSignUpSetUpPinFormData>({
+  const authenticationSignUp_formDataOfSetUpPin = reactive<IAuthenticationSetUpPinFormData>({
     pin: '',
   });
   const authenticationSignUp_formDataOfVerifyOtp = reactive<IAuthenticationVerifyOtpFormData>({
@@ -56,7 +54,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     otp: '',
     type: 'REGISTER',
   });
-  const authenticationSignUp_formDataOfVerifyPin = reactive<IAuthenticationSignUpVerifyPinFormData>({
+  const authenticationSignUp_formDataOfVerifyPin = reactive<IAuthenticationVerifyPinFormData>({
     pinConfirmation: '',
   });
   const authenticationSignUp_isAcceptTnc = ref<boolean>(false);
@@ -199,7 +197,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
         ...httpAbort_registerAbort(AUTHENTICATION_SIGN_UP_REQUEST),
       });
 
-      authenticationSignUp_activeStep.value += 1;
+      router.push({ name: 'sign-in' });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -267,10 +265,14 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
         if (authenticationSignUp_formValidations.value.$invalid) return;
         break;
       case 1:
+        authenticationSignUp_formValidationsOfVerifyOtp.value.$touch();
+        if (authenticationSignUp_formValidationsOfVerifyOtp.value.$invalid) return;
+        break;
+      case 2:
         authenticationSignUp_formValidationsOfSetUpPin.value.$touch();
         if (authenticationSignUp_formValidationsOfSetUpPin.value.$invalid) return;
         break;
-      case 2:
+      case 3:
         authenticationSignUp_formValidationsOfVerifyPin.value.$touch();
         if (authenticationSignUp_formValidationsOfVerifyPin.value.$invalid) return;
         break;
@@ -300,7 +302,6 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
         break;
       case 3:
         authenticationSignUp_fetchAuthenticationSetUpPin();
-        router.push({ name: 'sign-in' });
 
         break;
       default:
