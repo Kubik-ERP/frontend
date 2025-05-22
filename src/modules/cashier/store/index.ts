@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import { ICashierProduct, ICashierSelected, ICashierStateStore } from '../interfaces';
+import { ICashierProduct, ICashierStateStore } from '../interfaces';
 import {
   ICashierCalculateEstimation,
   ICashierOrderSummaryPaymentMethodResponse,
