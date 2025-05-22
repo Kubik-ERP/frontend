@@ -51,6 +51,11 @@ export interface ICashierOrderSummaryModalInvoiceDetail {
 export interface ICashierOrderSummaryModalCancelOrder {
   show: boolean;
 }
+export interface ICashierOrderSummaryModalPlaceOrderConfirmation {
+  show: boolean;
+  isLoading: boolean;
+  data: unknown;
+}
 
 export interface ICashierListTable {
   value: number;
@@ -136,6 +141,27 @@ export interface ICashierOrderSummary {
   product: ICashierSelected[];
 }
 
+export interface ICashierCalculateEstimationItems {
+  productId: string;
+  variantId: string;
+  productPrice: number;
+  variantPrice: number;
+  qty: number;
+  discountAmount: number;
+  subtotal: number;
+}
+
+export interface ICashierCalculateEstimation {
+  total: number;
+  discountTotal: number;
+  items: ICashierCalculateEstimationItems[];
+}
+
+export interface ICashierCalulateEstimationData {
+  isLoading: boolean;
+  data: ICashierCalculateEstimation;
+}
+
 export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_menuOrder: Ref<MenuPassThroughAttributes>;
   cashierOrderSummary_menuOrderItem: Ref<MenuItem[]>;
@@ -151,11 +177,12 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_modalPaymentMethod: Ref<ICashierOrderSummaryModalPaymentMethod>;
   cashierOrderSummary_modalVoucher: Ref<ICashierOrderSummaryModalVoucher>;
   cashierOrderSummary_modalSelectTable: Ref<ICashierOrderSummaryModalSelectTable>;
-  cashierOrderSummary_modalPlaceOrderConfirmation: Ref<ICashierOrderSummaryModalCancelOrder>;
-  cashierOrderSummary_modalPlaceOrderDetail: Ref<ICashierOrderSummaryModalCancelOrder>;
+  cashierOrderSummary_modalPlaceOrderConfirmation: Ref<ICashierOrderSummaryModalPlaceOrder>;
+  cashierOrderSummary_modalPlaceOrderDetail: Ref<ICashierOrderSummaryModalPlaceOrderConfirmation>;
 
   cashierOrderSummary_summary: Ref<ICashierOrderSummary>;
   cashierOrderSummary_getListActiveFloor: ComputedRef<ICashierListTable[]>;
+  cashierOrderSummary_isButtonPlaceOrderDisabled: ComputedRef<boolean>;
 
   cashierOrderSummary_handleOrderType: () => void;
   cashierOrderSummary_handleVoucher: () => void;
