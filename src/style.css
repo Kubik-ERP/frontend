@@ -21,8 +21,8 @@
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
 
-/** 
- =============================== PrimeVue Color Overiding   ================================ 
+/**
+ =============================== PrimeVue Color Overiding   ================================
  */
 
 :root {
@@ -124,6 +124,10 @@
 
   .default-wrapper-fullscreen {
     @apply relative inset-0 z-0 h-full w-dvw min-h-dvh overflow-x-hidden;
+  }
+
+  .grid-wrapper {
+    @apply grid grid-rows-1 grid-cols-12 relative inset-0 z-0;
   }
 
   .grid-wrapper-fullscreen {
