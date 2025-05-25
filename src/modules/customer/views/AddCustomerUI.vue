@@ -1,14 +1,25 @@
 <template>
   <div class="">
     {{ customer }}
-    <form class="grid grid-cols-2 gap-8" @submit.prevent>
+    <PrimeVueForm
+      v-slot="$form"
+      :initial-values="customer"
+      :resolver="resolver"
+      :validate-on-blur="true"
+      class="grid grid-cols-2 gap-8"
+      @submit="handleCreateCustomer"
+    >
       <div class="flex flex-col">
         <label for="name">Customer Name</label>
         <PrimeVueInputText
           v-model="customer.name"
+          name="name"
           type="text"
           class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
         />
+        <PrimeVueMessage v-if="$form.name?.invalid" severity="error" size="small" variant="simple">{{
+          $form.name.error?.message
+        }}</PrimeVueMessage>
       </div>
       <div class="flex flex-col">
         <label for="name">Gender</label>
@@ -22,50 +33,74 @@
             <label for="gender2">Female</label>
           </div>
         </div>
+        <PrimeVueMessage v-if="$form.gender?.invalid" severity="error" size="small" variant="simple">{{
+          $form.gender.error?.message
+        }}</PrimeVueMessage>
       </div>
       <div class="flex flex-col">
         <label for="name">Date of Birth</label>
         <div class="flex-auto">
-          <PrimeVueDatePicker v-model="customer.dob" show-icon fluid icon-display="input" input-id="icondisplay" />
+          <PrimeVueDatePicker
+            v-model="customer.dob"
+            name="dob"
+            show-icon
+            fluid
+            icon-display="input"
+            input-id="icondisplay"
+          />
         </div>
+        <PrimeVueMessage v-if="$form.dob?.invalid" severity="error" size="small" variant="simple">{{
+          $form.dob.error?.message
+        }}</PrimeVueMessage>
       </div>
       <div class="flex flex-col">
         <label for="name">Phone Number</label>
-        <div class="flex gap-4">
-          <PrimeVueSelect
-            v-model="customer.code"
-            :options="country_codes"
-            option-value="dial_code"
-            option-label="name"
-            placeholder="Select Code"
-            class="w-44"
-            filter
-            filter-placeholder="Search for a country..."
-          >
-            <template #option="slotProps">
-              <div class="flex items-center gap-2">
-                <img
-                  :alt="slotProps.option.code"
-                  :src="`https://flagsapi.com/${slotProps.option.code}/flat/64.png`"
-                  :class="`mr-2 flag flag-${slotProps.option.code.toLowerCase()}`"
-                  style="width: 18px"
-                />
-                <span> ({{ slotProps.option.dial_code }}) {{ slotProps.option.name }}</span>
-              </div>
-            </template>
-            <template #value="slotProps">
-              <div class="flex items-center gap-2">
-                <span>{{ slotProps.value ? slotProps.value : '' }}</span>
-              </div>
-            </template>
-          </PrimeVueSelect>
-          <PrimeVueInputNumber
-            v-model="customer.number"
-            input-id="withoutgrouping"
-            :use-grouping="false"
-            fluid
-            class="border shadow-xs border-grayscale-30 rounded-lg w-full"
-          />
+        <div class="flex flex-col">
+          <div class="flex gap-4">
+            <PrimeVueSelect
+              v-model="customer.code"
+              name="code"
+              :options="country_codes"
+              option-value="dial_code"
+              option-label="name"
+              placeholder="Select Code"
+              class="w-44"
+              filter
+              filter-placeholder="Search for a country..."
+            >
+              <template #option="slotProps">
+                <div class="flex items-center gap-2">
+                  <img
+                    :alt="slotProps.option.code"
+                    :src="`https://flagsapi.com/${slotProps.option.code}/flat/64.png`"
+                    :class="`mr-2 flag flag-${slotProps.option.code.toLowerCase()}`"
+                    style="width: 18px"
+                  />
+                  <span> ({{ slotProps.option.dial_code }}) {{ slotProps.option.name }}</span>
+                </div>
+              </template>
+              <template #value="slotProps">
+                <div class="flex items-center gap-2">
+                  <span>{{ slotProps.value ? slotProps.value : '' }}</span>
+                </div>
+              </template>
+            </PrimeVueSelect>
+
+            <PrimeVueInputNumber
+              v-model="customer.number"
+              name="number"
+              input-id="withoutgrouping"
+              :use-grouping="false"
+              fluid
+              class="border shadow-xs border-grayscale-30 rounded-lg w-full"
+            />
+          </div>
+          <PrimeVueMessage v-if="$form.code?.invalid" severity="error" size="small" variant="simple">{{
+            $form.code.error?.message
+          }}</PrimeVueMessage>
+          <PrimeVueMessage v-if="$form.number?.invalid" severity="error" size="small" variant="simple">{{
+            $form.number.error?.message
+          }}</PrimeVueMessage>
         </div>
       </div>
 
@@ -74,23 +109,34 @@
         <PrimeVueInputText
           v-model="customer.email"
           type="text"
+          name="email"
           class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
         />
+        <PrimeVueMessage v-if="$form.email?.invalid" severity="error" size="small" variant="simple">{{
+          $form.email.error?.message
+        }}</PrimeVueMessage>
       </div>
       <div class="flex flex-col">
         <label for="name">Member ID</label>
         <PrimeVueInputText
           v-model="customer.id"
           type="text"
+          name="id"
           class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
         />
+        <PrimeVueMessage v-if="$form.id?.invalid" severity="error" size="small" variant="simple">{{
+          $form.id.error?.message
+        }}</PrimeVueMessage>
         <label for="id" class="text-xs text-grayscale-30 text-end w-full"> {{ customer.id.length }}/16 </label>
       </div>
 
       <div class="flex flex-col">
         <label for="name">Tag</label>
         <div class="w-full">
-          <CustomerTags v-model="customer.tags" />
+          <CustomerTags v-model="customer.tags" name="tags" />
+          <PrimeVueMessage v-if="$form.tags?.invalid" severity="error" size="small" variant="simple">{{
+            $form.tags.error?.message
+          }}</PrimeVueMessage>
         </div>
       </div>
 
@@ -98,10 +144,14 @@
         <label for="name">Address</label>
         <PrimeVueTextarea
           v-model="customer.address"
+          name="address"
           rows="5"
           cols="30"
           class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
         />
+        <PrimeVueMessage v-if="$form.address?.invalid" severity="error" size="small" variant="simple">{{
+          $form.address.error?.message
+        }}</PrimeVueMessage>
       </div>
 
       <!-- canccel and add button -->
@@ -115,12 +165,71 @@
         ></PrimeVueButton>
         <PrimeVueButton type="submit" label="Add Customer" class="w-48 bg-primary border-primary"></PrimeVueButton>
       </div>
-    </form>
+    </PrimeVueForm>
   </div>
 </template>
 
-<script setup>
+<script setup >
 import CustomerTags from '@/modules/customer/components/addCustomer/tags.vue';
+
+const customer = reactive({
+  name: '',
+  gender: '',
+  dob: '',
+  code: '',
+  number: '',
+  email: '',
+  id: '',
+  tags: [],
+  address: '',
+});
+
+const resolver = ({ values }) => {
+  const errors = {};
+
+  if (!values.name) {
+    errors.name = [{ message: 'Name is required.' }];
+  }
+
+  if (!values.dob) {
+    errors.dob = [{ message: 'Date of birth is required.' }];
+  }
+
+  if (!values.code && !values.number) {
+    errors.code = [{ message: 'Code and Phone Number is required.' }];
+  }
+
+  if (!values.email) {
+    errors.email = [{ message: 'Email is required.' }];
+  }
+
+  if (!values.id) {
+    errors.id = [{ message: 'ID is required.' }];
+  }
+
+  if (!values.address) {
+    errors.address = [{ message: 'Address is required.' }];
+  }
+
+  if (!values.tags) {
+    errors.tags = [{ message: 'Tags is required.' }];
+  }
+
+  if (!values.gender) {
+    errors.gender = [{ message: 'Gender is required.' }];
+  }
+
+  return {
+    values,
+    errors,
+  };
+};
+
+const handleCreateCustomer = ( valid ) => {
+  if (valid) {
+    console.log(customer);
+  }
+};
 
 const country_codes = ref([
   {
@@ -1334,17 +1443,6 @@ const country_codes = ref([
     code: 'ZW',
   },
 ]);
-const customer = reactive({
-  name: '',
-  gender: '',
-  dob: '',
-  code: '',
-  number: '',
-  email: '',
-  id: '',
-  tags: [],
-  address: '',
-});
 </script>
 
 <style lang="scss" scoped>
