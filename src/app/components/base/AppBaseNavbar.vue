@@ -1,14 +1,19 @@
+<script setup lang="ts">
+/**
+ * @description Injected variables
+ */
+const route = useRoute();
+</script>
+
 <template>
   <nav
     id="navbar"
     class="relative inset-0 z-0 flex items-center justify-between border-b border-solid border-grayscale-10 px-10 py-4"
   >
     <section id="left-content" class="flex items-center gap-4">
-      <section id="box-icon-back" class="flex items-center justify-center w-[34px] h-[34px] rounded-md bg-white">
-        <AppBaseSvg name="chevron-left" class="!w-[18px] !h-[18px]" />
-      </section>
-
-      <h2 class="font-semibold text-black text-lg">Sales Order</h2>
+      <h2 class="font-semibold text-black text-lg">
+        {{ route.meta.title }}
+      </h2>
     </section>
 
     <PrimeVueIconField class="hidden lg:block">
