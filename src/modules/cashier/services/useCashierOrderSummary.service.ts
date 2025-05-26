@@ -5,7 +5,6 @@ import { debounce } from '@/app/helpers/debounce.helper';
 import {
   ICashierCalulateEstimationData,
   ICashierOrderSummary,
-  ICashierOrderSummaryCalculation,
   ICashierOrderSummaryData,
   ICashierOrderSummaryModalAddEdit,
   ICashierOrderSummaryModalCancelOrder,
@@ -31,6 +30,7 @@ import { useCashierStore } from '../store';
 
 // Vue
 import { ref } from 'vue';
+import { CASHIER_PROVIDER, CASHIER_ORDER_TYPE } from '../constants';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   // Router
@@ -51,19 +51,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   // Reactive data binding
   const cashierOrderSummary_modalOrderType = ref<ICashierOrderSummaryModalOrderType>({
     show: false,
-    selectedOrderType: 0,
-    data: [
-      {
-        code: 1,
-        label: 'Dine In',
-        available: true,
-      },
-      {
-        code: 2,
-        label: 'Takeaway',
-        available: false,
-      },
-    ],
+    selectedOrderType: '',
+    data: CASHIER_ORDER_TYPE,
   });
 
   const cashierOrderSummary_handleOrderType = () => {
@@ -146,134 +135,134 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     activeFloor: 1,
     listFloor: [
       {
-        value: 1,
+        value: '1',
         label: 'Floor 1',
         available: true,
       },
       {
-        value: 2,
+        value: '2',
         label: 'Floor 2',
         available: false,
       },
       {
-        value: 3,
+        value: '3',
         label: 'Floor 3',
         available: true,
       },
       {
-        value: 4,
+        value: '4',
         label: 'Floor 4',
         available: false,
       },
     ],
     data: [
       {
-        value: 1,
+        value: '1',
         label: 'Table 1',
         available: true,
         totalSeat: 4,
         floor: 1,
       },
       {
-        value: 2,
+        value: '2',
         label: 'Table 2',
         available: false,
         totalSeat: 8,
         floor: 1,
       },
       {
-        value: 3,
+        value: '3',
         label: 'Table 3',
         available: true,
         totalSeat: 12,
         floor: 1,
       },
       {
-        value: 4,
+        value: '4',
         label: 'Table 4',
         available: false,
         totalSeat: 6,
         floor: 1,
       },
       {
-        value: 5,
+        value: '5',
         label: 'Table 5',
         available: false,
         totalSeat: 6,
         floor: 1,
       },
       {
-        value: 6,
+        value: '6',
         label: 'Table 6',
         available: false,
         totalSeat: 6,
         floor: 2,
       },
       {
-        value: 7,
+        value: '7',
         label: 'Table 7',
         available: false,
         totalSeat: 6,
         floor: 2,
       },
       {
-        value: 8,
+        value: '8',
         label: 'Table 8',
         available: false,
         totalSeat: 6,
         floor: 2,
       },
       {
-        value: 9,
+        value: '9',
         label: 'Table 9',
         available: false,
         totalSeat: 6,
         floor: 2,
       },
       {
-        value: 10,
+        value: '10',
         label: 'Table 10',
         available: false,
         totalSeat: 12,
         floor: 2,
       },
       {
-        value: 11,
+        value: '11',
         label: 'Table 11',
         available: false,
         totalSeat: 2,
         floor: 2,
       },
       {
-        value: 12,
+        value: '12',
         label: 'Table 12',
         available: false,
         totalSeat: 2,
         floor: 2,
       },
       {
-        value: 13,
+        value: '13',
         label: 'Table 13',
         available: false,
         totalSeat: 2,
         floor: 2,
       },
       {
-        value: 14,
+        value: '14',
         label: 'Table 14',
         available: false,
         totalSeat: 2,
         floor: 2,
       },
       {
-        value: 15,
+        value: '15',
         label: 'Table 15',
         available: false,
         totalSeat: 2,
         floor: 2,
       },
       {
-        value: 16,
+        value: '16',
         label: 'Table 16',
         available: false,
         totalSeat: 2,
@@ -282,7 +271,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     ],
   });
 
-  const cashierOrderSummary_handleToggleSelectTable = (table: number) => {
+  const cashierOrderSummary_handleToggleSelectTable = (table: string) => {
     const index = cashierOrderSummary_modalSelectTable.value.selectedTable.indexOf(table);
 
     if (index === -1) {
@@ -305,12 +294,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_modalVoucher = ref<ICashierOrderSummaryModalVoucher>({
     show: false,
     form: {
-      voucher_code: 3,
+      voucher_code: '3',
     },
     search: '',
     data: [
       {
-        code: 1,
+        code: '1',
         label: 'Voucher A',
         available: true,
         minPurchase: 50000,
@@ -322,7 +311,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         stock: 10,
       },
       {
-        code: 2,
+        code: '2',
         label: 'Voucher B',
         available: false,
         minPurchase: 50000,
@@ -334,7 +323,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         stock: 10,
       },
       {
-        code: 3,
+        code: '3',
         label: 'Voucher C',
         available: true,
         minPurchase: 50000,
@@ -381,13 +370,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_handleVoucher = () => {};
 
-  const cashierOrderSummary_calculation = ref<ICashierOrderSummaryCalculation>({
-    subTotal: 0,
-    tax: 0,
-    discount: 0,
-    total: 0,
-  });
-
   const cashierOrderSummary_modalAddEditNotes = ref<ICashierOrderSummaryModalAddEdit>({
     show: false,
     item: null,
@@ -405,14 +387,14 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_summary = computed(() => {
     const summary: ICashierOrderSummary = {
-      provider: 'midtrans',
-      orderType: cashierOrderSummary_data.value.orderType,
+      provider: CASHIER_PROVIDER,
+      orderType: cashierOrderSummary_modalOrderType.value.selectedOrderType,
       invoiceDetail: {
         receivedBy: cashierOrderSummary_modalInvoiceDetail.value.form.received_by,
         notes: cashierOrderSummary_modalInvoiceDetail.value.form.notes,
       },
       paymentMethod: cashierOrderSummary_data.value.paymentMethod,
-      tableCode: cashierOrderSummary_modalSelectTable.value.selectedTable,
+      tableCode: cashierOrderSummary_modalSelectTable.value.selectedTable.toString(),
       selectedVoucher: cashierOrderSummary_modalVoucher.value.form.voucher_code,
       customerName: cashierOrderSummary_data.value.customerName,
       product: cashierProduct_selectedProduct.value,
@@ -424,12 +406,13 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_modalPlaceOrderDetail = ref<ICashierOrderSummaryModalPlaceOrderConfirmation>({
     show: false,
     isLoading: false,
+    showModalPayment: false,
     data: {},
   });
 
   const cashierOrderSummary_isButtonPlaceOrderDisabled = computed(() => {
     const isDisabled =
-      cashierOrderSummary_modalOrderType.value.selectedOrderType === 0 ||
+      cashierOrderSummary_modalOrderType.value.selectedOrderType === '' ||
       cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod === '' ||
       cashierOrderSummary_modalSelectTable.value.selectedTable.length === 0 ||
       cashierProduct_selectedProduct.value.length === 0;
@@ -454,7 +437,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         products: cashierOrderSummary_summary.value.product,
       });
 
-      cashierOrderSummary_calculateEstimation.value.data = response;
+      cashierOrderSummary_calculateEstimation.value.data = response.data;
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -489,29 +472,72 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_modalPlaceOrderDetail.value.isLoading = true;
 
     try {
-      const response = await store.cashierProduct_paymentProcess({
+      const params = {
         products: cashierOrderSummary_summary.value.product,
-        provider: 'midtrans',
+        orderType: cashierOrderSummary_summary.value.orderType,
+        invoiceDetail: {
+          receivedBy: cashierOrderSummary_modalInvoiceDetail.value.form.received_by,
+          notes: cashierOrderSummary_modalInvoiceDetail.value.form.notes,
+        },
+        provider: cashierOrderSummary_summary.value.provider,
+        paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
+        vouchers: cashierOrderSummary_summary.value.selectedVoucher,
+        customerId: cashierOrderSummary_data.value.customerName,
+        tableCode: cashierOrderSummary_summary.value.tableCode,
+      };
+
+      const response = await store.cashierProduct_paymentInstant(params);
+
+      cashierOrderSummary_modalPlaceOrderDetail.value.data = response.data;
+
+      cashierOrderSummary_modalPlaceOrderDetail.value.showModalPayment = true;
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      cashierOrderSummary_modalPlaceOrderDetail.value.isLoading = false;
+    }
+  };
+
+  const cashierOrderSummary_isLoadingUnpaidOrder = ref(false);
+
+  const cashierOrderSummary_handleSaveUnpaidOrder = async () => {
+    cashierOrderSummary_isLoadingUnpaidOrder.value = true;
+
+    try {
+      const params = {
+        products: cashierOrderSummary_summary.value.product,
         orderType: cashierOrderSummary_summary.value.orderType,
         invoiceDetail: {
           receivedBy: cashierOrderSummary_modalInvoiceDetail.value.form.received_by,
           notes: cashierOrderSummary_modalInvoiceDetail.value.form.notes,
         },
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
-        vouchers: cashierOrderSummary_modalVoucher.value.form.voucher_code,
+        vouchers: cashierOrderSummary_summary.value.selectedVoucher,
         customerId: cashierOrderSummary_data.value.customerName,
-        tableCode: cashierOrderSummary_modalSelectTable.value.selectedTable,
-      });
+        tableCode: cashierOrderSummary_summary.value.tableCode,
+      };
 
-      cashierOrderSummary_modalPlaceOrderDetail.value.data = response;
+      const response = await store.cashierProduct_paymentProcess(params);
+
+      store.cashierProduct_selectedProduct = [];
 
       if (route.name === 'cashier') {
         router.push({
           name: 'invoice',
+          params: {
+            invoiceId: response.data.orderId,
+          },
         });
       } else {
         router.push({
           name: 'self-order-invoice',
+          params: {
+            invoiceId: response.data.orderId,
+          },
         });
       }
     } catch (error) {
@@ -521,7 +547,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         return Promise.reject(new Error(String(error)));
       }
     } finally {
-      cashierOrderSummary_modalPlaceOrderDetail.value.isLoading = false;
+      cashierOrderSummary_isLoadingUnpaidOrder.value = false;
     }
   };
 
@@ -536,14 +562,30 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_handlePlaceOrderConfirmation = () => {
     cashierOrderSummary_modalPlaceOrderConfirmation.value.show = false;
-    cashierOrderSummary_modalPlaceOrderDetail.value.show = true;
+
+    switch (cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod) {
+      case '0196cf1f-f2cc-7130-a67b-2c753dbcbd32': // Cash
+        cashierOrderSummary_modalPlaceOrderDetail.value.show = true;
+        break;
+      case '0196cf1f-f2cc-7d1c-9500-dee362da4287': // QRIS
+        cashierOrderSummary_handlePlaceOrderDetail();
+        break;
+      case '0196cf1f-f2cc-7e3f-951d-cf86eb228b0b': // Debit
+        cashierOrderSummary_modalPlaceOrderDetail.value.show = true;
+        break;
+      case '0196cf1f-f2cc-7a21-bcd7-8e4d4d3505c2': // Credit
+        cashierOrderSummary_modalPlaceOrderDetail.value.show = true;
+        break;
+      default:
+        console.error('Invalid payment method selected');
+        break;
+    }
   };
 
   return {
     cashierOrderSummary_menuOrder,
     cashierOrderSummary_menuOrderItem,
     cashierOrderSummary_data,
-    cashierOrderSummary_calculation,
 
     cashierOrderSummary_modalMenuOrderItem,
     cashierOrderSummary_modalOrderSummary,
@@ -558,9 +600,13 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_modalCancelOrder,
 
     cashierOrderSummary_getListActiveFloor,
+    cashierOrderSummary_calculateEstimation,
     cashierOrderSummary_summary,
 
     cashierOrderSummary_isButtonPlaceOrderDisabled,
+
+    cashierOrderSummary_isLoadingUnpaidOrder,
+    cashierOrderSummary_handleSaveUnpaidOrder,
 
     cashierOrderSummary_handleOrderType,
     cashierOrderSummary_handleInvoiceDetail,

@@ -45,7 +45,7 @@ const {
   cashierOrderSummary_menuOrder,
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
-  cashierOrderSummary_calculation,
+  cashierOrderSummary_calculateEstimation,
   cashierOrderSummary_summary,
 
   cashierOrderSummary_modalMenuOrderItem,
@@ -62,6 +62,9 @@ const {
 
   cashierOrderSummary_getListActiveFloor,
   cashierOrderSummary_isButtonPlaceOrderDisabled,
+
+  cashierOrderSummary_isLoadingUnpaidOrder,
+  cashierOrderSummary_handleSaveUnpaidOrder,
 
   cashierOrderSummary_handleOrderType,
   cashierOrderSummary_handleInvoiceDetail,
@@ -109,7 +112,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_menuOrder,
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
-  cashierOrderSummary_calculation,
+  cashierOrderSummary_calculateEstimation,
   cashierOrderSummary_summary,
 
   cashierOrderSummary_modalMenuOrderItem,
@@ -126,6 +129,9 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_getListActiveFloor,
 
   cashierOrderSummary_isButtonPlaceOrderDisabled,
+
+  cashierOrderSummary_isLoadingUnpaidOrder,
+  cashierOrderSummary_handleSaveUnpaidOrder,
 
   cashierOrderSummary_handleOrderType,
   cashierOrderSummary_handleInvoiceDetail,

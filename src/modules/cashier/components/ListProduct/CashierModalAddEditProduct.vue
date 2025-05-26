@@ -46,7 +46,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               class="border border-primary text-primary px-4"
               variant="outlined"
               label="-"
-              :disabled="Number(cashierProduct_modalAddEditItem.item.qty) <= 1"
+              :disabled="Number(cashierProduct_modalAddEditItem.item.quantity) <= 1"
               @click="cashierProduct_handleQuantity('decrease')"
             />
             <PrimeVueInputNumber
@@ -54,7 +54,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               input-class="w-14 text-center justify-items-center"
               type="number"
               :min="1"
-              :max="cashierProduct_modalAddEditItem.product?.qty ?? 0"
+              :max="cashierProduct_modalAddEditItem.product?.quantity ?? 0"
             />
             <PrimeVueButton
               type="button"
@@ -62,8 +62,8 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               variant="outlined"
               label="+"
               :disabled="
-                Number(cashierProduct_modalAddEditItem.item.qty) >=
-                (cashierProduct_modalAddEditItem.product?.qty ?? 0)
+                Number(cashierProduct_modalAddEditItem.item.quantity) >=
+                (cashierProduct_modalAddEditItem.product?.quantity ?? 0)
               "
               @click="cashierProduct_handleQuantity('increase')"
             />
@@ -75,7 +75,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
         <div class="border rounded-md border-grayscale-10 overflow-auto flex flex-col max-h-48 flex-grow">
           <div
             v-for="category in cashierProduct_modalAddEditItem.product?.variant"
-            :key="category.id"
+            :key="category.variantId"
             class="flex justify-between w-full p-2"
           >
             <div class="flex items-center gap-2">

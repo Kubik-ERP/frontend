@@ -9,6 +9,9 @@ import components from './app/components';
 import loadAllRoutes from './app/router';
 import pinia from './app/store';
 
+// Socket
+import SocketPlugin from './plugins/socket/index';
+
 // Plugins
 import eventBus from './plugins/mitt';
 
@@ -46,6 +49,7 @@ const initialize = async () => {
   // Use everything what we have
   app.use(pinia);
   app.use(router);
+  app.use(SocketPlugin);
 
   // Register global event bus
   app.provide<Emitter<IBusEvent>>('eventBus', eventBus);

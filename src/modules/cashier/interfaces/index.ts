@@ -6,32 +6,34 @@ export interface ICashierCategory {
 }
 
 export interface ICashierVariant {
-  id: number;
+  variantId: string;
   name: string;
   price: number;
 }
 
 export interface ICashierModalAddProductItem {
-  qty: number;
+  quantity: number;
   variant: ICashierVariant;
   notes: string;
 }
 
 export interface ICashierProduct {
-  id: number;
+  productId: string;
   name: string;
   category: string;
   price: string;
   discountedPrice: string | null;
   image: string;
-  qty: number;
+  quantity: number;
   variant: ICashierVariant[];
 }
 
 export interface ICashierSelected {
   product: ICashierProduct;
   variant: ICashierVariant;
-  qty: number;
+  productId: string;
+  variantId: string;
+  quantity: number;
   notes: string;
 }
 

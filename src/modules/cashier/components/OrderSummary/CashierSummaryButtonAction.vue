@@ -5,21 +5,21 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalPlaceOrderConfirmation, cashierOrderSummary_isButtonPlaceOrderDisabled } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
-
-// router
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
+const {
+  cashierOrderSummary_modalPlaceOrderConfirmation,
+  cashierOrderSummary_isButtonPlaceOrderDisabled,
+  cashierOrderSummary_handleSaveUnpaidOrder,
+  cashierOrderSummary_isLoadingUnpaidOrder,
+} = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 <template>
   <section id="cashier-summary-button-action" class="flex gap-4 px-4 pt-2">
     <PrimeVueButton
       class="p-3 w-1/2 border border-primary"
       outlined
-      :disabled="cashierOrderSummary_isButtonPlaceOrderDisabled"
-      @click="router.push({ name: 'invoice' })"
+      :disabled="cashierOrderSummary_isButtonPlaceOrderDisabled || cashierOrderSummary_isLoadingUnpaidOrder"
+      :loading="cashierOrderSummary_isLoadingUnpaidOrder"
+      @click="cashierOrderSummary_handleSaveUnpaidOrder()"
     >
       <section class="flex gap-2 justify-center w-full items-center">
         <AppBaseSvg name="order-primary" class="!h-5 !w-5" />
