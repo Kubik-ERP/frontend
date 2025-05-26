@@ -16,7 +16,7 @@ import AppBaseSidebar from '@/app/components/base/AppBaseSidebar.vue';
       <AppBaseNavbar />
       <AppBaseBreadcrumb />
 
-      <section id="main-layout" class="w-full h-fit px-7 py-6">
+      <section id="main-layout" class="w-full h-fit p-10">
         <RouterView />
       </section>
     </section>
