@@ -22,6 +22,7 @@ const {
   authenticationSignUp_onResendOtp,
   authenticationSignUp_onSubmit,
   authenticationSignUp_stepper,
+  authenticationSignUp_verifyUser,
 } = useAuthenticationRegisterService();
 
 /**
@@ -42,6 +43,13 @@ provide('authenticationRegister', {
   authenticationSignUp_maskedEmail,
   authenticationSignUp_onResendOtp,
   authenticationSignUp_onSubmit,
+});
+
+/**
+ * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
+ */
+onMounted(() => {
+  authenticationSignUp_verifyUser();
 });
 </script>
 

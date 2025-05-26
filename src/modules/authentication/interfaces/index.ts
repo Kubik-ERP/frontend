@@ -3,10 +3,19 @@ export * from './authentication-reset-password.interface';
 export * from './authentication-sign-in.interface';
 export * from './authentication-sign-up.interface';
 
+export interface IAuthenticationProfile {
+  fullName: string;
+  usingPin: boolean;
+  email: string;
+  phone: string;
+  isVerified: boolean;
+  id: number;
+}
+
 export interface IAuthenticationStateStore {
   authentication_isLoading: boolean;
   authentication_token: string;
-  authentication_userData: unknown;
+  authentication_userData: IAuthenticationProfile | null;
 }
 
 export interface IAuthenticationSendOtpFormData {
