@@ -1,5 +1,9 @@
 // Constants
-import { AUTHENTICATION_GOOGLE_REDIRECT_REQUEST, AUTHENTICATION_SIGN_IN_REQUEST } from '../constants';
+import {
+  AUTHENTICATION_GOOGLE_REDIRECT_REQUEST,
+  AUTHENTICATION_PROFILE_REQUEST,
+  AUTHENTICATION_SIGN_IN_REQUEST,
+} from '../constants';
 
 // Interfaces
 import type {
@@ -24,7 +28,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
   const store = useAuthenticationStore(); // Instance of the store
   const route = useRoute(); // Instance of the route
   const router = useRouter(); // Instance of the router
-  const { authentication_isLoading } = storeToRefs(store);
+  const { authentication_isLoading, authentication_token, authentication_userData } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
@@ -60,7 +64,49 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
         ...httpAbort_registerAbort(AUTHENTICATION_GOOGLE_REDIRECT_REQUEST),
       });
 
-      router.push({ name: 'outlet.list' });
+      await authenticationSignIn_fetchAuthenticationProfile();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api authentication profile. We call the fetchAuthentication_profile function from the store to handle the request.
+   */
+  const authenticationSignIn_fetchAuthenticationProfile = async () => {
+    try {
+      let validationType;
+
+      await store.fetchAuthentication_profile({
+        ...httpAbort_registerAbort(AUTHENTICATION_PROFILE_REQUEST),
+      });
+
+      if (authentication_userData.value) {
+        if (!authentication_userData.value.isVerified) {
+          validationType = 'email-verification';
+        }
+
+        if (authentication_userData.value.usingPin) {
+          validationType = 'set-up-pin';
+        }
+      }
+
+      if (validationType) {
+        router.push({
+          name: 'sign-up',
+          query: {
+            email: authentication_userData.value?.email ?? authenticationSignIn_formData.email,
+            type: validationType,
+            token: authentication_token.value,
+          },
+        });
+      } else {
+        router.push({ name: 'outlet.list' });
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -84,7 +130,6 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
           ...httpAbort_registerAbort(AUTHENTICATION_SIGN_IN_REQUEST),
         },
       );
-      router.push({ name: 'outlet.list' });
 
       return Promise.resolve(result);
     } catch (error: unknown) {
@@ -112,6 +157,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
 
     try {
       await authenticationSignIn_fetchAuthenticationSignIn();
+      await authenticationSignIn_fetchAuthenticationProfile();
     } catch (error: unknown) {
       authenticationSignIn_isNotAuthenticated.value = true;
 

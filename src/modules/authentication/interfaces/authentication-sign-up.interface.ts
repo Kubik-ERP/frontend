@@ -35,4 +35,5 @@ export interface IAuthenticationSignUpProvided {
   authenticationSignUp_stepper: ShallowRef<IAuthenticationStepper[]>;
   authenticationSignUp_onResendOtp: () => Promise<void>;
   authenticationSignUp_onSubmit: () => Promise<void>;
+  authenticationSignUp_verifyUser: () => void;
 }
