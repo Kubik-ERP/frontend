@@ -162,10 +162,12 @@ import { ref } from 'vue';
 import { FilterMatchMode } from '@primevue/core/api';
 import ProductVariantPill from '../../components/ProductVariantPill.vue';
 
-import { getAllProducts } from '@/modules/catalog/services/Product/ProductServices';
+import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
 import CategoryPill from '@/modules/catalog/components/Category/CategoryPill.vue';
 
 const router = useRouter();
+
+const { getAllProducts } = useProductService();
 
 function formatCurrency(value) {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' })

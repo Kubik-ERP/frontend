@@ -1,5 +1,12 @@
-import { ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface.ts';
-import { IVariant } from '@/modules/catalog/interfaces/Variant/VariantInterface.ts';
+export interface ICategoryHasProduct {
+  categories_id: string;
+  products_id: string;
+}
+
+export interface IVariantHasProduct {
+  variant_id: string;
+  products_id: string;
+}
 
 export interface IProduct {
   id: string;
@@ -7,14 +14,18 @@ export interface IProduct {
   price: number;
   discount_price?: number;
   picture_url?: string;
-  categories_has_products?: ICategory[];
-  variant_has_products?: IVariant[];
+  categories_has_products?: ICategoryHasProduct[];
+  variant_has_products?: IVariantHasProduct[];
 }
 
 export interface CreateProductPayload {
+  image?: string;
   name: string;
   price?: number;
+  isDiscount?: boolean;
   discount_price?: number;
+  discount_value?: number;
+  discount_unit?: string;
   picture_url?: string;
   category_ids: string[];
   variant_ids: string[];

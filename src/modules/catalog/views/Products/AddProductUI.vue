@@ -234,11 +234,14 @@
 </template>
 
 <script setup>
-import { createProduct } from '@/modules/catalog/services/Product/ProductServices';
-import { getAllCategories } from '@/modules/catalog/services/Category/categoryService';
+import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
+import { useCategoryService } from '@/modules/catalog/services/Category/categoryService';
 
 const route = useRoute();
 // const router = useRouter();
+
+const { getAllCategories } = useCategoryService();
+const { createProduct } = useProductService();
 
 const product = reactive({
   id: null,

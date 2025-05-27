@@ -31,11 +31,13 @@ declare module 'vue' {
     PrimeVueListbox: typeof import('primevue/listbox')['default']
     PrimeVueMessage: typeof import('primevue/message')['default']
     PrimeVueMeterGroup: typeof import('primevue/metergroup')['default']
+    PrimeVueMultiSelect: typeof import('primevue/multiselect')['default']
     PrimeVuePassword: typeof import('primevue/password')['default']
     PrimeVuePopover: typeof import('primevue/popover')['default']
     PrimeVueRadioButton: typeof import('primevue/radiobutton')['default']
     PrimeVueSelect: typeof import('primevue/select')['default']
     PrimeVueTextarea: typeof import('primevue/textarea')['default']
+    PrimeVueToggleSwitch: typeof import('primevue/toggleswitch')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
