@@ -5,24 +5,16 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalPlaceOrderDetail } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierOrderSummary_modalPlaceOrderDetail, cashierOrderSummary_handleSimulatePayment } =
+  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+
+// env
+const isDevelopmentMode = import.meta.env.VITE_APP_MODE === 'development';
 
 // Router
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-
-// Socket
-import { useSocket } from '@/plugins/socket';
-
-const socket = useSocket();
-
-onMounted(() => {
-  socket.on('payment-success', (message: string) => {
-    // messages.value.push(message);
-    console.log('Received message:', message);
-  });
-});
 </script>
 
 <template>
@@ -65,6 +57,19 @@ onMounted(() => {
                 </div>
               </div>
             </div>
+
+            <PrimeVueButton
+              v-if="isDevelopmentMode"
+              class="w-full bg-primary text-white py-2.5 px-8"
+              type="button"
+              label="Simulate Payment"
+              @click="
+                cashierOrderSummary_handleSimulatePayment(
+                  cashierOrderSummary_modalPlaceOrderDetail?.data?.orderId ?? '',
+                )
+              "
+            >
+            </PrimeVueButton>
 
             <PrimeVueButton
               class="w-full bg-primary text-white py-2.5 px-8"

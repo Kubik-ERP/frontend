@@ -16,6 +16,7 @@ import {
   CASHIER_ENDPOINT_PAYMENT_METHOD,
   CASHIER_ENDPOINT_PAYMENT_PROCESS,
   CASHIER_ENDPOINT_PRODUCTS,
+  CASHIER_ENDPOINT_SIMULATE_PAYMENT,
 } from '../constants/cashierApi.constant';
 import {
   ICashierResponseCalulateEstimation,
@@ -448,6 +449,24 @@ export const useCashierStore = defineStore('cashier', {
           },
         );
 
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
+
+    async cashierProduct_simulatePayment(
+      payload: unknown,
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<unknown> {
+      try {
+        const response = await httpClient.post<unknown>(CASHIER_ENDPOINT_SIMULATE_PAYMENT, payload, {
+          ...requestConfigurations,
+        });
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

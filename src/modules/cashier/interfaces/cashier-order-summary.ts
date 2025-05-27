@@ -184,4 +184,6 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_handlePlaceOrderDetail: () => void;
 
   cashierOrderSummary_handleToggleSelectTable: (table: string) => void;
+
+  cashierOrderSummary_handleSimulatePayment: (invoiceId: string) => void;
 }

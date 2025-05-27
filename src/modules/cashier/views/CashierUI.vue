@@ -76,6 +76,8 @@ const {
   cashierOrderSummary_handleSelectTable,
   cashierOrderSummary_handleVoucher,
   cashierOrderSummary_handleToggleSelectTable,
+
+  cashierOrderSummary_handleSimulatePayment,
 } = useCashierOrderSummaryService();
 
 /**
@@ -143,6 +145,8 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_handleSelectTable,
   cashierOrderSummary_handleVoucher,
   cashierOrderSummary_handleToggleSelectTable,
+
+  cashierOrderSummary_handleSimulatePayment,
 });
 </script>
 

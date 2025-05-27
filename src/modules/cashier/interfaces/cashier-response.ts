@@ -47,3 +47,8 @@ export interface ICashierResponseMidtransQrisPayment {
     expiryTime: string;
   };
 }
+
+export interface ICashierResponseWebsocketMessage {
+  orderId: string;
+  message: string;
+}

@@ -31,6 +31,8 @@ import { useCashierStore } from '../store';
 // Vue
 import { ref } from 'vue';
 import { CASHIER_PROVIDER, CASHIER_ORDER_TYPE } from '../constants';
+import { useSocket } from '@/plugins/socket';
+import { ICashierResponseWebsocketMessage } from '../interfaces/cashier-response';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   // Router
@@ -55,10 +57,15 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     data: CASHIER_ORDER_TYPE,
   });
 
+  /**
+   * @description Handle order type selection
+   * @returns void
+   */
   const cashierOrderSummary_handleOrderType = () => {
     // TODO: handle order type on submit
   };
 
+  // Modal for invoice detail
   const cashierOrderSummary_modalInvoiceDetail = ref<ICashierOrderSummaryModalInvoiceDetail>({
     show: false,
     value: null,
@@ -68,14 +75,24 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     },
   });
 
+  /**
+   * @description Handle invoice detail submission
+   * @returns void
+   */
   const cashierOrderSummary_handleInvoiceDetail = () => {};
 
+  // Modal for cancel order
   const cashierOrderSummary_modalCancelOrder = ref<ICashierOrderSummaryModalCancelOrder>({
     show: false,
   });
 
+  /**
+   * @description Handle cancel order action
+   * @returns void
+   */
   const cashierOrderSummary_handleCancelOrder = () => {};
 
+  // Modal for payment method selection
   const cashierOrderSummary_modalPaymentMethod = ref<ICashierOrderSummaryModalPaymentMethod>({
     show: false,
     isLoading: false,
@@ -99,6 +116,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     ],
   });
 
+  /**
+   * @description Handle order type selection
+   * @returns void
+   */
   const cashierOrderSummary_handleFetchPaymentMethod = async () => {
     cashierOrderSummary_modalPaymentMethod.value.isLoading = true;
 
@@ -118,8 +139,13 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     }
   };
 
+  /**
+   * @description Handle payment method selection
+   * @returns void
+   */
   const cashierOrderSummary_handlePaymentMethod = async () => {};
 
+  // Watch for changes in payment method modal visibility
   watch(
     () => cashierOrderSummary_modalPaymentMethod.value.show,
     value => {
@@ -129,6 +155,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     },
   );
 
+  // Modal for selecting table
   const cashierOrderSummary_modalSelectTable = ref<ICashierOrderSummaryModalSelectTable>({
     show: false,
     selectedTable: [],
@@ -271,6 +298,11 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     ],
   });
 
+  /**
+   * @description Handle table selection toggle
+   * @param {string} table - The table to toggle selection for
+   * @returns void
+   */
   const cashierOrderSummary_handleToggleSelectTable = (table: string) => {
     const index = cashierOrderSummary_modalSelectTable.value.selectedTable.indexOf(table);
 
@@ -281,8 +313,13 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     }
   };
 
+  /**
+   * @description Handle table selection
+   * @returns void
+   */
   const cashierOrderSummary_handleSelectTable = () => {};
 
+  // Computed property to get active floor tables
   const cashierOrderSummary_getListActiveFloor = computed(() => {
     const activeFloor = cashierOrderSummary_modalSelectTable.value.data.filter(
       data => data.floor === cashierOrderSummary_modalSelectTable.value.activeFloor,
@@ -291,6 +328,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     return activeFloor;
   });
 
+  // Modal for voucher selection
   const cashierOrderSummary_modalVoucher = ref<ICashierOrderSummaryModalVoucher>({
     show: false,
     form: {
@@ -337,6 +375,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     ],
   });
 
+  /**
+   * @description Handle voucher selection
+   * @returns void
+   */
   const cashierOrderSummary_data = ref<ICashierOrderSummaryData>({
     orderId: '1234',
     customerName: '5ae5fbfb-0002-40fb-9734-0e4d111fb5b2',
@@ -368,6 +410,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     // },
   ]);
 
+  /**
+   * @description Handle voucher selection
+   * @returns void
+   */
   const cashierOrderSummary_handleVoucher = () => {};
 
   const cashierOrderSummary_modalAddEditNotes = ref<ICashierOrderSummaryModalAddEdit>({
@@ -376,6 +422,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     tempValue: '',
   });
 
+  /**
+   * @description Handle add/edit notes action
+   * @returns void
+   */
   watch(
     () => cashierOrderSummary_modalAddEditNotes.value.show,
     value => {
@@ -385,6 +435,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     },
   );
 
+  // Computed property to summarize order details
   const cashierOrderSummary_summary = computed(() => {
     const summary: ICashierOrderSummary = {
       provider: CASHIER_PROVIDER,
@@ -410,6 +461,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     data: {},
   });
 
+  /**
+   * @description Check if the "Place Order" button should be disabled
+   * @returns boolean
+   */
   const cashierOrderSummary_isButtonPlaceOrderDisabled = computed(() => {
     const isDisabled =
       cashierOrderSummary_modalOrderType.value.selectedOrderType === '' ||
@@ -429,6 +484,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     },
   });
 
+  /**
+   * @description Handle calculation of estimation
+   * @returns void
+   */
   const cashierOrderSUmmary_handleCalculateEstimation = async () => {
     cashierOrderSummary_calculateEstimation.value.isLoading = true;
 
@@ -467,6 +526,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     { immediate: true, deep: true },
   );
 
+  /**
+   * @description Handle placing order detail
+   * @returns void
+   */
   const cashierOrderSummary_handlePlaceOrderDetail = async () => {
     cashierOrderSummary_modalPlaceOrderDetail.value.show = false;
     cashierOrderSummary_modalPlaceOrderDetail.value.isLoading = true;
@@ -502,8 +565,51 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     }
   };
 
+  /**
+   * @description Handle simulating payment
+   * @param {string} invoiceId - The invoice ID to simulate payment for
+   * @returns void
+   */
+  const cashierOrderSummary_handleSimulatePayment = async (invoiceId: string) => {
+    try {
+      const params = {
+        acquirer: 'gopay',
+        currency: 'IDR',
+        expiry_time: '2025-05-15 13:43:44',
+        fraud_status: 'accept',
+        gross_amount: '50000',
+        issuer: 'gopay',
+        merchant_id: 'G670501757',
+        order_id: invoiceId,
+        payment_type: 'qris',
+        settlement_time: '2025-05-15 13:43:44',
+        signature_key: 'asf4a68svca6v3zv6av',
+        status_code: '200',
+        status_message: 'midtrans payment notification',
+        transaction_id: '318db42f-c746-4adb-8337-3b505db445fe',
+        transaction_status: 'settlement',
+        transaction_time: '2025-05-15 13:43:44',
+        transaction_type: 'on-US',
+      };
+
+      await store.cashierProduct_simulatePayment(params);
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      cashierOrderSummary_modalPlaceOrderDetail.value.isLoading = false;
+    }
+  };
+
   const cashierOrderSummary_isLoadingUnpaidOrder = ref(false);
 
+  /**
+   * @description Handle saving unpaid order
+   * @returns void
+   */
   const cashierOrderSummary_handleSaveUnpaidOrder = async () => {
     cashierOrderSummary_isLoadingUnpaidOrder.value = true;
 
@@ -560,15 +666,20 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     },
   });
 
-  const cashierOrderSummary_handlePlaceOrderConfirmation = () => {
-    cashierOrderSummary_modalPlaceOrderConfirmation.value.show = false;
-
+  /**
+   * @description Handle place order confirmation
+   * @returns void
+   */
+  const cashierOrderSummary_handlePlaceOrderConfirmation = async () => {
     switch (cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod) {
       case '0196cf1f-f2cc-7130-a67b-2c753dbcbd32': // Cash
         cashierOrderSummary_modalPlaceOrderDetail.value.show = true;
         break;
       case '0196cf1f-f2cc-7d1c-9500-dee362da4287': // QRIS
-        cashierOrderSummary_handlePlaceOrderDetail();
+        await cashierOrderSummary_handlePlaceOrderDetail();
+
+        cashierOrderSummary_modalPlaceOrderConfirmation.value.show = false;
+
         break;
       case '0196cf1f-f2cc-7e3f-951d-cf86eb228b0b': // Debit
         cashierOrderSummary_modalPlaceOrderDetail.value.show = true;
@@ -581,6 +692,63 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         break;
     }
   };
+
+  // Socket connection for real-time updates
+  const socket = useSocket();
+
+  /**
+   * @description Subscribe to payment events
+   * @returns void
+   */
+  const subscribe = () => {
+    const orderId = cashierOrderSummary_modalPlaceOrderDetail.value.data?.orderId;
+    if (!orderId) return;
+
+    socket.emit('subscribe-invoice', orderId);
+
+    socket.on('payment-success', (data: ICashierResponseWebsocketMessage) => {
+      if (data.orderId === orderId) {
+        router.replace({ name: 'invoice', params: { invoiceId: data.orderId } });
+      }
+    });
+
+    socket.on('payment-failed', data => {
+      if (data.orderId === orderId) {
+        router.replace({ name: 'invoice', params: { invoiceId: data.orderId } });
+      }
+    });
+  };
+
+  /**
+   * @description Unsubscribe from payment events
+   * @returns void
+   */
+  const unsubscribe = () => {
+    const orderId = cashierOrderSummary_modalPlaceOrderDetail.value.data?.orderId;
+    if (!orderId) return;
+
+    socket.emit('unsubscribe-invoice', orderId);
+
+    socket.off('payment-success');
+    socket.off('payment-failed');
+  };
+
+  // Watch for visibility of payment modal to manage subscription
+  watch(
+    () => cashierOrderSummary_modalPlaceOrderDetail.value.showModalPayment,
+    isVisible => {
+      if (isVisible) {
+        subscribe();
+      } else {
+        unsubscribe();
+      }
+    },
+  );
+
+  // Cleanup on component unmount
+  onUnmounted(() => {
+    unsubscribe();
+  });
 
   return {
     cashierOrderSummary_menuOrder,
@@ -618,5 +786,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_handleSelectTable,
     cashierOrderSummary_handleVoucher,
     cashierOrderSummary_handleToggleSelectTable,
+
+    cashierOrderSummary_handleSimulatePayment,
   };
 };

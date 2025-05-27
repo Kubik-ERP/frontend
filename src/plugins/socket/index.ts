@@ -1,7 +1,9 @@
 import { App, inject } from 'vue';
 import { io, Socket } from 'socket.io-client';
 
-const socket: Socket = io('http://103.191.63.109:8080');
+const socket: Socket = io(import.meta.env.VITE_APP_BASE_API_URL, {
+  transports: ['websocket'],
+});
 
 export default {
   install: (app: App) => {
