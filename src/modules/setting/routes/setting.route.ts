@@ -8,17 +8,22 @@ import { LAYOUT_OPTIONS } from '@/app/constants';
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/dashboard',
+    path: '/pos-setting',
     component: AppBaseWrapper,
     children: [
       {
         path: '',
-        name: 'dashboard',
-        component: () => import('../views/DashboardUI.vue'),
+        redirect: { name: 'outlet.list' },
+      },
+      {
+        path: 'tax',
+        name: 'setting.tax',
+        component: () => import('../views/SettingTaxUI.vue'),
         meta: {
-          breadcrumb: 'Dashboard',
-          requiresAuthorization: true,
+          breadcrumb: 'Tax & Service Charge',
           layout: LAYOUT_OPTIONS.DEFAULT,
+          requiresAuthorization: false,
+          title: 'Tax & Service Charge',
         },
       },
     ],

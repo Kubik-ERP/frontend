@@ -28,9 +28,10 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
   /**
    * @description Injected variables
    */
+  const route = useRoute(); // Instance of the route
   const router = useRouter(); // Instance of the router
   const store = useAuthenticationStore(); // Instance of the store
-  const { authentication_isLoading } = storeToRefs(store);
+  const { authentication_isLoading, authentication_token } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
@@ -221,6 +222,9 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
           ...httpAbort_registerAbort(AUTHENTICATION_SIGN_UP_REQUEST),
         },
       );
+
+      authenticationSignUp_fetchAuthenticationSendOtp();
+      authenticationSignUp_maskEmail();
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -288,8 +292,6 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     switch (authenticationSignUp_activeStep.value) {
       case 0:
         authenticationSignUp_fetchAuthenticationSignUp();
-        authenticationSignUp_fetchAuthenticationSendOtp();
-        authenticationSignUp_maskEmail();
 
         break;
       case 1:
@@ -333,6 +335,36 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     }
   };
 
+  /**
+   * @description Handle business logic for verifying user
+   */
+  const authenticationSignUp_verifyUser = (): void => {
+    const email = route.query.email as string;
+    const token = route.query.token as string;
+    const type = route.query.type as string;
+
+    if (email && token) {
+      authenticationSignUp_formData.email = email;
+      authentication_token.value = token;
+
+      switch (type) {
+        case 'email-verification':
+          authenticationSignUp_activeStep.value = 1;
+          authenticationSignUp_fetchAuthenticationSendOtp();
+          authenticationSignUp_maskEmail();
+
+          break;
+        case 'set-up-pin':
+          authenticationSignUp_activeStep.value = 2;
+
+          break;
+        default:
+          authenticationSignUp_activeStep.value = 0;
+          break;
+      }
+    }
+  };
+
   return {
     authenticationSignUp_activeStep,
     authenticationSignUp_durationOtpFormatted,
@@ -350,5 +382,6 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     authenticationSignUp_stepper,
     authenticationSignUp_onResendOtp,
     authenticationSignUp_onSubmit,
+    authenticationSignUp_verifyUser,
   };
 };
