@@ -1,21 +1,29 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+// Interfaces
+import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-summary';
+
+/**
+ * @description Inject all the data and methods what we need
+ */
+const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+</script>
 
 <template>
   <section id="cashier-summary-total" class="p-4 border-b-2 border-b-grayscale-10">
     <div class="flex flex-col gap-1 pb-2 border-b-2 border-b-grayscale-10">
       <div class="flex justify-between text-sm font-semibold">
         <span>Sub Total</span>
-        <span>Rp 0</span>
+        <span>{{ useCurrencyFormat(cashierOrderSummary_calculateEstimation?.data?.total || 0) }}</span>
       </div>
       <div class="flex justify-between text-sm text-text-disabled">
         <span>Tax</span>
-        <span>Rp 0</span>
+        <span>{{ useCurrencyFormat(0) }}</span>
       </div>
     </div>
 
     <div class="flex justify-between font-semibold pt-2">
       <span>Total</span>
-      <span>Rp 0</span>
+      <span>{{ useCurrencyFormat(cashierOrderSummary_calculateEstimation?.data?.total || 0) }}</span>
     </div>
   </section>
 </template>

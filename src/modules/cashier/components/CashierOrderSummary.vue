@@ -11,6 +11,7 @@ import CashierSummaryModalInvoiceDetail from './OrderSummary/Modal/CashierSummar
 import CashierSummaryModalMoreOptionsMobile from './OrderSummary/Modal/CashierSummaryModalMoreOptionsMobile.vue';
 import CashierSummaryModalOrderType from './OrderSummary/Modal/CashierSummaryModalOrderType.vue';
 import CashierSummaryModalPaymentMethod from './OrderSummary/Modal/CashierSummaryModalPaymentMethod.vue';
+import CashierSummaryModalPaymentQRIS from './OrderSummary/Modal/CashierSummaryModalPaymentQRIS.vue';
 import CashierSummaryModalPlaceOrderConfirmation from './OrderSummary/Modal/CashierSummaryModalPlaceOrderConfirmation.vue';
 import CashierSummaryModalPlaceOrderDetail from './OrderSummary/Modal/CashierSummaryModalPlaceOrderDetail.vue';
 import CashierSummaryModalSelectTable from './OrderSummary/Modal/CashierSummaryModalSelectTable.vue';
@@ -41,6 +42,7 @@ import CashierSummaryModalVoucher from './OrderSummary/Modal/CashierSummaryModal
       <CashierSummaryModalPaymentMethod />
       <CashierSummaryModalPlaceOrderDetail />
       <CashierSummaryModalPlaceOrderConfirmation />
+      <CashierSummaryModalPaymentQRIS />
     </section>
   </section>
 </template>
