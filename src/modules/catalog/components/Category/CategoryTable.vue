@@ -104,17 +104,29 @@
 
     <!-- Add Dialog -->
     <PrimeVueDialog v-model:visible="isAddOpen" modal header="Add Category" class="w-[45rem]">
-      <PrimeVueForm v-slot="$form" :initial-values="category" :resolver="resolver" @submit="handleAddCategory">
-        <div class="mb-4">
+      <form @submit.prevent="handleAddCategory">
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+          is-name-as-label
+          label-for="name"
+          name="Name"
+          :validators="category_formValidations.name"
+        >
           <label for="name">Category Name <sup class="text-red-500">*</sup></label>
-          <PrimeVueInputText v-model="category.name" name="name" type="text" class="w-full" fluid />
-          <PrimeVueMessage v-if="$form.name?.invalid" severity="error" size="small" variant="simple">{{
-            $form.name.error?.message
-          }}</PrimeVueMessage>
-        </div>
+          <PrimeVueInputText
+            v-model="category_formData.name"
+            name="name"
+            type="text"
+            class="w-full"
+            :class="[classes ? 'border-red-600' : 'border-blue-600']"
+            fluid
+            v-on="useListenerForm(category_formValidations, 'name')"
+          />
+        </AppBaseFormGroup>
         <div class="mb-8">
           <label for="description">description (Optional)</label>
-          <PrimeVueTextarea v-model="category.description" auto-resize rows="5" class="w-full" />
+          <PrimeVueTextarea v-model="category_formData.description" auto-resize rows="5" class="w-full" />
         </div>
         <div class="flex justify-end gap-2">
           <PrimeVueButton
@@ -126,22 +138,34 @@
           />
           <PrimeVueButton label="Add" class="w-48 bg-primary border-primary" type="submit" />
         </div>
-      </PrimeVueForm>
+      </form>
     </PrimeVueDialog>
 
     <!-- Edit Dialog -->
     <PrimeVueDialog v-model:visible="isEditOpen" modal header="Edit Category" class="w-[45rem]">
-      <PrimeVueForm v-slot="$form" :initial-values="category" :resolver="resolver" @submit="handleEditCategory">
-        <div class="mb-4">
+      <form @submit.prevent="handleEditCategory">
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+          is-name-as-label
+          label-for="name"
+          name="Name"
+          :validators="category_formValidations.name"
+        >
           <label for="name">Category Name <sup class="text-red-500">*</sup></label>
-          <PrimeVueInputText v-model="category.name" name="name" type="text" class="w-full" fluid />
-          <PrimeVueMessage v-if="$form.name?.invalid" severity="error" size="small" variant="simple">{{
-            $form.name.error?.message
-          }}</PrimeVueMessage>
-        </div>
+          <PrimeVueInputText
+            v-model="category_formData.name"
+            name="name"
+            type="text"
+            class="w-full"
+            :class="[classes ? 'border-red-600' : 'border-blue-600']"
+            fluid
+            v-on="useListenerForm(category_formValidations, 'name')"
+          />
+        </AppBaseFormGroup>
         <div class="mb-8">
           <label for="description">description (Optional)</label>
-          <PrimeVueTextarea v-model="category.description" auto-resize rows="5" class="w-full" />
+          <PrimeVueTextarea v-model="category_formData.description" auto-resize rows="5" class="w-full" />
         </div>
         <div class="flex justify-end gap-2">
           <PrimeVueButton
@@ -153,7 +177,7 @@
           />
           <PrimeVueButton label="Edit" class="w-48 bg-primary border-primary" type="submit" />
         </div>
-      </PrimeVueForm>
+      </form>
     </PrimeVueDialog>
 
     <!-- Delete Confirmation -->
@@ -176,13 +200,17 @@
 <script setup lang="ts">
 import { FilterMatchMode } from '@primevue/core/api';
 
-import {
+import { useCategoryService } from '../../services/Category/CategoryService';
+import { ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
+
+const {
   createCategory,
-  getAllCategories,
   updateCategory,
   deleteCategory,
-} from '@/modules/catalog/services/Category/categoryService';
-import { ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
+  getAllCategories,
+  category_formData,
+  category_formValidations,
+} = useCategoryService();
 
 const isAddOpen = ref(false);
 const isEditOpen = ref(false);
@@ -192,11 +220,6 @@ const categories = ref<ICategory[]>([]);
 const selected = ref<ICategory | null>(null);
 const loading = ref(false);
 
-const category = reactive({
-  name: '',
-  description: '',
-});
-
 // const category = ref('');
 // const description = ref('');
 const op = ref();
@@ -205,40 +228,25 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-const resolver = ({ values }) => {
-  const errors = {};
-
-  if (!values.name) {
-    errors.name = [{ message: 'Category name is required.' }];
+const handleAddCategory = async () => {
+  if (!category_formData.name.trim()) {
+    alert('ICategory name is required!');
+    return;
   }
 
-  return {
-    values,
-    errors,
-  };
-};
+  try {
+    const newCategory = await createCategory({
+      name: category_formData.name,
+      description: category_formData.description || '-',
+    });
 
-const handleAddCategory = async ({ valid }: { valid: boolean }) => {
-  if (valid) {
-    if (!category.name.trim()) {
-      alert('ICategory name is required!');
-      return;
-    }
-
-    try {
-      const newCategory = await createCategory({
-        name: category.name,
-        description: category.description || '-',
-      });
-
-      categories.value.push(newCategory);
-      isAddOpen.value = false;
-      category.name = '';
-      category.description = '';
-    } catch (error) {
-      console.error('Failed to create category:', error);
-      alert('Something went wrong while creating the category.');
-    }
+    categories.value.push(newCategory);
+    isAddOpen.value = false;
+    category_formData.name = '';
+    category_formData.description = '';
+  } catch (error) {
+    console.error('Failed to create category:', error);
+    alert('Something went wrong while creating the category.');
   }
 };
 const loadCategories = async () => {
@@ -255,8 +263,8 @@ const loadCategories = async () => {
 
 const openAddDialog = () => {
   isAddOpen.value = true;
-  category.name = '';
-  category.description = '';
+  category_formData.name = '';
+  category_formData.description = '';
 };
 
 const displayPopover = (event: Event, category: ICategory) => {
@@ -266,36 +274,46 @@ const displayPopover = (event: Event, category: ICategory) => {
 
 const displayEdit = () => {
   if (selected.value) {
-    category.name = selected.value.category;
-    category.description = selected.value.description ?? '';
+    category_formData.name = selected.value.category;
+    category_formData.description = selected.value.description ?? '';
     isEditOpen.value = true;
     op.value?.hide();
   }
 };
 
-const handleEditCategory = async ({ valid }: { valid: boolean }) => {
-  if (valid) {
-    if (selected.value) {
-      try {
-        const updatedCategory = await updateCategory(selected.value.id, {
-          name: category.name,
-          description: category.description || '-',
-        });
-        categories.value = categories.value.map(cat => (cat.id === updatedCategory.id ? updatedCategory : cat));
-        isEditOpen.value = false;
-      } catch (error) {
-        console.error('Failed to update category:', error);
-        alert('Something went wrong while updating the category.');
-      }
+const handleEditCategory = async () => {
+  if (selected.value) {
+    try {
+      const updatedCategory = await updateCategory(selected.value.id, {
+        name: category_formData.name,
+        description: category_formData.description || '-',
+      });
+      categories.value = categories.value.map(cat => (cat.id === updatedCategory.id ? updatedCategory : cat));
+      isEditOpen.value = false;
+    } catch (error) {
+      console.error('Failed to update category:', error);
+      alert('Something went wrong while updating the category.');
     }
   }
 };
 
-const handleDeleteCategory = () => {
+/**
+ * @description Deletes the currently selected category.
+ * If the category is successfully deleted, it removes the category from the list
+ * and displays a success alert. Otherwise, it shows an error alert.
+ * It also handles any errors encountered during the deletion process.
+ */
+
+const handleDeleteCategory = async () => {
   try {
     if (selected.value) {
-      deleteCategory(selected.value.id);
-      categories.value = categories.value.filter(cat => cat.id !== selected.value?.id);
+      const deleteCat = await deleteCategory(selected.value.id);
+      if (deleteCat === 200) {
+        alert('Category deleted successfully.');
+        categories.value = categories.value.filter(cat => cat.id !== selected.value?.id);
+      } else {
+        alert('Something went wrong while deleting the category.');
+      }
     }
   } catch (error) {
     console.error('Failed to delete category:', error);

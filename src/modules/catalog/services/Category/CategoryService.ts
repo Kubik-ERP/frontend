@@ -1,41 +1,73 @@
 import axios from 'axios';
-import { CategoryPayload, ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
+import {
+  CategoryPayload,
+  ICategory,
+  ICategoryFormData,
+} from '@/modules/catalog/interfaces/Category/CategoryInterface';
+
+import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/api/categories`;
 
-export const getAllCategories = async (): Promise<ICategory[]> => {
-  const response = await axios.get(API_URL);
-  const categories: ICategory[] = response.data.data;
+export const useCategoryService = () => {
+  const category_formData = reactive<ICategoryFormData>({
+    name: '',
+    description: '',
+  });
 
-  return categories.map(item => ({
-    id: item.id,
-    category: item.category,
-    description: item.description ?? '-',
+  const category_formRules = computed(() => ({
+    name: { required },
+    description: {  },
   }));
-};
 
-export const createCategory = async (payload: CategoryPayload): Promise<ICategory> => {
-  const response = await axios.post(API_URL, payload);
-  const data: ICategory = response.data.data;
+  const category_formValidations = useVuelidate(category_formRules, category_formData, {
+    $autoDirty: true,
+  });
+
+  const getAllCategories = async (): Promise<ICategory[]> => {
+    const response = await axios.get(API_URL);
+    const categories: ICategory[] = response.data.data;
+
+    return categories.map(item => ({
+      id: item.id,
+      category: item.category,
+      description: item.description ?? '-',
+    }));
+  };
+  const createCategory = async (payload: CategoryPayload): Promise<ICategory> => {
+    const response = await axios.post(API_URL, payload);
+    const data: ICategory = response.data.data;
+
+    return {
+      id: data.id,
+      category: data.category,
+      description: data.description || '-',
+    };
+  };
+  const updateCategory = async (id: string, payload: CategoryPayload): Promise<ICategory> => {
+    const response = await axios.patch(`${API_URL}/${id}`, payload);
+    const data: ICategory = response.data.data;
+
+    return {
+      id: data.id,
+      category: data.category,
+      description: data.description || '-',
+    };
+  };
+  const deleteCategory = async (id: string): Promise<number> => {
+    const response = await axios.delete(`${API_URL}/${id}`);
+    return response.status;
+  };
+
 
   return {
-    id: data.id,
-    category: data.category,
-    description: data.description || '-',
-  };
-};
+    category_formData,
+    category_formValidations,
+    getAllCategories,
+    createCategory,
+    updateCategory,
+    deleteCategory,
+  }
 
-export const updateCategory = async (id: string, payload: CategoryPayload): Promise<ICategory> => {
-  const response = await axios.patch(`${API_URL}/${id}`, payload);
-  const data: ICategory = response.data.data;
-
-  return {
-    id: data.id,
-    category: data.category,
-    description: data.description || '-',
-  };
-};
-
-export const deleteCategory = async (id: string): Promise<void> => {
-  await axios.delete(`${API_URL}/${id}`);
 };

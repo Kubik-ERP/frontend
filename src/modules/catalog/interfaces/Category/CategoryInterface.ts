@@ -9,3 +9,7 @@ export interface CategoryPayload {
   description?: string;
 }
 
+export interface ICategoryFormData {
+  name: string;
+  description: string;
+}
