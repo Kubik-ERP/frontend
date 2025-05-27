@@ -53,7 +53,7 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
           </div>
 
           <div class="flex flex-col gap-1">
-            <div v-if="item.variant.id">
+            <div v-if="item.variant.variantId">
               <p class="font-semibold text-xs text-text-disabled">Variant</p>
               <p class="text-sm">{{ item.variant.name }}</p>
             </div>
@@ -85,21 +85,21 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
               class="border border-primary text-primary px-4"
               variant="outlined"
               label="-"
-              @click="item.qty > 1 ? (item.qty -= 1) : (item.qty = 1)"
+              @click="item.quantity > 1 ? (item.quantity -= 1) : (item.quantity = 1)"
             />
             <PrimeVueInputNumber
-              v-model="item.qty"
+              v-model="item.quantity"
               class="!w-14"
               input-class="!w-14 justify-items-center text-center"
               :min="1"
-              :max="item.product.qty"
+              :max="item.product.quantity"
             />
             <PrimeVueButton
               type="button"
               class="border border-primary text-primary px-4"
               variant="outlined"
               label="+"
-              @click="item.qty == item.product.qty ? item.qty : (item.qty += 1)"
+              @click="item.quantity == item.product.quantity ? item.quantity : (item.quantity += 1)"
             />
           </div>
         </div>

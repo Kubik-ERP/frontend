@@ -8,7 +8,7 @@ import { LAYOUT_OPTIONS } from '@/app/constants';
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/invoice',
+    path: '/invoice/:invoiceId',
     component: AppBaseWrapper,
     children: [
       {
@@ -23,7 +23,7 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    path: '/self-order/invoice',
+    path: '/self-order/invoice/:invoiceId',
     component: AppBaseWrapper,
     children: [
       {
