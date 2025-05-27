@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CreateCategoryPayload, ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
+import { CategoryPayload, ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/api/categories`;
 
@@ -14,7 +14,7 @@ export const getAllCategories = async (): Promise<ICategory[]> => {
   }));
 };
 
-export const createCategory = async (payload: CreateCategoryPayload): Promise<ICategory> => {
+export const createCategory = async (payload: CategoryPayload): Promise<ICategory> => {
   const response = await axios.post(API_URL, payload);
   const data: ICategory = response.data.data;
 
@@ -25,9 +25,7 @@ export const createCategory = async (payload: CreateCategoryPayload): Promise<IC
   };
 };
 
-
-
-export const updateCategory = async (id: string, payload: { category: string; description?: string }): Promise<ICategory> => {
+export const updateCategory = async (id: string, payload: CategoryPayload): Promise<ICategory> => {
   const response = await axios.patch(`${API_URL}/${id}`, payload);
   const data: ICategory = response.data.data;
 

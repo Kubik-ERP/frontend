@@ -227,7 +227,7 @@ const handleAddCategory = async ({ valid }: { valid: boolean }) => {
 
     try {
       const newCategory = await createCategory({
-        category: category.name,
+        name: category.name,
         description: category.description || '-',
       });
 
@@ -278,7 +278,7 @@ const handleEditCategory = async ({ valid }: { valid: boolean }) => {
     if (selected.value) {
       try {
         const updatedCategory = await updateCategory(selected.value.id, {
-          category: category.name,
+          name: category.name,
           description: category.description || '-',
         });
         categories.value = categories.value.map(cat => (cat.id === updatedCategory.id ? updatedCategory : cat));
