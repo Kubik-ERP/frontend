@@ -36,14 +36,16 @@ export const useProductService = () => {
     const response = await axios.get(API_URL);
     const products: IProduct[] = response.data.data;
 
+    console.log(products);
+
     return products.map(item => ({
       id: item.id,
       name: item.name,
       price: item.price,
       discount_price: item.discount_price || 0,
       picture_url: item.picture_url || '-',
-      categories: item.categories_has_products,
-      variants: item.variant_has_products,
+      categories: item.categories_has_products?.map(item => item.categories.category),
+      variants: item.variant_has_products?.map(item => item.variant.name),
     }));
   };
 
