@@ -3,15 +3,8 @@
     <div class="flex flex-col gap-4">
       <h1 class="text-2xl font-bold">Products Detail</h1>
       <h2 class="text-xl font-semibold">Product Information</h2>
-      {{ product }}
-      <PrimeVueForm
-        v-slot="$form"
-        :initial-values="product"
-        :resolver="resolver"
-        :validate-on-blur="true"
-        class="flex flex-col items-center justify-center"
-        @submit="handleCreateProduct"
-      >
+      {{ product_formData }}
+      <form class="flex flex-col items-center justify-center" @submit.prevent="handleCreateProduct">
         <p>Photo (Optional)</p>
         <img
           class="rounded-lg mt-2 w-64 h-64 object-cover"
@@ -32,98 +25,123 @@
         />
 
         <div class="grid grid-cols-2 w-full gap-8 mt-8">
-          <div class="flex flex-col">
-            <label for="name">Product Name</label>
+          <AppBaseFormGroup
+            v-slot="{ classes }"
+            class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+            is-name-as-label
+            label-for="name"
+            name="Product Name"
+            :validators="product_formValidations.name"
+          >
             <PrimeVueInputText
-              v-model="product.name"
+              v-model="product_formData.name"
               name="name"
               type="text"
-              class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
-            />
-            <PrimeVueMessage v-if="$form.name?.invalid" severity="error" size="small" variant="simple">{{
-              $form.name.error?.message
-            }}</PrimeVueMessage>
-          </div>
-          <div class="flex flex-col">
-            <label for="category">Category</label>
-            <PrimeVueMultiSelect
-              v-model="product.category"
-              name="category"
-              display="chip"
-              :options="categories"
-              option-label="category"
-              filter
-              placeholder="Select"
-              class="w-full text-primary"
-              dropdown-icon="pi pi-circle"
-            >
-              <template #option="{ option }">
-                {{ option.category }}
-              </template>
-            </PrimeVueMultiSelect>
-            <PrimeVueMessage v-if="$form.category?.invalid" severity="error" size="small" variant="simple">{{
-              $form.category.error?.message
-            }}</PrimeVueMessage>
-          </div>
-          <div class="flex flex-col">
-            <label for="price">Price</label>
-            <PrimeVueInputNumber
-              v-model="product.price"
-              prefix="Rp "
-              name="price"
+              :class="classes ? '' : ''"
               fluid
-              class="border shadow-xs border-grayscale-30 rounded-lg"
-              @change="calculateDiscount"
+              class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
+              v-on="useListenerForm(product_formValidations, 'name')"
             />
-            <PrimeVueMessage v-if="$form.price?.invalid" severity="error" size="small" variant="simple">{{
-              $form.price.error?.message
-            }}</PrimeVueMessage>
+          </AppBaseFormGroup>
+
+          <div class="flex flex-col">
+            <AppBaseFormGroup
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+              is-name-as-label
+              label-for="catergory"
+              name="Category"
+              :validators="product_formValidations.category_ids"
+            >
+              <PrimeVueMultiSelect
+                v-model="product_formData.category_ids"
+                name="category"
+                display="chip"
+                :options="categories"
+                option-label="category"
+                option-value="id"
+                filter
+                placeholder="Select"
+                class="w-full text-primary"
+                dropdown-icon="pi pi-circle"
+                :class="classes ? '' : ''"
+                v-on="useListenerForm(product_formValidations, 'category_ids')"
+              >
+                <template #option="{ option }">
+                  {{ option.category }}
+                </template>
+              </PrimeVueMultiSelect>
+            </AppBaseFormGroup>
+          </div>
+          <div class="flex flex-col">
+            <AppBaseFormGroup
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+              is-name-as-label
+              label-for="price"
+              name="Price"
+              :validators="product_formValidations.price"
+            >
+              <PrimeVueInputNumber
+                v-model="product_formData.price"
+                prefix="Rp "
+                name="price"
+                fluid
+                class="border shadow-xs border-grayscale-30 rounded-lg"
+                :class="classes ? '' : ''"
+                v-on="useListenerForm(product_formValidations, 'price')"
+                @change="calculateDiscount"
+              />
+            </AppBaseFormGroup>
           </div>
         </div>
         <div class="grid grid-cols-2 h-fit w-full gap-x-8 mt-8">
           <div class="flex items-center gap-2 col-span-2">
-            <PrimeVueCheckbox v-model="product.isDiscount" binary @change="calculateDiscount" />
-            <label for="product.isDiscount" class="font-bold"> Add Discount Price </label>
+            <PrimeVueCheckbox v-model="product_formData.isDiscount" binary @change="calculateDiscount" />
+            <label for="product_formData.isDiscount" class="font-bold"> Add Discount Price </label>
           </div>
-          <div class="flex flex-col mt-4" :class="product.isDiscount ? 'block' : 'hidden'">
-            <label for="price">Discount Price</label>
-            <div class="relative w-full">
-              <div
-                class="flex items-center border shadow-xs border-grayscale-30 rounded-lg overflow-hidden w-full"
-              >
-                <PrimeVueInputNumber
-                  v-model="product.discount_value"
-                  class="w-full"
-                  name="discount_value"
-                  :prefix="product.discount_unit === 'Rp' ? 'Rp ' : ''"
-                  :suffix="product.discount_unit === '%' ? ' %' : ''"
-                  @change="calculateDiscount"
-                />
-                <div class="absolute right-0 flex items-center rounded-lg border-none ring-0">
-                  <PrimeVueSelect
-                    v-model="product.discount_unit"
-                    :options="['Rp', '%']"
-                    class="border-none bg-transparent"
-                    dropdown-icon="pi pi-circle"
-                    @update:modelValue="calculateDiscount"
-                  >
-                    <template #option="{ option }">
-                      {{ option }}
-                    </template>
-                  </PrimeVueSelect>
+          <div class="flex flex-col mt-4" :class="product_formData.isDiscount ? 'block' : 'hidden'">
+            <AppBaseFormGroup
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+              is-name-as-label
+              label-for="discount_value"
+              name="Discount Value"
+              :validators="product_formValidations.discount_value"
+            >
+              <div class="relative w-full">
+                <div
+                  class="flex items-center border shadow-xs border-grayscale-30 rounded-lg overflow-hidden w-full"
+                >
+                  <PrimeVueInputNumber
+                    v-model="product_formData.discount_value"
+                    class="w-full"
+                    name="discount_value"
+                    :prefix="product_formData.discount_unit === 'Rp' ? 'Rp ' : ''"
+                    :suffix="product_formData.discount_unit === '%' ? ' %' : ''"
+                    :class="classes ? '' : ''"
+                    @change="calculateDiscount"
+                    v-on="useListenerForm(product_formValidations, 'discount_value')"
+                  />
+                  <div class="absolute right-0 flex items-center rounded-lg border-none ring-0">
+                    <PrimeVueSelect
+                      v-model="product_formData.discount_unit"
+                      :options="['Rp', '%']"
+                      class="border-none bg-transparent"
+                      dropdown-icon="pi pi-circle"
+                      @update:modelValue="calculateDiscount"
+                    >
+                      <template #option="{ option }">
+                        {{ option }}
+                      </template>
+                    </PrimeVueSelect>
+                  </div>
                 </div>
+                <span
+                  >Total Price After Discount : <b> Rp {{ product_formData.discount_price }}</b></span
+                >
               </div>
-              <PrimeVueMessage
-                v-if="$form.discount_value?.invalid"
-                severity="error"
-                size="small"
-                variant="simple"
-                >{{ $form.discount_value.error?.message }}</PrimeVueMessage
-              >
-              <span
-                >Total Price After Discount : <b> Rp {{ product.discount_price }}</b></span
-              >
-            </div>
+            </AppBaseFormGroup>
           </div>
           <span></span>
         </div>
@@ -136,7 +154,11 @@
 
           <div v-if="toggleVariant" class="flex flex-col">
             <div class="flex flex-col gap-4">
-              <div v-for="(variant, index) in product.variants" :key="index" class="grid grid-cols-2 gap-x-8">
+              <div
+                v-for="(variant, index) in product_formData.variants"
+                :key="index"
+                class="grid grid-cols-2 gap-x-8"
+              >
                 <div class="flex flex-col">
                   <label :for="`variant-name-${index}`">Variant Name</label>
                   <PrimeVueInputText
@@ -144,14 +166,6 @@
                     v-model="variant.name"
                     :name="`variants.${index}.name`"
                   />
-                  <PrimeVueMessage
-                    v-if="$form.variants[index]?.name?.invalid"
-                    severity="error"
-                    size="small"
-                    variant="simple"
-                  >
-                    {{ $form.variants[index]?.name?.error?.message }}
-                  </PrimeVueMessage>
                 </div>
 
                 <div class="flex flex-col">
@@ -171,14 +185,6 @@
                       @click="removeVariant(index)"
                     />
                   </div>
-                  <PrimeVueMessage
-                    v-if="$form.variants[index]?.price?.invalid"
-                    severity="error"
-                    size="small"
-                    variant="simple"
-                  >
-                    {{ $form.variants[index]?.price?.error?.message }}
-                  </PrimeVueMessage>
                 </div>
               </div>
             </div>
@@ -203,7 +209,7 @@
             />
           </div>
         </div>
-      </PrimeVueForm>
+      </form>
     </div>
     <PrimeVueDialog :visible="isLeavingModal" modal header="">
       <template #container>
@@ -235,13 +241,12 @@
 
 <script setup>
 import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
-import { useCategoryService } from '@/modules/catalog/services/Category/categoryService';
-
+import { useCategoryService } from '../../services/Category/CategoryService';
 const route = useRoute();
 // const router = useRouter();
 
 const { getAllCategories } = useCategoryService();
-const { createProduct } = useProductService();
+const { createProduct, product_formData, product_formValidations } = useProductService();
 
 const product = reactive({
   id: null,
@@ -256,43 +261,43 @@ const product = reactive({
   variants: [],
 });
 
-const resolver = ({ values }) => {
-  const errors = {};
+// const resolver = ({ values }) => {
+//   const errors = {};
 
-  if (!values.username) {
-    errors.name = [{ message: 'Name is required.' }];
-  }
-  if (!values.category || values.category.length === 0) {
-    errors.category = [{ message: 'Category is required.' }];
-  }
-  if (!values.price) {
-    errors.price = [{ message: 'Price is required.' }];
-  }
-  if (product.isDiscount) {
-    if (!values.discount_value) {
-      errors.discount_value = [{ message: 'Discount value is required.' }];
-    }
-    if (!values.discount_unit) {
-      errors.discount_unit = [{ message: 'Discount unit is required.' }];
-    }
-  }
+//   if (!values.username) {
+//     errors.name = [{ message: 'Name is required.' }];
+//   }
+//   if (!values.category || values.category.length === 0) {
+//     errors.category = [{ message: 'Category is required.' }];
+//   }
+//   if (!values.price) {
+//     errors.price = [{ message: 'Price is required.' }];
+//   }
+//   if (product.isDiscount) {
+//     if (!values.discount_value) {
+//       errors.discount_value = [{ message: 'Discount value is required.' }];
+//     }
+//     if (!values.discount_unit) {
+//       errors.discount_unit = [{ message: 'Discount unit is required.' }];
+//     }
+//   }
 
-  values.variants?.forEach((v, i) => {
-    if (!v.name) {
-      errors[`variants.${i}.name`] = [{ message: 'Variant name is required.' }];
-    }
-    if (!v.price) {
-      errors[`variants.${i}.price`] = [{ message: 'Variant price is required.' }];
-    }
-  });
+//   values.variants?.forEach((v, i) => {
+//     if (!v.name) {
+//       errors[`variants.${i}.name`] = [{ message: 'Variant name is required.' }];
+//     }
+//     if (!v.price) {
+//       errors[`variants.${i}.price`] = [{ message: 'Variant price is required.' }];
+//     }
+//   });
 
-  console.log('errors:', errors);
+//   console.log('errors:', errors);
 
-  return {
-    values,
-    errors,
-  };
-};
+//   return {
+//     values,
+//     errors,
+//   };
+// };
 
 const previewImage = ref(null);
 const fileInput = ref(null);
@@ -306,8 +311,7 @@ const handleImageUpload = event => {
   if (file) {
     const reader = new FileReader();
     reader.onload = () => {
-      previewImage.value = reader.result;
-      // product.image = reader.result;
+      product_formData.image = reader.result;
     };
     reader.readAsDataURL(file);
   }
@@ -315,7 +319,7 @@ const handleImageUpload = event => {
 
 const handleCreateProduct = async () => {
   try {
-    const response = await createProduct(product);
+    const response = await createProduct(product_formData);
     console.log(response);
   } catch (error) {
     console.log(error);
@@ -339,15 +343,16 @@ const removeVariant = index => {
 };
 
 const calculateDiscount = () => {
-  if (!product.isDiscount) {
-    product.discount_price = 0;
+  if (!product_formData.isDiscount) {
+    product_formData.discount_price = 0;
   }
 
-  if (product.isDiscount) {
-    if (product.discount_unit === 'Rp') {
-      product.discount_price = product.price - product.discount_value;
+  if (product_formData.isDiscount) {
+    if (product_formData.discount_unit === 'Rp') {
+      product_formData.discount_price = product_formData.price - product_formData.discount_value;
     } else {
-      product.discount_price = product.price - (product.price * product.discount_value) / 100;
+      product_formData.discount_price =
+        product_formData.price - (product_formData.price * product_formData.discount_value) / 100;
     }
   }
 };

@@ -23,6 +23,9 @@ export const useProductService = () => {
   const product_formRules = computed(() => ({
     name: { required },
     price: { required },
+    category_ids: { required },
+    discount_value: { required },
+    variant_ids: { required },
   }));
 
   const product_formValidations = useVuelidate(product_formRules, product_formData, {

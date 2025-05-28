@@ -18,7 +18,7 @@ export const useCategoryService = () => {
 
   const category_formRules = computed(() => ({
     name: { required },
-    description: {  },
+    description: {},
   }));
 
   const category_formValidations = useVuelidate(category_formRules, category_formData, {
@@ -60,6 +60,16 @@ export const useCategoryService = () => {
     return response.status;
   };
 
+  const getCategoryByID = async (id: string): Promise<ICategory> => {
+    const response = await axios.get(`${API_URL}/${id}`);
+    const data: ICategory = response.data.data;
+
+    return {
+      id: data.id,
+      category: data.category,
+      description: data.description || '-',
+    };
+  };
 
   return {
     category_formData,
@@ -68,6 +78,6 @@ export const useCategoryService = () => {
     createCategory,
     updateCategory,
     deleteCategory,
-  }
-
+    getCategoryByID,
+  };
 };

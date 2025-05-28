@@ -42,7 +42,7 @@
         <PrimeVueColumn selection-mode="multiple" header-style="width: 3rem"></PrimeVueColumn>
         <PrimeVueColumn sortable field="id" header="Product ID" style="width: 15%"></PrimeVueColumn>
         <PrimeVueColumn sortable field="name" header="Name" style="width: 30%"></PrimeVueColumn>
-        <PrimeVueColumn sortable field="categories" header="Category" style="width: 14%">
+        <!-- <PrimeVueColumn sortable field="categories" header="Category" style="width: 14%">
           <template #body="{ data }">
             <CategoryPill :categories="data.categories" />
           </template>
@@ -51,7 +51,7 @@
           <template #body="{ data }">
             <ProductVariantPill :variants="data.variants" />
           </template>
-        </PrimeVueColumn>
+        </PrimeVueColumn> -->
 
         <PrimeVueColumn sortable field="price" header="Price" style="width: 25%">
           <template #body="{ data }">
