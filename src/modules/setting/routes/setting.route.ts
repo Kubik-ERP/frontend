@@ -16,6 +16,17 @@ const routes: RouteRecordRaw[] = [
         redirect: { name: 'outlet.list' },
       },
       {
+        path: 'invoice',
+        name: 'setting.invoice',
+        component: () => import('../views/SettingInvoiceUI.vue'),
+        meta: {
+          breadcrumb: 'Invoice',
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          requiresAuthorization: false,
+          title: 'Invoice',
+        },
+      },
+      {
         path: 'tax',
         name: 'setting.tax',
         component: () => import('../views/SettingTaxUI.vue'),
