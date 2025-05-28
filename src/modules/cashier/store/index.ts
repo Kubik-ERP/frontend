@@ -3,10 +3,7 @@ import { defineStore } from 'pinia';
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
 import { ICashierProduct, ICashierStateStore } from '../interfaces';
-import {
-  ICashierCalculateEstimation,
-  ICashierOrderSummaryPaymentMethodResponse,
-} from '../interfaces/cashier-order-summary';
+import { ICashierOrderSummaryPaymentMethodResponse } from '../interfaces/cashier-order-summary';
 
 // Plugins
 import httpClient from '@/plugins/axios';
@@ -15,14 +12,30 @@ import httpClient from '@/plugins/axios';
 import {
   CASHIER_ENDPOINT_CATEGORIES,
   CASHIER_ENDPOINT_PAYMENT_CALCULATE_ESTIMATION,
+  CASHIER_ENDPOINT_PAYMENT_INSTANT,
   CASHIER_ENDPOINT_PAYMENT_METHOD,
   CASHIER_ENDPOINT_PAYMENT_PROCESS,
   CASHIER_ENDPOINT_PRODUCTS,
+  CASHIER_ENDPOINT_SIMULATE_PAYMENT,
 } from '../constants/cashierApi.constant';
+import {
+  ICashierResponseCalulateEstimation,
+  ICashierResponseMidtransQrisPayment,
+  ICashierResponseProcessCheckout,
+} from '../interfaces/cashier-response';
 
 export const useCashierStore = defineStore('cashier', {
   state: (): ICashierStateStore => ({
-    cashierProduct_selectedProduct: [],
+    cashierProduct_selectedProduct: [
+      {
+        product: {} as ICashierProduct,
+        variant: {} as ICashierProduct['variant'][0],
+        productId: '0196cf23-e3fb-7caa-b7be-f08248b20a33',
+        variantId: '0196cf23-e3fb-70cf-a3ff-443bf28e7f0e',
+        quantity: 1,
+        notes: 'Ini adalah catatan',
+      },
+    ],
     cashierProduct_listCategory: [
       {
         id: 1,
@@ -125,89 +138,89 @@ export const useCashierStore = defineStore('cashier', {
     // TEMP: Hardcoded data, will be replaced with actual data from API
     cashierProduct_listFeaturedProduct: [
       {
-        id: 1,
+        productId: '1',
         name: 'Creamy Pasta',
         category: 'Food',
-        qty: 44,
+        quantity: 44,
         price: '10990',
         discountedPrice: null,
         image: 'https://foodish-api.com/images/pasta/pasta6.jpg',
         variant: [
-          { id: 1, name: 'No adds on', price: 0 },
-          { id: 2, name: 'With parmesan sauce', price: 5000 },
-          { id: 3, name: 'Extra cheese', price: 3000 },
-          { id: 4, name: 'Add grilled chicken', price: 7000 },
+          { variantId: '1', name: 'No adds on', price: 0 },
+          { variantId: '2', name: 'With parmesan sauce', price: 5000 },
+          { variantId: '3', name: 'Extra cheese', price: 3000 },
+          { variantId: '4', name: 'Add grilled chicken', price: 7000 },
         ],
       },
       {
-        id: 2,
+        productId: '2',
         name: 'Cheese Pasta',
         category: 'Food',
-        qty: 44,
+        quantity: 44,
         price: '15990',
         discountedPrice: null,
         image: 'https://foodish-api.com/images/pasta/pasta2.jpg',
         variant: [
-          { id: 1, name: 'Regular', price: 0 },
-          { id: 2, name: 'Extra cheese', price: 4000 },
-          { id: 3, name: 'With truffle oil', price: 8000 },
+          { variantId: '1', name: 'Regular', price: 0 },
+          { variantId: '2', name: 'Extra cheese', price: 4000 },
+          { variantId: '3', name: 'With truffle oil', price: 8000 },
         ],
       },
       {
-        id: 3,
+        productId: '3',
         name: 'Pepperoni Pizza',
         category: 'Food',
-        qty: 44,
+        quantity: 44,
         price: '15990',
         discountedPrice: '14990',
         image: 'https://foodish-api.com/images/pizza/pizza2.jpg',
         variant: [
-          { id: 1, name: 'Regular size', price: 0 },
-          { id: 2, name: 'Large size', price: 10000 },
-          { id: 3, name: 'Extra pepperoni', price: 5000 },
+          { variantId: '1', name: 'Regular size', price: 0 },
+          { variantId: '2', name: 'Large size', price: 10000 },
+          { variantId: '3', name: 'Extra pepperoni', price: 5000 },
         ],
       },
       {
-        id: 4,
+        productId: '4',
         name: 'Margarita Pizza',
         category: 'Food',
-        qty: 44,
+        quantity: 44,
         price: '20990',
         discountedPrice: '19990',
         image: 'https://foodish-api.com/images/pizza/pizza5.jpg',
         variant: [
-          { id: 1, name: 'Regular size', price: 0 },
-          { id: 2, name: 'Large size', price: 10000 },
-          { id: 3, name: 'Extra mozzarella', price: 6000 },
+          { variantId: '1', name: 'Regular size', price: 0 },
+          { variantId: '2', name: 'Large size', price: 10000 },
+          { variantId: '3', name: 'Extra mozzarella', price: 6000 },
         ],
       },
       {
-        id: 5,
+        productId: '5',
         name: 'Classic Cheeseburger',
         category: 'Food',
-        qty: 44,
+        quantity: 44,
         price: '20990',
         discountedPrice: '19990',
         image: 'https://foodish-api.com/images/burger/burger5.jpg',
         variant: [
-          { id: 1, name: 'Single patty', price: 0 },
-          { id: 2, name: 'Double patty', price: 8000 },
-          { id: 3, name: 'Add bacon', price: 5000 },
+          { variantId: '1', name: 'Single patty', price: 0 },
+          { variantId: '2', name: 'Double patty', price: 8000 },
+          { variantId: '3', name: 'Add bacon', price: 5000 },
         ],
       },
       {
-        id: 6,
+        productId: '6',
         name: 'Butter Chicken',
         category: 'Food',
-        qty: 44,
+        quantity: 44,
         price: '20990',
         discountedPrice: '19990',
         image: 'https://foodish-api.com/images/butter-chicken/butter-chicken5.jpg',
         variant: [
-          { id: 1, name: 'Mild spice', price: 0 },
-          { id: 2, name: 'Medium spice', price: 2000 },
-          { id: 3, name: 'Extra spicy', price: 4000 },
-          { id: 4, name: 'With garlic naan', price: 5000 },
+          { variantId: '1', name: 'Mild spice', price: 0 },
+          { variantId: '2', name: 'Medium spice', price: 2000 },
+          { variantId: '3', name: 'Extra spicy', price: 4000 },
+          { variantId: '4', name: 'With garlic naan', price: 5000 },
         ],
       },
     ],
@@ -215,87 +228,31 @@ export const useCashierStore = defineStore('cashier', {
     // TEMP: Hardcoded data, will be replaced with actual data from API
     cashierProduct_listFood: [
       {
-        id: 7,
+        productId: '7',
         name: 'Classic Pasta',
         category: 'Food',
-        qty: 44,
+        quantity: 44,
         price: '10990',
         discountedPrice: '9990',
         image: 'https://foodish-api.com/images/pasta/pasta1.jpg',
         variant: [
-          { id: 1, name: 'Regular', price: 0 },
-          { id: 2, name: 'Extra cheese', price: 3000 },
-          { id: 3, name: 'Add grilled chicken', price: 5000 },
+          { variantId: '1', name: 'Regular', price: 0 },
+          { variantId: '2', name: 'Extra cheese', price: 3000 },
+          { variantId: '3', name: 'Add grilled chicken', price: 5000 },
         ],
       },
       {
-        id: 8,
+        productId: '8',
         name: 'Cheese Pasta',
         category: 'Food',
-        qty: 44,
+        quantity: 44,
         price: '15990',
         discountedPrice: '14990',
         image: 'https://foodish-api.com/images/pasta/pasta2.jpg',
         variant: [
-          { id: 1, name: 'Regular', price: 0 },
-          { id: 2, name: 'Double cheese', price: 4000 },
-          { id: 3, name: 'With truffle oil', price: 7000 },
-        ],
-      },
-      {
-        id: 9,
-        name: 'Garlic Butter Pasta',
-        category: 'Food',
-        qty: 44,
-        price: '15990',
-        discountedPrice: '14990',
-        image: 'https://foodish-api.com/images/pasta/pasta3.jpg',
-        variant: [
-          { id: 1, name: 'Regular', price: 0 },
-          { id: 2, name: 'Extra garlic', price: 2000 },
-          { id: 3, name: 'Add shrimp', price: 6000 },
-        ],
-      },
-      {
-        id: 10,
-        name: 'Spicy Tomato Pasta',
-        category: 'Food',
-        qty: 44,
-        price: '20990',
-        discountedPrice: '19990',
-        image: 'https://foodish-api.com/images/pasta/pasta4.jpg',
-        variant: [
-          { id: 1, name: 'Mild spice', price: 0 },
-          { id: 2, name: 'Extra spicy', price: 3000 },
-          { id: 3, name: 'Add grilled sausage', price: 5000 },
-        ],
-      },
-      {
-        id: 11,
-        name: 'Pesto Pasta',
-        category: 'Food',
-        qty: 44,
-        price: '25990',
-        discountedPrice: '24990',
-        image: 'https://foodish-api.com/images/pasta/pasta5.jpg',
-        variant: [
-          { id: 1, name: 'Regular', price: 0 },
-          { id: 2, name: 'Add grilled chicken', price: 6000 },
-          { id: 3, name: 'With pine nuts', price: 5000 },
-        ],
-      },
-      {
-        id: 12,
-        name: 'Creamy Alfredo Pasta',
-        category: 'Food',
-        qty: 44,
-        price: '30990',
-        discountedPrice: '29990',
-        image: 'https://foodish-api.com/images/pasta/pasta6.jpg',
-        variant: [
-          { id: 1, name: 'Regular', price: 0 },
-          { id: 2, name: 'Extra creamy sauce', price: 5000 },
-          { id: 3, name: 'Add mushrooms', price: 4000 },
+          { variantId: '1', name: 'Regular', price: 0 },
+          { variantId: '2', name: 'Double cheese', price: 4000 },
+          { variantId: '3', name: 'With truffle oil', price: 7000 },
         ],
       },
     ],
@@ -303,82 +260,14 @@ export const useCashierStore = defineStore('cashier', {
     // TEMP: Hardcoded data, will be replaced with actual data from API
     cashierProduct_listDrink: [
       {
-        id: 13,
+        productId: '13',
         name: 'Samosa Snack',
         category: 'Beverage',
-        qty: 44,
+        quantity: 44,
         price: '5990',
         discountedPrice: '4990',
         image: 'https://foodish-api.com/images/samosa/samosa1.jpg',
-        variant: [
-          { id: 1, name: 'Regular', price: 0 },
-          { id: 2, name: 'Extra filling', price: 2000 },
-        ],
-      },
-      {
-        id: 14,
-        name: 'Spicy Samosa',
-        category: 'Beverage',
-        qty: 44,
-        price: '7990',
-        discountedPrice: '6990',
-        image: 'https://foodish-api.com/images/samosa/samosa2.jpg',
-        variant: [
-          { id: 1, name: 'Mild spice', price: 0 },
-          { id: 2, name: 'Extra spicy', price: 3000 },
-        ],
-      },
-      {
-        id: 15,
-        name: 'Crispy Samosa',
-        category: 'Beverage',
-        qty: 44,
-        price: '8990',
-        discountedPrice: '7990',
-        image: 'https://foodish-api.com/images/samosa/samosa3.jpg',
-        variant: [
-          { id: 1, name: 'Regular', price: 0 },
-          { id: 2, name: 'With cheese filling', price: 4000 },
-        ],
-      },
-      {
-        id: 16,
-        name: 'Vegetable Samosa',
-        category: 'Beverage',
-        qty: 44,
-        price: '10990',
-        discountedPrice: '9990',
-        image: 'https://foodish-api.com/images/samosa/samosa4.jpg',
-        variant: [
-          { id: 1, name: 'Regular', price: 0 },
-          { id: 2, name: 'Extra vegetables', price: 2000 },
-        ],
-      },
-      {
-        id: 17,
-        name: 'Chicken Samosa',
-        category: 'Beverage',
-        qty: 44,
-        price: '12990',
-        discountedPrice: '11990',
-        image: 'https://foodish-api.com/images/samosa/samosa5.jpg',
-        variant: [
-          { id: 1, name: 'Regular', price: 0 },
-          { id: 2, name: 'With extra chicken', price: 5000 },
-        ],
-      },
-      {
-        id: 18,
-        name: 'Cheese Samosa',
-        category: 'Beverage',
-        qty: 44,
-        price: '15990',
-        discountedPrice: '14990',
-        image: 'https://foodish-api.com/images/samosa/samosa6.jpg',
-        variant: [
-          { id: 1, name: 'Regular', price: 0 },
-          { id: 2, name: 'With extra cheese', price: 6000 },
-        ],
+        variant: [{ variantId: '1', name: 'Regular', price: 0 }],
       },
     ],
   }),
@@ -467,9 +356,9 @@ export const useCashierStore = defineStore('cashier', {
     async cashierProduct_calculateEstimation(
       payload: unknown,
       requestConfigurations: AxiosRequestConfig = {},
-    ): Promise<ICashierCalculateEstimation> {
+    ): Promise<ICashierResponseCalulateEstimation> {
       try {
-        const response = await httpClient.post<ICashierCalculateEstimation>(
+        const response = await httpClient.post<ICashierResponseCalulateEstimation>(
           CASHIER_ENDPOINT_PAYMENT_CALCULATE_ESTIMATION,
           payload,
           {
@@ -496,10 +385,38 @@ export const useCashierStore = defineStore('cashier', {
     async cashierProduct_paymentProcess(
       payload: unknown,
       requestConfigurations: AxiosRequestConfig = {},
-    ): Promise<ICashierOrderSummaryPaymentMethodResponse> {
+    ): Promise<ICashierResponseProcessCheckout> {
       try {
-        const response = await httpClient.post<ICashierOrderSummaryPaymentMethodResponse>(
+        const response = await httpClient.post<ICashierResponseProcessCheckout>(
           CASHIER_ENDPOINT_PAYMENT_PROCESS,
+          payload,
+          {
+            ...requestConfigurations,
+          },
+        );
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
+
+    /**
+     * @description Handle payment process.
+     * @url /payment/process
+     * @method POST
+     * @access public
+     */
+    async cashierProduct_paymentInstant(
+      payload: unknown,
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<ICashierResponseMidtransQrisPayment> {
+      try {
+        const response = await httpClient.post<ICashierResponseMidtransQrisPayment>(
+          CASHIER_ENDPOINT_PAYMENT_INSTANT,
           payload,
           {
             ...requestConfigurations,
@@ -532,6 +449,24 @@ export const useCashierStore = defineStore('cashier', {
           },
         );
 
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
+
+    async cashierProduct_simulatePayment(
+      payload: unknown,
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<unknown> {
+      try {
+        const response = await httpClient.post<unknown>(CASHIER_ENDPOINT_SIMULATE_PAYMENT, payload, {
+          ...requestConfigurations,
+        });
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

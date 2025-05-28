@@ -5,8 +5,11 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalPlaceOrderConfirmation, cashierOrderSummary_handlePlaceOrderConfirmation } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const {
+  cashierOrderSummary_modalPlaceOrderConfirmation,
+  cashierOrderSummary_modalPlaceOrderDetail,
+  cashierOrderSummary_handlePlaceOrderConfirmation,
+} = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 <template>
   <section id="cashier-summary-modal-place-order-confirmation">
@@ -42,6 +45,7 @@ const { cashierOrderSummary_modalPlaceOrderConfirmation, cashierOrderSummary_han
               type="button"
               label="Cancel"
               outlined
+              :disabled="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
               @click="closeCallback"
             ></PrimeVueButton>
 
@@ -49,6 +53,8 @@ const { cashierOrderSummary_modalPlaceOrderConfirmation, cashierOrderSummary_han
               class="bg-primary w-1/2 py-2.5 text-sm lg:text-base"
               type="button"
               label="Place Order"
+              :disabled="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
+              :loading="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
               @click="cashierOrderSummary_handlePlaceOrderConfirmation()"
             ></PrimeVueButton>
           </div>

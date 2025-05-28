@@ -49,7 +49,7 @@ const wrapperClass = computed(() => {
       <component
         :is="selectedComponent"
         v-for="product in cashierProduct_listDrink"
-        :key="product.id"
+        :key="product.productId"
         :product="product"
       />
     </section>
