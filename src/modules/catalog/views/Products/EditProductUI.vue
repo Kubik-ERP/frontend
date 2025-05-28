@@ -59,7 +59,6 @@
                 display="chip"
                 :options="categories"
                 option-label="category"
-                
                 filter
                 placeholder="Select"
                 class="w-full text-primary"
@@ -246,8 +245,7 @@
 import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
 import { useCategoryService } from '../../services/Category/CategoryService';
 
-// const route = useRoute();
-// const router = useRouter();
+const route = useRoute();
 
 const { getAllCategories } = useCategoryService();
 const { createProduct, product_formData, product_formValidations } = useProductService();
@@ -301,6 +299,15 @@ function clearForm() {
   product_formData.category = [];
 }
 
+const loadProduct = async () => {
+  try {
+    await getAllCategories();
+    await createProduct(route.params.id);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 const previewImage = ref(null);
 const fileInput = ref(null);
 
@@ -322,11 +329,9 @@ const handleImageUpload = event => {
 const handleCreateProduct = async () => {
   try {
     await createProduct(product_formData);
-
   } catch (error) {
     console.error(error);
-  }
-  finally {
+  } finally {
     clearForm();
   }
 };
@@ -345,8 +350,6 @@ const addVariant = () => {
 const removeVariant = index => {
   product.variants.splice(index, 1);
 };
-
-
 
 const calculateDiscount = () => {
   if (!product_formData.isDiscount) {

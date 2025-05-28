@@ -42,7 +42,7 @@ const routes: RouteRecordRaw[] = [
         path: 'products/edit-product/:id',
         name: 'edit-product',
         props: route => ({ id: route.params.id }),
-        component: () => import('../views/Products/AddProductUI.vue'),
+        component: () => import('../views/Products/EditProductUI.vue'),
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.DEFAULT,

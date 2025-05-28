@@ -11,21 +11,21 @@ export const useProductService = () => {
   const product_formData = reactive<CreateProductPayload>({
     image: '',
     name: '',
-    category_ids: [],
+    categories: [],
     price: 0,
     isDiscount: false,
     discount_value: 0,
     discount_unit: 'Rp',
     discount_price: 0,
-    variant_ids: [],
+    variants: [],
   });
 
   const product_formRules = computed(() => ({
     name: { required },
     price: { required },
-    category_ids: { required },
+    categories: { required },
     discount_value: { required },
-    variant_ids: { required },
+    variants: { required },
   }));
 
   const product_formValidations = useVuelidate(product_formRules, product_formData, {
@@ -47,6 +47,11 @@ export const useProductService = () => {
       categories: item.categories_has_products?.map(item => item.categories.category),
       variants: item.variant_has_products?.map(item => item.variant.name),
     }));
+  };
+
+  const getProductById = async (id: string): Promise<IProduct> => {
+    const response = await axios.get(`${API_URL}/${id}`);
+    return response.data.data;
   };
 
   const createProduct = async (payload: CreateProductPayload): Promise<IProduct> => {

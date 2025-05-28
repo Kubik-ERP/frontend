@@ -40,7 +40,7 @@
         <template #loading> Loading products data. Please wait. </template>
 
         <PrimeVueColumn selection-mode="multiple" header-style="width: 3rem"></PrimeVueColumn>
-        <PrimeVueColumn sortable field="id" header="Product ID" style="width: 15%"></PrimeVueColumn>
+        <PrimeVueColumn sortable field="id" header="Product ID" style="width: 10%"></PrimeVueColumn>
         <PrimeVueColumn sortable field="name" header="Name" style="width: 30%"></PrimeVueColumn>
         <PrimeVueColumn sortable field="categories" header="Category" style="width: 14%">
           <template #body="{ data }">
@@ -53,12 +53,12 @@
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn sortable field="price" header="Price" style="width: 25%">
+        <PrimeVueColumn sortable field="price" header="Price" style="width: 30%">
           <template #body="{ data }">
             {{ formatCurrency(data.price) }}
           </template>
         </PrimeVueColumn>
-        <PrimeVueColumn sortable field="discount_price" header="Discount Price" style="width: 25%">
+        <PrimeVueColumn sortable field="discount_price" header="Discount Price" style="width: 30%">
           <template #body="{ data }">
             {{ formatCurrency(data.discount_price) }}
           </template>
@@ -141,9 +141,12 @@
                   class="text-lg w-56"
                   variant="outlined"
                   icon="pi pi-trash"
-                  label="Delete Category"
+                  label="Delete Product"
                   severity="danger"
-                  @click="isDeleteOpen = false"
+                  @click="
+                    handleDelete(selectedProduct.id);
+                    isDeleteOpen = false;
+                  "
                 />
                 <PrimeVueButton class="w-56 text-lg bg-primary border-primary" @click="isDeleteOpen = false"
                   >Cancel</PrimeVueButton
@@ -167,7 +170,7 @@ import CategoryPill from '@/modules/catalog/components/Category/CategoryPill.vue
 
 const router = useRouter();
 
-const { getAllProducts } = useProductService();
+const { getAllProducts, deleteProduct } = useProductService();
 
 function formatCurrency(value) {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' })
@@ -209,6 +212,17 @@ const loadProducts = async () => {
     console.error('Failed to fetch products:', err);
   } finally {
     loading.value = false;
+  }
+};
+
+const handleDelete = async () => {
+  try {
+    console.log('product id', selectedProduct.value.id);
+    await deleteProduct(selectedProduct.value.id);
+    isDeleteOpen.value = false;
+    await loadProducts();
+  } catch (error) {
+    console.error('Failed to delete product:', error);
   }
 };
 

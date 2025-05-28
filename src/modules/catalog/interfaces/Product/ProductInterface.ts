@@ -35,12 +35,12 @@ export interface IProduct {
 export interface CreateProductPayload {
   image?: string;
   name: string;
-  price?: number;
+  price: number;
   isDiscount?: boolean;
   discount_price?: number;
   discount_value?: number;
   discount_unit?: string;
   picture_url?: string;
-  category_ids: string[];
-  variant_ids: string[];
+  categories: object[];
+  variants?: object[];
 }
