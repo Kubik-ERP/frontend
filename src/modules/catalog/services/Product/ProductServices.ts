@@ -36,8 +36,6 @@ export const useProductService = () => {
     const response = await axios.get(API_URL);
     const products: IProduct[] = response.data.data;
 
-    console.log(products);
-
     return products.map(item => ({
       id: item.id,
       name: item.name,
@@ -51,7 +49,18 @@ export const useProductService = () => {
 
   const getProductById = async (id: string): Promise<IProduct> => {
     const response = await axios.get(`${API_URL}/${id}`);
-    return response.data.data;
+    const product = response.data.data;
+    const categories = product.categories_has_products?.map(item => item.categories.category);
+    
+    return {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      discount_value: product.discount_price || 0,
+      picture_url: product.picture_url || '-',
+      categories: product.categories_has_products.map(item => item.categories) || [],
+      variants: product.variant_has_products?.map(item => item.variant) || [],
+    };
   };
 
   const createProduct = async (payload: CreateProductPayload): Promise<IProduct> => {
@@ -79,6 +88,7 @@ export const useProductService = () => {
 
   return {
     getAllProducts,
+    getProductById,
     createProduct,
     updateProduct,
     deleteProduct,

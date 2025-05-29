@@ -3,7 +3,7 @@
     <div class="flex flex-col gap-4">
       <h1 class="text-2xl font-bold">Products Detail</h1>
       <h2 class="text-xl font-semibold">Product Information</h2>
-      {{ product_formData }}
+      <!-- {{ product_formData }} -->
       <form class="flex flex-col items-center justify-center" @submit.prevent="handleCreateProduct">
         <p>Photo (Optional)</p>
         <img

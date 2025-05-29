@@ -33,6 +33,7 @@ export interface IProduct {
 }
 
 export interface CreateProductPayload {
+  id?: string;
   image?: string;
   name: string;
   price: number;

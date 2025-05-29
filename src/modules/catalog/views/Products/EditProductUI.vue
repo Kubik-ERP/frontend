@@ -4,7 +4,7 @@
       <h1 class="text-2xl font-bold">Products Detail</h1>
       <h2 class="text-xl font-semibold">Product Information</h2>
       {{ product_formData }}
-      <form class="flex flex-col items-center justify-center" @submit.prevent="handleCreateProduct">
+      <form class="flex flex-col items-center justify-center" @submit.prevent="handleUpdateProduct">
         <p>Photo (Optional)</p>
         <img
           class="rounded-lg mt-2 w-64 h-64 object-cover"
@@ -151,11 +151,11 @@
             <PrimeVueToggleSwitch v-model="toggleVariant" />
           </div>
 
-          <div v-if="toggleVariant" class="flex flex-col">
+          <div v-if="toggleVariant || product_formData.variants.length" class="flex flex-col">
             <div class="flex flex-col gap-4">
               <div
                 v-for="(variant, index) in product_formData.variants"
-                :key="index"
+                :key="variant.id"
                 class="grid grid-cols-2 gap-x-8"
               >
                 <div class="flex flex-col">
@@ -204,7 +204,7 @@
               />
             </router-link>
             <PrimeVueButton
-              :label="'Add Product'"
+              :label="'Edit Product'"
               class="text-xl w-48 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
               unstyled
               type="submit"
@@ -248,7 +248,7 @@ import { useCategoryService } from '../../services/Category/CategoryService';
 const route = useRoute();
 
 const { getAllCategories } = useCategoryService();
-const { createProduct, product_formData, product_formValidations } = useProductService();
+const { getProductById, updateProduct, product_formData, product_formValidations } = useProductService();
 
 // const resolver = ({ values }) => {
 //   const errors = {};
@@ -299,14 +299,38 @@ function clearForm() {
   product_formData.category = [];
 }
 
+const toggleVariant = ref(false);
+const categories = ref([]);
+const loadCategories = async () => {
+  try {
+    const response = await getAllCategories();
+    categories.value = response;
+  } catch (error) {
+    console.error('Failed to load categories:', error);
+  }
+};
 const loadProduct = async () => {
   try {
-    await getAllCategories();
-    await createProduct(route.params.id);
+    loadCategories();
+    const response = await getProductById(route.params.id);
+    console.log('🚀 ~ loadProduct ~ getProductById:', response);
+    product_formData.name = response.name;
+    product_formData.price = response.price;
+    product_formData.isDiscount = response.isDiscount;
+    product_formData.discount_value = response.discount_price;
+    product_formData.discount_unit = response.discount_unit;
+    product_formData.discount_price = response.discount_price;
+    product_formData.variants = response.variants;
+    product_formData.categories = response.categories;
+
+    if(response.variants.length > 0) {
+      toggleVariant.value = true;
+    }
+
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 const previewImage = ref(null);
 const fileInput = ref(null);
@@ -326,9 +350,9 @@ const handleImageUpload = event => {
   }
 };
 
-const handleCreateProduct = async () => {
+const handleUpdateProduct = async () => {
   try {
-    await createProduct(product_formData);
+    await updateProduct(product_formData);
   } catch (error) {
     console.error(error);
   } finally {
@@ -336,9 +360,8 @@ const handleCreateProduct = async () => {
   }
 };
 
-const categories = ref([]);
 
-const toggleVariant = ref(false);
+
 
 const addVariant = () => {
   product_formData.variants.push({
@@ -393,18 +416,10 @@ const confirmLeave = () => {
 //   }
 // };
 
-const loadCategories = async () => {
-  try {
-    const response = await getAllCategories();
-    categories.value = response;
-  } catch (error) {
-    console.error('Failed to load categories:', error);
-  }
-};
+
 
 onMounted(async () => {
-  loadCategories();
-  // loadProduct();
+  loadProduct();
 });
 
 const cancelLeave = () => {

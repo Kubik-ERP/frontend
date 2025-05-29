@@ -183,7 +183,7 @@ const selectedProduct = ref(null);
 
 const EditProducts = () => {
   router.push({ name: 'edit-product', params: { id: selectedProduct.value.id } });
-  console.log('product id :' + selectedProduct.value.id);
+  // console.log('product id :' + selectedProduct.value.id);
 };
 
 const op = ref();
@@ -207,7 +207,7 @@ const loadProducts = async () => {
   loading.value = true;
   try {
     products.value = await getAllProducts();
-    console.log('products', products.value);
+    // console.log('products', products.value);
   } catch (err) {
     console.error('Failed to fetch products:', err);
   } finally {
@@ -217,7 +217,7 @@ const loadProducts = async () => {
 
 const handleDelete = async () => {
   try {
-    console.log('product id', selectedProduct.value.id);
+    // console.log('product id', selectedProduct.value.id);
     await deleteProduct(selectedProduct.value.id);
     isDeleteOpen.value = false;
     await loadProducts();
