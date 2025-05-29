@@ -36,6 +36,10 @@
   --p-primary-700: var(--color-primary-700);
 }
 
+.w-webkit-fill-available {
+  width: -webkit-fill-available;
+}
+
 /**
   ================================ Custom TailwindCSS ================================
 */
