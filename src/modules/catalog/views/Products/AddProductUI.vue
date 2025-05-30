@@ -3,7 +3,7 @@
     <div class="flex flex-col gap-4">
       <h1 class="text-2xl font-bold">Products Detail</h1>
       <h2 class="text-xl font-semibold">Product Information</h2>
-      <!-- {{ product_formData }} -->
+      {{ product_formValidations }}
       <form class="flex flex-col items-center justify-center" @submit.prevent="handleCreateProduct">
         <p>Photo (Optional)</p>
         <img
@@ -59,7 +59,6 @@
                 display="chip"
                 :options="categories"
                 option-label="category"
-                
                 filter
                 placeholder="Select"
                 class="w-full text-primary"
@@ -160,12 +159,22 @@
                 class="grid grid-cols-2 gap-x-8"
               >
                 <div class="flex flex-col">
-                  <label :for="`variant-name-${index}`">Variant Name</label>
-                  <PrimeVueInputText
-                    :id="`variant-name-${index}`"
-                    v-model="variant.name"
-                    :name="`variants.${index}.name`"
-                  />
+                  <AppBaseFormGroup
+                    v-slot="{ classes }"
+                    class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+                    is-name-as-label
+                    label-for="variant-name"
+                    name="Variant Name"
+                    :validators="useFormValidateEach(product_formValidations.variants, index, 'name')"
+                  >
+                    <PrimeVueInputText
+                      :id="`variant-name-${index}`"
+                      v-model="variant.name"
+                      :name="`variants`"
+                      class="border shadow-xs border-grayscale-30 rounded-lg"
+                      :class="classes"
+                    />
+                  </AppBaseFormGroup>
                 </div>
 
                 <div class="flex flex-col">
@@ -246,49 +255,8 @@
 import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
 import { useCategoryService } from '../../services/Category/CategoryService';
 
-// const route = useRoute();
-// const router = useRouter();
-
 const { getAllCategories } = useCategoryService();
-const { createProduct, product_formData, product_formValidations } = useProductService();
-
-// const resolver = ({ values }) => {
-//   const errors = {};
-
-//   if (!values.username) {
-//     errors.name = [{ message: 'Name is required.' }];
-//   }
-//   if (!values.category || values.category.length === 0) {
-//     errors.category = [{ message: 'Category is required.' }];
-//   }
-//   if (!values.price) {
-//     errors.price = [{ message: 'Price is required.' }];
-//   }
-//   if (product.isDiscount) {
-//     if (!values.discount_value) {
-//       errors.discount_value = [{ message: 'Discount value is required.' }];
-//     }
-//     if (!values.discount_unit) {
-//       errors.discount_unit = [{ message: 'Discount unit is required.' }];
-//     }
-//   }
-
-//   values.variants?.forEach((v, i) => {
-//     if (!v.name) {
-//       errors[`variants.${i}.name`] = [{ message: 'Variant name is required.' }];
-//     }
-//     if (!v.price) {
-//       errors[`variants.${i}.price`] = [{ message: 'Variant price is required.' }];
-//     }
-//   });
-
-//   console.log('errors:', errors);
-
-//   return {
-//     values,
-//     errors,
-//   };
-// };
+const { createProduct, product_formData, product_formValidations, useFormValidateEach } = useProductService();
 
 function clearForm() {
   product_formData.name = '';
@@ -322,11 +290,9 @@ const handleImageUpload = event => {
 const handleCreateProduct = async () => {
   try {
     await createProduct(product_formData);
-
   } catch (error) {
     console.error(error);
-  }
-  finally {
+  } finally {
     clearForm();
   }
 };
@@ -345,8 +311,6 @@ const addVariant = () => {
 const removeVariant = index => {
   product.variants.splice(index, 1);
 };
-
-
 
 const calculateDiscount = () => {
   if (!product_formData.isDiscount) {

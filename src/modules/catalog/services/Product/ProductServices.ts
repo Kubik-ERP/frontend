@@ -3,7 +3,7 @@ import axios from 'axios';
 import { CreateProductPayload, IProduct } from '@/modules/catalog/interfaces/Product/ProductInterface.ts';
 
 import useVuelidate from '@vuelidate/core';
-import { required } from '@vuelidate/validators';
+import { required, helpers } from '@vuelidate/validators';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/api/products`;
 
@@ -17,7 +17,16 @@ export const useProductService = () => {
     discount_value: 0,
     discount_unit: 'Rp',
     discount_price: 0,
-    variants: [],
+    variants: [
+      {
+        name: '',
+        price: 0,
+      },
+      {
+        name: 'test',
+        price: 0,
+      }
+    ],
   });
 
   const product_formRules = computed(() => ({
@@ -25,7 +34,12 @@ export const useProductService = () => {
     price: { required },
     categories: { required },
     discount_value: { required },
-    variants: { required },
+    variants: {
+      $each: helpers.forEach({
+        name: { required },
+        price: { required },
+      }),
+    },
   }));
 
   const product_formValidations = useVuelidate(product_formRules, product_formData, {
@@ -51,7 +65,7 @@ export const useProductService = () => {
     const response = await axios.get(`${API_URL}/${id}`);
     const product = response.data.data;
     const categories = product.categories_has_products?.map(item => item.categories.category);
-    
+
     return {
       id: product.id,
       name: product.name,
