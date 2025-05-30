@@ -63,6 +63,8 @@ const {
   cashierOrderSummary_getListActiveFloor,
   cashierOrderSummary_isButtonPlaceOrderDisabled,
 
+  cashierOrderSummary_handleIsExpandedToggle,
+
   cashierOrderSummary_isLoadingUnpaidOrder,
   cashierOrderSummary_handleSaveUnpaidOrder,
 
@@ -131,6 +133,8 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_getListActiveFloor,
 
   cashierOrderSummary_isButtonPlaceOrderDisabled,
+
+  cashierOrderSummary_handleIsExpandedToggle,
 
   cashierOrderSummary_isLoadingUnpaidOrder,
   cashierOrderSummary_handleSaveUnpaidOrder,

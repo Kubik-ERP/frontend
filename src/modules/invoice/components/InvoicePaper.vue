@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Constants
+import { INVOICE_LIST_TAB } from '../constants/invoice.constant';
+
 // Interfaces
 import type { IInvoiceProvided } from '../interfaces/index';
 
@@ -7,57 +10,32 @@ import InvoiceCashierInvoice from './paper/InvoiceCashierInvoice.vue';
 import InvoiceKitchenTicket from './paper/InvoiceKitchenTicket.vue';
 import InvoiceTableTicket from './paper/InvoiceTableTicket.vue';
 
-// HTML2PDF
-import html2pdf from 'html2pdf.js';
-
-const { invoice_activeInvoice, invoice_listInvoice } = inject<IInvoiceProvided>('invoice')!;
+const { invoice_activeInvoice, invoice_handleDownload, invoice_handlePrint } =
+  inject<IInvoiceProvided>('invoice')!;
 
 /**
  * @description Ref for invoice paper
  */
 const invoiceRef = ref<HTMLElement | null>(null);
+const kitchenRef = ref<HTMLElement | null>(null);
+const tableRef = ref<HTMLElement | null>(null);
 
 /**
  * @description Print function
  */
 const print = () => {
-  if (!invoiceRef.value) return;
-
-  invoiceRef.value.classList.remove('hidden');
-  invoiceRef.value.classList.add('flex');
-
-  window.print();
-
-  setTimeout(() => {
-    invoiceRef?.value?.classList.add('hidden');
-  }, 1000);
+  invoice_handlePrint(invoiceRef.value!, kitchenRef.value!, tableRef.value!);
 };
 
 const download = () => {
-  if (!invoiceRef.value) return;
-
-  invoiceRef.value?.classList.remove('hidden');
-
-  html2pdf()
-    .from(invoiceRef.value)
-    .set({
-      margin: 0,
-      filename: 'invoice.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-    })
-    .save()
-    .then(() => {
-      invoiceRef.value?.classList.add('hidden');
-    });
+  invoice_handleDownload(invoiceRef.value!, kitchenRef.value!, tableRef.value!);
 };
 
 /**
  * @description Define expose for print function
  */
 
-defineExpose({ invoiceRef, print, download });
+defineExpose({ invoiceRef, kitchenRef, tableRef, print, download });
 </script>
 
 <template>
@@ -72,7 +50,7 @@ defineExpose({ invoiceRef, print, download });
           class="flex cursor-pointer mb-6 w-full max-w-md items-center justify-center p-2 bg-secondary-background rounded-xl"
         >
           <PrimeVueTab
-            v-for="(item, index) in invoice_listInvoice"
+            v-for="(item, index) in INVOICE_LIST_TAB"
             :key="index"
             unstyled
             :value="item.id"
@@ -100,15 +78,26 @@ defineExpose({ invoiceRef, print, download });
 
       <Teleport to="body">
         <div
-          id="print-invoice-paper"
           ref="invoiceRef"
-          class="hidden relative inset-0 mx-auto min-h-svh min-w-svw m-0 p-0 w-full h-full items-center justify-center"
+          class="print-invoice-paper hidden relative inset-0 mx-auto min-h-svh min-w-svw m-0 p-0 w-full h-full items-center justify-center"
         >
           <InvoiceCashierInvoice />
+        </div>
+
+        <div
+          ref="kitchenRef"
+          class="print-invoice-paper hidden relative inset-0 mx-auto min-h-svh min-w-svw m-0 p-0 w-full h-full items-center justify-center"
+        >
+          <InvoiceKitchenTicket />
+        </div>
+
+        <div
+          ref="tableRef"
+          class="print-invoice-paper hidden relative inset-0 mx-auto min-h-svh min-w-svw m-0 p-0 w-full h-full items-center justify-center"
+        >
+          <InvoiceTableTicket />
         </div>
       </Teleport>
     </section>
   </section>
 </template>
-
-<style scoped></style>

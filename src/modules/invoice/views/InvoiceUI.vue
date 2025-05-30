@@ -19,19 +19,27 @@ import type { IInvoiceProvided } from '../interfaces/index';
 // Services
 import { useInvoiceService } from '../services/useInvoice.service';
 
-// route
-import { useRoute } from 'vue-router';
-
 const route = useRoute();
 
 /**
  * @description Destructure all the data and methods what we need
  */
-const { invoice_activeInvoice, invoice_listInvoice } = useInvoiceService();
+const {
+  invoice_activeInvoice,
+  invoice_invoiceData,
+  invoice_handleOtherOptions,
+  invoice_handleDownload,
+  invoice_handlePrint,
+} = useInvoiceService();
 
 provide<IInvoiceProvided>('invoice', {
   invoice_activeInvoice,
-  invoice_listInvoice,
+
+  invoice_invoiceData,
+
+  invoice_handleDownload,
+  invoice_handlePrint,
+  invoice_handleOtherOptions,
 });
 
 const invoicePaperRef = ref();

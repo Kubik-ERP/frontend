@@ -1,6 +1,21 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+// Component
+import InvoiceCashierInvoiceLoading from './InvoiceCashierInvoiceLoading.vue';
+
+// Interface
+import { IInvoiceProvided } from '../../interfaces';
+
+/**
+ * @description Inject all the data and methods what we need
+ */
+const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
+</script>
 <template>
-  <section id="invoice-paper" class="bg-white flex flex-col items-center gap-2 w-full max-w-xs lg:max-w-md p-4">
+  <section
+    v-if="!invoice_invoiceData.isLoading"
+    id="invoice-paper"
+    class="invoice-paper bg-white flex flex-col items-center gap-2 w-full max-w-xs lg:max-w-md p-4"
+  >
     <section id="logo" class="w-20 h-20 bg-grayscale-10">&nbsp;</section>
     <h6 id="outlet-name" class="font-semibold text-black text-sm">Lawson Kaliurang</h6>
     <p id="outlet-address" class="font-normal text-black text-center text-sm px-4">
@@ -96,6 +111,9 @@
         Terima kasih dan kami tunggu kehadiran Anda kembali
       </p>
     </section>
+  </section>
+  <section v-else>
+    <InvoiceCashierInvoiceLoading />
   </section>
 </template>
 

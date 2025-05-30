@@ -1,13 +1,5 @@
 import { defineStore } from 'pinia';
 
-// Interfaces
-import type { AxiosRequestConfig } from 'axios';
-import { ICashierProduct, ICashierStateStore } from '../interfaces';
-import { ICashierOrderSummaryPaymentMethodResponse } from '../interfaces/cashier-order-summary';
-
-// Plugins
-import httpClient from '@/plugins/axios';
-
 // Constants
 import {
   CASHIER_ENDPOINT_CATEGORIES,
@@ -18,11 +10,26 @@ import {
   CASHIER_ENDPOINT_PRODUCTS,
   CASHIER_ENDPOINT_SIMULATE_PAYMENT,
 } from '../constants/cashierApi.constant';
+
+import {
+  CASHIER_DUMMY_LIST_CATEGORY,
+  CASHIER_DUMMY_LIST_DRINK,
+  CASHIER_DUMMY_LIST_FEATURED_PRODUCT,
+  CASHIER_DUMMY_LIST_FOOD,
+} from '../constants';
+
+// Interfaces
+import type { AxiosRequestConfig } from 'axios';
+import { ICashierProduct, ICashierStateStore } from '../interfaces';
+import { ICashierOrderSummaryPaymentMethodResponse } from '../interfaces/cashier-order-summary';
 import {
   ICashierResponseCalulateEstimation,
   ICashierResponseMidtransQrisPayment,
   ICashierResponseProcessCheckout,
 } from '../interfaces/cashier-response';
+
+// Plugins
+import httpClient from '@/plugins/axios';
 
 export const useCashierStore = defineStore('cashier', {
   state: (): ICashierStateStore => ({
@@ -36,240 +43,13 @@ export const useCashierStore = defineStore('cashier', {
         notes: 'Ini adalah catatan',
       },
     ],
-    cashierProduct_listCategory: [
-      {
-        id: 1,
-        name: 'Food',
-        total: 120,
-        image: 'https://foodish-api.com/images/pasta/pasta10.jpg',
-      },
-      {
-        id: 2,
-        name: 'Beverage',
-        total: 120,
-        image: 'https://foodish-api.com/images/pizza/pizza10.jpg',
-      },
-      {
-        id: 3,
-        name: 'Pastry',
-        total: 120,
-        image: 'https://foodish-api.com/images/samosa/samosa10.jpg',
-      },
-      {
-        id: 4,
-        name: 'Drinks',
-        total: 120,
-        image: 'https://foodish-api.com/images/burger/burger10.jpg',
-      },
-      {
-        id: 5,
-        name: 'Pasta',
-        total: 120,
-        image: 'https://foodish-api.com/images/butter-chicken/butter-chicken10.jpg',
-      },
-      {
-        id: 6,
-        name: 'Pizza',
-        total: 120,
-        image: 'https://foodish-api.com/images/pizza/pizza10.jpg',
-      },
-      {
-        id: 7,
-        name: 'Burger',
-        total: 120,
-        image: 'https://foodish-api.com/images/burger/burger10.jpg',
-      },
-      {
-        id: 8,
-        name: 'Butter Chicken',
-        total: 120,
-        image: 'https://foodish-api.com/images/butter-chicken/butter-chicken10.jpg',
-      },
-      {
-        id: 1,
-        name: 'Food',
-        total: 120,
-        image: 'https://foodish-api.com/images/pasta/pasta10.jpg',
-      },
-      {
-        id: 2,
-        name: 'Beverage',
-        total: 120,
-        image: 'https://foodish-api.com/images/pizza/pizza10.jpg',
-      },
-      {
-        id: 3,
-        name: 'Pastry',
-        total: 120,
-        image: 'https://foodish-api.com/images/samosa/samosa10.jpg',
-      },
-      {
-        id: 4,
-        name: 'Drinks',
-        total: 120,
-        image: 'https://foodish-api.com/images/burger/burger10.jpg',
-      },
-      {
-        id: 5,
-        name: 'Pasta',
-        total: 120,
-        image: 'https://foodish-api.com/images/butter-chicken/butter-chicken10.jpg',
-      },
-      {
-        id: 6,
-        name: 'Pizza',
-        total: 120,
-        image: 'https://foodish-api.com/images/pizza/pizza10.jpg',
-      },
-      {
-        id: 7,
-        name: 'Burger',
-        total: 120,
-        image: 'https://foodish-api.com/images/burger/burger10.jpg',
-      },
-      {
-        id: 8,
-        name: 'Butter Chicken',
-        total: 120,
-        image: 'https://foodish-api.com/images/butter-chicken/butter-chicken10.jpg',
-      },
-    ],
+    cashierProduct_listCategory: CASHIER_DUMMY_LIST_CATEGORY,
 
-    // TEMP: Hardcoded data, will be replaced with actual data from API
-    cashierProduct_listFeaturedProduct: [
-      {
-        productId: '1',
-        name: 'Creamy Pasta',
-        category: 'Food',
-        quantity: 44,
-        price: '10990',
-        discountedPrice: null,
-        image: 'https://foodish-api.com/images/pasta/pasta6.jpg',
-        variant: [
-          { variantId: '1', name: 'No adds on', price: 0 },
-          { variantId: '2', name: 'With parmesan sauce', price: 5000 },
-          { variantId: '3', name: 'Extra cheese', price: 3000 },
-          { variantId: '4', name: 'Add grilled chicken', price: 7000 },
-        ],
-      },
-      {
-        productId: '2',
-        name: 'Cheese Pasta',
-        category: 'Food',
-        quantity: 44,
-        price: '15990',
-        discountedPrice: null,
-        image: 'https://foodish-api.com/images/pasta/pasta2.jpg',
-        variant: [
-          { variantId: '1', name: 'Regular', price: 0 },
-          { variantId: '2', name: 'Extra cheese', price: 4000 },
-          { variantId: '3', name: 'With truffle oil', price: 8000 },
-        ],
-      },
-      {
-        productId: '3',
-        name: 'Pepperoni Pizza',
-        category: 'Food',
-        quantity: 44,
-        price: '15990',
-        discountedPrice: '14990',
-        image: 'https://foodish-api.com/images/pizza/pizza2.jpg',
-        variant: [
-          { variantId: '1', name: 'Regular size', price: 0 },
-          { variantId: '2', name: 'Large size', price: 10000 },
-          { variantId: '3', name: 'Extra pepperoni', price: 5000 },
-        ],
-      },
-      {
-        productId: '4',
-        name: 'Margarita Pizza',
-        category: 'Food',
-        quantity: 44,
-        price: '20990',
-        discountedPrice: '19990',
-        image: 'https://foodish-api.com/images/pizza/pizza5.jpg',
-        variant: [
-          { variantId: '1', name: 'Regular size', price: 0 },
-          { variantId: '2', name: 'Large size', price: 10000 },
-          { variantId: '3', name: 'Extra mozzarella', price: 6000 },
-        ],
-      },
-      {
-        productId: '5',
-        name: 'Classic Cheeseburger',
-        category: 'Food',
-        quantity: 44,
-        price: '20990',
-        discountedPrice: '19990',
-        image: 'https://foodish-api.com/images/burger/burger5.jpg',
-        variant: [
-          { variantId: '1', name: 'Single patty', price: 0 },
-          { variantId: '2', name: 'Double patty', price: 8000 },
-          { variantId: '3', name: 'Add bacon', price: 5000 },
-        ],
-      },
-      {
-        productId: '6',
-        name: 'Butter Chicken',
-        category: 'Food',
-        quantity: 44,
-        price: '20990',
-        discountedPrice: '19990',
-        image: 'https://foodish-api.com/images/butter-chicken/butter-chicken5.jpg',
-        variant: [
-          { variantId: '1', name: 'Mild spice', price: 0 },
-          { variantId: '2', name: 'Medium spice', price: 2000 },
-          { variantId: '3', name: 'Extra spicy', price: 4000 },
-          { variantId: '4', name: 'With garlic naan', price: 5000 },
-        ],
-      },
-    ],
+    cashierProduct_listFeaturedProduct: CASHIER_DUMMY_LIST_FEATURED_PRODUCT,
 
-    // TEMP: Hardcoded data, will be replaced with actual data from API
-    cashierProduct_listFood: [
-      {
-        productId: '7',
-        name: 'Classic Pasta',
-        category: 'Food',
-        quantity: 44,
-        price: '10990',
-        discountedPrice: '9990',
-        image: 'https://foodish-api.com/images/pasta/pasta1.jpg',
-        variant: [
-          { variantId: '1', name: 'Regular', price: 0 },
-          { variantId: '2', name: 'Extra cheese', price: 3000 },
-          { variantId: '3', name: 'Add grilled chicken', price: 5000 },
-        ],
-      },
-      {
-        productId: '8',
-        name: 'Cheese Pasta',
-        category: 'Food',
-        quantity: 44,
-        price: '15990',
-        discountedPrice: '14990',
-        image: 'https://foodish-api.com/images/pasta/pasta2.jpg',
-        variant: [
-          { variantId: '1', name: 'Regular', price: 0 },
-          { variantId: '2', name: 'Double cheese', price: 4000 },
-          { variantId: '3', name: 'With truffle oil', price: 7000 },
-        ],
-      },
-    ],
+    cashierProduct_listFood: CASHIER_DUMMY_LIST_FOOD,
 
-    // TEMP: Hardcoded data, will be replaced with actual data from API
-    cashierProduct_listDrink: [
-      {
-        productId: '13',
-        name: 'Samosa Snack',
-        category: 'Beverage',
-        quantity: 44,
-        price: '5990',
-        discountedPrice: '4990',
-        image: 'https://foodish-api.com/images/samosa/samosa1.jpg',
-        variant: [{ variantId: '1', name: 'Regular', price: 0 }],
-      },
-    ],
+    cashierProduct_listDrink: CASHIER_DUMMY_LIST_DRINK,
   }),
   getters: {
     /**

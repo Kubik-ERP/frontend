@@ -14,25 +14,60 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
     <div class="flex flex-col lg:flex-row w-full p-2 gap-4 bg-primary-background">
       <PrimeVueButton
         class="w-full lg:w-1/2 py-2 border border-primary-border text-primary"
+        :class="cashierOrderSummary_modalVoucher.form.voucher_code ? 'bg-white' : ''"
         outlined
         @click="cashierOrderSummary_modalVoucher.show = true"
       >
         <template #default>
           <section class="flex justify-between px-5 w-full items-center">
-            <span class="font-semibold truncate"> Promo / Voucher </span>
+            <div v-if="cashierOrderSummary_modalVoucher.form.voucher_code" class="flex gap-2 items-center">
+              <AppBaseSvg name="tag" class="!h-5 !w-5" />
+              <span class="font-semibold truncate">
+                {{
+                  cashierOrderSummary_modalVoucher.data.find(
+                    f => f.code === cashierOrderSummary_modalVoucher.form.voucher_code,
+                  )?.label || 'Promo / Voucher'
+                }}
+              </span>
+            </div>
+            <div v-else>
+              <span class="font-semibold truncate"> Promo / Voucher </span>
 
-            <AppBaseSvg name="voucher" class="!h-5 !w-5" />
+              <AppBaseSvg name="voucher" class="!h-5 !w-5" />
+            </div>
           </section>
         </template>
       </PrimeVueButton>
       <PrimeVueButton
         class="w-full lg:w-1/2 py-2 border border-primary-border text-primary"
+        :class="cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod ? 'bg-white' : ''"
         outlined
         @click="cashierOrderSummary_modalPaymentMethod.show = true"
       >
         <template #default>
           <section class="flex justify-between px-5 w-full items-center">
-            <span class="font-semibold truncate"> Payment Method </span>
+            <div
+              v-if="cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod"
+              class="flex gap-2 items-center"
+            >
+              <AppBaseSvg
+                :name="
+                  cashierOrderSummary_modalPaymentMethod.data.find(
+                    f => f.id === cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod,
+                  )?.iconName || 'voucher'
+                "
+                class="!h-5 !w-5"
+              />
+
+              <span class="font-semibold truncate">
+                {{
+                  cashierOrderSummary_modalPaymentMethod.data.find(
+                    f => f.id === cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod,
+                  )?.name || 'Payment Method'
+                }}
+              </span>
+            </div>
+            <span v-else class="font-semibold truncate"> Payment Method </span>
 
             <i class="pi pi-chevron-right" />
           </section>
