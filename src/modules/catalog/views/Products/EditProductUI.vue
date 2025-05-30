@@ -151,32 +151,66 @@
             <PrimeVueToggleSwitch v-model="toggleVariant" />
           </div>
 
-          <div v-if="toggleVariant || product_formData.variants.length" class="flex flex-col">
+          <div v-if="toggleVariant" class="flex flex-col">
             <div class="flex flex-col gap-4">
               <div
                 v-for="(variant, index) in product_formData.variants"
-                :key="variant.id"
+                :key="index"
                 class="grid grid-cols-2 gap-x-8"
               >
                 <div class="flex flex-col">
-                  <label :for="`variant-name-${index}`">Variant Name</label>
-                  <PrimeVueInputText
-                    :id="`variant-name-${index}`"
-                    v-model="variant.name"
-                    :name="`variants.${index}.name`"
-                  />
+                  <AppBaseFormGroup
+                    v-slot="{ classes }"
+                    class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+                    is-name-as-label
+                    label-for="variant-name"
+                    name="Variant Name"
+                    class="w-full"
+                    :validators="
+                      useFormValidateEach({
+                        validation: product_formValidations.variants,
+                        fieldIndex: index,
+                        field: 'name',
+                      })
+                    "
+                  >
+                    <PrimeVueInputText
+                      :id="`variant-name-${index}`"
+                      v-model="product_formData.variants[index].name"
+                      :name="`variants`"
+                      class="border shadow-xs border-grayscale-30 rounded-lg w-full"
+                      :class="classes"
+                    />
+                  </AppBaseFormGroup>
                 </div>
 
                 <div class="flex flex-col">
-                  <label :for="`variant-price-${index}`">Variant Price</label>
                   <div class="flex gap-2">
-                    <PrimeVueInputNumber
-                      :id="`variant-price-${index}`"
-                      v-model="variant.price"
-                      prefix="Rp "
-                      fluid
-                      :name="`variants.${index}.price`"
-                    />
+                    <AppBaseFormGroup
+                      v-slot="{ classes }"
+                      class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+                      is-name-as-label
+                      label-for="variant-name"
+                      name="Variant Name"
+                      class="w-full"
+                      :validators="
+                        useFormValidateEach({
+                          validation: product_formValidations.variants,
+                          fieldIndex: index,
+                          field: 'name',
+                        })
+                      "
+                    >
+                      <PrimeVueInputNumber
+                        :id="`variant-price-${index}`"
+                        v-model="product_formData.variants[index].price"
+                        prefix="Rp "
+                        fluid
+                        :name="`variants.${index}.price`"
+                        class="border shadow-xs border-grayscale-30 rounded-lg w-full"
+                        :class="classes"
+                      />
+                    </AppBaseFormGroup>
                     <PrimeVueButton
                       icon="pi pi-times"
                       variant="text"
@@ -250,44 +284,6 @@ const route = useRoute();
 const { getAllCategories } = useCategoryService();
 const { getProductById, updateProduct, product_formData, product_formValidations } = useProductService();
 
-// const resolver = ({ values }) => {
-//   const errors = {};
-
-//   if (!values.username) {
-//     errors.name = [{ message: 'Name is required.' }];
-//   }
-//   if (!values.category || values.category.length === 0) {
-//     errors.category = [{ message: 'Category is required.' }];
-//   }
-//   if (!values.price) {
-//     errors.price = [{ message: 'Price is required.' }];
-//   }
-//   if (product.isDiscount) {
-//     if (!values.discount_value) {
-//       errors.discount_value = [{ message: 'Discount value is required.' }];
-//     }
-//     if (!values.discount_unit) {
-//       errors.discount_unit = [{ message: 'Discount unit is required.' }];
-//     }
-//   }
-
-//   values.variants?.forEach((v, i) => {
-//     if (!v.name) {
-//       errors[`variants.${i}.name`] = [{ message: 'Variant name is required.' }];
-//     }
-//     if (!v.price) {
-//       errors[`variants.${i}.price`] = [{ message: 'Variant price is required.' }];
-//     }
-//   });
-
-//   console.log('errors:', errors);
-
-//   return {
-//     values,
-//     errors,
-//   };
-// };
-
 function clearForm() {
   product_formData.name = '';
   product_formData.price = 0;
@@ -323,10 +319,9 @@ const loadProduct = async () => {
     product_formData.variants = response.variants;
     product_formData.categories = response.categories;
 
-    if(response.variants.length > 0) {
+    if (response.variants.length > 0) {
       toggleVariant.value = true;
     }
-
   } catch (error) {
     console.error(error);
   }
@@ -360,9 +355,6 @@ const handleUpdateProduct = async () => {
   }
 };
 
-
-
-
 const addVariant = () => {
   product_formData.variants.push({
     name: '',
@@ -371,7 +363,7 @@ const addVariant = () => {
 };
 
 const removeVariant = index => {
-  product.variants.splice(index, 1);
+  product_formData.variants.splice(index, 1);
 };
 
 const calculateDiscount = () => {
@@ -406,16 +398,6 @@ const confirmLeave = () => {
     router.push(targetRoute);
   }
 };
-
-// const loadProduct = async () => {
-//   try {
-//     const response = await getProductByID();
-//     products.value = response;
-//   } catch (error) {
-//     console.error('Failed to load products:', error);
-//   }
-// };
-
 
 
 onMounted(async () => {

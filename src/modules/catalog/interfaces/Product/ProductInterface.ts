@@ -27,9 +27,10 @@ export interface IProduct {
   name: string;
   price: number;
   discount_price?: number;
+  discount_value?: number;
   picture_url?: string;
-  categories_has_products?: ICategoryHasProduct[];
-  variant_has_products?: IVariantHasProduct[];
+  categories?: ICategoryHasProduct[];
+  variants?: IVariantHasProduct[];
 }
 
 export interface CreateProductPayload {

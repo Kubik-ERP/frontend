@@ -1,6 +1,11 @@
 import axios from 'axios';
 
-import { CreateProductPayload, IProduct } from '@/modules/catalog/interfaces/Product/ProductInterface.ts';
+import {
+  CreateProductPayload,
+  IProduct,
+  ICategoryHasProduct,
+  IVariantHasProduct,
+} from '@/modules/catalog/interfaces/Product/ProductInterface.ts';
 
 import useVuelidate from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
@@ -47,15 +52,14 @@ export const useProductService = () => {
       price: item.price,
       discount_price: item.discount_price || 0,
       picture_url: item.picture_url || '-',
-      categories: item.categories_has_products?.map(item => item.categories.category),
-      variants: item.variant_has_products?.map(item => item.variant.name),
+      categories: item.categories_has_products?.map((item: ICategoryHasProduct) => item.categories.category),
+      variants: item.variant_has_products?.map((item: IVariantHasProduct) => item.variant.name),
     }));
   };
 
   const getProductById = async (id: string): Promise<IProduct> => {
     const response = await axios.get(`${API_URL}/${id}`);
     const product = response.data.data;
-    const categories = product.categories_has_products?.map(item => item.categories.category);
 
     return {
       id: product.id,
@@ -63,8 +67,8 @@ export const useProductService = () => {
       price: product.price,
       discount_value: product.discount_price || 0,
       picture_url: product.picture_url || '-',
-      categories: product.categories_has_products.map(item => item.categories) || [],
-      variants: product.variant_has_products?.map(item => item.variant) || [],
+      categories: product.categories_has_products.map((item: ICategoryHasProduct) => item.categories) || [],
+      variants: product.variant_has_products?.map((item: IVariantHasProduct) => item.variant) || [],
     };
   };
 
