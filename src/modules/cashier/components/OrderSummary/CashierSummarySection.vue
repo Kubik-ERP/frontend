@@ -100,7 +100,7 @@ const {
         class="relative flex justify-center items-center w-full border-b-2 border-b-grayscale-10 cursor-pointer"
         @click="cashierOrderSummary_handleIsExpandedToggle"
       >
-        <div class="absolute top-full p-1 bg-primary-background -translate-y-1/2 px-1">
+        <div class="absolute top-full rounded-full p-1 bg-primary-background -translate-y-1/2 px-1">
           <AppBaseSvg
             :name="cashierOrderSummary_data.isExpanded ? 'chevron-up' : 'chevron-down'"
             class="!h-4 !w-4 text-text-disabled"

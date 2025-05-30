@@ -22,6 +22,7 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
           <section class="flex justify-between px-5 w-full items-center">
             <div v-if="cashierOrderSummary_modalVoucher.form.voucher_code" class="flex gap-2 items-center">
               <AppBaseSvg name="tag" class="!h-5 !w-5" />
+
               <span class="font-semibold truncate">
                 {{
                   cashierOrderSummary_modalVoucher.data.find(
@@ -30,7 +31,7 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
                 }}
               </span>
             </div>
-            <div v-else>
+            <div v-else class="flex gap-2 items-center">
               <span class="font-semibold truncate"> Promo / Voucher </span>
 
               <AppBaseSvg name="voucher" class="!h-5 !w-5" />
