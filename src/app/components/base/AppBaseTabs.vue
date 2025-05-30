@@ -4,6 +4,7 @@
  */
 interface IProps {
   items?: ITabs[];
+  size?: 'small' | 'medium' | 'large';
   value?: string;
 }
 
@@ -42,11 +43,13 @@ const onChange = (value: string | number) => {
         :key="`tab-${tabIndex}`"
         :value="tab.value"
         :pt="{
-          root: `border-none text-sm rounded-lg max-h-10 py-2 w-1/4 ${
+          root: `border-none text-sm rounded-lg max-h-10 py-2 ${
             localValue === tab.value
               ? 'bg-green-primary text-white font-semibold'
               : 'bg-transparent font-normal text-secondary-hover'
-          }`,
+          }
+          ${props.size === 'small' ? 'px-3' : ''}    
+          `,
         }"
       >
         {{ tab.label }}
