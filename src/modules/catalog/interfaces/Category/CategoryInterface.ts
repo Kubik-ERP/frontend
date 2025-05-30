@@ -5,7 +5,7 @@ export interface ICategory {
 }
 
 export interface CategoryPayload {
-  name: string;
+  category: string;
   description?: string;
 }
 

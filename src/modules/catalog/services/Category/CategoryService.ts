@@ -35,14 +35,19 @@ export const useCategoryService = () => {
       description: item.description ?? '-',
     }));
   };
-  const createCategory = async (payload: CategoryPayload): Promise<ICategory> => {
+  const createCategory = async (payload: CategoryPayload): Promise<unknown> => {
     const response = await axios.post(API_URL, payload);
+    const message = response.data.message || 'Successfully created a category.';
+    if (response.data.statusCode !== 201) return {
+      message,
+      statusCode: response.data.statusCode,
+    };
     const data: ICategory = response.data.data;
-
     return {
       id: data.id,
       category: data.category,
       description: data.description || '-',
+      message,
     };
   };
   const updateCategory = async (id: string, payload: CategoryPayload): Promise<ICategory> => {

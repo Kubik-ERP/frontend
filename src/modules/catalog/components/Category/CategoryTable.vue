@@ -228,27 +228,6 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-const handleAddCategory = async () => {
-  if (!category_formData.name.trim()) {
-    alert('ICategory name is required!');
-    return;
-  }
-
-  try {
-    const newCategory = await createCategory({
-      name: category_formData.name,
-      description: category_formData.description || '-',
-    });
-
-    categories.value.push(newCategory);
-    isAddOpen.value = false;
-    category_formData.name = '';
-    category_formData.description = '';
-  } catch (error) {
-    console.error('Failed to create category:', error);
-    alert('Something went wrong while creating the category.');
-  }
-};
 const loadCategories = async () => {
   loading.value = true;
   try {
@@ -260,7 +239,32 @@ const loadCategories = async () => {
     loading.value = false;
   }
 };
+const handleAddCategory = async () => {
+  if (!category_formData.name.trim()) {
+    // alert('ICategory name is required!');
+    return;
+  }
 
+  try {
+    const newCategory = await createCategory({
+      category: category_formData.name,
+      description: category_formData.description || '-',
+    });
+
+    loadCategories();
+    isAddOpen.value = false;
+    category_formData.name = '';
+    category_formData.description = '';
+
+    if (newCategory.statusCode === 500) {
+      alert(`${newCategory.message}`);
+    }
+  } catch (error) {
+    console.error('Failed to create category:', error);
+    console.error(error);
+    alert('Something went wrong while creating the category.');
+  }
+};
 const openAddDialog = () => {
   isAddOpen.value = true;
   category_formData.name = '';
@@ -285,7 +289,7 @@ const handleEditCategory = async () => {
   if (selected.value) {
     try {
       const updatedCategory = await updateCategory(selected.value.id, {
-        name: category_formData.name,
+        category: category_formData.name,
         description: category_formData.description || '-',
       });
       categories.value = categories.value.map(cat => (cat.id === updatedCategory.id ? updatedCategory : cat));
@@ -309,7 +313,7 @@ const handleDeleteCategory = async () => {
     if (selected.value) {
       const deleteCat = await deleteCategory(selected.value.id);
       if (deleteCat === 200) {
-        alert('Category deleted successfully.');
+        // alert('Category deleted successfully.');
         categories.value = categories.value.filter(cat => cat.id !== selected.value?.id);
       } else {
         alert('Something went wrong while deleting the category.');
