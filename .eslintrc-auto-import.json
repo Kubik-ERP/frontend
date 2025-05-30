@@ -122,6 +122,7 @@
     "mapWritableState": true,
     "setActivePinia": true,
     "setMapStoreSuffix": true,
-    "storeToRefs": true
+    "storeToRefs": true,
+    "useFormValidateEach": true
   }
 }

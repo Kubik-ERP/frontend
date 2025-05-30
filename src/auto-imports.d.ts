@@ -99,6 +99,7 @@ declare global {
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
   const useCurrencyFormat: typeof import('./app/composables/useText')['useCurrencyFormat']
+  const useFormValidateEach: typeof import('./app/composables/useValidateForm')['useFormValidateEach']
   const useHttpAbort: typeof import('./app/composables/useHttpAbort')['useHttpAbort']
   const useId: typeof import('vue')['useId']
   const useLink: typeof import('vue-router')['useLink']
@@ -225,6 +226,7 @@ declare module 'vue' {
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
     readonly useCurrencyFormat: UnwrapRef<typeof import('./app/composables/useText')['useCurrencyFormat']>
+    readonly useFormValidateEach: UnwrapRef<typeof import('./app/composables/useValidateForm')['useFormValidateEach']>
     readonly useHttpAbort: UnwrapRef<typeof import('./app/composables/useHttpAbort')['useHttpAbort']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>

@@ -3,7 +3,6 @@
     <div class="flex flex-col gap-4">
       <h1 class="text-2xl font-bold">Products Detail</h1>
       <h2 class="text-xl font-semibold">Product Information</h2>
-      {{ product_formValidations }}
       <form class="flex flex-col items-center justify-center" @submit.prevent="handleCreateProduct">
         <p>Photo (Optional)</p>
         <img
@@ -165,28 +164,52 @@
                     is-name-as-label
                     label-for="variant-name"
                     name="Variant Name"
-                    :validators="useFormValidateEach(product_formValidations.variants, index, 'name')"
+                    class="w-full"
+                    :validators="
+                      useFormValidateEach({
+                        validation: product_formValidations.variants,
+                        fieldIndex: index,
+                        field: 'name',
+                      })
+                    "
                   >
                     <PrimeVueInputText
                       :id="`variant-name-${index}`"
-                      v-model="variant.name"
+                      v-model="product_formData.variants[index].name"
                       :name="`variants`"
-                      class="border shadow-xs border-grayscale-30 rounded-lg"
+                      class="border shadow-xs border-grayscale-30 rounded-lg w-full"
                       :class="classes"
                     />
                   </AppBaseFormGroup>
                 </div>
 
                 <div class="flex flex-col">
-                  <label :for="`variant-price-${index}`">Variant Price</label>
                   <div class="flex gap-2">
-                    <PrimeVueInputNumber
-                      :id="`variant-price-${index}`"
-                      v-model="variant.price"
-                      prefix="Rp "
-                      fluid
-                      :name="`variants.${index}.price`"
-                    />
+                    <AppBaseFormGroup
+                      v-slot="{ classes }"
+                      class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+                      is-name-as-label
+                      label-for="variant-name"
+                      name="Variant Name"
+                      class="w-full"
+                      :validators="
+                        useFormValidateEach({
+                          validation: product_formValidations.variants,
+                          fieldIndex: index,
+                          field: 'name',
+                        })
+                      "
+                    >
+                      <PrimeVueInputNumber
+                        :id="`variant-price-${index}`"
+                        v-model="product_formData.variants[index].price"
+                        prefix="Rp "
+                        fluid
+                        :name="`variants.${index}.price`"
+                        class="border shadow-xs border-grayscale-30 rounded-lg w-full"
+                        :class="classes"
+                      />
+                    </AppBaseFormGroup>
                     <PrimeVueButton
                       icon="pi pi-times"
                       variant="text"
@@ -256,7 +279,7 @@ import { useProductService } from '@/modules/catalog/services/Product/ProductSer
 import { useCategoryService } from '../../services/Category/CategoryService';
 
 const { getAllCategories } = useCategoryService();
-const { createProduct, product_formData, product_formValidations, useFormValidateEach } = useProductService();
+const { createProduct, product_formData, product_formValidations } = useProductService();
 
 function clearForm() {
   product_formData.name = '';
