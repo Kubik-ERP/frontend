@@ -36,7 +36,7 @@
               v-model="product_formData.name"
               name="name"
               type="text"
-              :class="classes ? '' : ''"
+              :class="{ ...classes }"
               fluid
               class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
               v-on="useListenerForm(product_formValidations, 'name')"
@@ -62,7 +62,7 @@
                 placeholder="Select"
                 class="w-full text-primary"
                 dropdown-icon="pi pi-circle"
-                :class="classes ? '' : ''"
+                :class="{ ...classes }"
                 v-on="useListenerForm(product_formValidations, 'categories')"
               >
                 <template #option="{ option }">
@@ -86,7 +86,7 @@
                 name="price"
                 fluid
                 class="border shadow-xs border-grayscale-30 rounded-lg"
-                :class="classes ? '' : ''"
+                :class="{ ...classes }"
                 v-on="useListenerForm(product_formValidations, 'price')"
                 @change="calculateDiscount"
               />
@@ -117,7 +117,7 @@
                     name="discount_value"
                     :prefix="product_formData.discount_unit === 'Rp' ? 'Rp ' : ''"
                     :suffix="product_formData.discount_unit === '%' ? ' %' : ''"
-                    :class="classes ? '' : ''"
+                    :class="{ ...classes }"
                     @change="calculateDiscount"
                     v-on="useListenerForm(product_formValidations, 'discount_value')"
                   />
@@ -178,7 +178,7 @@
                       v-model="product_formData.variants[index].name"
                       :name="`variants`"
                       class="border shadow-xs border-grayscale-30 rounded-lg w-full"
-                      :class="classes"
+                      :class="{ ...classes }"
                     />
                   </AppBaseFormGroup>
                 </div>
@@ -207,7 +207,7 @@
                         fluid
                         :name="`variants.${index}.price`"
                         class="border shadow-xs border-grayscale-30 rounded-lg w-full"
-                        :class="classes"
+                        :class="{ ...classes }"
                       />
                     </AppBaseFormGroup>
                     <PrimeVueButton

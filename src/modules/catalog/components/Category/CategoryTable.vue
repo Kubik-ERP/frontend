@@ -119,7 +119,7 @@
             name="name"
             type="text"
             class="w-full"
-            :class="[classes ? 'border-red-600' : 'border-blue-600']"
+            :class="{ ...classes }"
             fluid
             v-on="useListenerForm(category_formValidations, 'name')"
           />
@@ -158,7 +158,7 @@
             name="name"
             type="text"
             class="w-full"
-            :class="[classes ? 'border-red-600' : 'border-blue-600']"
+            :class="{ ...classes }"
             fluid
             v-on="useListenerForm(category_formValidations, 'name')"
           />

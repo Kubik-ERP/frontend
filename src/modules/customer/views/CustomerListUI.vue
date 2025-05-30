@@ -189,7 +189,9 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-import { getAllCustomers } from '../services/CustomersService';
+import { useCustomerService } from '../services/CustomersService';
+
+const { getAllCustomers } = useCustomerService();
 
 const selectedCustomer = ref(null);
 
