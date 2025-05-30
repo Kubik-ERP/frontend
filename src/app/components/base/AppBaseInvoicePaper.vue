@@ -1,24 +1,44 @@
 <script setup lang="ts">
-// Component
-import InvoiceCashierInvoiceLoading from './InvoiceCashierInvoiceLoading.vue';
-
-// Interface
-import { IInvoiceProvided } from '../../interfaces';
+/**
+ * @description Define the props interface
+ */
+interface IProps {
+  isAutomaticallyPrintReceipt: boolean;
+  isAutomaticallyPrintKitchen: boolean;
+  isAutomaticallyPrintTable: boolean;
+  isShowCompanyLogo: boolean;
+  isShowStoreLocation: boolean;
+  isHideCashierName: boolean;
+  isHideOrderType: boolean;
+  isHideQueueNumber: boolean;
+  isShowTableNumber: boolean;
+  isHideItemPrices: boolean;
+  isShowFooter: boolean;
+}
 
 /**
- * @description Inject all the data and methods what we need
+ * @description Define props with default values and interfaces
  */
-const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
+const props = withDefaults(defineProps<IProps>(), {
+  isAutomaticallyPrintReceipt: false,
+  isAutomaticallyPrintKitchen: false,
+  isAutomaticallyPrintTable: false,
+  isShowCompanyLogo: true,
+  isShowStoreLocation: true,
+  isHideCashierName: false,
+  isHideOrderType: false,
+  isHideQueueNumber: false,
+  isShowTableNumber: true,
+  isHideItemPrices: false,
+  isShowFooter: true,
+});
 </script>
+
 <template>
-  <section
-    v-if="!invoice_invoiceData.isLoading"
-    id="invoice-paper"
-    class="invoice-paper bg-white flex flex-col items-center gap-2 w-full max-w-xs lg:max-w-md p-4"
-  >
-    <section id="logo" class="w-20 h-20 bg-grayscale-10">&nbsp;</section>
+  <section id="invoice-paper" class="bg-white flex flex-col items-center gap-2 w-full">
+    <section v-if="props.isShowCompanyLogo" id="logo" class="w-20 h-20 bg-grayscale-10">&nbsp;</section>
     <h6 id="outlet-name" class="font-semibold text-black text-sm">Lawson Kaliurang</h6>
-    <p id="outlet-address" class="font-normal text-black text-center text-sm px-4">
+    <p v-if="props.isShowStoreLocation" id="outlet-address" class="font-normal text-black text-center text-sm px-4">
       Lawson Kaliurang - Jl. Kaliurang KM 6, Blotan, Sukoharjo, Kec. Ngaglik, Kabupaten Sleman, Daerah Istimewa
       Yogyakarta
     </p>
@@ -30,7 +50,7 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
       </div>
     </div>
 
-    <section id="cashier-information" class="flex items-center justify-between w-full">
+    <section v-if="!props.isHideCashierName" id="cashier-information" class="flex items-center justify-between w-full">
       <p id="label-cashier" class="font-normal text-black text-sm">Cashier</p>
       <p id="cashier-name" class="font-normal text-black text-sm">Samantha</p>
     </section>
@@ -40,14 +60,19 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
       <p id="customer-name" class="font-normal text-black text-sm">George</p>
     </section>
 
-    <section id="order-type" class="flex items-center justify-between w-full">
+    <section v-if="!props.isHideOrderType" id="order-type" class="flex items-center justify-between w-full">
       <p id="label-order-type" class="font-normal text-black text-sm">Order Type</p>
       <p id="order-type-value" class="font-normal text-black text-sm">Takeaway</p>
     </section>
 
-    <section id="queue" class="flex items-center justify-between w-full">
+    <section v-if="!props.isHideQueueNumber" id="queue" class="flex items-center justify-between w-full">
       <p id="label-queue" class="font-normal text-black text-sm">Queue</p>
       <p id="queue-value" class="font-normal text-black text-sm">38</p>
+    </section>
+
+    <section v-if="props.isShowTableNumber" id="queue" class="flex items-center justify-between w-full">
+      <p id="label-table-no" class="font-normal text-black text-sm">Table No.</p>
+      <p id="table-no-value" class="font-normal text-black text-sm">A1, A9, A10</p>
     </section>
 
     <table id="product-items" class="w-full">
@@ -64,8 +89,8 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
         <tr v-for="index in 2" :key="index">
           <td class="font-normal text-black text-sm py-2">Blueberry Pancake</td>
           <td class="font-normal text-black text-sm text-center py-2">1</td>
-          <td class="font-normal text-black text-sm text-center py-2">100.000.000</td>
-          <td class="font-normal text-black text-sm text-right py-2">100.000.000</td>
+          <td v-if="!props.isHideItemPrices" class="font-normal text-black text-sm text-center py-2">100.000.000</td>
+          <td v-if="!props.isHideItemPrices" class="font-normal text-black text-sm text-right py-2">100.000.000</td>
         </tr>
       </tbody>
 
@@ -104,20 +129,21 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
       </tfoot>
     </table>
 
-    <section id="closing" class="flex flex-col items-center gap-2 w-full">
-      <p id="label-social-media" class="font-normal text-black text-sm">Social Media</p>
-      <p id="social-media-ig" class="font-normal text-black text-sm">Instagram : @lawsonkal</p>
-      <p id="closing-text" class="font-normal text-black text-sm">
+    <section v-if="props.isShowFooter" id="closing" class="flex flex-col items-center gap-2 w-full">
+      <p id="label-social-media" class="font-normal text-black text-sm text-center">Social Media</p>
+      <p id="social-media-ig" class="font-normal text-black text-sm text-center">Instagram : @lawsonkal</p>
+      <p id="closing-text" class="font-normal text-black text-sm text-center">
         Terima kasih dan kami tunggu kehadiran Anda kembali
       </p>
     </section>
   </section>
-  <section v-else>
-    <InvoiceCashierInvoiceLoading />
-  </section>
 </template>
 
 <style lang="css" scoped>
+.invoice-paper{
+  box-shadow: 0px 0px 10px 2px #00000026;
+}
+
 .invoice-datetime-or-status {
   position: relative;
   width: 100%;
@@ -126,14 +152,15 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 }
 
 .invoice-datetime-or-status::before {
-  content: '====================================================';
+  content: '============================================';
   display: block;
   text-align: center;
   color: #000;
+  max-width: 100%;
 }
 
 .invoice-datetime-or-status::after {
-  content: '====================================================';
+  content: '============================================';
   display: block;
   text-align: center;
   color: #000;

@@ -45,7 +45,7 @@ const {
   cashierOrderSummary_menuOrder,
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
-  cashierOrderSummary_calculation,
+  cashierOrderSummary_calculateEstimation,
   cashierOrderSummary_summary,
 
   cashierOrderSummary_modalMenuOrderItem,
@@ -63,6 +63,11 @@ const {
   cashierOrderSummary_getListActiveFloor,
   cashierOrderSummary_isButtonPlaceOrderDisabled,
 
+  cashierOrderSummary_handleIsExpandedToggle,
+
+  cashierOrderSummary_isLoadingUnpaidOrder,
+  cashierOrderSummary_handleSaveUnpaidOrder,
+
   cashierOrderSummary_handleOrderType,
   cashierOrderSummary_handleInvoiceDetail,
   cashierOrderSummary_handleCancelOrder,
@@ -73,6 +78,8 @@ const {
   cashierOrderSummary_handleSelectTable,
   cashierOrderSummary_handleVoucher,
   cashierOrderSummary_handleToggleSelectTable,
+
+  cashierOrderSummary_handleSimulatePayment,
 } = useCashierOrderSummaryService();
 
 /**
@@ -109,7 +116,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_menuOrder,
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
-  cashierOrderSummary_calculation,
+  cashierOrderSummary_calculateEstimation,
   cashierOrderSummary_summary,
 
   cashierOrderSummary_modalMenuOrderItem,
@@ -127,6 +134,11 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
 
   cashierOrderSummary_isButtonPlaceOrderDisabled,
 
+  cashierOrderSummary_handleIsExpandedToggle,
+
+  cashierOrderSummary_isLoadingUnpaidOrder,
+  cashierOrderSummary_handleSaveUnpaidOrder,
+
   cashierOrderSummary_handleOrderType,
   cashierOrderSummary_handleInvoiceDetail,
   cashierOrderSummary_handleCancelOrder,
@@ -137,6 +149,8 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_handleSelectTable,
   cashierOrderSummary_handleVoucher,
   cashierOrderSummary_handleToggleSelectTable,
+
+  cashierOrderSummary_handleSimulatePayment,
 });
 </script>
 

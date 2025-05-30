@@ -36,6 +36,10 @@
   --p-primary-700: var(--color-primary-700);
 }
 
+.w-webkit-fill-available {
+  width: -webkit-fill-available;
+}
+
 /**
   ================================ Custom TailwindCSS ================================
 */
@@ -53,7 +57,7 @@
       display: none !important;
     }
 
-    body #print-invoice-paper {
+    body .print-invoice-paper {
       display: block !important;
     }
 
@@ -71,7 +75,7 @@
       width: 100%;
     }
 
-    #invoice-paper {
+    .invoice-paper {
       margin: 0 auto;
       width: 100%;
       max-width: 800px;
@@ -80,12 +84,12 @@
       page-break-after: always;
     }
 
-    #invoice-paper * {
+    .invoice-paper * {
       box-sizing: border-box;
     }
 
-    #invoice-paper section,
-    #invoice-paper table {
+    .invoice-paper section,
+    .invoice-paper table {
       page-break-inside: avoid;
     }
 

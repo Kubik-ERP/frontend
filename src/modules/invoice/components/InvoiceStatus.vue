@@ -1,6 +1,14 @@
 <script setup lang="ts">
 // emits
 const emit = defineEmits(['print', 'download']);
+
+// Services
+import { useInvoiceService } from '../services/useInvoice.service';
+
+/**
+ * @description Destructure all the data and methods what we need
+ */
+const { invoice_handleOtherOptions } = useInvoiceService();
 </script>
 
 <template>
@@ -100,7 +108,11 @@ const emit = defineEmits(['print', 'download']);
       <span class="font-normal text-text-disabled text-sm">other option</span>
 
       <section id="share-invoice" class="flex items-center gap-6">
-        <section id="copy-link" class="flex flex-col items-center gap-1 cursor-pointer">
+        <section
+          id="copy-link"
+          class="flex flex-col items-center gap-1 cursor-pointer"
+          @click="invoice_handleOtherOptions('copy')"
+        >
           <section
             id="box-icon"
             class="bg-primary-background flex items-center justify-center p-2 rounded-full w-10 h-10"
@@ -111,7 +123,11 @@ const emit = defineEmits(['print', 'download']);
           <span class="font-normal text-grayscale-70 text-sm"> Copy Link </span>
         </section>
 
-        <section id="email" class="flex flex-col items-center gap-1 cursor-pointer">
+        <section
+          id="email"
+          class="flex flex-col items-center gap-1 cursor-pointer"
+          @click="invoice_handleOtherOptions('email')"
+        >
           <section
             id="box-icon"
             class="bg-primary-background flex items-center justify-center p-2 rounded-full w-10 h-10"
@@ -122,7 +138,11 @@ const emit = defineEmits(['print', 'download']);
           <span class="font-normal text-grayscale-70 text-sm"> Email </span>
         </section>
 
-        <section id="whatsapp" class="flex flex-col items-center gap-1 cursor-pointer">
+        <section
+          id="whatsapp"
+          class="flex flex-col items-center gap-1 cursor-pointer"
+          @click="invoice_handleOtherOptions('whatsapp')"
+        >
           <section
             id="box-icon"
             class="bg-primary-background flex items-center justify-center p-2 rounded-full w-10 h-10"
