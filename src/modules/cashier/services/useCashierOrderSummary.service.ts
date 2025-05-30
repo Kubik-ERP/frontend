@@ -1,3 +1,13 @@
+// Constants
+import {
+  CASHIER_PROVIDER,
+  CASHIER_ORDER_TYPE,
+  CASHIER_DUMMY_LIST_FLOOR,
+  CASHIER_DUMMY_LIST_TABLE,
+  CASHIER_DUMMY_VOUCHER,
+  CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT,
+} from '../constants';
+
 // Helpers
 import { debounce } from '@/app/helpers/debounce.helper';
 
@@ -18,6 +28,8 @@ import {
   ICashierOrderSummaryProvided,
 } from '../interfaces/cashier-order-summary';
 
+import { ICashierResponseWebsocketMessage } from '../interfaces/cashier-response';
+
 import type { MenuPassThroughAttributes } from 'primevue';
 
 import { MenuItem } from 'primevue/menuitem';
@@ -28,11 +40,11 @@ import { useRouter, useRoute } from 'vue-router';
 // Stores
 import { useCashierStore } from '../store';
 
+// Socket
+import { useSocket } from '@/plugins/socket';
+
 // Vue
 import { ref } from 'vue';
-import { CASHIER_PROVIDER, CASHIER_ORDER_TYPE } from '../constants';
-import { useSocket } from '@/plugins/socket';
-import { ICashierResponseWebsocketMessage } from '../interfaces/cashier-response';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   // Router
@@ -160,142 +172,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     show: false,
     selectedTable: [],
     activeFloor: 1,
-    listFloor: [
-      {
-        value: '1',
-        label: 'Floor 1',
-        available: true,
-      },
-      {
-        value: '2',
-        label: 'Floor 2',
-        available: false,
-      },
-      {
-        value: '3',
-        label: 'Floor 3',
-        available: true,
-      },
-      {
-        value: '4',
-        label: 'Floor 4',
-        available: false,
-      },
-    ],
-    data: [
-      {
-        value: '1',
-        label: 'Table 1',
-        available: true,
-        totalSeat: 4,
-        floor: 1,
-      },
-      {
-        value: '2',
-        label: 'Table 2',
-        available: false,
-        totalSeat: 8,
-        floor: 1,
-      },
-      {
-        value: '3',
-        label: 'Table 3',
-        available: true,
-        totalSeat: 12,
-        floor: 1,
-      },
-      {
-        value: '4',
-        label: 'Table 4',
-        available: false,
-        totalSeat: 6,
-        floor: 1,
-      },
-      {
-        value: '5',
-        label: 'Table 5',
-        available: false,
-        totalSeat: 6,
-        floor: 1,
-      },
-      {
-        value: '6',
-        label: 'Table 6',
-        available: false,
-        totalSeat: 6,
-        floor: 2,
-      },
-      {
-        value: '7',
-        label: 'Table 7',
-        available: false,
-        totalSeat: 6,
-        floor: 2,
-      },
-      {
-        value: '8',
-        label: 'Table 8',
-        available: false,
-        totalSeat: 6,
-        floor: 2,
-      },
-      {
-        value: '9',
-        label: 'Table 9',
-        available: false,
-        totalSeat: 6,
-        floor: 2,
-      },
-      {
-        value: '10',
-        label: 'Table 10',
-        available: false,
-        totalSeat: 12,
-        floor: 2,
-      },
-      {
-        value: '11',
-        label: 'Table 11',
-        available: false,
-        totalSeat: 2,
-        floor: 2,
-      },
-      {
-        value: '12',
-        label: 'Table 12',
-        available: false,
-        totalSeat: 2,
-        floor: 2,
-      },
-      {
-        value: '13',
-        label: 'Table 13',
-        available: false,
-        totalSeat: 2,
-        floor: 2,
-      },
-      {
-        value: '14',
-        label: 'Table 14',
-        available: false,
-        totalSeat: 2,
-        floor: 2,
-      },
-      {
-        value: '15',
-        label: 'Table 15',
-        available: false,
-        totalSeat: 2,
-        floor: 2,
-      },
-      {
-        value: '16',
-        label: 'Table 16',
-        available: false,
-        totalSeat: 2,
-        floor: 2,
-      },
-    ],
+    listFloor: CASHIER_DUMMY_LIST_FLOOR,
+    data: CASHIER_DUMMY_LIST_TABLE,
   });
 
   /**
@@ -332,47 +210,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_modalVoucher = ref<ICashierOrderSummaryModalVoucher>({
     show: false,
     form: {
-      voucher_code: '3',
+      voucher_code: '',
     },
     search: '',
-    data: [
-      {
-        code: '1',
-        label: 'Voucher A',
-        available: true,
-        minPurchase: 50000,
-        maxDiscount: 10000,
-        discount: 10000,
-        validFrom: '31 July 2024',
-        validUntil: '31 July 2025',
-        type: 'percentage',
-        stock: 10,
-      },
-      {
-        code: '2',
-        label: 'Voucher B',
-        available: false,
-        minPurchase: 50000,
-        maxDiscount: 10000,
-        discount: 10000,
-        validFrom: '31 July 2024',
-        validUntil: '31 July 2025',
-        type: 'nominal',
-        stock: 10,
-      },
-      {
-        code: '3',
-        label: 'Voucher C',
-        available: true,
-        minPurchase: 50000,
-        maxDiscount: 10000,
-        discount: 10000,
-        validFrom: '31 July 2024',
-        validUntil: '31 July 2025',
-        type: 'percentage',
-        stock: 10,
-      },
-    ],
+    data: CASHIER_DUMMY_VOUCHER,
   });
 
   /**
@@ -386,7 +227,46 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     tableNumber: '',
     promoCode: '',
     paymentMethod: '',
+    isExpanded: true,
+    isExpandedVisible: false,
   });
+
+  /**
+   * @description Debounce function to handle watch changes
+   */
+  const debouncedHandleWatchChanges = debounce(() => {
+    if (
+      cashierOrderSummary_data.value.customerName &&
+      cashierOrderSummary_modalOrderType.value.selectedOrderType &&
+      cashierOrderSummary_modalSelectTable.value.selectedTable.length > 0
+    ) {
+      cashierOrderSummary_data.value.isExpanded = false;
+      cashierOrderSummary_data.value.isExpandedVisible = true;
+    } else {
+      cashierOrderSummary_data.value.isExpanded = true;
+      cashierOrderSummary_data.value.isExpandedVisible = false;
+    }
+  }, 500);
+
+  // watch for changes if customerName, orderType, and tableNumber are filled change isExpanded to false
+  watch(
+    () => [
+      cashierOrderSummary_data.value.customerName,
+      cashierOrderSummary_modalOrderType.value.selectedOrderType,
+      cashierOrderSummary_modalSelectTable.value.selectedTable,
+    ],
+    () => {
+      debouncedHandleWatchChanges();
+    },
+    { immediate: true, deep: true },
+  );
+
+  /**
+   * @description Handle isExpanded toggle
+   */
+  const cashierOrderSummary_handleIsExpandedToggle = () => {
+    cashierOrderSummary_data.value.isExpanded = !cashierOrderSummary_data.value.isExpanded;
+  };
 
   const cashierOrderSummary_menuOrder = ref<MenuPassThroughAttributes>({} as MenuPassThroughAttributes);
 
@@ -402,12 +282,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         cashierOrderSummary_modalCancelOrder.value.show = true;
       },
     },
-    // {
-    //   label: 'Add Invoice Detail',
-    //   command: () => {
-    //     cashierOrderSummary_modalInvoiceDetail.value.show = true;
-    //   },
-    // },
   ]);
 
   /**
@@ -488,7 +362,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description Handle calculation of estimation
    * @returns void
    */
-  const cashierOrderSUmmary_handleCalculateEstimation = async () => {
+  const cashierOrderSummary_handleCalculateEstimation = async () => {
     cashierOrderSummary_calculateEstimation.value.isLoading = true;
 
     try {
@@ -511,7 +385,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   /**
    * @description debounce function to handle calculate estimation
    */
-  const debouncedCalculateEstimation = debounce(() => cashierOrderSUmmary_handleCalculateEstimation(), 500);
+  const debouncedCalculateEstimation = debounce(() => cashierOrderSummary_handleCalculateEstimation(), 500);
 
   /**
    * @description watch calculate estimation changes
@@ -573,23 +447,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_handleSimulatePayment = async (invoiceId: string) => {
     try {
       const params = {
-        acquirer: 'gopay',
-        currency: 'IDR',
-        expiry_time: '2025-05-15 13:43:44',
-        fraud_status: 'accept',
-        gross_amount: '50000',
-        issuer: 'gopay',
-        merchant_id: 'G670501757',
+        ...CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT,
         order_id: invoiceId,
-        payment_type: 'qris',
-        settlement_time: '2025-05-15 13:43:44',
-        signature_key: 'asf4a68svca6v3zv6av',
-        status_code: '200',
-        status_message: 'midtrans payment notification',
-        transaction_id: '318db42f-c746-4adb-8337-3b505db445fe',
-        transaction_status: 'settlement',
-        transaction_time: '2025-05-15 13:43:44',
-        transaction_type: 'on-US',
       };
 
       await store.cashierProduct_simulatePayment(params);
@@ -774,6 +633,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_isButtonPlaceOrderDisabled,
 
     cashierOrderSummary_isLoadingUnpaidOrder,
+
+    cashierOrderSummary_handleIsExpandedToggle,
+
     cashierOrderSummary_handleSaveUnpaidOrder,
 
     cashierOrderSummary_handleOrderType,

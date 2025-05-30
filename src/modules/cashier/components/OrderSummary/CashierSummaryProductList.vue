@@ -10,13 +10,14 @@ import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-sum
  * @description Inject all the data and methods what we need
  */
 const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cashierProduct')!;
-const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierOrderSummary_modalAddEditNotes, cashierOrderSummary_calculateEstimation } =
+  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 
 <template>
   <section
     id="cashier-summary-product-list"
-    class="flex flex-col overflow-y-auto flex-grow border-t-0 border-b-grayscale-10 lg:border-t-2 border-b-2 p-4 border-t-grayscale-10 justify-center items-center"
+    class="flex flex-col overflow-y-auto flex-grow border-b-grayscale-10 border-b-2 p-4 border-t-grayscale-10 justify-center items-center"
     :class="cashierProduct_selectedProduct.length === 0 ? 'justify-center' : 'justify-start'"
   >
     <div v-if="cashierProduct_selectedProduct.length === 0" class="">
@@ -31,6 +32,7 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
       >
         <button
           class="cursor-pointer w-min h-min p-2 rounded-full bg-error-background"
+          :disabled="cashierOrderSummary_calculateEstimation.isLoading"
           @click="cashierProduct_selectedProduct.splice(key, 1)"
         >
           <AppBaseSvg name="trash" class="!h-4 !w-4" />
@@ -85,6 +87,7 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
               class="border border-primary text-primary px-4"
               variant="outlined"
               label="-"
+              :disabled="cashierOrderSummary_calculateEstimation.isLoading"
               @click="item.quantity > 1 ? (item.quantity -= 1) : (item.quantity = 1)"
             />
             <PrimeVueInputNumber
@@ -92,6 +95,7 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
               class="!w-14"
               input-class="!w-14 justify-items-center text-center"
               :min="1"
+              :disabled="cashierOrderSummary_calculateEstimation.isLoading"
               :max="item.product.quantity"
             />
             <PrimeVueButton
@@ -99,6 +103,7 @@ const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryPro
               class="border border-primary text-primary px-4"
               variant="outlined"
               label="+"
+              :disabled="cashierOrderSummary_calculateEstimation.isLoading"
               @click="item.quantity == item.product.quantity ? item.quantity : (item.quantity += 1)"
             />
           </div>

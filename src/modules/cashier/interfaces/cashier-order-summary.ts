@@ -18,7 +18,7 @@ export interface ICashierVoucher {
   maxDiscount: number;
   validUntil: string;
   validFrom: string;
-  type: 'percentage' | 'nominal';
+  type: string;
   stock: number;
 }
 
@@ -114,6 +114,8 @@ export interface ICashierOrderSummaryData {
   tableNumber: string;
   promoCode: string;
   paymentMethod: string;
+  isExpanded: boolean;
+  isExpandedVisible: boolean;
 }
 
 export interface ICashierOrderSummaryCalculation {
@@ -169,6 +171,8 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_summary: Ref<ICashierOrderSummary>;
   cashierOrderSummary_getListActiveFloor: ComputedRef<ICashierListTable[]>;
   cashierOrderSummary_isButtonPlaceOrderDisabled: ComputedRef<boolean>;
+
+  cashierOrderSummary_handleIsExpandedToggle: () => void;
 
   cashierOrderSummary_isLoadingUnpaidOrder: Ref<boolean>;
   cashierOrderSummary_handleSaveUnpaidOrder: () => void;
