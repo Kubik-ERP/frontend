@@ -24,7 +24,7 @@
                 <PrimeVueInputText v-model="filters['global'].value" placeholder="Keyword Search" />
               </PrimeVueIconField>
 
-              <router-link to="add-product">
+              <router-link to="products/add-product">
                 <PrimeVueButton
                   type="button"
                   severity="info"

@@ -289,7 +289,10 @@ function clearForm() {
   product_formData.discount_unit = 'Rp';
   product_formData.discount_price = 0;
   product_formData.variants = [];
-  product_formData.category = [];
+  product_formData.categories = [];
+  product_formData.image = null;
+
+  product_formValidations.name = null;
 }
 
 const previewImage = ref(null);

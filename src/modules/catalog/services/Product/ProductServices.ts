@@ -17,7 +17,7 @@ export const useProductService = () => {
     discount_value: 0,
     discount_unit: 'Rp',
     discount_price: 0,
-    variants: []
+    variants: [],
   });
 
   const product_formRules = computed(() => ({
