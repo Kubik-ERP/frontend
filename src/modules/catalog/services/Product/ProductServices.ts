@@ -25,6 +25,13 @@ export const useProductService = () => {
     discount_price: 0,
     variants: [],
   });
+  const product_formValidatable = computed(() => ({
+    name: product_formData.name,
+    price: product_formData.price,
+    categories: product_formData.categories,
+    discount_value: product_formData.discount_value,
+    variants: product_formData.variants,
+  }));
 
   const product_formRules = computed(() => ({
     name: { required },
@@ -39,19 +46,21 @@ export const useProductService = () => {
     },
   }));
 
-  const product_formValidations = useVuelidate(product_formRules, product_formData, {
+  const product_formValidations = useVuelidate(product_formRules, product_formValidatable, {
     $autoDirty: true,
   });
 
   const getAllProducts = async (page: number, limit: number, search: string): Promise<IProductResponse> => {
     const response = await axios.get(`${API_URL}/?page=${page}&limit=${limit}&search=${search}`);
-    const products: IProduct[] = response.data.data.data.map((item: IProduct) => ({
+    const products: IProduct[] = response.data.data.products.map((item: IProduct) => ({
       id: item.id,
       name: item.name,
       price: item.price,
       discount_price: item.discountPrice || 0,
       picture_url: item.picture_url || '-',
-      categoriesHasProducts: item.categoriesHasProducts?.map((cat: ICategoryHasProduct) => cat.categories.category),
+      categoriesHasProducts: item.categoriesHasProducts?.map(
+        (cat: ICategoryHasProduct) => cat.categories.category,
+      ),
       variantHasProducts: item.variantHasProducts?.map((variant: IVariantHasProduct) => variant.variant.name),
     }));
 
@@ -77,7 +86,8 @@ export const useProductService = () => {
       discountPrice: product.discountPrice || 0,
       isPercent: product.isPercent,
       picture_url: product.pictureUrl || '-', // ← corrected `pictureUrl`
-      categoriesHasProducts: product.categoriesHasProducts?.map((item: ICategoryHasProduct) => item.categories) || [],
+      categoriesHasProducts:
+        product.categoriesHasProducts?.map((item: ICategoryHasProduct) => item.categories) || [],
       variantHasProducts: product.variantHasProducts?.map((item: IVariantHasProduct) => item.variant) || [],
     };
   };
@@ -90,7 +100,7 @@ export const useProductService = () => {
   const updateProduct = async (id: string, payload: CreateProductPayload): Promise<IProduct> => {
     const response = await axios.patch(`${API_URL}/${id}`, payload);
     const data: IProduct = response.data.data;
-    console.log("🚀 ~ updateProduct ~ response:", data)
+    console.log('🚀 ~ updateProduct ~ response:', data);
 
     return {
       id: data.id,
