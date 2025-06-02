@@ -14,7 +14,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'categories',
         name: 'categories',
-        component: () => import('../views/CategoriesUI.vue'),
+        component: () => import('../views/Category/CategoriesUI.vue'),
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.DEFAULT,
@@ -23,7 +23,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'products',
         name: 'products',
-        component: () => import('../views/ProductsUI.vue'),
+        component: () => import('../views/Products/ProductsUI.vue'),
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.DEFAULT,
@@ -32,7 +32,17 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'products/add-product',
         name: 'add-product',
-        component: () => import('../views/AddProductUI.vue'),
+        component: () => import('../views/Products/AddProductUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.DEFAULT,
+        },
+      },
+      {
+        path: 'products/edit-product/:id',
+        name: 'edit-product',
+        props: route => ({ id: route.params.id }),
+        component: () => import('../views/Products/EditProductUI.vue'),
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.DEFAULT,

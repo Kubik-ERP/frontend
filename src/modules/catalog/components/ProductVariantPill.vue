@@ -1,3 +1,12 @@
+<script setup>
+const props = defineProps({
+  variants: {
+    type: Array,
+  },
+});
+// console.log(props.variants);
+</script>
+
 <template>
   <div>
     <div v-if="props.variants.length > 0 && props.variants.length < 4" class="flex gap-2 flex-wrap">
@@ -25,15 +34,6 @@
     <div v-else>-</div>
   </div>
 </template>
-
-<script setup>
-const props = defineProps({
-  variants: {
-    type: Array,
-  },
-});
-// console.log(props.variants);
-</script>
 
 <style lang="scss" scoped>
 </style>
