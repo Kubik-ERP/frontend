@@ -1,3 +1,5 @@
+<script setup lang="ts"></script>
+
 <template>
   <section id="invoice-total" class="w-full flex flex-col gap-2 bg-white py-5 px-4">
     <div class="flex justify-between">
@@ -62,5 +64,3 @@
     </div>
   </section>
 </template>
-
-<script setup lang="ts"></script>

@@ -114,10 +114,12 @@ export const useInvoiceService = (): IInvoiceProvided => {
 
   const invoice_invoiceData = ref<IInvoiceInvoiceData>({
     isLoading: false,
-    data: {},
+    data: null,
   });
 
   const invoice_handleFetchInvoiceById = async (invoiceId: string): Promise<void> => {
+    invoice_invoiceData.value.isLoading = true;
+
     try {
       const response = await store.invoice_fetchInvoiceById(invoiceId);
 
@@ -128,6 +130,8 @@ export const useInvoiceService = (): IInvoiceProvided => {
       } else {
         return Promise.reject(new Error(String(error)));
       }
+    } finally {
+      invoice_invoiceData.value.isLoading = false;
     }
   };
 

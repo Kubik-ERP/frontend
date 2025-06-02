@@ -12,3 +12,18 @@ export const INVOICE_LIST_TAB = [
     name: 'Table Ticket',
   },
 ];
+
+export const INVOICE_PAYMENT_STATUS = [
+  {
+    id: 'paid',
+    name: 'Paid',
+  },
+  {
+    id: 'unpaid',
+    name: 'Unpaid',
+  },
+  {
+    id: 'refund',
+    name: 'Refund',
+  },
+];

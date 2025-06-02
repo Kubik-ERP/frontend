@@ -1,3 +1,5 @@
+<script setup lang="ts"></script>
+
 <template>
   <section id="invoice-customer-details" class="py-4 px-5 bg-white">
     <PrimeVueButton v-slot="slotProps" as-child class="w-full">
@@ -7,5 +9,3 @@
     </PrimeVueButton>
   </section>
 </template>
-
-<script setup lang="ts"></script>

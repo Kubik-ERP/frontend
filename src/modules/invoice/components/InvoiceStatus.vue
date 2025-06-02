@@ -2,24 +2,26 @@
 // emits
 const emit = defineEmits(['print', 'download']);
 
-// Services
-import { useInvoiceService } from '../services/useInvoice.service';
+import { INVOICE_PAYMENT_STATUS } from '../constants/invoice.constant';
+// Interface
+import { IInvoiceProvided } from '../interfaces/index';
 
 /**
- * @description Destructure all the data and methods what we need
+ * @description Inject all the data and methods what we need
  */
-const { invoice_handleOtherOptions } = useInvoiceService();
+const { invoice_invoiceData, invoice_handleOtherOptions } = inject<IInvoiceProvided>('invoice')!;
 </script>
 
 <template>
   <section
+    v-if="!invoice_invoiceData.isLoading && invoice_invoiceData.data"
     id="invoice-status"
     class="overflow-y-auto hidden lg:flex col-span-4 relative inset-0 z-0 bg-white border-l border-solid border-grayscale-10 flex-col items-center px-4 py-5 gap-6"
   >
     <section id="invoice-id" class="flex flex-col items-center">
       <p id="label-invoice-id" class="font-normal text-text-disabled text-sm">Invoice ID</p>
 
-      <p id="invoice-id" class="font-semibold text-black text-lg">202408010001</p>
+      <p id="invoice-id" class="font-semibold text-black text-lg">{{ invoice_invoiceData.data?.id }}</p>
     </section>
 
     <section
@@ -30,10 +32,26 @@ const { invoice_handleOtherOptions } = useInvoiceService();
       <span class="font-normal text-text-disabled text-xs">More</span>
     </section>
 
-    <PrimeVueChip class="bg-primary-background px-4 py-2 rounded-full">
-      <AppBaseSvg name="paid" class="!w-8 !h-8" />
+    <PrimeVueChip
+      class="bg-primary-background px-4 py-2 rounded-full"
+      :class="{
+        'bg-primary-background': invoice_invoiceData.data.paymentStatus === 'paid',
+        'bg-warning-background': invoice_invoiceData.data.paymentStatus === 'unpaid',
+        'bg-error-background': invoice_invoiceData.data.paymentStatus === 'refund',
+      }"
+    >
+      <AppBaseSvg :name="invoice_invoiceData.data.paymentStatus" class="!w-8 !h-8" />
 
-      <span class="font-semibold text-primary text-lg"> Paid </span>
+      <span
+        class="font-semibold text-primary text-lg"
+        :class="{
+          'text-primary': invoice_invoiceData.data.paymentStatus === 'paid',
+          'text-warning-main': invoice_invoiceData.data.paymentStatus === 'unpaid',
+          'text-error-main': invoice_invoiceData.data.paymentStatus === 'refund',
+        }"
+      >
+        {{ INVOICE_PAYMENT_STATUS.find(f => f.id === invoice_invoiceData.data?.paymentStatus)?.name }}
+      </span>
     </PrimeVueChip>
 
     <table id="invoice-information">
@@ -47,21 +65,29 @@ const { invoice_handleOtherOptions } = useInvoiceService();
       <tbody>
         <tr>
           <td class="font-normal text-text-disabled text-sm pe-2 py-1">Created on</td>
-          <td class="font-normal text-grayscale-70 text-sm">01/08/2024 18:33</td>
+          <td class="font-normal text-grayscale-70 text-sm">
+            {{ useFormatDate(invoice_invoiceData.data.createdAt) }}
+          </td>
         </tr>
 
         <tr>
           <td class="font-normal text-text-disabled text-sm pe-2 py-1">Paid On</td>
-          <td class="font-normal text-grayscale-70 text-sm">01/08/2024 18:33</td>
+          <!-- TODO: Add field paid on -->
+          <td class="font-normal text-grayscale-70 text-sm">
+            {{ invoice_invoiceData.data.paymentStatus === 'paid' ? '01/08/2024 18:33' : '-' }}
+          </td>
         </tr>
 
         <tr>
           <td class="font-normal text-text-disabled text-sm pe-2 py-1">Payment Method</td>
-          <td class="font-normal text-grayscale-70 text-sm">Cash</td>
+          <td class="font-normal text-grayscale-70 text-sm">
+            {{ invoice_invoiceData?.data?.paymentMethods?.name || '-' }}
+          </td>
         </tr>
 
         <tr>
           <td class="font-normal text-text-disabled text-sm pe-2 py-1">By</td>
+          <!-- TODO: Add cashier -->
           <td class="font-normal text-grayscale-70 text-sm">Samantha</td>
         </tr>
       </tbody>
@@ -155,4 +181,5 @@ const { invoice_handleOtherOptions } = useInvoiceService();
       </section>
     </section>
   </section>
+  <section v-else></section>
 </template>
