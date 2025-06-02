@@ -15,25 +15,19 @@ import { ICashierOrderSummaryProvided } from '../interfaces/cashier-order-summar
  * @description Destructure all the data and methods what we need
  */
 const {
-  cashierProduct_isLoading,
-  cashierProduct_searchData,
-  cashierProduct_listCategory,
+  cashierProduct_productState,
 
   cashierProduct_modalAddEditItem,
   cashierProduct_modalCategory,
 
-  cashierProduct_listDrink,
-  cashierProduct_listFeaturedProduct,
-  cashierProduct_listFood,
-
-  cashierProduct_selectedCategory,
-  cashierProduct_selectedProduct,
   cashierProduct_selectedView,
+  cashierProduct_selectedProduct,
 
   cashierProduct_selectedProductQty,
 
   cashierProduct_handleSelectCategory,
   cashierProduct_handleSelectProduct,
+
   cashierProduct_onSearchData,
 
   isProductActive,
@@ -86,25 +80,19 @@ const {
  * @description Provide all the data and methods what we need
  */
 provide<ICashierProductProvided>('cashierProduct', {
-  cashierProduct_isLoading,
-  cashierProduct_searchData,
-  cashierProduct_listCategory,
+  cashierProduct_productState,
 
   cashierProduct_modalAddEditItem,
   cashierProduct_modalCategory,
 
-  cashierProduct_listDrink,
-  cashierProduct_listFeaturedProduct,
-  cashierProduct_listFood,
-
-  cashierProduct_selectedCategory,
-  cashierProduct_selectedProduct,
   cashierProduct_selectedView,
+  cashierProduct_selectedProduct,
 
   cashierProduct_selectedProductQty,
 
   cashierProduct_handleSelectCategory,
   cashierProduct_handleSelectProduct,
+
   cashierProduct_onSearchData,
 
   isProductActive,

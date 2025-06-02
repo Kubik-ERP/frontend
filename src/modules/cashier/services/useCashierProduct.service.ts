@@ -2,8 +2,8 @@
 import { debounce } from '@/app/helpers/debounce.helper';
 
 // interfaces
-import type { ICashierProductProvided } from '../interfaces/cashier-product-service';
-import type { ICashierModalAddProduct, ICashierModalAddProductItem, ICashierProduct } from '../interfaces';
+import type { ICashierProductProvided, ICashierProductState } from '../interfaces/cashier-product-service';
+import type { ICashierModalAddProduct, ICashierModalAddProductItem } from '../interfaces';
 
 // Store / Pinia
 import { storeToRefs } from 'pinia';
@@ -11,6 +11,7 @@ import { useCashierStore } from '../store';
 
 // Vue
 import { ref } from 'vue';
+import { ICashierProduct } from '../interfaces/cashier-response';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -21,22 +22,22 @@ export const useCashierProductService = (): ICashierProductProvided => {
    */
   const store = useCashierStore();
 
-  const {
-    cashierProduct_selectedProduct,
-    cashierProduct_listCategory,
-    cashierProduct_listFood,
-    cashierProduct_listFeaturedProduct,
-    cashierProduct_listDrink,
-  } = storeToRefs(store);
+  const { cashierProduct_selectedProduct } = storeToRefs(store);
 
   /**
    * @description Reactive data binding
    */
-  const cashierProduct_searchData = ref<string>('');
-  const cashierProduct_isLoading = ref<boolean>(false);
-
   const cashierProduct_selectedView = ref<'image' | 'grid' | 'inline'>('image');
-  const cashierProduct_selectedCategory = ref<string[]>([]);
+
+  const cashierProduct_productState = ref<ICashierProductState>({
+    isLoadingProduct: false,
+    isLoadingCategory: false,
+    selectedCategory: '',
+    searchProduct: '',
+    listCategory: [],
+    listProductSearch: [],
+    listProductCategory: [],
+  });
 
   const cashierProduct_modalAddEditItem = ref<ICashierModalAddProduct>({
     show: false,
@@ -45,7 +46,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
     item: {
       quantity: 1,
       variant: {
-        variantId: '0',
+        id: '',
         name: '',
         price: 0,
       },
@@ -61,13 +62,15 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @description Handle fetch api cashier search. We call the fetchCashierSearch function from the store to handle the request.
    */
   const cashierProduct_onSearchData = async (searchData: string) => {
-    cashierProduct_isLoading.value = true;
+    cashierProduct_productState.value.isLoadingProduct = true;
     try {
-      await store.cashierProduct_fetchSearch(searchData);
+      const response = await store.cashierProduct_fetchSearch(searchData);
+
+      cashierProduct_productState.value.listProductSearch = response;
     } catch (error) {
       console.error(error);
     } finally {
-      cashierProduct_isLoading.value = false;
+      cashierProduct_productState.value.isLoadingProduct = false;
     }
   };
 
@@ -80,9 +83,11 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @description watch search data changes
    */
   watch(
-    () => cashierProduct_searchData.value,
+    () => cashierProduct_productState.value.searchProduct,
     newValue => {
-      debouncedSearch(newValue);
+      if (newValue) {
+        debouncedSearch(newValue);
+      }
     },
   );
 
@@ -91,13 +96,23 @@ export const useCashierProductService = (): ICashierProductProvided => {
     @param {string} category
   */
   const cashierProduct_handleFetchCategory = async () => {
-    cashierProduct_isLoading.value = true;
+    cashierProduct_productState.value.isLoadingProduct = true;
     try {
-      await store.cashierProduct_fetchCategory(cashierProduct_selectedCategory.value[0] || '');
+      const response = await store.cashierProduct_fetchCategory(
+        cashierProduct_productState.value.selectedCategory || '',
+        {
+          params: {
+            page: 1,
+            limit: 1000,
+          },
+        },
+      );
+
+      cashierProduct_productState.value.listCategory = response.categories;
     } catch (error) {
       console.error(error);
     } finally {
-      cashierProduct_isLoading.value = false;
+      cashierProduct_productState.value.isLoadingProduct = false;
     }
   };
 
@@ -108,13 +123,25 @@ export const useCashierProductService = (): ICashierProductProvided => {
     @param {string} category
   */
   const cashierProduct_handleFetchProductCategory = async () => {
-    cashierProduct_isLoading.value = true;
+    cashierProduct_productState.value.isLoadingProduct = true;
     try {
-      await store.cashierProduct_fetchCategory(cashierProduct_selectedCategory.value[0] || '');
+      const response = await store.cashierProduct_fetchCategory(
+        cashierProduct_productState.value.selectedCategory || '',
+        {
+          params: {
+            page: 1,
+            limit: 1000,
+          },
+        },
+      );
+
+      cashierProduct_productState.value.listProductSearch = [];
+      cashierProduct_productState.value.searchProduct = '';
+      cashierProduct_productState.value.listProductCategory = response.categories;
     } catch (error) {
       console.error(error);
     } finally {
-      cashierProduct_isLoading.value = false;
+      cashierProduct_productState.value.isLoadingProduct = false;
     }
   };
 
@@ -124,7 +151,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @description watch selected category changes
    */
   watch(
-    () => cashierProduct_selectedCategory.value,
+    () => cashierProduct_productState.value.selectedCategory,
     newValue => {
       if (newValue.length > 0) {
         cashierProduct_handleFetchProductCategory();
@@ -138,13 +165,10 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @param {string} category
    */
   const cashierProduct_handleSelectCategory = (category: string) => {
-    if (cashierProduct_selectedCategory.value.includes(category)) {
-      cashierProduct_selectedCategory.value = cashierProduct_selectedCategory.value.filter(
-        item => item !== category,
-      );
+    if (category === cashierProduct_productState.value.selectedCategory) {
+      cashierProduct_productState.value.selectedCategory = '';
     } else {
-      // cashierProduct_selectedCategory.value.push(category);
-      cashierProduct_selectedCategory.value = [category];
+      cashierProduct_productState.value.selectedCategory = category;
     }
   };
 
@@ -158,7 +182,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
   const cashierProduct_handleSelectProduct = (product?: ICashierProduct, item?: ICashierModalAddProductItem) => {
     if (product && item) {
       const existingProduct = cashierProduct_selectedProduct.value.find(
-        val => val.product?.productId === product?.productId && item?.variant.variantId === val.variant?.variantId,
+        val => val.product?.id === product?.id && item?.variant.id === val.variant?.id,
       );
 
       if (existingProduct) {
@@ -167,8 +191,8 @@ export const useCashierProductService = (): ICashierProductProvided => {
       } else {
         cashierProduct_selectedProduct.value.push({
           product,
-          variantId: item.variant.variantId,
-          productId: product.productId,
+          variantId: item.variant.id,
+          productId: product.id,
           ...item,
         });
       }
@@ -182,7 +206,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @returns {boolan}
    */
   const isProductActive = (product: ICashierProduct): boolean => {
-    return !!cashierProduct_selectedProduct.value.find(val => val.product?.productId == product?.productId);
+    return !!cashierProduct_selectedProduct.value.find(val => val.product?.id == product?.id);
   };
 
   /**
@@ -228,8 +252,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
     newValue => {
       const productExist = cashierProduct_selectedProduct.value.find(val => {
         return (
-          val.product?.productId === cashierProduct_modalAddEditItem.value.product?.productId &&
-          val.variant?.variantId === newValue.variantId
+          val.product?.id === cashierProduct_modalAddEditItem.value.product?.id && val.variant?.id === newValue.id
         );
       });
 
@@ -252,7 +275,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
     cashierProduct_modalAddEditItem.value.item = {
       quantity: 1,
       variant: {
-        variantId: '0',
+        id: '',
         name: '',
         price: 0,
       },
@@ -270,15 +293,13 @@ export const useCashierProductService = (): ICashierProductProvided => {
     cashierProduct_modalAddEditItem.value.product = product;
     cashierProduct_modalAddEditItem.value.show = true;
 
-    const existingProduct = cashierProduct_selectedProduct.value.find(
-      val => val.product?.productId === product?.productId,
-    );
+    const existingProduct = cashierProduct_selectedProduct.value.find(val => val.product?.id === product?.id);
 
     if (existingProduct) {
       cashierProduct_modalAddEditItem.value.item = {
         quantity: existingProduct.quantity,
         variant: {
-          variantId: existingProduct.variant?.variantId,
+          id: existingProduct.variant?.id,
           name: existingProduct.variant?.name,
           price: existingProduct.variant?.price,
         },
@@ -292,18 +313,11 @@ export const useCashierProductService = (): ICashierProductProvided => {
   };
 
   return {
-    cashierProduct_isLoading,
-    cashierProduct_searchData,
-    cashierProduct_listCategory,
+    cashierProduct_productState,
 
     cashierProduct_modalAddEditItem,
     cashierProduct_modalCategory,
 
-    cashierProduct_listDrink,
-    cashierProduct_listFeaturedProduct,
-    cashierProduct_listFood,
-
-    cashierProduct_selectedCategory,
     cashierProduct_selectedView,
     cashierProduct_selectedProduct,
 

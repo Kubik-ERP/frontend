@@ -14,7 +14,7 @@ let scrollLeft: number;
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierProduct_listCategory, cashierProduct_handleSelectCategory, cashierProduct_selectedCategory } =
+const { cashierProduct_productState, cashierProduct_handleSelectCategory } =
   inject<ICashierProductProvided>('cashierProduct')!;
 
 /**
@@ -60,7 +60,7 @@ const moveDragging = (e: PointerEvent) => {
       @pointermove="moveDragging"
     >
       <PrimeVueCard
-        v-for="category in cashierProduct_listCategory"
+        v-for="category in cashierProduct_productState.listCategory"
         :key="category.id"
         :unstyled="true"
         :pt="{
@@ -69,19 +69,19 @@ const moveDragging = (e: PointerEvent) => {
         class="flex-shrink-0 w-[calc(100%/4)] xl:w-[calc(100%/7)] cursor-pointer"
         :class="{
           'border-primary-border border rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]':
-            cashierProduct_selectedCategory.includes(category.name),
+            cashierProduct_productState.selectedCategory === category.id,
         }"
-        @click="cashierProduct_handleSelectCategory(category.name)"
+        @click="cashierProduct_handleSelectCategory(category.id)"
       >
         <template #content>
           <section id="cashier-card-content" class="flex flex-col gap-[3px]">
             <img :src="category.image" class="h-10 w-10 rounded-full object-cover pointer-events-none" />
 
             <p class="font-semibold text-sm line-clamp-2">
-              {{ category.name }}
+              {{ category.category }}
             </p>
 
-            <p class="text-text-disabled text-xs">{{ category.total }} items</p>
+            <p class="text-text-disabled text-xs">{{ category.categoriesHasProducts.length }} items</p>
           </section>
         </template>
       </PrimeVueCard>

@@ -11,18 +11,14 @@ import {
   CASHIER_ENDPOINT_SIMULATE_PAYMENT,
 } from '../constants/cashierApi.constant';
 
-import {
-  CASHIER_DUMMY_LIST_CATEGORY,
-  CASHIER_DUMMY_LIST_DRINK,
-  CASHIER_DUMMY_LIST_FEATURED_PRODUCT,
-  CASHIER_DUMMY_LIST_FOOD,
-} from '../constants';
-
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import { ICashierProduct, ICashierStateStore } from '../interfaces';
 import { ICashierOrderSummaryPaymentMethodResponse } from '../interfaces/cashier-order-summary';
 import {
+  ICashierCategoriesData,
+  ICashierCategoriesResponse,
+  ICashierProduct,
+  ICashierProductResponse,
   ICashierResponseCalulateEstimation,
   ICashierResponseMidtransQrisPayment,
   ICashierResponseProcessCheckout,
@@ -30,26 +26,11 @@ import {
 
 // Plugins
 import httpClient from '@/plugins/axios';
+import { ICashierStateStore } from '../interfaces';
 
 export const useCashierStore = defineStore('cashier', {
   state: (): ICashierStateStore => ({
-    cashierProduct_selectedProduct: [
-      {
-        product: {} as ICashierProduct,
-        variant: {} as ICashierProduct['variant'][0],
-        productId: '0196cf23-e3fb-7caa-b7be-f08248b20a33',
-        variantId: '0196cf23-e3fb-70cf-a3ff-443bf28e7f0e',
-        quantity: 1,
-        notes: 'Ini adalah catatan',
-      },
-    ],
-    cashierProduct_listCategory: CASHIER_DUMMY_LIST_CATEGORY,
-
-    cashierProduct_listFeaturedProduct: CASHIER_DUMMY_LIST_FEATURED_PRODUCT,
-
-    cashierProduct_listFood: CASHIER_DUMMY_LIST_FOOD,
-
-    cashierProduct_listDrink: CASHIER_DUMMY_LIST_DRINK,
+    cashierProduct_selectedProduct: [],
   }),
   getters: {
     /**
@@ -65,9 +46,11 @@ export const useCashierStore = defineStore('cashier', {
      */
     async cashierProduct_fetchSearch(searchData: string): Promise<ICashierProduct[]> {
       try {
-        const response = await httpClient.get<ICashierProduct[]>(CASHIER_ENDPOINT_PRODUCTS + '/' + searchData);
+        const response = await httpClient.get<ICashierProductResponse>(
+          CASHIER_ENDPOINT_PRODUCTS + '/' + searchData,
+        );
 
-        return Promise.resolve(response.data);
+        return Promise.resolve(response.data.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
           return Promise.reject(error);
@@ -86,13 +69,16 @@ export const useCashierStore = defineStore('cashier', {
     async cashierProduct_fetchCategory(
       categoryId: string,
       requestConfigurations: AxiosRequestConfig = {},
-    ): Promise<ICashierProduct[]> {
+    ): Promise<ICashierCategoriesData> {
       try {
-        const response = await httpClient.get<ICashierProduct[]>(CASHIER_ENDPOINT_CATEGORIES + '/' + categoryId, {
-          ...requestConfigurations,
-        });
+        const response = await httpClient.get<ICashierCategoriesResponse>(
+          CASHIER_ENDPOINT_CATEGORIES + '/' + categoryId,
+          {
+            ...requestConfigurations,
+          },
+        );
 
-        return Promise.resolve(response.data);
+        return Promise.resolve(response.data.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
           return Promise.reject(error);
