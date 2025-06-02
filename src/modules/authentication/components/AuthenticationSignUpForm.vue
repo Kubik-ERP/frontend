@@ -18,7 +18,7 @@ const {
   <form class="form-group flex flex-col gap-10 w-full max-w-md" @submit.prevent="authenticationSignUp_onSubmit">
     <section id="greeting-text" class="flex items-end justify-between">
       <section id="text-information" class="flex flex-col gap-3">
-        <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
+        <img src="@/app/assets/images/app-logo.png" alt="app-logo" class="w-fit h-fit" />
         <h1 class="font-bold text-2xl leading-8">Create Account</h1>
       </section>
 
@@ -27,11 +27,40 @@ const {
         label="Sign In"
         severity="secondary"
         variant="outlined"
+        as="a"
+        href="/authentication/sign-in"
       />
     </section>
 
     <section id="form-inputs" class="flex flex-col gap-4 w-full">
       <span id="description" class="font-normal text-base text-disabled">Please enter your account details</span>
+
+      <AppBaseFormGroup
+        v-slot="{ classes }"
+        class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+        is-name-as-label
+        label-for="fullName"
+        name="Full Name"
+        spacing-bottom="mb-0"
+        :validators="authenticationSignUp_formValidations.fullName"
+      >
+        <PrimeVueIconField>
+          <PrimeVueInputIcon>
+            <template #default>
+              <AppBaseSvg name="user" />
+            </template>
+          </PrimeVueInputIcon>
+
+          <PrimeVueInputText
+            v-model="authenticationSignUp_formData.fullName"
+            :loading="authenticationSignUp_isLoading"
+            placeholder="Input your full name"
+            class="text-sm w-full"
+            :class="{ ...classes }"
+            v-on="useListenerForm(authenticationSignUp_formValidations, 'fullName')"
+          />
+        </PrimeVueIconField>
+      </AppBaseFormGroup>
 
       <AppBaseFormGroup
         v-slot="{ classes }"

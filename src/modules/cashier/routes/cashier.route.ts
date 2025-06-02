@@ -17,7 +17,22 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/CashierUI.vue'),
         meta: {
           requiresAuthorization: false,
-          layout: LAYOUT_OPTIONS.EMPTY,
+          layout: LAYOUT_OPTIONS.NAVBAR,
+        },
+      },
+    ],
+  },
+  {
+    path: '/self-order',
+    component: AppBaseWrapper,
+    children: [
+      {
+        path: '',
+        name: 'self-order',
+        component: () => import('../views/CashierUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.NAVBAR,
         },
       },
     ],

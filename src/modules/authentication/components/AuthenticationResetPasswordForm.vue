@@ -16,14 +16,14 @@ const {
 <template>
   <form class="form-group flex flex-col gap-10" @submit.prevent="authenticationResetPassword_onSubmit">
     <section id="greeting-text" class="flex flex-col gap-6">
-      <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
+      <img src="@/app/assets/images/app-logo.png" alt="app-logo" class="w-fit h-fit" />
 
       <section id="text-information" class="flex flex-col gap-2">
         <div class="flex items-center gap-4">
           <PrimeVueButton
             class="bg-transparent border border-solid border-blue-primary p-2 basic-smooth-animation hover:bg-grayscale-10"
             as="a"
-            href="/authentication/login"
+            href="/authentication/sign-in"
           >
             <template #default>
               <AppBaseSvg name="arrow-left" class="w-4 h-4" />

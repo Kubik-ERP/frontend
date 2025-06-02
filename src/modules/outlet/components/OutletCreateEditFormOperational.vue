@@ -1,15 +1,11 @@
 <script setup lang="ts">
-// Constants
-import { OUTLET_CREATE_EDIT_BUSINESS_HOURS } from '../constants/outlet-create-edit.constant';
-
 // Interfaces
-// import type { IOutletCreateEditProvided } from '../interfaces/outlet-create-edit.interface';
+import { IOutletCreateEditProvided } from '../interfaces';
 
 /**
  * @description Inject all the data and methods what we need
  */
-// const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
-//   inject<IOutletCreateEditProvided>('outletCreateEdit')!;
+const { outletCreateEdit_formData } = inject<IOutletCreateEditProvided>('outletCreateEdit')!;
 </script>
 
 <template>
@@ -20,15 +16,15 @@ import { OUTLET_CREATE_EDIT_BUSINESS_HOURS } from '../constants/outlet-create-ed
     </section>
 
     <template
-      v-for="(businessHour, businessHourIndex) in OUTLET_CREATE_EDIT_BUSINESS_HOURS"
+      v-for="(businessHour, businessHourIndex) in outletCreateEdit_formData.businessHours"
       :key="`business-hour-${businessHourIndex}`"
     >
       <section id="business-operational" class="grid grid-rows-1 grid-cols-6 gap-4">
         <section :id="`business-operational-day-${businessHourIndex}`" class="flex items-center gap-2">
-          <PrimeVueCheckbox binary />
+          <PrimeVueCheckbox v-model="businessHour.isOpen" binary />
 
           <span class="font-normal text-black text-sm">
-            {{ businessHour }}
+            {{ businessHour.day }}
           </span>
         </section>
 
@@ -37,8 +33,23 @@ import { OUTLET_CREATE_EDIT_BUSINESS_HOURS } from '../constants/outlet-create-ed
             :id="`datepicker-business-start-hour-${businessHourIndex}-timeonly`"
             fluid
             time-only
+            @value-change="
+              event => {
+                outletCreateEdit_formData.businessHours[businessHourIndex].openTime = event?.toString() ?? '';
+              }
+            "
           />
-          <PrimeVueDatePicker :id="`datepicker-business-end-hour-${businessHourIndex}-timeonly`" fluid time-only />
+
+          <PrimeVueDatePicker
+            :id="`datepicker-business-end-hour-${businessHourIndex}-timeonly`"
+            fluid
+            time-only
+            @value-change="
+              event => {
+                outletCreateEdit_formData.businessHours[businessHourIndex].closeTime = event?.toString() ?? '';
+              }
+            "
+          />
         </section>
       </section>
     </template>

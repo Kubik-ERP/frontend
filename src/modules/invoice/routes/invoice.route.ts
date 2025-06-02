@@ -8,12 +8,27 @@ import { LAYOUT_OPTIONS } from '@/app/constants';
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/invoice',
+    path: '/invoice/:invoiceId',
     component: AppBaseWrapper,
     children: [
       {
         path: '',
         name: 'invoice',
+        component: () => import('../views/InvoiceUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.EMPTY,
+        },
+      },
+    ],
+  },
+  {
+    path: '/self-order/invoice/:invoiceId',
+    component: AppBaseWrapper,
+    children: [
+      {
+        path: '',
+        name: 'self-order-invoice',
         component: () => import('../views/InvoiceUI.vue'),
         meta: {
           requiresAuthorization: false,

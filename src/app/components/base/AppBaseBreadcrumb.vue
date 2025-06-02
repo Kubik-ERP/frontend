@@ -1,12 +1,28 @@
 <script setup lang="ts">
-const home = ref({
+/**
+ * @description Injected variables
+ */
+const route = useRoute();
+
+// Home item (e.g., redirect to dashboard or homepage)
+const home = {
   icon: 'pi pi-home',
+  to: { name: 'dashboard' },
+};
+
+// Generate breadcrumb items from matched routes
+const items = computed(() => {
+  return route.matched
+    .filter(r => r.meta.breadcrumb && !r.meta.breadcrumbDisabled)
+    .map(r => ({
+      label: r.meta.breadcrumb,
+      to: { name: r.name as string, params: route.params },
+    }));
 });
-const items = ref([{ label: 'Dashboard' }]);
 </script>
 
 <template>
-  <section id="breadcrumbs" class="px-7 py-3 border-b borer-solid border-grayscale-10">
+  <section id="breadcrumbs" class="px-10 py-3 border-b border-solid border-grayscale-10">
     <PrimeVueBreadcrumb
       :home="home"
       :model="items"

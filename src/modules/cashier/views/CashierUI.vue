@@ -20,6 +20,7 @@ const {
   cashierProduct_listCategory,
 
   cashierProduct_modalAddEditItem,
+  cashierProduct_modalCategory,
 
   cashierProduct_listDrink,
   cashierProduct_listFeaturedProduct,
@@ -44,9 +45,11 @@ const {
   cashierOrderSummary_menuOrder,
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
-  cashierOrderSummary_calculation,
+  cashierOrderSummary_calculateEstimation,
   cashierOrderSummary_summary,
 
+  cashierOrderSummary_modalMenuOrderItem,
+  cashierOrderSummary_modalOrderSummary,
   cashierOrderSummary_modalAddEditNotes,
   cashierOrderSummary_modalCancelOrder,
   cashierOrderSummary_modalInvoiceDetail,
@@ -58,16 +61,25 @@ const {
   cashierOrderSummary_modalVoucher,
 
   cashierOrderSummary_getListActiveFloor,
+  cashierOrderSummary_isButtonPlaceOrderDisabled,
+
+  cashierOrderSummary_handleIsExpandedToggle,
+
+  cashierOrderSummary_isLoadingUnpaidOrder,
+  cashierOrderSummary_handleSaveUnpaidOrder,
 
   cashierOrderSummary_handleOrderType,
   cashierOrderSummary_handleInvoiceDetail,
   cashierOrderSummary_handleCancelOrder,
   cashierOrderSummary_handlePaymentMethod,
+  cashierOrderSummary_handleFetchPaymentMethod,
   cashierOrderSummary_handlePlaceOrderConfirmation,
   cashierOrderSummary_handlePlaceOrderDetail,
   cashierOrderSummary_handleSelectTable,
   cashierOrderSummary_handleVoucher,
   cashierOrderSummary_handleToggleSelectTable,
+
+  cashierOrderSummary_handleSimulatePayment,
 } = useCashierOrderSummaryService();
 
 /**
@@ -79,6 +91,7 @@ provide<ICashierProductProvided>('cashierProduct', {
   cashierProduct_listCategory,
 
   cashierProduct_modalAddEditItem,
+  cashierProduct_modalCategory,
 
   cashierProduct_listDrink,
   cashierProduct_listFeaturedProduct,
@@ -103,9 +116,11 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_menuOrder,
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
-  cashierOrderSummary_calculation,
+  cashierOrderSummary_calculateEstimation,
   cashierOrderSummary_summary,
 
+  cashierOrderSummary_modalMenuOrderItem,
+  cashierOrderSummary_modalOrderSummary,
   cashierOrderSummary_modalAddEditNotes,
   cashierOrderSummary_modalCancelOrder,
   cashierOrderSummary_modalInvoiceDetail,
@@ -117,22 +132,32 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_modalVoucher,
   cashierOrderSummary_getListActiveFloor,
 
+  cashierOrderSummary_isButtonPlaceOrderDisabled,
+
+  cashierOrderSummary_handleIsExpandedToggle,
+
+  cashierOrderSummary_isLoadingUnpaidOrder,
+  cashierOrderSummary_handleSaveUnpaidOrder,
+
   cashierOrderSummary_handleOrderType,
   cashierOrderSummary_handleInvoiceDetail,
   cashierOrderSummary_handleCancelOrder,
   cashierOrderSummary_handlePaymentMethod,
+  cashierOrderSummary_handleFetchPaymentMethod,
   cashierOrderSummary_handlePlaceOrderConfirmation,
   cashierOrderSummary_handlePlaceOrderDetail,
   cashierOrderSummary_handleSelectTable,
   cashierOrderSummary_handleVoucher,
   cashierOrderSummary_handleToggleSelectTable,
+
+  cashierOrderSummary_handleSimulatePayment,
 });
 </script>
 
 <template>
   <section
     id="cashier"
-    class="grid-wrapper-fullscreen bg-background min-h-screen h-screen default-wrapper-fullscreen"
+    class="grid grid-cols-12 bg-background min-h-[calc(100dvh-85px)] h-[88dvh] default-wrapper-fullscreen"
   >
     <CashierMainSection />
 

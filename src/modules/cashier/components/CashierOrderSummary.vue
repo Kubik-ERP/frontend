@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// Components
 import CashierSummaryButtonAction from './OrderSummary/CashierSummaryButtonAction.vue';
 import CashierSummaryProductList from './OrderSummary/CashierSummaryProductList.vue';
 import CashierSummaryPromoPayment from './OrderSummary/CashierSummaryPromoPayment.vue';
@@ -7,8 +8,10 @@ import CashierSummaryTotal from './OrderSummary/CashierSummaryTotal.vue';
 
 import CashierSummaryModalCancelOrder from './OrderSummary/Modal/CashierSummaryModalCancelOrder.vue';
 import CashierSummaryModalInvoiceDetail from './OrderSummary/Modal/CashierSummaryModalInvoiceDetail.vue';
+import CashierSummaryModalMoreOptionsMobile from './OrderSummary/Modal/CashierSummaryModalMoreOptionsMobile.vue';
 import CashierSummaryModalOrderType from './OrderSummary/Modal/CashierSummaryModalOrderType.vue';
 import CashierSummaryModalPaymentMethod from './OrderSummary/Modal/CashierSummaryModalPaymentMethod.vue';
+import CashierSummaryModalPaymentQRIS from './OrderSummary/Modal/CashierSummaryModalPaymentQRIS.vue';
 import CashierSummaryModalPlaceOrderConfirmation from './OrderSummary/Modal/CashierSummaryModalPlaceOrderConfirmation.vue';
 import CashierSummaryModalPlaceOrderDetail from './OrderSummary/Modal/CashierSummaryModalPlaceOrderDetail.vue';
 import CashierSummaryModalSelectTable from './OrderSummary/Modal/CashierSummaryModalSelectTable.vue';
@@ -16,7 +19,10 @@ import CashierSummaryModalVoucher from './OrderSummary/Modal/CashierSummaryModal
 </script>
 
 <template>
-  <section id="order-summary" class="col-span-4 pb-4 overflow-y-auto bg-white w-full h-full flex flex-col">
+  <section
+    id="order-summary"
+    class="hidden xl:col-span-4 lg:col-span-6 pb-4 overflow-y-auto bg-white w-full h-full lg:flex flex-col"
+  >
     <CashierSummarySection />
     <CashierSummaryProductList />
     <CashierSummaryPromoPayment />
@@ -30,10 +36,13 @@ import CashierSummaryModalVoucher from './OrderSummary/Modal/CashierSummaryModal
       <CashierSummaryModalOrderType />
       <CashierSummaryModalSelectTable />
 
+      <CashierSummaryModalMoreOptionsMobile />
+
       <CashierSummaryModalVoucher />
       <CashierSummaryModalPaymentMethod />
       <CashierSummaryModalPlaceOrderDetail />
       <CashierSummaryModalPlaceOrderConfirmation />
+      <CashierSummaryModalPaymentQRIS />
     </section>
   </section>
 </template>

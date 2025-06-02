@@ -10,6 +10,7 @@ const {
   authenticationSignIn_formValidations,
   authenticationSignIn_isLoading,
   authenticationSignIn_isNotAuthenticated,
+  authenticationSignIn_onSsoWithGoogle,
   authenticationSignIn_onSubmit,
 } = inject<IAuthenticationSignInProvided>('authenticationSignIn')!;
 </script>
@@ -17,7 +18,7 @@ const {
 <template>
   <form class="flex flex-col gap-10 w-full max-w-md" @submit.prevent="authenticationSignIn_onSubmit">
     <section id="greeting-text" class="flex flex-col gap-2">
-      <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
+      <img src="@/app/assets/images/app-logo.png" alt="app-logo" class="w-fit h-fit" />
 
       <h1 class="font-bold text-2xl leading-8">Hi! Welcome Back 👋</h1>
     </section>
@@ -99,7 +100,12 @@ const {
           :loading="authenticationSignIn_isLoading"
         />
 
-        <PrimeVueButton class="w-full" severity="secondary" variant="outlined">
+        <PrimeVueButton
+          class="w-full"
+          severity="secondary"
+          variant="outlined"
+          @click="authenticationSignIn_onSsoWithGoogle"
+        >
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="google" />

@@ -4,10 +4,11 @@ import {
   AUTHENTICATION_SIGN_UP_STEPPER,
   AUTHENTICATION_SEND_OTP_REQUEST,
 } from '../constants';
-import { IAuthenticationSendOtpFormData, IAuthenticationVerifyOtpFormData } from '../interfaces';
+import { IAuthenticationVerifyOtpFormData } from '../interfaces';
 
 // Interfaces
 import type {
+  IAuthenticationSendOtpFormData,
   IAuthenticationSignUpFormData,
   IAuthenticationSignUpProvided,
   IAuthenticationStepper,
@@ -27,9 +28,10 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
   /**
    * @description Injected variables
    */
+  const route = useRoute(); // Instance of the route
   const router = useRouter(); // Instance of the router
   const store = useAuthenticationStore(); // Instance of the store
-  const { authentication_isLoading } = storeToRefs(store);
+  const { authentication_isLoading, authentication_token } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
@@ -38,13 +40,14 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
   const authenticationSignUp_activeStep = ref<number>(0);
   const authenticationSignUp_durationOtp = ref<number>(0);
   const authenticationSignUp_formData = reactive<IAuthenticationSignUpFormData>({
+    fullName: '',
     email: '',
     phoneCountryCode: '+62',
     phoneNumber: '',
     password: '',
     passwordConfirmation: '',
   });
-  const authenticationSignUp_formDataOfSetUpPin = reactive({
+  const authenticationSignUp_formDataOfSetUpPin = reactive<IAuthenticationSetUpPinFormData>({
     pin: '',
   });
   const authenticationSignUp_formDataOfVerifyOtp = reactive<IAuthenticationVerifyOtpFormData>({
@@ -52,17 +55,18 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     otp: '',
     type: 'REGISTER',
   });
-  const authenticationSignUp_formDataOfVerifyPin = reactive({
-    pin: '',
+  const authenticationSignUp_formDataOfVerifyPin = reactive<IAuthenticationVerifyPinFormData>({
+    pinConfirmation: '',
   });
   const authenticationSignUp_isAcceptTnc = ref<boolean>(false);
-  const authenticationSignUp_maskedPhoneNumber = ref<string>('');
+  const authenticationSignUp_maskedEmail = ref<string>('');
   const authenticationSignUp_stepper = shallowRef<IAuthenticationStepper[]>(AUTHENTICATION_SIGN_UP_STEPPER);
 
   /**
    * @description Form validations
    */
   const authenticationSignUp_formRules = computed(() => ({
+    fullName: { required },
     email: { email, required },
     phoneCountryCode: { required, isPhoneCodeValid: isPhoneCodeValid },
     phoneNumber: { required, isPhoneNumberValid: isPhoneNumberValid },
@@ -76,7 +80,10 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     pin: { required },
   }));
   const authenticationSignUp_formRulesOfVerifyPin = computed(() => ({
-    pin: { required },
+    pinConfirmation: {
+      required,
+      sameAs: sameAs(authenticationSignUp_formDataOfSetUpPin.pin),
+    },
   }));
 
   const authenticationSignUp_formValidations = useVuelidate(
@@ -125,11 +132,15 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
   /**
    * @description Handle business logic for masking phone numbers.
    */
-  const authenticationSignUp_maskPhoneNumber = () => {
-    const phoneNumber = authenticationSignUp_formData.phoneNumber;
-    const maskedPhoneNumber =
-      phoneNumber.substring(0, 3) + '******' + phoneNumber.substring(phoneNumber.length - 2);
-    authenticationSignUp_maskedPhoneNumber.value = maskedPhoneNumber;
+  const authenticationSignUp_maskEmail = () => {
+    const email = authenticationSignUp_formData.email;
+    const maskedEmail = email.replace(/(.{2})(.*)(.{2}@.*)/, (match, p1, p2, p3) => {
+      console.log(match);
+
+      return `${p1}${'*'.repeat(p2.length)}${p3}`;
+    });
+
+    authenticationSignUp_maskedEmail.value = maskedEmail;
   };
 
   /**
@@ -161,8 +172,33 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
         ...httpAbort_registerAbort(AUTHENTICATION_SEND_OTP_REQUEST),
       });
 
+      authenticationSignUp_activeStep.value += 1;
       authenticationSignUp_durationOtp.value = 60 * 5; // 5 minutes
       authenticationSignUp_startCountdownOtp();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api authentication sign up. We call the fetchAuthentication_pin function from the store to handle the request.
+   */
+  const authenticationSignUp_fetchAuthenticationSetUpPin = async () => {
+    try {
+      const payload: ISetUnsetPin = {
+        pin: authenticationSignUp_formDataOfSetUpPin.pin,
+        pinConfirmation: authenticationSignUp_formDataOfVerifyPin.pinConfirmation,
+      };
+
+      await store.fetchAuthentication_pin('set', payload, {
+        ...httpAbort_registerAbort(AUTHENTICATION_SIGN_UP_REQUEST),
+      });
+
+      router.push({ name: 'sign-in' });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -186,6 +222,9 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
           ...httpAbort_registerAbort(AUTHENTICATION_SIGN_UP_REQUEST),
         },
       );
+
+      authenticationSignUp_fetchAuthenticationSendOtp();
+      authenticationSignUp_maskEmail();
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -200,15 +239,75 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
    */
   const authenticationSignUp_fetchAuthenticationVerifyOtp = async () => {
     try {
-      await store.fetchAuthentication_verifyOtp(authenticationSignUp_formDataOfVerifyOtp, {
-        ...httpAbort_registerAbort(AUTHENTICATION_SEND_OTP_REQUEST),
-      });
+      await store.fetchAuthentication_verifyOtp(
+        {
+          ...authenticationSignUp_formDataOfVerifyOtp,
+          email: authenticationSignUp_formData.email,
+        },
+        {
+          ...httpAbort_registerAbort(AUTHENTICATION_SEND_OTP_REQUEST),
+        },
+      );
+
+      authenticationSignUp_activeStep.value += 1;
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
         return Promise.reject(new Error(String(error)));
       }
+    }
+  };
+
+  /**
+   * @description Handle dynamic validation for forms
+   */
+  const authenticationSignUp_dynamicValidation = (): void => {
+    switch (authenticationSignUp_activeStep.value) {
+      case 0:
+        authenticationSignUp_formValidations.value.$touch();
+        if (authenticationSignUp_formValidations.value.$invalid) return;
+        break;
+      case 1:
+        authenticationSignUp_formValidationsOfVerifyOtp.value.$touch();
+        if (authenticationSignUp_formValidationsOfVerifyOtp.value.$invalid) return;
+        break;
+      case 2:
+        authenticationSignUp_formValidationsOfSetUpPin.value.$touch();
+        if (authenticationSignUp_formValidationsOfSetUpPin.value.$invalid) return;
+        break;
+      case 3:
+        authenticationSignUp_formValidationsOfVerifyPin.value.$touch();
+        if (authenticationSignUp_formValidationsOfVerifyPin.value.$invalid) return;
+        break;
+      default:
+        break;
+    }
+  };
+
+  /**
+   * @description Handle dynamic business logic for forms
+   */
+  const authenticationSignUp_dynamicBusinessLogic = (): void => {
+    switch (authenticationSignUp_activeStep.value) {
+      case 0:
+        authenticationSignUp_fetchAuthenticationSignUp();
+
+        break;
+      case 1:
+        authenticationSignUp_fetchAuthenticationVerifyOtp();
+
+        break;
+      case 2:
+        authenticationSignUp_activeStep.value += 1;
+
+        break;
+      case 3:
+        authenticationSignUp_fetchAuthenticationSetUpPin();
+
+        break;
+      default:
+        break;
     }
   };
 
@@ -223,31 +322,45 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
    * @description Handle action on submit form.
    */
   const authenticationSignUp_onSubmit = async (): Promise<void> => {
-    if (authenticationSignUp_activeStep.value === 0) {
-      authenticationSignUp_formValidations.value.$touch();
-      if (authenticationSignUp_formValidations.value.$invalid) return;
-    } else {
-      authenticationSignUp_formValidationsOfVerifyOtp.value.$touch();
-      if (authenticationSignUp_formValidationsOfVerifyOtp.value.$invalid) return;
-    }
+    authenticationSignUp_dynamicValidation();
 
     try {
-      if (authenticationSignUp_activeStep.value === 0) {
-        await authenticationSignUp_fetchAuthenticationSignUp();
-        await authenticationSignUp_fetchAuthenticationSendOtp();
-        authenticationSignUp_maskPhoneNumber();
-        authenticationSignUp_activeStep.value = 1;
-      } else {
-        authenticationSignUp_formDataOfVerifyOtp.email = authenticationSignUp_formData.email;
-
-        await authenticationSignUp_fetchAuthenticationVerifyOtp();
-        router.push({ name: 'sign-in' });
-      }
+      authenticationSignUp_dynamicBusinessLogic();
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
         return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle business logic for verifying user
+   */
+  const authenticationSignUp_verifyUser = (): void => {
+    const email = route.query.email as string;
+    const token = route.query.token as string;
+    const type = route.query.type as string;
+
+    if (email && token) {
+      authenticationSignUp_formData.email = email;
+      authentication_token.value = token;
+
+      switch (type) {
+        case 'email-verification':
+          authenticationSignUp_activeStep.value = 1;
+          authenticationSignUp_fetchAuthenticationSendOtp();
+          authenticationSignUp_maskEmail();
+
+          break;
+        case 'set-up-pin':
+          authenticationSignUp_activeStep.value = 2;
+
+          break;
+        default:
+          authenticationSignUp_activeStep.value = 0;
+          break;
       }
     }
   };
@@ -265,9 +378,10 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
     authenticationSignUp_formValidationsOfVerifyPin,
     authenticationSignUp_isAcceptTnc,
     authenticationSignUp_isLoading: authentication_isLoading,
-    authenticationSignUp_maskedPhoneNumber,
+    authenticationSignUp_maskedEmail,
     authenticationSignUp_stepper,
     authenticationSignUp_onResendOtp,
     authenticationSignUp_onSubmit,
+    authenticationSignUp_verifyUser,
   };
 };

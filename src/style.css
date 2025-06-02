@@ -22,6 +22,25 @@
 @import 'tailwindcss-primeui';
 
 /**
+ =============================== PrimeVue Color Overiding   ================================
+ */
+
+:root {
+  --p-primary-50: var(--color-primary-50);
+  --p-primary-100: var(--color-primary-100);
+  --p-primary-200: var(--color-primary-200);
+  --p-primary-300: var(--color-primary-300);
+  --p-primary-400: var(--color-primary-400);
+  --p-primary-500: var(--color-primary-500);
+  --p-primary-600: var(--color-primary-600);
+  --p-primary-700: var(--color-primary-700);
+}
+
+.w-webkit-fill-available {
+  width: -webkit-fill-available;
+}
+
+/**
   ================================ Custom TailwindCSS ================================
 */
 
@@ -31,6 +50,62 @@
   html {
     font-family: var(--font-sans);
     font-variation-settings: 'opsz' 14;
+  }
+
+  @media print {
+    body #main-content {
+      display: none !important;
+    }
+
+    body .print-invoice-paper {
+      display: block !important;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: white;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    .invoice-paper {
+      margin: 0 auto;
+      width: 100%;
+      max-width: 800px;
+      padding: 20px;
+      box-sizing: border-box;
+      page-break-after: always;
+    }
+
+    .invoice-paper * {
+      box-sizing: border-box;
+    }
+
+    .invoice-paper section,
+    .invoice-paper table {
+      page-break-inside: avoid;
+    }
+
+    #box-paper,
+    #invoice-change-paper,
+    .PrimeVueTabs,
+    .PrimeVueTabList {
+      all: unset;
+    }
+
+    table,
+    section,
+    .invoice-table,
+    .invoice-detail {
+      page-break-inside: avoid;
+    }
   }
 }
 
@@ -55,6 +130,10 @@
     @apply relative inset-0 z-0 h-full w-dvw min-h-dvh overflow-x-hidden;
   }
 
+  .grid-wrapper {
+    @apply grid grid-rows-1 grid-cols-12 relative inset-0 z-0;
+  }
+
   .grid-wrapper-fullscreen {
     @apply grid grid-rows-1 grid-cols-12 relative inset-0 z-0 w-dvw h-dvh;
   }
@@ -62,12 +141,19 @@
 
 @theme {
   --color-black-secondary: #434343;
-  --color-border-error: #F0AFAF;
+  --color-border-error: #f0afaf;
   --color-primary: #18618b;
+  --color-primary-50: #e5f1f7;
+  --color-primary-100: #b8d9e9;
+  --color-primary-200: #8ac0da;
+  --color-primary-300: #5ca8cb;
+  --color-primary-400: #2f8fbd;
+  --color-primary-500: #18618b;
+  --color-primary-600: #144e71;
+  --color-primary-700: #103b57;
   --color-blue-primary: #18618b;
   --color-green-primary: #64c9b1;
   --color-disabled: #8e8e8e;
-  --color-error-background: #fbebeb;
   --color-error-hover: #981c1c;
   --color-text-action-error: #e57171;
   --color-gray: #434343;
@@ -79,11 +165,13 @@
   --color-secondary: #a8e0d3;
   --color-secondary-background: #e9f7f4;
   --color-secondary-hover: #2a7866;
-  --color-blue-secondary-background: #D6EBF8;
+  --color-blue-secondary-background: #d6ebf8;
   --color-background: #f9fafb;
   --color-text-disabled: #8e8e8e;
   --color-text-primary: #070707;
   --color-disabled: #d9d9d9;
+  --color-gray-400: #98a2b3;
+  --color-gray-900: #101828;
   --color-grayscale-10: #ededed;
   --color-grayscale-20: #d9d9d9;
   --color-grayscale-30: #b4b4b4;
@@ -96,4 +184,8 @@
   --color-complementary-background: #f7e9f2;
   --color-complementary-main: #c964a2;
   --font-sans: 'Inter', sans-serif;
+}
+
+span.p-datatable-column-title {
+  @apply font-normal;
 }

@@ -25,7 +25,7 @@ const { cashierProduct_selectedView } = inject<ICashierProductProvided>('cashier
 </script>
 
 <template>
-  <section id="cashier-change-view" class="w-full flex gap-4 justify-end">
+  <section id="cashier-change-view" class="justify-start w-full flex gap-4 lg:justify-end">
     <AppBaseSvg
       v-for="item in listView"
       :key="item"

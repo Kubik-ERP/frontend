@@ -13,6 +13,7 @@ const {
   authenticationSignIn_formValidations,
   authenticationSignIn_isLoading,
   authenticationSignIn_isNotAuthenticated,
+  authenticationSignIn_onSsoWithGoogle,
   authenticationSignIn_onSubmit,
 } = useAuthenticationSignInService();
 
@@ -24,6 +25,7 @@ provide('authenticationSignIn', {
   authenticationSignIn_formValidations,
   authenticationSignIn_isLoading,
   authenticationSignIn_isNotAuthenticated,
+  authenticationSignIn_onSsoWithGoogle,
   authenticationSignIn_onSubmit,
 });
 </script>

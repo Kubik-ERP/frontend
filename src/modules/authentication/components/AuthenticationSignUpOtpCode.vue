@@ -7,11 +7,10 @@ import type { IAuthenticationSignUpProvided } from '../interfaces/authentication
  */
 const {
   authenticationSignUp_durationOtpFormatted,
-  authenticationSignUp_formData,
   authenticationSignUp_formDataOfVerifyOtp,
   authenticationSignUp_formValidationsOfVerifyOtp,
   authenticationSignUp_isLoading,
-  authenticationSignUp_maskedPhoneNumber,
+  authenticationSignUp_maskedEmail,
   authenticationSignUp_onResendOtp,
   authenticationSignUp_onSubmit,
 } = inject<IAuthenticationSignUpProvided>('authenticationRegister')!;
@@ -20,7 +19,7 @@ const {
 <template>
   <form class="form-group flex flex-col gap-10 w-md" @submit.prevent="authenticationSignUp_onSubmit">
     <section id="greeting-text" class="flex flex-col gap-3">
-      <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
+      <img src="@/app/assets/images/app-logo.png" alt="app-logo" class="w-fit h-fit" />
 
       <h1 class="font-bold text-2xl leading-8">We sent you a code</h1>
       <section id="text-information" class="flex flex-col">
@@ -28,8 +27,7 @@ const {
 
         <section id="phone-number" class="flex items-center gap-1">
           <p id="phone-number" class="font-normal text-base">
-            {{ authenticationSignUp_formData.phoneCountryCode }}
-            {{ authenticationSignUp_maskedPhoneNumber }}
+            {{ authenticationSignUp_maskedEmail }}
           </p>
           <AppBaseSvg name="edit" class="cursor-pointer" />
         </section>

@@ -5,8 +5,11 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalPlaceOrderConfirmation, cashierOrderSummary_handlePlaceOrderConfirmation } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const {
+  cashierOrderSummary_modalPlaceOrderConfirmation,
+  cashierOrderSummary_modalPlaceOrderDetail,
+  cashierOrderSummary_handlePlaceOrderConfirmation,
+} = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 <template>
   <section id="cashier-summary-modal-place-order-confirmation">
@@ -14,6 +17,7 @@ const { cashierOrderSummary_modalPlaceOrderConfirmation, cashierOrderSummary_han
       v-model:visible="cashierOrderSummary_modalPlaceOrderConfirmation.show"
       modal
       :style="{ width: '31rem' }"
+      class="m-2"
     >
       <template #container="{ closeCallback }">
         <section id="cashier-summary-modal-place-order-confirmation-content" class="flex flex-col gap-6 p-6">
@@ -24,10 +28,10 @@ const { cashierOrderSummary_modalPlaceOrderConfirmation, cashierOrderSummary_han
             <AppBaseSvg name="confirmation" class="!w-14 !h-14" />
 
             <div class="flex flex-col gap-3 p-2 items-center">
-              <span class="font-semibold text-lg">Are you sure want to place this order?</span>
+              <span class="font-semibold text-base lg:text-lg">Are you sure want to place this order?</span>
               <div class="grid grid-cols-12 py-2.5 px-4 mx-2 bg-secondary/80 rounded-xl">
                 <AppBaseSvg name="info" class="!w-3 !h-3 col-span-1 mt-1 text-secondary" />
-                <span class="text-sm text-secondary-hover text-justify col-span-11"
+                <span class="text-xs lg:text-sm text-secondary-hover text-justify col-span-11"
                   >Ensure the payment has been successfully processed before proceeding with the order and printing
                   the invoice</span
                 >
@@ -37,17 +41,20 @@ const { cashierOrderSummary_modalPlaceOrderConfirmation, cashierOrderSummary_han
 
           <div class="flex justify-end gap-6">
             <PrimeVueButton
-              class="text-primary border-primary w-1/2 py-2.5 px-14"
+              class="text-primary border-primary w-1/2 py-2.5 text-sm lg:text-base"
               type="button"
               label="Cancel"
               outlined
+              :disabled="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
               @click="closeCallback"
             ></PrimeVueButton>
 
             <PrimeVueButton
-              class="bg-primary w-1/2 py-2.5 px-14"
+              class="bg-primary w-1/2 py-2.5 text-sm lg:text-base"
               type="button"
               label="Place Order"
+              :disabled="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
+              :loading="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
               @click="cashierOrderSummary_handlePlaceOrderConfirmation()"
             ></PrimeVueButton>
           </div>

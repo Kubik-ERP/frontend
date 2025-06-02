@@ -16,7 +16,7 @@ const {
 <template>
   <form class="form-group flex flex-col gap-10 w-md" @submit.prevent="authenticationSignUp_onSubmit">
     <section id="greeting-text" class="flex flex-col gap-6">
-      <PrimeVueAvatar label="P" class="mr-2" size="xlarge" shape="circle" />
+      <img src="@/app/assets/images/app-logo.png" alt="app-logo" class="w-fit h-fit" />
 
       <section id="text-information" class="flex flex-col gap-2">
         <div class="flex items-center gap-4">
@@ -42,10 +42,10 @@ const {
         label-for="otp"
         name="OTP Code"
         spacing-bottom="mb-0"
-        :validators="authenticationSignUp_formValidationsOfVerifyPin.pin"
+        :validators="authenticationSignUp_formValidationsOfVerifyPin.pinConfirmation"
       >
         <PrimeVueInputOtp
-          v-model="authenticationSignUp_formDataOfVerifyPin.pin"
+          v-model="authenticationSignUp_formDataOfVerifyPin.pinConfirmation"
           :class="{ ...classes }"
           class="[&>input]:bg-white [&>input]:border-grayscale-30 [&>input]:font-bold [&>input]:text-2xl [&>input]:w-16 [&>input]:h-16!"
           :length="6"

@@ -1,5 +1,8 @@
 // Constants
 import {
+  AUTHENTICATION_ENDPOINT_GOOGLE_REDIRECT,
+  AUTHENTICATION_ENDPOINT_PIN,
+  AUTHENTICATION_ENDPOINT_PROFILE,
   AUTHENTICATION_ENDPOINT_RESET_PASSWORD,
   AUTHENTICATION_ENDPOINT_SEND_OTP,
   AUTHENTICATION_ENDPOINT_SIGN_IN,
@@ -9,6 +12,7 @@ import {
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
+import type { LocationQuery } from 'vue-router';
 import type {
   IAuthenticationCreateNewPasswordFormData,
   IAuthenticationResetPasswordFormData,
@@ -17,6 +21,8 @@ import type {
   IAuthenticationSignUpFormData,
   IAuthenticationStateStore,
   IAuthenticationSendOtpFormData,
+  IAuthenticationSignInResponse,
+  IAuthenticationProfile,
 } from '../interfaces';
 
 // Plugins
@@ -64,12 +70,76 @@ export const useAuthenticationStore = defineStore('authentication', {
     },
 
     /**
+     * @description Handle fetch api authentication google redirect.
+     * @url /authentication/google/redirect?{restQueryParams}
+     * @method GET
+     * @access public
+     */
+    async fetchAuthentication_googleRedirect(
+      restQueryParams: LocationQuery,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IAuthenticationSignInResponse> {
+      this.authentication_isLoading = true;
+
+      try {
+        const response = await httpClient.get<IAuthenticationSignInResponse>(
+          AUTHENTICATION_ENDPOINT_GOOGLE_REDIRECT,
+          {
+            params: restQueryParams,
+            ...requestConfigurations,
+          },
+        );
+
+        this.authentication_token = response.data.data.accessToken;
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.authentication_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api authentication reset password.
+     * @url /authentication/profile
+     * @method GET
+     * @access public
+     */
+    async fetchAuthentication_profile(requestConfigurations: AxiosRequestConfig): Promise<IAuthenticationProfile> {
+      this.authentication_isLoading = true;
+
+      try {
+        const response = await httpClient.get<IAuthenticationProfile>(AUTHENTICATION_ENDPOINT_PROFILE, {
+          ...requestConfigurations,
+        });
+
+        this.authentication_userData = response.data;
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.authentication_isLoading = false;
+      }
+    },
+
+    /**
      * @description Handle fetch api authentication reset password.
      * @url /authentication/forgot-password
      * @method POST
      * @access public
      */
     async fetchAuthentication_resetPassword(
+      pin: string,
       payload: IAuthenticationResetPasswordFormData,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
@@ -77,6 +147,9 @@ export const useAuthenticationStore = defineStore('authentication', {
 
       try {
         const response = await httpClient.post<unknown>(AUTHENTICATION_ENDPOINT_RESET_PASSWORD, payload, {
+          headers: {
+            pin: pin,
+          },
           ...requestConfigurations,
         });
 
@@ -122,6 +195,36 @@ export const useAuthenticationStore = defineStore('authentication', {
     },
 
     /**
+     * @description Handle fetch api authentication pin.
+     * @url /authentication/pin/${type}
+     * @method POST
+     * @access public
+     */
+    async fetchAuthentication_pin(
+      type: 'set' | 'unset',
+      payload: ISetUnsetPin,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.authentication_isLoading = true;
+
+      try {
+        const response = await httpClient.post<unknown>(`${AUTHENTICATION_ENDPOINT_PIN}/${type}`, payload, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.authentication_isLoading = false;
+      }
+    },
+
+    /**
      * @description Handle fetch api authentication sign in.
      * @url /authentication/login
      * @method POST
@@ -130,14 +233,18 @@ export const useAuthenticationStore = defineStore('authentication', {
     async fetchAuthentication_signIn(
       payload: IAuthenticationSignInFormData,
       requestConfigurations: AxiosRequestConfig,
-    ): Promise<unknown> {
+    ): Promise<IAuthenticationSignInResponse> {
       this.authentication_isLoading = true;
 
       try {
-        const response = await httpClient.post<unknown>(AUTHENTICATION_ENDPOINT_SIGN_IN, payload, {
-          ...requestConfigurations,
-        });
-        this.authentication_token = (response.data as { token: string }).token; // Refactor this type
+        const response = await httpClient.post<IAuthenticationSignInResponse>(
+          AUTHENTICATION_ENDPOINT_SIGN_IN,
+          payload,
+          {
+            ...requestConfigurations,
+          },
+        );
+        this.authentication_token = response.data.data.accessToken;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -160,13 +267,19 @@ export const useAuthenticationStore = defineStore('authentication', {
     async fetchAuthentication_signUp(
       payload: IAuthenticationSignUpFormData,
       requestConfigurations: AxiosRequestConfig,
-    ): Promise<unknown> {
+    ): Promise<IAuthenticationSignInResponse> {
       this.authentication_isLoading = true;
 
       try {
-        const response = await httpClient.post<unknown>(AUTHENTICATION_ENDPOINT_SIGN_UP, payload, {
-          ...requestConfigurations,
-        });
+        const response = await httpClient.post<IAuthenticationSignInResponse>(
+          AUTHENTICATION_ENDPOINT_SIGN_UP,
+          payload,
+          {
+            ...requestConfigurations,
+          },
+        );
+
+        this.authentication_token = response.data.data.accessToken;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {

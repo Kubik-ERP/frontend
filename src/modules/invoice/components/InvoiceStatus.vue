@@ -1,7 +1,20 @@
+<script setup lang="ts">
+// emits
+const emit = defineEmits(['print', 'download']);
+
+// Services
+import { useInvoiceService } from '../services/useInvoice.service';
+
+/**
+ * @description Destructure all the data and methods what we need
+ */
+const { invoice_handleOtherOptions } = useInvoiceService();
+</script>
+
 <template>
   <section
     id="invoice-status"
-    class="col-span-4 relative inset-0 z-0 bg-white border-l border-solid border-grayscale-10 flex flex-col items-center px-4 py-5 gap-6"
+    class="overflow-y-auto hidden lg:flex col-span-4 relative inset-0 z-0 bg-white border-l border-solid border-grayscale-10 flex-col items-center px-4 py-5 gap-6"
   >
     <section id="invoice-id" class="flex flex-col items-center">
       <p id="label-invoice-id" class="font-normal text-text-disabled text-sm">Invoice ID</p>
@@ -69,11 +82,11 @@
       </tfoot>
     </table>
 
-    <PrimeVueDivider class="border-grayscale-10 py-8" />
+    <PrimeVueDivider class="border-grayscale-10 py-4" />
 
     <section id="btn-actions" class="flex flex-col items-center gap-4 w-full">
       <section id="primary-buttons" class="flex items-center gap-4 w-full">
-        <PrimeVueButton class="w-full py-4" severity="secondary" variant="outlined">
+        <PrimeVueButton class="w-full py-4" severity="secondary" variant="outlined" @click="emit('download')">
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="download" class="!w-6 !h-6" />
@@ -82,7 +95,7 @@
           </template>
         </PrimeVueButton>
 
-        <PrimeVueButton class="bg-blue-primary border-none w-full py-4" severity="primary">
+        <PrimeVueButton class="bg-blue-primary border-none w-full py-4" severity="primary" @click="emit('print')">
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="printer" class="!w-6 !h-6" />
@@ -95,7 +108,11 @@
       <span class="font-normal text-text-disabled text-sm">other option</span>
 
       <section id="share-invoice" class="flex items-center gap-6">
-        <section id="copy-link" class="flex flex-col items-center gap-1 cursor-pointer">
+        <section
+          id="copy-link"
+          class="flex flex-col items-center gap-1 cursor-pointer"
+          @click="invoice_handleOtherOptions('copy')"
+        >
           <section
             id="box-icon"
             class="bg-primary-background flex items-center justify-center p-2 rounded-full w-10 h-10"
@@ -106,7 +123,11 @@
           <span class="font-normal text-grayscale-70 text-sm"> Copy Link </span>
         </section>
 
-        <section id="email" class="flex flex-col items-center gap-1 cursor-pointer">
+        <section
+          id="email"
+          class="flex flex-col items-center gap-1 cursor-pointer"
+          @click="invoice_handleOtherOptions('email')"
+        >
           <section
             id="box-icon"
             class="bg-primary-background flex items-center justify-center p-2 rounded-full w-10 h-10"
@@ -117,7 +138,11 @@
           <span class="font-normal text-grayscale-70 text-sm"> Email </span>
         </section>
 
-        <section id="whatsapp" class="flex flex-col items-center gap-1 cursor-pointer">
+        <section
+          id="whatsapp"
+          class="flex flex-col items-center gap-1 cursor-pointer"
+          @click="invoice_handleOtherOptions('whatsapp')"
+        >
           <section
             id="box-icon"
             class="bg-primary-background flex items-center justify-center p-2 rounded-full w-10 h-10"

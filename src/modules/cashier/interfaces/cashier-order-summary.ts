@@ -1,15 +1,16 @@
 import { MenuPassThroughAttributes } from 'primevue';
 import { MenuItem } from 'primevue/menuitem';
 import { ICashierSelected } from '.';
+import { ICashierResponseCalulateEstimationItem, ICashierResponseMidtransQrisPayment } from './cashier-response';
 
 export interface ICashierOrderType {
-  code: number;
+  code: string;
   label: string;
   available: boolean;
 }
 
 export interface ICashierVoucher {
-  code: number;
+  code: string;
   label: string;
   available: boolean;
   discount: number;
@@ -17,20 +18,25 @@ export interface ICashierVoucher {
   maxDiscount: number;
   validUntil: string;
   validFrom: string;
-  type: 'percentage' | 'nominal';
+  type: string;
   stock: number;
 }
 
 export interface ICashierOrderSummaryPaymentMethod {
-  code: number;
-  icon: string;
-  label: string;
-  available: boolean;
+  id: string;
+  name: string;
+  iconName: string;
+  sortNo: number;
+  isAvailable: boolean;
+}
+
+export interface ICashierOrderSummaryPaymentMethodResponse {
+  data: ICashierOrderSummaryPaymentMethod[];
 }
 
 export interface ICashierOrderSummaryModalOrderType {
   show: boolean;
-  selectedOrderType: number;
+  selectedOrderType: string;
   data: ICashierOrderType[];
 }
 
@@ -46,9 +52,15 @@ export interface ICashierOrderSummaryModalInvoiceDetail {
 export interface ICashierOrderSummaryModalCancelOrder {
   show: boolean;
 }
+export interface ICashierOrderSummaryModalPlaceOrderConfirmation {
+  show: boolean;
+  showModalPayment: boolean;
+  isLoading: boolean;
+  data: Partial<ICashierResponseMidtransQrisPayment['data']>;
+}
 
 export interface ICashierListTable {
-  value: number;
+  value: string;
   label: string;
   available: boolean;
   totalSeat: number;
@@ -56,14 +68,14 @@ export interface ICashierListTable {
 }
 
 export interface ICashierOrderSummarylistFloor {
-  value: number;
+  value: string;
   label: string;
   available: boolean;
 }
 
 export interface ICashierOrderSummaryModalSelectTable {
   show: boolean;
-  selectedTable: number[];
+  selectedTable: string[];
   activeFloor: number;
   listFloor: ICashierOrderSummarylistFloor[];
   data: ICashierListTable[];
@@ -71,8 +83,10 @@ export interface ICashierOrderSummaryModalSelectTable {
 
 export interface ICashierOrderSummaryModalPaymentMethod {
   show: boolean;
-  selectedPaymentMethod: number;
+  isLoading: boolean;
+  selectedPaymentMethod: string;
   data: ICashierOrderSummaryPaymentMethod[];
+  dataSelfOrder: ICashierOrderSummaryPaymentMethod[];
 }
 
 export interface ICashierOrderSummaryModalPlaceOrder {
@@ -87,7 +101,7 @@ export interface ICashierOrderSummaryModalPlaceOrder {
 export interface ICashierOrderSummaryModalVoucher {
   show: boolean;
   form: {
-    voucher_code: number;
+    voucher_code: string;
   };
   search: string;
   data: ICashierVoucher[];
@@ -100,6 +114,8 @@ export interface ICashierOrderSummaryData {
   tableNumber: string;
   promoCode: string;
   paymentMethod: string;
+  isExpanded: boolean;
+  isExpandedVisible: boolean;
 }
 
 export interface ICashierOrderSummaryCalculation {
@@ -123,18 +139,24 @@ export interface ICashierOrderSummary {
     notes: string;
   };
   paymentMethod: string;
-  tableCode: number[];
-  selectedVoucher: number;
+  tableCode: string;
+  selectedVoucher: string;
   customerName: string;
   product: ICashierSelected[];
+}
+
+export interface ICashierCalulateEstimationData {
+  isLoading: boolean;
+  data: ICashierResponseCalulateEstimationItem;
 }
 
 export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_menuOrder: Ref<MenuPassThroughAttributes>;
   cashierOrderSummary_menuOrderItem: Ref<MenuItem[]>;
   cashierOrderSummary_data: Ref<ICashierOrderSummaryData>;
-  cashierOrderSummary_calculation: Ref<ICashierOrderSummaryCalculation>;
 
+  cashierOrderSummary_modalMenuOrderItem: Ref<{ show: boolean }>;
+  cashierOrderSummary_modalOrderSummary: Ref<{ show: boolean }>;
   cashierOrderSummary_modalAddEditNotes: Ref<ICashierOrderSummaryModalAddEdit>;
   cashierOrderSummary_modalOrderType: Ref<ICashierOrderSummaryModalOrderType>;
   cashierOrderSummary_modalInvoiceDetail: Ref<ICashierOrderSummaryModalInvoiceDetail>;
@@ -142,14 +164,22 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_modalPaymentMethod: Ref<ICashierOrderSummaryModalPaymentMethod>;
   cashierOrderSummary_modalVoucher: Ref<ICashierOrderSummaryModalVoucher>;
   cashierOrderSummary_modalSelectTable: Ref<ICashierOrderSummaryModalSelectTable>;
-  cashierOrderSummary_modalPlaceOrderConfirmation: Ref<ICashierOrderSummaryModalCancelOrder>;
-  cashierOrderSummary_modalPlaceOrderDetail: Ref<ICashierOrderSummaryModalCancelOrder>;
+  cashierOrderSummary_modalPlaceOrderConfirmation: Ref<ICashierOrderSummaryModalPlaceOrder>;
+  cashierOrderSummary_modalPlaceOrderDetail: Ref<ICashierOrderSummaryModalPlaceOrderConfirmation>;
 
+  cashierOrderSummary_calculateEstimation: Ref<ICashierCalulateEstimationData>;
   cashierOrderSummary_summary: Ref<ICashierOrderSummary>;
   cashierOrderSummary_getListActiveFloor: ComputedRef<ICashierListTable[]>;
+  cashierOrderSummary_isButtonPlaceOrderDisabled: ComputedRef<boolean>;
+
+  cashierOrderSummary_handleIsExpandedToggle: () => void;
+
+  cashierOrderSummary_isLoadingUnpaidOrder: Ref<boolean>;
+  cashierOrderSummary_handleSaveUnpaidOrder: () => void;
 
   cashierOrderSummary_handleOrderType: () => void;
   cashierOrderSummary_handleVoucher: () => void;
+  cashierOrderSummary_handleFetchPaymentMethod: () => void;
   cashierOrderSummary_handlePaymentMethod: () => void;
   cashierOrderSummary_handleInvoiceDetail: () => void;
   cashierOrderSummary_handleCancelOrder: () => void;
@@ -157,5 +187,7 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_handlePlaceOrderConfirmation: () => void;
   cashierOrderSummary_handlePlaceOrderDetail: () => void;
 
-  cashierOrderSummary_handleToggleSelectTable: (table: number) => void;
+  cashierOrderSummary_handleToggleSelectTable: (table: string) => void;
+
+  cashierOrderSummary_handleSimulatePayment: (invoiceId: string) => void;
 }

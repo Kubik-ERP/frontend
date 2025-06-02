@@ -23,6 +23,8 @@ export const LIST_SIDEBAR_MENUS = [
         name: 'Cashier',
         iconName: 'cashier',
         path: '/cashier',
+        isHaveSubMenus: false,
+        subMenus: [],
       },
     ],
   },
@@ -35,6 +37,22 @@ export const LIST_SIDEBAR_MENUS = [
         path: '/sales-order',
         isHaveSubMenus: false,
         subMenus: [],
+      },
+      {
+        name: 'Queue',
+        iconName: 'queue',
+        path: '/queue',
+        isHaveSubMenus: true,
+        subMenus: [
+          {
+            name: 'Customer Queue',
+            path: '/',
+          },
+          {
+            name: 'Kitchen Queue',
+            path: '/',
+          },
+        ],
       },
       {
         name: 'Report',
@@ -76,7 +94,24 @@ export const LIST_SIDEBAR_MENUS = [
         iconName: 'inventory',
         path: '/inventory',
         isHaveSubMenus: false,
-        subMenus: [],
+        subMenus: [
+          {
+            name: 'Master Item',
+            path: '/',
+          },
+          {
+            name: 'Master Supplier',
+            path: '/',
+          },
+          {
+            name: 'Master Brand',
+            path: '/',
+          },
+          {
+            name: 'Inventory Category',
+            path: '/',
+          },
+        ],
       },
       {
         name: 'Marketing',
