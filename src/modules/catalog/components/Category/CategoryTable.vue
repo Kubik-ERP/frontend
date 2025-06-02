@@ -37,8 +37,8 @@
 
       <PrimeVueColumn selection-mode="multiple" header-style="width: 3rem" />
       <!-- <PrimeVueColumn sortable field="id" header="Category ID" style="width: 25%" /> -->
-      <PrimeVueColumn sortable field="category" header="Category"  />
-      <PrimeVueColumn sortable field="description" header="Description"  />
+      <PrimeVueColumn sortable field="category" header="Category" />
+      <PrimeVueColumn sortable field="description" header="Description" />
       <PrimeVueColumn>
         <template #body="slotProps">
           <PrimeVueButton
@@ -232,10 +232,10 @@ const loading = ref(false);
 const route = useRoute();
 const router = useRouter();
 
-const page = ref(1);
-const limit = ref(10);
-const search = ref('');
-const lastPage = ref(0);
+const page = ref<number>(1);
+const limit = ref<number>(10);
+const search = ref<string>('');
+const lastPage = ref<number>(0);
 
 // const category = ref('');
 // const description = ref('');
@@ -250,9 +250,9 @@ const loadCategories = async () => {
   try {
     const response = await getAllCategories(page.value, limit.value, search.value);
     categories.value = response.categories;
-    console.log('🚀 ~ loadCategories ~ categories.value:', categories.value);
+    // console.log('🚀 ~ loadCategories ~ categories.value:', categories.value);
     lastPage.value = response.lastPage;
-    console.log('🚀 ~ loadCategories ~ lastPage.value:', lastPage.value);
+    // console.log('🚀 ~ loadCategories ~ lastPage.value:', lastPage.value);
   } catch (err) {
     console.error('Failed to fetch categories:', err);
   } finally {
@@ -317,7 +317,9 @@ const handleEditCategory = async () => {
         category: category_formData.name,
         description: category_formData.description || '-',
       });
-      categories.value = categories.value.map((cat: ICategory) => (cat.id === updatedCategory.id ? updatedCategory : cat));
+      categories.value = categories.value.map((cat: ICategory) =>
+        cat.id === updatedCategory.id ? updatedCategory : cat,
+      );
       isEditOpen.value = false;
       resetForm();
     } catch (error) {
@@ -349,7 +351,7 @@ const handleSearch = () => {
   router.push({ query: { page: '1' } });
   page.value = 1;
   loadCategories();
-}
+};
 
 function goToPage(p: number) {
   router.push({ query: { page: p.toString() } });
@@ -375,7 +377,12 @@ const prevPage = () => {
 
 onMounted(() => {
   loadCategories();
-  // page.value = parseInt(route.query.page) || 1;
+  const pageParam = route.query.page;
+  if (typeof pageParam === 'string') {
+    page.value = parseInt(pageParam) || 1;
+  } else {
+    page.value = 1;
+  }
   if (!route.query.page) {
     router.push({ query: { page: '1' } });
   }

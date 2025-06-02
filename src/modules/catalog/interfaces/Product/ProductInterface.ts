@@ -5,7 +5,7 @@ export interface ICategory {
 }
 
 export interface IVariant {
-  id: string;
+  id?: string;
   name: string;
   price?: number;
 }
@@ -37,15 +37,15 @@ export interface IProduct {
 export interface CreateProductPayload {
   id?: string;
   image?: string;
-  name: string;
-  price: number;
+  name?: string;
+  price?: number;
   isDiscount?: boolean;
   discount_price?: number;
   discount_value?: number;
-  is_percent: boolean;
+  is_percent?: boolean;
   picture_url?: string;
-  categories: object[];
-  variants?: object[];
+  categories?: ICategory[];
+  variants?: IVariant[];
 }
 
 export interface IProductResponse {
