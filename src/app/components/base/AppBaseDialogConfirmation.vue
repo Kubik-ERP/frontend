@@ -4,6 +4,7 @@ import eventBus from '@/plugins/mitt';
 
 // Interfaces
 interface IProps {
+  id: string;
   description?: string;
   iconName?: string;
   isLoading?: boolean;
@@ -21,6 +22,7 @@ interface IProps {
 }
 
 const props = ref<IProps>({
+  id: 'AppBaseDialogConfirmation',
   description: '',
   iconName: 'info',
   isLoading: false,
@@ -28,8 +30,8 @@ const props = ref<IProps>({
   isUsingIcon: true,
   isUsingButtonActions: true,
   isUsingButtonSecondary: false,
-  onClickButtonPrimary: () => {},
-  onClickButtonSecondary: () => {},
+  onClickButtonPrimary: () => { },
+  onClickButtonSecondary: () => { },
   textButtonPrimary: 'OK',
   textButtonSecondary: 'Cancel',
   title: '',
@@ -38,20 +40,20 @@ const props = ref<IProps>({
 });
 
 eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
-  props.value = {
-    ...props.value,
-    ...(params as IProps),
-  };
+  const eventParams = params as IProps;
+
+  if (eventParams.id === props.value.id) {
+    props.value = {
+      ...props.value,
+      ...(params as IProps),
+    };
+  }
 });
 </script>
 
 <template>
-  <AppBaseDialog
-    :is-draggable="false"
-    :is-open="props.isOpen"
-    :is-using-closable-button="false"
-    :is-using-backdrop="true"
-  >
+  <AppBaseDialog :is-draggable="false" :is-open="props.isOpen" :is-using-closable-button="false"
+    :is-using-backdrop="true">
     <template #header>
       <AppBaseSvg :name="props.iconName" />
     </template>
@@ -72,12 +74,8 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
       <footer v-if="props.isUsingButtonActions" class="flex items-center gap-4 w-full">
         <section v-if="props.isUsingButtonSecondary" id="button-secondary">
           <template v-if="props.type === 'error'">
-            <PrimeVueButton
-              class="w-full border-none bg-transparent basic-smooth-animation hover:bg-grayscale-10"
-              severity="secondary"
-              :loading="props.isLoading"
-              @click="props.onClickButtonSecondary"
-            >
+            <PrimeVueButton class="w-full border-none bg-transparent basic-smooth-animation hover:bg-grayscale-10"
+              severity="secondary" :loading="props.isLoading" @click="props.onClickButtonSecondary">
               <template #default>
                 <section id="content" class="flex items-center gap-2">
                   <AppBaseSvg name="delete" />
@@ -92,22 +90,13 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
           <template v-else>
             <PrimeVueButton
               class="border-blue-primary bg-transparent font-semibold text-base text-blue-primary w-full basic-smooth-animation hover:bg-grayscale-10"
-              :label="props.textButtonSecondary"
-              :loading="props.isLoading"
-              severity="secondary"
-              variant="outlined"
-              @click="props.onClickButtonSecondary"
-            />
+              :label="props.textButtonSecondary" :loading="props.isLoading" severity="secondary" variant="outlined"
+              @click="props.onClickButtonSecondary" />
           </template>
         </section>
 
-        <PrimeVueButton
-          class="bg-blue-primary border-none text-sm py-[10px] w-full"
-          :label="props.textButtonPrimary"
-          type="button"
-          :loading="props.isLoading"
-          @click="props.onClickButtonPrimary"
-        />
+        <PrimeVueButton class="bg-blue-primary border-none text-sm py-[10px] w-full" :label="props.textButtonPrimary"
+          type="button" :loading="props.isLoading" @click="props.onClickButtonPrimary" />
       </footer>
     </template>
   </AppBaseDialog>
