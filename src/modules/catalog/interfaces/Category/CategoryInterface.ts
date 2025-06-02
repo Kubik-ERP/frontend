@@ -14,7 +14,13 @@ export interface ICategoryFormData {
   description: string;
 }
 
-export interface ICategoryResponse{
-  categories: ICategory[],
-  lastPage: number
+export interface ICategoryResponse {
+  categories: ICategory[];
+  lastPage: number;
+}
+
+export interface ICategoryAddResponse {
+  statusCode: number;
+  message: string;
+  data?: ICategory;
 }

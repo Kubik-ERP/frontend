@@ -4,6 +4,7 @@ import {
   ICategory,
   ICategoryFormData,
   ICategoryResponse,
+  ICategoryAddResponse,
 } from '@/modules/catalog/interfaces/Category/CategoryInterface';
 
 import useVuelidate from '@vuelidate/core';
@@ -39,10 +40,7 @@ export const useCategoryService = () => {
       lastPage,
     };
   };
-  const createCategory = async (payload: CategoryPayload): Promise<unknown> => {
-    category_formValidations.value.$touch();
-    if (category_formValidations.value.$invalid) return;
-
+  const createCategory = async (payload: CategoryPayload): Promise<ICategoryAddResponse> => {
     const response = await axios.post(API_URL, payload);
     const message = response.data.message || 'Successfully created a category.';
     if (response.data.statusCode !== 201)
@@ -52,10 +50,13 @@ export const useCategoryService = () => {
       };
     const data: ICategory = response.data.data;
     return {
-      id: data.id,
-      category: data.category,
-      description: data.description || '-',
       message,
+      statusCode: response.data.statusCode,
+      data: {
+        id: data.id,
+        category: data.category,
+        description: data.description || '-',
+      },
     };
   };
   const updateCategory = async (id: string, payload: CategoryPayload): Promise<ICategory> => {

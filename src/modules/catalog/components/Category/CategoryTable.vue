@@ -317,7 +317,7 @@ const handleEditCategory = async () => {
         category: category_formData.name,
         description: category_formData.description || '-',
       });
-      categories.value = categories.value.map(cat => (cat.id === updatedCategory.id ? updatedCategory : cat));
+      categories.value = categories.value.map((cat: ICategory) => (cat.id === updatedCategory.id ? updatedCategory : cat));
       isEditOpen.value = false;
       resetForm();
     } catch (error) {
@@ -333,7 +333,7 @@ const handleDeleteCategory = async () => {
       const deleteCat = await deleteCategory(selected.value.id);
       if (deleteCat === 200) {
         // alert('Category deleted successfully.');
-        categories.value = categories.value.filter(cat => cat.id !== selected.value?.id);
+        categories.value = categories.value.filter((cat: ICategory) => cat.id !== selected.value?.id);
       } else {
         alert('Something went wrong while deleting the category.');
       }
@@ -375,7 +375,7 @@ const prevPage = () => {
 
 onMounted(() => {
   loadCategories();
-  page.value = parseInt(route.query.page) || 1;
+  // page.value = parseInt(route.query.page) || 1;
   if (!route.query.page) {
     router.push({ query: { page: '1' } });
   }
