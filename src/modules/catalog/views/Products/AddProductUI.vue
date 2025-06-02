@@ -1,6 +1,7 @@
 <template>
   <div class="container mx-auto">
     <div class="flex flex-col gap-4">
+      {{ product_formData }}
       <h1 class="text-2xl font-bold">Products Detail</h1>
       <h2 class="text-xl font-semibold">Product Information</h2>
       <form class="flex flex-col items-center justify-center" @submit.prevent="handleCreateProduct">
@@ -314,6 +315,12 @@ const handleImageUpload = event => {
 const handleCreateProduct = async () => {
   product_formValidations.value.$touch();
   if (product_formValidations.value.$invalid) return;
+
+  if(!isDiscount.value){
+    console.log("no discount");
+    product_formData.discount_price = product_formData.price
+  }
+
   try {
     await createProduct(product_formData);
     clearForm();
