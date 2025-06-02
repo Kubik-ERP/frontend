@@ -1,3 +1,5 @@
+<script setup lang="ts"></script>
+
 <template>
   <section id="invoice-product">
     <div class="flex flex-col w-full gap-4 py-4">
@@ -28,5 +30,3 @@
     </div>
   </section>
 </template>
-
-<script setup lang="ts"></script>
