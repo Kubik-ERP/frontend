@@ -1,11 +1,11 @@
 export interface IInvoiceInvoiceData {
   isLoading: boolean;
-  data: Partial<IInvoiceResponseInvoice['data']>;
+  data: IInvoiceResponseInvoice['data'] | null;
 }
 export interface IInvoiceResponseInvoice {
   data: {
     id: string;
-    paymentMethodsId: string;
+    paymentMethodsId: string | null;
     customerId: string;
     discountAmount: number;
     tableCode: string;
@@ -19,11 +19,11 @@ export interface IInvoiceResponseInvoice {
       id: string;
       name: string;
       code: string;
-      number: string;
-      dob: string;
-      email: string;
+      number: string | null;
+      dob: string | null;
+      email: string | null;
       username: string;
-      address: string;
+      address: string | null;
     };
     invoiceDetails: {
       id: string;
@@ -45,7 +45,7 @@ export interface IInvoiceResponseInvoice {
         id: string;
         name: string;
         price: number;
-      };
+      } | null;
     }[];
     paymentMethods: {
       id: string;
@@ -53,7 +53,7 @@ export interface IInvoiceResponseInvoice {
       iconName: string;
       sortNo: number;
       isAvailable: boolean;
-    };
+    } | null;
   };
 }
 

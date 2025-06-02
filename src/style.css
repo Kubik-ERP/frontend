@@ -57,10 +57,6 @@
       display: none !important;
     }
 
-    body .print-invoice-paper {
-      display: block !important;
-    }
-
     body {
       margin: 0;
       padding: 0;
