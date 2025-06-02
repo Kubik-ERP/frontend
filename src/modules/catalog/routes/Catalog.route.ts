@@ -10,14 +10,20 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/catalog',
     component: AppBaseWrapper,
+    meta: {
+      requiresAuthorization: false,
+      breadcrumb: 'Catalog',
+    },
     children: [
       {
         path: 'categories',
         name: 'categories',
         component: () => import('../views/Category/CategoriesUI.vue'),
         meta: {
-          requiresAuthorization: false,
+          title: 'Categories',
+          breadcrumb: 'Categories',
           layout: LAYOUT_OPTIONS.DEFAULT,
+          requiresAuthorization: false,
         },
       },
       {
@@ -27,26 +33,32 @@ const routes: RouteRecordRaw[] = [
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.DEFAULT,
+          breadcrumb: 'Products',
+          title: 'Products',
         },
-      },
-      {
-        path: 'products/add-product',
-        name: 'add-product',
-        component: () => import('../views/Products/AddProductUI.vue'),
-        meta: {
-          requiresAuthorization: false,
-          layout: LAYOUT_OPTIONS.DEFAULT,
-        },
-      },
-      {
-        path: 'products/edit-product/:id',
-        name: 'edit-product',
-        props: route => ({ id: route.params.id }),
-        component: () => import('../views/Products/EditProductUI.vue'),
-        meta: {
-          requiresAuthorization: false,
-          layout: LAYOUT_OPTIONS.DEFAULT,
-        },
+        children: [
+          {
+            path: 'add-product',
+            name: 'add-product',
+            component: () => import('../views/Products/AddProductUI.vue'),
+            meta: {
+              requiresAuthorization: false,
+              layout: LAYOUT_OPTIONS.DEFAULT,
+              breadcrumb: 'Add Product',
+              title: 'Add Product',
+            },
+          },
+          {
+            path: 'edit-product/:id',
+            name: 'edit-product',
+            props: route => ({ id: route.params.id }),
+            component: () => import('../views/Products/EditProductUI.vue'),
+            meta: {
+              requiresAuthorization: false,
+              layout: LAYOUT_OPTIONS.DEFAULT,
+            },
+          },
+        ],
       },
     ],
   },

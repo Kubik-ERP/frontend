@@ -69,11 +69,11 @@ export const LIST_SIDEBAR_MENUS = [
         subMenus: [
           {
             name: 'Categories',
-            path: '/',
+            path: '/catalog/categories',
           },
           {
             name: 'Products',
-            path: '/',
+            path: '/catalog/products',
           },
         ],
       },
