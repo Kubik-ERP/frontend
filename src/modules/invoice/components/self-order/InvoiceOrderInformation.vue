@@ -1,3 +1,5 @@
+<script setup lang="ts"></script>
+
 <template>
   <section id="invoice-order-information" class="flex flex-col gap-2 p-4 bg-white">
     <span class="font-semibold">Customer Details</span>
@@ -22,5 +24,3 @@
     </div>
   </section>
 </template>
-
-<script setup lang="ts"></script>

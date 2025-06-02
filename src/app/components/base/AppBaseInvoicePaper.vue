@@ -62,12 +62,12 @@ const props = withDefaults(defineProps<IProps>(), {
 
     <section v-if="!props.isHideOrderType" id="order-type" class="flex items-center justify-between w-full">
       <p id="label-order-type" class="font-normal text-black text-sm">Order Type</p>
-      <p id="order-type-value" class="font-normal text-black text-sm">Takeaway</p>
+      <p id="order-type-value" class="font-normal text-black text-sm">Dine In</p>
     </section>
 
     <section v-if="!props.isHideQueueNumber" id="queue" class="flex items-center justify-between w-full">
       <p id="label-queue" class="font-normal text-black text-sm">Queue</p>
-      <p id="queue-value" class="font-normal text-black text-sm">38</p>
+      <p id="queue-value" class="font-normal text-black text-sm">39</p>
     </section>
 
     <section v-if="props.isShowTableNumber" id="queue" class="flex items-center justify-between w-full">
@@ -87,44 +87,44 @@ const props = withDefaults(defineProps<IProps>(), {
 
       <tbody class="border-b border-solid border-black">
         <tr v-for="index in 2" :key="index">
-          <td class="font-normal text-black text-sm py-2">Blueberry Pancake</td>
-          <td class="font-normal text-black text-sm text-center py-2">1</td>
-          <td v-if="!props.isHideItemPrices" class="font-normal text-black text-sm text-center py-2">100.000.000</td>
-          <td v-if="!props.isHideItemPrices" class="font-normal text-black text-sm text-right py-2">100.000.000</td>
+          <td class="font-normal text-black text-sm py-2">Product A</td>
+          <td class="font-normal text-black text-sm text-center py-2">2</td>
+          <td v-if="!props.isHideItemPrices" class="font-normal text-black text-sm text-center py-2">100.000</td>
+          <td v-if="!props.isHideItemPrices" class="font-normal text-black text-sm text-right py-2">100.000</td>
         </tr>
       </tbody>
 
       <tfoot class="border-b border-solid border-grayscale-10">
         <tr>
           <td class="font-normal text-black text-sm py-2">Sub Total</td>
-          <td class="font-normal text-black text-sm text-center py-2">6</td>
-          <td colspan="2" class="font-normal text-black text-sm text-right py-2">100.000.000</td>
+          <td class="font-normal text-black text-sm text-center py-2">5</td>
+          <td colspan="2" class="font-normal text-black text-sm text-right py-2">250.500</td>
         </tr>
 
         <tr>
           <td class="font-normal text-black text-sm py-2">Promo</td>
           <td class="font-normal text-black text-sm text-center py-2">2</td>
-          <td colspan="2" class="font-normal text-black text-sm text-right py-2">-200.000</td>
+          <td colspan="2" class="font-normal text-black text-sm text-right py-2">-50.000</td>
+        </tr>
+
+        <tr class="border-b border-solid border-black">
+          <td class="font-normal text-black text-sm py-2">PB1 10%</td>
+          <td colspan="3" class="font-normal text-black text-sm text-right py-2">25.050</td>
+        </tr>
+
+        <tr class="border-b border-dashed border-black">
+          <td colspan="2" class="font-semibold text-black text-sm text-center py-2">Total</td>
+          <td colspan="2" class="font-semibold text-black text-sm text-right py-2">225.550</td>
         </tr>
 
         <tr>
           <td class="font-normal text-black text-sm py-2">Debit</td>
-          <td colspan="3" class="font-normal text-black text-sm text-right py-2">599.800.500</td>
-        </tr>
-
-        <tr class="border-b border-dashed border-black">
-          <td class="font-normal text-black text-sm py-2">Kembali</td>
-          <td colspan="3" class="font-normal text-black text-sm text-right py-2">0</td>
-        </tr>
-
-        <tr class="border-b border-solid border-black">
-          <td class="font-normal text-black text-sm py-2">PPN</td>
-          <td colspan="3" class="font-normal text-black text-sm text-right py-2">59.800.500</td>
+          <td colspan="3" class="font-normal text-black text-sm text-right py-2">225.550</td>
         </tr>
 
         <tr>
-          <td colspan="2" class="font-semibold text-black text-sm text-center py-2">Total</td>
-          <td colspan="2" class="font-semibold text-black text-sm text-right py-2">659.780.550</td>
+          <td class="font-normal text-black text-sm py-2">Kembali</td>
+          <td colspan="3" class="font-normal text-black text-sm text-right py-2">0</td>
         </tr>
       </tfoot>
     </table>
@@ -140,14 +140,15 @@ const props = withDefaults(defineProps<IProps>(), {
 </template>
 
 <style lang="css" scoped>
-.invoice-paper{
+.invoice-paper {
   box-shadow: 0px 0px 10px 2px #00000026;
 }
 
 .invoice-datetime-or-status {
   position: relative;
   width: 100%;
-  font-family: 'Inter', monospace; /* Ensures uniform spacing */
+  font-family: 'Inter', monospace;
+  /* Ensures uniform spacing */
   font-size: 12px;
 }
 
@@ -179,7 +180,8 @@ const props = withDefaults(defineProps<IProps>(), {
 /* Content styling with flexbox for alignment */
 .invoice-datetime-or-status-content {
   display: flex;
-  justify-content: space-between; /* Pushes date and cashier to opposite ends */
+  justify-content: space-between;
+  /* Pushes date and cashier to opposite ends */
 }
 
 .date {
