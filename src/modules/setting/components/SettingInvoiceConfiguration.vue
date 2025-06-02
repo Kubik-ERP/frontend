@@ -33,8 +33,8 @@ const {
             General Settings
           </h6>
 
-          <section v-for="(generalSetting, generalSettingIndex) in settingInvoice_listGeneralSettings" :key="`general-setting-${generalSettingIndex}`" :id="generalSetting.id" class="flex items-center gap-3">
-            <PrimeVueCheckbox v-model="settingInvoice_formData.generalSettings[generalSetting.key as keyof ISettingInvoiceGeneralSettings]" :id="`is-${generalSetting.id}`" :disabled="settingInvoice_isEditableInvoiceConfiguration" binary />
+          <section v-for="(generalSetting, generalSettingIndex) in settingInvoice_listGeneralSettings" :id="generalSetting.id" :key="`general-setting-${generalSettingIndex}`" class="flex items-center gap-3">
+            <PrimeVueCheckbox :id="`is-${generalSetting.id}`" v-model="settingInvoice_formData.generalSettings[generalSetting.key as keyof ISettingInvoiceGeneralSettings]" :disabled="settingInvoice_isEditableInvoiceConfiguration" binary />
 
             <label :for="`is-${generalSetting.id}`" class="font-normal text-sm text-text-primary">
               {{ generalSetting.label }}
@@ -51,8 +51,8 @@ const {
             Content Settings
           </h6>
 
-          <section v-for="(contentSetting, contentSettingIndex) in settingInvoice_listContentSettings" :key="`content-setting-${contentSettingIndex}`" :id="contentSetting.id" class="flex items-center gap-3">
-            <PrimeVueCheckbox v-model="settingInvoice_formData.contentSettings[contentSetting.key as keyof ISettingInvoiceContentSettings]" :id="`is-${contentSetting.id}`" :disabled="settingInvoice_isEditableInvoiceConfiguration" binary />
+          <section v-for="(contentSetting, contentSettingIndex) in settingInvoice_listContentSettings" :id="contentSetting.id" :key="`content-setting-${contentSettingIndex}`" class="flex items-center gap-3">
+            <PrimeVueCheckbox :id="`is-${contentSetting.id}`" v-model="settingInvoice_formData.contentSettings[contentSetting.key as keyof ISettingInvoiceContentSettings]" :disabled="settingInvoice_isEditableInvoiceConfiguration" binary />
 
             <label :for="`is-${contentSetting.id}`" class="font-normal text-sm text-text-primary">
               {{ contentSetting.label }}
