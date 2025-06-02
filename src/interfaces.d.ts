@@ -62,6 +62,7 @@ declare global {
   }
 
   interface IPropsDialog {
+    id: string;
     isDraggable?: boolean;
     isUsingBackdrop?: boolean;
     isUsingClosableButton?: boolean;
@@ -70,6 +71,7 @@ declare global {
   }
 
   interface IPropsDialogConfirmation {
+    id: string;
     description?: string;
     iconName?: string;
     isLoading?: boolean;
@@ -97,6 +99,8 @@ declare global {
   }
 
   interface IPropsInvoicePaper {
+    companyLogo?: File | null;
+    footerText?: string | null;
     isAutomaticallyPrintReceipt: boolean;
     isAutomaticallyPrintKitchen: boolean;
     isAutomaticallyPrintTable: boolean;
@@ -108,6 +112,9 @@ declare global {
     isShowTableNumber: boolean;
     isHideItemPrices: boolean;
     isShowFooter: boolean;
+    incrementBy?: number;
+    resetSequence?: string;
+    startingNumber?: number;
   }
 
   /**
