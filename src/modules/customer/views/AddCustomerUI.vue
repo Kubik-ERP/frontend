@@ -1,3 +1,15 @@
+<script setup >
+import CustomerTags from '@/modules/customer/components/addCustomer/tags.vue';
+import { useCustomerService } from '../services/CustomersService';
+const { customer_FormData, customer_formValidations } = useCustomerService();
+
+const handleCreateCustomer = valid => {
+  if (valid) {
+    console.log(customer_FormData);
+  }
+};
+</script>
+
 <template>
   <div class="">
     {{ customer_FormData }}
@@ -237,18 +249,6 @@
     </form>
   </div>
 </template>
-
-<script setup >
-import CustomerTags from '@/modules/customer/components/addCustomer/tags.vue';
-import { useCustomerService } from '../services/CustomersService';
-const { customer_FormData, customer_formValidations } = useCustomerService();
-
-const handleCreateCustomer = valid => {
-  if (valid) {
-    console.log(customer_FormData);
-  }
-};
-</script>
 
 <style lang="scss" scoped>
 </style>

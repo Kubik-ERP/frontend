@@ -1,3 +1,55 @@
+<script setup>
+import { ref } from 'vue';
+import { FilterMatchMode } from '@primevue/core/api';
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
+
+import { useCustomerService } from '../services/CustomersService';
+
+const { getAllCustomers } = useCustomerService();
+
+const selectedCustomer = ref(null);
+
+const isLoading = ref(false);
+
+const isDeleteOpen = ref(false);
+
+const op = ref();
+const displayPopover = (event, product) => {
+  selectedCustomer.value = product;
+  op.value.show(event);
+  // console.log('product', product);
+};
+
+const customers = ref([]);
+
+const loadCustomers = async () => {
+  isLoading.value = true;
+  try {
+    customers.value = await getAllCustomers();
+    customers.value.map(item => ({
+      id: item.id,
+      name: item.name,
+      email: item.email,
+      code: item.code,
+      phone: `(${item.code}) ` + item.phone,
+      points: item.points,
+      latestVisit: item.latestVisit,
+    }));
+  } catch (error) {
+    console.error('Failed to fetch customers:', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+onMounted(() => {
+  loadCustomers();
+  console.log('customers', customers.value);
+});
+</script>
+
 <template>
   <div class="m-4 p-1 border border-gray rounded-lg shadow-2xl">
     <!-- {{ customers }} -->
@@ -181,58 +233,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from 'vue';
-import { FilterMatchMode } from '@primevue/core/api';
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
-
-import { useCustomerService } from '../services/CustomersService';
-
-const { getAllCustomers } = useCustomerService();
-
-const selectedCustomer = ref(null);
-
-const isLoading = ref(false);
-
-const isDeleteOpen = ref(false);
-
-const op = ref();
-const displayPopover = (event, product) => {
-  selectedCustomer.value = product;
-  op.value.show(event);
-  // console.log('product', product);
-};
-
-const customers = ref([]);
-
-const loadCustomers = async () => {
-  isLoading.value = true;
-  try {
-    customers.value = await getAllCustomers();
-    customers.value.map(item => ({
-      id: item.id,
-      name: item.name,
-      email: item.email,
-      code: item.code,
-      phone: `(${item.code}) ` + item.phone,
-      points: item.points,
-      latestVisit: item.latestVisit,
-    }));
-  } catch (error) {
-    console.error('Failed to fetch customers:', error);
-  } finally {
-    isLoading.value = false;
-  }
-};
-
-onMounted(() => {
-  loadCustomers();
-  console.log('customers', customers.value);
-});
-</script>
 
 <style lang="scss" scoped>
 </style>

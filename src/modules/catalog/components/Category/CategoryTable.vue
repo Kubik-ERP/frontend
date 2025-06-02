@@ -1,3 +1,137 @@
+<script setup lang="ts">
+import { FilterMatchMode } from '@primevue/core/api';
+
+import { useCategoryService } from '../../services/Category/CategoryService';
+import { ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
+
+const {
+  createCategory,
+  updateCategory,
+  deleteCategory,
+  getAllCategories,
+  category_formData,
+  category_formValidations,
+} = useCategoryService();
+
+const isAddOpen = ref(false);
+const isEditOpen = ref(false);
+const isDeleteOpen = ref(false);
+const selectedCategories = ref<ICategory[]>([]);
+const categories = ref<ICategory[]>([]);
+const selected = ref<ICategory | null>(null);
+const loading = ref(false);
+
+// const category = ref('');
+// const description = ref('');
+const op = ref();
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
+
+const loadCategories = async () => {
+  loading.value = true;
+  try {
+    categories.value = await getAllCategories();
+    console.log(categories.value);
+  } catch (err) {
+    console.error('Failed to fetch categories:', err);
+  } finally {
+    loading.value = false;
+  }
+};
+const handleAddCategory = async () => {
+  if (!category_formData.name.trim()) {
+    // alert('ICategory name is required!');
+    return;
+  }
+
+  try {
+    const newCategory = await createCategory({
+      category: category_formData.name,
+      description: category_formData.description || '-',
+    });
+
+    loadCategories();
+    isAddOpen.value = false;
+    category_formData.name = '';
+    category_formData.description = '';
+
+    if (newCategory.statusCode === 500) {
+      alert(`${newCategory.message}`);
+    }
+  } catch (error) {
+    console.error('Failed to create category:', error);
+    console.error(error);
+    alert('Something went wrong while creating the category.');
+  }
+};
+const openAddDialog = () => {
+  isAddOpen.value = true;
+  category_formData.name = '';
+  category_formData.description = '';
+};
+
+const displayPopover = (event: Event, category: ICategory) => {
+  selected.value = category;
+  op.value?.show(event);
+};
+
+const displayEdit = () => {
+  if (selected.value) {
+    category_formData.name = selected.value.category;
+    category_formData.description = selected.value.description ?? '';
+    isEditOpen.value = true;
+    op.value?.hide();
+  }
+};
+
+const handleEditCategory = async () => {
+  if (selected.value) {
+    try {
+      const updatedCategory = await updateCategory(selected.value.id, {
+        category: category_formData.name,
+        description: category_formData.description || '-',
+      });
+      categories.value = categories.value.map(cat => (cat.id === updatedCategory.id ? updatedCategory : cat));
+      isEditOpen.value = false;
+    } catch (error) {
+      console.error('Failed to update category:', error);
+      alert('Something went wrong while updating the category.');
+    }
+  }
+};
+
+/**
+ * @description Deletes the currently selected category.
+ * If the category is successfully deleted, it removes the category from the list
+ * and displays a success alert. Otherwise, it shows an error alert.
+ * It also handles any errors encountered during the deletion process.
+ */
+
+const handleDeleteCategory = async () => {
+  try {
+    if (selected.value) {
+      const deleteCat = await deleteCategory(selected.value.id);
+      if (deleteCat === 200) {
+        // alert('Category deleted successfully.');
+        categories.value = categories.value.filter(cat => cat.id !== selected.value?.id);
+      } else {
+        alert('Something went wrong while deleting the category.');
+      }
+    }
+  } catch (error) {
+    console.error('Failed to delete category:', error);
+  }
+
+  isDeleteOpen.value = false;
+};
+
+onMounted(() => {
+  loadCategories();
+});
+</script>
+
 <template>
   <div class="m-4 p-1 border border-gray rounded-lg shadow-2xl">
     <PrimeVueDataTable
@@ -196,137 +330,3 @@
     </PrimeVueDialog>
   </div>
 </template>
-
-<script setup lang="ts">
-import { FilterMatchMode } from '@primevue/core/api';
-
-import { useCategoryService } from '../../services/Category/CategoryService';
-import { ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
-
-const {
-  createCategory,
-  updateCategory,
-  deleteCategory,
-  getAllCategories,
-  category_formData,
-  category_formValidations,
-} = useCategoryService();
-
-const isAddOpen = ref(false);
-const isEditOpen = ref(false);
-const isDeleteOpen = ref(false);
-const selectedCategories = ref<ICategory[]>([]);
-const categories = ref<ICategory[]>([]);
-const selected = ref<ICategory | null>(null);
-const loading = ref(false);
-
-// const category = ref('');
-// const description = ref('');
-const op = ref();
-
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
-
-const loadCategories = async () => {
-  loading.value = true;
-  try {
-    categories.value = await getAllCategories();
-    console.log(categories.value);
-  } catch (err) {
-    console.error('Failed to fetch categories:', err);
-  } finally {
-    loading.value = false;
-  }
-};
-const handleAddCategory = async () => {
-  if (!category_formData.name.trim()) {
-    // alert('ICategory name is required!');
-    return;
-  }
-
-  try {
-    const newCategory = await createCategory({
-      category: category_formData.name,
-      description: category_formData.description || '-',
-    });
-
-    loadCategories();
-    isAddOpen.value = false;
-    category_formData.name = '';
-    category_formData.description = '';
-
-    if (newCategory.statusCode === 500) {
-      alert(`${newCategory.message}`);
-    }
-  } catch (error) {
-    console.error('Failed to create category:', error);
-    console.error(error);
-    alert('Something went wrong while creating the category.');
-  }
-};
-const openAddDialog = () => {
-  isAddOpen.value = true;
-  category_formData.name = '';
-  category_formData.description = '';
-};
-
-const displayPopover = (event: Event, category: ICategory) => {
-  selected.value = category;
-  op.value?.show(event);
-};
-
-const displayEdit = () => {
-  if (selected.value) {
-    category_formData.name = selected.value.category;
-    category_formData.description = selected.value.description ?? '';
-    isEditOpen.value = true;
-    op.value?.hide();
-  }
-};
-
-const handleEditCategory = async () => {
-  if (selected.value) {
-    try {
-      const updatedCategory = await updateCategory(selected.value.id, {
-        category: category_formData.name,
-        description: category_formData.description || '-',
-      });
-      categories.value = categories.value.map(cat => (cat.id === updatedCategory.id ? updatedCategory : cat));
-      isEditOpen.value = false;
-    } catch (error) {
-      console.error('Failed to update category:', error);
-      alert('Something went wrong while updating the category.');
-    }
-  }
-};
-
-/**
- * @description Deletes the currently selected category.
- * If the category is successfully deleted, it removes the category from the list
- * and displays a success alert. Otherwise, it shows an error alert.
- * It also handles any errors encountered during the deletion process.
- */
-
-const handleDeleteCategory = async () => {
-  try {
-    if (selected.value) {
-      const deleteCat = await deleteCategory(selected.value.id);
-      if (deleteCat === 200) {
-        // alert('Category deleted successfully.');
-        categories.value = categories.value.filter(cat => cat.id !== selected.value?.id);
-      } else {
-        alert('Something went wrong while deleting the category.');
-      }
-    }
-  } catch (error) {
-    console.error('Failed to delete category:', error);
-  }
-
-  isDeleteOpen.value = false;
-};
-
-onMounted(() => {
-  loadCategories();
-});
-</script>

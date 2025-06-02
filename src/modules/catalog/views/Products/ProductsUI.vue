@@ -1,3 +1,74 @@
+<script setup>
+import { ref } from 'vue';
+import { FilterMatchMode } from '@primevue/core/api';
+import ProductVariantPill from '../../components/ProductVariantPill.vue';
+
+import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
+import CategoryPill from '@/modules/catalog/components/Category/CategoryPill.vue';
+
+const router = useRouter();
+
+const { getAllProducts, deleteProduct } = useProductService();
+
+function formatCurrency(value) {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' })
+    .format(value)
+    .replace('Rp', 'Rp ')
+    .replace(',00', '');
+}
+
+const selectedProduct = ref(null);
+
+const EditProducts = () => {
+  router.push({ name: 'edit-product', params: { id: selectedProduct.value.id } });
+  // console.log('product id :' + selectedProduct.value.id);
+};
+
+const op = ref();
+
+const isDeleteOpen = ref(false);
+
+const displayPopover = (event, product) => {
+  selectedProduct.value = product;
+  op.value.show(event);
+  // console.log('product', product);
+};
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
+
+const selectedProducts = ref([]);
+const loading = ref(false);
+const products = ref([]);
+const loadProducts = async () => {
+  loading.value = true;
+  try {
+    products.value = await getAllProducts();
+    // console.log('products', products.value);
+  } catch (err) {
+    console.error('Failed to fetch products:', err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const handleDelete = async () => {
+  try {
+    // console.log('product id', selectedProduct.value.id);
+    await deleteProduct(selectedProduct.value.id);
+    isDeleteOpen.value = false;
+    await loadProducts();
+  } catch (error) {
+    console.error('Failed to delete product:', error);
+  }
+};
+
+onMounted(() => {
+  loadProducts();
+});
+</script>
+
 <template>
   <div class="m-4 p-1 border border-gray rounded-lg shadow-2xl">
     <!-- {{ products }} -->
@@ -159,74 +230,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from 'vue';
-import { FilterMatchMode } from '@primevue/core/api';
-import ProductVariantPill from '../../components/ProductVariantPill.vue';
-
-import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
-import CategoryPill from '@/modules/catalog/components/Category/CategoryPill.vue';
-
-const router = useRouter();
-
-const { getAllProducts, deleteProduct } = useProductService();
-
-function formatCurrency(value) {
-  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' })
-    .format(value)
-    .replace('Rp', 'Rp ')
-    .replace(',00', '');
-}
-
-const selectedProduct = ref(null);
-
-const EditProducts = () => {
-  router.push({ name: 'edit-product', params: { id: selectedProduct.value.id } });
-  // console.log('product id :' + selectedProduct.value.id);
-};
-
-const op = ref();
-
-const isDeleteOpen = ref(false);
-
-const displayPopover = (event, product) => {
-  selectedProduct.value = product;
-  op.value.show(event);
-  // console.log('product', product);
-};
-
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
-
-const selectedProducts = ref([]);
-const loading = ref(false);
-const products = ref([]);
-const loadProducts = async () => {
-  loading.value = true;
-  try {
-    products.value = await getAllProducts();
-    // console.log('products', products.value);
-  } catch (err) {
-    console.error('Failed to fetch products:', err);
-  } finally {
-    loading.value = false;
-  }
-};
-
-const handleDelete = async () => {
-  try {
-    // console.log('product id', selectedProduct.value.id);
-    await deleteProduct(selectedProduct.value.id);
-    isDeleteOpen.value = false;
-    await loadProducts();
-  } catch (error) {
-    console.error('Failed to delete product:', error);
-  }
-};
-
-onMounted(() => {
-  loadProducts();
-});
-</script>

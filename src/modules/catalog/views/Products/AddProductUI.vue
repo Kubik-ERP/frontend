@@ -1,3 +1,149 @@
+<script setup>
+import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
+import { useCategoryService } from '../../services/Category/CategoryService';
+
+const { getAllCategories } = useCategoryService();
+const { createProduct, product_formData, product_formValidations } = useProductService();
+
+function clearForm() {
+  product_formData.name = '';
+  product_formData.price = 0;
+  product_formData.isDiscount = false;
+  product_formData.discount_value = 0;
+  product_formData.discount_unit = 'Rp';
+  product_formData.discount_price = 0;
+  product_formData.variants = [];
+  product_formData.categories = [];
+  product_formData.image = null;
+
+  product_formValidations.name = null;
+}
+
+const previewImage = ref(null);
+const fileInput = ref(null);
+
+const triggerFileInput = () => {
+  fileInput.value?.click();
+};
+
+const handleImageUpload = event => {
+  const file = event.target.files?.[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      product_formData.image = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const handleCreateProduct = async () => {
+  try {
+    await createProduct(product_formData);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    clearForm();
+  }
+};
+
+const categories = ref([]);
+
+const toggleVariant = ref(false);
+
+const addVariant = () => {
+  product_formData.variants.push({
+    name: '',
+    price: 0,
+  });
+};
+
+const removeVariant = index => {
+  product.variants.splice(index, 1);
+};
+
+const calculateDiscount = () => {
+  if (!product_formData.isDiscount) {
+    product_formData.discount_price = 0;
+  }
+
+  if (product_formData.isDiscount) {
+    if (product_formData.discount_unit === 'Rp') {
+      product_formData.discount_price = product_formData.price - product_formData.discount_value;
+    } else {
+      product_formData.discount_price =
+        product_formData.price - (product_formData.price * product_formData.discount_value) / 100;
+    }
+  }
+};
+
+const nextRoute = ref(null);
+const isLeavingModal = ref(false);
+
+const router = useRouter();
+
+let hasConfirmedLeave = false;
+
+const confirmLeave = () => {
+  isLeavingModal.value = false;
+  hasConfirmedLeave = true;
+
+  if (nextRoute.value) {
+    const targetRoute = nextRoute.value;
+    nextRoute.value = null;
+    router.push(targetRoute);
+  }
+};
+
+// const loadProduct = async () => {
+//   try {
+//     const response = await getProductByID();
+//     products.value = response;
+//   } catch (error) {
+//     console.error('Failed to load products:', error);
+//   }
+// };
+
+const loadCategories = async () => {
+  try {
+    const response = await getAllCategories();
+    categories.value = response;
+  } catch (error) {
+    console.error('Failed to load categories:', error);
+  }
+};
+
+onMounted(async () => {
+  loadCategories();
+  // loadProduct();
+});
+
+const cancelLeave = () => {
+  isLeavingModal.value = false;
+  nextRoute.value = null;
+  hasConfirmedLeave = false;
+};
+
+onBeforeRouteLeave((to, from, next) => {
+  // console.log('onBeforeRouteLeave triggered', isLeavingModal.value, hasConfirmedLeave);
+
+  if (hasConfirmedLeave) {
+    hasConfirmedLeave = false;
+    return next();
+  }
+
+  if (!isLeavingModal.value) {
+    isLeavingModal.value = true;
+    nextRoute.value = to.fullPath;
+    next(false);
+  }
+});
+
+watch(product_formData, () => {
+  calculateDiscount();
+});
+</script>
+
 <template>
   <div class="container mx-auto">
     <div class="flex flex-col gap-4">
@@ -273,152 +419,6 @@
     </PrimeVueDialog>
   </div>
 </template>
-
-<script setup>
-import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
-import { useCategoryService } from '../../services/Category/CategoryService';
-
-const { getAllCategories } = useCategoryService();
-const { createProduct, product_formData, product_formValidations } = useProductService();
-
-function clearForm() {
-  product_formData.name = '';
-  product_formData.price = 0;
-  product_formData.isDiscount = false;
-  product_formData.discount_value = 0;
-  product_formData.discount_unit = 'Rp';
-  product_formData.discount_price = 0;
-  product_formData.variants = [];
-  product_formData.categories = [];
-  product_formData.image = null;
-
-  product_formValidations.name = null;
-}
-
-const previewImage = ref(null);
-const fileInput = ref(null);
-
-const triggerFileInput = () => {
-  fileInput.value?.click();
-};
-
-const handleImageUpload = event => {
-  const file = event.target.files?.[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      product_formData.image = reader.result;
-    };
-    reader.readAsDataURL(file);
-  }
-};
-
-const handleCreateProduct = async () => {
-  try {
-    await createProduct(product_formData);
-  } catch (error) {
-    console.error(error);
-  } finally {
-    clearForm();
-  }
-};
-
-const categories = ref([]);
-
-const toggleVariant = ref(false);
-
-const addVariant = () => {
-  product_formData.variants.push({
-    name: '',
-    price: 0,
-  });
-};
-
-const removeVariant = index => {
-  product.variants.splice(index, 1);
-};
-
-const calculateDiscount = () => {
-  if (!product_formData.isDiscount) {
-    product_formData.discount_price = 0;
-  }
-
-  if (product_formData.isDiscount) {
-    if (product_formData.discount_unit === 'Rp') {
-      product_formData.discount_price = product_formData.price - product_formData.discount_value;
-    } else {
-      product_formData.discount_price =
-        product_formData.price - (product_formData.price * product_formData.discount_value) / 100;
-    }
-  }
-};
-
-const nextRoute = ref(null);
-const isLeavingModal = ref(false);
-
-const router = useRouter();
-
-let hasConfirmedLeave = false;
-
-const confirmLeave = () => {
-  isLeavingModal.value = false;
-  hasConfirmedLeave = true;
-
-  if (nextRoute.value) {
-    const targetRoute = nextRoute.value;
-    nextRoute.value = null;
-    router.push(targetRoute);
-  }
-};
-
-// const loadProduct = async () => {
-//   try {
-//     const response = await getProductByID();
-//     products.value = response;
-//   } catch (error) {
-//     console.error('Failed to load products:', error);
-//   }
-// };
-
-const loadCategories = async () => {
-  try {
-    const response = await getAllCategories();
-    categories.value = response;
-  } catch (error) {
-    console.error('Failed to load categories:', error);
-  }
-};
-
-onMounted(async () => {
-  loadCategories();
-  // loadProduct();
-});
-
-const cancelLeave = () => {
-  isLeavingModal.value = false;
-  nextRoute.value = null;
-  hasConfirmedLeave = false;
-};
-
-onBeforeRouteLeave((to, from, next) => {
-  // console.log('onBeforeRouteLeave triggered', isLeavingModal.value, hasConfirmedLeave);
-
-  if (hasConfirmedLeave) {
-    hasConfirmedLeave = false;
-    return next();
-  }
-
-  if (!isLeavingModal.value) {
-    isLeavingModal.value = true;
-    nextRoute.value = to.fullPath;
-    next(false);
-  }
-});
-
-watch(product_formData, () => {
-  calculateDiscount();
-});
-</script>
 
 
 <style lang="scss" scoped>
