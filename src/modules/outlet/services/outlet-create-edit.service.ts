@@ -230,6 +230,7 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
    */
   const outletCreateEdit_onCloseDialogVerifyPIN = (): void => {
     const argsEventEmitter: IPropsDialog = {
+      id: 'outlet-create-edit-dialog-verify-pin',
       isOpen: false,
     };
 
@@ -263,6 +264,7 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
    */
   const outletCreateEdit_onShowDialogDeleteOutlet = async (): Promise<void> => {
     const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'outlet-create-edit-dialog-confirmation',
       description:
         'Deleting this store will permanently remove all related data, including transactions and inventory. This action cannot be undone.',
       iconName: 'delete-polygon',
@@ -270,13 +272,14 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
       isUsingButtonSecondary: true,
       onClickButtonPrimary: () => {
         const argsEventEmitter: IPropsDialogConfirmation = {
+          id: 'outlet-create-edit-dialog-confirmation',
           isOpen: false,
         };
 
         eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
       },
-      onClickButtonSecondary: async () => {
-        await outletCreateEdit_onDeleteOutlet(route.params.id as string);
+      onClickButtonSecondary: () => {
+        outletCreateEdit_onDeleteOutlet(route.params.id as string);
 
         router.push({ name: 'outlet.list' });
       },
@@ -298,6 +301,7 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
       if (outletCreateEdit_formValidations.value.$invalid) return;
 
       const argsEventEmitter: IPropsDialog = {
+        id: 'outlet-create-edit-dialog-verify-pin',
         isUsingClosableButton: false,
         isUsingBackdrop: true,
         isOpen: true,

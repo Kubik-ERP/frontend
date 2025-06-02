@@ -32,22 +32,15 @@ provide('cashInOut', {
 
 <template>
   <section id="sales-order-cash-in-out" class="flex flex-col relative inset-0 z-0">
-    <AppBaseDataTable
-      btn-cta-create-title="Add Cash In/Out"
-      :columns="cashInOut_listColumns"
-      :data="cashInOut_listValues"
-      header-title="Cash In/Out"
-      is-using-btn-cta-create
-      is-using-custom-body
-      @click-btn-cta-create="cashInOut_onCreate"
-    >
+    <AppBaseDataTable btn-cta-create-title="Add Cash In/Out" :columns="cashInOut_listColumns"
+      :data="cashInOut_listValues" header-title="Cash In/Out" is-using-btn-cta-create is-using-custom-body
+      @click-btn-cta-create="cashInOut_onCreate">
       <template #body="{ column, data }">
         <template v-if="column.value === 'type'">
           <div class="flex items-center gap-3">
             <AppBaseSvg
               :name="data[column.value] === 'Cash Out' ? 'arrow-left-circle-danger' : 'arrow-right-circle-success'"
-              class="!w-5 !h-5"
-            />
+              class="!w-5 !h-5" />
 
             <span class="font-normal text-sm text-text-primary">
               {{ data[column.value] }}
@@ -60,13 +53,9 @@ provide('cashInOut', {
         </template>
 
         <template v-else-if="column.value === 'action'">
-          <PrimeVueSplitButton
-            :model="cashInOut_listItemsOfSplitButton"
-            severity="contrast"
-            :pt="{
-              root: '[&>button.p-splitbutton-button]:hidden [&>button.p-splitbutton-dropdown]:bg-transparent [&>button.p-splitbutton-dropdown]:border-none',
-            }"
-          >
+          <PrimeVueSplitButton :model="cashInOut_listItemsOfSplitButton" severity="contrast" :pt="{
+            root: '[&>button.p-splitbutton-button]:hidden [&>button.p-splitbutton-dropdown]:bg-transparent [&>button.p-splitbutton-dropdown]:border-none',
+          }">
             &nbsp;
             <template #dropdownicon>
               <AppBaseSvg name="three-dots" class="!w-5 !h-5 text-gray-400" />
@@ -81,5 +70,6 @@ provide('cashInOut', {
     </AppBaseDataTable>
 
     <CashInOutCreateDialog />
+    <AppBaseDialogConfirmation id="sales-order-cash-in-out-dialog-confirmation" />
   </section>
 </template>
