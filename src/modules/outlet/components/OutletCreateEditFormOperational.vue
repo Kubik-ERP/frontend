@@ -15,10 +15,8 @@ const { outletCreateEdit_formData } = inject<IOutletCreateEditProvided>('outletC
       <h6 class="font-semibold text-base text-black">Busines Hours</h6>
     </section>
 
-    <template
-      v-for="(businessHour, businessHourIndex) in outletCreateEdit_formData.businessHours"
-      :key="`business-hour-${businessHourIndex}`"
-    >
+    <template v-for="(businessHour, businessHourIndex) in outletCreateEdit_formData.businessHours"
+      :key="`business-hour-${businessHourIndex}`">
       <section id="business-operational" class="grid grid-rows-1 grid-cols-6 gap-4">
         <section :id="`business-operational-day-${businessHourIndex}`" class="flex items-center gap-2">
           <PrimeVueCheckbox v-model="businessHour.isOpen" binary />
@@ -29,27 +27,19 @@ const { outletCreateEdit_formData } = inject<IOutletCreateEditProvided>('outletC
         </section>
 
         <section :id="`business-hour-${businessHourIndex}`" class="flex items-center gap-4">
-          <PrimeVueDatePicker
-            :id="`datepicker-business-start-hour-${businessHourIndex}-timeonly`"
-            fluid
-            time-only
+          <PrimeVueDatePicker :id="`datepicker-business-start-hour-${businessHourIndex}-timeonly`" fluid time-only
             @value-change="
-              event => {
+              (event: Date | Date[] | (Date | null)[] | null | undefined) => {
                 outletCreateEdit_formData.businessHours[businessHourIndex].openTime = event?.toString() ?? '';
               }
-            "
-          />
+            " />
 
-          <PrimeVueDatePicker
-            :id="`datepicker-business-end-hour-${businessHourIndex}-timeonly`"
-            fluid
-            time-only
+          <PrimeVueDatePicker :id="`datepicker-business-end-hour-${businessHourIndex}-timeonly`" fluid time-only
             @value-change="
-              event => {
+              (event: Date | Date[] | (Date | null)[] | null | undefined) => {
                 outletCreateEdit_formData.businessHours[businessHourIndex].closeTime = event?.toString() ?? '';
               }
-            "
-          />
+            " />
         </section>
       </section>
     </template>
