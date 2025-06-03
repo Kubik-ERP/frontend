@@ -13,10 +13,6 @@ try {
     path.join('./', '.eslintrc-auto-import.json'),
   ];
 
-  // Run eslint
-  console.log(chalk.blue('Running eslint...'));
-  execSync('npx eslint ./src', { stdio: 'inherit' });
-
   // First of all, we need to remove current generated files if they exist
   generatedFiles.forEach(file => {
     const filePath = path.join(process.cwd(), file);
