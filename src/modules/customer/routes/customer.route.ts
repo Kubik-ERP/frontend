@@ -12,12 +12,13 @@ const routes: RouteRecordRaw[] = [
     component: AppBaseWrapper,
     children: [
       {
-        path: 'customer-list',
+        path: '',
         name: 'customerlist',
         component: () => import('../views/CustomerListUI.vue'),
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.DEFAULT,
+          breadcrumb: 'Customers',
         },
       },
       {

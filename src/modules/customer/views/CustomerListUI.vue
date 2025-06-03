@@ -22,6 +22,14 @@ const page = ref(1);
 const limit = ref(10);
 const search = ref('');
 const lastPage = ref(0);
+const total = ref(0);
+
+const visiblePages = computed(() => {
+  const range = 5;
+  const start = Math.max(1, Math.min(page.value - 2, lastPage.value - range + 1));
+  const end = Math.min(lastPage.value, start + range - 1);
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+});
 
 const op = ref();
 const displayPopover = (event, product) => {
@@ -38,6 +46,7 @@ const loadCustomers = async () => {
     const response = await getAllCustomers(page.value, limit.value, search.value);
     customers.value = response.customers;
     lastPage.value = response.lastPage;
+    total.value = response.total;
   } catch (error) {
     console.error('Failed to fetch customers:', error);
   } finally {
@@ -98,7 +107,7 @@ onMounted(() => {
             <div class="flex items-center justify-center gap-2">
               <h1 class="text-2xl font-bold">Customers</h1>
               <p class="text-green-primary bg-green-primary/50 py-1 px-2 text-xs rounded-full">
-                {{ customers.length }} Members
+                {{ total }} Members
               </p>
             </div>
             <div class="flex gap-4 justify-end">
@@ -109,7 +118,7 @@ onMounted(() => {
                 </PrimeVueIconField>
               </form>
 
-              <router-link to="add-customer">
+              <router-link to="customer/add-customer">
                 <PrimeVueButton type="button" severity="info" label="Add Customer" icon="pi pi-plus"
                   class="bg-primary border-primary" />
               </router-link>
@@ -151,7 +160,7 @@ onMounted(() => {
               class="border border-primary text-primary hover:bg-transparent" @click="prevPage()" />
 
             <div class="flex gap-1">
-              <PrimeVueButton v-for="p in lastPage" :key="p" :label="p.toString()" class="border-none aspect-square p-4"
+              <PrimeVueButton v-for="p in visiblePages" :key="p" :label="p.toString()" class="border-none aspect-square p-4"
                 :class="page === p ? 'bg-blue-secondary-background text-primary' : 'bg-transparent text-grayscale-20'
                   " @click="goToPage(p)" />
             </div>

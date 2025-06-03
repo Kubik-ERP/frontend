@@ -60,6 +60,8 @@ const createTag = () => {
     const newTag = { name: search.value };
     selectedTags.value.push(newTag);
     tags.value.push(newTag); // Add the new tag to the available list as well
+
+    addTag(newTag);
   }
   search.value = '';
   closeListbox();

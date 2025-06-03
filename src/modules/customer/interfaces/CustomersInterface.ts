@@ -26,6 +26,11 @@ export interface ICustomer {
 export interface ICustomerResponse {
   customers: ICustomer[];
   lastPage: number;
+  total: number;
+}
+
+export interface ITag {
+  name: string;
 }
 
 export interface ICustomerFormData {
@@ -35,8 +40,8 @@ export interface ICustomerFormData {
   code: string;
   number: string;
   email: string;
-  id: string;
-  tags: string[];
+  // id: string;
+  tags: ITag[];
   address: string;
 }
 

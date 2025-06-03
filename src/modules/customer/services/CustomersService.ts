@@ -14,7 +14,7 @@ export const useCustomerService = () => {
     code: '+62',
     number: '',
     email: '',
-    id: '',
+    // id: '',
     tags: [],
     address: '',
   });
@@ -23,7 +23,7 @@ export const useCustomerService = () => {
     name: { required },
     email: { required, email },
     number: { required, numeric, minLength: minLength(10), maxLength: maxLength(11) },
-    id: { required, minLength: minLength(16), maxLength: maxLength(16) },
+    // id: { required, minLength: minLength(16), maxLength: maxLength(16) },
     address: { required },
     tags: { required },
     code: { required },
@@ -49,12 +49,12 @@ export const useCustomerService = () => {
       username: item.username,
       address: item.address,
       dob: item.dob,
-    }));;
-    console.log('🚀 ~ getAllCustomers ~ customers:', customers);
-
+    }));
+    
     return {
       customers,
       lastPage: response.data.data.lastPage,
+      total: response.data.data.total,
     }
   };
 
