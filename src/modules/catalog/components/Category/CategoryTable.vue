@@ -79,7 +79,6 @@ const handleAddCategory = async () => {
     alert('Something went wrong while creating the category.');
   }
 };
-
 const openAddDialog = () => {
   isAddOpen.value = true;
   category_formData.name = '';
