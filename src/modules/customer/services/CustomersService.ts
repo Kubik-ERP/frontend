@@ -1,7 +1,9 @@
 import axios from 'axios';
-import { ICustomer, ICustomerFormData, ICustomerResponse } from '../interfaces/CustomersInterface';
+import { ICustomer, ICustomerFormData, ICustomerResponse, ITag } from '../interfaces/CustomersInterface';
 
 const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/customers`;
+
+const API_URL_TAGS = `${import.meta.env.VITE_APP_BASE_API_URL}/api/tags`;
 
 import useVuelidate from '@vuelidate/core';
 import { required, email, numeric, minLength, maxLength } from '@vuelidate/validators';
@@ -25,7 +27,7 @@ export const useCustomerService = () => {
     number: { required, numeric, minLength: minLength(10), maxLength: maxLength(11) },
     // id: { required, minLength: minLength(16), maxLength: maxLength(16) },
     address: { required },
-    tags: { required },
+    tags: {  },
     code: { required },
     dob: { required },
     gender: { required },
@@ -34,6 +36,12 @@ export const useCustomerService = () => {
   const customer_formValidations = useVuelidate(customer_formRules, customer_FormData, {
     $autoDirty: true,
   });
+
+  const getCustomerTags = async (): Promise<ITag[]> => {
+    const response = await axios.get(API_URL_TAGS);
+    console.log('🚀 ~ getCustomerTags ~ response:', response);
+    return response.data.data;
+  };
 
   const getAllCustomers = async (page: number, limit: number, search: string): Promise<ICustomerResponse> => {
     const response = await axios.get(`${API_URL}?page=${page}&limit=${limit}&search=${search}`);
@@ -86,6 +94,7 @@ export const useCustomerService = () => {
     getAllCustomers,
     createCustomer,
     deleteCustomer,
+    getCustomerTags,
     customer_FormData,
     customer_formValidations,
   };

@@ -14,22 +14,21 @@ function clearForm() {
   customer_FormData.value = {};
 }
 
-const handleCreateCustomer = () => {
+const handleCreateCustomer = async () => {
   customer_formValidations.value.$touch();
+  console.log("🚀 ~ handleCreateCustomer ~ customer_formValidations.value:", customer_formValidations.value)
+  
   if (customer_formValidations.value.$invalid) return;
+
   console.log(customer_FormData);
 
   try {
     createCustomer(customer_FormData);
     clearForm();
 
-
-    router.push({
-      name: 'customer-list',
-    });
-
-
-
+    // router.push({
+    //   name: 'customer-list',
+    // });
   } catch (error) {
     console.error(error);
   }
@@ -71,6 +70,10 @@ onBeforeRouteLeave((to, from, next) => {
 <template>
   <div class="">
     {{ customer_FormData }}
+    <br>
+    {{ customer_formValidations.$errors }}
+    <br>
+    {{ customer_formValidations.$invalid }}
     <form class="grid grid-cols-2 gap-8" @submit.prevent="handleCreateCustomer">
       <div class="flex flex-col">
         <AppBaseFormGroup

@@ -29,9 +29,6 @@ export interface ICustomerResponse {
   total: number;
 }
 
-export interface ITag {
-  name: string;
-}
 
 export interface ICustomerFormData {
   name: string;

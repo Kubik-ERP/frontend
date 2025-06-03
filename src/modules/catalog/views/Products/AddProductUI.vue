@@ -39,7 +39,7 @@ const handleCreateProduct = async () => {
   product_formValidations.value.$touch();
   if (product_formValidations.value.$invalid) return;
 
-  if (!isDiscount.value) {
+  if (!product_formData.isDiscount) {
     console.log("no discount");
     product_formData.discount_price = product_formData.price
   }
