@@ -1,6 +1,10 @@
 <script setup lang="ts">
 // Interfaces
-import type { ISettingInvoiceContentSettings, ISettingInvoiceGeneralSettings, ISettingInvoiceProvided } from '../interfaces/setting-invoice.interface';
+import type {
+  ISettingInvoiceContentSettings,
+  ISettingInvoiceGeneralSettings,
+  ISettingInvoiceProvided,
+} from '../interfaces/setting-invoice.interface';
 
 /**
  * @description Inject all the data and methods what we need
@@ -11,6 +15,8 @@ const {
   settingInvoice_listContentSettings,
   settingInvoice_listGeneralSettings,
   settingInvoice_listInvoiceNumberContents,
+  settingInvoice_onShowEditFooterContentDialog,
+  settingInvoice_onShowEditInvoiceNumberConfigurationDialog,
   settingInvoice_toggleEditableInvoiceConfiguration,
 } = inject<ISettingInvoiceProvided>('settingInvoice')!;
 </script>
@@ -29,12 +35,12 @@ const {
     <PrimeVueCard class="w-full border border-solid border-grayscale-20 shadow-none">
       <template #content>
         <section id="form-group" class="flex flex-col gap-4">
-          <h6 class="font-semibold text-black-secondary text-sm">
-            General Settings
-          </h6>
+          <h6 class="font-semibold text-black-secondary text-sm">General Settings</h6>
 
-          <section v-for="(generalSetting, generalSettingIndex) in settingInvoice_listGeneralSettings" :key="`general-setting-${generalSettingIndex}`" :id="generalSetting.id" class="flex items-center gap-3">
-            <PrimeVueCheckbox v-model="settingInvoice_formData.generalSettings[generalSetting.key as keyof ISettingInvoiceGeneralSettings]" :id="`is-${generalSetting.id}`" :disabled="settingInvoice_isEditableInvoiceConfiguration" binary />
+          <section v-for="(generalSetting, generalSettingIndex) in settingInvoice_listGeneralSettings"
+            :id="generalSetting.id" :key="`general-setting-${generalSettingIndex}`" class="flex items-center gap-3">
+            <PrimeVueCheckbox :id="`is-${generalSetting.id}`" v-model="settingInvoice_formData.generalSettings[generalSetting.key as keyof ISettingInvoiceGeneralSettings]
+              " :disabled="!settingInvoice_isEditableInvoiceConfiguration" binary />
 
             <label :for="`is-${generalSetting.id}`" class="font-normal text-sm text-text-primary">
               {{ generalSetting.label }}
@@ -47,16 +53,58 @@ const {
     <PrimeVueCard class="w-full border border-solid border-grayscale-20 shadow-none">
       <template #content>
         <section id="form-group" class="flex flex-col gap-4">
-          <h6 class="font-semibold text-black-secondary text-sm">
-            Content Settings
-          </h6>
+          <h6 class="font-semibold text-black-secondary text-sm">Content Settings</h6>
 
-          <section v-for="(contentSetting, contentSettingIndex) in settingInvoice_listContentSettings" :key="`content-setting-${contentSettingIndex}`" :id="contentSetting.id" class="flex items-center gap-3">
-            <PrimeVueCheckbox v-model="settingInvoice_formData.contentSettings[contentSetting.key as keyof ISettingInvoiceContentSettings]" :id="`is-${contentSetting.id}`" :disabled="settingInvoice_isEditableInvoiceConfiguration" binary />
+          <section v-for="(contentSetting, contentSettingIndex) in settingInvoice_listContentSettings"
+            :id="contentSetting.id" :key="`content-setting-${contentSettingIndex}`"
+            class="flex items-center gap-3 w-full">
+            <section id="content-setting" class="flex justify-between w-full" :class="[
+              contentSetting.id === 'show-company-logo' ? 'items-start' : 'items-center',
+            ]">
+              <section id="form-group" class="flex gap-3">
+                <PrimeVueCheckbox :id="`is-${contentSetting.id}`" v-model="settingInvoice_formData.contentSettings[
+                  contentSetting.key as keyof ISettingInvoiceContentSettings
+                ]
+                  " :disabled="!settingInvoice_isEditableInvoiceConfiguration" binary />
 
-            <label :for="`is-${contentSetting.id}`" class="font-normal text-sm text-text-primary">
-              {{ contentSetting.label }}
-            </label>
+                <label :for="`is-${contentSetting.id}`" class="font-normal text-sm text-text-primary">
+                  {{ contentSetting.label }}
+                </label>
+              </section>
+
+              <template v-if="settingInvoice_isEditableInvoiceConfiguration">
+                <template v-if="contentSetting.id === 'show-company-logo'">
+                  <div class="flex flex-col items-end gap-2">
+                    <PrimeVueButton
+                      class="text-primary border-solid border-primary basic-smooth-animation hover:bg-grayscale-10 w-fit px-[18px]"
+                      severity="secondary" variant="outlined">
+                      <template #default>
+                        <section id="content" class="flex items-center gap-2">
+                          <AppBaseSvg name="image" />
+                          <span class="font-normal text-sm">Change Image</span>
+                        </section>
+                      </template>
+                    </PrimeVueButton>
+
+                    <section id="description" class="flex gap-3">
+                      <AppBaseSvg name="info" />
+                      <span class="font-normal text-black-secondary text-xs">
+                        Only square images (1:1 ratio) are supported. <br />
+                        Please adjust your image before uploading.
+                      </span>
+                    </section>
+                  </div>
+                </template>
+
+                <template v-if="contentSetting.id === 'show-footer'">
+                  <div class="flex items-center gap-2 cursor-pointer"
+                    @click="settingInvoice_onShowEditFooterContentDialog">
+                    <AppBaseSvg name="edit" />
+                    <span class="font-semibold text-primary text-sm"> Edit footer content </span>
+                  </div>
+                </template>
+              </template>
+            </section>
           </section>
         </section>
       </template>
@@ -65,19 +113,31 @@ const {
     <PrimeVueCard class="w-full border border-solid border-grayscale-20 shadow-none">
       <template #content>
         <section id="invoice-number" class="flex flex-col gap-4">
-          <h6 class="font-semibold text-black-secondary text-sm">
-            Content Settings
-          </h6>
+          <header class="flex items-center justify-between w-full">
+            <h6 class="font-semibold text-black-secondary text-sm">Invoice Number</h6>
+
+            <PrimeVueButton v-if="settingInvoice_isEditableInvoiceConfiguration"
+              class="text-primary border-solid border-primary basic-smooth-animation hover:bg-grayscale-10 w-fit px-[18px]"
+              severity="secondary" variant="outlined"
+              @click="settingInvoice_onShowEditInvoiceNumberConfigurationDialog">
+              <template #default>
+                <section id="content" class="flex items-center gap-2">
+                  <AppBaseSvg name="settings" />
+                  <span class="font-normal text-sm">Invoice Number Configuration</span>
+                </section>
+              </template>
+            </PrimeVueButton>
+          </header>
 
           <section id="invoice-number-content" class="grid-wrapper gap-4">
-            <div v-for="(invoiceNumberContent, invoiceNumberContentIndex) in settingInvoice_listInvoiceNumberContents" :key="`invoice-number-content-${invoiceNumberContentIndex}`" class="flex flex-col col-span-full md:col-span-6 gap-1">
+            <div v-for="(invoiceNumberContent, invoiceNumberContentIndex) in settingInvoice_listInvoiceNumberContents"
+              :key="`invoice-number-content-${invoiceNumberContentIndex}`"
+              class="flex flex-col col-span-full md:col-span-6 gap-1">
               <p class="font-normal text-text-secondary text-sm">
                 {{ invoiceNumberContent.label }}
               </p>
 
-              <span class="font-normal text-text-primary text-sm">
-                10001
-              </span>
+              <span class="font-normal text-text-primary text-sm"> 10001 </span>
             </div>
           </section>
         </section>
@@ -85,4 +145,3 @@ const {
     </PrimeVueCard>
   </section>
 </template>
-

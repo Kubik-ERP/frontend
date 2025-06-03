@@ -103,3 +103,30 @@ export const LIST_TABS_INVOICE_PREVIEW: ITabs[] = [
     value: "table-ticket"
   },
 ]
+
+export const LIST_TYPES_OF_RESET_SEQUENCE: IDropdownItem[] = [
+  {
+    label: 'Never',
+    value: 'Never'
+  },
+  {
+    label: 'Daily',
+    value: 'Daily'
+  },
+  {
+    label: 'Weekly',
+    value: 'Weekly'
+  },
+  {
+    label: 'Monthly',
+    value: 'Monthly'
+  },
+  {
+    label: 'Quarterly',
+    value: 'Quarterly'
+  },
+  {
+    label: 'Yearly',
+    value: 'Yearly'
+  },
+]

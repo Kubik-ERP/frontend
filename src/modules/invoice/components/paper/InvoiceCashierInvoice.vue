@@ -4,6 +4,8 @@ import InvoiceCashierInvoiceLoading from './InvoiceCashierInvoiceLoading.vue';
 
 // Interface
 import { IInvoiceProvided } from '../../interfaces';
+import { useFormatDate } from '@/app/composables';
+import { CASHIER_ORDER_TYPE } from '@/modules/cashier/constants';
 
 /**
  * @description Inject all the data and methods what we need
@@ -12,12 +14,15 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 </script>
 <template>
   <section
-    v-if="!invoice_invoiceData.isLoading"
+    v-if="!invoice_invoiceData.isLoading && invoice_invoiceData.data"
     id="invoice-paper"
     class="invoice-paper bg-white flex flex-col items-center gap-2 w-full max-w-xs lg:max-w-md p-4"
   >
     <section id="logo" class="w-20 h-20 bg-grayscale-10">&nbsp;</section>
+    <!-- TODO: add store name -->
     <h6 id="outlet-name" class="font-semibold text-black text-sm">Lawson Kaliurang</h6>
+
+    <!-- TODO: Add address name -->
     <p id="outlet-address" class="font-normal text-black text-center text-sm px-4">
       Lawson Kaliurang - Jl. Kaliurang KM 6, Blotan, Sukoharjo, Kec. Ngaglik, Kabupaten Sleman, Daerah Istimewa
       Yogyakarta
@@ -25,28 +30,35 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 
     <div class="invoice-datetime-or-status">
       <div class="invoice-datetime-or-status-content">
-        <span class="date">2024/01/01 05:33</span>
-        <span class="cashier">KASIR 202408010001</span>
+        <span class="date">{{ useFormatDate(new Date(invoice_invoiceData.data.createdAt)) }}</span>
+        <!-- TODO: add id invoice -->
+        <span class="cashier">KASIR {{ invoice_invoiceData.data.id }}</span>
       </div>
     </div>
 
     <section id="cashier-information" class="flex items-center justify-between w-full">
       <p id="label-cashier" class="font-normal text-black text-sm">Cashier</p>
+      <!-- TODO: add cashier name -->
       <p id="cashier-name" class="font-normal text-black text-sm">Samantha</p>
     </section>
 
     <section id="customer-information" class="flex items-center justify-between w-full">
       <p id="label-customer" class="font-normal text-black text-sm">Cust. Name</p>
-      <p id="customer-name" class="font-normal text-black text-sm">George</p>
+      <p id="customer-name" class="font-normal text-black text-sm">
+        {{ invoice_invoiceData.data.customer.name }}
+      </p>
     </section>
 
     <section id="order-type" class="flex items-center justify-between w-full">
       <p id="label-order-type" class="font-normal text-black text-sm">Order Type</p>
-      <p id="order-type-value" class="font-normal text-black text-sm">Takeaway</p>
+      <p id="order-type-value" class="font-normal text-black text-sm">
+        {{ CASHIER_ORDER_TYPE.find(f => f.code === invoice_invoiceData.data?.orderType)?.label ?? '' }}
+      </p>
     </section>
 
     <section id="queue" class="flex items-center justify-between w-full">
       <p id="label-queue" class="font-normal text-black text-sm">Queue</p>
+      <!-- TODO: Add queue -->
       <p id="queue-value" class="font-normal text-black text-sm">38</p>
     </section>
 
@@ -61,49 +73,77 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
       </thead>
 
       <tbody class="border-b border-solid border-black">
-        <tr v-for="index in 2" :key="index">
-          <td class="font-normal text-black text-sm py-2">Blueberry Pancake</td>
-          <td class="font-normal text-black text-sm text-center py-2">1</td>
-          <td class="font-normal text-black text-sm text-center py-2">100.000.000</td>
-          <td class="font-normal text-black text-sm text-right py-2">100.000.000</td>
-        </tr>
+        <template v-for="item in invoice_invoiceData.data.invoiceDetails" :key="item.id">
+          <tr>
+            <td class="font-normal text-black text-sm">{{ item.products.name }}</td>
+            <td class="font-normal text-black text-sm text-center">{{ item.qty }}</td>
+            <td class="font-normal text-black text-sm text-center">
+              {{ useCurrencyFormat(item.productPrice) }}
+            </td>
+            <td class="font-normal text-black text-sm text-right">
+              {{ useCurrencyFormat(item.productPrice * item.qty) }}
+            </td>
+          </tr>
+          <tr v-if="item.variant">
+            <td class="pl-4 font-normal text-black text-xs italic py-2">{{ item.variant.name }}</td>
+            <td class="font-normal text-black text-sm text-center py-2">{{ item.qty }}</td>
+            <td class="font-normal text-black text-sm text-center py-2">
+              {{ useCurrencyFormat(item.variant.price) }}
+            </td>
+            <td class="font-normal text-black text-sm text-right py-2">
+              {{ useCurrencyFormat(item.variant.price * item.qty) }}
+            </td>
+          </tr>
+        </template>
       </tbody>
 
       <tfoot class="border-b border-solid border-grayscale-10">
         <tr>
           <td class="font-normal text-black text-sm py-2">Sub Total</td>
+          <!-- TODO: add field total qty product -->
           <td class="font-normal text-black text-sm text-center py-2">6</td>
-          <td colspan="2" class="font-normal text-black text-sm text-right py-2">100.000.000</td>
+          <td colspan="2" class="font-normal text-black text-sm text-right py-2">
+            {{ useCurrencyFormat(invoice_invoiceData.data.subtotal) }}
+          </td>
         </tr>
 
         <tr>
           <td class="font-normal text-black text-sm py-2">Promo</td>
-          <td class="font-normal text-black text-sm text-center py-2">2</td>
-          <td colspan="2" class="font-normal text-black text-sm text-right py-2">-200.000</td>
+          <td colspan="3" class="font-normal text-black text-sm text-right py-2">
+            - {{ useCurrencyFormat(invoice_invoiceData.data.discountAmount) }}
+          </td>
         </tr>
 
         <tr>
           <td class="font-normal text-black text-sm py-2">Debit</td>
-          <td colspan="3" class="font-normal text-black text-sm text-right py-2">599.800.500</td>
+          <!-- TODO: Add field debit -->
+          <td colspan="3" class="font-normal text-black text-sm text-right py-2">
+            {{ useCurrencyFormat(invoice_invoiceData.data.subtotal) }}
+          </td>
         </tr>
 
         <tr class="border-b border-dashed border-black">
           <td class="font-normal text-black text-sm py-2">Kembali</td>
+          <!-- TODO: Add field change -->
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">0</td>
         </tr>
 
         <tr class="border-b border-solid border-black">
           <td class="font-normal text-black text-sm py-2">PPN</td>
+          <!-- TODO: add ppn / tax -->
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">59.800.500</td>
         </tr>
 
         <tr>
           <td colspan="2" class="font-semibold text-black text-sm text-center py-2">Total</td>
-          <td colspan="2" class="font-semibold text-black text-sm text-right py-2">659.780.550</td>
+          <td colspan="2" class="font-semibold text-black text-sm text-right py-2">
+            {{ useCurrencyFormat(invoice_invoiceData.data.subtotal - invoice_invoiceData.data.discountAmount) }}
+          </td>
         </tr>
       </tfoot>
     </table>
 
+    <!-- TODO: Footer -->
     <section id="closing" class="flex flex-col items-center gap-2 w-full">
       <p id="label-social-media" class="font-normal text-black text-sm">Social Media</p>
       <p id="social-media-ig" class="font-normal text-black text-sm">Instagram : @lawsonkal</p>
@@ -112,9 +152,10 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
       </p>
     </section>
   </section>
-  <section v-else>
+  <section v-else-if="invoice_invoiceData.isLoading">
     <InvoiceCashierInvoiceLoading />
   </section>
+  <section v-else></section>
 </template>
 
 <style lang="css" scoped>

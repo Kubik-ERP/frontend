@@ -1,6 +1,8 @@
 <script setup lang="ts">
 // Components
 import SettingInvoiceConfiguration from '../components/SettingInvoiceConfiguration.vue';
+import SettingInvoiceDialogFooterContent from '../components/SettingInvoiceDialogFooterContent.vue';
+import SettingInvoiceDialogInvoiceConfiguration from '../components/SettingInvoiceDialogInvoiceConfiguration.vue';
 import SettingInvoicePreview from '../components/SettingInvoicePreview.vue';
 
 // Services
@@ -13,11 +15,17 @@ const {
   settingInvoice_activeTab,
   settingInvoice_bindings,
   settingInvoice_formData,
+  settingInvoice_formValidations,
   settingInvoice_isEditableInvoiceConfiguration,
   settingInvoice_listContentSettings,
   settingInvoice_listGeneralSettings,
   settingInvoice_listInvoiceNumberContents,
+  settingInvoice_listResetSequences,
   settingInvoice_listTabsInvoicePreview,
+  settingInvoice_onCloseEditFooterContentDialog,
+  settingInvoice_onCloseEditInvoiceNumberConfigurationDialog,
+  settingInvoice_onShowEditFooterContentDialog,
+  settingInvoice_onShowEditInvoiceNumberConfigurationDialog,
   settingInvoice_toggleEditableInvoiceConfiguration,
 } = useSettingInvoiceService();
 
@@ -28,11 +36,17 @@ provide('settingInvoice', {
   settingInvoice_activeTab,
   settingInvoice_bindings,
   settingInvoice_formData,
+  settingInvoice_formValidations,
   settingInvoice_isEditableInvoiceConfiguration,
   settingInvoice_listContentSettings,
   settingInvoice_listGeneralSettings,
   settingInvoice_listInvoiceNumberContents,
+  settingInvoice_listResetSequences,
   settingInvoice_listTabsInvoicePreview,
+  settingInvoice_onCloseEditFooterContentDialog,
+  settingInvoice_onCloseEditInvoiceNumberConfigurationDialog,
+  settingInvoice_onShowEditFooterContentDialog,
+  settingInvoice_onShowEditInvoiceNumberConfigurationDialog,
   settingInvoice_toggleEditableInvoiceConfiguration,
 })
 </script>
@@ -41,5 +55,7 @@ provide('settingInvoice', {
   <section id="setting-invoice" class="grid-wrapper gap-8">
     <SettingInvoiceConfiguration />
     <SettingInvoicePreview />
+    <SettingInvoiceDialogFooterContent />
+    <SettingInvoiceDialogInvoiceConfiguration />
   </section>
 </template>
