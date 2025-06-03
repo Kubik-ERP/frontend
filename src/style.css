@@ -136,6 +136,7 @@
 }
 
 @theme {
+  --color-background-success: #edf7ee;
   --color-black-secondary: #434343;
   --color-border-error: #f0afaf;
   --color-primary: #18618b;
