@@ -117,3 +117,35 @@ export interface ICashierProduct {
 export interface ICashierProductResponse {
   data: ICashierProduct[];
 }
+
+export interface ICashierCustomerTag {
+  id: string;
+  name: string;
+}
+
+export interface ICashierCustomerHasTag {
+  customerId: string;
+  tagId: string;
+  tag: ICashierCustomerTag;
+}
+
+export interface ICashierCustomer {
+  id: string;
+  name: string;
+  code: string;
+  number: string;
+  dob: string;
+  email: string;
+  username: string;
+  address: string;
+  customersHasTag: ICashierCustomerHasTag[];
+}
+
+export interface ICashierCustomerResponse {
+  data: {
+    data: ICashierCustomer[];
+    total: number;
+    page: number;
+    lastPage: number;
+  };
+}

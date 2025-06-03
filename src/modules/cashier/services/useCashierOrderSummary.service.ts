@@ -32,6 +32,8 @@ import { ICashierResponseWebsocketMessage } from '../interfaces/cashier-response
 
 import type { MenuPassThroughAttributes } from 'primevue';
 
+import type { VirtualScrollerLazyEvent } from 'primevue/virtualscroller';
+
 import { MenuItem } from 'primevue/menuitem';
 
 // Router
@@ -45,6 +47,7 @@ import { useSocket } from '@/plugins/socket';
 
 // Vue
 import { ref } from 'vue';
+import { ICashierCustomerState } from '../interfaces';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   // Router
@@ -482,7 +485,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         },
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
         vouchers: cashierOrderSummary_summary.value.selectedVoucher,
-        customerId: cashierOrderSummary_data.value.customerName,
+        customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
         tableCode: cashierOrderSummary_summary.value.tableCode,
       };
 
@@ -549,6 +552,74 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       default:
         console.error('Invalid payment method selected');
         break;
+    }
+  };
+
+  const cashierProduct_customerState = ref<ICashierCustomerState>({
+    isLoading: false,
+    customerList: [],
+    page: 1,
+    limit: 50,
+    total: 0,
+    selectedCustomer: null,
+  });
+
+  /**
+   * @description Fetches the customer list from the store.
+   * @returns {Promise<void>}
+   */
+  const cashierProduct_fetchCustomerList = async (page: number, search: string = '') => {
+    cashierProduct_customerState.value.isLoading = true;
+    try {
+      const response = await store.cashierProduct_fetchCustomers({
+        params: {
+          page,
+          limit: cashierProduct_customerState.value.limit,
+          search: search || '',
+        },
+      });
+
+      if (page === 1) {
+        cashierProduct_customerState.value.customerList = response.data.data;
+      } else {
+        cashierProduct_customerState.value.customerList.push(...response.data.data);
+      }
+
+      cashierProduct_customerState.value.page = response.data.page;
+      cashierProduct_customerState.value.total = response.data.total;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      cashierProduct_customerState.value.isLoading = false;
+    }
+  };
+
+  cashierProduct_fetchCustomerList(cashierProduct_customerState.value.page);
+
+  /**
+   * @description handle onSearchCustomer
+   * @param {string} search
+   */
+  const cashierProduct_onSearchCustomer = (search: string) => {
+    cashierProduct_customerState.value.page = 1;
+    cashierProduct_fetchCustomerList(1, search);
+  };
+
+  /**
+   * @description on scroll fetch more customers
+   * @returns {Promise<void>}
+   */
+  const cashierProduct_onScrollFetchMoreCustomers = (event: VirtualScrollerLazyEvent) => {
+    console.log('onScrollFetchMoreCustomers', event);
+    const { last } = event;
+
+    const customerListLength = cashierProduct_customerState.value.customerList.length;
+    const totalCustomers = cashierProduct_customerState.value.total;
+    const isLoading = cashierProduct_customerState.value.isLoading;
+
+    if (!isLoading && last >= customerListLength - 1 && customerListLength < totalCustomers) {
+      cashierProduct_customerState.value.page += 1;
+      cashierProduct_fetchCustomerList(cashierProduct_customerState.value.page);
     }
   };
 
@@ -634,6 +705,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
     cashierOrderSummary_isLoadingUnpaidOrder,
 
+    cashierProduct_customerState,
+
     cashierOrderSummary_handleIsExpandedToggle,
 
     cashierOrderSummary_handleSaveUnpaidOrder,
@@ -650,5 +723,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_handleToggleSelectTable,
 
     cashierOrderSummary_handleSimulatePayment,
+    cashierProduct_onSearchCustomer,
+    cashierProduct_onScrollFetchMoreCustomers,
   };
 };

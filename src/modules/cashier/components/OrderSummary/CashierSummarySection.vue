@@ -15,6 +15,9 @@ const {
   cashierOrderSummary_menuOrder,
   cashierOrderSummary_modalOrderType,
   cashierOrderSummary_modalSelectTable,
+  cashierProduct_customerState,
+  cashierProduct_onScrollFetchMoreCustomers,
+  cashierProduct_onSearchCustomer,
   cashierOrderSummary_handleIsExpandedToggle,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
@@ -50,17 +53,53 @@ const {
       id="cashier-summary-section-order-item"
       class="flex flex-col gap-2"
     >
+      {{ cashierProduct_customerState.isLoading }}
+
       <div class="flex flex-col gap-2 w-full">
         <label for="username" class="text-sm">Username</label>
 
         <PrimeVueIconField class="flex w-full">
           <PrimeVueInputIcon class="pi pi-user" />
-          <PrimeVueInputText
-            id="customer-name"
-            v-model="cashierOrderSummary_data.customerName"
+
+          <PrimeVueAutoComplete
+            v-model="cashierProduct_customerState.selectedCustomer"
+            :suggestions="cashierProduct_customerState.customerList"
+            :options="cashierProduct_customerState.customerList"
+            :field="'name'"
+            :option-value="'id'"
+            :option-value-key="'id'"
+            option-label="name"
+            :min-length="1"
+            :loading="cashierProduct_customerState.isLoading"
+            :dropdown="true"
+            :delay="300"
             class="w-full"
-            placeholder="Please input Customer Name"
-          />
+            placeholder="Please select Customer Name"
+            :virtual-scroller-options="{
+              itemSize: cashierProduct_customerState.limit,
+              showLoader: true,
+              lazy: true,
+              delay: 300,
+              loading: cashierProduct_customerState.isLoading,
+              onLazyLoad: cashierProduct_onScrollFetchMoreCustomers,
+            }"
+            @scroll="cashierProduct_onScrollFetchMoreCustomers"
+            @complete="event => cashierProduct_onSearchCustomer(event.query)"
+          >
+            <template #option="slotProps">
+              <div class="flex items-center">
+                <div>{{ slotProps.option.name }}</div>
+              </div>
+            </template>
+            <template #header>
+              <div class="font-medium px-3 py-2">List Customers</div>
+            </template>
+            <template #footer>
+              <div class="px-3 py-3">
+                <PrimeVueButton label="Add New" fluid severity="secondary" text size="small" icon="pi pi-plus" />
+              </div>
+            </template>
+          </PrimeVueAutoComplete>
         </PrimeVueIconField>
       </div>
 

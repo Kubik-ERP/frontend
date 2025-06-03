@@ -1,6 +1,6 @@
-import { MenuPassThroughAttributes } from 'primevue';
+import { MenuPassThroughAttributes, VirtualScrollerLazyEvent } from 'primevue';
 import { MenuItem } from 'primevue/menuitem';
-import { ICashierSelected } from '.';
+import { ICashierCustomerState, ICashierSelected } from '.';
 import { ICashierResponseCalulateEstimationItem, ICashierResponseMidtransQrisPayment } from './cashier-response';
 
 export interface ICashierOrderType {
@@ -172,6 +172,8 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_getListActiveFloor: ComputedRef<ICashierListTable[]>;
   cashierOrderSummary_isButtonPlaceOrderDisabled: ComputedRef<boolean>;
 
+  cashierProduct_customerState: Ref<ICashierCustomerState>;
+
   cashierOrderSummary_handleIsExpandedToggle: () => void;
 
   cashierOrderSummary_isLoadingUnpaidOrder: Ref<boolean>;
@@ -190,4 +192,7 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_handleToggleSelectTable: (table: string) => void;
 
   cashierOrderSummary_handleSimulatePayment: (invoiceId: string) => void;
+
+  cashierProduct_onSearchCustomer: (search: string) => void;
+  cashierProduct_onScrollFetchMoreCustomers: (event: VirtualScrollerLazyEvent) => void;
 }

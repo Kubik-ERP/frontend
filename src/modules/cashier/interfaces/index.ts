@@ -1,4 +1,9 @@
-import { ICashierCategoriesResponse, ICashierProduct, ICashierVariant } from './cashier-response';
+import {
+  ICashierCategoriesResponse,
+  ICashierCustomer,
+  ICashierProduct,
+  ICashierVariant,
+} from './cashier-response';
 
 export interface ICashierModalAddProductItem {
   quantity: number;
@@ -29,4 +34,13 @@ export interface ICashierStateStore {
 export interface ICashierStateCategory {
   isLoading: boolean;
   data: ICashierCategoriesResponse;
+}
+
+export interface ICashierCustomerState {
+  isLoading: boolean;
+  customerList: ICashierCustomer[];
+  page: number;
+  limit: number;
+  total: number;
+  selectedCustomer: ICashierCustomer | null;
 }

@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 // Constants
 import {
   CASHIER_ENDPOINT_CATEGORIES,
+  CASHIER_ENDPOINT_COSTUMERS,
   CASHIER_ENDPOINT_PAYMENT_CALCULATE_ESTIMATION,
   CASHIER_ENDPOINT_PAYMENT_INSTANT,
   CASHIER_ENDPOINT_PAYMENT_METHOD,
@@ -17,6 +18,7 @@ import { ICashierOrderSummaryPaymentMethodResponse } from '../interfaces/cashier
 import {
   ICashierCategoriesData,
   ICashierCategoriesResponse,
+  ICashierCustomerResponse,
   ICashierProduct,
   ICashierProductResponse,
   ICashierResponseCalulateEstimation,
@@ -225,6 +227,12 @@ export const useCashierStore = defineStore('cashier', {
       }
     },
 
+    /**
+     * @description Handle simulate payment.
+     * @url /cashier/simulate-payment
+     * @method POST
+     * @access public
+     */
     async cashierProduct_simulatePayment(
       payload: unknown,
       requestConfigurations: AxiosRequestConfig = {},
@@ -233,6 +241,30 @@ export const useCashierStore = defineStore('cashier', {
         const response = await httpClient.post<unknown>(CASHIER_ENDPOINT_SIMULATE_PAYMENT, payload, {
           ...requestConfigurations,
         });
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
+
+    /**
+     * @description Handle fetch list customers.
+     * @url /customers
+     * @method GET
+     * @access public
+     */
+    async cashierProduct_fetchCustomers(
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<ICashierCustomerResponse> {
+      try {
+        const response = await httpClient.get<ICashierCustomerResponse>(CASHIER_ENDPOINT_COSTUMERS, {
+          ...requestConfigurations,
+        });
+
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

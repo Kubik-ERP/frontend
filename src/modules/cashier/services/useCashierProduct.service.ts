@@ -152,10 +152,8 @@ export const useCashierProductService = (): ICashierProductProvided => {
    */
   watch(
     () => cashierProduct_productState.value.selectedCategory,
-    newValue => {
-      if (newValue.length > 0) {
-        cashierProduct_handleFetchProductCategory();
-      }
+    () => {
+      cashierProduct_handleFetchProductCategory();
     },
     { immediate: true, deep: true },
   );
