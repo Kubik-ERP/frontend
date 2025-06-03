@@ -10,6 +10,10 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/customer',
     component: AppBaseWrapper,
+    meta:{
+      requiresAuthorization: false,
+      breadcrumb: 'Customer',
+    },
     children: [
       {
         path: '',
@@ -18,7 +22,6 @@ const routes: RouteRecordRaw[] = [
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.DEFAULT,
-          breadcrumb: 'Customers',
         },
       },
       {
@@ -28,6 +31,18 @@ const routes: RouteRecordRaw[] = [
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.DEFAULT,
+          breadcrumb: 'Add Customer',
+        },
+      },
+      {
+        path: 'edit-customer/:id',
+        name: 'edit-customer',
+        props: route => ({ id: route.params.id }),
+        component: () => import('../views/EditCustomerUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          breadcrumb: 'Edit Customer',
         },
       },
     ],

@@ -24,6 +24,11 @@ const search = ref('');
 const lastPage = ref(0);
 const total = ref(0);
 
+function handleEdit() {
+  console.log(selectedCustomer.value.id);
+  router.push({ name: 'edit-customer', params: { id: selectedCustomer.value.id } });
+}
+
 const visiblePages = computed(() => {
   const range = 5;
   const start = Math.max(1, Math.min(page.value - 2, lastPage.value - range + 1));
@@ -175,7 +180,7 @@ onMounted(() => {
 
       <PrimeVuePopover ref="op">
         <div class="flex flex-col items-start">
-          <PrimeVueButton variant="text" label="Edit" icon="pi pi-pen-to-square" class="text-black" />
+          <PrimeVueButton variant="text" label="Edit" icon="pi pi-pen-to-square" class="text-black" @click="handleEdit()" />
           <PrimeVueButton variant="text" label="Delete" icon="pi pi-trash" class="text-red-500"
             @click="isDeleteOpen = true" />
         </div>

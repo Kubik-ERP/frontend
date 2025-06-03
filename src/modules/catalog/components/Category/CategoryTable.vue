@@ -139,6 +139,13 @@ const handleDeleteCategory = async () => {
   isDeleteOpen.value = false;
 };
 
+const visiblePages = computed(() => {
+  const range = 5;
+  const start = Math.max(1, Math.min(page.value - 2, lastPage.value - range + 1));
+  const end = Math.min(lastPage.value, start + range - 1);
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+});
+
 const handleSearch = () => {
   router.push({ query: { page: '1' } });
   page.value = 1;
@@ -222,7 +229,7 @@ onMounted(() => {
             class="border border-primary text-primary hover:bg-transparent" @click="prevPage()" />
 
           <div class="flex gap-1">
-            <PrimeVueButton v-for="p in lastPage" :key="p" :label="p.toString()" class="border-none aspect-square p-4"
+            <PrimeVueButton v-for="p in visiblePages" :key="p" :label="p.toString()" class="border-none aspect-square p-4"
               :class="page === p ? 'bg-blue-secondary-background text-primary' : 'bg-transparent text-grayscale-20'
                 " @click="goToPage(p)" />
           </div>
