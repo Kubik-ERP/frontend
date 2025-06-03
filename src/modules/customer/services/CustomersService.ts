@@ -61,7 +61,12 @@ export const useCustomerService = () => {
   const createCustomer = async (payload: ICustomerFormData): Promise<ICustomer> => {
     const response = await axios.post(API_URL, payload);
     const data: ICustomer = response.data.data;
+
     return {
+      address: data.address || '-',
+      dob: data.dob || '-',
+      customersHasTag: data.customersHasTag || [],
+      username: data.username || '-',
       id: data.id,
       name: data.name,
       email: data.email,

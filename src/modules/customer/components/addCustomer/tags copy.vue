@@ -1,36 +1,3 @@
-<template>
-  <div>
-    <PrimeVueIconField>
-      <PrimeVueInputText
-        v-model="search"
-        class="w-full"
-        placeholder="Search or Create Tags"
-        @focus="openListbox"
-        @input="filterTags"
-      />
-      <PrimeVueInputIcon>
-        <i class="pi pi-search" />
-      </PrimeVueInputIcon>
-    </PrimeVueIconField>
-
-    <PrimeVueListbox
-      v-if="isListBoxOpen"
-      :options="filteredTags"
-      option-label="name"
-      class="w-full md:w-56"
-      list-style="max-height:250px"
-    >
-      <template #option="slotProps">
-        <div class="flex items-center w-full" @click="addTag(slotProps.option)">
-          <div>{{ slotProps.option.name }}</div>
-        </div>
-      </template>
-    </PrimeVueListbox>
-
-    {{ selectedTags }}
-  </div>
-</template>
-
 <script setup>
 import { ref } from 'vue';
 
@@ -69,3 +36,26 @@ const addTag = (selectedTag) => {
   closeListbox();
 };
 </script>
+
+<template>
+  <div>
+    <PrimeVueIconField>
+      <PrimeVueInputText v-model="search" class="w-full" placeholder="Search or Create Tags" @focus="openListbox"
+        @input="filterTags" />
+      <PrimeVueInputIcon>
+        <i class="pi pi-search" />
+      </PrimeVueInputIcon>
+    </PrimeVueIconField>
+
+    <PrimeVueListbox v-if="isListBoxOpen" :options="filteredTags" option-label="name" class="w-full md:w-56"
+      list-style="max-height:250px">
+      <template #option="slotProps">
+        <div class="flex items-center w-full" @click="addTag(slotProps.option)">
+          <div>{{ slotProps.option.name }}</div>
+        </div>
+      </template>
+    </PrimeVueListbox>
+
+    {{ selectedTags }}
+  </div>
+</template>

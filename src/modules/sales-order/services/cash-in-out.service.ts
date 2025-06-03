@@ -46,6 +46,7 @@ export const useCashInOutService = (): ICashInOutProvided => {
    */
   const cashInOut_onClose = (): void => {
     const argsEventEmitter: IPropsDialog = {
+      id: 'cash-in-out-create-dialog',
       isOpen: false,
     };
 
@@ -57,6 +58,7 @@ export const useCashInOutService = (): ICashInOutProvided => {
    */
   const cashInOut_onCreate = (): void => {
     const argsEventEmitter: IPropsDialog = {
+      id: 'cash-in-out-create-dialog',
       isUsingClosableButton: false,
       isUsingBackdrop: true,
       isOpen: true,
@@ -71,6 +73,7 @@ export const useCashInOutService = (): ICashInOutProvided => {
    */
   const cashInOut_onDelete = (): void => {
     const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'sales-order-cash-in-out-dialog-confirmation',
       isUsingIcon: true,
       isUsingButtonActions: true,
       isOpen: true,
@@ -91,6 +94,7 @@ export const useCashInOutService = (): ICashInOutProvided => {
   const cashInOut_onEdit = (): void => {
     console.log('Edit cash in out');
     const argsEventEmitter: IPropsDialog = {
+      id: 'cash-in-out-create-dialog',
       isUsingClosableButton: false,
       isUsingBackdrop: true,
       isOpen: true,

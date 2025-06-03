@@ -56,3 +56,27 @@ export const useRemoveSpecialCharacter = (keywords: string) => {
 export const useRemoveSpace = (keywords: string) => {
   return keywords.replace(/\s/g, '');
 };
+
+/**
+ * @description Handle format date
+ * - yyyy: year (e.g. 2025)
+ * - mm: month (01-12)
+ * - dd: day (01-31)
+ * - hh: hour (00-23)
+ * - MM: minutes (00-59)
+ * - ss: seconds (00-59)
+ */
+export const useFormatDate = (dateInput: string | number | Date, format: string = 'dd/mm/yyyy hh:MM'): string => {
+  const date = new Date(dateInput);
+
+  const map: Record<string, string | number> = {
+    yyyy: date.getFullYear(),
+    mm: String(date.getMonth() + 1).padStart(2, '0'),
+    dd: String(date.getDate()).padStart(2, '0'),
+    hh: String(date.getHours()).padStart(2, '0'),
+    MM: String(date.getMinutes()).padStart(2, '0'),
+    ss: String(date.getSeconds()).padStart(2, '0'),
+  };
+
+  return format.replace(/yyyy|mm|dd|hh|MM|ss/g, matched => map[matched].toString());
+};

@@ -1,211 +1,3 @@
-<template>
-  <div class="m-4 p-1 border border-gray rounded-lg shadow-2xl">
-    <PrimeVueDataTable
-      :selection="selectedCategories"
-      :value="categories"
-      paginator
-      :rows="limit"
-      table-style="min-width: 50rem"
-      :filters="filters"
-      data-key="id"
-      :loading="loading"
-    >
-      <template #header>
-        <div class="flex justify-between">
-          <h1 class="text-2xl font-bold">Categories</h1>
-          <div class="flex gap-4">
-            <form @submit.prevent="handleSearch">
-              <PrimeVueIconField>
-                <PrimeVueInputIcon><i class="pi pi-search" /></PrimeVueInputIcon>
-                <PrimeVueInputText v-model="search" placeholder="Keyword Search" />
-              </PrimeVueIconField>
-            </form>
-            <PrimeVueButton
-              type="button"
-              severity="info"
-              label="Add Category"
-              icon="pi pi-plus"
-              class="bg-primary border-primary"
-              @click="openAddDialog()"
-            />
-          </div>
-        </div>
-      </template>
-
-      <template #empty>No categories found.</template>
-      <template #loading>Loading categories data. Please wait.</template>
-
-      <PrimeVueColumn selection-mode="multiple" header-style="width: 3rem" />
-      <!-- <PrimeVueColumn sortable field="id" header="Category ID" style="width: 25%" /> -->
-      <PrimeVueColumn sortable field="category" header="Category" />
-      <PrimeVueColumn sortable field="description" header="Description" />
-      <PrimeVueColumn>
-        <template #body="slotProps">
-          <PrimeVueButton
-            icon="pi pi-ellipsis-v"
-            class="bg-transparent text-gray-500 border-none float-end"
-            @click="displayPopover($event, slotProps.data)"
-          />
-        </template>
-      </PrimeVueColumn>
-      <template #paginatorcontainer="{}">
-        <div class="flex items-center gap-2 justify-between w-full py-2">
-          <!-- Previous Page Button -->
-          <PrimeVueButton
-            icon="pi pi-angle-left"
-            variant="text"
-            label="Previous"
-            class="border border-primary text-primary hover:bg-transparent"
-            @click="prevPage()"
-          />
-
-          <div class="flex gap-1">
-            <PrimeVueButton
-              v-for="p in lastPage"
-              :key="p"
-              :label="p.toString()"
-              class="border-none aspect-square p-4"
-              :class="
-                page === p ? 'bg-blue-secondary-background text-primary' : 'bg-transparent text-grayscale-20'
-              "
-              @click="goToPage(p)"
-            />
-          </div>
-          <!-- Page Numbers -->
-
-          <!-- Next Page Button -->
-          <PrimeVueButton
-            icon="pi pi-angle-right"
-            variant="text"
-            label="Next"
-            class="border border-primary text-primary hover:bg-transparent flex-row-reverse"
-            @click="nextPage()"
-          />
-        </div>
-      </template>
-    </PrimeVueDataTable>
-
-    <!-- Popover -->
-    <PrimeVuePopover ref="op">
-      <div class="flex flex-col items-start">
-        <PrimeVueButton
-          variant="text"
-          label="Edit"
-          icon="pi pi-pen-to-square"
-          class="text-black"
-          @click="displayEdit"
-        />
-        <PrimeVueButton
-          variant="text"
-          label="Delete"
-          icon="pi pi-trash"
-          class="text-red-500"
-          @click="isDeleteOpen = true"
-        />
-      </div>
-    </PrimeVuePopover>
-
-    <!-- Add Dialog -->
-    <PrimeVueDialog v-model:visible="isAddOpen" modal header="Add Category" class="w-[45rem]">
-      <form @submit.prevent="handleAddCategory">
-        <AppBaseFormGroup
-          v-slot="{ classes }"
-          class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-          is-name-as-label
-          label-for="name"
-          name="Name"
-          :validators="category_formValidations.name"
-        >
-          <label for="name">Category Name <sup class="text-red-500">*</sup></label>
-          <PrimeVueInputText
-            v-model="category_formData.name"
-            name="name"
-            type="text"
-            class="w-full"
-            :class="{ ...classes }"
-            fluid
-            v-on="useListenerForm(category_formValidations, 'name')"
-          />
-        </AppBaseFormGroup>
-        <div class="mb-8">
-          <label for="description">description (Optional)</label>
-          <PrimeVueTextarea v-model="category_formData.description" auto-resize rows="5" class="w-full" />
-        </div>
-        <div class="flex justify-end gap-2">
-          <PrimeVueButton
-            label="Cancel"
-            severity="info"
-            variant="outlined"
-            class="w-48"
-            @click="
-              isAddOpen = false;
-              resetForm();
-            "
-          />
-          <PrimeVueButton label="Add" class="w-48 bg-primary border-primary" type="submit" />
-        </div>
-      </form>
-    </PrimeVueDialog>
-
-    <!-- Edit Dialog -->
-    <PrimeVueDialog v-model:visible="isEditOpen" modal header="Edit Category" class="w-[45rem]">
-      <form @submit.prevent="handleEditCategory">
-        <AppBaseFormGroup
-          v-slot="{ classes }"
-          class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-          is-name-as-label
-          label-for="name"
-          name="Name"
-          :validators="category_formValidations.name"
-        >
-          <label for="name">Category Name <sup class="text-red-500">*</sup></label>
-          <PrimeVueInputText
-            v-model="category_formData.name"
-            name="name"
-            type="text"
-            class="w-full"
-            :class="{ ...classes }"
-            fluid
-            v-on="useListenerForm(category_formValidations, 'name')"
-          />
-        </AppBaseFormGroup>
-        <div class="mb-8">
-          <label for="description">description (Optional)</label>
-          <PrimeVueTextarea v-model="category_formData.description" auto-resize rows="5" class="w-full" />
-        </div>
-        <div class="flex justify-end gap-2">
-          <PrimeVueButton
-            label="Cancel"
-            severity="info"
-            variant="outlined"
-            class="w-48"
-            @click="
-              isEditOpen = false;
-              resetForm();
-            "
-          />
-          <PrimeVueButton label="Edit" class="w-48 bg-primary border-primary" type="submit" />
-        </div>
-      </form>
-    </PrimeVueDialog>
-
-    <!-- Delete Confirmation -->
-    <PrimeVueDialog :visible="isDeleteOpen" modal header="">
-      <template #container>
-        <div class="w-[35rem] p-8 text-center">
-          <i class="pi pi-trash text-4xl mb-4 text-red-500" />
-          <h1 class="text-2xl font-semibold mb-2">Are you sure you want to delete this category?</h1>
-          <p class="mb-6">This will affect products that use this category.</p>
-          <div class="flex justify-center gap-4">
-            <PrimeVueButton label="Delete" severity="danger" class="w-40" @click="handleDeleteCategory()" />
-            <PrimeVueButton label="Cancel" class="w-40 bg-primary border-primary" @click="isDeleteOpen = false" />
-          </div>
-        </div>
-      </template>
-    </PrimeVueDialog>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { FilterMatchMode } from '@primevue/core/api';
 
@@ -388,3 +180,130 @@ onMounted(() => {
   }
 });
 </script>
+
+
+<template>
+  <div class="m-4 p-1 border border-gray rounded-lg shadow-2xl">
+    <PrimeVueDataTable :selection="selectedCategories" :value="categories" paginator :rows="limit"
+      table-style="min-width: 50rem" :filters="filters" data-key="id" :loading="loading">
+      <template #header>
+        <div class="flex justify-between">
+          <h1 class="text-2xl font-bold">Categories</h1>
+          <div class="flex gap-4">
+            <form @submit.prevent="handleSearch">
+              <PrimeVueIconField>
+                <PrimeVueInputIcon><i class="pi pi-search" /></PrimeVueInputIcon>
+                <PrimeVueInputText v-model="search" placeholder="Keyword Search" />
+              </PrimeVueIconField>
+            </form>
+            <PrimeVueButton type="button" severity="info" label="Add Category" icon="pi pi-plus"
+              class="bg-primary border-primary" @click="openAddDialog()" />
+          </div>
+        </div>
+      </template>
+
+      <template #empty>No categories found.</template>
+      <template #loading>Loading categories data. Please wait.</template>
+
+      <PrimeVueColumn selection-mode="multiple" header-style="width: 3rem" />
+      <!-- <PrimeVueColumn sortable field="id" header="Category ID" style="width: 25%" /> -->
+      <PrimeVueColumn sortable field="category" header="Category" />
+      <PrimeVueColumn sortable field="description" header="Description" />
+      <PrimeVueColumn>
+        <template #body="slotProps">
+          <PrimeVueButton icon="pi pi-ellipsis-v" class="bg-transparent text-gray-500 border-none float-end"
+            @click="displayPopover($event, slotProps.data)" />
+        </template>
+      </PrimeVueColumn>
+      <template #paginatorcontainer="{ }">
+        <div class="flex items-center gap-2 justify-between w-full py-2">
+          <!-- Previous Page Button -->
+          <PrimeVueButton icon="pi pi-angle-left" variant="text" label="Previous"
+            class="border border-primary text-primary hover:bg-transparent" @click="prevPage()" />
+
+          <div class="flex gap-1">
+            <PrimeVueButton v-for="p in lastPage" :key="p" :label="p.toString()" class="border-none aspect-square p-4"
+              :class="page === p ? 'bg-blue-secondary-background text-primary' : 'bg-transparent text-grayscale-20'
+                " @click="goToPage(p)" />
+          </div>
+          <!-- Page Numbers -->
+
+          <!-- Next Page Button -->
+          <PrimeVueButton icon="pi pi-angle-right" variant="text" label="Next"
+            class="border border-primary text-primary hover:bg-transparent flex-row-reverse" @click="nextPage()" />
+        </div>
+      </template>
+    </PrimeVueDataTable>
+
+    <!-- Popover -->
+    <PrimeVuePopover ref="op">
+      <div class="flex flex-col items-start">
+        <PrimeVueButton variant="text" label="Edit" icon="pi pi-pen-to-square" class="text-black"
+          @click="displayEdit" />
+        <PrimeVueButton variant="text" label="Delete" icon="pi pi-trash" class="text-red-500"
+          @click="isDeleteOpen = true" />
+      </div>
+    </PrimeVuePopover>
+
+    <!-- Add Dialog -->
+    <PrimeVueDialog v-model:visible="isAddOpen" modal header="Add Category" class="w-[45rem]">
+      <form @submit.prevent="handleAddCategory">
+        <AppBaseFormGroup v-slot="{ classes }" class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+          is-name-as-label label-for="name" name="Name" :validators="category_formValidations.name">
+          <label for="name">Category Name <sup class="text-red-500">*</sup></label>
+          <PrimeVueInputText v-model="category_formData.name" name="name" type="text" class="w-full"
+            :class="{ ...classes }" fluid v-on="useListenerForm(category_formValidations, 'name')" />
+        </AppBaseFormGroup>
+        <div class="mb-8">
+          <label for="description">description (Optional)</label>
+          <PrimeVueTextarea v-model="category_formData.description" auto-resize rows="5" class="w-full" />
+        </div>
+        <div class="flex justify-end gap-2">
+          <PrimeVueButton label="Cancel" severity="info" variant="outlined" class="w-48" @click="
+            isAddOpen = false;
+          resetForm();
+          " />
+          <PrimeVueButton label="Add" class="w-48 bg-primary border-primary" type="submit" />
+        </div>
+      </form>
+    </PrimeVueDialog>
+
+    <!-- Edit Dialog -->
+    <PrimeVueDialog v-model:visible="isEditOpen" modal header="Edit Category" class="w-[45rem]">
+      <form @submit.prevent="handleEditCategory">
+        <AppBaseFormGroup v-slot="{ classes }" class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+          is-name-as-label label-for="name" name="Name" :validators="category_formValidations.name">
+          <label for="name">Category Name <sup class="text-red-500">*</sup></label>
+          <PrimeVueInputText v-model="category_formData.name" name="name" type="text" class="w-full"
+            :class="{ ...classes }" fluid v-on="useListenerForm(category_formValidations, 'name')" />
+        </AppBaseFormGroup>
+        <div class="mb-8">
+          <label for="description">description (Optional)</label>
+          <PrimeVueTextarea v-model="category_formData.description" auto-resize rows="5" class="w-full" />
+        </div>
+        <div class="flex justify-end gap-2">
+          <PrimeVueButton label="Cancel" severity="info" variant="outlined" class="w-48" @click="
+            isEditOpen = false;
+          resetForm();
+          " />
+          <PrimeVueButton label="Edit" class="w-48 bg-primary border-primary" type="submit" />
+        </div>
+      </form>
+    </PrimeVueDialog>
+
+    <!-- Delete Confirmation -->
+    <PrimeVueDialog :visible="isDeleteOpen" modal header="">
+      <template #container>
+        <div class="w-[35rem] p-8 text-center">
+          <i class="pi pi-trash text-4xl mb-4 text-red-500" />
+          <h1 class="text-2xl font-semibold mb-2">Are you sure you want to delete this category?</h1>
+          <p class="mb-6">This will affect products that use this category.</p>
+          <div class="flex justify-center gap-4">
+            <PrimeVueButton label="Delete" severity="danger" class="w-40" @click="handleDeleteCategory()" />
+            <PrimeVueButton label="Cancel" class="w-40 bg-primary border-primary" @click="isDeleteOpen = false" />
+          </div>
+        </div>
+      </template>
+    </PrimeVueDialog>
+  </div>
+</template>
