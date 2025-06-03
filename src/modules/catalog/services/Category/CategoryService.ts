@@ -3,6 +3,8 @@ import {
   CategoryPayload,
   ICategory,
   ICategoryFormData,
+  ICategoryResponse,
+  ICategoryAddResponse,
 } from '@/modules/catalog/interfaces/Category/CategoryInterface';
 
 import useVuelidate from '@vuelidate/core';
@@ -25,32 +27,41 @@ export const useCategoryService = () => {
     $autoDirty: true,
   });
 
-  const getAllCategories = async (): Promise<ICategory[]> => {
-    const response = await axios.get(API_URL);
-    const categories: ICategory[] = response.data.data;
-
-    return categories.map(item => ({
+  const getAllCategories = async (page: number, limit: number, search: string): Promise<ICategoryResponse> => {
+    const response = await axios.get(`${API_URL}/?page=${page}&limit=${limit}&search=${search}`);
+    const lastPage = response.data.data.lastPage;
+    const categories: ICategory[] = response.data.data.categories.map((item: ICategory) => ({
       id: item.id,
       category: item.category,
       description: item.description ?? '-',
     }));
+    return {
+      categories,
+      lastPage,
+    };
   };
-  const createCategory = async (payload: CategoryPayload): Promise<unknown> => {
+  const createCategory = async (payload: CategoryPayload): Promise<ICategoryAddResponse> => {
     const response = await axios.post(API_URL, payload);
     const message = response.data.message || 'Successfully created a category.';
-    if (response.data.statusCode !== 201) return {
-      message,
-      statusCode: response.data.statusCode,
-    };
+    if (response.data.statusCode !== 201)
+      return {
+        message,
+        statusCode: response.data.statusCode,
+      };
     const data: ICategory = response.data.data;
     return {
-      id: data.id,
-      category: data.category,
-      description: data.description || '-',
       message,
+      statusCode: response.data.statusCode,
+      data: {
+        id: data.id,
+        category: data.category,
+        description: data.description || '-',
+      },
     };
   };
   const updateCategory = async (id: string, payload: CategoryPayload): Promise<ICategory> => {
+    category_formValidations.value.$touch();
+
     const response = await axios.patch(`${API_URL}/${id}`, payload);
     const data: ICategory = response.data.data;
 

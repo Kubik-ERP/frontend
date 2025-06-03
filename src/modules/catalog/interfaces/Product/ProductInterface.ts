@@ -5,7 +5,7 @@ export interface ICategory {
 }
 
 export interface IVariant {
-  id: string;
+  id?: string;
   name: string;
   price?: number;
 }
@@ -26,23 +26,29 @@ export interface IProduct {
   id: string;
   name: string;
   price: number;
-  discount_price?: number;
+  discountPrice?: number;
   discount_value?: number;
   picture_url?: string;
-  categories?: ICategoryHasProduct[];
-  variants?: IVariantHasProduct[];
+  isPercent?: boolean;
+  categoriesHasProducts?: ICategoryHasProduct[];
+  variantHasProducts?: IVariantHasProduct[];
 }
 
 export interface CreateProductPayload {
-  id?: string;
+
   image?: string;
-  name: string;
-  price: number;
+  name?: string;
+  price?: number;
   isDiscount?: boolean;
   discount_price?: number;
   discount_value?: number;
-  discount_unit?: string;
+  is_percent?: boolean;
   picture_url?: string;
-  categories: object[];
-  variants?: object[];
+  categories?: ICategory[];
+  variants?: IVariant[];
+}
+
+export interface IProductResponse {
+  products: IProduct[];
+  lastPage: number;
 }
