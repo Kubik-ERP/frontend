@@ -10,7 +10,7 @@ import {
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 
-const API_URL = `${import.meta.env.VITE_API_URL}/api/categories`;
+const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/categories`;
 
 export const useCategoryService = () => {
   const category_formData = reactive<ICategoryFormData>({

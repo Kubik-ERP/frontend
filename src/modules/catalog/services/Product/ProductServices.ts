@@ -11,7 +11,7 @@ import {
 import useVuelidate from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
 
-const API_URL = `${import.meta.env.VITE_API_URL}/api/products`;
+const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/products`;
 
 export const useProductService = () => {
   const product_formData = reactive<CreateProductPayload>({

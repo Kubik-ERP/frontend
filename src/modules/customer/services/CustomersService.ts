@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { ICustomer, ICustomerFormData,ICustomerResponse } from '../interfaces/CustomersInterface';
+import { ICustomer, ICustomerFormData, ICustomerResponse } from '../interfaces/CustomersInterface';
 
-const API_URL = `${import.meta.env.VITE_API_URL}/api/customers`;
+const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/customers`;
 
 import useVuelidate from '@vuelidate/core';
 import { required, email, numeric, minLength, maxLength } from '@vuelidate/validators';
@@ -50,12 +50,12 @@ export const useCustomerService = () => {
       address: item.address,
       dob: item.dob,
     }));
-    
+
     return {
       customers,
       lastPage: response.data.data.lastPage,
       total: response.data.data.total,
-    }
+    };
   };
 
   const createCustomer = async (payload: ICustomerFormData): Promise<ICustomer> => {
