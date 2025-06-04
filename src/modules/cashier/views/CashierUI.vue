@@ -15,25 +15,19 @@ import { ICashierOrderSummaryProvided } from '../interfaces/cashier-order-summar
  * @description Destructure all the data and methods what we need
  */
 const {
-  cashierProduct_isLoading,
-  cashierProduct_searchData,
-  cashierProduct_listCategory,
+  cashierProduct_productState,
 
   cashierProduct_modalAddEditItem,
   cashierProduct_modalCategory,
 
-  cashierProduct_listDrink,
-  cashierProduct_listFeaturedProduct,
-  cashierProduct_listFood,
-
-  cashierProduct_selectedCategory,
-  cashierProduct_selectedProduct,
   cashierProduct_selectedView,
+  cashierProduct_selectedProduct,
 
   cashierProduct_selectedProductQty,
 
   cashierProduct_handleSelectCategory,
   cashierProduct_handleSelectProduct,
+
   cashierProduct_onSearchData,
 
   isProductActive,
@@ -45,34 +39,38 @@ const {
   cashierOrderSummary_menuOrder,
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
-  cashierOrderSummary_calculateEstimation,
-  cashierOrderSummary_summary,
 
   cashierOrderSummary_modalMenuOrderItem,
   cashierOrderSummary_modalOrderSummary,
   cashierOrderSummary_modalAddEditNotes,
-  cashierOrderSummary_modalCancelOrder,
-  cashierOrderSummary_modalInvoiceDetail,
-  cashierOrderSummary_modalOrderType,
   cashierOrderSummary_modalPaymentMethod,
+  cashierOrderSummary_modalSelectTable,
+  cashierOrderSummary_modalOrderType,
+  cashierOrderSummary_modalVoucher,
+  cashierOrderSummary_modalInvoiceDetail,
   cashierOrderSummary_modalPlaceOrderConfirmation,
   cashierOrderSummary_modalPlaceOrderDetail,
-  cashierOrderSummary_modalSelectTable,
-  cashierOrderSummary_modalVoucher,
+  cashierOrderSummary_modalCancelOrder,
 
   cashierOrderSummary_getListActiveFloor,
+  cashierOrderSummary_calculateEstimation,
+  cashierOrderSummary_summary,
+
   cashierOrderSummary_isButtonPlaceOrderDisabled,
+
+  cashierOrderSummary_isLoadingUnpaidOrder,
+
+  cashierProduct_customerState,
 
   cashierOrderSummary_handleIsExpandedToggle,
 
-  cashierOrderSummary_isLoadingUnpaidOrder,
   cashierOrderSummary_handleSaveUnpaidOrder,
 
   cashierOrderSummary_handleOrderType,
   cashierOrderSummary_handleInvoiceDetail,
   cashierOrderSummary_handleCancelOrder,
-  cashierOrderSummary_handlePaymentMethod,
   cashierOrderSummary_handleFetchPaymentMethod,
+  cashierOrderSummary_handlePaymentMethod,
   cashierOrderSummary_handlePlaceOrderConfirmation,
   cashierOrderSummary_handlePlaceOrderDetail,
   cashierOrderSummary_handleSelectTable,
@@ -80,31 +78,27 @@ const {
   cashierOrderSummary_handleToggleSelectTable,
 
   cashierOrderSummary_handleSimulatePayment,
+  cashierProduct_onSearchCustomer,
+  cashierProduct_onScrollFetchMoreCustomers,
 } = useCashierOrderSummaryService();
 
 /**
  * @description Provide all the data and methods what we need
  */
 provide<ICashierProductProvided>('cashierProduct', {
-  cashierProduct_isLoading,
-  cashierProduct_searchData,
-  cashierProduct_listCategory,
+  cashierProduct_productState,
 
   cashierProduct_modalAddEditItem,
   cashierProduct_modalCategory,
 
-  cashierProduct_listDrink,
-  cashierProduct_listFeaturedProduct,
-  cashierProduct_listFood,
-
-  cashierProduct_selectedCategory,
-  cashierProduct_selectedProduct,
   cashierProduct_selectedView,
+  cashierProduct_selectedProduct,
 
   cashierProduct_selectedProductQty,
 
   cashierProduct_handleSelectCategory,
   cashierProduct_handleSelectProduct,
+
   cashierProduct_onSearchData,
 
   isProductActive,
@@ -116,34 +110,38 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_menuOrder,
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
-  cashierOrderSummary_calculateEstimation,
-  cashierOrderSummary_summary,
 
   cashierOrderSummary_modalMenuOrderItem,
   cashierOrderSummary_modalOrderSummary,
   cashierOrderSummary_modalAddEditNotes,
-  cashierOrderSummary_modalCancelOrder,
-  cashierOrderSummary_modalInvoiceDetail,
-  cashierOrderSummary_modalOrderType,
   cashierOrderSummary_modalPaymentMethod,
+  cashierOrderSummary_modalSelectTable,
+  cashierOrderSummary_modalOrderType,
+  cashierOrderSummary_modalVoucher,
+  cashierOrderSummary_modalInvoiceDetail,
   cashierOrderSummary_modalPlaceOrderConfirmation,
   cashierOrderSummary_modalPlaceOrderDetail,
-  cashierOrderSummary_modalSelectTable,
-  cashierOrderSummary_modalVoucher,
+  cashierOrderSummary_modalCancelOrder,
+
   cashierOrderSummary_getListActiveFloor,
+  cashierOrderSummary_calculateEstimation,
+  cashierOrderSummary_summary,
 
   cashierOrderSummary_isButtonPlaceOrderDisabled,
 
+  cashierOrderSummary_isLoadingUnpaidOrder,
+
+  cashierProduct_customerState,
+
   cashierOrderSummary_handleIsExpandedToggle,
 
-  cashierOrderSummary_isLoadingUnpaidOrder,
   cashierOrderSummary_handleSaveUnpaidOrder,
 
   cashierOrderSummary_handleOrderType,
   cashierOrderSummary_handleInvoiceDetail,
   cashierOrderSummary_handleCancelOrder,
-  cashierOrderSummary_handlePaymentMethod,
   cashierOrderSummary_handleFetchPaymentMethod,
+  cashierOrderSummary_handlePaymentMethod,
   cashierOrderSummary_handlePlaceOrderConfirmation,
   cashierOrderSummary_handlePlaceOrderDetail,
   cashierOrderSummary_handleSelectTable,
@@ -151,6 +149,8 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_handleToggleSelectTable,
 
   cashierOrderSummary_handleSimulatePayment,
+  cashierProduct_onSearchCustomer,
+  cashierProduct_onScrollFetchMoreCustomers,
 });
 </script>
 

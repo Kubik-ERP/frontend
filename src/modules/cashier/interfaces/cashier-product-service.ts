@@ -1,25 +1,24 @@
-import {
-  ICashierProduct,
-  ICashierCategory,
-  ICashierSelected,
-  ICashierModalAddProductItem,
-  ICashierModalAddProduct,
-} from './index';
+import { ICashierCategory, ICashierProduct } from './cashier-response';
+
+import { ICashierSelected, ICashierModalAddProductItem, ICashierModalAddProduct } from './index';
+
+export interface ICashierProductState {
+  isLoadingProduct: boolean;
+  isLoadingCategory: boolean;
+  selectedCategory: string;
+  searchProduct: string;
+  listCategory: ICashierCategory[];
+  listProductSearch: ICashierProduct[];
+  listProductCategory: ICashierCategory[];
+}
 
 export interface ICashierProductProvided {
-  cashierProduct_searchData: Ref<string>;
-  cashierProduct_isLoading: Ref<boolean>;
-  cashierProduct_listCategory: Ref<ICashierCategory[], ICashierCategory[]>;
+  cashierProduct_productState: Ref<ICashierProductState>;
 
   cashierProduct_modalAddEditItem: Ref<ICashierModalAddProduct>;
   cashierProduct_modalCategory: Ref<{ show: boolean }>;
 
-  cashierProduct_listFood: Ref<ICashierProduct[], ICashierProduct[]>;
-  cashierProduct_listFeaturedProduct: Ref<ICashierProduct[], ICashierProduct[]>;
-  cashierProduct_listDrink: Ref<ICashierProduct[], ICashierProduct[]>;
-
   cashierProduct_selectedProduct: Ref<ICashierSelected[]>;
-  cashierProduct_selectedCategory: Ref<string[]>;
   cashierProduct_selectedView: Ref<'image' | 'grid' | 'inline'>;
 
   cashierProduct_selectedProductQty: WritableComputedRef<number, number>;

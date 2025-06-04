@@ -5,6 +5,7 @@ export const CASHIER_BASE_PAYMENT_ENDPOINT = '/payment';
 
 export const CASHIER_ENDPOINT_PRODUCTS = `/products`;
 export const CASHIER_ENDPOINT_CATEGORIES = `/categories`;
+export const CASHIER_ENDPOINT_COSTUMERS = `/customers`;
 
 export const CASHIER_ENDPOINT_PAYMENT_INSTANT = `${CASHIER_BASE_INVOICE_ENDPOINT + CASHIER_BASE_PROCESS_ENDPOINT}/instant`;
 

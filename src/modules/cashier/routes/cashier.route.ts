@@ -18,6 +18,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.NAVBAR,
+          title: 'Cashier',
         },
       },
     ],
@@ -33,6 +34,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.NAVBAR,
+          title: 'Self Order',
         },
       },
     ],
