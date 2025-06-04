@@ -128,8 +128,8 @@ export const useProductService = () => {
 
   const createProduct = async (payload: CreateProductPayload): Promise<IProduct> => {
     const formData = convertProductToFormData(payload);
-    console.log('🚀 ~ createProduct ~ payload:', payload);
-    console.log('🚀 ~ createProduct ~ formData:', formData);
+    // console.log('🚀 ~ createProduct ~ payload:', payload);
+    // console.log('🚀 ~ createProduct ~ formData:', formData);
 
     const response = await axios.post(API_URL, formData, {
       headers: {
@@ -137,7 +137,7 @@ export const useProductService = () => {
       },
     });
 
-    console.log('🚀 ~ createProduct ~ response.data.data:', response);
+    // console.log('🚀 ~ createProduct ~ response.data.data:', response);
     return response.data.data;
   };
 
