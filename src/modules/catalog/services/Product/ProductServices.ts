@@ -119,7 +119,7 @@ export const useProductService = () => {
       price: product.price,
       discountPrice: product.discountPrice || 0,
       isPercent: product.isPercent,
-      picture_url: product.pictureUrl || '-', // ← corrected `pictureUrl`
+      picture_url: `${import.meta.env.VITE_APP_BASE_API_URL}${product.pictureUrl}` || '-', // ← corrected `pictureUrl`
       categoriesHasProducts:
         product.categoriesHasProducts?.map((item: ICategoryHasProduct) => item.categories) || [],
       variantHasProducts: product.variantHasProducts?.map((item: IVariantHasProduct) => item.variant) || [],
@@ -142,7 +142,14 @@ export const useProductService = () => {
   };
 
   const updateProduct = async (id: string, payload: CreateProductPayload): Promise<IProduct> => {
-    const response = await axios.patch(`${API_URL}/${id}`, payload);
+    const formData = convertProductToFormData(payload);
+
+    
+    const response = await axios.patch(`${API_URL}/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     const data: IProduct = response.data.data;
     // console.log('🚀 ~ updateProduct ~ response:', data);
 

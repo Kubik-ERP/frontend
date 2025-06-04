@@ -19,6 +19,8 @@ function clearForm() {
   product_formData.discount_price = 0;
   product_formData.variants = [];
   product_formData.categories = [];
+  product_formData.imagePreview = '';
+
   toggleVariant.value = false;
   product_formValidations.value.$reset();
 }
@@ -37,6 +39,7 @@ const discount_unit = ref('Rp');
 const loadProduct = async () => {
   try {
     const response = await getProductById(route.params.id);
+    console.log('🚀 ~ loadProduct ~ response:', response);
     // console.log('🚀 ~ loadProduct ~ getProductById:', response);
     product_formData.name = response.name;
     product_formData.price = response.price;
@@ -44,6 +47,7 @@ const loadProduct = async () => {
     product_formData.variants = response.variantHasProducts;
     product_formData.categories = response.categoriesHasProducts;
     product_formData.is_percent = response.isPercent;
+    product_formData.imagePreview = response.picture_url;
 
     product_formData.isDiscount = product_formData.price !== product_formData.discount_price;
 
@@ -74,9 +78,11 @@ const triggerFileInput = () => {
 const handleImageUpload = event => {
   const file = event.target.files?.[0];
   if (file) {
+    product_formData.imageFile = file; // ✅ Save the file
+
     const reader = new FileReader();
     reader.onload = () => {
-      product_formData.image = reader.result;
+      product_formData.imagePreview = reader.result;
     };
     reader.readAsDataURL(file);
   }
@@ -175,9 +181,14 @@ onBeforeRouteLeave((to, from, next) => {
         <p>Photo (Optional)</p>
         <img
           class="rounded-lg mt-2 w-64 h-64 object-cover"
-          :src="product_formData.image || 'https://placehold.co/250'"
+          :src="product_formData.imagePreview || 'https://placehold.co/250'"
           alt="Photo"
         />
+        <!-- <img
+          class="rounded-lg mt-2 w-64 h-64 object-cover"
+          :src="product_formData.image || 'https://placehold.co/250'"
+          alt="Photo"
+        /> -->
 
         <!-- Hidden File Input -->
         <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
