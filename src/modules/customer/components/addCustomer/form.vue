@@ -5,7 +5,14 @@ const { customer_FormData, customer_formValidations, createCustomer } = useCusto
 
 function clearForm() {
   customer_formValidations.value.$reset();
-  customer_FormData.value = {};
+  customer_FormData.name = '';
+  customer_FormData.gender = '';
+  customer_FormData.dob = '';
+  customer_FormData.code = '';
+  customer_FormData.number = '';
+  customer_FormData.email = '';
+  customer_FormData.tags = [];
+  customer_FormData.address = '';
 }
 
 const handleCreateCustomer = async () => {
@@ -33,11 +40,26 @@ const handleCreateCustomer = async () => {
   <form class="grid grid-cols-2 gap-8" @submit.prevent="handleCreateCustomer">
     {{ customer_FormData }}
     <br />
-    {{ customer_formValidations.$errors }}
+    <!-- {{ customer_formValidations.$errors }}
     <br />
-    {{ customer_formValidations.$invalid }}
+    {{ customer_formValidations.$invalid }} -->
     <div class="flex flex-col">
-      <AppBaseFormGroup
+      <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Customer Name</label>
+      <div
+        class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+        is-name-as-label
+        label-for="name"
+        name="Customer Name"
+      >
+        <PrimeVueInputText
+          v-model="customer_FormData.name"
+          name="name"
+          type="text"
+          class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
+          fluid
+        />
+      </div>
+      <!-- <AppBaseFormGroup
         v-slot="{ classes }"
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
@@ -53,7 +75,7 @@ const handleCreateCustomer = async () => {
           :class="{ ...classes }"
           fluid
         />
-      </AppBaseFormGroup>
+      </AppBaseFormGroup> -->
     </div>
     <div class="flex flex-col">
       <label for="gender" class="block text-sm font-medium leading-6 text-gray-900">Gender</label>
@@ -79,6 +101,7 @@ const handleCreateCustomer = async () => {
       <PrimeVueDatePicker
         v-model="customer_FormData.dob"
         name="dob"
+        type="date"
         show-icon
         fluid
         icon-display="input"

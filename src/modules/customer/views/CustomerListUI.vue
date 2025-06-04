@@ -105,8 +105,15 @@ onMounted(() => {
 <template>
   <div class="m-4 p-1 border border-gray rounded-lg shadow-2xl">
     <div>
-      <PrimeVueDataTable :selection="selectedCustomer" :value="customers" :rows="limit" :filters="filters" data-key="ID"
-        paginator :loading="isLoading">
+      <PrimeVueDataTable
+        :selection="selectedCustomer"
+        :value="customers"
+        :rows="limit"
+        :filters="filters"
+        data-key="ID"
+        paginator
+        :loading="isLoading"
+      >
         <template #header>
           <div class="flex justify-between">
             <div class="flex items-center justify-center gap-2">
@@ -124,8 +131,13 @@ onMounted(() => {
               </form>
 
               <router-link to="customer/add-customer">
-                <PrimeVueButton type="button" severity="info" label="Add Customer" icon="pi pi-plus"
-                  class="bg-primary border-primary" />
+                <PrimeVueButton
+                  type="button"
+                  severity="info"
+                  label="Add Customer"
+                  icon="pi pi-plus"
+                  class="bg-primary border-primary"
+                />
               </router-link>
             </div>
           </div>
@@ -138,7 +150,9 @@ onMounted(() => {
         <PrimeVueColumn sortable field="name" header="Customer Name" style="width: 20%"></PrimeVueColumn>
         <PrimeVueColumn sortable field="email" header="Email" style="width: 20%"></PrimeVueColumn>
         <PrimeVueColumn sortable field="phone" header="Phone Number" style="width: 20%">
-          <template #body="{ data }"> ({{ data.code }}) {{ data.number }} </template>
+          <template #body="{ data }">
+            <span>({{ data.code }}) {{ data.number }}</span>
+          </template>
         </PrimeVueColumn>
         <PrimeVueColumn sortable field="points" header="Loyalty Point" style="width: 20%">
           <template #body="{ data }">
@@ -152,37 +166,68 @@ onMounted(() => {
 
         <PrimeVueColumn>
           <template #body="slotProps">
-            <PrimeVueButton type="text" icon="pi pi-ellipsis-v"
+            <PrimeVueButton
+              type="text"
+              icon="pi pi-ellipsis-v"
               class="bg-transparent text-gray-500 border-none float-end"
-              @click="displayPopover($event, slotProps.data)"></PrimeVueButton>
+              @click="displayPopover($event, slotProps.data)"
+            ></PrimeVueButton>
           </template>
         </PrimeVueColumn>
 
-        <template #paginatorcontainer="{ }">
+        <template #paginatorcontainer="{}">
           <div class="flex items-center gap-2 justify-between w-full py-2">
             <!-- Previous Page Button -->
-            <PrimeVueButton icon="pi pi-angle-left" variant="text" label="Previous"
-              class="border border-primary text-primary hover:bg-transparent" @click="prevPage()" />
+            <PrimeVueButton
+              icon="pi pi-angle-left"
+              variant="text"
+              label="Previous"
+              class="border border-primary text-primary hover:bg-transparent"
+              @click="prevPage()"
+            />
 
             <div class="flex gap-1">
-              <PrimeVueButton v-for="p in visiblePages" :key="p" :label="p.toString()" class="border-none aspect-square p-4"
-                :class="page === p ? 'bg-blue-secondary-background text-primary' : 'bg-transparent text-grayscale-20'
-                  " @click="goToPage(p)" />
+              <PrimeVueButton
+                v-for="p in visiblePages"
+                :key="p"
+                :label="p.toString()"
+                class="border-none aspect-square p-4"
+                :class="
+                  page === p ? 'bg-blue-secondary-background text-primary' : 'bg-transparent text-grayscale-20'
+                "
+                @click="goToPage(p)"
+              />
             </div>
             <!-- Page Numbers -->
 
             <!-- Next Page Button -->
-            <PrimeVueButton icon="pi pi-angle-right" variant="text" label="Next"
-              class="border border-primary text-primary hover:bg-transparent flex-row-reverse" @click="nextPage()" />
+            <PrimeVueButton
+              icon="pi pi-angle-right"
+              variant="text"
+              label="Next"
+              class="border border-primary text-primary hover:bg-transparent flex-row-reverse"
+              @click="nextPage()"
+            />
           </div>
         </template>
       </PrimeVueDataTable>
 
       <PrimeVuePopover ref="op">
         <div class="flex flex-col items-start">
-          <PrimeVueButton variant="text" label="Edit" icon="pi pi-pen-to-square" class="text-black" @click="handleEdit()" />
-          <PrimeVueButton variant="text" label="Delete" icon="pi pi-trash" class="text-red-500"
-            @click="isDeleteOpen = true" />
+          <PrimeVueButton
+            variant="text"
+            label="Edit"
+            icon="pi pi-pen-to-square"
+            class="text-black"
+            @click="handleEdit()"
+          />
+          <PrimeVueButton
+            variant="text"
+            label="Delete"
+            icon="pi pi-trash"
+            class="text-red-500"
+            @click="isDeleteOpen = true"
+          />
         </div>
       </PrimeVuePopover>
 
@@ -194,9 +239,16 @@ onMounted(() => {
               <h1 class="text-2xl font-semibold">Are you sure you want to delete this customer?</h1>
               <p>This action cannot be undone, and the customer will be removed from customers list</p>
               <div class="flex items-center justify-between gap-4">
-                <PrimeVueButton class="text-lg w-56" variant="outlined" icon="pi pi-trash" label="Delete Customer"
-                  severity="danger" @click="handleDelete()" />
-                <PrimeVueButton class="w-56 text-lg bg-primary border-primary" @click="isDeleteOpen = false">Cancel
+                <PrimeVueButton
+                  class="text-lg w-56"
+                  variant="outlined"
+                  icon="pi pi-trash"
+                  label="Delete Customer"
+                  severity="danger"
+                  @click="handleDelete()"
+                />
+                <PrimeVueButton class="w-56 text-lg bg-primary border-primary" @click="isDeleteOpen = false"
+                  >Cancel
                 </PrimeVueButton>
               </div>
             </div>
