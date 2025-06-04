@@ -11,6 +11,11 @@ export interface ICashierResponseCalulateEstimationDetail {
 export interface ICashierResponseCalulateEstimationItem {
   total: number;
   discountTotal: number;
+  grandTotal: number;
+  serviceCharge: number | null;
+  serviceChargeInclude: boolean;
+  tax: number | null;
+  taxInclude: boolean;
   items: ICashierResponseCalulateEstimationItem[];
 }
 
@@ -79,6 +84,7 @@ export interface ICashierCategoriesHasProductResponse {
     id: string;
     description: string;
     category: string;
+    image: string;
     categoriesHasProducts: ICashierCategoryHasProduct[];
   };
 }

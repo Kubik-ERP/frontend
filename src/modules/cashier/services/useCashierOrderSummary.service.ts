@@ -408,6 +408,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    */
   const cashierOrderSummary_isButtonPlaceOrderDisabled = computed(() => {
     const isDisabled =
+      cashierProduct_customerState.value.selectedCustomer?.id === '' ||
       cashierOrderSummary_modalOrderType.value.selectedOrderType === '' ||
       cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod === '' ||
       cashierOrderSummary_modalSelectTable.value.selectedTable.length === 0 ||
@@ -421,6 +422,11 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     data: {
       total: 0,
       discountTotal: 0,
+      grandTotal: 0,
+      serviceCharge: 0,
+      serviceChargeInclude: false,
+      tax: 0,
+      taxInclude: false,
       items: [],
     },
   });
@@ -470,6 +476,11 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         cashierOrderSummary_calculateEstimation.value.data = {
           total: 0,
           discountTotal: 0,
+          grandTotal: 0,
+          serviceCharge: 0,
+          serviceChargeInclude: false,
+          tax: 0,
+          taxInclude: false,
           items: [],
         };
       }

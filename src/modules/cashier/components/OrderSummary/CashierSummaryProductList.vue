@@ -44,11 +44,13 @@ const { cashierOrderSummary_modalAddEditNotes, cashierOrderSummary_calculateEsti
             <div class="flex flex-col">
               <span class="text-sm font-semibold">{{ item.product.name }}</span>
               <div class="flex flex-col w-fit">
-                <span class="text-xs">Rp {{ item.product.discountPrice ?? item.product.price }}</span>
+                <span class="text-xs">{{
+                  useCurrencyFormat(item.product.discountPrice ?? item.product.price)
+                }}</span>
                 <span
                   v-if="item.product.discountPrice"
                   class="text-text-disabled text-[10px] line-through text-right"
-                  >Rp {{ item.product.price }}</span
+                  >{{ useCurrencyFormat(item.product.price) }}</span
                 >
               </div>
             </div>
@@ -57,7 +59,12 @@ const { cashierOrderSummary_modalAddEditNotes, cashierOrderSummary_calculateEsti
           <div class="flex flex-col gap-1">
             <div v-if="item.variant.id">
               <p class="font-semibold text-xs text-text-disabled">Variant</p>
-              <p class="text-sm">{{ item.variant.name }}</p>
+              <p class="text-sm">
+                {{ item.variant.name }}
+                <span v-if="item.variant.price > 0" class="text-xs text-text-disabled"
+                  >(+{{ useCurrencyFormat(item.variant.price) }})</span
+                >
+              </p>
             </div>
 
             <div v-if="item.notes">
