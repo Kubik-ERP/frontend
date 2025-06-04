@@ -3,8 +3,6 @@ import CustomerTags from '@/modules/customer/components/addCustomer/tags.vue';
 import { useCustomerService } from '../services/CustomersService';
 const { customer_FormData, customer_formValidations, updateCustomer, getCustomerByID } = useCustomerService();
 
-const customerID = ref('');
-
 function clearForm() {
   customer_formValidations.value.$reset();
   customer_FormData.name = '';
@@ -19,11 +17,11 @@ function clearForm() {
 
 const handleEditCustomer = async () => {
   customer_formValidations.value.$touch();
-  console.log('🚀 ~ handleEditCustomer ~ customer_formValidations.value:', customer_formValidations.value);
+  // console.log('🚀 ~ handleEditCustomer ~ customer_formValidations.value:', customer_formValidations.value);
 
   if (customer_formValidations.value.$invalid) return;
 
-  console.log(customer_FormData);
+  // console.log(customer_FormData);
 
   try {
     updateCustomer(route.params.id, customer_FormData);
@@ -100,12 +98,6 @@ onMounted(() => {
 
 <template>
   <form class="grid grid-cols-2 gap-8" @submit.prevent="handleEditCustomer">
-    {{ customer_FormData }}
-    <br />
-    {{ customerID }}
-    <!-- {{ customer_formValidations.$errors }}
-    <br />
-    {{ customer_formValidations.$invalid }} -->
     <div class="flex flex-col">
       <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Customer Name</label>
       <div

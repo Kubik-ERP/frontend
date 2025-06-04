@@ -17,11 +17,11 @@ function clearForm() {
 
 const handleCreateCustomer = async () => {
   customer_formValidations.value.$touch();
-  console.log('🚀 ~ handleCreateCustomer ~ customer_formValidations.value:', customer_formValidations.value);
+  // console.log('🚀 ~ handleCreateCustomer ~ customer_formValidations.value:', customer_formValidations.value);
 
   if (customer_formValidations.value.$invalid) return;
 
-  console.log(customer_FormData);
+  // console.log(customer_FormData);
 
   try {
     createCustomer(customer_FormData);
@@ -38,8 +38,8 @@ const handleCreateCustomer = async () => {
 
 <template>
   <form class="grid grid-cols-2 gap-8" @submit.prevent="handleCreateCustomer">
-    {{ customer_FormData }}
-    <br />
+    <!-- {{ customer_FormData }} -->
+    <!-- <br /> -->
     <!-- {{ customer_formValidations.$errors }}
     <br />
     {{ customer_formValidations.$invalid }} -->

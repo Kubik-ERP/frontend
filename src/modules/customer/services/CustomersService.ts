@@ -80,7 +80,7 @@ export const useCustomerService = () => {
 
   const createCustomer = async (payload: ICustomerFormData): Promise<ICustomerCreateResponse> => {
     const response = await axios.post(API_URL, payload);
-    console.log('🚀 ~ createCustomer ~ response:', response);
+    // console.log('🚀 ~ createCustomer ~ response:', response);
 
     const data: ICustomer = response.data.data.data;
 

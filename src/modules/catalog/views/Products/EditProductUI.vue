@@ -39,7 +39,7 @@ const discount_unit = ref('Rp');
 const loadProduct = async () => {
   try {
     const response = await getProductById(route.params.id);
-    console.log('🚀 ~ loadProduct ~ response:', response);
+    // console.log('🚀 ~ loadProduct ~ response:', response);
     // console.log('🚀 ~ loadProduct ~ getProductById:', response);
     product_formData.name = response.name;
     product_formData.price = response.price;

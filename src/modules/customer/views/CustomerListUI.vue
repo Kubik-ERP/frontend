@@ -25,7 +25,7 @@ const lastPage = ref(0);
 const total = ref(0);
 
 function handleEdit() {
-  console.log(selectedCustomer.value.id);
+  // console.log(selectedCustomer.value.id);
   router.push({ name: 'edit-customer', params: { id: selectedCustomer.value.id } });
 }
 
