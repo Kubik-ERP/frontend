@@ -69,11 +69,11 @@ export const LIST_SIDEBAR_MENUS = [
         subMenus: [
           {
             name: 'Categories',
-            path: '/',
+            path: '/catalog/categories',
           },
           {
             name: 'Products',
-            path: '/',
+            path: '/catalog/products',
           },
         ],
       },
@@ -164,11 +164,28 @@ export const LIST_SIDEBAR_MENUS = [
         subMenus: [],
       },
       {
-        name: 'Point of Sales',
-        iconName: 'sales',
-        path: '/point-of-sales',
-        isHaveSubMenus: false,
-        subMenus: [],
+        name: 'POS Settings',
+        iconName: 'gear',
+        path: '/pos-setting',
+        isHaveSubMenus: true,
+        subMenus: [
+          {
+            name: 'Device',
+            path: '/pos-setting/device',
+          },
+          {
+            name: 'Payment Method',
+            path: '/pos-setting/payment-method',
+          },
+          {
+            name: 'Tax & Service Charge',
+            path: '/pos-setting/tax',
+          },
+          {
+            name: 'Invoice',
+            path: '/pos-setting/invoice',
+          }
+        ],
       },
       {
         name: 'Integrations',
