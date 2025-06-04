@@ -13,12 +13,13 @@ function clearForm() {
   product_formData.discount_price = 0;
   product_formData.variants = [];
   product_formData.categories = [];
-  product_formData.image = null;
+  product_formData.imagePreview = "";
 
   product_formValidations.value.$reset();
 }
 
 const fileInput = ref(null);
+
 
 const triggerFileInput = () => {
   fileInput.value?.click();
@@ -27,9 +28,11 @@ const triggerFileInput = () => {
 const handleImageUpload = event => {
   const file = event.target.files?.[0];
   if (file) {
+    product_formData.imageFile = file; // ✅ Save the file
+
     const reader = new FileReader();
     reader.onload = () => {
-      product_formData.image = reader.result;
+      product_formData.imagePreview = reader.result;
     };
     reader.readAsDataURL(file);
   }
@@ -65,7 +68,7 @@ const addVariant = () => {
 };
 
 const removeVariant = index => {
-  product.variants.splice(index, 1);
+  product_formData.variants.splice(index, 1);
 };
 
 const calculateDiscount = () => {
@@ -145,8 +148,8 @@ watch(product_formData, () => {
 <template>
   <div class="container mx-auto">
     <div class="flex flex-col gap-4">
-      <!-- {{ product_formData }}
-      <br />
+      <!-- {{ product_formData }} -->
+      <!-- <br />
       {{ product_formValidations }}
       <br />
       {{ product_formValidations.$invalid }} -->
@@ -156,7 +159,7 @@ watch(product_formData, () => {
         <p>Photo (Optional)</p>
         <img
           class="rounded-lg mt-2 w-64 h-64 object-cover"
-          :src="product_formData.image || 'https://placehold.co/250'"
+          :src="product_formData.imagePreview || 'https://placehold.co/250'"
           alt="Photo"
         />
 

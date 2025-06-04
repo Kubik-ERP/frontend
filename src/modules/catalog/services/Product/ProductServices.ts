@@ -13,9 +13,43 @@ import { required, helpers } from '@vuelidate/validators';
 
 const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/products`;
 
+function convertProductToFormData(payload: CreateProductPayload): FormData {
+  const formData = new FormData();
+
+  // Required flat fields (assume all are non-undefined)
+  formData.append('name', String(payload.name));
+  formData.append('price', String(payload.price));
+  formData.append('discount_price', String(payload.discount_price));
+  formData.append('isDiscount', String(payload.isDiscount));
+  formData.append('is_percent', String(payload.is_percent));
+
+  // Optional image
+  if (payload.imageFile) {
+    formData.append('image', payload.imageFile); // Make sure it's a File or Blob
+  }
+
+  // Categories
+  payload.categories?.forEach((cat, i) => {
+    if (cat.id) formData.append(`categories[${i}][id]`, cat.id);
+    if (cat.category) formData.append(`categories[${i}][category]`, cat.category);
+    if (cat.description) formData.append(`categories[${i}][description]`, cat.description);
+  });
+
+  // Variants
+  payload.variants?.forEach((variant, i) => {
+    if (variant.name) formData.append(`variants[${i}][name]`, variant.name);
+    if (variant.price !== undefined) {
+      formData.append(`variants[${i}][price]`, String(variant.price));
+    }
+  });
+
+  return formData;
+}
+
 export const useProductService = () => {
   const product_formData = reactive<CreateProductPayload>({
-    image: '',
+    imageFile: undefined,
+    imagePreview: '',
     name: '',
     categories: [],
     price: 0,
@@ -93,7 +127,17 @@ export const useProductService = () => {
   };
 
   const createProduct = async (payload: CreateProductPayload): Promise<IProduct> => {
-    const response = await axios.post(API_URL, payload);
+    const formData = convertProductToFormData(payload);
+    console.log('🚀 ~ createProduct ~ payload:', payload);
+    console.log('🚀 ~ createProduct ~ formData:', formData);
+
+    const response = await axios.post(API_URL, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    console.log('🚀 ~ createProduct ~ response.data.data:', response);
     return response.data.data;
   };
 
