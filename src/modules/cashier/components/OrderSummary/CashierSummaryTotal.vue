@@ -18,9 +18,35 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
         }}</span>
         <PrimeVueSkeleton v-else width="6rem" />
       </div>
-      <div class="flex justify-between text-sm text-text-disabled">
-        <span>Tax</span>
-        <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">{{ useCurrencyFormat(0) }}</span>
+      <div
+        v-if="cashierOrderSummary_calculateEstimation.data.tax"
+        class="flex justify-between text-sm text-text-disabled"
+      >
+        <span
+          >Tax
+          <span v-if="cashierOrderSummary_calculateEstimation.data.taxInclude">(included)</span>
+          <span v-else>(excluded)</span></span
+        >
+
+        <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">{{
+          useCurrencyFormat(cashierOrderSummary_calculateEstimation.data.tax)
+        }}</span>
+        <PrimeVueSkeleton v-else width="6rem" />
+      </div>
+      <div
+        v-if="cashierOrderSummary_calculateEstimation.data.serviceCharge"
+        class="flex justify-between text-sm text-text-disabled"
+      >
+        <span
+          >Service
+
+          <span v-if="cashierOrderSummary_calculateEstimation.data.serviceChargeInclude">(included)</span>
+          <span v-else>(excluded)</span></span
+        >
+
+        <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
+          {{ useCurrencyFormat(cashierOrderSummary_calculateEstimation.data.serviceCharge) }}</span
+        >
         <PrimeVueSkeleton v-else width="6rem" />
       </div>
     </div>
@@ -28,7 +54,7 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
     <div class="flex justify-between font-semibold pt-2">
       <span>Total</span>
       <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">{{
-        useCurrencyFormat(cashierOrderSummary_calculateEstimation?.data?.total || 0)
+        useCurrencyFormat(cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0)
       }}</span>
       <PrimeVueSkeleton v-else width="6rem" />
     </div>

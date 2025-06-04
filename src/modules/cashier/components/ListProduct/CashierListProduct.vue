@@ -13,7 +13,7 @@ import { computed } from 'vue';
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierProduct_listFeaturedProduct, cashierProduct_selectedView } =
+const { cashierProduct_productState, cashierProduct_selectedView } =
   inject<ICashierProductProvided>('cashierProduct')!;
 
 /**
@@ -42,18 +42,39 @@ const wrapperClass = computed(() => {
 </script>
 
 <template>
-  <section id="cashier-list-featured-product" class="flex flex-col gap-2">
-    <h2 class="text-xs text-text-disabled">Featured Products</h2>
-
-    <section id="cashier-list-wrapper-class" :class="wrapperClass">
+  <template v-if="cashierProduct_productState.searchProduct">
+    <section id="cashier-list-product-wrapper-class" :class="wrapperClass">
       <component
         :is="selectedComponent"
-        v-for="product in cashierProduct_listFeaturedProduct"
-        :key="product.productId"
+        v-for="product in cashierProduct_productState.listProductSearch"
+        :key="product.id"
         :product="product"
+        :category="product?.categoriesHasProducts?.[0]?.categories.category || ''"
       />
     </section>
-  </section>
+  </template>
+  <template v-else>
+    <section
+      v-for="(item, index) in cashierProduct_productState.listProductCategory"
+      id="cashier-list-featured-product"
+      :key="index"
+      class="flex flex-col gap-2"
+    >
+      <template v-if="item.categoriesHasProducts.length > 0">
+        <h2 class="text-xs text-text-disabled">{{ item.category }}</h2>
+
+        <section id="cashier-list-wrapper-class" :class="wrapperClass">
+          <component
+            :is="selectedComponent"
+            v-for="product in item.categoriesHasProducts"
+            :key="product.productsId"
+            :product="product.products"
+            :category="item.category"
+          />
+        </section>
+      </template>
+    </section>
+  </template>
 </template>
 
 <style scoped></style>

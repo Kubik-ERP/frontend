@@ -31,7 +31,7 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
                 }}
               </span>
             </div>
-            <div v-else class="flex gap-2 items-center">
+            <div v-else class="flex gap-2 w-full items-center justify-between">
               <span class="font-semibold truncate"> Promo / Voucher </span>
 
               <AppBaseSvg name="voucher" class="!h-5 !w-5" />

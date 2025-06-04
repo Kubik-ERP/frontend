@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 // Constants
 import {
   CASHIER_ENDPOINT_CATEGORIES,
+  CASHIER_ENDPOINT_COSTUMERS,
   CASHIER_ENDPOINT_PAYMENT_CALCULATE_ESTIMATION,
   CASHIER_ENDPOINT_PAYMENT_INSTANT,
   CASHIER_ENDPOINT_PAYMENT_METHOD,
@@ -11,18 +12,15 @@ import {
   CASHIER_ENDPOINT_SIMULATE_PAYMENT,
 } from '../constants/cashierApi.constant';
 
-import {
-  CASHIER_DUMMY_LIST_CATEGORY,
-  CASHIER_DUMMY_LIST_DRINK,
-  CASHIER_DUMMY_LIST_FEATURED_PRODUCT,
-  CASHIER_DUMMY_LIST_FOOD,
-} from '../constants';
-
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import { ICashierProduct, ICashierStateStore } from '../interfaces';
 import { ICashierOrderSummaryPaymentMethodResponse } from '../interfaces/cashier-order-summary';
 import {
+  ICashierCategoriesHasProductResponse,
+  ICashierCategoriesResponse,
+  ICashierCustomerResponse,
+  ICashierProduct,
+  ICashierProductResponse,
   ICashierResponseCalulateEstimation,
   ICashierResponseMidtransQrisPayment,
   ICashierResponseProcessCheckout,
@@ -30,26 +28,11 @@ import {
 
 // Plugins
 import httpClient from '@/plugins/axios';
+import { ICashierStateStore } from '../interfaces';
 
 export const useCashierStore = defineStore('cashier', {
   state: (): ICashierStateStore => ({
-    cashierProduct_selectedProduct: [
-      {
-        product: {} as ICashierProduct,
-        variant: {} as ICashierProduct['variant'][0],
-        productId: '0196cf23-e3fb-7caa-b7be-f08248b20a33',
-        variantId: '0196cf23-e3fb-70cf-a3ff-443bf28e7f0e',
-        quantity: 1,
-        notes: 'Ini adalah catatan',
-      },
-    ],
-    cashierProduct_listCategory: CASHIER_DUMMY_LIST_CATEGORY,
-
-    cashierProduct_listFeaturedProduct: CASHIER_DUMMY_LIST_FEATURED_PRODUCT,
-
-    cashierProduct_listFood: CASHIER_DUMMY_LIST_FOOD,
-
-    cashierProduct_listDrink: CASHIER_DUMMY_LIST_DRINK,
+    cashierProduct_selectedProduct: [],
   }),
   getters: {
     /**
@@ -65,9 +48,11 @@ export const useCashierStore = defineStore('cashier', {
      */
     async cashierProduct_fetchSearch(searchData: string): Promise<ICashierProduct[]> {
       try {
-        const response = await httpClient.get<ICashierProduct[]>(CASHIER_ENDPOINT_PRODUCTS + '/' + searchData);
+        const response = await httpClient.get<ICashierProductResponse>(
+          CASHIER_ENDPOINT_PRODUCTS + '/' + searchData,
+        );
 
-        return Promise.resolve(response.data);
+        return Promise.resolve(response.data.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
           return Promise.reject(error);
@@ -84,13 +69,40 @@ export const useCashierStore = defineStore('cashier', {
      * @access public
      */
     async cashierProduct_fetchCategory(
-      categoryId: string,
       requestConfigurations: AxiosRequestConfig = {},
-    ): Promise<ICashierProduct[]> {
+    ): Promise<ICashierCategoriesResponse> {
       try {
-        const response = await httpClient.get<ICashierProduct[]>(CASHIER_ENDPOINT_CATEGORIES + '/' + categoryId, {
+        const response = await httpClient.get<ICashierCategoriesResponse>(CASHIER_ENDPOINT_CATEGORIES, {
           ...requestConfigurations,
         });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
+
+    /**
+     * @description Handle fetch api cashier product category
+     * @url /api/categories/{:categoryId}
+     * @method GET
+     * @access public
+     */
+    async cashierProduct_fetchCategoryByID(
+      categoryId: string,
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<ICashierCategoriesHasProductResponse> {
+      try {
+        const response = await httpClient.get<ICashierCategoriesHasProductResponse>(
+          CASHIER_ENDPOINT_CATEGORIES + '/' + categoryId,
+          {
+            ...requestConfigurations,
+          },
+        );
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -239,6 +251,12 @@ export const useCashierStore = defineStore('cashier', {
       }
     },
 
+    /**
+     * @description Handle simulate payment.
+     * @url /cashier/simulate-payment
+     * @method POST
+     * @access public
+     */
     async cashierProduct_simulatePayment(
       payload: unknown,
       requestConfigurations: AxiosRequestConfig = {},
@@ -247,6 +265,30 @@ export const useCashierStore = defineStore('cashier', {
         const response = await httpClient.post<unknown>(CASHIER_ENDPOINT_SIMULATE_PAYMENT, payload, {
           ...requestConfigurations,
         });
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
+
+    /**
+     * @description Handle fetch list customers.
+     * @url /customers
+     * @method GET
+     * @access public
+     */
+    async cashierProduct_fetchCustomers(
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<ICashierCustomerResponse> {
+      try {
+        const response = await httpClient.get<ICashierCustomerResponse>(CASHIER_ENDPOINT_COSTUMERS, {
+          ...requestConfigurations,
+        });
+
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
