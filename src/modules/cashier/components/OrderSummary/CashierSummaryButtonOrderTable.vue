@@ -1,23 +1,4 @@
-<script setup lang="ts">
-// Constants
-import { CASHIER_ORDER_TYPE } from '../../constants';
-
-// Interfaces
-import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-summary';
-
-/**
- * @description Inject all the data and methods what we need
- */
-const { cashierOrderSummary_modalOrderType, cashierOrderSummary_modalSelectTable } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
-
-const props = defineProps({
-  isSelfOrder: {
-    type: Boolean,
-    default: false,
-  },
-});
-</script>
+<script setup></script>
 <template>
   <section id="cashier-summary-button-order-table">
     <div class="border-t-2 border-t-grayscale-10">
