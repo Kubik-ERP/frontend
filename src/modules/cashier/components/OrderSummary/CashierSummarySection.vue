@@ -53,8 +53,6 @@ const {
       id="cashier-summary-section-order-item"
       class="flex flex-col gap-2"
     >
-      {{ cashierProduct_customerState.isLoading }}
-
       <div class="flex flex-col gap-2 w-full">
         <label for="username" class="text-sm">Username</label>
 
@@ -72,30 +70,30 @@ const {
             :min-length="1"
             :loading="cashierProduct_customerState.isLoading"
             :dropdown="true"
-            :delay="300"
             class="w-full"
             placeholder="Please select Customer Name"
             :virtual-scroller-options="{
-              itemSize: cashierProduct_customerState.limit,
-              showLoader: true,
+              itemSize: 50,
+              step: cashierProduct_customerState.limit,
               lazy: true,
               delay: 300,
               loading: cashierProduct_customerState.isLoading,
               onLazyLoad: cashierProduct_onScrollFetchMoreCustomers,
             }"
-            @scroll="cashierProduct_onScrollFetchMoreCustomers"
             @complete="event => cashierProduct_onSearchCustomer(event.query)"
           >
             <template #option="slotProps">
-              <div class="flex items-center">
-                <div>{{ slotProps.option.name }}</div>
+              <div class="flex gap-1 text-xs w-full items-center">
+                <div class="flex flex-col w-full">
+                  <div class="font-semibold">{{ slotProps.option.name }}</div>
+                  <span class="text-[10px] text-text-disabled">{{ slotProps.option.email }}</span>
+                </div>
+                <div class="text-[10px]">({{ slotProps.option.code }}) {{ slotProps.option.number }}</div>
               </div>
             </template>
-            <template #header>
-              <div class="font-medium px-3 py-2">List Customers</div>
-            </template>
+
             <template #footer>
-              <div class="px-3 py-3">
+              <div class="px-1 py-1">
                 <PrimeVueButton label="Add New" fluid severity="secondary" text size="small" icon="pi pi-plus" />
               </div>
             </template>

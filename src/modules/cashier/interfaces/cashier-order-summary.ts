@@ -109,7 +109,6 @@ export interface ICashierOrderSummaryModalVoucher {
 
 export interface ICashierOrderSummaryData {
   orderId: string;
-  customerName: string;
   orderType: string;
   tableNumber: string;
   promoCode: string;
