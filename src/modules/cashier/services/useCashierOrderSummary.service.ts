@@ -290,7 +290,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    */
   const cashierOrderSummary_data = ref<ICashierOrderSummaryData>({
     orderId: '1234',
-
     orderType: '',
     tableNumber: '',
     promoCode: '',
@@ -436,6 +435,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     try {
       const response = await store.cashierProduct_calculateEstimation({
         products: cashierOrderSummary_summary.value.product,
+        orderType: cashierOrderSummary_summary.value.orderType,
       });
 
       cashierOrderSummary_calculateEstimation.value.data = response.data;
@@ -459,13 +459,22 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description watch calculate estimation changes
    */
   watch(
-    () => cashierProduct_selectedProduct.value,
+    () => [cashierProduct_selectedProduct.value, cashierOrderSummary_modalOrderType.value.selectedOrderType],
     async () => {
-      if (cashierProduct_selectedProduct.value.length > 0) {
+      if (
+        cashierOrderSummary_modalOrderType.value.selectedOrderType &&
+        cashierProduct_selectedProduct.value.length > 0
+      ) {
         debouncedCalculateEstimation();
+      } else {
+        cashierOrderSummary_calculateEstimation.value.data = {
+          total: 0,
+          discountTotal: 0,
+          items: [],
+        };
       }
     },
-    { immediate: true, deep: true },
+    { deep: true },
   );
 
   /**

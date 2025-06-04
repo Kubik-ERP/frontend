@@ -74,6 +74,15 @@ export interface ICashierCategoriesData {
   lastPage: number;
 }
 
+export interface ICashierCategoriesHasProductResponse {
+  data: {
+    id: string;
+    description: string;
+    category: string;
+    categoriesHasProducts: ICashierCategoryHasProduct[];
+  };
+}
+
 export interface ICashierCategoriesResponse {
   data: ICashierCategoriesData;
 }

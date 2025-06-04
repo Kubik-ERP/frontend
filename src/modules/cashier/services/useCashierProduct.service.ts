@@ -98,17 +98,14 @@ export const useCashierProductService = (): ICashierProductProvided => {
   const cashierProduct_handleFetchCategory = async () => {
     cashierProduct_productState.value.isLoadingProduct = true;
     try {
-      const response = await store.cashierProduct_fetchCategory(
-        cashierProduct_productState.value.selectedCategory || '',
-        {
-          params: {
-            page: 1,
-            limit: 1000,
-          },
+      const response = await store.cashierProduct_fetchCategory({
+        params: {
+          page: 1,
+          limit: 1000,
         },
-      );
+      });
 
-      cashierProduct_productState.value.listCategory = response.categories;
+      cashierProduct_productState.value.listCategory = response.data.categories;
     } catch (error) {
       console.error(error);
     } finally {
@@ -125,19 +122,27 @@ export const useCashierProductService = (): ICashierProductProvided => {
   const cashierProduct_handleFetchProductCategory = async () => {
     cashierProduct_productState.value.isLoadingProduct = true;
     try {
-      const response = await store.cashierProduct_fetchCategory(
-        cashierProduct_productState.value.selectedCategory || '',
-        {
-          params: {
-            page: 1,
-            limit: 1000,
-          },
-        },
-      );
+      const params = {
+        page: 1,
+        limit: 1000,
+      };
+
+      // const responseId = await store.cashierProduct_fetchCategoryByID(
+      //   cashierProduct_productState.value.selectedCategory,
+      //   {
+      //     params,
+      //   },
+      // );
+
+      const response = await store.cashierProduct_fetchCategory({
+        params,
+      });
 
       cashierProduct_productState.value.listProductSearch = [];
       cashierProduct_productState.value.searchProduct = '';
-      cashierProduct_productState.value.listProductCategory = response.categories;
+
+      cashierProduct_productState.value.listProductCategory = response.data.categories;
+      // cashierProduct_productState.value.listProductCategory = responseId.data.categoriesHasProducts
     } catch (error) {
       console.error(error);
     } finally {

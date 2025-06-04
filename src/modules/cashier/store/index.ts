@@ -16,7 +16,7 @@ import {
 import type { AxiosRequestConfig } from 'axios';
 import { ICashierOrderSummaryPaymentMethodResponse } from '../interfaces/cashier-order-summary';
 import {
-  ICashierCategoriesData,
+  ICashierCategoriesHasProductResponse,
   ICashierCategoriesResponse,
   ICashierCustomerResponse,
   ICashierProduct,
@@ -69,18 +69,42 @@ export const useCashierStore = defineStore('cashier', {
      * @access public
      */
     async cashierProduct_fetchCategory(
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<ICashierCategoriesResponse> {
+      try {
+        const response = await httpClient.get<ICashierCategoriesResponse>(CASHIER_ENDPOINT_CATEGORIES, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
+
+    /**
+     * @description Handle fetch api cashier product category
+     * @url /api/categories/{:categoryId}
+     * @method GET
+     * @access public
+     */
+    async cashierProduct_fetchCategoryByID(
       categoryId: string,
       requestConfigurations: AxiosRequestConfig = {},
-    ): Promise<ICashierCategoriesData> {
+    ): Promise<ICashierCategoriesHasProductResponse> {
       try {
-        const response = await httpClient.get<ICashierCategoriesResponse>(
+        const response = await httpClient.get<ICashierCategoriesHasProductResponse>(
           CASHIER_ENDPOINT_CATEGORIES + '/' + categoryId,
           {
             ...requestConfigurations,
           },
         );
 
-        return Promise.resolve(response.data.data);
+        return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
           return Promise.reject(error);
