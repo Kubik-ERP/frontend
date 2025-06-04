@@ -1,31 +1,14 @@
-export interface ICashierCategory {
-  id: number;
-  name: string;
-  total: number;
-  image: string;
-}
-
-export interface ICashierVariant {
-  variantId: string;
-  name: string;
-  price: number;
-}
+import {
+  ICashierCategoriesResponse,
+  ICashierCustomer,
+  ICashierProduct,
+  ICashierVariant,
+} from './cashier-response';
 
 export interface ICashierModalAddProductItem {
   quantity: number;
   variant: ICashierVariant;
   notes: string;
-}
-
-export interface ICashierProduct {
-  productId: string;
-  name: string;
-  category: string;
-  price: string;
-  discountedPrice: string | null;
-  image: string;
-  quantity: number;
-  variant: ICashierVariant[];
 }
 
 export interface ICashierSelected {
@@ -46,8 +29,18 @@ export interface ICashierModalAddProduct {
 
 export interface ICashierStateStore {
   cashierProduct_selectedProduct: ICashierSelected[];
-  cashierProduct_listCategory: ICashierCategory[];
-  cashierProduct_listFeaturedProduct: ICashierProduct[];
-  cashierProduct_listFood: ICashierProduct[];
-  cashierProduct_listDrink: ICashierProduct[];
+}
+
+export interface ICashierStateCategory {
+  isLoading: boolean;
+  data: ICashierCategoriesResponse;
+}
+
+export interface ICashierCustomerState {
+  isLoading: boolean;
+  customerList: ICashierCustomer[];
+  page: number;
+  limit: number;
+  total: number;
+  selectedCustomer: ICashierCustomer | null;
 }

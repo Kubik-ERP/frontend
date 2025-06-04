@@ -4,13 +4,11 @@ import CashierFilterByCategory from './CashierFilterByCategory.vue';
 import CashierSearchProductCategory from './CashierSearchProductCategory.vue';
 import CashierModalAddEditProduct from './ListProduct/CashierModalAddEditProduct.vue';
 import CashierChangeView from './ListProduct/CashierChangeView.vue';
-import CashierListDrink from './ListProduct/CashierListDrink.vue';
-import CashierListFeaturedProduct from './ListProduct/CashierListFeaturedProduct.vue';
-import CashierListFood from './ListProduct/CashierListFood.vue';
 import CashierMobileButtonCategory from './OrderSummary/CashierMobileButtonCategory.vue';
 import CashierMobileButtonCheckout from './OrderSummary/CashierMobileButtonCheckout.vue';
 import CashierModalCategory from './ListProduct/CashierModalCategory.vue';
 import CashierSummaryModalOrderSummary from './OrderSummary/Modal/CashierSummaryModalOrderSummary.vue';
+import CashierListProduct from './ListProduct/CashierListProduct.vue';
 </script>
 
 <template>
@@ -25,11 +23,7 @@ import CashierSummaryModalOrderSummary from './OrderSummary/Modal/CashierSummary
     <CashierChangeView />
 
     <section id="cashier-main-section-list-product" class="flex flex-col overflow-y-auto flex-grow">
-      <CashierListFeaturedProduct />
-
-      <CashierListFood />
-
-      <CashierListDrink />
+      <CashierListProduct />
     </section>
 
     <CashierModalAddEditProduct />

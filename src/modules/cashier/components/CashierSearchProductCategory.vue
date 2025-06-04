@@ -5,13 +5,13 @@ import type { ICashierProductProvided } from '../interfaces/cashier-product-serv
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierProduct_searchData, cashierProduct_isLoading, cashierProduct_onSearchData } =
+const { cashierProduct_productState, cashierProduct_onSearchData } =
   inject<ICashierProductProvided>('cashierProduct')!;
 </script>
 
 <template>
   <section id="cashier-search-product-category">
-    <form @submit.prevent="cashierProduct_onSearchData(cashierProduct_searchData)">
+    <form @submit.prevent="cashierProduct_onSearchData(cashierProduct_productState.searchProduct)">
       <PrimeVueIconField>
         <PrimeVueInputIcon>
           <template #default>
@@ -20,8 +20,8 @@ const { cashierProduct_searchData, cashierProduct_isLoading, cashierProduct_onSe
         </PrimeVueInputIcon>
 
         <PrimeVueInputText
-          v-model="cashierProduct_searchData"
-          :loading="cashierProduct_isLoading"
+          v-model="cashierProduct_productState.searchProduct"
+          :loading="cashierProduct_productState.isLoadingProduct"
           placeholder="Search product name or category"
           class="text-sm w-full"
         />
