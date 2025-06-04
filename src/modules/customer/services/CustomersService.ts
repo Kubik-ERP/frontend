@@ -6,7 +6,7 @@ const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/customers`;
 const API_URL_TAGS = `${import.meta.env.VITE_APP_BASE_API_URL}/api/tags`;
 
 import useVuelidate from '@vuelidate/core';
-import { required, email, numeric, minLength, maxLength } from '@vuelidate/validators';
+import { required } from '@vuelidate/validators';
 
 export const useCustomerService = () => {
   const customer_FormData = reactive<ICustomerFormData>({
@@ -16,30 +16,36 @@ export const useCustomerService = () => {
     code: '+62',
     number: '',
     email: '',
-    // id: '',
     tags: [],
     address: '',
   });
 
+  // const customer_formRules = computed(() => ({
+  //   name: { required },
+  //   email: { required, email },
+  //   number: { required, numeric, minLength: minLength(10), maxLength: maxLength(11) },
+  //   // id: { required, minLength: minLength(16), maxLength: maxLength(16) },
+  //   address: { required },
+  //   tags: {  },
+  //   code: { required },
+  //   dob: { required },
+  //   gender: { required },
+  // }));
+
   const customer_formRules = computed(() => ({
     name: { required },
-    email: { required, email },
-    number: { required, numeric, minLength: minLength(10), maxLength: maxLength(11) },
-    // id: { required, minLength: minLength(16), maxLength: maxLength(16) },
-    address: { required },
-    tags: {  },
-    code: { required },
-    dob: { required },
-    gender: { required },
   }));
 
-  const customer_formValidations = useVuelidate(customer_formRules, customer_FormData, {
+  const customer_formValidatable = computed(() => ({
+    name: customer_FormData.name,
+  }));
+
+  const customer_formValidations = useVuelidate(customer_formRules, customer_formValidatable, {
     $autoDirty: true,
   });
 
   const getCustomerTags = async (): Promise<ITag[]> => {
     const response = await axios.get(API_URL_TAGS);
-    console.log('🚀 ~ getCustomerTags ~ response:', response);
     return response.data.data;
   };
 

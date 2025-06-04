@@ -100,7 +100,7 @@ export const useProductService = () => {
   const updateProduct = async (id: string, payload: CreateProductPayload): Promise<IProduct> => {
     const response = await axios.patch(`${API_URL}/${id}`, payload);
     const data: IProduct = response.data.data;
-    console.log('🚀 ~ updateProduct ~ response:', data);
+    // console.log('🚀 ~ updateProduct ~ response:', data);
 
     return {
       id: data.id,

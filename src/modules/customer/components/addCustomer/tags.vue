@@ -23,7 +23,6 @@ onMounted(async () => {
   try {
     const response = await getCustomerTags();
     tags.value = response;
-    console.log('🚀 ~ onMounted ~ tags.value:', tags.value);
   } catch (error) {
     console.log(error);
   }
@@ -89,7 +88,7 @@ const removeTag = tagToRemove => {
 
 
 <template>
-  <form>
+  <div>
     <PrimeVueIconField>
       <PrimeVueInputText
         v-model="search"
@@ -140,5 +139,5 @@ const removeTag = tagToRemove => {
         </button>
       </span>
     </div>
-  </form>
+  </div>
 </template>
