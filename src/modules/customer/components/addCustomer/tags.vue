@@ -1,4 +1,6 @@
 <script setup>
+import { useCustomerService } from '../../services/CustomersService';
+
 const props = defineProps({
   modelValue: {
     type: Array,
@@ -6,21 +8,21 @@ const props = defineProps({
   },
 });
 
+const { getCustomerTags } = useCustomerService();
+
 const emit = defineEmits(['update:modelValue']);
 
 const selectedTags = ref([...props.modelValue]);
 
-watch(selectedTags, val => {
-  emit('update:modelValue', val);
-});
+
 
 const search = ref('');
 const tags = ref([]);
 
 onMounted(async () => {
   try {
-    const response = await getTags();
-    tags.value = response.data;
+    const response = await getCustomerTags();
+    tags.value = response;
   } catch (error) {
     console.log(error);
   }
@@ -51,7 +53,9 @@ const addTag = selectedTag => {
     selectedTags.value.push(selectedTag);
   }
   search.value = '';
+  filterTags();
   closeListbox();
+  emit('update:modelValue', selectedTags.value);
 };
 
 // Create a new tag from the search input
@@ -60,6 +64,10 @@ const createTag = () => {
     const newTag = { name: search.value };
     selectedTags.value.push(newTag);
     tags.value.push(newTag); // Add the new tag to the available list as well
+
+    addTag(newTag);
+    filterTags();
+    emit('update:modelValue', selectedTags.value);
   }
   search.value = '';
   closeListbox();
@@ -72,7 +80,7 @@ const removeTag = tagToRemove => {
   if (!tags.value.some(tag => tag.name === tagToRemove.name)) {
     tags.value.push(tagToRemove);
   }
-
+  emit('update:modelValue', selectedTags.value);
   // Refilter the list after update
   filterTags();
 };
@@ -82,15 +90,25 @@ const removeTag = tagToRemove => {
 <template>
   <div>
     <PrimeVueIconField>
-      <PrimeVueInputText v-model="search" class="w-full" placeholder="Search or Create Tags" @focus="openListbox"
-        @input="filterTags" />
+      <PrimeVueInputText
+        v-model="search"
+        class="w-full"
+        placeholder="Search or Create Tags"
+        @focus="openListbox"
+        @input="filterTags"
+      />
       <PrimeVueInputIcon>
         <i class="pi pi-search" />
       </PrimeVueInputIcon>
     </PrimeVueIconField>
 
-    <PrimeVueListbox v-if="isListBoxOpen" :options="filteredTags" option-label="name" class="w-full"
-      list-style="max-height:250px">
+    <PrimeVueListbox
+      v-if="isListBoxOpen"
+      :options="filteredTags"
+      option-label="name"
+      class="w-full"
+      list-style="max-height:250px"
+    >
       <template #option="slotProps">
         <div class="flex items-center w-full" @click="addTag(slotProps.option)">
           <div>{{ slotProps.option.name }}</div>
@@ -102,14 +120,19 @@ const removeTag = tagToRemove => {
         <div v-if="search" class="mb-2">
           <PrimeVueButton
             class="bg-blue-secondary-background/50 text-blue-primary font-semibold text-lg justify-start border-none rounded-none text-start w-full"
-            @click="createTag">+ Add "{{ search }}"</PrimeVueButton>
+            @click="createTag"
+            >+ Add "{{ search }}"</PrimeVueButton
+          >
         </div>
       </template>
     </PrimeVueListbox>
 
     <div class="flex gap-2 mt-2 flex-wrap">
-      <span v-for="tag in selectedTags" :key="tag"
-        class="px-2 py-1 font-semibold bg-blue-secondary-background/50 rounded-full flex items-center justify-center gap-2">
+      <span
+        v-for="tag in selectedTags"
+        :key="tag"
+        class="px-2 py-1 font-semibold bg-blue-secondary-background/50 rounded-full flex items-center justify-center gap-2"
+      >
         <p class="text-primary whitespace-nowrap">{{ tag.name }}</p>
         <button @click="removeTag(tag)">
           <i class="pi pi-times-circle text-sm cursor-pointer"></i>
