@@ -16,13 +16,27 @@ const routes: RouteRecordRaw[] = [
         name: 'sales-order',
         component: () => import('../views/SalesOrderUI.vue'),
         meta: {
-          breadcrumb: 'Sales Order',
           layout: LAYOUT_OPTIONS.DEFAULT,
           requiresAuthorization: false,
           title: 'Sales Order',
         },
       },
+      {
+        path: 'cash-register',
+        name: 'sales-order.cash-register',
+        component: () => import('../views/SalesOrderCashRegisterUI.vue'),
+        meta: {
+          breadcrumb: 'Cash Register',
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          requiresAuthorization: false,
+          title: 'Cash Register',
+        },
+      }
     ],
+    meta: {
+      breadcrumb: 'Sales Order',
+      requiresAuthorization: false,
+    }
   },
 ];
 

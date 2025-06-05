@@ -4,6 +4,39 @@ import SalesOrderCashInOut from '../components/SalesOrderCashInOut.vue';
 import SalesOrderDailySales from '../components/SalesOrderDailySales.vue';
 import SalesOrderVoucher from '../components/SalesOrderVoucher.vue';
 
+export const LIST_COLUMNS_OF_CASH_DRAWER: IColumnDataTable[] = [
+  {
+    label: 'Date',
+    sortable: true,
+    value: 'createdAt',
+  },
+  {
+    label: 'Staff Name',
+    sortable: true,
+    value: 'staffName',
+  },
+  {
+    label: 'Expected Balance',
+    sortable: true,
+    value: 'expectedBalance',
+  },
+  {
+    label: 'Actual Balance',
+    sortable: true,
+    value: 'actualBalance',
+  },
+  {
+    label: 'Status',
+    sortable: true,
+    value: 'status',
+  },
+  {
+    label: '',
+    sortable: false,
+    value: 'action',
+  }
+]
+
 export const LIST_COLUMNS_OF_CASH_IN_OUT: IColumnDataTable[] = [
   {
     label: 'Date',
@@ -187,6 +220,37 @@ export const LIST_TYPES_OF_ORDER_STATUS: IDropdownItem[] = [
     value: 'Cancelled',
   },
 ];
+
+export const LIST_VALUES_OF_CASH_DRAWER = [
+  {
+    createdAt: '01/08/2024',
+    staffName: 'Bessie Cooper',
+    expectedBalance: 100000,
+    actualBalance: null,
+    status: 'Open',
+  },
+  {
+    createdAt: '01/08/2024',
+    staffName: 'Esther Howard',
+    expectedBalance: 1200000,
+    actualBalance: 1150000,
+    status: 'Open',
+  },
+  {
+    createdAt: '01/08/2024',
+    staffName: 'Eleanor Pena',
+    expectedBalance: 500000,
+    actualBalance: 500000,
+    status: 'Close',
+  },
+  {
+    createdAt: '01/08/2024',
+    staffName: 'Jacob Jones',
+    expectedBalance: 800000,
+    actualBalance: null,
+    status: 'Open',
+  },
+]
 
 export const LIST_VALUES_OF_CASH_IN_OUT = [
   {
