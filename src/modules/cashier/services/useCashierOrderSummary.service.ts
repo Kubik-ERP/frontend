@@ -289,6 +289,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @returns void
    */
   const cashierOrderSummary_data = ref<ICashierOrderSummaryData>({
+    customerName: '',
     orderId: '1234',
     orderType: '',
     tableNumber: '',
