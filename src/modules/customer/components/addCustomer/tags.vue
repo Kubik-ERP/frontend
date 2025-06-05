@@ -1,4 +1,6 @@
 <script setup>
+import { useCustomerService } from '../../services/CustomersService';
+
 const props = defineProps({
   modelValue: {
     type: Array,
@@ -6,21 +8,21 @@ const props = defineProps({
   },
 });
 
+const { getCustomerTags } = useCustomerService();
+
 const emit = defineEmits(['update:modelValue']);
 
 const selectedTags = ref([...props.modelValue]);
 
-watch(selectedTags, val => {
-  emit('update:modelValue', val);
-});
+
 
 const search = ref('');
 const tags = ref([]);
 
 onMounted(async () => {
   try {
-    const response = await getTags();
-    tags.value = response.data;
+    const response = await getCustomerTags();
+    tags.value = response;
   } catch (error) {
     console.log(error);
   }
@@ -51,7 +53,9 @@ const addTag = selectedTag => {
     selectedTags.value.push(selectedTag);
   }
   search.value = '';
+  filterTags();
   closeListbox();
+  emit('update:modelValue', selectedTags.value);
 };
 
 // Create a new tag from the search input
@@ -60,6 +64,10 @@ const createTag = () => {
     const newTag = { name: search.value };
     selectedTags.value.push(newTag);
     tags.value.push(newTag); // Add the new tag to the available list as well
+
+    addTag(newTag);
+    filterTags();
+    emit('update:modelValue', selectedTags.value);
   }
   search.value = '';
   closeListbox();
@@ -72,11 +80,12 @@ const removeTag = tagToRemove => {
   if (!tags.value.some(tag => tag.name === tagToRemove.name)) {
     tags.value.push(tagToRemove);
   }
-
+  emit('update:modelValue', selectedTags.value);
   // Refilter the list after update
   filterTags();
 };
 </script>
+
 
 <template>
   <div>

@@ -1,10 +1,13 @@
 <script setup lang="ts">
-// Interfaces
+// Constant
 import { CASHIER_ORDER_TYPE } from '../../constants';
-import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-summary';
 
 // Components`
 import CashierSummaryButtonOrderTable from './CashierSummaryButtonOrderTable.vue';
+
+// Interfaces
+import { AutoCompleteCompleteEvent } from 'primevue';
+import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-summary';
 
 /**
  * @description Inject all the data and methods what we need
@@ -15,6 +18,9 @@ const {
   cashierOrderSummary_menuOrder,
   cashierOrderSummary_modalOrderType,
   cashierOrderSummary_modalSelectTable,
+  cashierProduct_customerState,
+  cashierProduct_onScrollFetchMoreCustomers,
+  cashierProduct_onSearchCustomer,
   cashierOrderSummary_handleIsExpandedToggle,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
@@ -55,12 +61,46 @@ const {
 
         <PrimeVueIconField class="flex w-full">
           <PrimeVueInputIcon class="pi pi-user" />
-          <PrimeVueInputText
-            id="customer-name"
-            v-model="cashierOrderSummary_data.customerName"
+
+          <PrimeVueAutoComplete
+            v-model="cashierProduct_customerState.selectedCustomer"
+            :suggestions="cashierProduct_customerState.customerList"
+            :options="cashierProduct_customerState.customerList"
+            :field="'name'"
+            :option-value="'id'"
+            :option-value-key="'id'"
+            option-label="name"
+            :min-length="1"
+            :loading="cashierProduct_customerState.isLoading"
+            :dropdown="true"
             class="w-full"
-            placeholder="Please input Customer Name"
-          />
+            placeholder="Please select Customer Name"
+            :virtual-scroller-options="{
+              itemSize: 50,
+              step: cashierProduct_customerState.limit,
+              lazy: true,
+              delay: 300,
+              loading: cashierProduct_customerState.isLoading,
+              onLazyLoad: cashierProduct_onScrollFetchMoreCustomers,
+            }"
+            @complete="(event: AutoCompleteCompleteEvent) => cashierProduct_onSearchCustomer(event.query)"
+          >
+            <template #option="slotProps">
+              <div class="flex gap-1 text-xs w-full items-center">
+                <div class="flex flex-col w-full">
+                  <div class="font-semibold">{{ slotProps.option.name }}</div>
+                  <span class="text-[10px] text-text-disabled">{{ slotProps.option.email }}</span>
+                </div>
+                <div class="text-[10px]">({{ slotProps.option.code }}) {{ slotProps.option.number }}</div>
+              </div>
+            </template>
+
+            <template #footer>
+              <div class="px-1 py-1">
+                <PrimeVueButton label="Add New" fluid severity="secondary" text size="small" icon="pi pi-plus" />
+              </div>
+            </template>
+          </PrimeVueAutoComplete>
         </PrimeVueIconField>
       </div>
 

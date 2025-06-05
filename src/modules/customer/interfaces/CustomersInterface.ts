@@ -1,11 +1,32 @@
+export interface ITag {
+  id: string;
+  name: string;
+}
+
+export interface ICustomersHasTag {
+  customerId: string;
+  name: string;
+  tag: ITag;
+}
+
 export interface ICustomer {
   id: string;
   name: string;
-  email: string;
-  code: string;
+  code?: string;
   number?: string;
-  points?: number; //number
-  latestVisit?: string; //date
+  dob?: string;
+  email?: string;
+  username?: string;
+  address?: string;
+  points?: number;
+  latestVisit?: string;
+  customersHasTag?: ICustomersHasTag[];
+}
+
+export interface ICustomerResponse {
+  customers: ICustomer[];
+  lastPage: number;
+  total: number;
 }
 
 export interface ICustomerFormData {
@@ -15,7 +36,27 @@ export interface ICustomerFormData {
   code: string;
   number: string;
   email: string;
-  id: string;
-  tags: string[];
+  // id: string;
+  tags: ITag[];
   address: string;
+}
+
+export interface ICreateCustomerPayload {
+  name: string;
+  code: string;
+  number: string;
+  dob: string;
+  email: string;
+  address: string;
+  customers_has_tag: [
+    {
+      id: string;
+    },
+  ];
+}
+
+export interface ICustomerCreateResponse {
+  data?: ICustomer;
+  message: string;
+  statusCode: number;
 }

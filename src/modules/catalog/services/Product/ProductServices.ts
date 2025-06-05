@@ -5,25 +5,67 @@ import {
   IProduct,
   ICategoryHasProduct,
   IVariantHasProduct,
+  IProductResponse,
 } from '@/modules/catalog/interfaces/Product/ProductInterface.ts';
 
 import useVuelidate from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
 
-const API_URL = `${import.meta.env.VITE_API_URL}/api/products`;
+const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/products`;
+
+function convertProductToFormData(payload: CreateProductPayload): FormData {
+  const formData = new FormData();
+
+  // Required flat fields (assume all are non-undefined)
+  formData.append('name', String(payload.name));
+  formData.append('price', String(payload.price));
+  formData.append('discount_price', String(payload.discount_price));
+  formData.append('isDiscount', String(payload.isDiscount));
+  formData.append('is_percent', String(payload.is_percent));
+
+  // Optional image
+  if (payload.imageFile) {
+    formData.append('image', payload.imageFile); // Make sure it's a File or Blob
+  }
+
+  // Categories
+  payload.categories?.forEach((cat, i) => {
+    if (cat.id) formData.append(`categories[${i}][id]`, cat.id);
+    if (cat.category) formData.append(`categories[${i}][category]`, cat.category);
+    if (cat.description) formData.append(`categories[${i}][description]`, cat.description);
+  });
+
+  // Variants
+  payload.variants?.forEach((variant, i) => {
+    if (variant.name) formData.append(`variants[${i}][name]`, variant.name);
+    if (variant.price !== undefined) {
+      formData.append(`variants[${i}][price]`, String(variant.price));
+    }
+  });
+
+  return formData;
+}
 
 export const useProductService = () => {
   const product_formData = reactive<CreateProductPayload>({
-    image: '',
+    imageFile: undefined,
+    imagePreview: '',
     name: '',
     categories: [],
     price: 0,
     isDiscount: false,
     discount_value: 0,
-    discount_unit: 'Rp',
+    is_percent: false,
     discount_price: 0,
     variants: [],
   });
+  const product_formValidatable = computed(() => ({
+    name: product_formData.name,
+    price: product_formData.price,
+    categories: product_formData.categories,
+    discount_value: product_formData.discount_value,
+    variants: product_formData.variants,
+  }));
 
   const product_formRules = computed(() => ({
     name: { required },
@@ -38,56 +80,83 @@ export const useProductService = () => {
     },
   }));
 
-  const product_formValidations = useVuelidate(product_formRules, product_formData, {
+  const product_formValidations = useVuelidate(product_formRules, product_formValidatable, {
     $autoDirty: true,
   });
 
-  const getAllProducts = async (): Promise<IProduct[]> => {
-    const response = await axios.get(API_URL);
-    const products: IProduct[] = response.data.data;
-
-    return products.map(item => ({
+  const getAllProducts = async (page: number, limit: number, search: string): Promise<IProductResponse> => {
+    const response = await axios.get(`${API_URL}/?page=${page}&limit=${limit}&search=${search}`);
+    const products: IProduct[] = response.data.data.products.map((item: IProduct) => ({
       id: item.id,
       name: item.name,
       price: item.price,
-      discount_price: item.discount_price || 0,
+      discount_price: item.discountPrice || 0,
       picture_url: item.picture_url || '-',
-      categories: item.categories_has_products?.map((item: ICategoryHasProduct) => item.categories.category),
-      variants: item.variant_has_products?.map((item: IVariantHasProduct) => item.variant.name),
+      categoriesHasProducts: item.categoriesHasProducts?.map(
+        (cat: ICategoryHasProduct) => cat.categories.category,
+      ),
+      variantHasProducts: item.variantHasProducts?.map((variant: IVariantHasProduct) => variant.variant.name),
     }));
+
+    const lastPage = response.data.data.lastPage;
+
+    return {
+      products,
+      lastPage,
+    };
   };
 
   const getProductById = async (id: string): Promise<IProduct> => {
     const response = await axios.get(`${API_URL}/${id}`);
+
+    // console.log('🚀 ~ getProductById ~ response:', response);
     const product = response.data.data;
+    // console.log('🚀 ~ getProductById ~ product:', product);
 
     return {
       id: product.id,
       name: product.name,
       price: product.price,
-      discount_value: product.discount_price || 0,
-      picture_url: product.picture_url || '-',
-      categories: product.categories_has_products.map((item: ICategoryHasProduct) => item.categories) || [],
-      variants: product.variant_has_products?.map((item: IVariantHasProduct) => item.variant) || [],
+      discountPrice: product.discountPrice || 0,
+      isPercent: product.isPercent,
+      picture_url: `${import.meta.env.VITE_APP_BASE_API_URL}${product.pictureUrl}` || '-', // ← corrected `pictureUrl`
+      categoriesHasProducts:
+        product.categoriesHasProducts?.map((item: ICategoryHasProduct) => item.categories) || [],
+      variantHasProducts: product.variantHasProducts?.map((item: IVariantHasProduct) => item.variant) || [],
     };
   };
 
   const createProduct = async (payload: CreateProductPayload): Promise<IProduct> => {
-    const response = await axios.post(API_URL, payload);
+    const formData = convertProductToFormData(payload);
+    // console.log('🚀 ~ createProduct ~ payload:', payload);
+    // console.log('🚀 ~ createProduct ~ formData:', formData);
+
+    const response = await axios.post(API_URL, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    // console.log('🚀 ~ createProduct ~ response.data.data:', response);
     return response.data.data;
   };
 
   const updateProduct = async (id: string, payload: CreateProductPayload): Promise<IProduct> => {
-    const response = await axios.patch(`${API_URL}/${id}`, payload);
+    const formData = convertProductToFormData(payload);
+
+    
+    const response = await axios.patch(`${API_URL}/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     const data: IProduct = response.data.data;
+    // console.log('🚀 ~ updateProduct ~ response:', data);
 
     return {
       id: data.id,
       name: data.name,
       price: data.price,
-      discount_price: data.discount_price || 0,
-      picture_url: data.picture_url || '-',
-      categories_has_products: data.categories_has_products || [],
     };
   };
 

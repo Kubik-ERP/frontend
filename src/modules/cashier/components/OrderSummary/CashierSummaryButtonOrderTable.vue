@@ -9,7 +9,7 @@ import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-sum
  * @description Inject all the data and methods what we need
  */
 const { cashierOrderSummary_modalOrderType, cashierOrderSummary_modalSelectTable } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 
 const props = defineProps({
   isSelfOrder: {

@@ -5,7 +5,7 @@ import { ICashierProductProvided } from '../../interfaces/cashier-product-servic
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierProduct_modalCategory, cashierProduct_listCategory, cashierProduct_handleSelectCategory } =
+const { cashierProduct_modalCategory, cashierProduct_productState, cashierProduct_handleSelectCategory } =
   inject<ICashierProductProvided>('cashierProduct')!;
 </script>
 <template>
@@ -23,13 +23,13 @@ const { cashierProduct_modalCategory, cashierProduct_listCategory, cashierProduc
 
           <div class="overflow-y-auto h-72">
             <section
-              v-for="category in cashierProduct_listCategory"
+              v-for="category in cashierProduct_productState.listCategory"
               id="cashier-modal-category-item"
               :key="category.id"
               class="flex gap-4 py-2"
               @click="
                 () => {
-                  cashierProduct_handleSelectCategory(category.name);
+                  cashierProduct_handleSelectCategory(category.category);
                   closeCallback();
                 }
               "
@@ -37,8 +37,8 @@ const { cashierProduct_modalCategory, cashierProduct_listCategory, cashierProduc
               <img :src="category.image" class="h-9 w-9 rounded-full object-cover pointer-events-none" />
 
               <div class="flex flex-col gap-1">
-                <span class="text-xs font-semibold">{{ category.name }}</span>
-                <span class="text-xs text-text-disabled">{{ category.total }} Items</span>
+                <span class="text-xs font-semibold">{{ category.category }}</span>
+                <span class="text-xs text-text-disabled">{{ category.categoriesHasProducts.length }} Items</span>
               </div>
             </section>
           </div>

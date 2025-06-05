@@ -4,23 +4,22 @@ import { useCategoryService } from '../../services/Category/CategoryService';
 
 const { getAllCategories } = useCategoryService();
 const { createProduct, product_formData, product_formValidations } = useProductService();
-
+const discount_unit = ref('Rp');
 function clearForm() {
   product_formData.name = '';
   product_formData.price = 0;
   product_formData.isDiscount = false;
   product_formData.discount_value = 0;
-  product_formData.discount_unit = 'Rp';
   product_formData.discount_price = 0;
   product_formData.variants = [];
   product_formData.categories = [];
-  product_formData.image = null;
+  product_formData.imagePreview = "";
 
-  product_formValidations.name = null;
+  product_formValidations.value.$reset();
 }
 
-const previewImage = ref(null);
 const fileInput = ref(null);
+
 
 const triggerFileInput = () => {
   fileInput.value?.click();
@@ -29,21 +28,31 @@ const triggerFileInput = () => {
 const handleImageUpload = event => {
   const file = event.target.files?.[0];
   if (file) {
+    product_formData.imageFile = file; // ✅ Save the file
+
     const reader = new FileReader();
     reader.onload = () => {
-      product_formData.image = reader.result;
+      product_formData.imagePreview = reader.result;
     };
     reader.readAsDataURL(file);
   }
 };
 
 const handleCreateProduct = async () => {
+  product_formValidations.value.$touch();
+  if (product_formValidations.value.$invalid) return;
+
+  if (!product_formData.isDiscount) {
+    // console.log('no discount');
+    product_formData.discount_price = product_formData.price;
+  }
+
   try {
     await createProduct(product_formData);
+    clearForm();
+    product_formValidations.value.$reset();
   } catch (error) {
     console.error(error);
-  } finally {
-    clearForm();
   }
 };
 
@@ -59,7 +68,7 @@ const addVariant = () => {
 };
 
 const removeVariant = index => {
-  product.variants.splice(index, 1);
+  product_formData.variants.splice(index, 1);
 };
 
 const calculateDiscount = () => {
@@ -68,11 +77,13 @@ const calculateDiscount = () => {
   }
 
   if (product_formData.isDiscount) {
-    if (product_formData.discount_unit === 'Rp') {
+    if (discount_unit.value === 'Rp') {
+      product_formData.is_percent = false;
       product_formData.discount_price = product_formData.price - product_formData.discount_value;
     } else {
       product_formData.discount_price =
         product_formData.price - (product_formData.price * product_formData.discount_value) / 100;
+      product_formData.is_percent = true;
     }
   }
 };
@@ -95,19 +106,10 @@ const confirmLeave = () => {
   }
 };
 
-// const loadProduct = async () => {
-//   try {
-//     const response = await getProductByID();
-//     products.value = response;
-//   } catch (error) {
-//     console.error('Failed to load products:', error);
-//   }
-// };
-
 const loadCategories = async () => {
   try {
-    const response = await getAllCategories();
-    categories.value = response;
+    const response = await getAllCategories(1, 100, '');
+    categories.value = response.categories;
   } catch (error) {
     console.error('Failed to load categories:', error);
   }
@@ -115,7 +117,6 @@ const loadCategories = async () => {
 
 onMounted(async () => {
   loadCategories();
-  // loadProduct();
 });
 
 const cancelLeave = () => {
@@ -147,13 +148,18 @@ watch(product_formData, () => {
 <template>
   <div class="container mx-auto">
     <div class="flex flex-col gap-4">
+      <!-- {{ product_formData }} -->
+      <!-- <br />
+      {{ product_formValidations }}
+      <br />
+      {{ product_formValidations.$invalid }} -->
       <h1 class="text-2xl font-bold">Products Detail</h1>
       <h2 class="text-xl font-semibold">Product Information</h2>
       <form class="flex flex-col items-center justify-center" @submit.prevent="handleCreateProduct">
         <p>Photo (Optional)</p>
         <img
           class="rounded-lg mt-2 w-64 h-64 object-cover"
-          :src="previewImage || 'https://placehold.co/250'"
+          :src="product_formData.imagePreview || 'https://placehold.co/250'"
           alt="Photo"
         />
 
@@ -261,15 +267,15 @@ watch(product_formData, () => {
                     v-model="product_formData.discount_value"
                     class="w-full"
                     name="discount_value"
-                    :prefix="product_formData.discount_unit === 'Rp' ? 'Rp ' : ''"
-                    :suffix="product_formData.discount_unit === '%' ? ' %' : ''"
-                    :class="{ ...classes }"
+                    :prefix="product_formData.is_percent === false ? 'Rp ' : ''"
+                    :suffix="product_formData.is_percent === true ? ' %' : ''"
+                    :class="classes ? '' : ''"
                     @change="calculateDiscount"
                     v-on="useListenerForm(product_formValidations, 'discount_value')"
                   />
                   <div class="absolute right-0 flex items-center rounded-lg border-none ring-0">
                     <PrimeVueSelect
-                      v-model="product_formData.discount_unit"
+                      v-model="discount_unit"
                       :options="['Rp', '%']"
                       class="border-none bg-transparent"
                       dropdown-icon="pi pi-circle"
@@ -420,6 +426,4 @@ watch(product_formData, () => {
   </div>
 </template>
 
-
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

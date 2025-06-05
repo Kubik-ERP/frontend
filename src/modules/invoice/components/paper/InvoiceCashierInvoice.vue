@@ -86,7 +86,7 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
           </tr>
           <tr v-if="item.variant">
             <td class="pl-4 font-normal text-black text-xs italic py-2">{{ item.variant.name }}</td>
-            <td class="font-normal text-black text-sm text-center py-2">{{ item.qty }}</td>
+            <td class="font-normal text-black text-sm text-center py-2"></td>
             <td class="font-normal text-black text-sm text-center py-2">
               {{ useCurrencyFormat(item.variant.price) }}
             </td>
@@ -100,8 +100,9 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
       <tfoot class="border-b border-solid border-grayscale-10">
         <tr>
           <td class="font-normal text-black text-sm py-2">Sub Total</td>
-          <!-- TODO: add field total qty product -->
-          <td class="font-normal text-black text-sm text-center py-2">6</td>
+          <td class="font-normal text-black text-sm text-center py-2">
+            {{ invoice_invoiceData.data.invoiceDetails.reduce((sum, item) => sum + item.qty, 0) }}
+          </td>
           <td colspan="2" class="font-normal text-black text-sm text-right py-2">
             {{ useCurrencyFormat(invoice_invoiceData.data.subtotal) }}
           </td>
@@ -131,7 +132,9 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
         <tr class="border-b border-solid border-black">
           <td class="font-normal text-black text-sm py-2">PPN</td>
           <!-- TODO: add ppn / tax -->
-          <td colspan="3" class="font-normal text-black text-sm text-right py-2">59.800.500</td>
+          <td colspan="3" class="font-normal text-black text-sm text-right py-2">
+            {{ useCurrencyFormat(invoice_invoiceData.data.subtotal * (10 / 100)) }}
+          </td>
         </tr>
 
         <tr>

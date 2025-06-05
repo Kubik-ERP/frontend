@@ -27,16 +27,24 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
     class="p-0 m-0 rounded-t-4xl lg:rounded-lg"
   >
     <template #container="{ closeCallback }">
-      <div class="overflow-auto flex flex-col gap-6 text-sm lg:text-lg p-6">
+      <div
+        v-if="cashierProduct_modalAddEditItem.product"
+        class="overflow-auto flex flex-col gap-6 text-sm lg:text-lg p-6"
+      >
         <div class="font-semibold">Add Item</div>
 
         <div class="flex w-full items-center justify-between">
           <div class="flex items-center gap-4">
-            <img class="w-20 h-20 object-cover" :src="cashierProduct_modalAddEditItem.product?.image" />
+            <img class="w-20 h-20 object-cover" :src="cashierProduct_modalAddEditItem.product.pictureUrl!" />
 
             <div class="flex flex-col gap-1">
-              <span class="font-semibold">{{ cashierProduct_modalAddEditItem.product?.name }}</span>
-              <span class="text-sm">Rp{{ cashierProduct_modalAddEditItem.product?.price }}</span>
+              <span class="font-semibold">{{ cashierProduct_modalAddEditItem.product.name }}</span>
+              <span class="text-sm"
+                >Rp{{
+                  cashierProduct_modalAddEditItem.product.discountPrice ??
+                  cashierProduct_modalAddEditItem.product.price
+                }}</span
+              >
             </div>
           </div>
 
@@ -54,46 +62,46 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               input-class="w-14 text-center justify-items-center"
               type="number"
               :min="1"
-              :max="cashierProduct_modalAddEditItem.product?.quantity ?? 0"
             />
             <PrimeVueButton
               type="button"
               class="border border-primary text-primary px-4"
               variant="outlined"
               label="+"
-              :disabled="
-                Number(cashierProduct_modalAddEditItem.item.quantity) >=
-                (cashierProduct_modalAddEditItem.product?.quantity ?? 0)
-              "
               @click="cashierProduct_handleQuantity('increase')"
             />
           </div>
         </div>
 
-        <span class="font-semibold">Variant</span>
+        <section
+          v-if="(cashierProduct_modalAddEditItem?.product?.variantHasProducts?.length || 0) > 0"
+          id="list-variant"
+        >
+          <span class="font-semibold">Variant</span>
 
-        <div class="border rounded-md border-grayscale-10 overflow-auto flex flex-col max-h-48 flex-grow">
-          <div
-            v-for="category in cashierProduct_modalAddEditItem.product?.variant"
-            :key="category.variantId"
-            class="flex justify-between w-full p-2"
-          >
-            <div class="flex items-center gap-2">
-              <PrimeVueRadioButton
-                v-model="cashierProduct_modalAddEditItem.item.variant"
-                :input-id="category.name"
-                name="dynamic"
-                :value="category"
-              />
+          <div class="border rounded-md border-grayscale-10 overflow-auto flex flex-col max-h-48 flex-grow">
+            <div
+              v-for="variant in cashierProduct_modalAddEditItem.product.variantHasProducts"
+              :key="variant.variant.id"
+              class="flex justify-between w-full p-2"
+            >
+              <div class="flex items-center gap-2">
+                <PrimeVueRadioButton
+                  v-model="cashierProduct_modalAddEditItem.item.variant"
+                  :input-id="variant.variant.id"
+                  :name="variant.variant.name"
+                  :value="variant.variant"
+                />
 
-              <label :for="category.name">{{ category.name }}</label>
+                <label :for="variant.variant.id">{{ variant.variant.name }}</label>
+              </div>
+
+              <span class="text-sm text-text-disabled">{{
+                variant.variant.price == 0 ? 'Free' : `+ Rp ${variant.variant.price}`
+              }}</span>
             </div>
-
-            <span class="text-sm text-text-disabled">{{
-              category.price == 0 ? 'Free' : `+ Rp ${category.price}`
-            }}</span>
           </div>
-        </div>
+        </section>
 
         <PrimeVueButton
           v-if="!cashierProduct_modalAddEditItem.isAddNotesActive"
@@ -158,11 +166,11 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
             class="bg-primary border-none text-white py-2.5 px-14"
             type="button"
             label="Save"
-            :disabled="!cashierProduct_modalAddEditItem.item?.variant"
+            :disabled="!cashierProduct_modalAddEditItem.item.variant"
             @click="
               cashierProduct_handleSelectProduct(
-                cashierProduct_modalAddEditItem.product!,
-                cashierProduct_modalAddEditItem.item!,
+                cashierProduct_modalAddEditItem.product,
+                cashierProduct_modalAddEditItem.item,
               );
 
               closeCallback();
@@ -177,8 +185,8 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
           :disabled="!cashierProduct_modalAddEditItem.item?.variant"
           @click="
             cashierProduct_handleSelectProduct(
-              cashierProduct_modalAddEditItem.product!,
-              cashierProduct_modalAddEditItem.item!,
+              cashierProduct_modalAddEditItem.product,
+              cashierProduct_modalAddEditItem.item,
             );
 
             closeCallback();

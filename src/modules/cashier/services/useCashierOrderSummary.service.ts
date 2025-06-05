@@ -32,6 +32,8 @@ import { ICashierResponseWebsocketMessage } from '../interfaces/cashier-response
 
 import type { MenuPassThroughAttributes } from 'primevue';
 
+import type { VirtualScrollerLazyEvent } from 'primevue/virtualscroller';
+
 import { MenuItem } from 'primevue/menuitem';
 
 // Router
@@ -45,6 +47,7 @@ import { useSocket } from '@/plugins/socket';
 
 // Vue
 import { ref } from 'vue';
+import { ICashierCustomerState } from '../interfaces';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   // Router
@@ -75,6 +78,71 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    */
   const cashierOrderSummary_handleOrderType = () => {
     // TODO: handle order type on submit
+  };
+
+  const cashierProduct_customerState = ref<ICashierCustomerState>({
+    isLoading: false,
+    customerList: [],
+    page: 1,
+    limit: 20,
+    total: 0,
+    selectedCustomer: null,
+  });
+
+  /**
+   * @description Fetches the customer list from the store.
+   * @returns {Promise<void>}
+   */
+  const cashierProduct_fetchCustomerList = async (page: number, search: string = '') => {
+    cashierProduct_customerState.value.isLoading = true;
+    try {
+      const response = await store.cashierProduct_fetchCustomers({
+        params: {
+          page,
+          limit: cashierProduct_customerState.value.limit,
+          search: search || '',
+        },
+      });
+
+      if (page === 1) {
+        cashierProduct_customerState.value.customerList = response.data.data;
+      } else {
+        cashierProduct_customerState.value.customerList.push(...response.data.data);
+      }
+
+      cashierProduct_customerState.value.page = response.data.page;
+      cashierProduct_customerState.value.total = response.data.total;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      cashierProduct_customerState.value.isLoading = false;
+    }
+  };
+
+  /**
+   * @description handle onSearchCustomer
+   * @param {string} search
+   */
+  const cashierProduct_onSearchCustomer = (search: string) => {
+    cashierProduct_customerState.value.page = 1;
+    cashierProduct_fetchCustomerList(1, search);
+  };
+
+  /**
+   * @description on scroll fetch more customers
+   * @returns {Promise<void>}
+   */
+  const cashierProduct_onScrollFetchMoreCustomers = (event: VirtualScrollerLazyEvent) => {
+    const { last } = event;
+
+    const customerListLength = cashierProduct_customerState.value.customerList.length;
+    const totalCustomers = cashierProduct_customerState.value.total;
+    const isLoading = cashierProduct_customerState.value.isLoading;
+
+    if (!isLoading && last >= customerListLength - 1 && customerListLength < totalCustomers) {
+      cashierProduct_customerState.value.page += 1;
+      cashierProduct_fetchCustomerList(cashierProduct_customerState.value.page);
+    }
   };
 
   // Modal for invoice detail
@@ -221,8 +289,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @returns void
    */
   const cashierOrderSummary_data = ref<ICashierOrderSummaryData>({
+    customerName: '',
     orderId: '1234',
-    customerName: '5ae5fbfb-0002-40fb-9734-0e4d111fb5b2',
     orderType: '',
     tableNumber: '',
     promoCode: '',
@@ -236,7 +304,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    */
   const debouncedHandleWatchChanges = debounce(() => {
     if (
-      cashierOrderSummary_data.value.customerName &&
+      cashierProduct_customerState.value.selectedCustomer?.id &&
       cashierOrderSummary_modalOrderType.value.selectedOrderType &&
       cashierOrderSummary_modalSelectTable.value.selectedTable.length > 0
     ) {
@@ -251,7 +319,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   // watch for changes if customerName, orderType, and tableNumber are filled change isExpanded to false
   watch(
     () => [
-      cashierOrderSummary_data.value.customerName,
+      cashierProduct_customerState.value.selectedCustomer?.id,
       cashierOrderSummary_modalOrderType.value.selectedOrderType,
       cashierOrderSummary_modalSelectTable.value.selectedTable,
     ],
@@ -321,7 +389,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       paymentMethod: cashierOrderSummary_data.value.paymentMethod,
       tableCode: cashierOrderSummary_modalSelectTable.value.selectedTable.toString(),
       selectedVoucher: cashierOrderSummary_modalVoucher.value.form.voucher_code,
-      customerName: cashierOrderSummary_data.value.customerName,
+      customerName: cashierProduct_customerState.value.selectedCustomer?.id || '',
       product: cashierProduct_selectedProduct.value,
     };
 
@@ -341,6 +409,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    */
   const cashierOrderSummary_isButtonPlaceOrderDisabled = computed(() => {
     const isDisabled =
+      cashierProduct_customerState.value.selectedCustomer?.id === '' ||
       cashierOrderSummary_modalOrderType.value.selectedOrderType === '' ||
       cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod === '' ||
       cashierOrderSummary_modalSelectTable.value.selectedTable.length === 0 ||
@@ -354,6 +423,11 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     data: {
       total: 0,
       discountTotal: 0,
+      grandTotal: 0,
+      serviceCharge: 0,
+      serviceChargeInclude: false,
+      tax: 0,
+      taxInclude: false,
       items: [],
     },
   });
@@ -368,6 +442,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     try {
       const response = await store.cashierProduct_calculateEstimation({
         products: cashierOrderSummary_summary.value.product,
+        orderType: cashierOrderSummary_summary.value.orderType,
       });
 
       cashierOrderSummary_calculateEstimation.value.data = response.data;
@@ -391,13 +466,27 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description watch calculate estimation changes
    */
   watch(
-    () => cashierProduct_selectedProduct.value,
+    () => [cashierProduct_selectedProduct.value, cashierOrderSummary_modalOrderType.value.selectedOrderType],
     async () => {
-      if (cashierProduct_selectedProduct.value.length > 0) {
+      if (
+        cashierOrderSummary_modalOrderType.value.selectedOrderType &&
+        cashierProduct_selectedProduct.value.length > 0
+      ) {
         debouncedCalculateEstimation();
+      } else {
+        cashierOrderSummary_calculateEstimation.value.data = {
+          total: 0,
+          discountTotal: 0,
+          grandTotal: 0,
+          serviceCharge: 0,
+          serviceChargeInclude: false,
+          tax: 0,
+          taxInclude: false,
+          items: [],
+        };
       }
     },
-    { immediate: true, deep: true },
+    { deep: true },
   );
 
   /**
@@ -419,7 +508,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         provider: cashierOrderSummary_summary.value.provider,
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
         vouchers: cashierOrderSummary_summary.value.selectedVoucher,
-        customerId: cashierOrderSummary_data.value.customerName,
+        customerId: cashierProduct_customerState.value.selectedCustomer?.id,
         tableCode: cashierOrderSummary_summary.value.tableCode,
       };
 
@@ -482,7 +571,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         },
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
         vouchers: cashierOrderSummary_summary.value.selectedVoucher,
-        customerId: cashierOrderSummary_data.value.customerName,
+        customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
         tableCode: cashierOrderSummary_summary.value.tableCode,
       };
 
@@ -634,6 +723,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
     cashierOrderSummary_isLoadingUnpaidOrder,
 
+    cashierProduct_customerState,
+
     cashierOrderSummary_handleIsExpandedToggle,
 
     cashierOrderSummary_handleSaveUnpaidOrder,
@@ -650,5 +741,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_handleToggleSelectTable,
 
     cashierOrderSummary_handleSimulatePayment,
+    cashierProduct_onSearchCustomer,
+    cashierProduct_onScrollFetchMoreCustomers,
   };
 };
