@@ -3,6 +3,7 @@
 import type {
   ISettingInvoiceContentSettings,
   ISettingInvoiceGeneralSettings,
+  ISettingInvoiceNumberConfigurations,
   ISettingInvoiceProvided,
 } from '../interfaces/setting-invoice.interface';
 
@@ -11,12 +12,16 @@ import type {
  */
 const {
   settingInvoice_formData,
+  settingInvoice_formValidations,
   settingInvoice_isEditableInvoiceConfiguration,
+  settingInvoice_isLoading,
   settingInvoice_listContentSettings,
   settingInvoice_listGeneralSettings,
   settingInvoice_listInvoiceNumberContents,
   settingInvoice_onShowEditFooterContentDialog,
   settingInvoice_onShowEditInvoiceNumberConfigurationDialog,
+  settingInvoice_onUpdateSettingInvoice,
+  settingInvoice_onUploadCompanylogo,
   settingInvoice_toggleEditableInvoiceConfiguration,
 } = inject<ISettingInvoiceProvided>('settingInvoice')!;
 </script>
@@ -75,16 +80,25 @@ const {
               <template v-if="settingInvoice_isEditableInvoiceConfiguration">
                 <template v-if="contentSetting.id === 'show-company-logo'">
                   <div class="flex flex-col items-end gap-2">
-                    <PrimeVueButton
-                      class="text-primary border-solid border-primary basic-smooth-animation hover:bg-grayscale-10 w-fit px-[18px]"
-                      severity="secondary" variant="outlined">
-                      <template #default>
-                        <section id="content" class="flex items-center gap-2">
-                          <AppBaseSvg name="image" />
-                          <span class="font-normal text-sm">Change Image</span>
-                        </section>
+                    <PrimeVueFileUpload v-model="settingInvoice_formData.contentSettings.companyLogo" url="/api/upload"
+                      accept="image/*" custom-upload :max-file-size="1000000" :show-cancel-button="false"
+                      :show-upload-button="false" :pt="{
+                        content: 'hidden',
+                        header: 'p-0',
+                      }" @select="settingInvoice_onUploadCompanylogo">
+                      <template #header="{ chooseCallback }">
+                        <PrimeVueButton
+                          class="text-primary border-solid border-primary basic-smooth-animation hover:bg-grayscale-10 w-fit px-[18px]"
+                          severity="secondary" variant="outlined" @click="chooseCallback()">
+                          <template #default>
+                            <section id="content" class="flex items-center gap-2">
+                              <AppBaseSvg name="image" />
+                              <span class="font-normal text-sm">Change Image</span>
+                            </section>
+                          </template>
+                        </PrimeVueButton>
                       </template>
-                    </PrimeVueButton>
+                    </PrimeVueFileUpload>
 
                     <section id="description" class="flex gap-3">
                       <AppBaseSvg name="info" />
@@ -137,11 +151,25 @@ const {
                 {{ invoiceNumberContent.label }}
               </p>
 
-              <span class="font-normal text-text-primary text-sm"> 10001 </span>
+              <span class="font-normal text-text-primary text-sm">
+                {{ settingInvoice_formData.invoiceNumberConfigurations[invoiceNumberContent.key as keyof
+                  ISettingInvoiceNumberConfigurations] }}
+              </span>
             </div>
           </section>
         </section>
       </template>
     </PrimeVueCard>
+
+    <section v-if="settingInvoice_isEditableInvoiceConfiguration" id="btn-actions"
+      class="flex items-center w-full gap-4 mt-8">
+      <PrimeVueButton
+        class="font-semibold text-base text-primary w-full max-w-40 border-2 border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
+        label="Cancel" severity="secondary" variant="outlined" />
+
+      <PrimeVueButton class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40" label="Update"
+        type="button" :disabled="settingInvoice_formValidations.$invalid" :loading="settingInvoice_isLoading"
+        @click="settingInvoice_onUpdateSettingInvoice" />
+    </section>
   </section>
 </template>

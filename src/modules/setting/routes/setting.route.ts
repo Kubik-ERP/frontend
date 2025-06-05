@@ -22,7 +22,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           breadcrumb: 'Invoice',
           layout: LAYOUT_OPTIONS.DEFAULT,
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           title: 'Invoice',
         },
       },
@@ -33,7 +33,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           breadcrumb: 'Tax & Service Charge',
           layout: LAYOUT_OPTIONS.DEFAULT,
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           title: 'Tax & Service Charge',
         },
       },

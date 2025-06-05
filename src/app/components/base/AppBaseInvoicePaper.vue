@@ -3,6 +3,9 @@
  * @description Define the props interface
  */
 interface IProps {
+  companyLogo?: File | null;
+  companyLogoUrl?: string | null;
+  footerText?: string | null;
   isAutomaticallyPrintReceipt: boolean;
   isAutomaticallyPrintKitchen: boolean;
   isAutomaticallyPrintTable: boolean;
@@ -14,12 +17,18 @@ interface IProps {
   isShowTableNumber: boolean;
   isHideItemPrices: boolean;
   isShowFooter: boolean;
+  incrementBy?: number;
+  resetSequence?: string;
+  startingNumber?: number;
 }
 
 /**
  * @description Define props with default values and interfaces
  */
 const props = withDefaults(defineProps<IProps>(), {
+  companyLogo: null,
+  companyLogoUrl: null,
+  footerText: null,
   isAutomaticallyPrintReceipt: false,
   isAutomaticallyPrintKitchen: false,
   isAutomaticallyPrintTable: false,
@@ -31,12 +40,29 @@ const props = withDefaults(defineProps<IProps>(), {
   isShowTableNumber: true,
   isHideItemPrices: false,
   isShowFooter: true,
+  incrementBy: 1,
+  resetSequence: 'daily',
+  startingNumber: 1,
 });
+const URL = window.URL;
 </script>
 
 <template>
   <section id="invoice-paper" class="bg-white flex flex-col items-center gap-2 w-full">
-    <section v-if="props.isShowCompanyLogo" id="logo" class="w-20 h-20 bg-grayscale-10">&nbsp;</section>
+    <template v-if="props.isShowCompanyLogo">
+      <template v-if="props.companyLogo">
+        <img :src="URL.createObjectURL(props.companyLogo)" alt="Company Logo" class="w-20 h-20 object-cover" />
+      </template>
+
+      <template v-else-if="props.companyLogoUrl">
+        <img :src="props.companyLogoUrl" alt="Company Logo" class="w-20 h-20 object-cover" />
+      </template>
+
+      <template v-else>
+        <section v-if="props.isShowCompanyLogo" id="logo" class="w-20 h-20 bg-grayscale-10">&nbsp;</section>
+      </template>
+    </template>
+
     <h6 id="outlet-name" class="font-semibold text-black text-sm">Lawson Kaliurang</h6>
     <p v-if="props.isShowStoreLocation" id="outlet-address" class="font-normal text-black text-center text-sm px-4">
       Lawson Kaliurang - Jl. Kaliurang KM 6, Blotan, Sukoharjo, Kec. Ngaglik, Kabupaten Sleman, Daerah Istimewa
@@ -130,11 +156,15 @@ const props = withDefaults(defineProps<IProps>(), {
     </table>
 
     <section v-if="props.isShowFooter" id="closing" class="flex flex-col items-center gap-2 w-full">
-      <p id="label-social-media" class="font-normal text-black text-sm text-center">Social Media</p>
-      <p id="social-media-ig" class="font-normal text-black text-sm text-center">Instagram : @lawsonkal</p>
-      <p id="closing-text" class="font-normal text-black text-sm text-center">
-        Terima kasih dan kami tunggu kehadiran Anda kembali
-      </p>
+      <section v-if="props.footerText" id="footer-content" v-html="props.footerText"></section>
+
+      <template v-else>
+        <p id="label-social-media" class="font-normal text-black text-sm text-center">Social Media</p>
+        <p id="social-media-ig" class="font-normal text-black text-sm text-center">Instagram : @lawsonkal</p>
+        <p id="closing-text" class="font-normal text-black text-sm text-center">
+          Terima kasih dan kami tunggu kehadiran Anda kembali
+        </p>
+      </template>
     </section>
   </section>
 </template>
