@@ -100,6 +100,7 @@ declare global {
 
   interface IPropsInvoicePaper {
     companyLogo?: File | null;
+    companyLogoUrl?: string | null;
     footerText?: string | null;
     isAutomaticallyPrintReceipt: boolean;
     isAutomaticallyPrintKitchen: boolean;
@@ -115,6 +116,13 @@ declare global {
     incrementBy?: number;
     resetSequence?: string;
     startingNumber?: number;
+  }
+
+  interface IPropsToast {
+    isOpen: boolean;
+    message: string;
+    position: EToastPosition;
+    type: EToastType;
   }
 
   /**

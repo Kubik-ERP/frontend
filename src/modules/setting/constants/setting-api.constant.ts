@@ -1,0 +1,1 @@
+export const SETTING_INVOICE_BASE_ENDPOINT = '/invoice/setting';
