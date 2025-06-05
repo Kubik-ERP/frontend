@@ -21,12 +21,12 @@ const {
       <template #header>
         <header class="flex flex-col">
           <div class="flex flex-col items-center w-full px-6 py-5 gap-2">
-            <section id="content" class="flex items-end gap-6">
+            <section class="cash-register-actions flex items-end gap-6">
               <PrimeVueButton
                 class="border-2 border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
                 severity="secondary" variant="outlined">
                 <template #default>
-                  <section id="content" class="flex items-center gap-2">
+                  <section class="cash-out-button flex items-center gap-2">
                     <AppBaseSvg name="minus" />
                     <span class="font-semibold text-xs text-primary">Cash Out</span>
                   </section>
