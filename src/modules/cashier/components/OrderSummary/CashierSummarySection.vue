@@ -47,19 +47,29 @@ const {
         <PrimeVueIconField class="flex w-full">
           <PrimeVueInputIcon class="pi pi-user" />
 
-          <PrimeVueAutoComplete v-model="cashierProduct_customerState.selectedCustomer"
+          <PrimeVueAutoComplete
+            v-model="cashierProduct_customerState.selectedCustomer"
             :suggestions="cashierProduct_customerState.customerList"
-            :options="cashierProduct_customerState.customerList" :field="'name'" :option-value="'id'"
-            :option-value-key="'id'" option-label="name" :min-length="1"
-            :loading="cashierProduct_customerState.isLoading" :dropdown="true" class="w-full"
-            placeholder="Please select Customer Name" :virtual-scroller-options="{
+            :options="cashierProduct_customerState.customerList"
+            :field="'name'"
+            :option-value="'id'"
+            :option-value-key="'id'"
+            option-label="name"
+            :min-length="1"
+            :loading="cashierProduct_customerState.isLoading"
+            :dropdown="true"
+            class="w-full"
+            placeholder="Please select Customer Name"
+            :virtual-scroller-options="{
               itemSize: 50,
               step: cashierProduct_customerState.limit,
               lazy: true,
               delay: 300,
               loading: cashierProduct_customerState.isLoading,
               onLazyLoad: cashierProduct_onScrollFetchMoreCustomers,
-            }" @complete="(event: any) => cashierProduct_onSearchCustomer(event.query)">
+            }"
+            @complete="event => cashierProduct_onSearchCustomer(event.query)"
+          >
             <template #option="slotProps">
               <div class="flex gap-1 text-xs w-full items-center">
                 <div class="flex flex-col w-full">
