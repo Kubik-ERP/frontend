@@ -36,7 +36,8 @@ export interface IProduct {
 
 export interface CreateProductPayload {
 
-  image?: string;
+  imagePreview?: string;
+  imageFile?: File;
   name?: string;
   price?: number;
   isDiscount?: boolean;

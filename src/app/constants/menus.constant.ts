@@ -77,6 +77,13 @@ export const LIST_SIDEBAR_MENUS = [
           },
         ],
       },
+      {
+        name: 'Customer',
+        iconName: 'customer',
+        path: '/customer',
+        isHaveSubMenus: false,
+        subMenus: [],
+      }
     ],
   },
   {

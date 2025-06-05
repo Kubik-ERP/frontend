@@ -11,11 +11,45 @@ import {
 import useVuelidate from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
 
-const API_URL = `${import.meta.env.VITE_API_URL}/api/products`;
+const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/products`;
+
+function convertProductToFormData(payload: CreateProductPayload): FormData {
+  const formData = new FormData();
+
+  // Required flat fields (assume all are non-undefined)
+  formData.append('name', String(payload.name));
+  formData.append('price', String(payload.price));
+  formData.append('discount_price', String(payload.discount_price));
+  formData.append('isDiscount', String(payload.isDiscount));
+  formData.append('is_percent', String(payload.is_percent));
+
+  // Optional image
+  if (payload.imageFile) {
+    formData.append('image', payload.imageFile); // Make sure it's a File or Blob
+  }
+
+  // Categories
+  payload.categories?.forEach((cat, i) => {
+    if (cat.id) formData.append(`categories[${i}][id]`, cat.id);
+    if (cat.category) formData.append(`categories[${i}][category]`, cat.category);
+    if (cat.description) formData.append(`categories[${i}][description]`, cat.description);
+  });
+
+  // Variants
+  payload.variants?.forEach((variant, i) => {
+    if (variant.name) formData.append(`variants[${i}][name]`, variant.name);
+    if (variant.price !== undefined) {
+      formData.append(`variants[${i}][price]`, String(variant.price));
+    }
+  });
+
+  return formData;
+}
 
 export const useProductService = () => {
   const product_formData = reactive<CreateProductPayload>({
-    image: '',
+    imageFile: undefined,
+    imagePreview: '',
     name: '',
     categories: [],
     price: 0,
@@ -52,7 +86,7 @@ export const useProductService = () => {
 
   const getAllProducts = async (page: number, limit: number, search: string): Promise<IProductResponse> => {
     const response = await axios.get(`${API_URL}/?page=${page}&limit=${limit}&search=${search}`);
-    const products: IProduct[] = response.data.data.data.map((item: IProduct) => ({
+    const products: IProduct[] = response.data.data.products.map((item: IProduct) => ({
       id: item.id,
       name: item.name,
       price: item.price,
@@ -85,7 +119,7 @@ export const useProductService = () => {
       price: product.price,
       discountPrice: product.discountPrice || 0,
       isPercent: product.isPercent,
-      picture_url: product.pictureUrl || '-', // ← corrected `pictureUrl`
+      picture_url: `${import.meta.env.VITE_APP_BASE_API_URL}${product.pictureUrl}` || '-', // ← corrected `pictureUrl`
       categoriesHasProducts:
         product.categoriesHasProducts?.map((item: ICategoryHasProduct) => item.categories) || [],
       variantHasProducts: product.variantHasProducts?.map((item: IVariantHasProduct) => item.variant) || [],
@@ -93,14 +127,31 @@ export const useProductService = () => {
   };
 
   const createProduct = async (payload: CreateProductPayload): Promise<IProduct> => {
-    const response = await axios.post(API_URL, payload);
+    const formData = convertProductToFormData(payload);
+    // console.log('🚀 ~ createProduct ~ payload:', payload);
+    // console.log('🚀 ~ createProduct ~ formData:', formData);
+
+    const response = await axios.post(API_URL, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    // console.log('🚀 ~ createProduct ~ response.data.data:', response);
     return response.data.data;
   };
 
   const updateProduct = async (id: string, payload: CreateProductPayload): Promise<IProduct> => {
-    const response = await axios.patch(`${API_URL}/${id}`, payload);
+    const formData = convertProductToFormData(payload);
+
+    
+    const response = await axios.patch(`${API_URL}/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     const data: IProduct = response.data.data;
-    console.log('🚀 ~ updateProduct ~ response:', data);
+    // console.log('🚀 ~ updateProduct ~ response:', data);
 
     return {
       id: data.id,
