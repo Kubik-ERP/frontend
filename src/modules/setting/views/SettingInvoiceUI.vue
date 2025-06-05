@@ -14,9 +14,11 @@ import { useSettingInvoiceService } from '../services/setting-invoice.service';
 const {
   settingInvoice_activeTab,
   settingInvoice_bindings,
+  settingInvoice_fetchSettingDetail,
   settingInvoice_formData,
   settingInvoice_formValidations,
   settingInvoice_isEditableInvoiceConfiguration,
+  settingInvoice_isLoading,
   settingInvoice_listContentSettings,
   settingInvoice_listGeneralSettings,
   settingInvoice_listInvoiceNumberContents,
@@ -26,6 +28,8 @@ const {
   settingInvoice_onCloseEditInvoiceNumberConfigurationDialog,
   settingInvoice_onShowEditFooterContentDialog,
   settingInvoice_onShowEditInvoiceNumberConfigurationDialog,
+  settingInvoice_onUpdateSettingInvoice,
+  settingInvoice_onUploadCompanylogo,
   settingInvoice_toggleEditableInvoiceConfiguration,
 } = useSettingInvoiceService();
 
@@ -38,6 +42,7 @@ provide('settingInvoice', {
   settingInvoice_formData,
   settingInvoice_formValidations,
   settingInvoice_isEditableInvoiceConfiguration,
+  settingInvoice_isLoading,
   settingInvoice_listContentSettings,
   settingInvoice_listGeneralSettings,
   settingInvoice_listInvoiceNumberContents,
@@ -47,8 +52,17 @@ provide('settingInvoice', {
   settingInvoice_onCloseEditInvoiceNumberConfigurationDialog,
   settingInvoice_onShowEditFooterContentDialog,
   settingInvoice_onShowEditInvoiceNumberConfigurationDialog,
+  settingInvoice_onUpdateSettingInvoice,
+  settingInvoice_onUploadCompanylogo,
   settingInvoice_toggleEditableInvoiceConfiguration,
 })
+
+/**
+ * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
+ */
+onMounted(async () => {
+  await settingInvoice_fetchSettingDetail();
+});
 </script>
 
 <template>
