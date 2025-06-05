@@ -98,10 +98,6 @@ const {
                           </template>
                         </PrimeVueButton>
                       </template>
-
-                      <template #content>
-                        Test
-                      </template>
                     </PrimeVueFileUpload>
 
                     <section id="description" class="flex gap-3">
