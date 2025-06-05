@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Components
+import CashDrawerSetUpDialog from './cash-drawer/CashDrawerSetUpDialog.vue';
+
 // Services
 import { useCashDrawerService } from '../services/cash-drawer.service';
 
@@ -11,6 +14,8 @@ const {
   cashDrawer_getClassOfStatus,
   cashDrawer_listColumns,
   cashDrawer_listValues,
+  cashDrawer_onCloseRegister,
+  cashDrawer_onOpenRegister,
 } = useCashDrawerService();
 
 /**
@@ -21,13 +26,15 @@ provide('cashDrawer', {
   cashDrawer_formValidations,
   cashDrawer_listColumns,
   cashDrawer_listValues,
+  cashDrawer_onCloseRegister,
 });
 </script>
 
 <template>
   <section id="sales-order-cash-drawer" class="flex flex-col relative inset-0 z-0">
     <AppBaseDataTable btn-cta-create-title="Open Register" :columns="cashDrawer_listColumns"
-      :data="cashDrawer_listValues" header-title="Cash Drawer" is-using-btn-cta-create is-using-custom-body>
+      :data="cashDrawer_listValues" header-title="Cash Drawer" is-using-btn-cta-create is-using-custom-body
+      @click-btn-cta-create="cashDrawer_onOpenRegister">
       <template #body="{ column, data }">
         <template v-if="column.value === 'expectedBalance' || column.value === 'actualBalance'">
           <span class="font-normal text-sm text-text-primary">
@@ -55,5 +62,6 @@ provide('cashDrawer', {
     </AppBaseDataTable>
 
     <AppBaseDialogConfirmation id="sales-order-cash-drawer-dialog-confirmation" />
+    <CashDrawerSetUpDialog />
   </section>
 </template>

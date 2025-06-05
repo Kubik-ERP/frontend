@@ -4,6 +4,9 @@ import { LIST_COLUMNS_OF_CASH_DRAWER, LIST_VALUES_OF_CASH_DRAWER } from "../cons
 // Interfaces
 import type { ICashDrawerFormData, ICashDrawerProvided } from "../interfaces/cash-drawer.interface";
 
+// Plugins
+import eventBus from '@/plugins/mitt';
+
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
@@ -14,6 +17,7 @@ import { required } from '@vuelidate/validators';
 export const useCashDrawerService = (): ICashDrawerProvided => {
   const cashDrawer_formData = reactive<ICashDrawerFormData>({
     balances: [],
+    notes: '',
     openBalance: null,
     staffName: 'Samantha',
   })
@@ -24,6 +28,7 @@ export const useCashDrawerService = (): ICashDrawerProvided => {
   const cashDrawer_formRules = computed(() => ({
     openBalance: { required },
     staffName: { required },
+    notes: { required },
   }));
   const cashDrawer_formValidations = useVuelidate(cashDrawer_formRules, cashDrawer_formData);
 
@@ -41,11 +46,40 @@ export const useCashDrawerService = (): ICashDrawerProvided => {
     }
   }
 
+  /**
+   * @description Handle business logic for close dialog open register
+   */
+  const cashDrawer_onCloseRegister = (): void => {
+    const argsEventEmitter = {
+      id: 'cash-drawer-setup-dialog',
+      isOpen: false,
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle business logic for event click button open register
+   */
+  const cashDrawer_onOpenRegister = (): void => {
+    const argsEventEmitter = {
+      id: 'cash-drawer-setup-dialog',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: '534px'
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
   return {
     cashDrawer_formData,
     cashDrawer_formValidations,
     cashDrawer_getClassOfStatus,
     cashDrawer_listColumns: LIST_COLUMNS_OF_CASH_DRAWER,
     cashDrawer_listValues: LIST_VALUES_OF_CASH_DRAWER as never[],
+    cashDrawer_onCloseRegister,
+    cashDrawer_onOpenRegister,
   }
 }
