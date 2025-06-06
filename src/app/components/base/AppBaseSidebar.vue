@@ -126,7 +126,7 @@ const toggleSubMenu = (categoryIndex: number, menuIndex: number) => {
                   }">
                     <li v-for="(subMenu, subMenuIndex) in menu.subMenus" :key="`sub-menu-${subMenuIndex}`">
                       <RouterLink v-ripple :to="subMenu.path"
-                        class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple"
+                        class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-primary-border dark:text-surface-0 dark:hover:bg-primary-border duration-150 transition-colors p-ripple"
                         :class="[
                           route.path === subMenu.path
                             ? 'bg-primary-border'
@@ -141,7 +141,7 @@ const toggleSubMenu = (categoryIndex: number, menuIndex: number) => {
                 </template>
                 <template v-else>
                   <RouterLink v-ripple :to="menu.path"
-                    class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors p-ripple gap-2"
+                    class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-grayscale-10 dark:text-surface-0 dark:hover:bg-grayscale-10 duration-150 transition-colors p-ripple gap-2"
                     :class="[route.path === menu.path ? 'bg-primary text-white' : '']">
                     <AppBaseSvg :name="menu.iconName" class="!w-5 !h-5" :class="[
                       route.path === menu.path ? 'filter-white' : '',
@@ -165,7 +165,7 @@ const toggleSubMenu = (categoryIndex: number, menuIndex: number) => {
       <template v-for="(additionalMenu, additionalMenuIndex) in LIST_ADDITIONAL_MENUS"
         :key="`additionalMenu-${additionalMenuIndex}`">
         <RouterLink :id="`additional-menu-${additionalMenuIndex}`" :to="additionalMenu.path"
-          class="flex items-center gap-2 p-2 basic-smooth-animation hover:bg-grayscale-10 cursor-pointer rounded-md"
+          class="flex items-center gap-2 p-2 basic-smooth-animation hover:bg-primary-border cursor-pointer rounded-md"
           :class="[route.path === additionalMenu.path ? 'bg-primary-border' : '']">
           <AppBaseSvg :name="additionalMenu.iconName" class="!w-5 !h-5" />
           <p class="font-normal text-base text-black">

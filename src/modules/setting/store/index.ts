@@ -1,9 +1,18 @@
 // Constants
-import { SETTING_INVOICE_BASE_ENDPOINT } from "../constants/setting-api.constant";
+import {
+  SETTING_CHARGES_BASE_ENDPOINT,
+  SETTING_CHARGES_UPSERT_ENDPOINT,
+  SETTING_INVOICE_BASE_ENDPOINT,
+} from '../constants/setting-api.constant';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import type { ISettingStateStore, ISettingInvoiceDetailResponse } from "../interfaces";
+import type {
+  ISettingStateStore,
+  ISettingInvoiceDetailResponse,
+  ISettingTaxAndServiceResponse,
+  ISettingTaxAndServiceFormData,
+} from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
@@ -12,6 +21,8 @@ export const useSettingStore = defineStore('pos-setting', {
   state: (): ISettingStateStore => ({
     setting_isLoading: false,
     setting_invoice: null,
+    setting_service: null,
+    setting_tax: null,
   }),
   getters: {
     /**
@@ -54,6 +65,70 @@ export const useSettingStore = defineStore('pos-setting', {
     },
 
     /**
+     * @description Handle fetch api pos setting - list charges
+     * @url /charges
+     * @method GET
+     * @access private
+     */
+    async fetchSetting_listCharges(
+      storeId: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<ISettingTaxAndServiceResponse> {
+      this.setting_isLoading = true;
+
+      try {
+        const response = await httpClient.get<ISettingTaxAndServiceResponse>(SETTING_CHARGES_BASE_ENDPOINT, {
+          params: { storeId },
+          ...requestConfigurations,
+        });
+
+        if (response.data.data.length > 0) {
+          this.setting_service = response.data.data.find(charge => charge.type === 'service') || null;
+          this.setting_tax = response.data.data.find(charge => charge.type === 'tax') || null;
+        }
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.setting_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api pos setting - update charges
+     * @url /charges/upsert
+     * @method PUT
+     * @access private
+     */
+    async fetchSetting_updateCharges(
+      payload: ISettingTaxAndServiceFormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.setting_isLoading = true;
+
+      try {
+        const response = await httpClient.post<unknown>(SETTING_CHARGES_UPSERT_ENDPOINT, payload, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.setting_isLoading = false;
+      }
+    },
+
+    /**
      * @description Handle fetch api pos setting - update invoice setting
      * @url /invoice/setting
      * @method PUT
@@ -80,6 +155,6 @@ export const useSettingStore = defineStore('pos-setting', {
       } finally {
         this.setting_isLoading = false;
       }
-    }
-  }
+    },
+  },
 });

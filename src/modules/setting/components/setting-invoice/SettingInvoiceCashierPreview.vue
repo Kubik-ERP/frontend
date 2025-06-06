@@ -1,13 +1,11 @@
 <script setup lang="ts">
 // Interfaces
-import type { ISettingInvoiceProvided } from '../interfaces/setting-invoice.interface';
+import type { ISettingInvoiceProvided } from '../../interfaces/setting-invoice.interface';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const {
-  settingInvoice_bindings
-} = inject<ISettingInvoiceProvided>('settingInvoice')!;
+const { settingInvoice_bindings } = inject<ISettingInvoiceProvided>('settingInvoice')!;
 </script>
 
 <template>
