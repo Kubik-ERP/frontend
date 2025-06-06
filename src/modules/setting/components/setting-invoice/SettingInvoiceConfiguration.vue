@@ -5,7 +5,7 @@ import type {
   ISettingInvoiceGeneralSettings,
   ISettingInvoiceNumberConfigurations,
   ISettingInvoiceProvided,
-} from '../interfaces/setting-invoice.interface';
+} from '../../interfaces/setting-invoice.interface';
 
 /**
  * @description Inject all the data and methods what we need
@@ -31,7 +31,10 @@ const {
     <header class="flex items-center justify-between w-full">
       <h5 class="font-semibold text-black text-lg">Invoice Configuration</h5>
 
-      <div class="flex items-center gap-2 cursor-pointer" @click="settingInvoice_toggleEditableInvoiceConfiguration">
+      <div
+        class="flex items-center gap-2 cursor-pointer"
+        @click="settingInvoice_toggleEditableInvoiceConfiguration"
+      >
         <AppBaseSvg name="edit" />
         <span class="font-semibold text-primary text-sm"> Edit Invoice Config </span>
       </div>
@@ -42,10 +45,20 @@ const {
         <section id="form-group" class="flex flex-col gap-4">
           <h6 class="font-semibold text-black-secondary text-sm">General Settings</h6>
 
-          <section v-for="(generalSetting, generalSettingIndex) in settingInvoice_listGeneralSettings"
-            :id="generalSetting.id" :key="`general-setting-${generalSettingIndex}`" class="flex items-center gap-3">
-            <PrimeVueCheckbox :id="`is-${generalSetting.id}`" v-model="settingInvoice_formData.generalSettings[generalSetting.key as keyof ISettingInvoiceGeneralSettings]
-              " :disabled="!settingInvoice_isEditableInvoiceConfiguration" binary />
+          <section
+            v-for="(generalSetting, generalSettingIndex) in settingInvoice_listGeneralSettings"
+            :id="generalSetting.id"
+            :key="`general-setting-${generalSettingIndex}`"
+            class="flex items-center gap-3"
+          >
+            <PrimeVueCheckbox
+              :id="`is-${generalSetting.id}`"
+              v-model="
+                settingInvoice_formData.generalSettings[generalSetting.key as keyof ISettingInvoiceGeneralSettings]
+              "
+              :disabled="!settingInvoice_isEditableInvoiceConfiguration"
+              binary
+            />
 
             <label :for="`is-${generalSetting.id}`" class="font-normal text-sm text-text-primary">
               {{ generalSetting.label }}
@@ -60,17 +73,28 @@ const {
         <section id="form-group" class="flex flex-col gap-4">
           <h6 class="font-semibold text-black-secondary text-sm">Content Settings</h6>
 
-          <section v-for="(contentSetting, contentSettingIndex) in settingInvoice_listContentSettings"
-            :id="contentSetting.id" :key="`content-setting-${contentSettingIndex}`"
-            class="flex items-center gap-3 w-full">
-            <section id="content-setting" class="flex justify-between w-full" :class="[
-              contentSetting.id === 'show-company-logo' ? 'items-start' : 'items-center',
-            ]">
+          <section
+            v-for="(contentSetting, contentSettingIndex) in settingInvoice_listContentSettings"
+            :id="contentSetting.id"
+            :key="`content-setting-${contentSettingIndex}`"
+            class="flex items-center gap-3 w-full"
+          >
+            <section
+              id="content-setting"
+              class="flex justify-between w-full"
+              :class="[contentSetting.id === 'show-company-logo' ? 'items-start' : 'items-center']"
+            >
               <section id="form-group" class="flex gap-3">
-                <PrimeVueCheckbox :id="`is-${contentSetting.id}`" v-model="settingInvoice_formData.contentSettings[
-                  contentSetting.key as keyof ISettingInvoiceContentSettings
-                ]
-                  " :disabled="!settingInvoice_isEditableInvoiceConfiguration" binary />
+                <PrimeVueCheckbox
+                  :id="`is-${contentSetting.id}`"
+                  v-model="
+                    settingInvoice_formData.contentSettings[
+                      contentSetting.key as keyof ISettingInvoiceContentSettings
+                    ]
+                  "
+                  :disabled="!settingInvoice_isEditableInvoiceConfiguration"
+                  binary
+                />
 
                 <label :for="`is-${contentSetting.id}`" class="font-normal text-sm text-text-primary">
                   {{ contentSetting.label }}
@@ -80,16 +104,27 @@ const {
               <template v-if="settingInvoice_isEditableInvoiceConfiguration">
                 <template v-if="contentSetting.id === 'show-company-logo'">
                   <div class="flex flex-col items-end gap-2">
-                    <PrimeVueFileUpload v-model="settingInvoice_formData.contentSettings.companyLogo" url="/api/upload"
-                      accept="image/*" custom-upload :max-file-size="1000000" :show-cancel-button="false"
-                      :show-upload-button="false" :pt="{
+                    <PrimeVueFileUpload
+                      v-model="settingInvoice_formData.contentSettings.companyLogo"
+                      url="/api/upload"
+                      accept="image/*"
+                      custom-upload
+                      :max-file-size="1000000"
+                      :show-cancel-button="false"
+                      :show-upload-button="false"
+                      :pt="{
                         content: 'hidden',
                         header: 'p-0',
-                      }" @select="settingInvoice_onUploadCompanylogo">
+                      }"
+                      @select="settingInvoice_onUploadCompanylogo"
+                    >
                       <template #header="{ chooseCallback }">
                         <PrimeVueButton
                           class="text-primary border-solid border-primary basic-smooth-animation hover:bg-grayscale-10 w-fit px-[18px]"
-                          severity="secondary" variant="outlined" @click="chooseCallback()">
+                          severity="secondary"
+                          variant="outlined"
+                          @click="chooseCallback()"
+                        >
                           <template #default>
                             <section id="content" class="flex items-center gap-2">
                               <AppBaseSvg name="image" />
@@ -111,8 +146,10 @@ const {
                 </template>
 
                 <template v-if="contentSetting.id === 'show-footer'">
-                  <div class="flex items-center gap-2 cursor-pointer"
-                    @click="settingInvoice_onShowEditFooterContentDialog">
+                  <div
+                    class="flex items-center gap-2 cursor-pointer"
+                    @click="settingInvoice_onShowEditFooterContentDialog"
+                  >
                     <AppBaseSvg name="edit" />
                     <span class="font-semibold text-primary text-sm"> Edit footer content </span>
                   </div>
@@ -130,10 +167,13 @@ const {
           <header class="flex items-center justify-between w-full">
             <h6 class="font-semibold text-black-secondary text-sm">Invoice Number</h6>
 
-            <PrimeVueButton v-if="settingInvoice_isEditableInvoiceConfiguration"
+            <PrimeVueButton
+              v-if="settingInvoice_isEditableInvoiceConfiguration"
               class="text-primary border-solid border-primary basic-smooth-animation hover:bg-grayscale-10 w-fit px-[18px]"
-              severity="secondary" variant="outlined"
-              @click="settingInvoice_onShowEditInvoiceNumberConfigurationDialog">
+              severity="secondary"
+              variant="outlined"
+              @click="settingInvoice_onShowEditInvoiceNumberConfigurationDialog"
+            >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
                   <AppBaseSvg name="settings" />
@@ -144,16 +184,21 @@ const {
           </header>
 
           <section id="invoice-number-content" class="grid-wrapper gap-4">
-            <div v-for="(invoiceNumberContent, invoiceNumberContentIndex) in settingInvoice_listInvoiceNumberContents"
+            <div
+              v-for="(invoiceNumberContent, invoiceNumberContentIndex) in settingInvoice_listInvoiceNumberContents"
               :key="`invoice-number-content-${invoiceNumberContentIndex}`"
-              class="flex flex-col col-span-full md:col-span-6 gap-1">
+              class="flex flex-col col-span-full md:col-span-6 gap-1"
+            >
               <p class="font-normal text-text-secondary text-sm">
                 {{ invoiceNumberContent.label }}
               </p>
 
               <span class="font-normal text-text-primary text-sm">
-                {{ settingInvoice_formData.invoiceNumberConfigurations[invoiceNumberContent.key as keyof
-                  ISettingInvoiceNumberConfigurations] }}
+                {{
+                  settingInvoice_formData.invoiceNumberConfigurations[
+                    invoiceNumberContent.key as keyof ISettingInvoiceNumberConfigurations
+                  ]
+                }}
               </span>
             </div>
           </section>
@@ -161,15 +206,26 @@ const {
       </template>
     </PrimeVueCard>
 
-    <section v-if="settingInvoice_isEditableInvoiceConfiguration" id="btn-actions"
-      class="flex items-center w-full gap-4 mt-8">
+    <section
+      v-if="settingInvoice_isEditableInvoiceConfiguration"
+      id="btn-actions"
+      class="flex items-center w-full gap-4 mt-8"
+    >
       <PrimeVueButton
         class="font-semibold text-base text-primary w-full max-w-40 border-2 border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
-        label="Cancel" severity="secondary" variant="outlined" />
+        label="Cancel"
+        severity="secondary"
+        variant="outlined"
+      />
 
-      <PrimeVueButton class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40" label="Update"
-        type="button" :disabled="settingInvoice_formValidations.$invalid" :loading="settingInvoice_isLoading"
-        @click="settingInvoice_onUpdateSettingInvoice" />
+      <PrimeVueButton
+        class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
+        label="Update"
+        type="button"
+        :disabled="settingInvoice_formValidations.$invalid"
+        :loading="settingInvoice_isLoading"
+        @click="settingInvoice_onUpdateSettingInvoice"
+      />
     </section>
   </section>
 </template>

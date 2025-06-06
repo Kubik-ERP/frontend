@@ -83,7 +83,7 @@ export const LIST_SIDEBAR_MENUS = [
         path: '/customer',
         isHaveSubMenus: false,
         subMenus: [],
-      }
+      },
     ],
   },
   {
@@ -186,12 +186,12 @@ export const LIST_SIDEBAR_MENUS = [
           },
           {
             name: 'Tax & Service Charge',
-            path: '/pos-setting/tax',
+            path: '/pos-setting/tax-service',
           },
           {
             name: 'Invoice',
             path: '/pos-setting/invoice',
-          }
+          },
         ],
       },
       {
