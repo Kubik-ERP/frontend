@@ -13,7 +13,6 @@ import { useSettingStore } from '../store';
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
-import { EToastPosition, EToastType } from '@/app/constants/toast.constant';
 
 /**
  * @description Closure function that returns everything what we need into an object
