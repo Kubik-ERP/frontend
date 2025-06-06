@@ -1,11 +1,16 @@
 // Constants
-import { SETTING_INVOICE_DETAIL_REQUEST } from '../constants/setting.constant';
-import { LIST_CONTENT_SETTINGS_INVOICE, LIST_GENERAL_SETTINGS_INVOICE, LIST_INVOICE_NUMBER_CONTENTS, LIST_TABS_INVOICE_PREVIEW, LIST_TYPES_OF_RESET_SEQUENCE } from '../constants/setting-invoice.constant';
+import { SETTING_INVOICE_DETAIL_REQUEST, SETTING_UPDATE_INVOICE_REQUEST } from '../constants/setting.constant';
+import {
+  LIST_CONTENT_SETTINGS_INVOICE,
+  LIST_GENERAL_SETTINGS_INVOICE,
+  LIST_INVOICE_NUMBER_CONTENTS,
+  LIST_TABS_INVOICE_PREVIEW,
+  LIST_TYPES_OF_RESET_SEQUENCE,
+} from '../constants/setting-invoice.constant';
 
 // Interfaces
 import type { ISettingInvoiceFormData, ISettingInvoiceProvided } from '../interfaces/setting-invoice.interface';
 import type { FileUploadSelectEvent } from 'primevue';
-
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -16,7 +21,6 @@ import { useSettingStore } from '../store';
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
-import { EToastPosition, EToastType } from '@/app/constants/toast.constant';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -64,9 +68,9 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
       incrementBy: 1,
       resetSequence: 'Daily',
       startingNumber: 1,
-    }
-  })
-  const settingInvoice_isEditableInvoiceConfiguration = ref<boolean>(false)
+    },
+  });
+  const settingInvoice_isEditableInvoiceConfiguration = ref<boolean>(false);
 
   /**
    * @description Form validations
@@ -79,22 +83,18 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
       incrementBy: { required },
       resetSequence: { required },
       startingNumber: { required },
-    }
-  }))
-  const settingInvoice_formValidations = useVuelidate(
-    settingInvoice_formRules,
-    settingInvoice_formData,
-    {
-      $autoDirty: true,
     },
-  );
+  }));
+  const settingInvoice_formValidations = useVuelidate(settingInvoice_formRules, settingInvoice_formData, {
+    $autoDirty: true,
+  });
 
   /**
    * @description Handle fetch api pos setting. We call the fetchSetting_detailInvoiceSetting function from the store to handle the request.
    */
   const settingInvoice_fetchSettingDetail = async (): Promise<void> => {
     try {
-      await store.fetchSetting_detailInvoiceSetting( settingInvoice_formData.storeId, {
+      await store.fetchSetting_detailInvoiceSetting(settingInvoice_formData.storeId, {
         ...httpAbort_registerAbort(SETTING_INVOICE_DETAIL_REQUEST),
       });
 
@@ -109,14 +109,14 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
   };
 
   /**
-   * @description Handle fetch api pos setting. We call the fetchSetting_updateInvoiceSetting function from the store to handle the request.
+   * @description Handle fetch api pos setting. We call  the fetchSetting_updateInvoiceSetting function from the store to handle the request.
    */
   const settingInvoice_fetchUpdateSettingInvoice = async (): Promise<void> => {
     try {
       const payload = settingInvoice_mappingPayloadToFormData();
 
       await store.fetchSetting_updateInvoiceSetting(payload, {
-        ...httpAbort_registerAbort(SETTING_INVOICE_DETAIL_REQUEST),
+        ...httpAbort_registerAbort(SETTING_UPDATE_INVOICE_REQUEST),
       });
 
       const argsEventEmitter: IPropsToast = {
@@ -124,7 +124,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
         type: EToastType.SUCCESS,
         message: 'Invoice setting has been updated successfully.',
         position: EToastPosition.TOP_RIGHT,
-      }
+      };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
     } catch (error: unknown) {
@@ -141,11 +141,13 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
   /**
    * @description Computed property that combines general and content settings into a single object
    */
-  const settingInvoice_bindings = computed((): IPropsInvoicePaper => ({
-    companyLogoUrl: settingInvoice_formData.companyLogoUrl,
-    ...settingInvoice_formData.generalSettings,
-    ...settingInvoice_formData.contentSettings,
-  }));
+  const settingInvoice_bindings = computed(
+    (): IPropsInvoicePaper => ({
+      companyLogoUrl: settingInvoice_formData.companyLogoUrl,
+      ...settingInvoice_formData.generalSettings,
+      ...settingInvoice_formData.contentSettings,
+    }),
+  );
 
   /**
    * @description Handle business logic for mapping invoice detail of general settings
@@ -157,12 +159,14 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
 
         if (value !== null && value !== undefined) {
           if (typeof value === 'boolean') {
-            settingInvoice_formData.generalSettings[generalKey as keyof typeof settingInvoice_formData.generalSettings] = value;
+            settingInvoice_formData.generalSettings[
+              generalKey as keyof typeof settingInvoice_formData.generalSettings
+            ] = value;
           }
         }
       }
     }
-  }
+  };
 
   /**
    * @description Handle business logic for mapping invoice detail of content settings
@@ -189,7 +193,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
         }
       }
     }
-  }
+  };
 
   /**
    * @description Handle business logic for mapping invoice detail of invoice number configurations
@@ -200,11 +204,12 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
         const value = setting_invoice.value![invoiceConfigKey as keyof typeof setting_invoice.value];
 
         if (value !== null && value !== undefined) {
-          (settingInvoice_formData.invoiceNumberConfigurations as Record<string, unknown>)[invoiceConfigKey] = value;
+          (settingInvoice_formData.invoiceNumberConfigurations as Record<string, unknown>)[invoiceConfigKey] =
+            value;
         }
       }
     }
-  }
+  };
 
   /**
    * @description Handle business logic for mapping default invoice detail
@@ -221,7 +226,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
         (settingInvoice_formData as Record<string, unknown>)[key] = value;
       }
     }
-  }
+  };
 
   /**
    * @description Handle business logic for mapping invoice detail
@@ -251,7 +256,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
           break;
       }
     }
-  }
+  };
 
   /**
    * @description Handle business logic for mapping payload into form data
@@ -262,7 +267,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
       ...settingInvoice_formData.contentSettings,
       ...settingInvoice_formData.generalSettings,
       ...settingInvoice_formData.invoiceNumberConfigurations,
-    }
+    };
 
     // Create a new FormData object and append the mapped payload
     const formData = new FormData();
@@ -282,18 +287,17 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
     return formData;
   };
 
-
   /**
    * @description handle business logic for close dialog edit footer content
    */
   const settingInvoice_onCloseEditFooterContentDialog = (): void => {
     const argsEventEmitter: IPropsDialog = {
       id: 'setting-invoice-dialog-footer-content',
-      isOpen: false
-    }
+      isOpen: false,
+    };
 
     eventBus.emit('AppBaseDialog', argsEventEmitter);
-  }
+  };
 
   /**
    * @description handle business logic for close dialog edit invoice number configuration
@@ -301,11 +305,11 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
   const settingInvoice_onCloseEditInvoiceNumberConfigurationDialog = (): void => {
     const argsEventEmitter: IPropsDialog = {
       id: 'setting-invoice-dialog-invoice-configuration',
-      isOpen: false
-    }
+      isOpen: false,
+    };
 
     eventBus.emit('AppBaseDialog', argsEventEmitter);
-  }
+  };
 
   /**
    * @description Handle business logic for show dialog edit footer content
@@ -315,11 +319,11 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
       id: 'setting-invoice-dialog-footer-content',
       isOpen: true,
       isUsingClosableButton: false,
-      width: '534px'
-    }
+      width: '534px',
+    };
 
     eventBus.emit('AppBaseDialog', argsEventEmitter);
-  }
+  };
 
   /**
    * @description Handle business logic for show dialog edit invoice number configuration
@@ -329,11 +333,11 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
       id: 'setting-invoice-dialog-invoice-configuration',
       isOpen: true,
       isUsingClosableButton: false,
-      width: '586px'
-    }
+      width: '586px',
+    };
 
     eventBus.emit('AppBaseDialog', argsEventEmitter);
-  }
+  };
 
   /**
    * @description Handle business logic for event click button update invoice setting
@@ -354,7 +358,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
         return Promise.reject(new Error(String(error)));
       }
     }
-  }
+  };
 
   /**
    * @description Handle business logic for uploading photo company logo
@@ -369,8 +373,8 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
    * @description handle business logic for button toggle editable invoice configuration
    */
   const settingInvoice_toggleEditableInvoiceConfiguration = (): void => {
-    settingInvoice_isEditableInvoiceConfiguration.value = !settingInvoice_isEditableInvoiceConfiguration.value
-  }
+    settingInvoice_isEditableInvoiceConfiguration.value = !settingInvoice_isEditableInvoiceConfiguration.value;
+  };
 
   return {
     settingInvoice_activeTab,
@@ -392,5 +396,5 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
     settingInvoice_onUpdateSettingInvoice,
     settingInvoice_onUploadCompanylogo,
     settingInvoice_toggleEditableInvoiceConfiguration,
-  }
-}
+  };
+};

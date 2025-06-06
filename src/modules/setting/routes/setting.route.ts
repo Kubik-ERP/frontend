@@ -27,9 +27,9 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'tax',
+        path: 'tax-service',
         name: 'setting.tax',
-        component: () => import('../views/SettingTaxUI.vue'),
+        component: () => import('../views/SettingTaxServiceUI.vue'),
         meta: {
           breadcrumb: 'Tax & Service Charge',
           layout: LAYOUT_OPTIONS.DEFAULT,

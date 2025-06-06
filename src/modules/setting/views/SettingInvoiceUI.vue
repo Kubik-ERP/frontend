@@ -1,9 +1,9 @@
 <script setup lang="ts">
 // Components
-import SettingInvoiceConfiguration from '../components/SettingInvoiceConfiguration.vue';
-import SettingInvoiceDialogFooterContent from '../components/SettingInvoiceDialogFooterContent.vue';
-import SettingInvoiceDialogInvoiceConfiguration from '../components/SettingInvoiceDialogInvoiceConfiguration.vue';
-import SettingInvoicePreview from '../components/SettingInvoicePreview.vue';
+import SettingInvoiceConfiguration from '../components/setting-invoice/SettingInvoiceConfiguration.vue';
+import SettingInvoiceDialogFooterContent from '../components/setting-invoice/SettingInvoiceDialogFooterContent.vue';
+import SettingInvoiceDialogInvoiceConfiguration from '../components/setting-invoice/SettingInvoiceDialogInvoiceConfiguration.vue';
+import SettingInvoicePreview from '../components/setting-invoice/SettingInvoicePreview.vue';
 
 // Services
 import { useSettingInvoiceService } from '../services/setting-invoice.service';
@@ -55,7 +55,7 @@ provide('settingInvoice', {
   settingInvoice_onUpdateSettingInvoice,
   settingInvoice_onUploadCompanylogo,
   settingInvoice_toggleEditableInvoiceConfiguration,
-})
+});
 
 /**
  * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
