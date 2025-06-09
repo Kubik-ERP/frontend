@@ -28,6 +28,7 @@ declare global {
     label: string;
     sortable: boolean;
     value: string;
+    width?: string;
   }
 
   interface IComponentComposableOptions {
@@ -169,7 +170,7 @@ declare global {
   }
 
   interface IRestParamsFormValidateEach {
-    field: string
+    field: string;
     fieldIndex?: number;
     fieldNesting?: string;
     fieldNestingIndex?: number;

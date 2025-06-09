@@ -171,10 +171,13 @@ const emits = defineEmits(['clickBtnCtaCreate']);
         columnTitle: 'text-sm font-normal text-grayscale-70',
         headerCell: 'bg-background border-b-grayscale-20',
       }"
+      :style="`
+        width: ${column.width ? column.width : 'auto'};
+      `"
     >
-      <template #body="{ data }">
+      <template #body="{ data, index }">
         <template v-if="props.isUsingCustomBody">
-          <slot name="body" :data="data" :column="column" />
+          <slot name="body" :column="column" :data="data" :index="index" />
         </template>
 
         <template v-else>

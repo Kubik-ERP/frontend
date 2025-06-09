@@ -62,7 +62,9 @@ const message: ComputedRef<string> = computed(() => {
 
 <template>
   <div id="form-group" :class="{ [spacingBottom]: !isNotHaveSpacing }">
-    <label v-if="isNameAsLabel" :class="classLabel" :for="labelFor">{{ name }}</label>
+    <label v-if="isNameAsLabel" :class="classLabel" :for="labelFor">
+      {{ name }}<span v-if="validators.required" class="text-error-main">*</span>
+    </label>
     <slot
       :is-error="!!error"
       :is-valid="isInvalid"
