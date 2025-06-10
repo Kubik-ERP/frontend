@@ -19,6 +19,10 @@ const props = defineProps({
  */
 const { cashierProduct_productState, cashierProduct_handleOpenModalAddProduct, isProductActive } =
   inject<ICashierProductProvided>('cashierProduct')!;
+
+const imageUrl = computed(() => {
+  return import.meta.env.VITE_APP_BASE_API_URL + '/' + props.product.pictureUrl;
+});
 </script>
 
 <template>
@@ -38,7 +42,7 @@ const { cashierProduct_productState, cashierProduct_handleOpenModalAddProduct, i
     >
       <template #content>
         <section id="cashier-card-content" class="flex flex-col gap-2 relative">
-          <img :src="props.product.pictureUrl!" class="h-[98px] w-full object-cover" />
+          <AppBaseImage :src="imageUrl" :alt="props.product.name" class="h-[98px] w-full object-cover" />
 
           <div
             v-if="isProductActive(props.product)"

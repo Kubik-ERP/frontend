@@ -8,6 +8,7 @@ import {
   CASHIER_ENDPOINT_PAYMENT_INSTANT,
   CASHIER_ENDPOINT_PAYMENT_METHOD,
   CASHIER_ENDPOINT_PAYMENT_PROCESS,
+  CASHIER_ENDPOINT_PAYMENT_UNPAID,
   CASHIER_ENDPOINT_PRODUCTS,
   CASHIER_ENDPOINT_SIMULATE_PAYMENT,
 } from '../constants/cashierApi.constant';
@@ -225,6 +226,38 @@ export const useCashierStore = defineStore('cashier', {
     },
 
     /**
+     * @description Handle payment for unpaid status.
+     * @url /invoiceo/process/payment
+     * @method POST
+     * @access public
+     */
+    async cashierProduct_paymentUnpaid(
+      payload: {
+        provider: string;
+        invoiceId: string;
+        paymentMethodId: string;
+      },
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<ICashierResponseMidtransQrisPayment> {
+      try {
+        const response = await httpClient.post<ICashierResponseMidtransQrisPayment>(
+          CASHIER_ENDPOINT_PAYMENT_UNPAID,
+          payload,
+          {
+            ...requestConfigurations,
+          },
+        );
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
+
+    /**
      * @description Handle fetch get payment method.
      * @url /cashier/product
      * @method GET
@@ -274,7 +307,6 @@ export const useCashierStore = defineStore('cashier', {
         }
       }
     },
-
     /**
      * @description Handle fetch list customers.
      * @url /customers

@@ -14,6 +14,10 @@ const {
 
 // Composables
 import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
+
+const imageUrl = computed(() => {
+  return import.meta.env.VITE_APP_BASE_API_URL + '/' + cashierProduct_modalAddEditItem.value.product?.pictureUrl;
+});
 </script>
 
 <template>
@@ -35,7 +39,11 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 
         <div class="flex w-full items-center justify-between">
           <div class="flex items-center gap-4">
-            <img class="w-20 h-20 object-cover" :src="cashierProduct_modalAddEditItem.product.pictureUrl!" />
+            <AppBaseImage
+              class="w-20 h-20 object-cover"
+              :alt="cashierProduct_modalAddEditItem.product.name"
+              :src="imageUrl"
+            />
 
             <div class="flex flex-col gap-1">
               <span class="font-semibold">{{ cashierProduct_modalAddEditItem.product.name }}</span>

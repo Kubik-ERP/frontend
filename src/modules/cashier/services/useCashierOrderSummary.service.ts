@@ -16,6 +16,7 @@ import {
   ICashierCalulateEstimationData,
   ICashierOrderSummary,
   ICashierOrderSummaryData,
+  ICashierOrderSummaryModalAddCustomer,
   ICashierOrderSummaryModalAddEdit,
   ICashierOrderSummaryModalCancelOrder,
   ICashierOrderSummaryModalInvoiceDetail,
@@ -329,6 +330,15 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     { immediate: true, deep: true },
   );
 
+  const cashierOrderSummary_modalAddCustomer = ref<ICashierOrderSummaryModalAddCustomer>({
+    show: false,
+  });
+
+  const cashierOrderSummary_handleModalAddCustomer = () => {
+    console.log('Toggling modalAddCustomer visibility');
+    cashierOrderSummary_modalAddCustomer.value.show = !cashierOrderSummary_modalAddCustomer.value.show;
+  };
+
   /**
    * @description Handle isExpanded toggle
    */
@@ -410,6 +420,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_isButtonPlaceOrderDisabled = computed(() => {
     const isDisabled =
       cashierProduct_customerState.value.selectedCustomer?.id === '' ||
+      cashierProduct_customerState.value.selectedCustomer?.id === null ||
       cashierOrderSummary_modalOrderType.value.selectedOrderType === '' ||
       cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod === '' ||
       cashierOrderSummary_modalSelectTable.value.selectedTable.length === 0 ||
@@ -703,6 +714,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_menuOrderItem,
     cashierOrderSummary_data,
 
+    cashierOrderSummary_modalAddCustomer,
     cashierOrderSummary_modalMenuOrderItem,
     cashierOrderSummary_modalOrderSummary,
     cashierOrderSummary_modalAddEditNotes,
@@ -724,6 +736,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_isLoadingUnpaidOrder,
 
     cashierProduct_customerState,
+
+    cashierOrderSummary_handleModalAddCustomer,
 
     cashierOrderSummary_handleIsExpandedToggle,
 

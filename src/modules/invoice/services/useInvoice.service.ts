@@ -2,16 +2,72 @@
 import html2pdf from 'html2pdf.js';
 
 // Interfaces
-import { IInvoiceInvoiceData, IInvoiceProvided } from '../interfaces';
+import {
+  IInvoiceInvoiceData,
+  IInvoiceModalPayData,
+  IInvoiceOtherOptionsData,
+  IInvoiceProvided,
+} from '../interfaces';
+
+// Store
 import { useInvoiceStore } from '../store';
+import { useCashierStore } from '@/modules/cashier/store';
+import { CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT, CASHIER_PROVIDER } from '@/modules/cashier/constants';
 
 export const useInvoiceService = (): IInvoiceProvided => {
   const store = useInvoiceStore();
+  const storeCashier = useCashierStore();
 
   const route = useRoute();
 
-  const invoice_activeInvoice = ref(1);
+  const invoice_activeInvoice = ref<number>(1);
 
+  const invoice_modalPay = ref<IInvoiceModalPayData>({
+    show: false,
+    showModalPayment: false,
+    isLoading: false,
+    listPayment: [],
+    dataPayment: {},
+    data: {
+      selectedPaymentMethod: '',
+      moneyReceived: 0,
+      totalPrice: 0,
+      change: 0,
+    },
+  });
+
+  /**
+   * @description Handle order type selection
+   * @returns void
+   */
+  const invoice_handleFetchPaymentMethod = async () => {
+    invoice_modalPay.value.isLoading = true;
+
+    try {
+      const response = await storeCashier.cashierProduct_fetchPaymentMethod({});
+
+      invoice_modalPay.value.listPayment = response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      invoice_modalPay.value.isLoading = false;
+    }
+  };
+
+  invoice_handleFetchPaymentMethod();
+
+  /**
+   * @description Handle printing of the invoice
+   * @param invoiceRef
+   * @param kitchenRef
+   * @param cashierRef
+   * @returns void
+   * @throws Error if the print fails
+   */
   const invoice_handlePrint = (
     invoiceRef: HTMLElement | null = null,
     kitchenRef: HTMLElement | null = null,
@@ -45,6 +101,14 @@ export const useInvoiceService = (): IInvoiceProvided => {
     }
   };
 
+  /**
+   * @description Handle downloading of the invoice
+   * @param invoiceRef
+   * @param kitchenRef
+   * @param cashierRef
+   * @returns void
+   * @throws Error if the download fails
+   */
   const invoice_handleDownload = (
     invoiceRef: HTMLElement | null = null,
     kitchenRef: HTMLElement | null = null,
@@ -86,23 +150,44 @@ export const useInvoiceService = (): IInvoiceProvided => {
     }
   };
 
-  const invoice_handleOtherOptions = (type: 'copy' | 'email' | 'whatsapp') => {
-    const email = 'ramadwiyantara1@gmail.com';
-    const subject = 'Invoice Details';
-    const body = `Please find the invoice details at: ${window.location.href}`;
+  const invoice_otherOptions = ref<IInvoiceOtherOptionsData>({
+    isLoadingSendEmail: false,
+  });
 
+  /**
+   * @description Handle other options like copy, email, or WhatsApp
+   * @param type - The type of action to perform
+   * @returns void
+   */
+  const invoice_handleOtherOptions = async (type: 'copy' | 'email' | 'whatsapp') => {
     const whatsappNumber = '6281234567890';
     const whatsappMessage = `Please find the invoice details at: ${window.location.href}`;
 
     switch (type) {
       case 'copy':
-        navigator.clipboard.writeText(window.location.href);
+        try {
+          navigator.clipboard.writeText(window.location.host + '/static/invoice/' + route.params.invoiceId);
+          alert('Invoice link copied to clipboard!');
+        } catch (error) {
+          console.error('Failed to copy text: ', error);
+        }
         break;
       case 'email':
-        window.open(
-          `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
-          '_blank',
-        );
+        invoice_otherOptions.value.isLoadingSendEmail = true;
+        try {
+          await store.invoice_sendEmail(route.params.invoiceId as string);
+
+          alert('Email sent successfully!');
+        } catch (error) {
+          if (error instanceof Error) {
+            return Promise.reject(error);
+          } else {
+            return Promise.reject(new Error(String(error)));
+          }
+        } finally {
+          invoice_otherOptions.value.isLoadingSendEmail = false;
+        }
+
         break;
       case 'whatsapp':
         window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
@@ -117,6 +202,12 @@ export const useInvoiceService = (): IInvoiceProvided => {
     data: null,
   });
 
+  /**
+   * @description Fetch invoice data by ID
+   * @param invoiceId - The ID of the invoice to fetch
+   * @throws Error if the fetch fails
+   * @returns Promise<void>
+   */
   const invoice_handleFetchInvoiceById = async (invoiceId: string): Promise<void> => {
     invoice_invoiceData.value.isLoading = true;
 
@@ -137,13 +228,69 @@ export const useInvoiceService = (): IInvoiceProvided => {
 
   invoice_handleFetchInvoiceById(route.params.invoiceId as string);
 
+  const invoice_handlePayInvoice = async () => {
+    invoice_modalPay.value.show = false;
+    invoice_modalPay.value.isLoading = true;
+
+    try {
+      const params = {
+        provider: CASHIER_PROVIDER,
+        paymentMethodId: invoice_modalPay.value.data.selectedPaymentMethod,
+        invoiceId: route.params.invoiceId as string,
+      };
+
+      const response = await storeCashier.cashierProduct_paymentUnpaid(params);
+
+      invoice_modalPay.value.dataPayment = response.data;
+
+      invoice_modalPay.value.showModalPayment = true;
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      invoice_modalPay.value.isLoading = false;
+    }
+  };
+
+  /**
+   * @description Handle simulating payment
+   * @param {string} invoiceId - The invoice ID to simulate payment for
+   * @returns void
+   */
+  const invoice_handleSimulatePayment = async (invoiceId: string) => {
+    try {
+      const params = {
+        ...CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT,
+        order_id: invoiceId,
+      };
+
+      await storeCashier.cashierProduct_simulatePayment(params);
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      invoice_modalPay.value.showModalPayment = false;
+
+      invoice_handleFetchInvoiceById(route.params.invoiceId as string);
+    }
+  };
+
   return {
     invoice_activeInvoice,
-
     invoice_invoiceData,
+    invoice_modalPay,
+    invoice_otherOptions,
 
     invoice_handleDownload,
     invoice_handlePrint,
     invoice_handleOtherOptions,
+    invoice_handlePayInvoice,
+    invoice_handleSimulatePayment,
   };
 };

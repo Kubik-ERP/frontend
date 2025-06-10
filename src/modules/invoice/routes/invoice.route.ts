@@ -39,6 +39,22 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: '/static/invoice/:invoiceId',
+    component: AppBaseWrapper,
+    children: [
+      {
+        path: '',
+        name: 'static-invoice',
+        component: () => import('../views/StaticInvoice.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.EMPTY,
+          title: 'Invoice',
+        },
+      },
+    ],
+  },
 ];
 
 export default routes;

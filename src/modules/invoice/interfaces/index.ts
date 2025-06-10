@@ -1,7 +1,29 @@
+import { ICashierOrderSummaryPaymentMethod } from '@/modules/cashier/interfaces/cashier-order-summary';
+import { ICashierResponseMidtransQrisPayment } from '@/modules/cashier/interfaces/cashier-response';
+
+export interface IInvoiceModalPayData {
+  show: boolean;
+  isLoading: boolean;
+  showModalPayment: boolean;
+  dataPayment: Partial<ICashierResponseMidtransQrisPayment['data']>;
+  listPayment: ICashierOrderSummaryPaymentMethod[];
+  data: {
+    selectedPaymentMethod: string;
+    moneyReceived: number;
+    totalPrice: number;
+    change: number;
+  };
+}
+
 export interface IInvoiceInvoiceData {
   isLoading: boolean;
   data: IInvoiceResponseInvoice['data'] | null;
 }
+
+export interface IInvoiceOtherOptionsData {
+  isLoadingSendEmail: boolean;
+}
+
 export interface IInvoiceResponseInvoice {
   data: {
     id: string;
@@ -59,8 +81,9 @@ export interface IInvoiceResponseInvoice {
 
 export interface IInvoiceProvided {
   invoice_activeInvoice: Ref<number>;
-
   invoice_invoiceData: Ref<IInvoiceInvoiceData>;
+  invoice_modalPay: Ref<IInvoiceModalPayData>;
+  invoice_otherOptions: Ref<IInvoiceOtherOptionsData>;
 
   invoice_handlePrint: (
     invoiceRef: HTMLElement,
@@ -73,4 +96,6 @@ export interface IInvoiceProvided {
     cashierRef: HTMLElement | null,
   ) => void;
   invoice_handleOtherOptions: (type: 'copy' | 'email' | 'whatsapp') => void;
+  invoice_handlePayInvoice: () => void;
+  invoice_handleSimulatePayment: (invoiceId: string) => void;
 }
