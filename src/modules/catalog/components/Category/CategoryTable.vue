@@ -142,6 +142,7 @@ const handleEditCategory = async () => {
       const updatedCategory = await updateCategory(selected.value.id, {
         category: category_formData.name,
         description: category_formData.description || '-',
+        imageFile: category_formData.imageFile,
       });
       categories.value = categories.value.map(cat => (cat.id === updatedCategory.id ? updatedCategory : cat));
       isEditOpen.value = false;

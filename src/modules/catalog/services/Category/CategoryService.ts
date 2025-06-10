@@ -18,8 +18,8 @@ function convertCategoriesToFormData(payload: CategoryPayload): FormData {
   // console.log('🚀 ~ convertCategoriesToFormData ~ payload:', payload);
   const formData = new FormData();
 
-  // formData.append('category', payload.category);
-  // formData.append('description', payload.description ?? '');
+  formData.append('category', payload.category);
+  formData.append('description', payload.description ?? '');
 
   if (payload.imageFile) formData.append('image', payload.imageFile);
 
@@ -101,7 +101,13 @@ export const useCategoryService = () => {
   const updateCategory = async (id: string, payload: CategoryPayload): Promise<ICategory> => {
     try {
       category_formValidations.value.$touch();
-      const response = await axios.patch(`${API_URL}/${id}`, payload);
+      const formData = convertCategoriesToFormData(payload);
+
+      const response = await axios.patch(`${API_URL}/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       const data: ICategory = response.data.data;
 
       const argsEventEmitter: IPropsToast = {
