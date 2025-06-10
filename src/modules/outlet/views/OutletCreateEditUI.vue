@@ -61,7 +61,11 @@ eventBus.emit('AppBaseDialogPinVerification', argsEventEmitter);
  */
 onMounted(async () => {
   if (outletCreateEdit_isEditable) {
-    await outletCreateEdit_fetchDetailOutlet(outletCreateEdit_routeParamsId.value!);
+    if (outletCreateEdit_routeParamsId.value !== undefined && outletCreateEdit_routeParamsId.value !== null) {
+      await outletCreateEdit_fetchDetailOutlet(outletCreateEdit_routeParamsId.value);
+    } else {
+      console.error('Error: outletCreateEdit_routeParamsId.value is undefined or null.');
+    }
   }
 });
 </script>
