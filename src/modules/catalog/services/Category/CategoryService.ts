@@ -10,12 +10,28 @@ import {
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 
+import eventBus from '@/plugins/mitt';
+
 const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/categories`;
+
+function convertCategoriesToFormData(payload: CategoryPayload): FormData {
+  // console.log('🚀 ~ convertCategoriesToFormData ~ payload:', payload);
+  const formData = new FormData();
+
+  // formData.append('category', payload.category);
+  // formData.append('description', payload.description ?? '');
+
+  if (payload.imageFile) formData.append('image', payload.imageFile);
+
+  return formData;
+}
 
 export const useCategoryService = () => {
   const category_formData = reactive<ICategoryFormData>({
     name: '',
     description: '',
+    imageFile: undefined,
+    imagePreview: '',
   });
 
   const category_formRules = computed(() => ({
@@ -41,49 +57,106 @@ export const useCategoryService = () => {
     };
   };
   const createCategory = async (payload: CategoryPayload): Promise<ICategoryAddResponse> => {
-    const response = await axios.post(API_URL, payload);
-    const message = response.data.message || 'Successfully created a category.';
-    if (response.data.statusCode !== 201)
+    try {
+      const formData = convertCategoriesToFormData(payload);
+      // console.log("🚀 ~ createCategory ~ payload:", payload)
+      // console.log("🚀 ~ createCategory ~ formData:", formData)
+      const response = await axios.post(API_URL, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      const message = response.data.message || 'Successfully created a category.';
+      if (response.data.statusCode !== 201)
+        return {
+          message,
+          statusCode: response.data.statusCode,
+        };
+      const data: ICategory = response.data.data;
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Category has been created successfully',
+        position: EToastPosition.BOTTOM_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
       return {
         message,
         statusCode: response.data.statusCode,
+        data: {
+          id: data.id,
+          category: data.category,
+          description: data.description || '-',
+        },
       };
-    const data: ICategory = response.data.data;
-    return {
-      message,
-      statusCode: response.data.statusCode,
-      data: {
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+  const updateCategory = async (id: string, payload: CategoryPayload): Promise<ICategory> => {
+    try {
+      category_formValidations.value.$touch();
+      const response = await axios.patch(`${API_URL}/${id}`, payload);
+      const data: ICategory = response.data.data;
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Category has been updated successfully',
+        position: EToastPosition.BOTTOM_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      return {
         id: data.id,
         category: data.category,
         description: data.description || '-',
-      },
-    };
-  };
-  const updateCategory = async (id: string, payload: CategoryPayload): Promise<ICategory> => {
-    category_formValidations.value.$touch();
-
-    const response = await axios.patch(`${API_URL}/${id}`, payload);
-    const data: ICategory = response.data.data;
-
-    return {
-      id: data.id,
-      category: data.category,
-      description: data.description || '-',
-    };
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
   };
   const deleteCategory = async (id: string): Promise<number> => {
-    const response = await axios.delete(`${API_URL}/${id}`);
-    return response.status;
+    try {
+      const response = await axios.delete(`${API_URL}/${id}`);
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Category has been deleted successfully',
+        position: EToastPosition.BOTTOM_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      return response.status;
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
   };
 
   const getCategoryByID = async (id: string): Promise<ICategory> => {
     const response = await axios.get(`${API_URL}/${id}`);
     const data: ICategory = response.data.data;
+    // console.log("🚀 ~ getCategoryByID ~ response:", response)
 
     return {
       id: data.id,
       category: data.category,
       description: data.description || '-',
+      pictureUrl: `${import.meta.env.VITE_APP_BASE_API_URL}${data.pictureUrl}`,
     };
   };
 
