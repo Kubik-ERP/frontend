@@ -1,5 +1,5 @@
 <script setup>
-import AddCustomerForm from '@/modules/customer/components/addCustomer/form.vue'
+import AddCustomerForm from '@/modules/customer/components/addCustomer/form.vue';
 
 const router = useRouter();
 
@@ -41,8 +41,6 @@ onBeforeRouteLeave((to, from, next) => {
 
 <template>
   <div class="">
-
-    
     <AddCustomerForm />
 
     <PrimeVueDialog :visible="isLeavingModal" modal header="">
