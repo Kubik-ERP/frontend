@@ -2,7 +2,9 @@
 // Plugins
 import eventBus from '@/plugins/mitt';
 
-// Interfaces
+/**
+ * @description Define the props interface
+ */
 interface IProps {
   id: string;
   description?: string;
@@ -21,8 +23,8 @@ interface IProps {
   width?: string;
 }
 
-const props = ref<IProps>({
-  id: 'AppBaseDialogConfirmation',
+const props = withDefaults(defineProps<IProps>(), {
+  id: 'app-base-dialog-confirmation',
   description: '',
   iconName: 'info',
   isLoading: false,
@@ -30,8 +32,8 @@ const props = ref<IProps>({
   isUsingIcon: true,
   isUsingButtonActions: true,
   isUsingButtonSecondary: false,
-  onClickButtonPrimary: () => { },
-  onClickButtonSecondary: () => { },
+  onClickButtonPrimary: () => {},
+  onClickButtonSecondary: () => {},
   textButtonPrimary: 'OK',
   textButtonSecondary: 'Cancel',
   title: '',
@@ -39,48 +41,90 @@ const props = ref<IProps>({
   width: '',
 });
 
+/**
+ * @description Reactive data binding
+ */
+const dialogConfirmation = ref<IProps>({
+  id: props.id,
+  description: '',
+  iconName: 'info',
+  isLoading: false,
+  isOpen: false,
+  isUsingIcon: true,
+  isUsingButtonActions: true,
+  isUsingButtonSecondary: false,
+  onClickButtonPrimary: () => {},
+  onClickButtonSecondary: () => {},
+  textButtonPrimary: 'OK',
+  textButtonSecondary: 'Cancel',
+  title: '',
+  type: 'info',
+  width: '',
+});
+const dialog = ref<IPropsDialog>({
+  id: dialogConfirmation.value.id,
+  isDraggable: false,
+  isUsingBackdrop: true,
+  isUsingClosableButton: false,
+  isOpen: false,
+  width: dialogConfirmation.value.width || '534px',
+});
+
 eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
   const eventParams = params as IProps;
 
-  if (eventParams.id === props.value.id) {
-    props.value = {
-      ...props.value,
-      ...(params as IProps),
+  if (eventParams.id === dialogConfirmation.value.id) {
+    const argsEventEmitter: IPropsDialog = {
+      id: dialogConfirmation.value.id,
+      isOpen: eventParams.isOpen ?? true,
+      width: eventParams.width || '534px',
     };
+
+    dialogConfirmation.value = {
+      ...dialogConfirmation.value,
+      ...eventParams,
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
   }
 });
 </script>
 
 <template>
-  <AppBaseDialog :is-draggable="false" :is-open="props.isOpen" :is-using-closable-button="false"
-    :is-using-backdrop="true">
+  <AppBaseDialog v-bind="dialog">
     <template #header>
-      <AppBaseSvg :name="props.iconName" />
+      <header class="flex flex-col items-center gap-2 w-full">
+        <AppBaseSvg :name="dialogConfirmation.iconName" class="!w-14 !h-14" />
+      </header>
     </template>
 
     <template #content>
-      <section id="content" class="flex flex-col gap-3">
+      <section id="content" class="flex flex-col items-center gap-3">
         <h6 class="font-semibold text-black text-lg">
-          {{ props.title }}
+          {{ dialogConfirmation.title }}
         </h6>
 
         <p class="font-normal text-black-secondary text-center text-sm">
-          {{ props.description }}
+          {{ dialogConfirmation.description }}
         </p>
       </section>
     </template>
 
     <template #footer>
-      <footer v-if="props.isUsingButtonActions" class="flex items-center gap-4 w-full">
-        <section v-if="props.isUsingButtonSecondary" id="button-secondary">
-          <template v-if="props.type === 'error'">
-            <PrimeVueButton class="w-full border-none bg-transparent basic-smooth-animation hover:bg-grayscale-10"
-              severity="secondary" :loading="props.isLoading" @click="props.onClickButtonSecondary">
+      <footer v-if="dialogConfirmation.isUsingButtonActions" class="flex items-center gap-4 w-full">
+        <section v-if="dialogConfirmation.isUsingButtonSecondary" id="button-secondary" class="w-full">
+          <template v-if="dialogConfirmation.type === 'error'">
+            <PrimeVueButton
+              class="w-full border-none bg-transparent basic-smooth-animation hover:bg-grayscale-10"
+              severity="secondary"
+              :loading="dialogConfirmation.isLoading"
+              @click="dialogConfirmation.onClickButtonSecondary"
+            >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
                   <AppBaseSvg name="delete" />
                   <span class="font-semibold text-base text-error-main">
-                    {{ props.textButtonSecondary }}
+                    {{ dialogConfirmation.textButtonSecondary }}
                   </span>
                 </section>
               </template>
@@ -90,13 +134,22 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
           <template v-else>
             <PrimeVueButton
               class="border-blue-primary bg-transparent font-semibold text-base text-blue-primary w-full basic-smooth-animation hover:bg-grayscale-10"
-              :label="props.textButtonSecondary" :loading="props.isLoading" severity="secondary" variant="outlined"
-              @click="props.onClickButtonSecondary" />
+              :label="dialogConfirmation.textButtonSecondary"
+              :loading="dialogConfirmation.isLoading"
+              severity="secondary"
+              variant="outlined"
+              @click="dialogConfirmation.onClickButtonSecondary"
+            />
           </template>
         </section>
 
-        <PrimeVueButton class="bg-blue-primary border-none text-sm py-[10px] w-full" :label="props.textButtonPrimary"
-          type="button" :loading="props.isLoading" @click="props.onClickButtonPrimary" />
+        <PrimeVueButton
+          class="bg-blue-primary border-none text-sm py-[10px] w-full"
+          :label="dialogConfirmation.textButtonPrimary"
+          type="button"
+          :loading="dialogConfirmation.isLoading"
+          @click="dialogConfirmation.onClickButtonPrimary"
+        />
       </footer>
     </template>
   </AppBaseDialog>

@@ -3,6 +3,7 @@ import {
   SETTING_CHARGES_BASE_ENDPOINT,
   SETTING_CHARGES_UPSERT_ENDPOINT,
   SETTING_INVOICE_BASE_ENDPOINT,
+  SETTING_PAYMENT_METHOD_ENDPOINT,
 } from '../constants/setting-api.constant';
 
 // Interfaces
@@ -12,6 +13,8 @@ import type {
   ISettingInvoiceDetailResponse,
   ISettingTaxAndServiceResponse,
   ISettingTaxAndServiceFormData,
+  ISettingPaymentMethodResponse,
+  ISettingPaymentMethodFormData,
 } from '../interfaces';
 
 // Plugins
@@ -21,6 +24,7 @@ export const useSettingStore = defineStore('pos-setting', {
   state: (): ISettingStateStore => ({
     setting_isLoading: false,
     setting_invoice: null,
+    setting_paymentMethod: [],
     setting_service: null,
     setting_tax: null,
   }),
@@ -30,6 +34,35 @@ export const useSettingStore = defineStore('pos-setting', {
      */
   },
   actions: {
+    /**
+     * @description Handle fetch api pos setting - create payment method
+     * @url /payment/method
+     * @method POST
+     * @access private
+     */
+    async fetchSetting_createPaymentMethod(
+      payload: ISettingPaymentMethodFormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.setting_isLoading = true;
+
+      try {
+        const response = await httpClient.post<unknown>(SETTING_PAYMENT_METHOD_ENDPOINT, payload, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.setting_isLoading = false;
+      }
+    },
+
     /**
      * @description Handle fetch api pos setting - detail invoice setting
      * @url /invoice/setting
@@ -100,6 +133,38 @@ export const useSettingStore = defineStore('pos-setting', {
     },
 
     /**
+     * @description Handle fetch api pos setting - list payment methods
+     * @url /payment/method
+     * @method GET
+     * @access private
+     */
+    async fetchSetting_listPaymentMethods(
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<ISettingPaymentMethodResponse> {
+      this.setting_isLoading = true;
+
+      try {
+        const response = await httpClient.get<ISettingPaymentMethodResponse>(SETTING_PAYMENT_METHOD_ENDPOINT, {
+          ...requestConfigurations,
+        });
+
+        if (response.data.data.length > 0) {
+          this.setting_paymentMethod = response.data.data;
+        }
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.setting_isLoading = false;
+      }
+    },
+
+    /**
      * @description Handle fetch api pos setting - update charges
      * @url /charges/upsert
      * @method PUT
@@ -142,6 +207,37 @@ export const useSettingStore = defineStore('pos-setting', {
 
       try {
         const response = await httpClient.put<unknown>(SETTING_INVOICE_BASE_ENDPOINT, payload, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.setting_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api pos setting - update payment method
+     * @url /payment/method
+     * @method PUT
+     * @access private
+     */
+    async fetchSetting_updatePaymentMethod(
+      id: number,
+      payload: ISettingPaymentMethodFormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.setting_isLoading = true;
+
+      try {
+        const response = await httpClient.put<unknown>(SETTING_PAYMENT_METHOD_ENDPOINT, payload, {
+          params: { id },
           ...requestConfigurations,
         });
 

@@ -19,8 +19,6 @@ function clearForm() {
 }
 
 const fileInput = ref(null);
-
-
 const triggerFileInput = () => {
   fileInput.value?.click();
 };
