@@ -93,7 +93,6 @@ const emits = defineEmits(['clickBtnCtaCreate']);
                     </PrimeVueInputIcon>
 
                     <PrimeVueInputText
-                      cll
                       placeholder="Search by Member ID or Name"
                       class="text-sm w-full min-w-80"
                     />
