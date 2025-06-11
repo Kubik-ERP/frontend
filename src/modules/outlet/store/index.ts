@@ -27,6 +27,7 @@ export const useOutletStore = defineStore('outlet', {
      * @access private
      */
     async fetchOutlet_createNewOutlet(
+      pin: string,
       payload: FormData,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
@@ -34,6 +35,9 @@ export const useOutletStore = defineStore('outlet', {
 
       try {
         const response = await httpClient.post<unknown>(OUTLET_BASE_ENDPOINT, payload, {
+          headers: {
+            pin: pin,
+          },
           ...requestConfigurations,
         });
 
@@ -55,10 +59,17 @@ export const useOutletStore = defineStore('outlet', {
      * @method DELETE
      * @access private
      */
-    async fetchOutlet_deleteOutlet(outletId: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async fetchOutlet_deleteOutlet(
+      pin: string,
+      outletId: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
       this.outlet_isLoading = true;
       try {
         const response = await httpClient.delete<unknown>(`${OUTLET_BASE_ENDPOINT}/${outletId}`, {
+          headers: {
+            pin: pin,
+          },
           ...requestConfigurations,
         });
 
@@ -80,7 +91,10 @@ export const useOutletStore = defineStore('outlet', {
      * @method GET
      * @access private
      */
-    async fetchOutlet_detail(outletId: string, requestConfigurations: AxiosRequestConfig): Promise<IOutletDetailResponse> {
+    async fetchOutlet_detail(
+      outletId: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IOutletDetailResponse> {
       this.outlet_isLoading = true;
 
       try {
@@ -136,6 +150,7 @@ export const useOutletStore = defineStore('outlet', {
      * @access private
      */
     async fetchOutlet_updateOutlet(
+      pin: string,
       outletId: string,
       payload: FormData,
       requestConfigurations: AxiosRequestConfig,
@@ -144,6 +159,9 @@ export const useOutletStore = defineStore('outlet', {
 
       try {
         const response = await httpClient.put<unknown>(`${OUTLET_BASE_ENDPOINT}/${outletId}`, payload, {
+          headers: {
+            pin: pin,
+          },
           ...requestConfigurations,
         });
 

@@ -27,6 +27,17 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'payment-method',
+        name: 'setting.payment-method',
+        component: () => import('../views/SettingPaymentMethodUI.vue'),
+        meta: {
+          breadcrumb: 'Payment Method',
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          requiresAuthorization: true,
+          title: 'Payment Method',
+        },
+      },
+      {
         path: 'tax-service',
         name: 'setting.tax',
         component: () => import('../views/SettingTaxServiceUI.vue'),

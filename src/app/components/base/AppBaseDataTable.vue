@@ -16,6 +16,7 @@ interface IProps {
   isUsingFilter?: boolean;
   isUsingHeader?: boolean;
   isUsingPagination?: boolean;
+  isUsingSearchOnHeader?: boolean;
   clickBtnCtaCreate?: () => void;
   rowsPerPage?: number;
 }
@@ -37,6 +38,7 @@ const props = withDefaults(defineProps<IProps>(), {
   isUsingHeader: true,
   isUsingFilter: true,
   isUsingPagination: true,
+  isUsingSearchOnHeader: false,
   clickBtnCtaCreate: () => {},
   rowsPerPage: 10,
 });
@@ -82,23 +84,38 @@ const emits = defineEmits(['clickBtnCtaCreate']);
               </template>
 
               <template v-else>
-                <template v-if="props.isUsingBtnCtaCreate">
-                  <PrimeVueButton
-                    class="bg-primary border-none w-fit px-5"
-                    severity="secondary"
-                    @click="emits('clickBtnCtaCreate')"
-                  >
-                    <template #default>
-                      <section id="content" class="flex items-center gap-2">
-                        <AppBaseSvg name="plus-line-white" />
+                <section id="right-content" class="flex items-center gap-4">
+                  <PrimeVueIconField v-if="props.isUsingSearchOnHeader">
+                    <PrimeVueInputIcon>
+                      <template #default>
+                        <AppBaseSvg name="search" />
+                      </template>
+                    </PrimeVueInputIcon>
 
-                        <span class="font-semibold text-base text-white">
-                          {{ props.btnCtaCreateTitle }}
-                        </span>
-                      </section>
-                    </template>
-                  </PrimeVueButton>
-                </template>
+                    <PrimeVueInputText
+                      placeholder="Search by Member ID or Name"
+                      class="text-sm w-full min-w-80"
+                    />
+                  </PrimeVueIconField>
+
+                  <template v-if="props.isUsingBtnCtaCreate">
+                    <PrimeVueButton
+                      class="bg-primary border-none w-fit px-5"
+                      severity="secondary"
+                      @click="emits('clickBtnCtaCreate')"
+                    >
+                      <template #default>
+                        <section id="content" class="flex items-center gap-2">
+                          <AppBaseSvg name="plus-line-white" />
+
+                          <span class="font-semibold text-base text-white">
+                            {{ props.btnCtaCreateTitle }}
+                          </span>
+                        </section>
+                      </template>
+                    </PrimeVueButton>
+                  </template>
+                </section>
               </template>
             </section>
 
@@ -171,10 +188,13 @@ const emits = defineEmits(['clickBtnCtaCreate']);
         columnTitle: 'text-sm font-normal text-grayscale-70',
         headerCell: 'bg-background border-b-grayscale-20',
       }"
+      :style="`
+        width: ${column.width ? column.width : 'auto'};
+      `"
     >
-      <template #body="{ data }">
+      <template #body="{ data, index }">
         <template v-if="props.isUsingCustomBody">
-          <slot name="body" :data="data" :column="column" />
+          <slot name="body" :column="column" :data="data" :index="index" />
         </template>
 
         <template v-else>
