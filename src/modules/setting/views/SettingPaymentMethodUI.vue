@@ -3,7 +3,7 @@
 import SettingPaymentMethodCreateEditDialog from '../components/setting-payment-method/SettingPaymentMethodCreateEditDialog.vue';
 
 // Services
-import { useSettingPaymentMethodService } from '../services/setting-payment.service';
+import { useSettingPaymentMethodService } from '../services/setting-payment-method.service';
 
 /**
  * @description Destructure all the data and methods what we need
