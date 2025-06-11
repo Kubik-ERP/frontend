@@ -6,11 +6,34 @@ import { useCategoryService } from '../../services/Category/CategoryService';
 import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
 import CategoryPill from '@/modules/catalog/components/Category/CategoryPill.vue';
 
-const { getAllProducts, deleteProduct } = useProductService();
+const { getAllProducts, deleteProduct, getProductByCategories } = useProductService();
 
 const { getAllCategories } = useCategoryService();
 const categories = ref([]);
 const selectedCategories = ref([]);
+
+watch(selectedCategories, () => {
+  if (selectedCategories.value.length > 0) {
+    loadProductByCategories();
+  } else {
+    loadProducts();
+  }
+});
+
+const loadProductByCategories = async () => {
+  loading.value = true;
+  try {
+    const response = await getProductByCategories(page.value, limit.value, search.value, selectedCategories.value);
+    // console.log("🚀 ~ loadProductByCategories ~ response:", response)
+    products.value = response.products;
+    lastPage.value = response.lastPage;
+  } catch (err) {
+    console.error('Failed to fetch products:', err);
+  } finally {
+    loading.value = false;
+  }
+};
+
 const loadCategories = async () => {
   loading.value = true;
   try {
@@ -51,7 +74,7 @@ function formatCurrency(value) {
 const selectedProduct = ref(null);
 
 const EditProducts = () => {
-  router.push({ name: 'edit-product', params: { id: selectedProduct.value.id } });
+  router.push({ name: 'catalog.products.edit', params: { id: selectedProduct.value.id } });
   // console.log('product id :' + selectedProduct.value.id);
 };
 
@@ -80,7 +103,7 @@ const loadProducts = async () => {
     products.value = response.products;
     lastPage.value = response.lastPage;
     // console.log('🚀 ~ loadProducts ~ lastPage.value:', lastPage.value);
-    // console.log('products', products.value);
+    console.log('products', products.value);
   } catch (err) {
     console.error('Failed to fetch products:', err);
   } finally {
@@ -90,37 +113,71 @@ const loadProducts = async () => {
 
 const handleDelete = async () => {
   try {
+    loading.value = true;
     // console.log('product id', selectedProduct.value.id);
     await deleteProduct(selectedProduct.value.id);
     isDeleteOpen.value = false;
-    await loadProducts();
+    if (selectedCategories.value.length > 0) {
+    console.log('multiple');
+    loadProductByCategories();
+  } else {
+    console.log('get all');
+    loadProducts();
+  }
   } catch (error) {
     console.error('Failed to delete product:', error);
+  }
+  finally {
+    loading.value = false;
   }
 };
 
 const onPageChange = event => {
   page.value = event.page + 1; // event.page is 0-based
-  loadProducts();
+  if (selectedCategories.value.length > 0) {
+    console.log('multiple');
+    loadProductByCategories();
+  } else {
+    console.log('get all');
+    loadProducts();
+  }
 };
 
 const handleSearch = () => {
   router.push({ query: { page: '1' } });
   page.value = 1;
-  loadProducts();
+ if (selectedCategories.value.length > 0) {
+    console.log('multiple');
+    loadProductByCategories();
+  } else {
+    console.log('get all');
+    loadProducts();
+  }
 };
 
 function goToPage(p) {
   router.push({ query: { page: p.toString() } });
   page.value = p;
-  loadProducts();
+  if (selectedCategories.value.length > 0) {
+    console.log('multiple');
+    loadProductByCategories();
+  } else {
+    console.log('get all');
+    loadProducts();
+  }
 }
 
 const nextPage = () => {
   if (page.value < lastPage.value) {
     page.value = page.value + 1;
     router.push({ query: { page: page.value.toString() } });
+    if (selectedCategories.value.length > 0) {
+    console.log('multiple');
+    loadProductByCategories();
+  } else {
+    console.log('get all');
     loadProducts();
+  }
   }
 };
 
@@ -128,7 +185,13 @@ const prevPage = () => {
   if (page.value > 1) {
     page.value = page.value - 1;
     router.push({ query: { page: page.value.toString() } });
+    if (selectedCategories.value.length > 0) {
+    console.log('multiple');
+    loadProductByCategories();
+  } else {
+    console.log('get all');
     loadProducts();
+  }
   }
 };
 
@@ -156,12 +219,13 @@ onMounted(() => {
         @page="onPageChange"
       >
         <template #header>
+          {{ selectedCategories }}
           <div class="flex justify-between">
             <div class="flex items-center">
               <h1 class="text-2xl font-bold">Products</h1>
             </div>
             <div class="flex gap-4 justify-end">
-              <div class="flex flex-col">
+              <div class="flex flex-col w-64 max-w-64">
                 <PrimeVueMultiSelect
                   v-model="selectedCategories"
                   name="category"
@@ -170,7 +234,7 @@ onMounted(() => {
                   option-label="category"
                   filter
                   placeholder="Select"
-                  class="w-full max-w-64 text-primary"
+                  class="w-full text-primary"
                   dropdown-icon="pi pi-circle"
                 >
                   <template #option="{ option }">

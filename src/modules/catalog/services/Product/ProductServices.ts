@@ -12,6 +12,7 @@ import useVuelidate from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
 
 import eventBus from '@/plugins/mitt';
+import { ICategory } from '../../interfaces/Category/CategoryInterface';
 
 const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/products`;
 
@@ -100,6 +101,38 @@ export const useProductService = () => {
       variantHasProducts: item.variantHasProducts?.map((variant: IVariantHasProduct) => variant.variant.name),
     }));
 
+    const lastPage = response.data.data.lastPage;
+
+    return {
+      products,
+      lastPage,
+    };
+  };
+
+  const getProductByCategories = async (
+    page: number,
+    limit: number,
+    search: string,
+    categories: ICategory[],
+  ): Promise<IProductResponse> => {
+    const categoriesID = categories.map(cat => cat.id);
+    const response = await axios.get(
+      `${API_URL}/?categories=${categoriesID.join('%23')}&page=${page}&limit=${limit}&search=${search}`,
+    );
+    console.log('🚀 ~ getProductByCategories ~ response:', response);
+    const products: IProduct[] = response.data.data.products.map((item: IProduct) => {
+      return {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        discount_price: item.discountPrice || 0,
+        picture_url: item.picture_url || '-',
+        categoriesHasProducts: item.categoriesHasProducts?.map(
+          (cat: ICategoryHasProduct) => cat.categories.category,
+        ),
+        variantHasProducts: item.variantHasProducts?.map((variant: IVariantHasProduct) => variant.variant.name),
+      };
+    });
     const lastPage = response.data.data.lastPage;
 
     return {
@@ -220,6 +253,7 @@ export const useProductService = () => {
     createProduct,
     updateProduct,
     deleteProduct,
+    getProductByCategories,
     product_formValidations,
     product_formData,
   };
