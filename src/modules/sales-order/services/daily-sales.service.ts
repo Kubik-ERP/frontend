@@ -154,7 +154,6 @@ export const useDailySalesService = (): IDailySalesProvided => {
   );
 
   const dailySales_handleOnPageChange = (page: number): void => {
-    console.log('Page changed to:', page);
     dailySales_data.value.meta.page = page;
 
     dailySales_debouncedFetch();
