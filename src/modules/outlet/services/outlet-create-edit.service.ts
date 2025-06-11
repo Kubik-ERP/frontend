@@ -56,6 +56,19 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
     building: '',
     businessHours: OUTLET_CREATE_EDIT_INITIAL_VALUES_OF_BUSINESS_HOURS,
   });
+  const outletCreateEdit_formDataOfVerifyPin = reactive<IAuthenticationVerifyPinFormData>({
+    pinConfirmation: '',
+  });
+  const outletCreateEdit_isPinInvalid = ref<boolean>(false);
+  const outletCreateEdit_routeParamsId = ref<string | undefined>(route.params.id as string | undefined);
+
+  /**
+   * @description Computed property that checks if the outlet is editable or not.
+   * If the route parameter 'id' exists, it means we are editing an existing outlet.
+   */
+  const outletCreateEdit_isEditable = computed(() => {
+    return Boolean(outletCreateEdit_routeParamsId.value);
+  });
 
   /**
    * @description Form validations
@@ -105,8 +118,12 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
 
             if (typedBusinessHourKey === 'openTime' || typedBusinessHourKey === 'closeTime') {
               // We need to add more zero value on it. So from HH:mm to HH:mm:ss
-              const hour = new Date(formValue).getHours();
-              const minute = new Date(formValue).getMinutes();
+              let hour = new Date(formValue).getHours().toString();
+              let minute = new Date(formValue).getMinutes().toString();
+
+              // Check if hour or minute is less than 10, then add a leading zero
+              hour = +hour < 10 ? `0${hour}` : hour;
+              minute = +minute < 10 ? `0${minute}` : minute;
 
               formData.append(`${typedKey}[${index}][${typedBusinessHourKey}]`, `${hour}:${minute}:00`);
             } else {
@@ -153,10 +170,12 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
    */
   const outletCreateEdit_fetchCreateNewOutlet = async (formData: FormData) => {
     try {
-      await store.fetchOutlet_createNewOutlet(formData, {
+      await store.fetchOutlet_createNewOutlet(outletCreateEdit_formDataOfVerifyPin.pinConfirmation, formData, {
         ...httpAbort_registerAbort(OUTLET_CREATE_EDIT_CREATE_NEW_OUTLET_REQUEST),
       });
     } catch (error: unknown) {
+      outletCreateEdit_isPinInvalid.value = true;
+
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -170,10 +189,12 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
    */
   const outletCreateEdit_fetchDeleteOutlet = async (id: string): Promise<void> => {
     try {
-      await store.fetchOutlet_deleteOutlet(id, {
+      await store.fetchOutlet_deleteOutlet(outletCreateEdit_formDataOfVerifyPin.pinConfirmation, id, {
         ...httpAbort_registerAbort(OUTLET_CREATE_EDIT_DELETE_OUTLET_REQUEST),
       });
     } catch (error: unknown) {
+      outletCreateEdit_isPinInvalid.value = true;
+
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -206,10 +227,12 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
    */
   const outletCreateEdit_fetchUpdateOutlet = async (id: string, formData: FormData): Promise<void> => {
     try {
-      await store.fetchOutlet_updateOutlet(id, formData, {
+      await store.fetchOutlet_updateOutlet(outletCreateEdit_formDataOfVerifyPin.pinConfirmation, id, formData, {
         ...httpAbort_registerAbort(OUTLET_CREATE_EDIT_UPDATE_OUTLET_REQUEST),
       });
     } catch (error: unknown) {
+      outletCreateEdit_isPinInvalid.value = true;
+
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -229,20 +252,22 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
    * @description Handle action on cancel button on dialog verify pin
    */
   const outletCreateEdit_onCloseDialogVerifyPIN = (): void => {
-    const argsEventEmitter: IPropsDialog = {
-      id: 'outlet-create-edit-dialog-verify-pin',
+    outletCreateEdit_isPinInvalid.value = false;
+    const argsEventEmitter: IPropsDialogPinVerification = {
       isOpen: false,
     };
 
-    eventBus.emit('AppBaseDialog', argsEventEmitter);
+    eventBus.emit('AppBaseDialogPinVerification', argsEventEmitter);
   };
 
   /**
    * @description Handle action on delete outlet
    */
-  const outletCreateEdit_onDeleteOutlet = async (id: string): Promise<void> => {
+  const outletCreateEdit_onDeleteOutlet = async (): Promise<void> => {
     try {
-      await outletCreateEdit_fetchDeleteOutlet(id);
+      await outletCreateEdit_fetchDeleteOutlet(outletCreateEdit_routeParamsId.value!);
+
+      router.push({ name: 'outlet.list' });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -279,9 +304,18 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
         eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
       },
       onClickButtonSecondary: () => {
-        outletCreateEdit_onDeleteOutlet(route.params.id as string);
+        const argsEventEmitter: IPropsDialogPinVerification = {
+          isOpen: true,
+          isInvalid: outletCreateEdit_isPinInvalid.value,
+          pinConfirmation: outletCreateEdit_formDataOfVerifyPin.pinConfirmation,
+          onClickPrimaryButton: outletCreateEdit_onDeleteOutlet,
+          onClickSecondaryButton: outletCreateEdit_onCloseDialogVerifyPIN,
+          primaryButtonClass:
+            'bg-error-main border-none font-semibold text-base text-white py-[10px] w-full max-w-40',
+          primaryButtonLabel: 'Delete Store Data',
+        };
 
-        router.push({ name: 'outlet.list' });
+        eventBus.emit('AppBaseDialogPinVerification', argsEventEmitter);
       },
       textButtonPrimary: 'Cancel',
       textButtonSecondary: 'Delete Store',
@@ -298,16 +332,19 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
   const outletCreateEdit_onSubmit = async (): Promise<void> => {
     try {
       outletCreateEdit_formValidations.value.$touch();
+
       if (outletCreateEdit_formValidations.value.$invalid) return;
 
-      const argsEventEmitter: IPropsDialog = {
-        id: 'outlet-create-edit-dialog-verify-pin',
-        isUsingClosableButton: false,
-        isUsingBackdrop: true,
+      const argsEventEmitter: IPropsDialogPinVerification = {
         isOpen: true,
+        isInvalid: outletCreateEdit_isPinInvalid.value,
+        pinConfirmation: outletCreateEdit_formDataOfVerifyPin.pinConfirmation,
+        onClickPrimaryButton: outletCreateEdit_onSubmitDialogVerifyPIN,
+        onClickSecondaryButton: outletCreateEdit_onCloseDialogVerifyPIN,
+        primaryButtonLabel: outletCreateEdit_isEditable ? 'Update Store Data' : 'Create Store',
       };
 
-      eventBus.emit('AppBaseDialog', argsEventEmitter);
+      eventBus.emit('AppBaseDialogPinVerification', argsEventEmitter);
     } catch (error) {
       console.error(error);
     }
@@ -320,8 +357,8 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
     try {
       const formData: FormData = outletCreateEdit_onMappingFormData();
 
-      if (route.params.id) {
-        await outletCreateEdit_fetchUpdateOutlet(route.params.id as string, formData);
+      if (outletCreateEdit_isEditable.value) {
+        await outletCreateEdit_fetchUpdateOutlet(outletCreateEdit_routeParamsId.value!, formData);
       } else {
         await outletCreateEdit_fetchCreateNewOutlet(formData);
       }
@@ -349,7 +386,9 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
   return {
     outletCreateEdit_fetchDetailOutlet,
     outletCreateEdit_formData,
+    outletCreateEdit_formDataOfVerifyPin,
     outletCreateEdit_formValidations,
+    outletCreateEdit_isEditable,
     outletCreateEdit_isLoading: outlet_isLoading,
     outletCreateEdit_onCancel,
     outletCreateEdit_onCloseDialogVerifyPIN,
@@ -359,5 +398,6 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
     outletCreateEdit_onSubmit,
     outletCreateEdit_onSubmitDialogVerifyPIN,
     outletCreateEdit_onUploadPhoto,
+    outletCreateEdit_routeParamsId,
   };
 };

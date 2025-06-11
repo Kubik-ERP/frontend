@@ -31,7 +31,9 @@ export interface IOutletCreateEditFormData {
 export interface IOutletCreateEditProvided {
   outletCreateEdit_fetchDetailOutlet: (outletId: string) => Promise<unknown>;
   outletCreateEdit_formData: IOutletCreateEditFormData;
+  outletCreateEdit_formDataOfVerifyPin: IAuthenticationVerifyPinFormData;
   outletCreateEdit_formValidations: globalThis.Ref<Validation>;
+  outletCreateEdit_isEditable: globalThis.Ref<boolean>;
   outletCreateEdit_isLoading: globalThis.Ref<boolean>;
   outletCreateEdit_onCancel: () => void;
   outletCreateEdit_onCloseDialogVerifyPIN: () => void;
@@ -41,4 +43,5 @@ export interface IOutletCreateEditProvided {
   outletCreateEdit_onSubmit: () => Promise<unknown>;
   outletCreateEdit_onSubmitDialogVerifyPIN: () => Promise<unknown>;
   outletCreateEdit_onUploadPhoto: (event: FileUploadSelectEvent) => void;
+  outletCreateEdit_routeParamsId: globalThis.Ref<string | undefined>;
 }

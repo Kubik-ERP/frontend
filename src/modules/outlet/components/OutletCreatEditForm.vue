@@ -10,8 +10,13 @@ import { IOutletCreateEditProvided } from '../interfaces';
 /**
  * @description Inject all the data and methods what we need
  */
-const { outletCreateEdit_isLoading, outletCreateEdit_onCancel, outletCreateEdit_onSubmit } =
-  inject<IOutletCreateEditProvided>('outletCreateEdit')!;
+const {
+  outletCreateEdit_isEditable,
+  outletCreateEdit_isLoading,
+  outletCreateEdit_onCancel,
+  outletCreateEdit_onShowDialogDeleteOutlet,
+  outletCreateEdit_onSubmit,
+} = inject<IOutletCreateEditProvided>('outletCreateEdit')!;
 </script>
 
 <template>
@@ -40,8 +45,10 @@ const { outletCreateEdit_isLoading, outletCreateEdit_onCancel, outletCreateEdit_
 
       <section id="right-contents" class="flex items-center gap-4">
         <PrimeVueButton
+          v-if="outletCreateEdit_isEditable"
           class="w-36 border-none bg-transparent basic-smooth-animation hover:bg-grayscale-10"
           severity="secondary"
+          @click="outletCreateEdit_onShowDialogDeleteOutlet()"
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">

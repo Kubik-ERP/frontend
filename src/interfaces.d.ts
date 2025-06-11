@@ -89,6 +89,17 @@ declare global {
     width?: string;
   }
 
+  interface IPropsDialogPinVerification {
+    isInvalid?: boolean;
+    isOpen: boolean;
+    onClickPrimaryButton?: () => void;
+    onClickSecondaryButton?: () => void;
+    pinConfirmation?: string;
+    primaryButtonClass?: string;
+    primaryButtonLabel?: string;
+    secondaryButtonClass?: string;
+    secondaryButtonLabel?: string;
+  }
   interface IPropsFormGroup {
     isNameAsLabel: boolean;
     isNameAsPlaceholder: boolean;
