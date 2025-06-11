@@ -44,7 +44,7 @@ const {
         <section id="active-payment-method" class="flex items-center justify-between w-full">
           <label for="activate" class="font-normal text-base text-black"> Activate this payment method </label>
 
-          <PrimeVueToggleSwitch v-model:model-value="settingPaymentMethod_formData.isAvailable" id="activate" />
+          <PrimeVueToggleSwitch id="activate" v-model:model-value="settingPaymentMethod_formData.isAvailable" />
         </section>
       </form>
     </template>
