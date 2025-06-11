@@ -1,7 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import { FilterMatchMode } from '@primevue/core/api';
 
 import { useCategoryService } from '../../services/Category/CategoryService';
+import { ICategory } from '../../interfaces/Category/CategoryInterface';
 //import { ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
 
 const {
@@ -17,18 +18,18 @@ const {
 const isAddOpen = ref(false);
 const isEditOpen = ref(false);
 const isDeleteOpen = ref(false);
-const selectedCategories = ref([]);
-const categories = ref([]);
-const selected = ref(null);
+const selectedCategories = ref<ICategory[]>([]);
+const categories = ref<ICategory[]>([]);
+const selected = ref<ICategory>();
 const loading = ref(false);
 
 const route = useRoute();
 const router = useRouter();
 
-const page = ref(1);
-const limit = ref(10);
-const search = ref('');
-const lastPage = ref(0);
+const page = ref<number>(1);
+const limit = ref<number>(10);
+const search = ref<string>('');
+const lastPage = ref<number>(0);
 
 // const category = ref('');
 // const description = ref('');
@@ -38,19 +39,19 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-const fileInput = ref(null);
+const fileInput = ref();
 const triggerFileInput = () => {
-  fileInput.value?.click();
+  (fileInput.value as HTMLInputElement)?.click();
 };
 
-const handleImageUpload = event => {
-  const file = event.target.files?.[0];
+const handleImageUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
   if (file) {
     category_formData.imageFile = file; // ✅ Save the file
 
     const reader = new FileReader();
     reader.onload = () => {
-      category_formData.imagePreview = reader.result;
+      category_formData.imagePreview = reader.result as string;
     };
     reader.readAsDataURL(file);
   }
@@ -71,23 +72,21 @@ const loadCategories = async () => {
   }
 };
 
-const loadCategoryByID = async (id) => {
-
+const loadCategoryByID = async (id: string) => {
   try {
     const response = await getCategoryByID(id);
     category_formData.name = response.category;
-    category_formData.description = response.description;
+    category_formData.description = response.description ?? '-';
     category_formData.imagePreview = response.pictureUrl;
   } catch (error) {
     console.error('Failed to load category by ID:', error);
   }
-
 };
 function resetForm() {
   category_formData.name = '';
   category_formData.description = '';
-  category_formData.imageFile = null;
-  category_formData.imagePreview = null;
+  category_formData.imageFile = undefined;
+  category_formData.imagePreview = undefined;
   category_formValidations.value.$reset();
 }
 const handleAddCategory = async () => {
@@ -120,15 +119,15 @@ const openAddDialog = () => {
   category_formData.description = '';
 };
 
-const displayPopover = (event, category) => {
+const displayPopover = (event: Event, category: ICategory) => {
   selected.value = category;
   op.value?.show(event);
 };
 
-const displayEdit = () => {
+const displayEdit = (id: string) => {
   if (selected.value) {
     // console.log("🚀 ~ displayEdit ~ selected.value:", selected.value.id)
-    loadCategoryByID(selected.value.id);
+    loadCategoryByID(id);
     isEditOpen.value = true;
     op.value?.hide();
   }
@@ -154,13 +153,13 @@ const handleEditCategory = async () => {
   }
 };
 
-const handleDeleteCategory = async () => {
+const handleDeleteCategory = async (id: string) => {
   try {
     if (selected.value) {
       const deleteCat = await deleteCategory(selected.value.id);
       if (deleteCat === 200) {
         // alert('Category deleted successfully.');
-        categories.value = categories.value.filter(cat => cat.id !== selected.value?.id);
+        categories.value = categories.value.filter(cat => cat.id !== id);
       } else {
         alert('Something went wrong while deleting the category.');
       }
@@ -185,7 +184,7 @@ const handleSearch = () => {
   loadCategories();
 };
 
-function goToPage(p) {
+function goToPage(p: number) {
   router.push({ query: { page: p.toString() } });
   page.value = p;
   loadCategories();
@@ -317,7 +316,7 @@ onMounted(() => {
           label="Edit"
           icon="pi pi-pen-to-square"
           class="text-black"
-          @click="displayEdit"
+          @click="selected && displayEdit(selected.id)"
         />
         <PrimeVueButton
           variant="text"
@@ -461,7 +460,12 @@ onMounted(() => {
           <h1 class="text-2xl font-semibold mb-2">Are you sure you want to delete this category?</h1>
           <p class="mb-6">This will affect products that use this category.</p>
           <div class="flex justify-center gap-4">
-            <PrimeVueButton label="Delete" severity="danger" class="w-40" @click="handleDeleteCategory()" />
+            <PrimeVueButton
+              label="Delete"
+              severity="danger"
+              class="w-40"
+              @click="selected && handleDeleteCategory(selected.id)"
+            />
             <PrimeVueButton label="Cancel" class="w-40 bg-primary border-primary" @click="isDeleteOpen = false" />
           </div>
         </div>
