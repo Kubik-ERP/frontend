@@ -2,9 +2,11 @@
 // Component
 import InvoiceCashierInvoiceLoading from './InvoiceCashierInvoiceLoading.vue';
 
+// Composables
+import { useFormatDate } from '@/app/composables';
+
 // Interface
 import { IInvoiceProvided } from '../../interfaces';
-import { useFormatDate } from '@/app/composables';
 import { CASHIER_ORDER_TYPE } from '@/modules/cashier/constants';
 
 /**
@@ -104,14 +106,27 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
             {{ invoice_invoiceData.data.invoiceDetails.reduce((sum, item) => sum + item.qty, 0) }}
           </td>
           <td colspan="2" class="font-normal text-black text-sm text-right py-2">
-            {{ useCurrencyFormat(invoice_invoiceData.data.subtotal) }}
+            {{
+              useCurrencyFormat(
+                invoice_invoiceData.data.paymentStatus === 'unpaid'
+                  ? invoice_invoiceData.calculate?.total || 0
+                  : invoice_invoiceData.data.subtotal,
+              )
+            }}
           </td>
         </tr>
 
         <tr>
           <td class="font-normal text-black text-sm py-2">Promo</td>
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
-            - {{ useCurrencyFormat(invoice_invoiceData.data.discountAmount) }}
+            -
+            {{
+              useCurrencyFormat(
+                invoice_invoiceData.data.paymentStatus === 'unpaid'
+                  ? invoice_invoiceData.calculate?.discountTotal || 0
+                  : invoice_invoiceData.data.discountAmount,
+              )
+            }}
           </td>
         </tr>
 
@@ -119,28 +134,69 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
           <td class="font-normal text-black text-sm py-2">Debit</td>
           <!-- TODO: Add field debit -->
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
-            {{ useCurrencyFormat(invoice_invoiceData.data.subtotal) }}
+            {{ useCurrencyFormat(0) }}
           </td>
         </tr>
 
         <tr class="border-b border-dashed border-black">
           <td class="font-normal text-black text-sm py-2">Kembali</td>
           <!-- TODO: Add field change -->
-          <td colspan="3" class="font-normal text-black text-sm text-right py-2">0</td>
+          <td colspan="3" class="font-normal text-black text-sm text-right py-2">{{ useCurrencyFormat(0) }}</td>
         </tr>
 
-        <tr class="border-b border-solid border-black">
-          <td class="font-normal text-black text-sm py-2">PPN</td>
-          <!-- TODO: add ppn / tax -->
+        <tr>
+          <td class="flex items-center font-normal text-black text-sm py-2">
+            Tax
+
+            <div
+              v-if="invoice_invoiceData.data.paymentStatus === 'unpaid'"
+              class="ml-1 text-xs italic text-text-disabled"
+            >
+              ({{ invoice_invoiceData.calculate?.taxInclude ? 'included' : 'excluded' }})
+            </div>
+          </td>
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
-            {{ useCurrencyFormat(invoice_invoiceData.data.subtotal * (10 / 100)) }}
+            {{
+              useCurrencyFormat(
+                invoice_invoiceData.data.paymentStatus === 'unpaid'
+                  ? invoice_invoiceData.calculate?.tax || 0
+                  : invoice_invoiceData.data.taxAmount || 0,
+              )
+            }}
+          </td>
+        </tr>
+        <tr class="border-b border-solid border-black">
+          <td class="flex items-center font-normal text-black text-sm py-2">
+            Service
+
+            <div
+              v-if="invoice_invoiceData.data.paymentStatus === 'unpaid'"
+              class="ml-1 text-xs italic text-text-disabled"
+            >
+              ({{ invoice_invoiceData.calculate?.serviceChargeInclude ? 'included' : 'excluded' }})
+            </div>
+          </td>
+          <td colspan="3" class="font-normal text-black text-sm text-right py-2">
+            {{
+              useCurrencyFormat(
+                invoice_invoiceData.data.paymentStatus === 'unpaid'
+                  ? invoice_invoiceData.calculate?.serviceCharge || 0
+                  : invoice_invoiceData.data.serviceChargeAmount || 0,
+              )
+            }}
           </td>
         </tr>
 
         <tr>
           <td colspan="2" class="font-semibold text-black text-sm text-center py-2">Total</td>
           <td colspan="2" class="font-semibold text-black text-sm text-right py-2">
-            {{ useCurrencyFormat(invoice_invoiceData.data.subtotal - invoice_invoiceData.data.discountAmount) }}
+            {{
+              useCurrencyFormat(
+                invoice_invoiceData.data.paymentStatus === 'unpaid'
+                  ? invoice_invoiceData.calculate?.grandTotal || 0
+                  : invoice_invoiceData.data.grandTotal || 0,
+              )
+            }}
           </td>
         </tr>
       </tfoot>

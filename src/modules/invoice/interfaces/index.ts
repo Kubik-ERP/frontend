@@ -1,11 +1,14 @@
 import { ICashierOrderSummaryPaymentMethod } from '@/modules/cashier/interfaces/cashier-order-summary';
-import { ICashierResponseMidtransQrisPayment } from '@/modules/cashier/interfaces/cashier-response';
+import {
+  ICashierResponseCalulateEstimationItem,
+  IMidtransQrisPaymentData,
+} from '@/modules/cashier/interfaces/cashier-response';
 
 export interface IInvoiceModalPayData {
   show: boolean;
   isLoading: boolean;
   showModalPayment: boolean;
-  dataPayment: Partial<ICashierResponseMidtransQrisPayment['data']>;
+  dataPayment: Partial<IMidtransQrisPaymentData>;
   listPayment: ICashierOrderSummaryPaymentMethod[];
   data: {
     selectedPaymentMethod: string;
@@ -17,66 +20,87 @@ export interface IInvoiceModalPayData {
 
 export interface IInvoiceInvoiceData {
   isLoading: boolean;
-  data: IInvoiceResponseInvoice['data'] | null;
+  data: IInvoiceData | null;
+  calculate: ICashierResponseCalulateEstimationItem | null;
 }
 
 export interface IInvoiceOtherOptionsData {
   isLoadingSendEmail: boolean;
 }
 
+export interface IInvoiceCustomer {
+  id: string;
+  name: string;
+  code: string;
+  number: string | null;
+  dob: string | null;
+  email: string | null;
+  username: string;
+  address: string | null;
+  gender: string; // ✅ baru
+}
+export interface IInvoiceProduct {
+  id: string;
+  name: string;
+  price: number;
+  discountPrice: number;
+  pictureUrl: string;
+  isPercent: boolean; // ✅ baru
+}
+
+export interface IInvoiceVariant {
+  id: string;
+  name: string;
+  price: number;
+}
+
+export interface IInvoiceDetail {
+  id: string;
+  productId: string;
+  productPrice: number;
+  variantId: string;
+  notes: string;
+  qty: number;
+  invoiceId: string;
+  variantPrice: number | null;
+  products: IInvoiceProduct;
+  variant: IInvoiceVariant | null;
+}
+
+export interface IInvoicePaymentMethod {
+  id: string;
+  name: string;
+  iconName: string;
+  sortNo: number;
+  isAvailable: boolean;
+}
+
+export interface IInvoiceData {
+  id: string;
+  paymentMethodsId: string | null;
+  customerId: string;
+  discountAmount: number;
+  tableCode: string;
+  paymentStatus: 'unpaid' | 'paid' | 'refund';
+  createdAt: string;
+  updateAt: string;
+  deleteAt: string | null;
+  subtotal: number;
+  orderType: 'dine_in' | 'take_away' | 'self_order';
+  paidAt: string | null; // ✅ baru
+  taxId: string | null; // ✅ baru
+  serviceChargeId: string | null; // ✅ baru
+  taxAmount: number | null; // ✅ baru
+  serviceChargeAmount: number | null; // ✅ baru
+  grandTotal: number | null; // ✅ baru
+  customer: IInvoiceCustomer;
+  invoiceDetails: IInvoiceDetail[];
+  invoiceCharges: []; // ✅ baru — sementara pakai `any[]` karena struktur belum diketahui
+  paymentMethods: IInvoicePaymentMethod | null;
+}
+
 export interface IInvoiceResponseInvoice {
-  data: {
-    id: string;
-    paymentMethodsId: string | null;
-    customerId: string;
-    discountAmount: number;
-    tableCode: string;
-    paymentStatus: 'unpaid' | 'paid' | 'refund';
-    createdAt: string;
-    updateAt: string;
-    deleteAt: string | null;
-    subtotal: number;
-    orderType: 'dine_in' | 'take_away' | 'self_order';
-    customer: {
-      id: string;
-      name: string;
-      code: string;
-      number: string | null;
-      dob: string | null;
-      email: string | null;
-      username: string;
-      address: string | null;
-    };
-    invoiceDetails: {
-      id: string;
-      productId: string;
-      productPrice: number;
-      variantId: string;
-      notes: string;
-      qty: number;
-      invoiceId: string;
-      variantPrice: number | null;
-      products: {
-        id: string;
-        name: string;
-        price: number;
-        discountPrice: number;
-        pictureUrl: string;
-      };
-      variant: {
-        id: string;
-        name: string;
-        price: number;
-      } | null;
-    }[];
-    paymentMethods: {
-      id: string;
-      name: string;
-      iconName: string;
-      sortNo: number;
-      isAvailable: boolean;
-    } | null;
-  };
+  data: IInvoiceData;
 }
 
 export interface IInvoiceProvided {

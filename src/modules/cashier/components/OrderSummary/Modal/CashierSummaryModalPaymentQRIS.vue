@@ -1,9 +1,14 @@
 <script setup lang="ts">
+import { IMidtransQrisPaymentData } from '@/modules/cashier/interfaces/cashier-response';
+
+// Router
+import { useRouter } from 'vue-router';
+
 // Props
 const props = defineProps<{
   modalPlaceOrderDetail: {
     showModalPayment: boolean;
-    data: Partial<ICashierResponseMidtransQrisPayment['data']>;
+    data: Partial<IMidtransQrisPaymentData>;
   };
 }>();
 
@@ -15,9 +20,6 @@ const emit = defineEmits<{
 // env
 const isDevelopmentMode = import.meta.env.VITE_APP_MODE === 'development';
 
-import { ICashierResponseMidtransQrisPayment } from '@/modules/cashier/interfaces/cashier-response';
-// Router
-import { useRouter } from 'vue-router';
 const router = useRouter();
 </script>
 

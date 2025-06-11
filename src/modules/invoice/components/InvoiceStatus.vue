@@ -73,9 +73,12 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
 
         <tr>
           <td class="font-normal text-text-disabled text-sm pe-2 py-1">Paid On</td>
-          <!-- TODO: Add field paid on -->
           <td class="font-normal text-grayscale-70 text-sm">
-            {{ invoice_invoiceData.data.paymentStatus === 'paid' ? '01/08/2024 18:33' : '-' }}
+            {{
+              invoice_invoiceData.data.paymentStatus === 'paid'
+                ? useFormatDate(invoice_invoiceData.data.paidAt!)
+                : '-'
+            }}
           </td>
         </tr>
 

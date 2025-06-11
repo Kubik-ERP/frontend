@@ -27,9 +27,10 @@ import {
   ICashierResponseProcessCheckout,
 } from '../interfaces/cashier-response';
 
+import { ICashierStateStore } from '../interfaces';
+
 // Plugins
 import httpClient from '@/plugins/axios';
-import { ICashierStateStore } from '../interfaces';
 
 export const useCashierStore = defineStore('cashier', {
   state: (): ICashierStateStore => ({

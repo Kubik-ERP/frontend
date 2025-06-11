@@ -335,7 +335,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   });
 
   const cashierOrderSummary_handleModalAddCustomer = () => {
-    console.log('Toggling modalAddCustomer visibility');
     cashierOrderSummary_modalAddCustomer.value.show = !cashierOrderSummary_modalAddCustomer.value.show;
   };
 
@@ -421,6 +420,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     const isDisabled =
       cashierProduct_customerState.value.selectedCustomer?.id === '' ||
       cashierProduct_customerState.value.selectedCustomer?.id === null ||
+      cashierProduct_customerState.value.selectedCustomer?.id === undefined ||
       cashierOrderSummary_modalOrderType.value.selectedOrderType === '' ||
       cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod === '' ||
       cashierOrderSummary_modalSelectTable.value.selectedTable.length === 0 ||

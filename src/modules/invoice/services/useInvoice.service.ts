@@ -200,7 +200,35 @@ export const useInvoiceService = (): IInvoiceProvided => {
   const invoice_invoiceData = ref<IInvoiceInvoiceData>({
     isLoading: false,
     data: null,
+    calculate: null,
   });
+
+  const invoice_handleCalculate = async () => {
+    invoice_invoiceData.value.isLoading = true;
+
+    const mappedProducts = invoice_invoiceData.value.data?.invoiceDetails.map(item => ({
+      ...item,
+      quantity: item.qty,
+      variantId: item.variantId || '',
+    }));
+
+    try {
+      const response = await storeCashier.cashierProduct_calculateEstimation({
+        products: mappedProducts || [],
+        orderType: invoice_invoiceData.value.data?.orderType,
+      });
+
+      invoice_invoiceData.value.calculate = response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      invoice_invoiceData.value.isLoading = false;
+    }
+  };
 
   /**
    * @description Fetch invoice data by ID
@@ -215,6 +243,10 @@ export const useInvoiceService = (): IInvoiceProvided => {
       const response = await store.invoice_fetchInvoiceById(invoiceId);
 
       invoice_invoiceData.value.data = response.data;
+
+      if (response.data.paymentStatus === 'unpaid') {
+        invoice_handleCalculate();
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);

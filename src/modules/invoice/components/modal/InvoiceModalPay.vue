@@ -5,7 +5,7 @@ import { IInvoiceProvided } from '../../interfaces';
 /**
  * @description Inject all the data and methods what we need
  */
-const { invoice_modalPay, invoice_handlePayInvoice } = inject<IInvoiceProvided>('invoice')!;
+const { invoice_invoiceData, invoice_modalPay, invoice_handlePayInvoice } = inject<IInvoiceProvided>('invoice')!;
 </script>
 <template>
   <PrimeVueDialog
@@ -42,7 +42,9 @@ const { invoice_modalPay, invoice_handlePayInvoice } = inject<IInvoiceProvided>(
 
         <div class="flex w-full justify-between items-center">
           <span class="text-text-disabled">Total Price</span>
-          <span class="font-semibold">Rp 119.800</span>
+          <span class="font-semibold">{{
+            useCurrencyFormat(invoice_invoiceData.calculate?.grandTotal || 0)
+          }}</span>
         </div>
 
         <div class="flex justify-end">
