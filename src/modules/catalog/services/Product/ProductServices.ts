@@ -11,6 +11,8 @@ import {
 import useVuelidate from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
 
+import eventBus from '@/plugins/mitt';
+
 const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/products`;
 
 function convertProductToFormData(payload: CreateProductPayload): FormData {
@@ -109,7 +111,7 @@ export const useProductService = () => {
   const getProductById = async (id: string): Promise<IProduct> => {
     const response = await axios.get(`${API_URL}/${id}`);
 
-    // console.log('🚀 ~ getProductById ~ response:', response);
+    console.log('🚀 ~ getProductById ~ response:', response);
     const product = response.data.data;
     // console.log('🚀 ~ getProductById ~ product:', product);
 
@@ -127,41 +129,89 @@ export const useProductService = () => {
   };
 
   const createProduct = async (payload: CreateProductPayload): Promise<IProduct> => {
-    const formData = convertProductToFormData(payload);
-    // console.log('🚀 ~ createProduct ~ payload:', payload);
-    // console.log('🚀 ~ createProduct ~ formData:', formData);
+    try {
+      const formData = convertProductToFormData(payload);
+      // console.log('🚀 ~ createProduct ~ payload:', payload);
+      console.log('🚀 ~ createProduct ~ formData:', formData);
 
-    const response = await axios.post(API_URL, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+      const response = await axios.post(API_URL, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-    // console.log('🚀 ~ createProduct ~ response.data.data:', response);
-    return response.data.data;
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Product has been created successfully',
+        position: EToastPosition.BOTTOM_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      // console.log('🚀 ~ createProduct ~ response.data.data:', response);
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
   };
 
   const updateProduct = async (id: string, payload: CreateProductPayload): Promise<IProduct> => {
-    const formData = convertProductToFormData(payload);
+    try {
+      const formData = convertProductToFormData(payload);
 
-    
-    const response = await axios.patch(`${API_URL}/${id}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    const data: IProduct = response.data.data;
-    // console.log('🚀 ~ updateProduct ~ response:', data);
+      const response = await axios.patch(`${API_URL}/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      const data: IProduct = response.data.data;
+      // console.log('🚀 ~ updateProduct ~ response:', data);
 
-    return {
-      id: data.id,
-      name: data.name,
-      price: data.price,
-    };
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Product has been updated successfully',
+        position: EToastPosition.BOTTOM_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      return {
+        id: data.id,
+        name: data.name,
+        price: data.price,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
   };
 
   const deleteProduct = async (id: string): Promise<void> => {
-    await axios.delete(`${API_URL}/${id}`);
+    try {
+      await axios.delete(`${API_URL}/${id}`);
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Product has been deleted successfully',
+        position: EToastPosition.BOTTOM_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
   };
 
   return {
