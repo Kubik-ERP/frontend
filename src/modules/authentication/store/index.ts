@@ -114,13 +114,13 @@ export const useAuthenticationStore = defineStore('authentication', {
       this.authentication_isLoading = true;
 
       try {
-        const response = await httpClient.get<IAuthenticationProfile>(AUTHENTICATION_ENDPOINT_PROFILE, {
+        const response = await httpClient.get<{ data: IAuthenticationProfile }>(AUTHENTICATION_ENDPOINT_PROFILE, {
           ...requestConfigurations,
         });
 
-        this.authentication_userData = response.data;
+        this.authentication_userData = response.data.data;
 
-        return Promise.resolve(response.data);
+        return Promise.resolve(response.data.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
           return Promise.reject(error);
@@ -324,7 +324,7 @@ export const useAuthenticationStore = defineStore('authentication', {
   },
   persist: {
     key: 'authentication',
-    pick: ['authentication_token'],
-    storage: sessionStorage,
+    pick: ['authentication_token', 'authentication_userData'],
+    storage: localStorage,
   },
 });

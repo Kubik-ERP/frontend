@@ -153,10 +153,18 @@ export const useDailySalesService = (): IDailySalesProvided => {
     { deep: true },
   );
 
+  const dailySales_handleOnPageChange = (page: number): void => {
+    console.log('Page changed to:', page);
+    dailySales_data.value.meta.page = page;
+
+    dailySales_debouncedFetch();
+  };
+
   return {
     dailySales_getClassOfOrderStatus,
     dailySales_getClassOfOrderType,
     dailySales_getClassOfPaymentStatus,
+    dailySales_handleOnPageChange,
     dailySales_data,
     dailySales_listColumns: LIST_COLUMNS_OF_DAILY_SALES,
     dailySales_listTypesOfOrderStatus: LIST_TYPES_OF_ORDER_STATUS,

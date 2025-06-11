@@ -13,10 +13,12 @@ import {
 import { useInvoiceStore } from '../store';
 import { useCashierStore } from '@/modules/cashier/store';
 import { CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT, CASHIER_PROVIDER } from '@/modules/cashier/constants';
+import { useAuthenticationStore } from '@/modules/authentication/store';
 
 export const useInvoiceService = (): IInvoiceProvided => {
   const store = useInvoiceStore();
   const storeCashier = useCashierStore();
+  const storeAuthentication = useAuthenticationStore();
 
   const route = useRoute();
 
@@ -201,6 +203,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
     isLoading: false,
     data: null,
     calculate: null,
+    currentUser: storeAuthentication.authentication_userData,
   });
 
   const invoice_handleCalculate = async () => {

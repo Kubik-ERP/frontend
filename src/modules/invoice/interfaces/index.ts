@@ -1,3 +1,4 @@
+import { IAuthenticationProfile } from '@/modules/authentication/interfaces';
 import { ICashierOrderSummaryPaymentMethod } from '@/modules/cashier/interfaces/cashier-order-summary';
 import {
   ICashierResponseCalulateEstimationItem,
@@ -22,6 +23,7 @@ export interface IInvoiceInvoiceData {
   isLoading: boolean;
   data: IInvoiceData | null;
   calculate: ICashierResponseCalulateEstimationItem | null;
+  currentUser: IAuthenticationProfile | null;
 }
 
 export interface IInvoiceOtherOptionsData {
@@ -87,16 +89,20 @@ export interface IInvoiceData {
   deleteAt: string | null;
   subtotal: number;
   orderType: 'dine_in' | 'take_away' | 'self_order';
-  paidAt: string | null; // ✅ baru
-  taxId: string | null; // ✅ baru
-  serviceChargeId: string | null; // ✅ baru
-  taxAmount: number | null; // ✅ baru
-  serviceChargeAmount: number | null; // ✅ baru
-  grandTotal: number | null; // ✅ baru
+  paidAt: string | null;
+  taxId: string | null;
+  serviceChargeId: string | null;
+  taxAmount: number | null;
+  serviceChargeAmount: number | null;
+  grandTotal: number | null;
   customer: IInvoiceCustomer;
   invoiceDetails: IInvoiceDetail[];
-  invoiceCharges: []; // ✅ baru — sementara pakai `any[]` karena struktur belum diketahui
+  invoiceCharges: [];
   paymentMethods: IInvoicePaymentMethod | null;
+  users: {
+    fullName: string;
+    id: number;
+  } | null;
 }
 
 export interface IInvoiceResponseInvoice {

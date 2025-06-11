@@ -512,10 +512,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       const params = {
         products: cashierOrderSummary_summary.value.product,
         orderType: cashierOrderSummary_summary.value.orderType,
-        invoiceDetail: {
-          receivedBy: cashierOrderSummary_modalInvoiceDetail.value.form.received_by,
-          notes: cashierOrderSummary_modalInvoiceDetail.value.form.notes,
-        },
         provider: cashierOrderSummary_summary.value.provider,
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
         vouchers: cashierOrderSummary_summary.value.selectedVoucher,
@@ -576,10 +572,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       const params = {
         products: cashierOrderSummary_summary.value.product,
         orderType: cashierOrderSummary_summary.value.orderType,
-        invoiceDetail: {
-          receivedBy: cashierOrderSummary_modalInvoiceDetail.value.form.received_by,
-          notes: cashierOrderSummary_modalInvoiceDetail.value.form.notes,
-        },
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
         vouchers: cashierOrderSummary_summary.value.selectedVoucher,
         customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',

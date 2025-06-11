@@ -17,6 +17,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/CashierUI.vue'),
         meta: {
           requiresAuthorization: true,
+          backArrow: true,
+          backArrowPath: '/dashboard',
           layout: LAYOUT_OPTIONS.NAVBAR,
           title: 'Cashier',
         },

@@ -41,7 +41,13 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
     <section id="cashier-information" class="flex items-center justify-between w-full">
       <p id="label-cashier" class="font-normal text-black text-sm">Cashier</p>
       <!-- TODO: add cashier name -->
-      <p id="cashier-name" class="font-normal text-black text-sm">Samantha</p>
+      <p id="cashier-name" class="font-normal text-black text-sm">
+        {{
+          invoice_invoiceData.data.paymentStatus === 'unpaid'
+            ? invoice_invoiceData.currentUser?.fullname || '-'
+            : invoice_invoiceData.data.users?.fullName
+        }}
+      </p>
     </section>
 
     <section id="customer-information" class="flex items-center justify-between w-full">
@@ -120,13 +126,7 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
           <td class="font-normal text-black text-sm py-2">Promo</td>
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
             -
-            {{
-              useCurrencyFormat(
-                invoice_invoiceData.data.paymentStatus === 'unpaid'
-                  ? invoice_invoiceData.calculate?.discountTotal || 0
-                  : invoice_invoiceData.data.discountAmount,
-              )
-            }}
+            {{ useCurrencyFormat(invoice_invoiceData.data.paymentStatus === 'unpaid' ? 0 : 0) }}
           </td>
         </tr>
 

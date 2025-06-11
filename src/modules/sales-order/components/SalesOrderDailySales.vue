@@ -9,11 +9,11 @@ const {
   dailySales_getClassOfOrderStatus,
   dailySales_getClassOfOrderType,
   dailySales_getClassOfPaymentStatus,
+  dailySales_handleOnPageChange,
   dailySales_listColumns,
   dailySales_listTypesOfOrderStatus,
   dailySales_listTypesOfOrderType,
   dailySales_listTypesOfPaymentStatus,
-
   dailySales_data,
 } = useDailySalesService();
 </script>
@@ -26,13 +26,16 @@ const {
       :data="dailySales_data.items"
       header-title="Daily Sales"
       :rows-per-page="dailySales_data.meta.pageSize"
-      paginator
-      is-using-pagination
+      :total-records="dailySales_data.meta.total"
+      :first="(dailySales_data.meta.page - 1) * dailySales_data.meta.pageSize"
+      :is-loading="dailySales_data.isLoading"
+      is-using-server-side-pagination
       is-using-custom-body
       is-using-custom-filter
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-header
+      @update:currentPage="dailySales_handleOnPageChange"
     >
       <template #header-prefix>
         <div class="flex items-center gap-2">
@@ -49,11 +52,15 @@ const {
         <PrimeVueIconField>
           <PrimeVueInputIcon>
             <template #default>
-              <AppBaseSvg v-model="dailySales_data.filter.id" name="search" />
+              <AppBaseSvg name="search" />
             </template>
           </PrimeVueInputIcon>
 
-          <PrimeVueInputText cll placeholder="Search Invoice ID" class="text-sm w-full min-w-80" />
+          <PrimeVueInputText
+            v-model="dailySales_data.filter.id"
+            placeholder="Search Invoice ID"
+            class="text-sm w-full min-w-80"
+          />
         </PrimeVueIconField>
       </template>
 

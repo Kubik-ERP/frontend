@@ -91,8 +91,13 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
 
         <tr>
           <td class="font-normal text-text-disabled text-sm pe-2 py-1">By</td>
-          <!-- TODO: Add cashier -->
-          <td class="font-normal text-grayscale-70 text-sm">Samantha</td>
+          <td class="font-normal text-grayscale-70 text-sm">
+            {{
+              invoice_invoiceData.data.paymentStatus === 'unpaid'
+                ? invoice_invoiceData.currentUser?.fullname || '-'
+                : invoice_invoiceData.data.users?.fullName
+            }}
+          </td>
         </tr>
       </tbody>
 
