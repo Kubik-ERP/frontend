@@ -3,6 +3,22 @@ import CustomerTags from '@/modules/customer/components/addCustomer/tags.vue';
 import { useCustomerService } from '../../services/CustomersService';
 const { customer_FormData, customer_formValidations, createCustomer } = useCustomerService();
 
+/**
+ * @description Define props with default values and interfaces
+ */
+const props = defineProps({
+  isModal: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const emit = defineEmits(['close']);
+
+const handleOnClose = () => {
+  emit('close');
+}
+
 function clearForm() {
   customer_formValidations.value.$reset();
   customer_FormData.name = '';
@@ -24,8 +40,12 @@ const handleCreateCustomer = async () => {
   // console.log(customer_FormData);
 
   try {
-    createCustomer(customer_FormData);
+    await createCustomer(customer_FormData);
     clearForm();
+
+    if(props.isModal) {
+      handleOnClose()
+    }
 
     // router.push({
     //   name: 'customer-list',
@@ -201,7 +221,7 @@ const handleCreateCustomer = async () => {
 
     <!-- canccel and add button -->
     <div class="flex gap-4 grid-cols-2">
-      <router-link to="/customer">
+      <router-link v-if="!isModal" to="/customer" >
         <PrimeVueButton
           type="button"
           label="Cancel"
@@ -210,6 +230,16 @@ const handleCreateCustomer = async () => {
           class="w-48 text-primary border-primary"
         ></PrimeVueButton>
       </router-link>
+      <PrimeVueButton
+          v-else
+          type="button"
+          label="Cancel"
+          severity="info"
+          variant="outlined"
+          class="w-48 text-primary border-primary"
+          @click="handleOnClose()"
+        ></PrimeVueButton>
+
       <PrimeVueButton type="submit" label="Add Customer" class="w-48 bg-primary border-primary"></PrimeVueButton>
     </div>
   </form>

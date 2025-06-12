@@ -75,7 +75,11 @@ const moveDragging = (e: PointerEvent) => {
       >
         <template #content>
           <section id="cashier-card-content" class="flex flex-col gap-[3px]">
-            <img :src="category.image" class="h-10 w-10 rounded-full object-cover pointer-events-none" />
+            <AppBaseImage
+              :src="category.image"
+              :alt="category.category"
+              class="h-10 w-10 rounded-full object-cover pointer-events-none"
+            />
 
             <p class="font-semibold text-sm line-clamp-2">
               {{ category.category }}

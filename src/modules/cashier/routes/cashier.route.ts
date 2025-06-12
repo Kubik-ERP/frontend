@@ -16,7 +16,9 @@ const routes: RouteRecordRaw[] = [
         name: 'cashier',
         component: () => import('../views/CashierUI.vue'),
         meta: {
-          requiresAuthorization: false,
+          requiresAuthorization: true,
+          backArrow: true,
+          backArrowPath: '/dashboard',
           layout: LAYOUT_OPTIONS.NAVBAR,
           title: 'Cashier',
         },
@@ -32,7 +34,7 @@ const routes: RouteRecordRaw[] = [
         name: 'self-order',
         component: () => import('../views/CashierUI.vue'),
         meta: {
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           layout: LAYOUT_OPTIONS.NAVBAR,
           title: 'Self Order',
         },

@@ -12,10 +12,20 @@ import CashierSummaryModalMoreOptionsMobile from './OrderSummary/Modal/CashierSu
 import CashierSummaryModalOrderType from './OrderSummary/Modal/CashierSummaryModalOrderType.vue';
 import CashierSummaryModalPaymentMethod from './OrderSummary/Modal/CashierSummaryModalPaymentMethod.vue';
 import CashierSummaryModalPaymentQRIS from './OrderSummary/Modal/CashierSummaryModalPaymentQRIS.vue';
+import CashierSummaryModalAddCustomer from './OrderSummary/Modal/CashierSummaryModalAddCustomer.vue';
 import CashierSummaryModalPlaceOrderConfirmation from './OrderSummary/Modal/CashierSummaryModalPlaceOrderConfirmation.vue';
 import CashierSummaryModalPlaceOrderDetail from './OrderSummary/Modal/CashierSummaryModalPlaceOrderDetail.vue';
 import CashierSummaryModalSelectTable from './OrderSummary/Modal/CashierSummaryModalSelectTable.vue';
 import CashierSummaryModalVoucher from './OrderSummary/Modal/CashierSummaryModalVoucher.vue';
+
+// Interface
+import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+
+/**
+ * @description Inject all the data and methods what we need
+ */
+const { cashierOrderSummary_modalPlaceOrderDetail, cashierOrderSummary_handleSimulatePayment } =
+  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 
 <template>
@@ -42,7 +52,14 @@ import CashierSummaryModalVoucher from './OrderSummary/Modal/CashierSummaryModal
       <CashierSummaryModalPaymentMethod />
       <CashierSummaryModalPlaceOrderDetail />
       <CashierSummaryModalPlaceOrderConfirmation />
-      <CashierSummaryModalPaymentQRIS />
+      <CashierSummaryModalPaymentQRIS
+        :modal-place-order-detail="{
+          showModalPayment: cashierOrderSummary_modalPlaceOrderDetail.showModalPayment,
+          data: cashierOrderSummary_modalPlaceOrderDetail.data,
+        }"
+        @simulate-payment="cashierOrderSummary_handleSimulatePayment"
+      />
+      <CashierSummaryModalAddCustomer />
     </section>
   </section>
 </template>

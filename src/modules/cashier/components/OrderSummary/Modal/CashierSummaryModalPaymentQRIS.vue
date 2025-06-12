@@ -1,26 +1,32 @@
 <script setup lang="ts">
-// Interface
-import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
-
-/**
- * @description Inject all the data and methods what we need
- */
-const { cashierOrderSummary_modalPlaceOrderDetail, cashierOrderSummary_handleSimulatePayment } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
-
-// env
-const isDevelopmentMode = import.meta.env.VITE_APP_MODE === 'development';
+import { IMidtransQrisPaymentData } from '@/modules/cashier/interfaces/cashier-response';
 
 // Router
 import { useRouter } from 'vue-router';
+
+// Props
+const props = defineProps<{
+  modalPlaceOrderDetail: {
+    showModalPayment: boolean;
+    data: Partial<IMidtransQrisPaymentData>;
+  };
+}>();
+
+// Emit
+const emit = defineEmits<{
+  (e: 'simulate-payment', orderId: string): void;
+}>();
+
+// env
+const isDevelopmentMode = import.meta.env.VITE_APP_MODE === 'development';
 
 const router = useRouter();
 </script>
 
 <template>
-  <section id="cashier-summary-modal-payment-qris" class="">
+  <section id="cashier-summary-modal-payment-qris">
     <PrimeVueDialog
-      v-model:visible="cashierOrderSummary_modalPlaceOrderDetail.showModalPayment"
+      v-model:visible="props.modalPlaceOrderDetail.showModalPayment"
       modal
       :style="{
         width: '100dvw',
@@ -31,13 +37,10 @@ const router = useRouter();
     >
       <template #container="{ closeCallback }">
         <section
-          id="cashier-summary-modal-payment-content"
+          v-if="props.modalPlaceOrderDetail.data.orderId"
           class="flex flex-col gap-6 p-6 h-full w-full max-w-3xl"
         >
-          <section
-            id="cashier-summary-modal-payment-content-body"
-            class="items-center justify-center flex flex-col gap-4 flex-grow overflow-y-auto"
-          >
+          <section class="items-center justify-center flex flex-col gap-4 flex-grow overflow-y-auto">
             <div class="flex flex-col gap-2">
               <div class="flex justify-between">
                 <div class="flex flex-col gap-2 items-center">
@@ -48,11 +51,12 @@ const router = useRouter();
                   />
                   <span class="text-2xl font-semibold">Payment</span>
 
-                  <img
-                    v-for="(item, index) in cashierOrderSummary_modalPlaceOrderDetail.data.actions"
+                  <AppBaseImage
+                    v-for="(item, index) in props.modalPlaceOrderDetail.data.actions"
                     :key="index"
                     :src="item.url"
-                    alt="qris"
+                    :alt="item.name"
+                    class="h-92 w-92 object-contain"
                   />
                 </div>
               </div>
@@ -63,13 +67,8 @@ const router = useRouter();
               class="w-full bg-primary text-white py-2.5 px-8"
               type="button"
               label="Simulate Payment"
-              @click="
-                cashierOrderSummary_handleSimulatePayment(
-                  cashierOrderSummary_modalPlaceOrderDetail?.data?.orderId ?? '',
-                )
-              "
-            >
-            </PrimeVueButton>
+              @click="emit('simulate-payment', props.modalPlaceOrderDetail.data.orderId)"
+            />
 
             <PrimeVueButton
               class="w-full bg-primary text-white py-2.5 px-8"
@@ -79,12 +78,11 @@ const router = useRouter();
                 router.push({
                   name: 'invoice',
                   params: {
-                    orderId: cashierOrderSummary_modalPlaceOrderDetail.data.orderId,
+                    invoiceId: props.modalPlaceOrderDetail.data.orderId,
                   },
                 })
               "
-            >
-            </PrimeVueButton>
+            />
           </section>
         </section>
       </template>

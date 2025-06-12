@@ -13,6 +13,7 @@ const API_URL_TAGS = `${import.meta.env.VITE_APP_BASE_API_URL}/api/tags`;
 
 import useVuelidate from '@vuelidate/core';
 
+import eventBus from '@/plugins/mitt';
 
 // import { required } from '@vuelidate/validators';
 
@@ -79,16 +80,33 @@ export const useCustomerService = () => {
   };
 
   const createCustomer = async (payload: ICustomerFormData): Promise<ICustomerCreateResponse> => {
-    const response = await axios.post(API_URL, payload);
-    // console.log('🚀 ~ createCustomer ~ response:', response);
+    try {
+      const response = await axios.post(API_URL, payload);
+      // console.log('🚀 ~ createCustomer ~ response:', response);
 
-    const data: ICustomer = response.data.data.data;
+      const data: ICustomer = response.data.data.data;
 
-    return {
-      data,
-      message: response.data.message,
-      statusCode: response.status,
-    };
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Customer has been created successfully',
+        position: EToastPosition.BOTTOM_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      return {
+        data,
+        message: response.data.message,
+        statusCode: response.status,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
   };
 
   const getCustomerByID = async (id: string): Promise<ICustomer> => {
@@ -97,23 +115,58 @@ export const useCustomerService = () => {
     // console.log("🚀 ~ getCustomerByID ~ customer:", customer)
     // console.log("🚀 ~ getCustomerByID ~ response:", response)
 
-    return customer
+    return customer;
   };
 
   const updateCustomer = async (id: string, payload: ICustomerFormData): Promise<ICustomerCreateResponse> => {
-    const response = await axios.patch(`${API_URL}/${id}`, payload);
-    const data: ICustomer = response.data.data.data;
+    try {
+      const response = await axios.patch(`${API_URL}/${id}`, payload);
+      const data: ICustomer = response.data.data.data;
 
-    return {
-      data,
-      message: response.data.message,
-      statusCode: response.status,
-    };
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Customer has been updated successfully',
+        position: EToastPosition.BOTTOM_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      return {
+        data,
+        message: response.data.message,
+        statusCode: response.status,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
   };
 
   const deleteCustomer = async (id: string): Promise<void> => {
-    const response = await axios.delete(`${API_URL}/${id}`);
-    return response.data.data;
+    try {
+      const response = await axios.delete(`${API_URL}/${id}`);
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Customer has been deleted successfully',
+        position: EToastPosition.BOTTOM_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
   };
 
   return {

@@ -9,7 +9,8 @@ import { IInvoiceProvided } from '../interfaces/index';
 /**
  * @description Inject all the data and methods what we need
  */
-const { invoice_invoiceData, invoice_handleOtherOptions } = inject<IInvoiceProvided>('invoice')!;
+const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_handleOtherOptions } =
+  inject<IInvoiceProvided>('invoice')!;
 </script>
 
 <template>
@@ -72,9 +73,12 @@ const { invoice_invoiceData, invoice_handleOtherOptions } = inject<IInvoiceProvi
 
         <tr>
           <td class="font-normal text-text-disabled text-sm pe-2 py-1">Paid On</td>
-          <!-- TODO: Add field paid on -->
           <td class="font-normal text-grayscale-70 text-sm">
-            {{ invoice_invoiceData.data.paymentStatus === 'paid' ? '01/08/2024 18:33' : '-' }}
+            {{
+              invoice_invoiceData.data.paymentStatus === 'paid'
+                ? useFormatDate(invoice_invoiceData.data.paidAt!)
+                : '-'
+            }}
           </td>
         </tr>
 
@@ -87,8 +91,13 @@ const { invoice_invoiceData, invoice_handleOtherOptions } = inject<IInvoiceProvi
 
         <tr>
           <td class="font-normal text-text-disabled text-sm pe-2 py-1">By</td>
-          <!-- TODO: Add cashier -->
-          <td class="font-normal text-grayscale-70 text-sm">Samantha</td>
+          <td class="font-normal text-grayscale-70 text-sm">
+            {{
+              invoice_invoiceData.data.paymentStatus === 'unpaid'
+                ? invoice_invoiceData.currentUser?.fullname || '-'
+                : invoice_invoiceData.data.users?.fullname
+            }}
+          </td>
         </tr>
       </tbody>
 
@@ -112,7 +121,13 @@ const { invoice_invoiceData, invoice_handleOtherOptions } = inject<IInvoiceProvi
 
     <section id="btn-actions" class="flex flex-col items-center gap-4 w-full">
       <section id="primary-buttons" class="flex items-center gap-4 w-full">
-        <PrimeVueButton class="w-full py-4" severity="secondary" variant="outlined" @click="emit('download')">
+        <PrimeVueButton
+          v-if="invoice_invoiceData.data.paymentStatus !== 'unpaid'"
+          class="w-full py-4"
+          severity="secondary"
+          variant="outlined"
+          @click="emit('download')"
+        >
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="download" class="!w-6 !h-6" />
@@ -120,12 +135,48 @@ const { invoice_invoiceData, invoice_handleOtherOptions } = inject<IInvoiceProvi
             </section>
           </template>
         </PrimeVueButton>
-
-        <PrimeVueButton class="bg-blue-primary border-none w-full py-4" severity="primary" @click="emit('print')">
+        <PrimeVueButton
+          v-else
+          class="w-full py-4 bg-primary"
+          severity="primary"
+          variant="outlined"
+          @click="invoice_modalPay.show = true"
+        >
           <template #default>
             <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="printer" class="!w-6 !h-6" />
-              <span class="font-semibold text-white text-sm">Print Invoice</span>
+              <AppBaseSvg
+                :name="invoice_invoiceData.data.paymentStatus !== 'unpaid' ? 'cash' : 'cash-white'"
+                class="!w-6 !h-6"
+              />
+              <span class="font-semibold text-white text-sm">Pay Now</span>
+            </section>
+          </template>
+        </PrimeVueButton>
+
+        <PrimeVueButton
+          class="w-full py-4"
+          :class="{
+            'bg-blue-primary border-none': invoice_invoiceData.data.paymentStatus !== 'unpaid',
+            'bg-white border-primary': invoice_invoiceData.data.paymentStatus === 'unpaid',
+          }"
+          severity="primary"
+          @click="emit('print')"
+        >
+          <template #default>
+            <section id="content" class="flex items-center gap-2">
+              <AppBaseSvg
+                :name="invoice_invoiceData.data.paymentStatus !== 'unpaid' ? 'printer' : 'printer-primary'"
+                class="!w-6 !h-6"
+                color="primary"
+              />
+              <span
+                class="font-semibold text-sm"
+                :class="{
+                  'text-white': invoice_invoiceData.data.paymentStatus !== 'unpaid',
+                  'text-primary': invoice_invoiceData.data.paymentStatus === 'unpaid',
+                }"
+                >Print Invoice</span
+              >
             </section>
           </template>
         </PrimeVueButton>
@@ -134,9 +185,9 @@ const { invoice_invoiceData, invoice_handleOtherOptions } = inject<IInvoiceProvi
       <span class="font-normal text-text-disabled text-sm">other option</span>
 
       <section id="share-invoice" class="flex items-center gap-6">
-        <section
+        <PrimeVueButton
           id="copy-link"
-          class="flex flex-col items-center gap-1 cursor-pointer"
+          class="flex flex-col items-center gap-1 cursor-pointer bg-white border-none"
           @click="invoice_handleOtherOptions('copy')"
         >
           <section
@@ -147,11 +198,12 @@ const { invoice_invoiceData, invoice_handleOtherOptions } = inject<IInvoiceProvi
           </section>
 
           <span class="font-normal text-grayscale-70 text-sm"> Copy Link </span>
-        </section>
+        </PrimeVueButton>
 
-        <section
+        <PrimeVueButton
           id="email"
-          class="flex flex-col items-center gap-1 cursor-pointer"
+          :loading="invoice_otherOptions.isLoadingSendEmail"
+          class="flex flex-col items-center gap-1 cursor-pointer bg-white border-none"
           @click="invoice_handleOtherOptions('email')"
         >
           <section
@@ -162,11 +214,11 @@ const { invoice_invoiceData, invoice_handleOtherOptions } = inject<IInvoiceProvi
           </section>
 
           <span class="font-normal text-grayscale-70 text-sm"> Email </span>
-        </section>
+        </PrimeVueButton>
 
-        <section
+        <PrimeVueButton
           id="whatsapp"
-          class="flex flex-col items-center gap-1 cursor-pointer"
+          class="flex flex-col items-center gap-1 cursor-pointer bg-white border-none"
           @click="invoice_handleOtherOptions('whatsapp')"
         >
           <section
@@ -177,7 +229,7 @@ const { invoice_invoiceData, invoice_handleOtherOptions } = inject<IInvoiceProvi
           </section>
 
           <span class="font-normal text-grayscale-70 text-sm"> Whatsapp </span>
-        </section>
+        </PrimeVueButton>
       </section>
     </section>
   </section>

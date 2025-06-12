@@ -2,13 +2,15 @@
 import { FilterMatchMode } from '@primevue/core/api';
 
 import { useCategoryService } from '../../services/Category/CategoryService';
-import { ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
+import { ICategory } from '../../interfaces/Category/CategoryInterface';
+//import { ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
 
 const {
   createCategory,
   updateCategory,
   deleteCategory,
   getAllCategories,
+  getCategoryByID,
   category_formData,
   category_formValidations,
 } = useCategoryService();
@@ -18,7 +20,7 @@ const isEditOpen = ref(false);
 const isDeleteOpen = ref(false);
 const selectedCategories = ref<ICategory[]>([]);
 const categories = ref<ICategory[]>([]);
-const selected = ref<ICategory | null>(null);
+const selected = ref<ICategory>();
 const loading = ref(false);
 
 const route = useRoute();
@@ -37,6 +39,24 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
+const fileInput = ref();
+const triggerFileInput = () => {
+  (fileInput.value as HTMLInputElement)?.click();
+};
+
+const handleImageUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (file) {
+    category_formData.imageFile = file; // ✅ Save the file
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      category_formData.imagePreview = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
 const loadCategories = async () => {
   loading.value = true;
   try {
@@ -51,9 +71,22 @@ const loadCategories = async () => {
     loading.value = false;
   }
 };
+
+const loadCategoryByID = async (id: string) => {
+  try {
+    const response = await getCategoryByID(id);
+    category_formData.name = response.category;
+    category_formData.description = response.description ?? '-';
+    category_formData.imagePreview = response.pictureUrl;
+  } catch (error) {
+    console.error('Failed to load category by ID:', error);
+  }
+};
 function resetForm() {
   category_formData.name = '';
   category_formData.description = '';
+  category_formData.imageFile = undefined;
+  category_formData.imagePreview = undefined;
   category_formValidations.value.$reset();
 }
 const handleAddCategory = async () => {
@@ -63,6 +96,7 @@ const handleAddCategory = async () => {
     const newCategory = await createCategory({
       category: category_formData.name,
       description: category_formData.description || '-',
+      imageFile: category_formData.imageFile,
     });
 
     loadCategories();
@@ -90,10 +124,10 @@ const displayPopover = (event: Event, category: ICategory) => {
   op.value?.show(event);
 };
 
-const displayEdit = () => {
+const displayEdit = (id: string) => {
   if (selected.value) {
-    category_formData.name = selected.value.category;
-    category_formData.description = selected.value.description ?? '';
+    // console.log("🚀 ~ displayEdit ~ selected.value:", selected.value.id)
+    loadCategoryByID(id);
     isEditOpen.value = true;
     op.value?.hide();
   }
@@ -107,10 +141,9 @@ const handleEditCategory = async () => {
       const updatedCategory = await updateCategory(selected.value.id, {
         category: category_formData.name,
         description: category_formData.description || '-',
+        imageFile: category_formData.imageFile,
       });
-      categories.value = categories.value.map((cat: ICategory) =>
-        cat.id === updatedCategory.id ? updatedCategory : cat,
-      );
+      categories.value = categories.value.map(cat => (cat.id === updatedCategory.id ? updatedCategory : cat));
       isEditOpen.value = false;
       resetForm();
     } catch (error) {
@@ -120,13 +153,13 @@ const handleEditCategory = async () => {
   }
 };
 
-const handleDeleteCategory = async () => {
+const handleDeleteCategory = async (id: string) => {
   try {
     if (selected.value) {
       const deleteCat = await deleteCategory(selected.value.id);
       if (deleteCat === 200) {
         // alert('Category deleted successfully.');
-        categories.value = categories.value.filter((cat: ICategory) => cat.id !== selected.value?.id);
+        categories.value = categories.value.filter(cat => cat.id !== id);
       } else {
         alert('Something went wrong while deleting the category.');
       }
@@ -190,8 +223,16 @@ onMounted(() => {
 
 <template>
   <div class="m-4 p-1 border border-gray rounded-lg shadow-2xl">
-    <PrimeVueDataTable :selection="selectedCategories" :value="categories" paginator :rows="limit"
-      table-style="min-width: 50rem" :filters="filters" data-key="id" :loading="loading">
+    <PrimeVueDataTable
+      :selection="selectedCategories"
+      :value="categories"
+      paginator
+      :rows="limit"
+      table-style="min-width: 50rem"
+      :filters="filters"
+      data-key="id"
+      :loading="loading"
+    >
       <template #header>
         <div class="flex justify-between">
           <h1 class="text-2xl font-bold">Categories</h1>
@@ -202,8 +243,14 @@ onMounted(() => {
                 <PrimeVueInputText v-model="search" placeholder="Keyword Search" />
               </PrimeVueIconField>
             </form>
-            <PrimeVueButton type="button" severity="info" label="Add Category" icon="pi pi-plus"
-              class="bg-primary border-primary" @click="openAddDialog()" />
+            <PrimeVueButton
+              type="button"
+              severity="info"
+              label="Add Category"
+              icon="pi pi-plus"
+              class="bg-primary border-primary"
+              @click="openAddDialog()"
+            />
           </div>
         </div>
       </template>
@@ -217,26 +264,46 @@ onMounted(() => {
       <PrimeVueColumn sortable field="description" header="Description" />
       <PrimeVueColumn>
         <template #body="slotProps">
-          <PrimeVueButton icon="pi pi-ellipsis-v" class="bg-transparent text-gray-500 border-none float-end"
-            @click="displayPopover($event, slotProps.data)" />
+          <PrimeVueButton
+            icon="pi pi-ellipsis-v"
+            class="bg-transparent text-gray-500 border-none float-end"
+            @click="displayPopover($event, slotProps.data)"
+          />
         </template>
       </PrimeVueColumn>
-      <template #paginatorcontainer="{ }">
+      <template #paginatorcontainer="{}">
         <div class="flex items-center gap-2 justify-between w-full py-2">
           <!-- Previous Page Button -->
-          <PrimeVueButton icon="pi pi-angle-left" variant="text" label="Previous"
-            class="border border-primary text-primary hover:bg-transparent" @click="prevPage()" />
+          <PrimeVueButton
+            icon="pi pi-angle-left"
+            variant="text"
+            label="Previous"
+            class="border border-primary text-primary hover:bg-transparent"
+            @click="prevPage()"
+          />
 
           <div class="flex gap-1">
-            <PrimeVueButton v-for="p in visiblePages" :key="p" :label="p.toString()" class="border-none aspect-square p-4"
-              :class="page === p ? 'bg-blue-secondary-background text-primary' : 'bg-transparent text-grayscale-20'
-                " @click="goToPage(p)" />
+            <PrimeVueButton
+              v-for="p in visiblePages"
+              :key="p"
+              :label="p.toString()"
+              class="border-none aspect-square p-4"
+              :class="
+                page === p ? 'bg-blue-secondary-background text-primary' : 'bg-transparent text-grayscale-20'
+              "
+              @click="goToPage(p)"
+            />
           </div>
           <!-- Page Numbers -->
 
           <!-- Next Page Button -->
-          <PrimeVueButton icon="pi pi-angle-right" variant="text" label="Next"
-            class="border border-primary text-primary hover:bg-transparent flex-row-reverse" @click="nextPage()" />
+          <PrimeVueButton
+            icon="pi pi-angle-right"
+            variant="text"
+            label="Next"
+            class="border border-primary text-primary hover:bg-transparent flex-row-reverse"
+            @click="nextPage()"
+          />
         </div>
       </template>
     </PrimeVueDataTable>
@@ -244,31 +311,80 @@ onMounted(() => {
     <!-- Popover -->
     <PrimeVuePopover ref="op">
       <div class="flex flex-col items-start">
-        <PrimeVueButton variant="text" label="Edit" icon="pi pi-pen-to-square" class="text-black"
-          @click="displayEdit" />
-        <PrimeVueButton variant="text" label="Delete" icon="pi pi-trash" class="text-red-500"
-          @click="isDeleteOpen = true" />
+        <PrimeVueButton
+          variant="text"
+          label="Edit"
+          icon="pi pi-pen-to-square"
+          class="text-black"
+          @click="selected && displayEdit(selected.id)"
+        />
+        <PrimeVueButton
+          variant="text"
+          label="Delete"
+          icon="pi pi-trash"
+          class="text-red-500"
+          @click="isDeleteOpen = true"
+        />
       </div>
     </PrimeVuePopover>
 
     <!-- Add Dialog -->
     <PrimeVueDialog v-model:visible="isAddOpen" modal header="Add Category" class="w-[45rem]">
       <form @submit.prevent="handleAddCategory">
-        <AppBaseFormGroup v-slot="{ classes }" class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-          is-name-as-label label-for="name" name="Name" :validators="category_formValidations.name">
+        <div class="flex items-center flex-col">
+          <p>Photo (Optional)</p>
+          <img
+            class="rounded-lg mt-2 w-64 h-64 object-cover"
+            :src="category_formData.imagePreview || 'https://placehold.co/250'"
+            alt="Photo"
+          />
+
+          <!-- Hidden File Input -->
+          <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
+
+          <!-- PrimeVue Button as file selector -->
+          <PrimeVueButton
+            label="Select Image"
+            icon="pi pi-image"
+            class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
+            variant="outlined"
+            @click="triggerFileInput"
+          />
+        </div>
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+          is-name-as-label
+          label-for="name"
+          name="Name"
+          :validators="category_formValidations.name"
+        >
           <label for="name">Category Name <sup class="text-red-500">*</sup></label>
-          <PrimeVueInputText v-model="category_formData.name" name="name" type="text" class="w-full"
-            :class="{ ...classes }" fluid v-on="useListenerForm(category_formValidations, 'name')" />
+          <PrimeVueInputText
+            v-model="category_formData.name"
+            name="name"
+            type="text"
+            class="w-full"
+            :class="{ ...classes }"
+            fluid
+            v-on="useListenerForm(category_formValidations, 'name')"
+          />
         </AppBaseFormGroup>
         <div class="mb-8">
           <label for="description">description (Optional)</label>
           <PrimeVueTextarea v-model="category_formData.description" auto-resize rows="5" class="w-full" />
         </div>
         <div class="flex justify-end gap-2">
-          <PrimeVueButton label="Cancel" severity="info" variant="outlined" class="w-48" @click="
-            isAddOpen = false;
-          resetForm();
-          " />
+          <PrimeVueButton
+            label="Cancel"
+            severity="info"
+            variant="outlined"
+            class="w-48"
+            @click="
+              isAddOpen = false;
+              resetForm();
+            "
+          />
           <PrimeVueButton label="Add" class="w-48 bg-primary border-primary" type="submit" />
         </div>
       </form>
@@ -277,21 +393,60 @@ onMounted(() => {
     <!-- Edit Dialog -->
     <PrimeVueDialog v-model:visible="isEditOpen" modal header="Edit Category" class="w-[45rem]">
       <form @submit.prevent="handleEditCategory">
-        <AppBaseFormGroup v-slot="{ classes }" class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-          is-name-as-label label-for="name" name="Name" :validators="category_formValidations.name">
+        <div class="flex items-center flex-col">
+          <p>Photo (Optional)</p>
+          <img
+            class="rounded-lg mt-2 w-64 h-64 object-cover"
+            :src="category_formData.imagePreview || 'https://placehold.co/250'"
+            alt="Photo"
+          />
+
+          <!-- Hidden File Input -->
+          <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
+
+          <!-- PrimeVue Button as file selector -->
+          <PrimeVueButton
+            label="Select Image"
+            icon="pi pi-image"
+            class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
+            variant="outlined"
+            @click="triggerFileInput"
+          />
+        </div>
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+          is-name-as-label
+          label-for="name"
+          name="Name"
+          :validators="category_formValidations.name"
+        >
           <label for="name">Category Name <sup class="text-red-500">*</sup></label>
-          <PrimeVueInputText v-model="category_formData.name" name="name" type="text" class="w-full"
-            :class="{ ...classes }" fluid v-on="useListenerForm(category_formValidations, 'name')" />
+          <PrimeVueInputText
+            v-model="category_formData.name"
+            name="name"
+            type="text"
+            class="w-full"
+            :class="{ ...classes }"
+            fluid
+            v-on="useListenerForm(category_formValidations, 'name')"
+          />
         </AppBaseFormGroup>
         <div class="mb-8">
           <label for="description">description (Optional)</label>
           <PrimeVueTextarea v-model="category_formData.description" auto-resize rows="5" class="w-full" />
         </div>
         <div class="flex justify-end gap-2">
-          <PrimeVueButton label="Cancel" severity="info" variant="outlined" class="w-48" @click="
-            isEditOpen = false;
-          resetForm();
-          " />
+          <PrimeVueButton
+            label="Cancel"
+            severity="info"
+            variant="outlined"
+            class="w-48"
+            @click="
+              isEditOpen = false;
+              resetForm();
+            "
+          />
           <PrimeVueButton label="Edit" class="w-48 bg-primary border-primary" type="submit" />
         </div>
       </form>
@@ -305,7 +460,12 @@ onMounted(() => {
           <h1 class="text-2xl font-semibold mb-2">Are you sure you want to delete this category?</h1>
           <p class="mb-6">This will affect products that use this category.</p>
           <div class="flex justify-center gap-4">
-            <PrimeVueButton label="Delete" severity="danger" class="w-40" @click="handleDeleteCategory()" />
+            <PrimeVueButton
+              label="Delete"
+              severity="danger"
+              class="w-40"
+              @click="selected && handleDeleteCategory(selected.id)"
+            />
             <PrimeVueButton label="Cancel" class="w-40 bg-primary border-primary" @click="isDeleteOpen = false" />
           </div>
         </div>

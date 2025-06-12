@@ -22,6 +22,8 @@ const {
   cashierProduct_onScrollFetchMoreCustomers,
   cashierProduct_onSearchCustomer,
   cashierOrderSummary_handleIsExpandedToggle,
+
+  cashierOrderSummary_handleModalAddCustomer,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 
@@ -97,7 +99,15 @@ const {
 
             <template #footer>
               <div class="px-1 py-1">
-                <PrimeVueButton label="Add New" fluid severity="secondary" text size="small" icon="pi pi-plus" />
+                <PrimeVueButton
+                  label="Add New"
+                  fluid
+                  severity="secondary"
+                  text
+                  size="small"
+                  icon="pi pi-plus"
+                  @click="cashierOrderSummary_handleModalAddCustomer()"
+                />
               </div>
             </template>
           </PrimeVueAutoComplete>
