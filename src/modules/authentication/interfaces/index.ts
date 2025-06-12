@@ -4,7 +4,7 @@ export * from './authentication-sign-in.interface';
 export * from './authentication-sign-up.interface';
 
 export interface IAuthenticationProfile {
-  fullName: string;
+  fullname: string;
   usingPin: boolean;
   email: string;
   phone: string;

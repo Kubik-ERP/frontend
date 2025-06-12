@@ -12,6 +12,10 @@ import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-sum
 const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cashierProduct')!;
 const { cashierOrderSummary_modalAddEditNotes, cashierOrderSummary_calculateEstimation } =
   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+
+const showImageUrl = (picture: string | null) => {
+  return picture ? picture : 'assets/images/product-placeholder.png';
+};
 </script>
 
 <template>
@@ -39,7 +43,11 @@ const { cashierOrderSummary_modalAddEditNotes, cashierOrderSummary_calculateEsti
         </button>
         <div class="col-span-6 xl:col-span-7 flex flex-col gap-4">
           <div class="flex gap-4">
-            <img :src="item.product.pictureUrl!" alt="product" class="w-10 h-10 object-cover" />
+            <AppBaseImage
+              :src="showImageUrl(item.product.pictureUrl)"
+              alt="product"
+              class="w-10 h-10 object-cover"
+            />
 
             <div class="flex flex-col">
               <span class="text-sm font-semibold">{{ item.product.name }}</span>

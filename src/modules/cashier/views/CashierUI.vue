@@ -40,6 +40,7 @@ const {
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
 
+  cashierOrderSummary_modalAddCustomer,
   cashierOrderSummary_modalMenuOrderItem,
   cashierOrderSummary_modalOrderSummary,
   cashierOrderSummary_modalAddEditNotes,
@@ -61,6 +62,8 @@ const {
   cashierOrderSummary_isLoadingUnpaidOrder,
 
   cashierProduct_customerState,
+
+  cashierOrderSummary_handleModalAddCustomer,
 
   cashierOrderSummary_handleIsExpandedToggle,
 
@@ -111,6 +114,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_menuOrderItem,
   cashierOrderSummary_data,
 
+  cashierOrderSummary_modalAddCustomer,
   cashierOrderSummary_modalMenuOrderItem,
   cashierOrderSummary_modalOrderSummary,
   cashierOrderSummary_modalAddEditNotes,
@@ -132,6 +136,8 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_isLoadingUnpaidOrder,
 
   cashierProduct_customerState,
+
+  cashierOrderSummary_handleModalAddCustomer,
 
   cashierOrderSummary_handleIsExpandedToggle,
 

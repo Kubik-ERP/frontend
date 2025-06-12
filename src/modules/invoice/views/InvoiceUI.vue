@@ -18,6 +18,8 @@ import type { IInvoiceProvided } from '../interfaces/index';
 
 // Services
 import { useInvoiceService } from '../services/useInvoice.service';
+import InvoiceModalPay from '../components/modal/InvoiceModalPay.vue';
+import CashierSummaryModalPaymentQRIS from '@/modules/cashier/components/OrderSummary/Modal/CashierSummaryModalPaymentQRIS.vue';
 
 const route = useRoute();
 
@@ -27,19 +29,27 @@ const route = useRoute();
 const {
   invoice_activeInvoice,
   invoice_invoiceData,
-  invoice_handleOtherOptions,
+  invoice_modalPay,
+  invoice_otherOptions,
+
   invoice_handleDownload,
   invoice_handlePrint,
+  invoice_handleOtherOptions,
+  invoice_handlePayInvoice,
+  invoice_handleSimulatePayment,
 } = useInvoiceService();
 
 provide<IInvoiceProvided>('invoice', {
   invoice_activeInvoice,
-
   invoice_invoiceData,
+  invoice_modalPay,
+  invoice_otherOptions,
 
   invoice_handleDownload,
   invoice_handlePrint,
   invoice_handleOtherOptions,
+  invoice_handlePayInvoice,
+  invoice_handleSimulatePayment,
 });
 
 const invoicePaperRef = ref();
@@ -64,6 +74,15 @@ const handleDownload = () => {
         <InvoicePaper ref="invoicePaperRef" />
         <InvoiceStatus @download="handleDownload" @print="handlePrint" />
         <InvoiceMobileButtonAction @download="handleDownload" @print="handlePrint" />
+        <InvoiceModalPay />
+
+        <CashierSummaryModalPaymentQRIS
+          :modal-place-order-detail="{
+            showModalPayment: invoice_modalPay.showModalPayment,
+            data: invoice_modalPay.dataPayment,
+          }"
+          @simulate-payment="invoice_handleSimulatePayment"
+        />
       </section>
     </template>
     <template v-else>

@@ -11,6 +11,15 @@ const route = useRoute();
     class="relative inset-0 z-0 flex items-center justify-between border-b border-solid border-grayscale-10 px-10 py-4"
   >
     <section id="left-content" class="flex items-center gap-4">
+      <router-link v-if="route.meta.backArrow" :to="route.meta.backArrowPath ?? '/'">
+        <PrimeVueButton
+          v-if="route.meta.backArrow"
+          class="bg-white border-none shadow-xs hover:bg-grayscale-10/50 basic-smooth-animation rounded-lg p-2"
+        >
+          <AppBaseSvg name="chevron-left" class="!w-5 !h-5" />
+        </PrimeVueButton>
+      </router-link>
+
       <h2 class="font-semibold text-black text-lg">
         {{ route.meta.title }}
       </h2>
