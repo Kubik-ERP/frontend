@@ -1,5 +1,5 @@
 // Components
-import SalesOrderCashDrawer from '../components/SalesOrderCashDrawer.vue';
+import CashDrawerListUI from '@/modules/cash-drawer/views/CashDrawerListUI.vue';
 import SalesOrderCashInOut from '../components/SalesOrderCashInOut.vue';
 import SalesOrderDailySales from '../components/SalesOrderDailySales.vue';
 import SalesOrderVoucher from '../components/SalesOrderVoucher.vue';
@@ -146,7 +146,7 @@ export const LIST_TABS_SALES_ORDER: ITabs[] = [
     value: 'voucher',
   },
   {
-    component: SalesOrderCashDrawer,
+    component: CashDrawerListUI,
     label: 'Cash Drawer',
     value: 'cash-drawer',
   },

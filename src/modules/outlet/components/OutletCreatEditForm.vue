@@ -37,7 +37,7 @@ const {
 
         <PrimeVueButton
           class="bg-blue-primary border-none text-sm py-[10px] w-36"
-          label="Create Store"
+          :label="outletCreateEdit_isEditable ? 'Update Store' : 'Create Store'"
           type="submit"
           :loading="outletCreateEdit_isLoading"
         />

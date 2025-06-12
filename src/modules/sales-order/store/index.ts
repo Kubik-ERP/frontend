@@ -1,3 +1,6 @@
+// Constants
+import { SALES_ORDER_INVOICE_BASE_ENDPOINT } from '../constants/sales-order-api.constant';
+
 import { defineStore } from 'pinia';
 
 // Interfaces
@@ -6,7 +9,6 @@ import { IDailySalesData, IDailySalesDataResponse } from '../interfaces/daily-sa
 
 // Plugins
 import httpClient from '@/plugins/axios';
-import { SALES_ORDER_INVOICE_ENDPOINT } from '../constants/sales-orderApi.constant';
 
 export const useSalesOrderStore = defineStore('sales-order', {
   state: () => ({}),
@@ -25,7 +27,7 @@ export const useSalesOrderStore = defineStore('sales-order', {
      */
     async salesOrder_fetchDailySales(requestConfigurations: AxiosRequestConfig = {}): Promise<IDailySalesData> {
       try {
-        const response = await httpClient.get<IDailySalesDataResponse>(SALES_ORDER_INVOICE_ENDPOINT, {
+        const response = await httpClient.get<IDailySalesDataResponse>(SALES_ORDER_INVOICE_BASE_ENDPOINT, {
           ...requestConfigurations,
         });
 
