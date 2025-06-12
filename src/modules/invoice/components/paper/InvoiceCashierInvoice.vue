@@ -41,11 +41,12 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
     <section id="cashier-information" class="flex items-center justify-between w-full">
       <p id="label-cashier" class="font-normal text-black text-sm">Cashier</p>
       <!-- TODO: add cashier name -->
+
       <p id="cashier-name" class="font-normal text-black text-sm">
         {{
           invoice_invoiceData.data.paymentStatus === 'unpaid'
             ? invoice_invoiceData.currentUser?.fullname || '-'
-            : invoice_invoiceData.data.users?.fullName
+            : invoice_invoiceData.data.users?.fullname
         }}
       </p>
     </section>
