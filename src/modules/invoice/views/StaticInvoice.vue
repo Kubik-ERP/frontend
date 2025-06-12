@@ -14,19 +14,27 @@ import { useInvoiceService } from '../services/useInvoice.service';
 const {
   invoice_activeInvoice,
   invoice_invoiceData,
-  invoice_handleOtherOptions,
+  invoice_modalPay,
+  invoice_otherOptions,
+
   invoice_handleDownload,
   invoice_handlePrint,
+  invoice_handleOtherOptions,
+  invoice_handlePayInvoice,
+  invoice_handleSimulatePayment,
 } = useInvoiceService();
 
 provide<IInvoiceProvided>('invoice', {
   invoice_activeInvoice,
-
   invoice_invoiceData,
+  invoice_modalPay,
+  invoice_otherOptions,
 
   invoice_handleDownload,
   invoice_handlePrint,
   invoice_handleOtherOptions,
+  invoice_handlePayInvoice,
+  invoice_handleSimulatePayment,
 });
 </script>
 
