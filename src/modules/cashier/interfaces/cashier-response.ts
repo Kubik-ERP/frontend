@@ -29,28 +29,32 @@ export interface ICashierResponseProcessCheckout {
   };
 }
 
+export interface IMidtransAction {
+  name: string;
+  method: string;
+  url: string;
+}
+
+export interface IMidtransQrisPaymentData {
+  statusCode: string;
+  statusMessage: string;
+  transactionId: string;
+  orderId: string;
+  merchantId: string;
+  grossAmount: string;
+  currency: string;
+  paymentType: string;
+  transactionTime: string;
+  transactionStatus: string;
+  fraudStatus: string;
+  actions: IMidtransAction[];
+  acquirer: string;
+  qrString: string;
+  expiryTime: string;
+}
+
 export interface ICashierResponseMidtransQrisPayment {
-  data: {
-    statusCode: string;
-    statusMessage: string;
-    transactionId: string;
-    orderId: string;
-    merchantId: string;
-    grossAmount: string;
-    currency: string;
-    paymentType: string;
-    transactionTime: string;
-    transactionStatus: string;
-    fraudStatus: string;
-    actions: {
-      name: string;
-      method: string;
-      url: string;
-    }[];
-    acquirer: string;
-    qrString: string;
-    expiryTime: string;
-  };
+  data: IMidtransQrisPaymentData;
 }
 
 export interface ICashierResponseWebsocketMessage {

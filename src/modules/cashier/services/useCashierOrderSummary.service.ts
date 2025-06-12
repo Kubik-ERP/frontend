@@ -16,6 +16,7 @@ import {
   ICashierCalulateEstimationData,
   ICashierOrderSummary,
   ICashierOrderSummaryData,
+  ICashierOrderSummaryModalAddCustomer,
   ICashierOrderSummaryModalAddEdit,
   ICashierOrderSummaryModalCancelOrder,
   ICashierOrderSummaryModalInvoiceDetail,
@@ -329,6 +330,14 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     { immediate: true, deep: true },
   );
 
+  const cashierOrderSummary_modalAddCustomer = ref<ICashierOrderSummaryModalAddCustomer>({
+    show: false,
+  });
+
+  const cashierOrderSummary_handleModalAddCustomer = () => {
+    cashierOrderSummary_modalAddCustomer.value.show = !cashierOrderSummary_modalAddCustomer.value.show;
+  };
+
   /**
    * @description Handle isExpanded toggle
    */
@@ -410,6 +419,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_isButtonPlaceOrderDisabled = computed(() => {
     const isDisabled =
       cashierProduct_customerState.value.selectedCustomer?.id === '' ||
+      cashierProduct_customerState.value.selectedCustomer?.id === null ||
+      cashierProduct_customerState.value.selectedCustomer?.id === undefined ||
       cashierOrderSummary_modalOrderType.value.selectedOrderType === '' ||
       cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod === '' ||
       cashierOrderSummary_modalSelectTable.value.selectedTable.length === 0 ||
@@ -501,10 +512,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       const params = {
         products: cashierOrderSummary_summary.value.product,
         orderType: cashierOrderSummary_summary.value.orderType,
-        invoiceDetail: {
-          receivedBy: cashierOrderSummary_modalInvoiceDetail.value.form.received_by,
-          notes: cashierOrderSummary_modalInvoiceDetail.value.form.notes,
-        },
         provider: cashierOrderSummary_summary.value.provider,
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
         vouchers: cashierOrderSummary_summary.value.selectedVoucher,
@@ -565,10 +572,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       const params = {
         products: cashierOrderSummary_summary.value.product,
         orderType: cashierOrderSummary_summary.value.orderType,
-        invoiceDetail: {
-          receivedBy: cashierOrderSummary_modalInvoiceDetail.value.form.received_by,
-          notes: cashierOrderSummary_modalInvoiceDetail.value.form.notes,
-        },
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
         vouchers: cashierOrderSummary_summary.value.selectedVoucher,
         customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
@@ -703,6 +706,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_menuOrderItem,
     cashierOrderSummary_data,
 
+    cashierOrderSummary_modalAddCustomer,
     cashierOrderSummary_modalMenuOrderItem,
     cashierOrderSummary_modalOrderSummary,
     cashierOrderSummary_modalAddEditNotes,
@@ -724,6 +728,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_isLoadingUnpaidOrder,
 
     cashierProduct_customerState,
+
+    cashierOrderSummary_handleModalAddCustomer,
 
     cashierOrderSummary_handleIsExpandedToggle,
 

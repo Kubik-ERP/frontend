@@ -1,11 +1,29 @@
 <script setup>
 import AddCustomerForm from '@/modules/customer/components/addCustomer/form.vue'
 
+/**
+ * @description Define props with default values and interfaces
+ */
+const props = defineProps({
+  isModal: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const emit = defineEmits(['close']);
+
+const handleOnClose = () => {
+  console.log('handleOnClose called');
+  emit('close');
+}
+
 const router = useRouter();
 
 const nextRoute = ref(null);
 const isLeavingModal = ref(false);
 let hasConfirmedLeave = false;
+
 const confirmLeave = () => {
   isLeavingModal.value = false;
   hasConfirmedLeave = true;
@@ -43,7 +61,7 @@ onBeforeRouteLeave((to, from, next) => {
   <div class="">
 
     
-    <AddCustomerForm />
+    <AddCustomerForm :is-modal="props.isModal" @close="handleOnClose" />
 
     <PrimeVueDialog :visible="isLeavingModal" modal header="">
       <template #container>

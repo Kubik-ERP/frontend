@@ -34,7 +34,11 @@ const { cashierProduct_modalCategory, cashierProduct_productState, cashierProduc
                 }
               "
             >
-              <img :src="category.image" class="h-9 w-9 rounded-full object-cover pointer-events-none" />
+              <AppBaseImage
+                :src="category.image"
+                :alt="category.category"
+                class="h-9 w-9 rounded-full object-cover pointer-events-none"
+              />
 
               <div class="flex flex-col gap-1">
                 <span class="text-xs font-semibold">{{ category.category }}</span>

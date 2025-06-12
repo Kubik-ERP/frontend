@@ -34,8 +34,8 @@ export const LIST_COLUMNS_OF_CASH_DRAWER: IColumnDataTable[] = [
     label: '',
     sortable: false,
     value: 'action',
-  }
-]
+  },
+];
 
 export const LIST_COLUMNS_OF_CASH_IN_OUT: IColumnDataTable[] = [
   {
@@ -79,7 +79,7 @@ export const LIST_COLUMNS_OF_DAILY_SALES: IColumnDataTable[] = [
   {
     label: 'Invoice ID',
     sortable: true,
-    value: 'invoiceId',
+    value: 'id',
   },
   {
     label: 'Purchase Date',
@@ -94,12 +94,12 @@ export const LIST_COLUMNS_OF_DAILY_SALES: IColumnDataTable[] = [
   {
     label: 'Table Number',
     sortable: true,
-    value: 'tableNumber',
+    value: 'tableCode',
   },
   {
     label: 'Total Price',
     sortable: true,
-    value: 'price',
+    value: 'grandTotal',
   },
   {
     label: 'Order Type',
@@ -171,53 +171,53 @@ export const LIST_TYPES_OF_CASH_IN_OUT: IDropdownItem[] = [
 export const LIST_TYPES_OF_ORDER_TYPE: IDropdownItem[] = [
   {
     label: 'Dine In',
-    value: 'Dine In',
+    value: 'dine_in',
   },
   {
-    label: 'Takeaway',
-    value: 'Takeaway',
+    label: 'Take Away',
+    value: 'take_away',
   },
   {
     label: 'Self Order',
-    value: 'Self Order',
+    value: 'self_order',
   },
 ];
 
 export const LIST_TYPES_OF_PAYMENT_STATUS: IDropdownItem[] = [
   {
     label: 'Paid',
-    value: 'Paid',
+    value: 'paid',
   },
   {
     label: 'Unpaid',
-    value: 'Unpaid',
+    value: 'unpaid',
   },
   {
     label: 'Cancelled',
-    value: 'Cancelled',
+    value: 'cancelled',
   },
   {
     label: 'Refunded',
-    value: 'Refunded',
+    value: 'refunded',
   },
 ];
 
 export const LIST_TYPES_OF_ORDER_STATUS: IDropdownItem[] = [
   {
     label: 'In Progress',
-    value: 'In Progress',
+    value: 'in_progress',
   },
   {
     label: 'Waiting',
-    value: 'Waiting',
+    value: 'waiting',
   },
   {
     label: 'Served',
-    value: 'Served',
+    value: 'served',
   },
   {
     label: 'Cancelled',
-    value: 'Cancelled',
+    value: 'cancelled',
   },
 ];
 
@@ -250,7 +250,7 @@ export const LIST_VALUES_OF_CASH_DRAWER = [
     actualBalance: null,
     status: 'Open',
   },
-]
+];
 
 export const LIST_VALUES_OF_CASH_IN_OUT = [
   {

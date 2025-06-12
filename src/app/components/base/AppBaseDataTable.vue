@@ -17,8 +17,13 @@ interface IProps {
   isUsingHeader?: boolean;
   isUsingPagination?: boolean;
   isUsingSearchOnHeader?: boolean;
+  isLoading?: boolean;
   clickBtnCtaCreate?: () => void;
   rowsPerPage?: number;
+  totalRecords?: number;
+  first?: number;
+  isUsingServerSidePagination?: boolean;
+  onPageChange?: (event: { page: number; rows: number }) => void;
 }
 
 /**
@@ -39,11 +44,52 @@ const props = withDefaults(defineProps<IProps>(), {
   isUsingFilter: true,
   isUsingPagination: true,
   isUsingSearchOnHeader: false,
+  isLoading: false,
   clickBtnCtaCreate: () => {},
   rowsPerPage: 10,
+  totalRecords: 0,
+  first: 1,
+  isUsingServerSidePagination: false,
+  onPageChange: () => {},
 });
 
-const emits = defineEmits(['clickBtnCtaCreate']);
+const emits = defineEmits(['clickBtnCtaCreate', 'update:currentPage']);
+
+/**
+ * @description Handle page change event
+ * @param event - The event object containing the page and rows information
+ */
+const handlePageChange = (event: { page: number; rows: number }) => {
+  emits('update:currentPage', event.page + 1);
+
+  props.onPageChange?.(event);
+};
+
+const currentPage = computed(() => Math.floor(props.first / props.rowsPerPage));
+const totalPages = computed(() => Math.ceil(props.totalRecords / props.rowsPerPage));
+
+/**
+ *  @description Compute the displayed pages for pagination
+ *  This logic ensures that the pagination displays a maximum of 7 pages,
+ */
+const displayedPages = computed(() => {
+  const pages: (number | string)[] = [];
+  const current = currentPage.value;
+  const total = totalPages.value;
+  const last = total - 1;
+
+  if (total <= 7) {
+    for (let i = 0; i < total; i++) pages.push(i);
+  } else if (current <= 2) {
+    pages.push(0, 1, 2, '...', last - 2, last - 1, last);
+  } else if (current >= last - 2) {
+    pages.push(0, 1, 2, '...', last - 2, last - 1, last);
+  } else {
+    pages.push(0, '...', current - 1, current, current + 1, '...', last);
+  }
+
+  return pages;
+});
 </script>
 
 <template>
@@ -51,11 +97,16 @@ const emits = defineEmits(['clickBtnCtaCreate']);
     :paginator="props.isUsingPagination"
     :value="props.data"
     :rows="props.rowsPerPage"
+    :first="props.first"
+    :lazy="props.isUsingServerSidePagination"
+    :total-records="props.totalRecords"
+    :loading="props.isLoading"
     table-style="min-width: 50rem"
     :pt="{
       root: 'border border-solid border-grayscale-20 rounded-sm',
       header: 'p-0',
     }"
+    @page="handlePageChange"
   >
     <template #header>
       <template v-if="props.isUsingHeader">
@@ -92,10 +143,7 @@ const emits = defineEmits(['clickBtnCtaCreate']);
                       </template>
                     </PrimeVueInputIcon>
 
-                    <PrimeVueInputText
-                      placeholder="Search by Member ID or Name"
-                      class="text-sm w-full min-w-80"
-                    />
+                    <PrimeVueInputText placeholder="Search by Member ID or Name" class="text-sm w-full min-w-80" />
                   </PrimeVueIconField>
 
                   <template v-if="props.isUsingBtnCtaCreate">
@@ -144,7 +192,12 @@ const emits = defineEmits(['clickBtnCtaCreate']);
     <template #paginatorcontainer="{ page, pageCount, prevPageCallback, nextPageCallback }">
       <div class="flex items-center gap-2 justify-between w-full py-2">
         <!-- Previous Page Button -->
-        <PrimeVueButton class="border-primary w-fit px-4" variant="outlined" @click="prevPageCallback">
+        <PrimeVueButton
+          :disabled="page === 0 || pageCount === 0"
+          class="border-primary w-fit px-4"
+          variant="outlined"
+          @click="prevPageCallback"
+        >
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="arrow-left" />
@@ -154,20 +207,33 @@ const emits = defineEmits(['clickBtnCtaCreate']);
         </PrimeVueButton>
 
         <div>
-          <template v-for="p in pageCount" :key="p">
-            <PrimeVueButton
-              :label="p.toString()"
-              class="border-none aspect-square p-4"
-              :class="
-                page === p - 1 ? 'bg-blue-secondary-background text-primary' : 'bg-transparent text-grayscale-20'
-              "
-            />
+          <template v-for="(p, idx) in displayedPages" :key="idx">
+            <template v-if="p === '...'">
+              <span class="px-2 text-gray-400">...</span>
+            </template>
+            <template v-else>
+              <PrimeVueButton
+                :label="(Number(p) + 1).toString()"
+                class="border-none aspect-square p-4"
+                :class="
+                  currentPage === Number(p)
+                    ? 'bg-blue-secondary-background text-primary'
+                    : 'bg-transparent text-grayscale-20'
+                "
+                @click="emits('update:currentPage', Number(p) + 1)"
+              />
+            </template>
           </template>
         </div>
         <!-- Page Numbers -->
 
         <!-- Next Page Button -->
-        <PrimeVueButton class="border-primary w-fit px-4" variant="outlined" @click="nextPageCallback">
+        <PrimeVueButton
+          :disabled="page === (pageCount || 1) - 1 || pageCount === 0"
+          class="border-primary w-fit px-4"
+          variant="outlined"
+          @click="nextPageCallback"
+        >
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <span class="font-normal text-sm text-primary">Next</span>

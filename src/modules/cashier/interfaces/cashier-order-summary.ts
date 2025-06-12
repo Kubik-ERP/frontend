@@ -89,6 +89,10 @@ export interface ICashierOrderSummaryModalPaymentMethod {
   dataSelfOrder: ICashierOrderSummaryPaymentMethod[];
 }
 
+export interface ICashierOrderSummaryModalAddCustomer {
+  show: boolean;
+}
+
 export interface ICashierOrderSummaryModalPlaceOrder {
   show: boolean;
   form: {
@@ -155,6 +159,7 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_menuOrderItem: Ref<MenuItem[]>;
   cashierOrderSummary_data: Ref<ICashierOrderSummaryData>;
 
+  cashierOrderSummary_modalAddCustomer: Ref<ICashierOrderSummaryModalAddCustomer>;
   cashierOrderSummary_modalMenuOrderItem: Ref<{ show: boolean }>;
   cashierOrderSummary_modalOrderSummary: Ref<{ show: boolean }>;
   cashierOrderSummary_modalAddEditNotes: Ref<ICashierOrderSummaryModalAddEdit>;
@@ -173,6 +178,8 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_isButtonPlaceOrderDisabled: ComputedRef<boolean>;
 
   cashierProduct_customerState: Ref<ICashierCustomerState>;
+
+  cashierOrderSummary_handleModalAddCustomer: () => void;
 
   cashierOrderSummary_handleIsExpandedToggle: () => void;
 
