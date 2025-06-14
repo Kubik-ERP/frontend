@@ -415,7 +415,7 @@ onMounted(() => {
     <!-- Edit Dialog -->
     <PrimeVueDialog v-model:visible="isEditOpen" modal header="Edit Category" class="w-[45rem]" @hide="resetForm()">
       <form @submit.prevent="handleEditCategory">
-        {{ category_formData.imagePreview }}
+        <!-- {{ category_formData.imagePreview }} -->
         <div class="flex items-center flex-col">
           <p>Photo (Optional)</p>
           <img
