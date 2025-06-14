@@ -172,6 +172,7 @@ export const useProductService = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
+      console.log("🚀 ~ createProduct ~ response:", response)
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,

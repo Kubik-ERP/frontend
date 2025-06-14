@@ -11,7 +11,7 @@ const customer = ref({
 });
 </script>
 <template>
-  <div class="border border-solid border-primary-100 rounded-md p-4">
+  <div class="border border-solid border-primary-100 rounded-md p-4 mb-8">
     <section class="flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <h1 class="text-xl font-semibold">{{ customer.name }}</h1>

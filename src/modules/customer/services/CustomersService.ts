@@ -53,12 +53,14 @@ export const useCustomerService = () => {
 
   const getCustomerTags = async (): Promise<ITag[]> => {
     const response = await axios.get(API_URL_TAGS);
+    console.log("🚀 ~ getCustomerTags ~ response:", response)
     return response.data.data;
   };
 
   const getAllCustomers = async (page: number, limit: number, search: string): Promise<ICustomerResponse> => {
     const response = await axios.get(`${API_URL}?page=${page}&limit=${limit}&search=${search}`);
-    const customers: ICustomer[] = response.data.data.data.map((item: ICustomer) => ({
+    // console.log("🚀 ~ getAllCustomers ~ response:", response)
+    const customers: ICustomer[] = response.data.data.customers.map((item: ICustomer) => ({
       id: item.id,
       name: item.name,
       email: item.email,
@@ -82,7 +84,7 @@ export const useCustomerService = () => {
   const createCustomer = async (payload: ICustomerFormData): Promise<ICustomerCreateResponse> => {
     try {
       const response = await axios.post(API_URL, payload);
-      // console.log('🚀 ~ createCustomer ~ response:', response);
+      console.log('🚀 ~ createCustomer ~ response:', response);
 
       const data: ICustomer = response.data.data.data;
 
