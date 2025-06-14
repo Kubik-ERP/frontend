@@ -77,7 +77,7 @@ export const useCategoryService = () => {
         isOpen: true,
         type: EToastType.SUCCESS,
         message: 'Category has been created successfully',
-        position: EToastPosition.BOTTOM_RIGHT,
+        position: EToastPosition.TOP_RIGHT,
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
@@ -114,7 +114,7 @@ export const useCategoryService = () => {
         isOpen: true,
         type: EToastType.SUCCESS,
         message: 'Category has been updated successfully',
-        position: EToastPosition.BOTTOM_RIGHT,
+        position: EToastPosition.TOP_RIGHT,
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
@@ -139,7 +139,7 @@ export const useCategoryService = () => {
         isOpen: true,
         type: EToastType.SUCCESS,
         message: 'Category has been deleted successfully',
-        position: EToastPosition.BOTTOM_RIGHT,
+        position: EToastPosition.TOP_RIGHT,
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
@@ -157,12 +157,16 @@ export const useCategoryService = () => {
     const response = await axios.get(`${API_URL}/${id}`);
     const data: ICategory = response.data.data;
     // console.log("🚀 ~ getCategoryByID ~ response:", response)
+    const pictureUrl = data.pictureUrl
+  ? `${import.meta.env.VITE_APP_BASE_API_URL}${data.pictureUrl}`
+  : 'https://placehold.co/250';
+
 
     return {
       id: data.id,
       category: data.category,
       description: data.description || '-',
-      pictureUrl: `${import.meta.env.VITE_APP_BASE_API_URL}${data.pictureUrl}`,
+      pictureUrl: pictureUrl
     };
   };
 
