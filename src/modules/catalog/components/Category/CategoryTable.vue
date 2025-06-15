@@ -6,6 +6,11 @@ import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
 import deleteSVG from '@/app/assets/icons/delete.svg';
 import editSVG from '@/app/assets/icons/edit.svg';
 import plusLineWhiteSVG from '@/app/assets/icons/plus-line-white.svg';
+import threeDotsSVG from '@/app/assets/icons/three-dots.svg';
+import searchSVG from '@/app/assets/icons/search.svg';
+import chevronLeftSVG from '@/app/assets/icons/chevron-left.svg';
+import chevronRightSVG from '@/app/assets/icons/chevron-right.svg';
+import imageSVG from '@/app/assets/icons/image.svg';
 
 const {
   createCategory,
@@ -16,7 +21,6 @@ const {
   category_formData,
   category_formValidations,
 } = useCategoryService();
-
 
 const isAddOpen = ref(false);
 const isEditOpen = ref(false);
@@ -37,8 +41,6 @@ const lastPage = ref<number>(0);
 // const category = ref('');
 // const description = ref('');
 const op = ref();
-
-
 
 const fileInput = ref();
 const triggerFileInput = () => {
@@ -238,7 +240,7 @@ onMounted(() => {
           <div class="flex gap-4">
             <form @submit.prevent="handleSearch">
               <PrimeVueIconField>
-                <PrimeVueInputIcon><i class="pi pi-search" /></PrimeVueInputIcon>
+                <PrimeVueInputIcon><img :src="searchSVG" alt="" /></PrimeVueInputIcon>
                 <PrimeVueInputText v-model="search" placeholder="Keyword Search" />
               </PrimeVueIconField>
             </form>
@@ -285,10 +287,13 @@ onMounted(() => {
       <PrimeVueColumn>
         <template #body="slotProps">
           <PrimeVueButton
-            icon="pi pi-ellipsis-v"
             class="bg-transparent text-gray-500 border-none float-end"
             @click="displayPopover($event, slotProps.data)"
-          />
+          >
+            <template #icon>
+              <img :src="threeDotsSVG" alt="" />
+            </template>
+          </PrimeVueButton>
         </template>
       </PrimeVueColumn>
 
@@ -296,12 +301,15 @@ onMounted(() => {
         <div class="flex items-center gap-2 justify-between w-full py-2">
           <!-- Previous Page Button -->
           <PrimeVueButton
-            icon="pi pi-angle-left"
             variant="text"
             label="Previous"
             class="border border-primary text-primary hover:bg-transparent"
             @click="prevPage()"
-          />
+          >
+            <template #icon>
+              <img :src="chevronLeftSVG" alt="" />
+            </template>
+        </PrimeVueButton>
 
           <div class="flex gap-1">
             <PrimeVueButton
@@ -319,12 +327,15 @@ onMounted(() => {
 
           <!-- Next Page Button -->
           <PrimeVueButton
-            icon="pi pi-angle-right"
             variant="text"
             label="Next"
             class="border border-primary text-primary hover:bg-transparent flex-row-reverse"
             @click="nextPage()"
-          />
+          >
+            <template #icon>
+              <img :src="chevronRightSVG" alt="" />
+            </template>
+        </PrimeVueButton>
         </div>
       </template>
     </PrimeVueDataTable>
@@ -355,7 +366,11 @@ onMounted(() => {
       <form @submit.prevent="handleAddCategory">
         <div class="flex items-center flex-col">
           <p>Photo (Optional)</p>
-          <img class="rounded-lg mt-2 w-64 h-64 object-cover" src="https://placehold.co/250" alt="Photo" />
+          <img
+            class="rounded-lg mt-2 w-64 h-64 object-cover"
+            :src="category_formData.imagePreview || 'https://placehold.co/250'"
+            alt="Photo"
+          />
 
           <!-- Hidden File Input -->
           <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
@@ -363,11 +378,14 @@ onMounted(() => {
           <!-- PrimeVue Button as file selector -->
           <PrimeVueButton
             label="Select Image"
-            icon="pi pi-image"
             class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
             variant="outlined"
             @click="triggerFileInput"
-          />
+          >
+            <template #icon>
+              <img :src="imageSVG" alt="" />
+            </template>
+        </PrimeVueButton>
         </div>
         <AppBaseFormGroup
           v-slot="{ classes }"
@@ -413,7 +431,13 @@ onMounted(() => {
     </PrimeVueDialog>
 
     <!-- Edit Dialog -->
-    <PrimeVueDialog v-model:visible="isEditOpen" modal header="Edit Category" class="w-[45rem]" @hide="resetForm()">
+    <PrimeVueDialog
+      v-model:visible="isEditOpen"
+      modal
+      header="Edit Category"
+      class="w-[45rem]"
+      @hide="resetForm()"
+    >
       <form @submit.prevent="handleEditCategory">
         <!-- {{ category_formData.imagePreview }} -->
         <div class="flex items-center flex-col">
@@ -430,11 +454,14 @@ onMounted(() => {
           <!-- PrimeVue Button as file selector -->
           <PrimeVueButton
             label="Select Image"
-            icon="pi pi-image"
             class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
             variant="outlined"
             @click="triggerFileInput"
-          />
+          >
+            <template #icon>
+              <img :src="imageSVG" alt="" />
+            </template>
+        </PrimeVueButton>
         </div>
         <AppBaseFormGroup
           v-slot="{ classes }"

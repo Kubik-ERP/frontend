@@ -1,11 +1,20 @@
 <script setup>
 import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
 import { useCategoryService } from '../../services/Category/CategoryService';
+import excludeSVG from '@/app/assets/icons/exclude.svg';
+import deleteSVG from '@/app/assets/icons/delete.svg';
+import plusLineSVG from '@/app/assets/icons/plus-line.svg';
+import chevronDownSVG from '@/app/assets/icons/chevron-down.svg';
+import imageSVG from '@/app/assets/icons/image.svg';
+import confirmationSVG from '@/app/assets/icons/confirmation.svg';
+import closeRedSVG from '@/app/assets/icons/close-red.svg';
+import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
 
 const route = useRoute();
 
 const { getAllCategories } = useCategoryService();
-const { getProductById, updateProduct, product_formData, product_formValidations } = useProductService();
+const { getProductById, updateProduct, deleteProduct, product_formData, product_formValidations } =
+  useProductService();
 
 const toggleVariant = ref(false);
 const categories = ref([]);
@@ -39,14 +48,14 @@ const discount_unit = ref('Rp');
 const loadProduct = async () => {
   try {
     const response = await getProductById(route.params.id);
-    // console.log('🚀 ~ loadProduct ~ response:', response);
-    // console.log('🚀 ~ loadProduct ~ getProductById:', response);
+
     product_formData.name = response.name;
     product_formData.price = response.price;
     product_formData.discount_price = response.discountPrice;
     product_formData.variants = response.variantHasProducts;
     product_formData.categories = response.categoriesHasProducts;
     product_formData.is_percent = response.isPercent;
+    console.log("🚀 ~ loadProduct ~ response.isPercent:", response.isPercent)
     product_formData.imagePreview = response.picture_url;
 
     product_formData.isDiscount = product_formData.price !== product_formData.discount_price;
@@ -59,10 +68,9 @@ const loadProduct = async () => {
         product_formData.discount_value = response.price - response.discountPrice;
         discount_unit.value = 'Rp';
       }
-
-      if (product_formData.variants.length > 0) {
-        toggleVariant.value = true;
-      }
+    }
+    if (product_formData.variants.length > 0) {
+      toggleVariant.value = true;
     }
   } catch (error) {
     console.error(error);
@@ -85,6 +93,19 @@ const handleImageUpload = event => {
       product_formData.imagePreview = reader.result;
     };
     reader.readAsDataURL(file);
+  }
+};
+
+const isDeleteOpen = ref(false);
+
+const handleDelete = async () => {
+  try {
+    await deleteProduct(productID.value);
+    isDeleteOpen.value = false;
+    hasConfirmedLeave = true;
+    router.push({ name: 'catalog.products.index' });
+  } catch (error) {
+    console.error('Failed to delete product:', error);
   }
 };
 
@@ -169,6 +190,32 @@ onBeforeRouteLeave((to, from, next) => {
     next(false);
   }
 });
+
+// Modal state
+const isUpdateModal = ref(false);
+
+// Your action to call when confirming
+const confirmUpdate = async () => {
+  try {
+    // Example: updateProduct() or any async call
+    await handleUpdateProduct(); // Make sure this is defined/imported
+
+    product_formValidations.value.$reset();
+    hasConfirmedLeave = true;
+    router.push({ name: 'catalog.products.index' });
+    // Optionally show success feedback/toast here
+
+    isUpdateModal.value = false;
+  } catch (error) {
+    console.error('Failed to update product:', error);
+    // Optionally show error feedback
+  }
+};
+
+// Cancel just closes the modal
+const cancelUpdate = () => {
+  isUpdateModal.value = false;
+};
 </script>
 
 <template>
@@ -177,30 +224,25 @@ onBeforeRouteLeave((to, from, next) => {
       <h1 class="text-2xl font-bold">Products Detail</h1>
       <h2 class="text-xl font-semibold">Product Information</h2>
 
-      <form class="flex flex-col items-center justify-center" @submit.prevent="handleUpdateProduct">
+      <form class="flex flex-col items-center justify-center" @submit.prevent="isUpdateModal = true">
         <p>Photo (Optional)</p>
         <img
           class="rounded-lg mt-2 w-64 h-64 object-cover"
           :src="product_formData.imagePreview || 'https://placehold.co/250'"
           alt="Photo"
         />
-        <!-- <img
-          class="rounded-lg mt-2 w-64 h-64 object-cover"
-          :src="product_formData.image || 'https://placehold.co/250'"
-          alt="Photo"
-        /> -->
-
-        <!-- Hidden File Input -->
         <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
 
-        <!-- PrimeVue Button as file selector -->
         <PrimeVueButton
           label="Select Image"
-          icon="pi pi-image"
           class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
           variant="outlined"
           @click="triggerFileInput"
-        />
+        >
+          <template #icon>
+            <img :src="imageSVG" alt="" />
+          </template>
+        </PrimeVueButton>
 
         <div class="grid grid-cols-2 w-full gap-8 mt-8">
           <AppBaseFormGroup
@@ -240,10 +282,12 @@ onBeforeRouteLeave((to, from, next) => {
                 filter
                 placeholder="Select"
                 class="w-full text-primary"
-                dropdown-icon="pi pi-circle"
                 :class="classes ? '' : ''"
                 v-on="useListenerForm(product_formValidations, 'categories')"
               >
+                <template #dropdownicon>
+                  <img :src="chevronDownSVG" alt="" />
+                </template>
                 <template #option="{ option }">
                   {{ option.category }}
                 </template>
@@ -305,10 +349,12 @@ onBeforeRouteLeave((to, from, next) => {
                       v-model="discount_unit"
                       :options="['Rp', '%']"
                       class="border-none bg-transparent"
-                      dropdown-icon="pi pi-circle"
                       @update:modelValue="calculateDiscount"
                       @change="calculateDiscount"
                     >
+                      <template #dropdownicon>
+                        <img :src="chevronDownSVG" alt="" />
+                      </template>
                       <template #option="{ option }">
                         {{ option }}
                       </template>
@@ -363,65 +409,68 @@ onBeforeRouteLeave((to, from, next) => {
                   </AppBaseFormGroup>
                 </div>
 
-                <div class="flex flex-col">
-                  <div class="flex gap-2">
-                    <AppBaseFormGroup
-                      v-slot="{ classes }"
-                      class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-                      is-name-as-label
-                      label-for="variant-name"
-                      name="Variant Name"
-                      class="w-full"
-                      :validators="
-                        useFormValidateEach({
-                          validation: product_formValidations.variants,
-                          fieldIndex: index,
-                          field: 'name',
-                        })
-                      "
+                <div class="flex gap-2">
+                  <div class="flex flex-col w-full">
+                    <label
+                      for="variant-price"
+                      class="flex gap-2 text-sm font-medium leading-6 text-gray-900 w-full"
                     >
-                      <PrimeVueInputNumber
-                        :id="`variant-price-${index}`"
-                        v-model="product_formData.variants[index].price"
-                        prefix="Rp "
-                        fluid
-                        :name="`variants.${index}.price`"
-                        class="border shadow-xs border-grayscale-30 rounded-lg w-full"
-                        :class="classes"
-                      />
-                    </AppBaseFormGroup>
-                    <PrimeVueButton
-                      icon="pi pi-times"
-                      variant="text"
-                      severity="danger"
-                      @click="removeVariant(index)"
+                      Additional Price
+                      <p class="text-gray-400">(Optional)</p>
+                    </label>
+                    <PrimeVueInputNumber
+                      :id="`variant-price-${index}`"
+                      v-model="product_formData.variants[index].price"
+                      prefix="Rp "
+                      fluid
+                      :name="`variants.${index}.price`"
+                      class="border shadow-xs border-grayscale-30 rounded-lg w-full"
+                      :class="classes"
                     />
                   </div>
+                  <PrimeVueButton variant="text" severity="danger" @click="removeVariant(index)">
+                    <img :src="closeRedSVG" alt="" />
+                  </PrimeVueButton>
                 </div>
               </div>
             </div>
 
             <PrimeVueButton
               label="Add Variant"
-              icon="pi pi-plus"
               class="mt-4 col-span-2 w-fit text-xl px-8 py-2 text-primary pl-4 bg-transparent border-none font-semibold flex items-center justify-center gap-2"
               @click="addVariant"
-            />
+            >
+              <template #icon>
+                <img :src="plusLineSVG" alt="" />
+              </template>
+            </PrimeVueButton>
           </div>
-          <div class="flex gap-4 mb-8">
-            <router-link to="/catalog/products">
+          <div class="flex justify-between">
+            <div class="flex gap-4 mb-8">
+              <router-link to="/catalog/products">
+                <PrimeVueButton
+                  label="Cancel"
+                  class="text-xl w-48 py-2 border-2 border-primary cursor-pointer rounded-lg text-primary bg-transparent font-semibold"
+                  unstyled
+                />
+              </router-link>
               <PrimeVueButton
-                label="Cancel"
-                class="text-xl w-48 py-2 border-2 border-primary cursor-pointer rounded-lg text-primary bg-transparent font-semibold"
+                :label="'Edit Product'"
+                class="text-xl w-48 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
                 unstyled
+                type="submit"
               />
-            </router-link>
+            </div>
+
             <PrimeVueButton
-              :label="'Edit Product'"
-              class="text-xl w-48 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
-              unstyled
-              type="submit"
-            />
+              label="Delete Product"
+              class="text-xl w-56 py-2 border-2 border-none cursor-pointer rounded-lg text-red-500 bg-transparent font-semibold"
+              @click="isDeleteOpen = true"
+            >
+              <template #icon>
+                <img :src="deleteSVG" alt="" />
+              </template>
+            </PrimeVueButton>
           </div>
         </div>
       </form>
@@ -430,7 +479,7 @@ onBeforeRouteLeave((to, from, next) => {
       <template #container>
         <div class="w-[35rem] p-8">
           <div class="flex flex-col items-center gap-4 text-center">
-            <span><i class="pi pi-trash" style="font-size: 2.5rem"></i></span>
+            <span><img :src="excludeSVG" alt="" /></span>
             <h1 class="text-2xl font-semibold">Are you sure you want to leave this page?</h1>
             <p>Any changes you make to the data will be lost if you leave this page without saving</p>
             <div class="flex items-center justify-between gap-4">
@@ -446,6 +495,63 @@ onBeforeRouteLeave((to, from, next) => {
                 @click="cancelLeave"
                 >Cancel</PrimeVueButton
               >
+            </div>
+          </div>
+        </div>
+      </template>
+    </PrimeVueDialog>
+
+    <PrimeVueDialog v-model:visible="isDeleteOpen" modal header="">
+      <template #container>
+        <div class="w-[35rem] p-8">
+          <div class="flex flex-col items-center gap-4 text-center">
+            <img :src="deletePolygonSVG" alt="Delete icon" class="mx-auto" />
+            <h1 class="text-2xl font-semibold">Are you sure you want to delete this product?</h1>
+            <p>This action cannot be undone, and the product will be removed from catalog</p>
+            <div class="flex items-center justify-between gap-4">
+              <PrimeVueButton
+                class="text-lg w-56 text-red-500 bg-transparent border-none"
+                variant="outlined"
+                label="Delete Product"
+                severity="danger"
+                @click="
+                  handleDelete();
+                  isDeleteOpen = false;
+                "
+              >
+                <template #icon>
+                  <img :src="deleteSVG" alt="" />
+                </template>
+              </PrimeVueButton>
+              <PrimeVueButton class="w-56 text-lg bg-primary border-primary" @click="isDeleteOpen = false"
+                >Cancel
+              </PrimeVueButton>
+            </div>
+          </div>
+        </div>
+      </template>
+    </PrimeVueDialog>
+
+    <PrimeVueDialog :visible="isUpdateModal" modal header="">
+      <template #container>
+        <div class="w-[35rem] p-8">
+          <div class="flex flex-col items-center gap-4 text-center">
+            <span><img :src="confirmationSVG" alt="" /></span>
+            <h1 class="text-2xl font-semibold">Are you sure want to update this product item?</h1>
+            <p>The update will affect the product items in the catalog</p>
+            <div class="flex items-center justify-between gap-4">
+              <PrimeVueButton
+                variant="text"
+                class="w-56 text-lg border-2 border-primary text-primary font-semibold"
+                @click="cancelUpdate"
+                >Cancel</PrimeVueButton
+              >
+              <PrimeVueButton
+                class="text-xl w-56 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
+                unstyled
+                label="Yes, I'm Sure"
+                @click="confirmUpdate"
+              />
             </div>
           </div>
         </div>

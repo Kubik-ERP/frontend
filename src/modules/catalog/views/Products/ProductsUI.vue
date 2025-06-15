@@ -1,10 +1,18 @@
 <script setup>
 import { ref } from 'vue';
-import { FilterMatchMode } from '@primevue/core/api';
 import ProductVariantPill from '../../components/ProductVariantPill.vue';
 import { useCategoryService } from '../../services/Category/CategoryService';
 import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
 import CategoryPill from '@/modules/catalog/components/Category/CategoryPill.vue';
+import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
+import deleteSVG from '@/app/assets/icons/delete.svg';
+import editSVG from '@/app/assets/icons/edit.svg';
+import plusLineWhiteSVG from '@/app/assets/icons/plus-line-white.svg';
+import threeDotsSVG from '@/app/assets/icons/three-dots.svg';
+import searchSVG from '@/app/assets/icons/search.svg';
+import chevronDownSVG from '@/app/assets/icons/chevron-down.svg';
+import chevronLeftSVG from '@/app/assets/icons/chevron-left.svg';
+import chevronRightSVG from '@/app/assets/icons/chevron-right.svg';
 
 const { getAllProducts, deleteProduct, getProductByCategories } = useProductService();
 
@@ -88,12 +96,8 @@ const displayPopover = (event, product) => {
   // console.log('product', product);
 };
 
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
-
 const selectedProducts = ref([]);
-const loading = ref(false);
+const loading = ref(true);
 const products = ref([]);
 
 const loadProducts = async () => {
@@ -103,7 +107,7 @@ const loadProducts = async () => {
     products.value = response.products;
     lastPage.value = response.lastPage;
     // console.log('🚀 ~ loadProducts ~ lastPage.value:', lastPage.value);
-    console.log('products', products.value);
+    // console.log('products', products.value);
   } catch (err) {
     console.error('Failed to fetch products:', err);
   } finally {
@@ -118,16 +122,15 @@ const handleDelete = async () => {
     await deleteProduct(selectedProduct.value.id);
     isDeleteOpen.value = false;
     if (selectedCategories.value.length > 0) {
-    console.log('multiple');
-    loadProductByCategories();
-  } else {
-    console.log('get all');
-    loadProducts();
-  }
+      // console.log('multiple');
+      loadProductByCategories();
+    } else {
+      // console.log('get all');
+      loadProducts();
+    }
   } catch (error) {
     console.error('Failed to delete product:', error);
-  }
-  finally {
+  } finally {
     loading.value = false;
   }
 };
@@ -135,7 +138,7 @@ const handleDelete = async () => {
 const onPageChange = event => {
   page.value = event.page + 1; // event.page is 0-based
   if (selectedCategories.value.length > 0) {
-    console.log('multiple');
+    // console.log('multiple');
     loadProductByCategories();
   } else {
     console.log('get all');
@@ -146,11 +149,11 @@ const onPageChange = event => {
 const handleSearch = () => {
   router.push({ query: { page: '1' } });
   page.value = 1;
- if (selectedCategories.value.length > 0) {
-    console.log('multiple');
+  if (selectedCategories.value.length > 0) {
+    // console.log('multiple');
     loadProductByCategories();
   } else {
-    console.log('get all');
+    // console.log('get all');
     loadProducts();
   }
 };
@@ -159,10 +162,10 @@ function goToPage(p) {
   router.push({ query: { page: p.toString() } });
   page.value = p;
   if (selectedCategories.value.length > 0) {
-    console.log('multiple');
+    // console.log('multiple');
     loadProductByCategories();
   } else {
-    console.log('get all');
+    // console.log('get all');
     loadProducts();
   }
 }
@@ -172,12 +175,12 @@ const nextPage = () => {
     page.value = page.value + 1;
     router.push({ query: { page: page.value.toString() } });
     if (selectedCategories.value.length > 0) {
-    console.log('multiple');
-    loadProductByCategories();
-  } else {
-    console.log('get all');
-    loadProducts();
-  }
+      // console.log('multiple');
+      loadProductByCategories();
+    } else {
+      // console.log('get all');
+      loadProducts();
+    }
   }
 };
 
@@ -186,12 +189,12 @@ const prevPage = () => {
     page.value = page.value - 1;
     router.push({ query: { page: page.value.toString() } });
     if (selectedCategories.value.length > 0) {
-    console.log('multiple');
-    loadProductByCategories();
-  } else {
-    console.log('get all');
-    loadProducts();
-  }
+      // console.log('multiple');
+      loadProductByCategories();
+    } else {
+      // console.log('get all');
+      loadProducts();
+    }
   }
 };
 
@@ -212,10 +215,8 @@ onMounted(() => {
         v-model:selection="selectedProducts"
         :value="products"
         :rows="limit"
-        :filters="filters"
         data-key="ID"
         paginator
-        :loading="loading"
         @page="onPageChange"
       >
         <template #header>
@@ -232,10 +233,12 @@ onMounted(() => {
                   :options="categories"
                   option-label="category"
                   filter
-                  placeholder="Select"
+                  placeholder="Filter By Categories"
                   class="w-full text-primary"
-                  dropdown-icon="pi pi-circle"
                 >
+                  <template #dropdownicon>
+                    <img :src="chevronDownSVG" alt="" />
+                  </template>
                   <template #option="{ option }">
                     {{ option.category }}
                   </template>
@@ -243,7 +246,7 @@ onMounted(() => {
               </div>
               <form @submit.prevent="handleSearch">
                 <PrimeVueIconField>
-                  <PrimeVueInputIcon><i class="pi pi-search" /></PrimeVueInputIcon>
+                  <PrimeVueInputIcon><img :src="searchSVG" alt="" /></PrimeVueInputIcon>
                   <PrimeVueInputText v-model="search" placeholder="Keyword Search" />
                 </PrimeVueIconField>
               </form>
@@ -253,48 +256,85 @@ onMounted(() => {
                   type="button"
                   severity="info"
                   label="Add Product"
-                  icon="pi pi-plus"
                   class="bg-primary border-primary"
-                />
+                >
+                  <template #icon>
+                    <img :src="plusLineWhiteSVG" alt="" />
+                  </template>
+                </PrimeVueButton>
               </router-link>
             </div>
           </div>
         </template>
+
         <template #empty> No products found. </template>
-        <template #loading> Loading products data. Please wait. </template>
 
-        <PrimeVueColumn selection-mode="multiple" header-style="width: 3rem"></PrimeVueColumn>
-        <!-- <PrimeVueColumn sortable field="id" header="Product ID" style="width: 10%"></PrimeVueColumn> -->
-        <PrimeVueColumn sortable field="name" header="Name" style="width: 30%"></PrimeVueColumn>
-        <PrimeVueColumn sortable field="categories" header="Category" style="width: 15%">
+        <PrimeVueColumn sortable field="name" header="Name">
           <template #body="{ data }">
-            <CategoryPill :categories="data.categoriesHasProducts" />
-          </template>
-        </PrimeVueColumn>
-        <PrimeVueColumn sortable field="variants" header="Variants" style="width: 35%">
-          <template #body="{ data }">
-            <ProductVariantPill :variants="data.variantHasProducts" />
+            <template v-if="loading">
+              <PrimeVueSkeleton width="150px" height="1.5rem" />
+            </template>
+            <template v-else>
+              {{ data.name }}
+            </template>
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn sortable field="price" header="Price" style="width: 15%">
+        <PrimeVueColumn sortable field="categories" header="Category">
           <template #body="{ data }">
-            {{ formatCurrency(data.price) }}
+            <template v-if="loading">
+              <PrimeVueSkeleton width="200px" height="1.5rem" />
+            </template>
+            <template v-else>
+              <CategoryPill :categories="data.categoriesHasProducts" />
+            </template>
           </template>
         </PrimeVueColumn>
-        <PrimeVueColumn sortable field="discount_price" header="Discount Price" style="width: 15%">
+
+        <PrimeVueColumn sortable field="variants" header="Variants">
           <template #body="{ data }">
-            {{ formatCurrency(data.discount_price) }}
+            <template v-if="loading">
+              <PrimeVueSkeleton width="180px" height="1.5rem" />
+            </template>
+            <template v-else>
+              <ProductVariantPill :variants="data.variantHasProducts" />
+            </template>
           </template>
         </PrimeVueColumn>
+
+        <PrimeVueColumn sortable field="price" header="Price">
+          <template #body="{ data }">
+            <template v-if="loading">
+              <PrimeVueSkeleton width="80px" height="1.5rem" />
+            </template>
+            <template v-else>
+              {{ formatCurrency(data.price) }}
+            </template>
+          </template>
+        </PrimeVueColumn>
+
+        <PrimeVueColumn sortable field="discount_price" header="Discount Price">
+          <template #body="{ data }">
+            <template v-if="loading">
+              <PrimeVueSkeleton width="100px" height="1.5rem" />
+            </template>
+            <template v-else>
+              {{ formatCurrency(data.discount_price) }}
+            </template>
+          </template>
+        </PrimeVueColumn>
+
         <PrimeVueColumn>
           <template #body="slotProps">
             <PrimeVueButton
               type="text"
-              icon="pi pi-ellipsis-v"
               class="bg-transparent text-gray-500 border-none float-end"
               @click="displayPopover($event, slotProps.data)"
-            ></PrimeVueButton>
+            >
+              <template #icon>
+                <img :src="threeDotsSVG" alt="" />
+              </template>
+            </PrimeVueButton>
           </template>
         </PrimeVueColumn>
 
@@ -302,12 +342,16 @@ onMounted(() => {
           <div class="flex items-center gap-2 justify-between w-full py-2">
             <!-- Previous Page Button -->
             <PrimeVueButton
-              icon="pi pi-angle-left"
+              
               variant="text"
               label="Previous"
               class="border border-primary text-primary hover:bg-transparent"
               @click="prevPage()"
-            />
+            >
+              <template #icon>
+                <img :src="chevronLeftSVG" alt="" />
+              </template>
+          </PrimeVueButton>
 
             <div class="flex gap-1">
               <PrimeVueButton
@@ -325,32 +369,31 @@ onMounted(() => {
 
             <!-- Next Page Button -->
             <PrimeVueButton
-              icon="pi pi-angle-right"
               variant="text"
               label="Next"
               class="border border-primary text-primary hover:bg-transparent flex-row-reverse"
               @click="nextPage()"
-            />
+            >
+              <template #icon>
+                <img :src="chevronRightSVG" alt="" />
+              </template>
+          </PrimeVueButton>
           </div>
         </template>
       </PrimeVueDataTable>
 
       <PrimeVuePopover ref="op">
         <div class="flex flex-col items-start">
-          <PrimeVueButton
-            variant="text"
-            label="Edit"
-            icon="pi pi-pen-to-square"
-            class="text-black"
-            @click="EditProducts"
-          />
-          <PrimeVueButton
-            variant="text"
-            label="Delete"
-            icon="pi pi-trash"
-            class="text-red-500"
-            @click="isDeleteOpen = true"
-          />
+          <PrimeVueButton variant="text" label="Edit" class="text-black" @click="EditProducts">
+            <template #icon>
+              <img :src="editSVG" alt="" />
+            </template>
+          </PrimeVueButton>
+          <PrimeVueButton variant="text" label="Delete" class="text-black" @click="isDeleteOpen = true">
+            <template #icon>
+              <img :src="deleteSVG" alt="" />
+            </template>
+          </PrimeVueButton>
         </div>
       </PrimeVuePopover>
 
@@ -358,21 +401,24 @@ onMounted(() => {
         <template #container>
           <div class="w-[35rem] p-8">
             <div class="flex flex-col items-center gap-4 text-center">
-              <span><i class="pi pi-trash" style="font-size: 2.5rem"></i></span>
+              <img :src="deletePolygonSVG" alt="Delete icon" class="mx-auto" />
               <h1 class="text-2xl font-semibold">Are you sure you want to delete this product?</h1>
               <p>This action cannot be undone, and the product will be removed from catalog</p>
               <div class="flex items-center justify-between gap-4">
                 <PrimeVueButton
-                  class="text-lg w-56"
+                  class="text-lg w-56 text-red-500 bg-transparent border-none"
                   variant="outlined"
-                  icon="pi pi-trash"
                   label="Delete Product"
                   severity="danger"
                   @click="
                     handleDelete(selectedProduct.id);
                     isDeleteOpen = false;
                   "
-                />
+                >
+                  <template #icon>
+                    <img :src="deleteSVG" alt="" />
+                  </template>
+                </PrimeVueButton>
                 <PrimeVueButton class="w-56 text-lg bg-primary border-primary" @click="isDeleteOpen = false"
                   >Cancel
                 </PrimeVueButton>
