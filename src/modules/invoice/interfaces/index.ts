@@ -88,6 +88,7 @@ export interface IInvoiceData {
   updateAt: string;
   deleteAt: string | null;
   subtotal: number;
+  invoiceNumber: string;
   orderType: 'dine_in' | 'take_away' | 'self_order';
   paidAt: string | null;
   taxId: string | null;

@@ -34,7 +34,7 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
       <div class="invoice-datetime-or-status-content">
         <span class="date">{{ useFormatDate(new Date(invoice_invoiceData.data.createdAt)) }}</span>
         <!-- TODO: add id invoice -->
-        <span class="cashier">KASIR {{ invoice_invoiceData.data.id }}</span>
+        <span class="cashier">KASIR {{ invoice_invoiceData.data.invoiceNumber }}</span>
       </div>
     </div>
 
