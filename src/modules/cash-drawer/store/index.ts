@@ -7,14 +7,14 @@ import {
   CASH_DRAWER_OPEN_ENDPOINT,
   CASH_DRAWER_STATUS_ENDPOINT,
   CASH_DRAWER_TRANSACTION_ENDPOINT,
-} from '@/modules/cash-in-out/constants/cash-in-out-api.constant';
+} from '../constants';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
+import type { ICashDrawerOpenFormData, ICashDrawerRequestQuery } from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
-import { ICashDrawerOpenFormData, ICashDrawerRequestQuery } from '../interfaces/cash-drawer-list.interface';
 
 export const useCashDrawerStore = defineStore('cash-drawer', {
   state: () => ({
@@ -38,6 +38,8 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
       type: 'in' | 'out',
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
+      this.cashDrawer_isLoading = true;
+
       try {
         const response = await httpClient.post(
           `${CASH_DRAWER_ADD_TRANSACTION_ENDPOINT}/${type}/${cashDrawerId}`,
@@ -54,6 +56,8 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
         } else {
           return Promise.reject(new Error(String(error)));
         }
+      } finally {
+        this.cashDrawer_isLoading = false;
       }
     },
 
@@ -64,6 +68,8 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
      * @access private
      */
     async cashDrawer_close(cashDrawerId: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+      this.cashDrawer_isLoading = true;
+
       try {
         const response = await httpClient.post(
           `${CASH_DRAWER_CLOSE_ENDPOINT}/${cashDrawerId}`,
@@ -80,6 +86,8 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
         } else {
           return Promise.reject(new Error(String(error)));
         }
+      } finally {
+        this.cashDrawer_isLoading = false;
       }
     },
 
@@ -120,6 +128,8 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
       params: ICashDrawerRequestQuery,
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<unknown> {
+      this.cashDrawer_isLoading = true;
+
       try {
         const response = await httpClient.get(`${CASH_DRAWER_LIST_ENDPOINT}/${storeId}`, {
           params,
@@ -133,6 +143,8 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
         } else {
           return Promise.reject(new Error(String(error)));
         }
+      } finally {
+        this.cashDrawer_isLoading = false;
       }
     },
 
@@ -147,6 +159,8 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
       payload: ICashDrawerOpenFormData,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
+      this.cashDrawer_isLoading = true;
+
       try {
         const response = await httpClient.post(`${CASH_DRAWER_OPEN_ENDPOINT}/${cashDrawerId}`, payload, {
           ...requestConfigurations,
@@ -159,6 +173,8 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
         } else {
           return Promise.reject(new Error(String(error)));
         }
+      } finally {
+        this.cashDrawer_isLoading = false;
       }
     },
 
@@ -169,6 +185,8 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
      * @access private
      */
     async cashDrawer_status(cashDrawerId: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+      this.cashDrawer_isLoading = true;
+
       try {
         const response = await httpClient.get(`${CASH_DRAWER_STATUS_ENDPOINT}/${cashDrawerId}`, {
           ...requestConfigurations,
@@ -181,6 +199,8 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
         } else {
           return Promise.reject(new Error(String(error)));
         }
+      } finally {
+        this.cashDrawer_isLoading = false;
       }
     },
 
@@ -194,6 +214,8 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
       cashDrawerId: string,
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<unknown> {
+      this.cashDrawer_isLoading = true;
+
       try {
         const response = await httpClient.get(`${CASH_DRAWER_TRANSACTION_ENDPOINT}/${cashDrawerId}`, {
           ...requestConfigurations,
@@ -206,6 +228,8 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
         } else {
           return Promise.reject(new Error(String(error)));
         }
+      } finally {
+        this.cashDrawer_isLoading = false;
       }
     },
   },

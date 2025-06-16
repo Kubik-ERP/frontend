@@ -13,6 +13,7 @@ export const useOutletStore = defineStore('outlet', {
     outlet_detail: null,
     outlet_isLoading: false,
     outlet_lists: [],
+    outlet_currentOutlet: null,
   }),
   getters: {
     /**
@@ -176,5 +177,10 @@ export const useOutletStore = defineStore('outlet', {
         this.outlet_isLoading = false;
       }
     },
+  },
+  persist: {
+    key: 'outlet',
+    pick: ['outlet_currentOutlet'],
+    storage: localStorage,
   },
 });

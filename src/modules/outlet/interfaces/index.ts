@@ -21,7 +21,8 @@ export interface IOutletDetailResponse {
 }
 
 export interface IOutletStateStore {
+  outlet_detail: IOutlet | null;
   outlet_isLoading: boolean;
   outlet_lists: IOutlet[];
-  outlet_detail: IOutlet | null;
+  outlet_currentOutlet: IOutlet | null;
 }

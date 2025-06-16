@@ -1,30 +1,36 @@
 <script setup lang="ts">
 // Services
-import { useCashDrawerService } from '../services/cash-drawer.service';
+import { useCashDrawerCashRegisterService } from '../services/cash-drawer-cash-register.service';
 
 /**
  * @description Destructure all the data and methods what we need
  */
 const {
-  cashDrawer_getIconOfTypeCashRegister,
-  cashDrawer_listColumnsOfCashRegister,
-  cashDrawer_listTypesOfCashRegister,
-  cashDrawer_listValuesOfCashRegister
-} = useCashDrawerService();
+  cashDrawerCashRegister_getIconOfTypeCashRegister,
+  cashDrawerCashRegister_listColumns,
+  cashDrawerCashRegister_listTypesOfCashRegister,
+  cashDrawerCashRegister_listValuesOfCashRegister,
+} = useCashDrawerCashRegisterService();
 </script>
-
 
 <template>
   <section id="sales-order-cash-register" class="flex flex-col relative inset-0 z-0">
-    <AppBaseDataTable :columns="cashDrawer_listColumnsOfCashRegister" :data="cashDrawer_listValuesOfCashRegister"
-      is-using-custom-body is-using-custom-filter is-using-custom-header>
+    <AppBaseDataTable
+      :columns="cashDrawerCashRegister_listColumns"
+      :data="cashDrawerCashRegister_listValuesOfCashRegister"
+      is-using-custom-body
+      is-using-custom-filter
+      is-using-custom-header
+    >
       <template #header>
         <header class="flex flex-col">
           <div class="flex flex-col items-center w-full px-6 py-5 gap-2">
             <section class="cash-register-actions flex items-end gap-6">
               <PrimeVueButton
                 class="border-2 border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
-                severity="secondary" variant="outlined">
+                severity="secondary"
+                variant="outlined"
+              >
                 <template #default>
                   <section class="cash-out-button flex items-center gap-2">
                     <AppBaseSvg name="minus" />
@@ -34,22 +40,20 @@ const {
               </PrimeVueButton>
 
               <section id="balances" class="flex flex-col items-center gap-2">
-                <h6 class="font-semibold text-grayscale-70 text-xs">
-                  Total Balance
-                </h6>
+                <h6 class="font-semibold text-grayscale-70 text-xs">Total Balance</h6>
 
                 <div class="flex items-end gap-1">
                   <span class="font-semibold text-text-disabled text-sm">Rp</span>
 
-                  <h2 class="font-bold text-primary text-4xl">
-                    700.000,00
-                  </h2>
+                  <h2 class="font-bold text-primary text-4xl">700.000,00</h2>
                 </div>
               </section>
 
               <PrimeVueButton
                 class="border-2 border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
-                severity="secondary" variant="outlined">
+                severity="secondary"
+                variant="outlined"
+              >
                 <template #default>
                   <section id="content" class="flex items-center gap-2">
                     <AppBaseSvg name="plus-line" />
@@ -59,8 +63,11 @@ const {
               </PrimeVueButton>
             </section>
 
-            <PrimeVueButton class="bg-error-main border-none w-fit px-4 py-2 rounded-lg basic-smooth-animation"
-              severity="secondary" variant="outlined">
+            <PrimeVueButton
+              class="bg-error-main border-none w-fit px-4 py-2 rounded-lg basic-smooth-animation"
+              severity="secondary"
+              variant="outlined"
+            >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
                   <AppBaseSvg name="close-circle" class="!w-5 !h-5" />
@@ -70,8 +77,10 @@ const {
             </PrimeVueButton>
           </div>
 
-          <section id="sales-order-cash-register-filter"
-            class="flex items-center justify-between w-full border-b border-t border-solid border-grayscale-20 px-6 py-5">
+          <section
+            id="sales-order-cash-register-filter"
+            class="flex items-center justify-between w-full border-b border-t border-solid border-grayscale-20 px-6 py-5"
+          >
             <section id="detail-information">
               <table>
                 <tbody>
@@ -93,7 +102,9 @@ const {
             <section id="form-filter" class="flex items-center gap-4 w-fit">
               <PrimeVueButton
                 class="border-2 border-solid border-primary basic-smooth-animation w-full px-3 py-2 rounded-lg hover:bg-grayscale-10"
-                severity="secondary" variant="outlined">
+                severity="secondary"
+                variant="outlined"
+              >
                 <template #default>
                   <section id="content" class="flex items-center gap-2">
                     <AppBaseSvg name="export" />
@@ -102,8 +113,13 @@ const {
                 </template>
               </PrimeVueButton>
 
-              <PrimeVueSelect :options="cashDrawer_listTypesOfCashRegister" option-label="label" option-value="value"
-                placeholder="Type" class="text-sm w-full min-w-60">
+              <PrimeVueSelect
+                :options="cashDrawerCashRegister_listTypesOfCashRegister"
+                option-label="label"
+                option-value="value"
+                placeholder="Type"
+                class="text-sm w-full min-w-60"
+              >
               </PrimeVueSelect>
             </section>
           </section>
@@ -113,7 +129,10 @@ const {
       <template #body="{ column, data }">
         <template v-if="column.value === 'type'">
           <section id="type" class="flex items-center gap-3">
-            <AppBaseSvg :name="cashDrawer_getIconOfTypeCashRegister(data[column.value])" class="!w-5 !h-5" />
+            <AppBaseSvg
+              :name="cashDrawerCashRegister_getIconOfTypeCashRegister(data[column.value])"
+              class="!w-5 !h-5"
+            />
             <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
           </section>
         </template>
@@ -125,9 +144,10 @@ const {
         </template>
 
         <template v-else-if="column.value === 'cashOut'">
-          <span class="font-normal text-sm" :class="[
-            data[column.value] > 0 ? 'text-text-action-error' : 'text-text-primary'
-          ]">
+          <span
+            class="font-normal text-sm"
+            :class="[data[column.value] > 0 ? 'text-text-action-error' : 'text-text-primary']"
+          >
             {{ useCurrencyFormat(data[column.value]) }}
           </span>
         </template>
@@ -139,8 +159,12 @@ const {
         </template>
 
         <template v-else-if="column.value === 'action'">
-          <PrimeVueButton v-if="data.type === 'Cash In' || data.type === 'Cash Out'" variant="text" rounded
-            aria-label="detail">
+          <PrimeVueButton
+            v-if="data.type === 'Cash In' || data.type === 'Cash Out'"
+            variant="text"
+            rounded
+            aria-label="detail"
+          >
             <template #icon>
               <AppBaseSvg name="delete" class="!w-5 !h-5" />
             </template>

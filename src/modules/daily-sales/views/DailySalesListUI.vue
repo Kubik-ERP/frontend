@@ -1,41 +1,43 @@
 <script setup lang="ts">
 // Services
-import { useDailySalesService } from '../services/daily-sales.service';
+import { useDailySalesListService } from '../services/daily-sales-list.service';
 
 /**
  * @description Destructure all the data and methods what we need
  */
 const {
-  dailySales_getClassOfOrderStatus,
-  dailySales_getClassOfOrderType,
-  dailySales_getClassOfPaymentStatus,
-  dailySales_handleOnPageChange,
-  dailySales_listColumns,
-  dailySales_listTypesOfOrderStatus,
-  dailySales_listTypesOfOrderType,
-  dailySales_listTypesOfPaymentStatus,
-  dailySales_data,
-} = useDailySalesService();
+  dailySalesList_columns,
+  dailySalesList_getClassOfOrderStatus,
+  dailySalesList_getClassOfOrderType,
+  dailySalesList_getClassOfPaymentStatus,
+  dailySalesList_isLoading,
+  dailySalesList_onChangePage,
+  dailySalesList_queryParams,
+  dailySalesList_typesOfOrderStatus,
+  dailySalesList_typesOfOrderType,
+  dailySalesList_typesOfPaymentStatus,
+  dailySalesList_values,
+} = useDailySalesListService();
 </script>
 
 <template>
-  <section id="sales-order-daily-sales" class="flex flex-col relative inset-0 z-0">
+  <section id="daily-sales" class="flex flex-col relative inset-0 z-0">
     <AppBaseDataTable
       btn-cta-create-title="Add Cash In/Out"
-      :columns="dailySales_listColumns"
-      :data="dailySales_data.items"
+      :columns="dailySalesList_columns"
+      :data="dailySalesList_values.data.items"
       header-title="Daily Sales"
-      :rows-per-page="dailySales_data.meta.pageSize"
-      :total-records="dailySales_data.meta.total"
-      :first="(dailySales_data.meta.page - 1) * dailySales_data.meta.pageSize"
-      :is-loading="dailySales_data.isLoading"
+      :rows-per-page="dailySalesList_values.data.meta.pageSize"
+      :total-records="dailySalesList_values.data.meta.total"
+      :first="(dailySalesList_values.data.meta.page - 1) * dailySalesList_values.data.meta.pageSize"
+      :is-loading="dailySalesList_isLoading"
       is-using-server-side-pagination
       is-using-custom-body
       is-using-custom-filter
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-header
-      @update:currentPage="dailySales_handleOnPageChange"
+      @update:currentPage="dailySalesList_onChangePage"
     >
       <template #header-prefix>
         <div class="flex items-center gap-2">
@@ -43,7 +45,7 @@ const {
 
           <PrimeVueChip
             class="text-xs font-normal bg-secondary-background text-green-primary"
-            :label="`${dailySales_data.meta.total} Invoices`"
+            :label="`${dailySalesList_values.data.meta.total} Invoices`"
           />
         </div>
       </template>
@@ -57,7 +59,7 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVueInputText
-            v-model="dailySales_data.filter.id"
+            v-model="dailySalesList_queryParams.id"
             placeholder="Search Invoice ID"
             class="text-sm w-full min-w-80"
           />
@@ -70,7 +72,7 @@ const {
 
           <div class="flex items-center gap-4 w-full">
             <PrimeVueDatePicker
-              v-model="dailySales_data.filter.createdAtFrom"
+              v-model="dailySalesList_queryParams.createdAtFrom"
               class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
               placeholder="Real Time "
               show-on-focus
@@ -79,9 +81,9 @@ const {
             />
 
             <PrimeVueMultiSelect
-              v-model="dailySales_data.filter.orderType"
+              v-model="dailySalesList_queryParams.orderType"
               display="chip"
-              :options="dailySales_listTypesOfOrderType"
+              :options="dailySalesList_typesOfOrderType"
               option-label="label"
               option-value="value"
               filter
@@ -90,9 +92,9 @@ const {
             />
 
             <PrimeVueMultiSelect
-              v-model="dailySales_data.filter.paymentStatus"
+              v-model="dailySalesList_queryParams.paymentStatus"
               display="chip"
-              :options="dailySales_listTypesOfPaymentStatus"
+              :options="dailySalesList_typesOfPaymentStatus"
               option-label="label"
               option-value="value"
               filter
@@ -101,9 +103,9 @@ const {
             />
 
             <PrimeVueMultiSelect
-              v-model="dailySales_data.filter.orderStatus"
+              v-model="dailySalesList_queryParams.orderStatus"
               display="chip"
-              :options="dailySales_listTypesOfOrderStatus"
+              :options="dailySalesList_typesOfOrderStatus"
               option-label="label"
               option-value="value"
               filter
@@ -131,23 +133,29 @@ const {
 
         <template v-else-if="column.value === 'orderType'">
           <PrimeVueChip
-            :class="[dailySales_getClassOfOrderType(data[column.value]), 'text-xs font-normal']"
-            :label="dailySales_listTypesOfOrderType.find(f => f.value === data[column.value])?.label || ''"
+            :class="[dailySalesList_getClassOfOrderType(data[column.value]), 'text-xs font-normal']"
+            :label="dailySalesList_typesOfOrderType.find(f => f.value === data[column.value])?.label || ''"
           />
         </template>
 
         <template v-else-if="column.value === 'paymentStatus'">
           <PrimeVueChip
-            :class="[dailySales_getClassOfPaymentStatus(data[column.value]), 'text-xs font-normal']"
-            :label="dailySales_listTypesOfPaymentStatus.find(f => f.value === data[column.value])?.label || ''"
+            :class="[dailySalesList_getClassOfPaymentStatus(data[column.value]), 'text-xs font-normal']"
+            :label="dailySalesList_typesOfPaymentStatus.find(f => f.value === data[column.value])?.label || ''"
           />
         </template>
 
         <template v-else-if="column.value === 'orderStatus'">
-          <PrimeVueChip
-            :class="[dailySales_getClassOfOrderStatus(data[column.value]), 'text-xs font-normal']"
-            :label="dailySales_listTypesOfOrderStatus.find(f => f.value === data[column.value])?.label || ''"
-          />
+          <template v-if="data[column.value]">
+            <PrimeVueChip
+              :class="[dailySalesList_getClassOfOrderStatus(data[column.value]), 'text-xs font-normal']"
+              :label="dailySalesList_typesOfOrderStatus.find(f => f.value === data[column.value])?.label || ''"
+            />
+          </template>
+
+          <template v-else>
+            <span class="font-normal text-sm text-text-primary">N/A</span>
+          </template>
         </template>
 
         <template v-else-if="column.value === 'action'">

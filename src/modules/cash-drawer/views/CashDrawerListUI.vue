@@ -1,4 +1,8 @@
 <script setup lang="ts">
+// Components
+import CashDrawerListTable from '../components/CashDrawerListTable.vue';
+import CashDrawerListOpenRegisterDialog from '../components/CashDrawerListOpenRegisterDialog.vue';
+
 // Services
 import { useCashDrawerListService } from '../services/cash-drawer-list.service';
 
@@ -7,63 +11,46 @@ import { useCashDrawerListService } from '../services/cash-drawer-list.service';
  */
 const {
   cashDrawerList_columns,
-  cashDrawerList_fetchListTransactions,
-  // cashDrawerList_formDataOfOpenRegister,
+  // cashDrawerList_fetchListTransactions,
+  cashDrawerList_formDataOfOpenRegister,
+  cashDrawerList_formValidationsOfOpenRegister,
   cashDrawerList_getClassOfStatus,
   cashDrawerList_isLoading,
-  cashDrawerList_onOpenDialogOpenRegister,
-  // cashDrawerList_queryParams,
+  cashDrawerList_onCloseOpenRegisterDialog,
+  cashDrawerList_onShowOpenRegisterDialog,
+  cashDrawerList_queryParams,
+  cashDrawerList_suggestionRegisterBalance,
   cashDrawerList_values,
 } = useCashDrawerListService();
 
 /**
+ * @description Provide all the data and methods what we need
+ */
+provide('cashDrawerList', {
+  cashDrawerList_columns,
+  cashDrawerList_formDataOfOpenRegister,
+  cashDrawerList_formValidationsOfOpenRegister,
+  cashDrawerList_getClassOfStatus,
+  cashDrawerList_isLoading,
+  cashDrawerList_onCloseOpenRegisterDialog,
+  cashDrawerList_onShowOpenRegisterDialog,
+  cashDrawerList_queryParams,
+  cashDrawerList_suggestionRegisterBalance,
+  cashDrawerList_values,
+});
+
+/**
  * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
  */
-onMounted(async () => {
-  await cashDrawerList_fetchListTransactions();
-});
+// onMounted(async () => {
+//   await cashDrawerList_fetchListTransactions();
+// })
 </script>
 
 <template>
   <section id="sales-order-cash-drawer" class="flex flex-col relative inset-0 z-0">
-    <AppBaseDataTable
-      btn-cta-create-title="Open Register"
-      :columns="cashDrawerList_columns"
-      :data="cashDrawerList_values"
-      header-title="Cash Drawer"
-      is-using-btn-cta-create
-      is-using-custom-body
-      :is-loading="cashDrawerList_isLoading"
-      @click-btn-cta-create="cashDrawerList_onOpenDialogOpenRegister"
-    >
-      <template #body="{ column, data }">
-        <template v-if="column.value === 'expectedBalance' || column.value === 'actualBalance'">
-          <span class="font-normal text-sm text-text-primary">
-            {{ useCurrencyFormat(data[column.value]) }}
-          </span>
-        </template>
-
-        <template v-else-if="column.value === 'status'">
-          <PrimeVueChip
-            :class="[cashDrawerList_getClassOfStatus(data[column.value]), 'text-xs font-normal']"
-            :label="data[column.value]"
-          />
-        </template>
-
-        <template v-else-if="column.value === 'action'">
-          <PrimeVueButton variant="text" rounded aria-label="detail">
-            <template #icon>
-              <AppBaseSvg name="eye-visible" class="!w-5 !h-5" />
-            </template>
-          </PrimeVueButton>
-        </template>
-
-        <template v-else>
-          <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
-        </template>
-      </template>
-    </AppBaseDataTable>
-
+    <CashDrawerListTable />
+    <CashDrawerListOpenRegisterDialog />
     <AppBaseDialogConfirmation id="sales-order-cash-drawer-dialog-confirmation" />
   </section>
 </template>

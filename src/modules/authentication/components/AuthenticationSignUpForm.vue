@@ -105,6 +105,11 @@ const {
               v-model="authenticationSignUp_formData.phoneCountryCode"
               filter
               :options="COUNTRY_INFORMATIONS"
+              :option-label="
+                value => {
+                  return `${value.name} (${value.dialCodes})`;
+                }
+              "
               option-value="dialCodes"
               placeholder="+62"
               class="text-sm h-full min-h-9 w-full"
@@ -114,7 +119,7 @@ const {
               <template #option="{ option }">
                 <section id="phone-option" class="flex items-center gap-1">
                   <img :src="option.image" alt="country-flag" class="w-6 h-6" />
-                  <span class="text-sm">{{ option.dialCodes }}</span>
+                  <span class="text-sm">{{ option.name }} ({{ option.dialCodes }})</span>
                 </section>
               </template>
 
