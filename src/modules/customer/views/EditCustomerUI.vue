@@ -1,7 +1,12 @@
 <script setup>
+import excludeSVG from '@/app/assets/icons/exclude.svg';
+import deleteSVG from '@/app/assets/icons/delete.svg';
+import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
+
 import CustomerTags from '@/modules/customer/components/addCustomer/tags.vue';
 import { useCustomerService } from '../services/CustomersService';
-const { customer_FormData, customer_formValidations, updateCustomer, getCustomerByID } = useCustomerService();
+const { customer_FormData, customer_formValidations, updateCustomer, getCustomerByID, deleteCustomer } =
+  useCustomerService();
 
 function clearForm() {
   customer_formValidations.value.$reset();
@@ -33,6 +38,14 @@ const handleEditCustomer = async () => {
   } catch (error) {
     console.error(error);
   }
+};
+
+const isDeleteOpen = ref(false);
+const handleDelete = async () => {
+  isDeleteOpen.value = false;
+  deleteCustomer(route.params.id);
+  hasConfirmedLeave = true;
+  router.push({ name: 'customer-list' });
 };
 
 const router = useRouter();
@@ -254,25 +267,72 @@ onMounted(() => {
     <div></div>
 
     <!-- canccel and add button -->
-    <div class="flex gap-4 grid-cols-2">
-      <router-link to="/customer">
+    <div class="flex items-center justify-between col-span-2">
+      <div class="flex gap-2">
+        <router-link to="/customer">
+          <PrimeVueButton
+            type="button"
+            label="Cancel"
+            severity="info"
+            variant="outlined"
+            class="w-48 text-primary border-primary"
+          ></PrimeVueButton>
+        </router-link>
         <PrimeVueButton
-          type="button"
-          label="Cancel"
-          severity="info"
-          variant="outlined"
-          class="w-48 text-primary border-primary"
+          type="submit"
+          label="Edit Customer"
+          class="w-48 bg-primary border-primary"
         ></PrimeVueButton>
-      </router-link>
-      <PrimeVueButton type="submit" label="Edit Customer" class="w-48 bg-primary border-primary"></PrimeVueButton>
+      </div>
+
+      <PrimeVueButton
+        label="Delete Customer"
+        class="text-xl w-56 py-2 border-2 border-none cursor-pointer rounded-lg text-red-500 bg-transparent font-semibold"
+        @click="isDeleteOpen = true"
+      >
+        <template #icon>
+          <img :src="deleteSVG" alt="" />
+        </template>
+      </PrimeVueButton>
     </div>
   </form>
+
+  <PrimeVueDialog v-model:visible="isDeleteOpen" modal header="">
+    <template #container>
+      <div class="w-[35rem] p-8">
+        <div class="flex flex-col items-center gap-4 text-center">
+          <img :src="deletePolygonSVG" alt="Delete icon" class="mx-auto" />
+          <h1 class="text-2xl font-semibold">Are you sure want to delete this customer data?</h1>
+          <p>Deleting this customer data will permanently remove it from the system</p>
+          <div class="flex items-center justify-between gap-4">
+            <PrimeVueButton
+              class="text-lg w-56 text-red-500 bg-transparent border-none"
+              variant="outlined"
+              label="Delete Customer"
+              severity="danger"
+              @click="
+                handleDelete();
+                isDeleteOpen = false;
+              "
+            >
+              <template #icon>
+                <img :src="deleteSVG" alt="" />
+              </template>
+            </PrimeVueButton>
+            <PrimeVueButton class="w-56 text-lg bg-primary border-primary" @click="isDeleteOpen = false"
+              >Cancel
+            </PrimeVueButton>
+          </div>
+        </div>
+      </div>
+    </template>
+  </PrimeVueDialog>
 
   <PrimeVueDialog :visible="isLeavingModal" modal header="">
     <template #container>
       <div class="w-[35rem] p-8">
         <div class="flex flex-col items-center gap-4 text-center">
-          <span><i class="pi pi-trash" style="font-size: 2.5rem"></i></span>
+          <span><img :src="excludeSVG" alt="" /></span>
           <h1 class="text-2xl font-semibold">Are you sure you want to leave this page?</h1>
           <p>Any changes you make to the data will be lost if you leave this page without saving</p>
           <div class="flex items-center justify-between gap-4">

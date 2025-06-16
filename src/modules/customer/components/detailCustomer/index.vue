@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import editSVG from '@/app/assets/icons/edit.svg';
+
+const route = useRoute();
+const customerID = ref(route.params.id);
+
 const customer = ref({
   id: '00105789127009833',
   name: 'Brooklyn Simmons',
@@ -13,9 +18,19 @@ const customer = ref({
 <template>
   <div class="border border-solid border-primary-100 rounded-md p-4 mb-8">
     <section class="flex flex-col gap-2">
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-8">
         <h1 class="text-xl font-semibold">{{ customer.name }}</h1>
-        <PrimeVueButton label="Edit Customer" class="" icon="pi pi-pen-to-square" />
+        <router-link :to="`/customer/edit-customer/${customerID}`">
+          <PrimeVueButton
+            label="Edit Customer Data"
+            unstyled
+            class="flex items-center gap-2 text-primary font-semibold text-sm"
+          >
+            <template #icon>
+              <img :src="editSVG" alt="" />
+            </template>
+          </PrimeVueButton>
+        </router-link>
       </div>
       <p>{{ customer.id }}</p>
     </section>
@@ -52,7 +67,6 @@ const customer = ref({
           <label for="tags" class="block text-sm font-medium leading-6 text-gray-900">Tag</label>
           <p>{{ customer.tags.join(', ') }}</p>
         </div>
-
       </div>
     </section>
   </div>

@@ -92,7 +92,7 @@ export const useCustomerService = () => {
         isOpen: true,
         type: EToastType.SUCCESS,
         message: 'Customer has been created successfully',
-        position: EToastPosition.BOTTOM_RIGHT,
+        position: EToastPosition.TOP_RIGHT,
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
@@ -129,7 +129,7 @@ export const useCustomerService = () => {
         isOpen: true,
         type: EToastType.SUCCESS,
         message: 'Customer has been updated successfully',
-        position: EToastPosition.BOTTOM_RIGHT,
+        position: EToastPosition.TOP_RIGHT,
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
@@ -156,7 +156,7 @@ export const useCustomerService = () => {
         isOpen: true,
         type: EToastType.SUCCESS,
         message: 'Customer has been deleted successfully',
-        position: EToastPosition.BOTTOM_RIGHT,
+        position: EToastPosition.TOP_RIGHT,
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);

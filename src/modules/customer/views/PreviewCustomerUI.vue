@@ -2,8 +2,7 @@
 import detailCustomer from '../components/detailCustomer/index.vue';
 import loyaltyPoint from '../components/detailCustomer/loyaltyPoint.vue';
 import salesInvoice from '../components/detailCustomer/salesInvoice.vue';
-// import SalesOrderDailySales from '../../sales-order/components/SalesOrderDailySales.vue';
-// const route = useRoute();
+
 const selectedPage = ref('Sales Invoice');
 const pageOption = ref(['Sales Invoice', 'Loyalty Point']);
 </script>
@@ -11,7 +10,16 @@ const pageOption = ref(['Sales Invoice', 'Loyalty Point']);
   <div>
     <detailCustomer />
 
-    <PrimeVueSelectButton v-model="selectedPage" :options="pageOption" />
+    <PrimeVueSelectButton v-model="selectedPage" :options="pageOption" class="mb-8" unstyled>
+      <template #option="slotProps">
+        <button
+          class="px-4 py-2 text-sm font-medium transition-all"
+          :class="[slotProps.option === selectedPage ? 'text-primary border-b-2 border-primary' : 'text-gray-500']"
+        >
+          {{ slotProps.option }}
+        </button>
+      </template>
+    </PrimeVueSelectButton>
 
     <template v-if="selectedPage === 'Sales Invoice'">
       <salesInvoice />

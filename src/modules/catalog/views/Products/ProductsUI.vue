@@ -209,7 +209,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="p-1 border border-gray rounded-lg shadow-2xl">
+  <div class="p-1 border border-gray-200 rounded-lg shadow-2xl">
     <div>
       <PrimeVueDataTable
         v-model:selection="selectedProducts"
@@ -269,10 +269,10 @@ onMounted(() => {
 
         <template #empty> No products found. </template>
 
-        <PrimeVueColumn sortable field="name" header="Name">
+        <PrimeVueColumn sortable field="name" header="Name" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
-              <PrimeVueSkeleton width="150px" height="1.5rem" />
+              <PrimeVueSkeleton height="1.5rem" />
             </template>
             <template v-else>
               {{ data.name }}
@@ -280,10 +280,10 @@ onMounted(() => {
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn sortable field="categories" header="Category">
+        <PrimeVueColumn sortable field="categories" header="Category" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
-              <PrimeVueSkeleton width="200px" height="1.5rem" />
+              <PrimeVueSkeleton height="1.5rem" />
             </template>
             <template v-else>
               <CategoryPill :categories="data.categoriesHasProducts" />
@@ -291,10 +291,10 @@ onMounted(() => {
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn sortable field="variants" header="Variants">
+        <PrimeVueColumn sortable field="variants" header="Variants" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
-              <PrimeVueSkeleton width="180px" height="1.5rem" />
+              <PrimeVueSkeleton height="1.5rem" />
             </template>
             <template v-else>
               <ProductVariantPill :variants="data.variantHasProducts" />
@@ -302,10 +302,10 @@ onMounted(() => {
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn sortable field="price" header="Price">
+        <PrimeVueColumn sortable field="price" header="Price" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
-              <PrimeVueSkeleton width="80px" height="1.5rem" />
+              <PrimeVueSkeleton height="1.5rem" />
             </template>
             <template v-else>
               {{ formatCurrency(data.price) }}
@@ -313,10 +313,10 @@ onMounted(() => {
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn sortable field="discount_price" header="Discount Price">
+        <PrimeVueColumn sortable field="discount_price" header="Discount Price" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
-              <PrimeVueSkeleton width="100px" height="1.5rem" />
+              <PrimeVueSkeleton height="1.5rem" />
             </template>
             <template v-else>
               {{ formatCurrency(data.discount_price) }}

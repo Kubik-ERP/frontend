@@ -1,5 +1,8 @@
 <script setup>
+import excludeSVG from '@/app/assets/icons/exclude.svg';
+
 import AddCustomerForm from '@/modules/customer/components/addCustomer/form.vue'
+
 
 /**
  * @description Define props with default values and interfaces
@@ -67,7 +70,7 @@ onBeforeRouteLeave((to, from, next) => {
       <template #container>
         <div class="w-[35rem] p-8">
           <div class="flex flex-col items-center gap-4 text-center">
-            <span><i class="pi pi-trash" style="font-size: 2.5rem"></i></span>
+            <span><img :src="excludeSVG" alt="" /></span>
             <h1 class="text-2xl font-semibold">Are you sure you want to leave this page?</h1>
             <p>Any changes you make to the data will be lost if you leave this page without saving</p>
             <div class="flex items-center justify-between gap-4">

@@ -225,7 +225,7 @@ onMounted(() => {
 
 
 <template>
-  <div class="m-4 p-1 border border-gray rounded-lg shadow-2xl">
+  <div class="m-4 p-1 border border-gray-200 rounded-lg shadow-2xl">
     <PrimeVueDataTable
       :selection="selectedCategories"
       :value="categories"
@@ -262,10 +262,10 @@ onMounted(() => {
       <template #empty>No categories found.</template>
 
       <!-- <PrimeVueColumn sortable field="id" header="Category ID" style="width: 25%" /> -->
-      <PrimeVueColumn header="Category">
+      <PrimeVueColumn header="Category" class="w-1/2">
         <template #body="slotProps">
           <template v-if="loading">
-            <PrimeVueSkeleton width="200px" height="1.5rem" />
+            <PrimeVueSkeleton height="1.5rem" />
           </template>
           <template v-else>
             {{ slotProps.data.category }}
@@ -273,10 +273,10 @@ onMounted(() => {
         </template>
       </PrimeVueColumn>
 
-      <PrimeVueColumn header="Description">
+      <PrimeVueColumn header="Description" class="w-1/2">
         <template #body="slotProps">
           <template v-if="loading">
-            <PrimeVueSkeleton width="100%" height="1.5rem" />
+            <PrimeVueSkeleton  height="1.5rem" />
           </template>
           <template v-else>
             {{ slotProps.data.description }}
