@@ -23,10 +23,10 @@ const props = withDefaults(defineProps<IProps>(), {
   onClickPrimaryButton: () => {},
   onClickSecondaryButton: () => {},
   pinConfirmation: '',
-  primaryButtonClass: 'bg-blue-primary border-none text-base py-[10px] w-full max-w-40',
+  primaryButtonClass: 'bg-blue-primary border-none text-base w-fit px-4 py-[10px]',
   primaryButtonLabel: 'Update',
   secondaryButtonClass:
-    'font-semibold text-base text-primary w-full max-w-40 border-2 border-solid border-primary basic-smooth-animation hover:bg-grayscale-10',
+    'font-semibold text-base text-primary w-fit px-4 border-2 border-solid border-primary basic-smooth-animation hover:bg-grayscale-10',
   secondaryButtonLabel: 'Cancel',
 });
 
