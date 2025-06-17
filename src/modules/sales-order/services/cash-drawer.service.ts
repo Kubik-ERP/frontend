@@ -1,9 +1,13 @@
 // Constants
-import { LIST_COLUMNS_OF_CASH_DRAWER, LIST_VALUES_OF_CASH_DRAWER } from "../constants/sales-order.constant";
-import { LIST_COLUMNS_OF_CASH_REGISTER, LIST_TYPES_OF_CASH_REGISTER, LIST_VALUES_OF_CASH_REGISTER } from "../constants/cash-drawer.constant";
+import { LIST_COLUMNS_OF_CASH_DRAWER, LIST_VALUES_OF_CASH_DRAWER } from '../constants/sales-order.constant';
+import {
+  LIST_COLUMNS_OF_CASH_REGISTER,
+  LIST_TYPES_OF_CASH_REGISTER,
+  LIST_VALUES_OF_CASH_REGISTER,
+} from '../constants/cash-drawer.constant';
 
 // Interfaces
-import type { ICashDrawerFormData, ICashDrawerProvided } from "../interfaces/cash-drawer.interface";
+import type { ICashDrawerFormData, ICashDrawerProvided } from '../interfaces/cash-drawer.interface';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -24,7 +28,7 @@ export const useCashDrawerService = (): ICashDrawerProvided => {
     notes: '',
     openBalance: null,
     staffName: 'Samantha',
-  })
+  });
 
   /**
    * @description Form validations
@@ -48,7 +52,7 @@ export const useCashDrawerService = (): ICashDrawerProvided => {
       default:
         return '';
     }
-  }
+  };
 
   /**
    * @description Handle business logic to return dynamic icon name of type cash register
@@ -68,7 +72,7 @@ export const useCashDrawerService = (): ICashDrawerProvided => {
       default:
         return '';
     }
-  }
+  };
 
   /**
    * @description Handle business logic for close dialog open register
@@ -91,7 +95,7 @@ export const useCashDrawerService = (): ICashDrawerProvided => {
       isUsingClosableButton: false,
       isUsingBackdrop: true,
       isOpen: true,
-      width: '534px'
+      width: '534px',
     };
 
     eventBus.emit('AppBaseDialog', argsEventEmitter);
@@ -109,5 +113,5 @@ export const useCashDrawerService = (): ICashDrawerProvided => {
     cashDrawer_listValuesOfCashRegister: LIST_VALUES_OF_CASH_REGISTER as never[],
     cashDrawer_onCloseRegister,
     cashDrawer_onOpenRegister,
-  }
-}
+  };
+};

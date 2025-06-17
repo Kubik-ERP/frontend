@@ -10,6 +10,8 @@ const {
   dailySales_getClassOfOrderType,
   dailySales_getClassOfPaymentStatus,
   dailySales_handleOnPageChange,
+  dailySales_handleOnSortChange,
+
   dailySales_listColumns,
   dailySales_listTypesOfOrderStatus,
   dailySales_listTypesOfOrderType,
@@ -22,13 +24,15 @@ const {
   <section id="sales-order-daily-sales" class="flex flex-col relative inset-0 z-0">
     <AppBaseDataTable
       btn-cta-create-title="Add Cash In/Out"
+      header-title="Daily Sales"
       :columns="dailySales_listColumns"
       :data="dailySales_data.items"
-      header-title="Daily Sales"
       :rows-per-page="dailySales_data.meta.pageSize"
       :total-records="dailySales_data.meta.total"
       :first="(dailySales_data.meta.page - 1) * dailySales_data.meta.pageSize"
       :is-loading="dailySales_data.isLoading"
+      :sort-field="dailySales_data.sorting.orderBy"
+      :sort-order="dailySales_data.sorting.orderDirection"
       is-using-server-side-pagination
       is-using-custom-body
       is-using-custom-filter
@@ -36,6 +40,7 @@ const {
       is-using-custom-header-suffix
       is-using-header
       @update:currentPage="dailySales_handleOnPageChange"
+      @update:sort="dailySales_handleOnSortChange"
     >
       <template #header-prefix>
         <div class="flex items-center gap-2">
@@ -57,7 +62,7 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVueInputText
-            v-model="dailySales_data.filter.id"
+            v-model="dailySales_data.filter.invoiceNumber"
             placeholder="Search Invoice ID"
             class="text-sm w-full min-w-80"
           />
@@ -71,11 +76,32 @@ const {
           <div class="flex items-center gap-4 w-full">
             <PrimeVueDatePicker
               v-model="dailySales_data.filter.createdAtFrom"
+              :manual-input="false"
               class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
-              placeholder="Real Time "
+              placeholder="Purchase Date From"
               show-on-focus
               show-icon
               fluid
+              show-time
+              show-button-bar
+              hour-format="24"
+              @clear-click="dailySales_data.filter.createdAtFrom = null"
+            />
+
+            <PrimeVueDatePicker
+              v-model="dailySales_data.filter.createdAtTo"
+              :manual-input="false"
+              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
+              placeholder="Purchase Date To"
+              show-on-focus
+              show-icon
+              fluid
+              show-time
+              show-button-bar
+              show-clear
+              hour-format="24"
+              :disabled="!dailySales_data.filter.createdAtFrom"
+              @clear-click="dailySales_data.filter.createdAtTo = null"
             />
 
             <PrimeVueMultiSelect
@@ -96,6 +122,7 @@ const {
               option-label="label"
               option-value="value"
               filter
+              show-clear
               placeholder="Payment Status"
               class="text-sm text-text-disabled w-full"
             />

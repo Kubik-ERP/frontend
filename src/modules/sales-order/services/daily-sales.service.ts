@@ -1,4 +1,5 @@
 // Constants
+import { useParamsSerializer } from '@/app/composables/useHttp';
 import {
   LIST_COLUMNS_OF_DAILY_SALES,
   LIST_TYPES_OF_ORDER_STATUS,
@@ -8,9 +9,11 @@ import {
 
 // Interfaces
 import type { IDailySalesData, IDailySalesProvided } from '../interfaces/daily-sales.interface';
+import { DataTableSortEvent } from 'primevue';
 
 // Pinia
 import { useSalesOrderStore } from '../store';
+import { useFormatDateLocal, useSnakeCase } from '@/app/composables';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -29,9 +32,14 @@ export const useDailySalesService = (): IDailySalesProvided => {
     filter: {
       paymentStatus: null,
       createdAtFrom: null,
-      id: null,
+      createdAtTo: null,
+      invoiceNumber: null,
       orderType: null,
       orderStatus: null,
+    },
+    sorting: {
+      orderBy: null,
+      orderDirection: null,
     },
     items: [],
     meta: {
@@ -105,6 +113,13 @@ export const useDailySalesService = (): IDailySalesProvided => {
     }
   };
 
+
+  const mapOrderDirection = (val: 0 | 1 | -1 | undefined | null): 'asc' | 'desc' | null => {
+    if (val === 1) return 'asc';
+    if (val === -1) return 'desc';
+    return null;
+  }
+
   /**
    * @description Handle fetch api sales order daily sales
    */
@@ -112,11 +127,26 @@ export const useDailySalesService = (): IDailySalesProvided => {
     dailySales_data.value.isLoading = true;
 
     try {
+      const { createdAtFrom, createdAtTo, ...otherFilter } = dailySales_data.value.filter;
+
+      const filteredParams = {
+        ...otherFilter,
+        createdAtFrom: createdAtFrom ? useFormatDateLocal(createdAtFrom) : null,
+        createdAtTo: createdAtTo ? useFormatDateLocal(createdAtTo) : null,
+      };
+      
+      const filteredSorting = {
+        orderBy: useSnakeCase(dailySales_data.value.sorting.orderBy?.toString()) || null,
+        orderDirection: mapOrderDirection(dailySales_data.value.sorting.orderDirection),
+      }
+
       const response = await store.salesOrder_fetchDailySales({
         params: {
-          ...dailySales_data.value.filter,
+          ...filteredParams,
+          ...filteredSorting,
           ...dailySales_data.value.meta,
         },
+        paramsSerializer: useParamsSerializer,
       });
 
       if (response.items) {
@@ -153,17 +183,31 @@ export const useDailySalesService = (): IDailySalesProvided => {
     { deep: true },
   );
 
+  watch(
+    () => dailySales_data.value.sorting,
+     () => {
+      dailySales_debouncedFetch();
+    },
+    { deep: true },
+  )
+
   const dailySales_handleOnPageChange = (page: number): void => {
     dailySales_data.value.meta.page = page;
 
     dailySales_debouncedFetch();
   };
 
+  const dailySales_handleOnSortChange = (event: DataTableSortEvent) => {
+    dailySales_data.value.sorting.orderBy = event.sortField as string | null;
+    dailySales_data.value.sorting.orderDirection = event.sortOrder;
+  }
+
   return {
     dailySales_getClassOfOrderStatus,
     dailySales_getClassOfOrderType,
     dailySales_getClassOfPaymentStatus,
     dailySales_handleOnPageChange,
+    dailySales_handleOnSortChange,
     dailySales_data,
     dailySales_listColumns: LIST_COLUMNS_OF_DAILY_SALES,
     dailySales_listTypesOfOrderStatus: LIST_TYPES_OF_ORDER_STATUS,

@@ -1,8 +1,11 @@
+import { DataTableSortEvent } from 'primevue'
+
 export interface IDailySalesProvided {
   dailySales_getClassOfOrderStatus: (orderStatus: string) => string;
   dailySales_getClassOfOrderType: (orderType: string) => string;
   dailySales_getClassOfPaymentStatus: (paymentStatus: string) => string;
   dailySales_handleOnPageChange: (page: number) => void;
+  dailySales_handleOnSortChange: (event: DataTableSortEvent) => void;
   dailySales_data: Ref<IDailySalesData, IDailySalesData>;
   dailySales_listColumns: IColumnDataTable[];
   dailySales_listTypesOfOrderStatus: IDropdownItem[];
@@ -11,11 +14,17 @@ export interface IDailySalesProvided {
 }
 
 export interface IDailySalesFilter {
-  paymentStatus: string | null;
-  orderType: string | null;
-  orderStatus: string | null;
+  paymentStatus: string[] | null;
+  orderType: string[] | null;
+  orderStatus: string[] | null;
   createdAtFrom: Date | null;
-  id: string | null;
+  createdAtTo: Date | null;
+  invoiceNumber: string | null;
+}
+
+export interface IDailySalesSorting {
+  orderBy: string | null;
+  orderDirection: 0 | 1 | -1 | undefined | null;
 }
 
 export interface IDailySalesData {
@@ -23,6 +32,7 @@ export interface IDailySalesData {
   items: IDailySalesItem[];
   meta: IDailySalesMeta;
   filter: IDailySalesFilter;
+  sorting: IDailySalesSorting;
 }
 
 export interface IDailySalesCustomer {

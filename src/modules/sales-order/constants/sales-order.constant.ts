@@ -79,7 +79,7 @@ export const LIST_COLUMNS_OF_DAILY_SALES: IColumnDataTable[] = [
   {
     label: 'Invoice ID',
     sortable: true,
-    value: 'id',
+    value: 'invoiceNumber',
   },
   {
     label: 'Purchase Date',
@@ -88,32 +88,32 @@ export const LIST_COLUMNS_OF_DAILY_SALES: IColumnDataTable[] = [
   },
   {
     label: 'Customer',
-    sortable: true,
+    sortable: false,
     value: 'customer',
   },
   {
     label: 'Table Number',
-    sortable: true,
+    sortable: false,
     value: 'tableCode',
   },
   {
     label: 'Total Price',
-    sortable: true,
+    sortable: false,
     value: 'grandTotal',
   },
   {
     label: 'Order Type',
-    sortable: true,
+    sortable: false,
     value: 'orderType',
   },
   {
     label: 'Payment Status',
-    sortable: true,
+    sortable: false,
     value: 'paymentStatus',
   },
   {
     label: 'Order Status',
-    sortable: true,
+    sortable: false,
     value: 'orderStatus',
   },
   {
@@ -193,12 +193,8 @@ export const LIST_TYPES_OF_PAYMENT_STATUS: IDropdownItem[] = [
     value: 'unpaid',
   },
   {
-    label: 'Cancelled',
-    value: 'cancelled',
-  },
-  {
-    label: 'Refunded',
-    value: 'refunded',
+    label: 'Refund',
+    value: 'refund',
   },
 ];
 
