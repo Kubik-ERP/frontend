@@ -100,7 +100,7 @@ export interface IInvoiceData {
   invoiceCharges: [];
   paymentMethods: IInvoicePaymentMethod | null;
   users: {
-    fullName: string;
+    fullname: string;
     id: number;
   } | null;
 }

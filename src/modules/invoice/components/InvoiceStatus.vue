@@ -95,7 +95,7 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
             {{
               invoice_invoiceData.data.paymentStatus === 'unpaid'
                 ? invoice_invoiceData.currentUser?.fullname || '-'
-                : invoice_invoiceData.data.users?.fullName
+                : invoice_invoiceData.data.users?.fullname
             }}
           </td>
         </tr>

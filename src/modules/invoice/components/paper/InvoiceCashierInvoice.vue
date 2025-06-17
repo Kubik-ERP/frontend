@@ -45,7 +45,7 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
         {{
           invoice_invoiceData.data.paymentStatus === 'unpaid'
             ? invoice_invoiceData.currentUser?.fullname || '-'
-            : invoice_invoiceData.data.users?.fullName
+            : invoice_invoiceData.data.users?.fullname
         }}
       </p>
     </section>
