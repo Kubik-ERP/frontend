@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Components
-import InvoiceCashierInvoice from '../components/paper/InvoiceCashierInvoice.vue';
+import InvoicePaperCashierInvoice from '../components/paper/InvoicePaperCashierInvoice.vue';
 
 // Interfaces
 import type { IInvoiceProvided } from '../interfaces/index';
@@ -40,6 +40,6 @@ provide<IInvoiceProvided>('invoice', {
 
 <template>
   <section id="invoice" class="default-wrapper-fullscreen">
-    <InvoiceCashierInvoice />
+    <InvoicePaperCashierInvoice />
   </section>
 </template>

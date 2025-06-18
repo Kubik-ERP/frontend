@@ -12,17 +12,26 @@ import {
 // Store
 import { useInvoiceStore } from '../store';
 import { useCashierStore } from '@/modules/cashier/store';
-import { CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT, CASHIER_PROVIDER } from '@/modules/cashier/constants';
 import { useAuthenticationStore } from '@/modules/authentication/store';
+import { useOutletStore } from '@/modules/outlet/store';
+import { useSettingStore } from '@/modules/setting/store';
+
+// Constant
+import { CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT, CASHIER_PROVIDER } from '@/modules/cashier/constants';
 
 export const useInvoiceService = (): IInvoiceProvided => {
   const store = useInvoiceStore();
   const storeCashier = useCashierStore();
   const storeAuthentication = useAuthenticationStore();
+  const storeOutlet = useOutletStore();
+  const storeSetting = useSettingStore();
 
   const route = useRoute();
 
   const invoice_activeInvoice = ref<number>(1);
+
+  const { outlet_selectedOutlet } = storeToRefs(storeOutlet);
+  const { setting_invoice } = storeToRefs(storeSetting);
 
   const invoice_modalPay = ref<IInvoiceModalPayData>({
     show: false,
@@ -204,6 +213,8 @@ export const useInvoiceService = (): IInvoiceProvided => {
     data: null,
     calculate: null,
     currentUser: storeAuthentication.authentication_userData,
+    currentOutlet: outlet_selectedOutlet.value,
+    configInvoice: setting_invoice.value,
   });
 
   const invoice_handleCalculate = async () => {
@@ -247,8 +258,10 @@ export const useInvoiceService = (): IInvoiceProvided => {
 
       invoice_invoiceData.value.data = response.data;
 
+      await storeSetting.fetchSetting_detailInvoiceSetting(invoice_invoiceData.value.currentOutlet?.id || '', {});
+
       if (response.data.paymentStatus === 'unpaid') {
-        invoice_handleCalculate();
+        await invoice_handleCalculate();
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
