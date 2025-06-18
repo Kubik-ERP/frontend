@@ -226,6 +226,17 @@ onMounted(() => {
 
 <template>
   <div class="m-4 p-1 border border-gray-200 rounded-lg shadow-2xl">
+
+    <!-- <AppBaseDataTable
+    header-title="Categories"
+    :columns="category_columns"
+    :data="categories"
+    :is-loading="loading"
+    is-using-custom-filter
+    
+    >
+  </AppBaseDataTable> -->
+
     <PrimeVueDataTable
       :selection="selectedCategories"
       :value="categories"

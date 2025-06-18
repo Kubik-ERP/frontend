@@ -445,8 +445,8 @@ const cancelUpdate = () => {
               </template>
             </PrimeVueButton>
           </div>
-          <div class="flex justify-between">
-            <div class="flex gap-4 mb-8">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
               <router-link to="/catalog/products">
                 <PrimeVueButton
                   label="Cancel"

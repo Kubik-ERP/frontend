@@ -1,4 +1,7 @@
 import axios from 'axios';
+
+import { CATEGORIES_COLUMNS } from '../../constants';
+
 import {
   CategoryPayload,
   ICategory,
@@ -158,19 +161,19 @@ export const useCategoryService = () => {
     const data: ICategory = response.data.data;
     // console.log("🚀 ~ getCategoryByID ~ response:", response)
     const pictureUrl = data.pictureUrl
-  ? `${import.meta.env.VITE_APP_BASE_API_URL}${data.pictureUrl}`
-  : 'https://placehold.co/250';
-
+      ? `${import.meta.env.VITE_APP_BASE_API_URL}${data.pictureUrl}`
+      : 'https://placehold.co/250';
 
     return {
       id: data.id,
       category: data.category,
       description: data.description || '-',
-      pictureUrl: pictureUrl
+      pictureUrl: pictureUrl,
     };
   };
 
   return {
+    category_columns: CATEGORIES_COLUMNS,
     category_formData,
     category_formValidations,
     getAllCategories,
