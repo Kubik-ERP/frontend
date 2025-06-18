@@ -6,6 +6,9 @@ import AppBaseWrapper from '@/app/components/base/AppBaseWrapper.vue';
 // Constants
 import { LAYOUT_OPTIONS } from '@/app/constants';
 
+// Routes
+import cashDrawerRouter from '@/modules/cash-drawer/routes/cash-drawer.router';
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/sales-order',
@@ -21,22 +24,12 @@ const routes: RouteRecordRaw[] = [
           title: 'Sales Order',
         },
       },
-      {
-        path: 'cash-register',
-        name: 'sales-order.cash-register',
-        component: () => import('../views/SalesOrderCashRegisterUI.vue'),
-        meta: {
-          breadcrumb: 'Cash Register',
-          layout: LAYOUT_OPTIONS.DEFAULT,
-          requiresAuthorization: false,
-          title: 'Cash Register',
-        },
-      }
+      cashDrawerRouter,
     ],
     meta: {
       breadcrumb: 'Sales Order',
-      requiresAuthorization: false,
-    }
+      requiresAuthorization: true,
+    },
   },
 ];
 

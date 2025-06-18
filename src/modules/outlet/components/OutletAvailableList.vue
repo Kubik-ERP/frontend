@@ -32,7 +32,7 @@ const {
       </RouterLink>
 
       <template v-if="outlet.photo">
-        <PrimeVueAvatar class="mr-2" :image="APP_BASE_URL + outlet.photo" size="xlarge" shape="circle" />
+        <PrimeVueAvatar class="mr-2" :image="APP_BASE_BUCKET_URL + outlet.photo" size="xlarge" shape="circle" />
       </template>
 
       <template v-else>

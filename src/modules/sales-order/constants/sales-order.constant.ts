@@ -1,4 +1,5 @@
 // Components
+<<<<<<< HEAD
 import SalesOrderCashDrawer from '../components/SalesOrderCashDrawer.vue';
 import SalesOrderCashInOut from '../components/SalesOrderCashInOut.vue';
 import SalesOrderDailySales from '../components/SalesOrderDailySales.vue';
@@ -133,30 +134,37 @@ export const LIST_ITEMS_OF_SPLIT_BUTTON: ISplitButton[] = [
     label: 'Delete',
   },
 ];
+=======
+import CashDrawerListUI from '@/modules/cash-drawer/views/CashDrawerListUI.vue';
+import CashInOutListUI from '@/modules/cash-in-out/views/CashInOutListUI.vue';
+import DailySalesListUI from '@/modules/daily-sales/views/DailySalesListUI.vue';
+import VoucherListUI from '@/modules/voucher/views/VoucherListUI.vue';
+>>>>>>> origin/development
 
 export const LIST_TABS_SALES_ORDER: ITabs[] = [
   {
-    component: SalesOrderDailySales,
+    component: DailySalesListUI,
     label: 'Daily Sales',
     value: 'daily-sales',
   },
   {
-    component: SalesOrderVoucher,
+    component: VoucherListUI,
     label: 'Voucher',
     value: 'voucher',
   },
   {
-    component: SalesOrderCashDrawer,
+    component: CashDrawerListUI,
     label: 'Cash Drawer',
     value: 'cash-drawer',
   },
   {
-    component: SalesOrderCashInOut,
+    component: CashInOutListUI,
     label: 'Cash In/Out',
     value: 'cash-in-out',
   },
 ];
 
+<<<<<<< HEAD
 export const LIST_TYPES_OF_CASH_IN_OUT: IDropdownItem[] = [
   {
     label: 'Cash In',
@@ -309,3 +317,5 @@ export const LIST_VALUES_OF_DAILY_SALES = [
     orderStatus: 'Cancelled',
   },
 ];
+=======
+>>>>>>> origin/development

@@ -71,7 +71,7 @@ const {
 
               <section id="option-values" class="flex items-center gap-4">
                 <span class="font-normal text-text-disabled text-sm">No</span>
-                <PrimeVueToggleSwitch v-model:model-value="settingTaxService_formDataOfTax.isInclude" />
+                <PrimeVueToggleSwitch v-model:model-value="settingTaxService_formDataOfTax.isInclude" :disabled="!settingTaxService_formDataOfTax.isEnabled" />
                 <span class="font-normal text-primary text-sm">Yes</span>
               </section>
             </section>
@@ -81,7 +81,7 @@ const {
 
               <section id="option-values" class="flex items-center gap-4">
                 <span class="font-normal text-text-disabled text-sm">No</span>
-                <PrimeVueToggleSwitch v-model:model-value="settingTaxService_formDataOfTax.appliedToTakeaway" />
+                <PrimeVueToggleSwitch v-model:model-value="settingTaxService_formDataOfTax.appliedToTakeaway" :disabled="!settingTaxService_formDataOfTax.isEnabled" />
                 <span class="font-normal text-primary text-sm">Yes</span>
               </section>
             </section>
