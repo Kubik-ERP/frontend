@@ -5,7 +5,7 @@ export const DAILY_SALES_LIST_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Invoice ID',
     sortable: true,
-    value: 'id',
+    value: 'invoiceNumber',
   },
   {
     label: 'Purchase Date',
@@ -14,32 +14,32 @@ export const DAILY_SALES_LIST_COLUMNS: IColumnDataTable[] = [
   },
   {
     label: 'Customer',
-    sortable: true,
+    sortable: false,
     value: 'customer',
   },
   {
     label: 'Table Number',
-    sortable: true,
+    sortable: false,
     value: 'tableCode',
   },
   {
     label: 'Total Price',
-    sortable: true,
+    sortable: false,
     value: 'grandTotal',
   },
   {
     label: 'Order Type',
-    sortable: true,
+    sortable: false,
     value: 'orderType',
   },
   {
     label: 'Payment Status',
-    sortable: true,
+    sortable: false,
     value: 'paymentStatus',
   },
   {
     label: 'Order Status',
-    sortable: true,
+    sortable: false,
     value: 'orderStatus',
   },
   {

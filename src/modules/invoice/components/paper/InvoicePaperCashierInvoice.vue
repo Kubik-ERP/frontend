@@ -31,6 +31,7 @@ const imageUrl = computed(() => {
     id="invoice-paper"
     class="invoice-paper bg-white flex flex-col items-center gap-2 w-full max-w-xs lg:max-w-md p-4"
   >
+  
     <section v-if="invoice_invoiceData.configInvoice.isShowCompanyLogo" id="logo">
       <AppBaseImage :src="imageUrl" :alt="invoice_invoiceData.currentOutlet.name" class="w-20 h-20" />
     </section>

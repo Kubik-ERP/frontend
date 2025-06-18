@@ -16,6 +16,6 @@ const { cashierOrderSummary_modalAddCustomer, cashierOrderSummary_handleModalAdd
     modal
     :style="{ width: '50rem' }"
   >
-    <AddCustomerUI :is-modal="true" @close="cashierOrderSummary_handleModalAddCustomer()" />
+    <AddCustomerUI :is-modal="true" @close="cashierOrderSummary_handleModalAddCustomer" />
   </PrimeVueDialog>
 </template>

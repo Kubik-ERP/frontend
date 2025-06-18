@@ -6,50 +6,25 @@ import { useDailySalesListService } from '../services/daily-sales-list.service';
  * @description Destructure all the data and methods what we need
  */
 const {
-<<<<<<< HEAD:src/modules/sales-order/components/SalesOrderDailySales.vue
-  dailySales_getClassOfOrderStatus,
-  dailySales_getClassOfOrderType,
-  dailySales_getClassOfPaymentStatus,
-  dailySales_handleOnPageChange,
-  dailySales_handleOnSortChange,
-
-  dailySales_listColumns,
-  dailySales_listTypesOfOrderStatus,
-  dailySales_listTypesOfOrderType,
-  dailySales_listTypesOfPaymentStatus,
-  dailySales_data,
-} = useDailySalesService();
-=======
   dailySalesList_columns,
   dailySalesList_getClassOfOrderStatus,
   dailySalesList_getClassOfOrderType,
   dailySalesList_getClassOfPaymentStatus,
   dailySalesList_isLoading,
   dailySalesList_onChangePage,
+  dailySales_handleOnSortChange,
   dailySalesList_queryParams,
   dailySalesList_typesOfOrderStatus,
   dailySalesList_typesOfOrderType,
   dailySalesList_typesOfPaymentStatus,
   dailySalesList_values,
 } = useDailySalesListService();
->>>>>>> origin/development:src/modules/daily-sales/views/DailySalesListUI.vue
 </script>
 
 <template>
   <section id="daily-sales" class="flex flex-col relative inset-0 z-0">
     <AppBaseDataTable
       btn-cta-create-title="Add Cash In/Out"
-<<<<<<< HEAD:src/modules/sales-order/components/SalesOrderDailySales.vue
-      header-title="Daily Sales"
-      :columns="dailySales_listColumns"
-      :data="dailySales_data.items"
-      :rows-per-page="dailySales_data.meta.pageSize"
-      :total-records="dailySales_data.meta.total"
-      :first="(dailySales_data.meta.page - 1) * dailySales_data.meta.pageSize"
-      :is-loading="dailySales_data.isLoading"
-      :sort-field="dailySales_data.sorting.orderBy"
-      :sort-order="dailySales_data.sorting.orderDirection"
-=======
       :columns="dailySalesList_columns"
       :data="dailySalesList_values.data.items"
       header-title="Daily Sales"
@@ -57,19 +32,16 @@ const {
       :total-records="dailySalesList_values.data.meta.total"
       :first="(dailySalesList_values.data.meta.page - 1) * dailySalesList_values.data.meta.pageSize"
       :is-loading="dailySalesList_isLoading"
->>>>>>> origin/development:src/modules/daily-sales/views/DailySalesListUI.vue
+      :sort-field="dailySalesList_queryParams.orderBy"
+      :sort-order="dailySalesList_queryParams.orderDirection"
       is-using-server-side-pagination
       is-using-custom-body
       is-using-custom-filter
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-header
-<<<<<<< HEAD:src/modules/sales-order/components/SalesOrderDailySales.vue
-      @update:currentPage="dailySales_handleOnPageChange"
-      @update:sort="dailySales_handleOnSortChange"
-=======
       @update:currentPage="dailySalesList_onChangePage"
->>>>>>> origin/development:src/modules/daily-sales/views/DailySalesListUI.vue
+      @update:sort="dailySales_handleOnSortChange"
     >
       <template #header-prefix>
         <div class="flex items-center gap-2">
@@ -91,11 +63,7 @@ const {
           </PrimeVueInputIcon>
 
           <PrimeVueInputText
-<<<<<<< HEAD:src/modules/sales-order/components/SalesOrderDailySales.vue
-            v-model="dailySales_data.filter.invoiceNumber"
-=======
-            v-model="dailySalesList_queryParams.id"
->>>>>>> origin/development:src/modules/daily-sales/views/DailySalesListUI.vue
+            v-model="dailySalesList_queryParams.invoiceNumber"
             placeholder="Search Invoice ID"
             class="text-sm w-full min-w-80"
           />
@@ -108,12 +76,7 @@ const {
 
           <div class="flex items-center gap-4 w-full">
             <PrimeVueDatePicker
-<<<<<<< HEAD:src/modules/sales-order/components/SalesOrderDailySales.vue
-              v-model="dailySales_data.filter.createdAtFrom"
-              :manual-input="false"
-=======
               v-model="dailySalesList_queryParams.createdAtFrom"
->>>>>>> origin/development:src/modules/daily-sales/views/DailySalesListUI.vue
               class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
               placeholder="Purchase Date From"
               show-on-focus
@@ -122,11 +85,11 @@ const {
               show-time
               show-button-bar
               hour-format="24"
-              @clear-click="dailySales_data.filter.createdAtFrom = null"
+              @clear-click="dailySalesList_queryParams.createdAtFrom = null"
             />
 
             <PrimeVueDatePicker
-              v-model="dailySales_data.filter.createdAtTo"
+              v-model="dailySalesList_queryParams.createdAtTo"
               :manual-input="false"
               class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
               placeholder="Purchase Date To"
@@ -137,8 +100,8 @@ const {
               show-button-bar
               show-clear
               hour-format="24"
-              :disabled="!dailySales_data.filter.createdAtFrom"
-              @clear-click="dailySales_data.filter.createdAtTo = null"
+              :disabled="!dailySalesList_queryParams.createdAtFrom"
+              @clear-click="dailySalesList_queryParams.createdAtTo = null"
             />
 
             <PrimeVueMultiSelect
