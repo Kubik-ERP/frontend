@@ -1,56 +1,48 @@
-
 <script setup lang="ts">
 // Services
-import { useDailySalesService } from '../../../sales-order/services/daily-sales.service';
+import { useCustomerDetailService } from '../../services/customer-detail.service';
 
+const { customerDetail_columns, customerDetail_values } = useCustomerDetailService();
 /**
  * @description Destructure all the data and methods what we need
  */
-const {
-  dailySales_getClassOfOrderStatus,
-  dailySales_getClassOfOrderType,
-  dailySales_getClassOfPaymentStatus,
-  dailySales_handleOnPageChange,
-  dailySales_listColumns,
-  dailySales_listTypesOfOrderStatus,
-  dailySales_listTypesOfOrderType,
-  dailySales_listTypesOfPaymentStatus,
-  dailySales_data,
-} = useDailySalesService();
+
+const handleSearch = () => {};
+const search = ref('');
+
+const orderTypeClass = (orderType: string) => {
+  switch (orderType) {
+    case 'Dine In':
+      return 'bg-primary-background text-primary';
+    case 'Takeaway':
+      return 'bg-secondary-background text-green-primary';
+    case 'Delivery':
+      return 'text-success-main';
+    default:
+      return '';
+  }
+};
+
+const orderStatusClass = (orderStatus: string) => {
+  switch (orderStatus) {
+    case 'Paid':
+      return 'bg-background-success text-success';
+    case 'Unpaid':
+      return 'bg-warning-background text-warning-main';
+    case 'Cancelled':
+      return 'bg-error-background text-error-main';
+    case 'Refunded':
+      return 'bg-error-background text-error-main';
+    default:
+      return '';
+  }
+};
 </script>
 <template>
-  <section id="sales-order-daily-sales" class="flex flex-col relative inset-0 z-0">
-    <section class="grid grid-cols-2 gap-4 p-4">
-      <div class="w-full bg-blue-300/10 border border-blue-300 rounded-lg p-4">
-        <div class="flex flex-col justify-between w-full gap-4">
-          <div class="flex items-center gap-2 min-h-8">
-            <h6 class="font-semibold text-black text-sm">Total Sales</h6>
-            <span class="text-xs border text-green-90000 border-green-300 bg-green-300/10 rounded-full px-2 py-1"
-              >100 Sales</span
-            >
-          </div>
-          <div class="flex items-center justify-between">
-            <span class="font-semibold text-gray-500">Rp</span>
-            <span class="font-bold text-blue-700 text-2xl">100.000</span>
-          </div>
-        </div>
-      </div>
-      <div class="w-full bg-red-300/10 border border-red-300 rounded-lg p-4">
-        <div class="flex flex-col justify-between w-full gap-4">
-          <div class="flex items-center gap-2 min-h-8">
-            <h6 class="font-semibold text-black text-sm">Unpaid Amount</h6>
-          </div>
-          <div class="flex items-center justify-between">
-            <span class="font-semibold text-gray-500">Rp</span>
-            <span class="font-bold text-red-700 text-2xl">100.000</span>
-          </div>
-        </div>
-      </div>
-    </section>
-    <AppBaseDataTable
-      btn-cta-create-title="Add Cash In/Out"
-      :columns="dailySales_listColumns"
-      :data="dailySales_data.items"
+  <section id="customer-daily-sales" class="flex flex-col relative inset-0 z-0">
+    <!-- <AppBaseDataTable
+      :columns="customerDetail_columns"
+      :data="customerDetail_values"
       header-title="Daily Sales"
       :rows-per-page="dailySales_data.meta.pageSize"
       :total-records="dailySales_data.meta.total"
@@ -61,34 +53,76 @@ const {
       is-using-custom-filter
       is-using-custom-header-prefix
       is-using-custom-header-suffix
-      is-using-header
+      is-using-custom-header
       @update:currentPage="dailySales_handleOnPageChange"
+    > -->
+    <AppBaseDataTable
+      :columns="customerDetail_columns"
+      :data="customerDetail_values"
+      is-using-server-side-pagination
+      is-using-custom-body
+      is-using-custom-filter
+      is-using-custom-header-prefix
+      is-using-custom-header-suffix
+      is-using-custom-header
     >
-      <template #header-prefix>
-        <div class="flex items-center gap-2">
-          <h6 class="font-semibold text-gray-900 text-xl">Daily Sales</h6>
+      <template #header>
+        <section class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <h6 class="font-semibold text-black text-xl">Daily Sales</h6>
+            <PrimeVueChip
+              class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-1"
+              :label="`${customerDetail_values.length} Invoices`"
+            />
+          </div>
+          <form @submit.prevent="handleSearch">
+            <PrimeVueIconField>
+              <PrimeVueInputIcon>
+                <template #default>
+                  <AppBaseSvg name="search" />
+                </template>
+              </PrimeVueInputIcon>
 
-          <PrimeVueChip
-            class="text-xs font-normal bg-secondary-background text-green-primary"
-            :label="`${dailySales_data.meta.total} Invoices`"
-          />
-        </div>
-      </template>
-
-      <template #header-suffix>
-        <PrimeVueIconField>
-          <PrimeVueInputIcon>
-            <template #default>
-              <AppBaseSvg name="search" />
-            </template>
-          </PrimeVueInputIcon>
-
-          <PrimeVueInputText
-            v-model="dailySales_data.filter.id"
-            placeholder="Search Invoice ID"
-            class="text-sm w-full min-w-80"
-          />
-        </PrimeVueIconField>
+              <PrimeVueInputText
+                v-model="search"
+                placeholder="Search Invoice ID"
+                class="text-sm w-full min-w-80"
+              />
+            </PrimeVueIconField>
+          </form>
+        </section>
+        <section class="grid grid-cols-2 gap-4 p-4">
+          <div class="w-full bg-primary-background border border-primary rounded-lg p-4">
+            <div class="flex flex-col justify-between w-full gap-4">
+              <div class="flex items-center gap-2 min-h-8">
+                <h6 class="font-semibold text-black text-sm">Total Sales</h6>
+                <PrimeVueChip
+                  class="text-xs font-normal text-secondary-hover bg-secondary-background border border-secondary px-1.5 py-1"
+                >
+                  <span class="flex items-center gap-1">
+                    <p class="font-bold">{{ customerDetail_values.length }}</p>
+                    <p class="font-semibold">Sales</p>
+                  </span>
+                </PrimeVueChip>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-disabled">Rp</span>
+                <span class="font-bold text-primary text-2xl">100.000</span>
+              </div>
+            </div>
+          </div>
+          <div class="w-full bg-error-background border border-error-main rounded-lg p-4">
+            <div class="flex flex-col justify-between w-full gap-4">
+              <div class="flex items-center gap-2 min-h-8">
+                <h6 class="font-semibold text-black text-sm">Unpaid Amount</h6>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-disabled">Rp</span>
+                <span class="font-bold text-error-main text-2xl">100.000</span>
+              </div>
+            </div>
+          </div>
+        </section>
       </template>
 
       <template #filter>
@@ -142,53 +176,44 @@ const {
       </template>
 
       <template #body="{ column, data }">
-        <template v-if="column.value === 'createdAt'">
-          <span class="font-normal text-sm text-text-primary">{{
-            useFormatDate(new Date(data[column.value]))
-          }}</span>
+        <template v-if="column.value === 'invoiceID'">
+          <span class="font-semibold">{{ data.invoiceID }}</span>
         </template>
 
-        <template v-else-if="column.value === 'customer'">
-          <span class="font-normal text-sm text-text-primary">{{ data[column.value].name }}</span>
+        <template v-if="column.value === 'purchaseDate'">
+          <span>{{ data.purchaseDate }}</span>
         </template>
 
-        <template v-else-if="column.value === 'grandTotal'">
-          <span class="font-normal text-sm text-text-primary">{{ useCurrencyFormat(data[column.value]) }}</span>
+        <template v-if="column.value === 'tableNumber'">
+          <span>{{ data.tableNumber }}</span>
         </template>
 
-        <template v-else-if="column.value === 'orderType'">
+        <template v-if="column.value === 'totalPrice'">
+          <span>{{ useCurrencyFormat(data.totalPrice) }}</span>
+        </template>
+
+        <template v-if="column.value === 'status'">
           <PrimeVueChip
-            :class="[dailySales_getClassOfOrderType(data[column.value]), 'text-xs font-normal']"
-            :label="dailySales_listTypesOfOrderType.find(f => f.value === data[column.value])?.label || ''"
+            :class="[orderStatusClass(data[column.value]), 'text-xs font-normal px-1.5 py-1']"
+            :label="data[column.value]"
           />
         </template>
 
-        <template v-else-if="column.value === 'paymentStatus'">
+        <template v-if="column.value === 'orderType'">
           <PrimeVueChip
-            :class="[dailySales_getClassOfPaymentStatus(data[column.value]), 'text-xs font-normal']"
-            :label="dailySales_listTypesOfPaymentStatus.find(f => f.value === data[column.value])?.label || ''"
+            :class="[orderTypeClass(data[column.value]), 'text-xs font-normal px-1.5 py-1']"
+            :label="data[column.value]"
           />
         </template>
 
-        <template v-else-if="column.value === 'orderStatus'">
-          <PrimeVueChip
-            :class="[dailySales_getClassOfOrderStatus(data[column.value]), 'text-xs font-normal']"
-            :label="dailySales_listTypesOfOrderStatus.find(f => f.value === data[column.value])?.label || ''"
-          />
-        </template>
-
-        <template v-else-if="column.value === 'action'">
-          <router-link :to="`/invoice/${data.id}`">
+        <template v-if="column.value === 'action'">
+          <router-link :to="`/invoice/${data.invoiceID}`">
             <PrimeVueButton variant="text" rounded aria-label="Filter">
               <template #icon>
                 <AppBaseSvg name="eye-visible" class="!w-5 !h-5" />
               </template>
             </PrimeVueButton>
           </router-link>
-        </template>
-
-        <template v-else>
-          <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
         </template>
       </template>
     </AppBaseDataTable>

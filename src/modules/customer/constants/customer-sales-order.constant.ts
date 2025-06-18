@@ -11,7 +11,7 @@ export const SALES_INVOICE_COLUMNS: IColumnDataTable[] = [
   },
   {
     label: 'Table Number',
-    sortable: true,
+    sortable: false,
     value: 'tableNumber',
   },
   {
@@ -21,12 +21,12 @@ export const SALES_INVOICE_COLUMNS: IColumnDataTable[] = [
   },
   {
     label: 'Status',
-    sortable: true,
+    sortable: false,
     value: 'status',
   },
   {
     label: 'Order Type',
-    sortable: true,
+    sortable: false,
     value: 'orderType',
   },
   {
@@ -36,20 +36,30 @@ export const SALES_INVOICE_COLUMNS: IColumnDataTable[] = [
   },
 ];
 
-export const SALES_INVOICE_ITEMS_OF_SPLIT_BUTTON: ISplitButton[] = [
-  {
-    iconName: 'eye-visible',
-    label: 'Preview',
-  },
-];
 
 export const SALES_INVOICE_VALUES = [
+  {
+    invoiceID: '#202408010012',
+    purchaseDate: '01/08/2024',
+    tableNumber: 'A1, A2',
+    totalPrice: 100000,
+    status: 'Refunded',
+    orderType: 'Takeaway',
+  },
+  {
+    invoiceID: '#202408010011',
+    purchaseDate: '01/08/2024',
+    tableNumber: 'A1, A2',
+    totalPrice: 100000,
+    status: 'Paid',
+    orderType: 'Takeaway',
+  },
   {
     invoiceID: '#202408010010',
     purchaseDate: '01/08/2024',
     tableNumber: 'A1, A2',
     totalPrice: 100000,
-    status: 'Paid',
+    status: 'Unpaid',
     orderType: 'Dine In',
   },
   {
@@ -57,7 +67,7 @@ export const SALES_INVOICE_VALUES = [
     purchaseDate: '01/08/2024',
     tableNumber: 'A1',
     totalPrice: 100000,
-    status: 'Paid',
+    status: 'Cancelled',
     orderType: 'Dine In',
   },
 ];

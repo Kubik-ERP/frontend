@@ -3,7 +3,7 @@ import detailCustomer from '../components/detailCustomer/index.vue';
 import loyaltyPoint from '../components/detailCustomer/loyaltyPoint.vue';
 import salesInvoice from '../components/detailCustomer/salesInvoice.vue';
 
-const selectedPage = ref('Sales Invoice');
+const selectedPage = ref('Loyalty Point');
 const pageOption = ref(['Sales Invoice', 'Loyalty Point']);
 </script>
 <template>
