@@ -1,6 +1,9 @@
 <script setup lang="ts">
 // Interfaces
-import type { IAuthenticationSignUpCountryInformations, IAuthenticationSignUpProvided } from '../interfaces/authentication-sign-up.interface';
+import type {
+  IAuthenticationSignUpCountryInformations,
+  IAuthenticationSignUpProvided,
+} from '../interfaces/authentication-sign-up.interface';
 
 /**
  * @description Inject all the data and methods what we need

@@ -90,7 +90,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
           validationType = 'email-verification';
         }
 
-        if (authentication_userData.value.usingPin) {
+        if (!authentication_userData.value.usingPin) {
           validationType = 'set-up-pin';
         }
       }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Interfaces
 import type { ICashDrawerListProvided } from '../interfaces/cash-drawer-list.interface';
+import type { IStaffMemberListProvided } from '@/modules/staff-member/interfaces';
 
 /**
  * @description Inject all the data and methods what we need
@@ -8,9 +9,13 @@ import type { ICashDrawerListProvided } from '../interfaces/cash-drawer-list.int
 const {
   cashDrawerList_formDataOfOpenRegister,
   cashDrawerList_formValidationsOfOpenRegister,
+  cashDrawerList_isLoading,
   cashDrawerList_onCloseOpenRegisterDialog,
+  cashDrawerList_onSubmitOpenRegisterForm,
   cashDrawerList_suggestionRegisterBalance,
 } = inject('cashDrawerList') as ICashDrawerListProvided;
+
+const { staffMemberList_dropdownItemStaff } = inject('staffMemberList') as IStaffMemberListProvided;
 </script>
 
 <template>
@@ -52,7 +57,8 @@ const {
             <PrimeVueChip
               v-for="suggestionPrice in cashDrawerList_suggestionRegisterBalance"
               :key="suggestionPrice"
-              class="bg-secondary-background"
+              class="bg-secondary-background cursor-pointer hover:bg-secondary basic-smooth-animation"
+              @click="cashDrawerList_formDataOfOpenRegister.balance = suggestionPrice"
             >
               <template #default>
                 <div class="flex items-center gap-2">
@@ -77,11 +83,17 @@ const {
             spacing-bottom="mb-0"
             :validators="cashDrawerList_formValidationsOfOpenRegister.userId"
           >
-            <PrimeVueInputNumber
+            <PrimeVueSelect
+              id="staff"
               v-model="cashDrawerList_formDataOfOpenRegister.userId"
-              placeholder=""
-              class="text-sm w-full"
+              filter
+              :options="staffMemberList_dropdownItemStaff"
+              option-label="label"
+              option-value="value"
+              placeholder="Select Staff"
+              class="text-base text-text-primary w-full"
               :class="{ ...classes }"
+              v-on="useListenerForm(cashDrawerList_formValidationsOfOpenRegister, 'userId')"
             />
           </AppBaseFormGroup>
         </section>
@@ -116,7 +128,8 @@ const {
           class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
           label="Save"
           type="button"
-          :disabled="cashDrawerList_formValidationsOfOpenRegister.$invalid"
+          :disabled="cashDrawerList_formValidationsOfOpenRegister.$invalid || cashDrawerList_isLoading"
+          @click="cashDrawerList_onSubmitOpenRegisterForm"
         />
       </footer>
     </template>
