@@ -1,7 +1,11 @@
 import { MenuPassThroughAttributes, VirtualScrollerLazyEvent } from 'primevue';
 import { MenuItem } from 'primevue/menuitem';
 import { ICashierCustomerState, ICashierSelected } from '.';
-import { ICashierResponseCalulateEstimationItem, ICashierResponseMidtransQrisPayment } from './cashier-response';
+import {
+  ICashierCustomer,
+  ICashierResponseCalulateEstimationItem,
+  ICashierResponseMidtransQrisPayment,
+} from './cashier-response';
 
 export interface ICashierOrderType {
   code: string;
@@ -149,6 +153,12 @@ export interface ICashierOrderSummary {
   product: ICashierSelected[];
 }
 
+export interface ICashierResponseAddCustomer {
+  data: ICashierCustomer;
+  message: string;
+  statusCode: number;
+}
+
 export interface ICashierCalulateEstimationData {
   isLoading: boolean;
   data: ICashierResponseCalulateEstimationItem;
@@ -186,7 +196,6 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_isLoadingUnpaidOrder: Ref<boolean>;
   cashierOrderSummary_handleSaveUnpaidOrder: () => void;
 
-  cashierOrderSummary_handleOrderType: () => void;
   cashierOrderSummary_handleVoucher: () => void;
   cashierOrderSummary_handleFetchPaymentMethod: () => void;
   cashierOrderSummary_handlePaymentMethod: () => void;

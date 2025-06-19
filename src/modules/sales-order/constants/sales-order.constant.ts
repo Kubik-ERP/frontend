@@ -26,4 +26,3 @@ export const LIST_TABS_SALES_ORDER: ITabs[] = [
     value: 'cash-in-out',
   },
 ];
-

@@ -1,6 +1,6 @@
 // Interfaces
 import type { Validation } from '@vuelidate/core';
-import { ICashDrawerData } from '.';
+import { ICashDrawerData } from './index';
 
 export interface ICashDrawerListRequestQuery {
   endDate?: string | null;

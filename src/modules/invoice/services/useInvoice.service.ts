@@ -12,17 +12,26 @@ import {
 // Store
 import { useInvoiceStore } from '../store';
 import { useCashierStore } from '@/modules/cashier/store';
-import { CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT, CASHIER_PROVIDER } from '@/modules/cashier/constants';
 import { useAuthenticationStore } from '@/modules/authentication/store';
+import { useOutletStore } from '@/modules/outlet/store';
+import { useSettingStore } from '@/modules/setting/store';
+
+// Constant
+import { CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT, CASHIER_PROVIDER } from '@/modules/cashier/constants';
 
 export const useInvoiceService = (): IInvoiceProvided => {
   const store = useInvoiceStore();
   const storeCashier = useCashierStore();
   const storeAuthentication = useAuthenticationStore();
+  const storeOutlet = useOutletStore();
+  const storeSetting = useSettingStore();
 
   const route = useRoute();
 
   const invoice_activeInvoice = ref<number>(1);
+
+  const { outlet_currentOutlet } = storeToRefs(storeOutlet);
+  const { setting_invoice } = storeToRefs(storeSetting);
 
   const invoice_modalPay = ref<IInvoiceModalPayData>({
     show: false,
@@ -162,40 +171,44 @@ export const useInvoiceService = (): IInvoiceProvided => {
    * @returns void
    */
   const invoice_handleOtherOptions = async (type: 'copy' | 'email' | 'whatsapp') => {
-    const whatsappNumber = '6281234567890';
-    const whatsappMessage = `Please find the invoice details at: ${window.location.href}`;
+    if (invoice_invoiceData.value.data?.customer.code && invoice_invoiceData.value.data?.customer.number) {
+      const whatsappNumber =
+        invoice_invoiceData.value.data?.customer.code.toString() +
+        invoice_invoiceData.value.data?.customer.number.toString();
+      const whatsappMessage = `Please find the invoice details at: ${window.location.href}`;
 
-    switch (type) {
-      case 'copy':
-        try {
-          navigator.clipboard.writeText(window.location.host + '/static/invoice/' + route.params.invoiceId);
-          alert('Invoice link copied to clipboard!');
-        } catch (error) {
-          console.error('Failed to copy text: ', error);
-        }
-        break;
-      case 'email':
-        invoice_otherOptions.value.isLoadingSendEmail = true;
-        try {
-          await store.invoice_sendEmail(route.params.invoiceId as string);
-
-          alert('Email sent successfully!');
-        } catch (error) {
-          if (error instanceof Error) {
-            return Promise.reject(error);
-          } else {
-            return Promise.reject(new Error(String(error)));
+      switch (type) {
+        case 'copy':
+          try {
+            navigator.clipboard.writeText(window.location.host + '/static/invoice/' + route.params.invoiceId);
+            alert('Invoice link copied to clipboard!');
+          } catch (error) {
+            console.error('Failed to copy text: ', error);
           }
-        } finally {
-          invoice_otherOptions.value.isLoadingSendEmail = false;
-        }
+          break;
+        case 'email':
+          invoice_otherOptions.value.isLoadingSendEmail = true;
+          try {
+            await store.invoice_sendEmail(route.params.invoiceId as string);
 
-        break;
-      case 'whatsapp':
-        window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-        break;
-      default:
-        console.error('Unknown option selected');
+            alert('Email sent successfully!');
+          } catch (error) {
+            if (error instanceof Error) {
+              return Promise.reject(error);
+            } else {
+              return Promise.reject(new Error(String(error)));
+            }
+          } finally {
+            invoice_otherOptions.value.isLoadingSendEmail = false;
+          }
+
+          break;
+        case 'whatsapp':
+          window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+          break;
+        default:
+          console.error('Unknown option selected');
+      }
     }
   };
 
@@ -204,6 +217,8 @@ export const useInvoiceService = (): IInvoiceProvided => {
     data: null,
     calculate: null,
     currentUser: storeAuthentication.authentication_userData,
+    currentOutlet: outlet_currentOutlet.value,
+    configInvoice: setting_invoice.value,
   });
 
   const invoice_handleCalculate = async () => {
@@ -247,8 +262,12 @@ export const useInvoiceService = (): IInvoiceProvided => {
 
       invoice_invoiceData.value.data = response.data;
 
+      await storeSetting.fetchSetting_detailInvoiceSetting(invoice_invoiceData.value.currentOutlet?.id || '', {});
+
+      invoice_invoiceData.value.configInvoice = setting_invoice.value;
+
       if (response.data.paymentStatus === 'unpaid') {
-        invoice_handleCalculate();
+        await invoice_handleCalculate();
       }
     } catch (error: unknown) {
       if (error instanceof Error) {

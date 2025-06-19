@@ -73,14 +73,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     data: CASHIER_ORDER_TYPE,
   });
 
-  /**
-   * @description Handle order type selection
-   * @returns void
-   */
-  const cashierOrderSummary_handleOrderType = () => {
-    // TODO: handle order type on submit
-  };
-
   const cashierProduct_customerState = ref<ICashierCustomerState>({
     isLoading: false,
     customerList: [],
@@ -735,7 +727,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
     cashierOrderSummary_handleSaveUnpaidOrder,
 
-    cashierOrderSummary_handleOrderType,
     cashierOrderSummary_handleInvoiceDetail,
     cashierOrderSummary_handleCancelOrder,
     cashierOrderSummary_handleFetchPaymentMethod,

@@ -20,7 +20,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/SalesOrderUI.vue'),
         meta: {
           layout: LAYOUT_OPTIONS.DEFAULT,
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           title: 'Sales Order',
         },
       },
