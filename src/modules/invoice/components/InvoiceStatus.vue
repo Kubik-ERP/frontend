@@ -22,7 +22,7 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
     <section id="invoice-id" class="flex flex-col items-center">
       <p id="label-invoice-id" class="font-normal text-text-disabled text-sm">Invoice ID</p>
 
-      <p id="invoice-id" class="font-semibold text-black text-lg">{{ invoice_invoiceData.data?.id }}</p>
+      <p id="invoice-id" class="font-semibold text-black text-lg">{{ invoice_invoiceData.data?.invoiceNumber }}</p>
     </section>
 
     <section
@@ -95,7 +95,7 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
             {{
               invoice_invoiceData.data.paymentStatus === 'unpaid'
                 ? invoice_invoiceData.currentUser?.fullname || '-'
-                : invoice_invoiceData.data.users?.fullName
+                : invoice_invoiceData.data.users?.fullname
             }}
           </td>
         </tr>

@@ -67,6 +67,7 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
    * If the route parameter 'id' exists, it means we are editing an existing outlet.
    */
   const outletCreateEdit_isEditable = computed(() => {
+    console.log(outletCreateEdit_routeParamsId.value, 'val');
     return Boolean(outletCreateEdit_routeParamsId.value);
   });
 
@@ -341,7 +342,7 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
         pinConfirmation: outletCreateEdit_formDataOfVerifyPin.pinConfirmation,
         onClickPrimaryButton: outletCreateEdit_onSubmitDialogVerifyPIN,
         onClickSecondaryButton: outletCreateEdit_onCloseDialogVerifyPIN,
-        primaryButtonLabel: outletCreateEdit_isEditable ? 'Update Store Data' : 'Create Store',
+        primaryButtonLabel: outletCreateEdit_isEditable.value ? 'Update Store Data' : 'Create Store',
       };
 
       eventBus.emit('AppBaseDialogPinVerification', argsEventEmitter);

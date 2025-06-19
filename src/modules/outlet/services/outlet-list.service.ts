@@ -16,7 +16,7 @@ export const useOutletListService = (): IOutletListProvided => {
    */
   const router = useRouter();
   const store = useOutletStore(); // Instance of the store
-  const { outlet_isLoading, outlet_lists } = storeToRefs(store);
+  const { outlet_isLoading, outlet_lists, outlet_currentOutlet } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
@@ -66,6 +66,7 @@ export const useOutletListService = (): IOutletListProvided => {
    */
   const outletList_onSelectOutlet = (outlet: IOutlet) => {
     outletList_selectedOutlet.value = outlet;
+    outlet_currentOutlet.value = outlet;
   };
 
   return {

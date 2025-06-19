@@ -30,6 +30,18 @@ export const useCamelCase = (keywords: string | undefined): string => {
 };
 
 /**
+ * @description Handle format text to snake case
+ */
+export const useSnakeCase = (keywords: string | undefined): string => {
+  if (!keywords) return '';
+
+  return keywords
+    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')  
+    .replace(/\s+/g, '_')                    
+    .toLowerCase();                         
+};
+
+/**
  * @description Handle Currency Format with vanilla javascript
  */
 export const useCurrencyFormat = (data: number, options = DEFAULT_CURRENCY_OPTIONS): string => {
@@ -79,4 +91,12 @@ export const useFormatDate = (dateInput: string | number | Date, format: string 
   };
 
   return format.replace(/yyyy|mm|dd|hh|MM|ss/g, matched => map[matched].toString());
+};
+
+export const useFormatDateLocal = (date: string | Date | number) => {
+  const d = new Date(date);
+  const pad = (n: unknown) => String(n).padStart(2, '0');
+  const ms = String(d.getMilliseconds()).padStart(3, '0');
+
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${ms}`;
 };

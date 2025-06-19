@@ -4,6 +4,8 @@ import {
   ICashierResponseCalulateEstimationItem,
   IMidtransQrisPaymentData,
 } from '@/modules/cashier/interfaces/cashier-response';
+import { IOutlet } from '@/modules/outlet/interfaces';
+import { ISettingInvoiceDetail } from '@/modules/setting/interfaces';
 
 export interface IInvoiceModalPayData {
   show: boolean;
@@ -24,6 +26,8 @@ export interface IInvoiceInvoiceData {
   data: IInvoiceData | null;
   calculate: ICashierResponseCalulateEstimationItem | null;
   currentUser: IAuthenticationProfile | null;
+  currentOutlet: IOutlet | null;
+  configInvoice: ISettingInvoiceDetail | null;
 }
 
 export interface IInvoiceOtherOptionsData {
@@ -88,6 +92,7 @@ export interface IInvoiceData {
   updateAt: string;
   deleteAt: string | null;
   subtotal: number;
+  invoiceNumber: string;
   orderType: 'dine_in' | 'take_away' | 'self_order';
   paidAt: string | null;
   taxId: string | null;
@@ -100,7 +105,7 @@ export interface IInvoiceData {
   invoiceCharges: [];
   paymentMethods: IInvoicePaymentMethod | null;
   users: {
-    fullName: string;
+    fullname: string;
     id: number;
   } | null;
 }

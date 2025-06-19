@@ -102,8 +102,8 @@ const {
                 <PrimeVueButton
                   label="Add New"
                   fluid
-                  severity="secondary"
                   text
+                  severity="secondary"
                   size="small"
                   icon="pi pi-plus"
                   @click="cashierOrderSummary_handleModalAddCustomer()"

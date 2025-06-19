@@ -41,6 +41,20 @@ declare global {
     currency: string;
   }
 
+  interface ICustomer {
+    address: string;
+    code: string;
+    dob: string;
+    email: string;
+    gender: string;
+    id: string;
+    name: string;
+    number: string;
+    point: number | null;
+    tag: string | null;
+    username: string;
+  }
+
   interface IDefaultContent {
     id: string;
     key: string;
@@ -54,6 +68,13 @@ declare global {
 
   interface IObjectFileUpload extends File {
     objectURL: string;
+  }
+
+  interface IPageMeta {
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
   }
 
   interface IPagination {

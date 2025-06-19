@@ -86,7 +86,7 @@ export const useCustomerService = () => {
       const response = await axios.post(API_URL, payload);
       console.log('🚀 ~ createCustomer ~ response:', response);
 
-      const data: ICustomer = response.data.data.data;
+      const data: ICustomer = response.data.data;
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,

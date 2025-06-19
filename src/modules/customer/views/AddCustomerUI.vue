@@ -16,9 +16,8 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
-const handleOnClose = () => {
-  console.log('handleOnClose called');
-  emit('close');
+const handleOnClose = (response) => {
+  emit('close', response);
 }
 
 const router = useRouter();

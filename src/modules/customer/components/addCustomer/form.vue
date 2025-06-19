@@ -15,8 +15,8 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
-const handleOnClose = () => {
-  emit('close');
+const handleOnClose = (response) => {
+  emit('close', response);
 }
 
 function clearForm() {
@@ -40,11 +40,11 @@ const handleCreateCustomer = async () => {
   // console.log(customer_FormData);
 
   try {
-    await createCustomer(customer_FormData);
+    const response = await createCustomer(customer_FormData);
     clearForm();
 
     if(props.isModal) {
-      handleOnClose()
+      handleOnClose(response)
     }
 
     // router.push({
