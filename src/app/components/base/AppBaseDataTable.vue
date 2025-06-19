@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Interface
+import { DataTableSortEvent } from 'primevue/datatable';
+
 /**
  * @description Define the props interface
  */
@@ -13,6 +16,9 @@ interface IProps {
   isUsingCustomHeader?: boolean;
   isUsingCustomHeaderPrefix?: boolean;
   isUsingCustomHeaderSuffix?: boolean;
+  removableSort?: boolean;
+  sortField?: string;
+  sortOrder?: number | null;
   isUsingFilter?: boolean;
   isUsingHeader?: boolean;
   isUsingPagination?: boolean;
@@ -40,6 +46,9 @@ const props = withDefaults(defineProps<IProps>(), {
   isUsingCustomHeader: false,
   isUsingCustomHeaderPrefix: false,
   isUsingCustomHeaderSuffix: false,
+  removableSort: true,
+  sortField: '',
+  sortOrder: null,
   isUsingHeader: true,
   isUsingFilter: true,
   isUsingPagination: true,
@@ -53,7 +62,7 @@ const props = withDefaults(defineProps<IProps>(), {
   onPageChange: () => {},
 });
 
-const emits = defineEmits(['clickBtnCtaCreate', 'update:currentPage']);
+const emits = defineEmits(['clickBtnCtaCreate', 'update:currentPage', 'update:sort']);
 
 /**
  * @description Handle page change event
@@ -67,6 +76,17 @@ const handlePageChange = (event: { page: number; rows: number }) => {
 
 const currentPage = computed(() => Math.floor(props.first / props.rowsPerPage));
 const totalPages = computed(() => Math.ceil(props.totalRecords / props.rowsPerPage));
+
+/**
+ * @description Handle sort event
+ * @param event - The event object containing the sort field and order
+ */
+const handleSort = (event: DataTableSortEvent) => {
+  emits('update:sort', {
+    sortField: event.sortField,
+    sortOrder: event.sortOrder,
+  });
+};
 
 /**
  *  @description Compute the displayed pages for pagination
@@ -100,13 +120,16 @@ const displayedPages = computed(() => {
     :first="props.first"
     :lazy="props.isUsingServerSidePagination"
     :total-records="props.totalRecords"
-    :loading="props.isLoading"
+    :removable-sort="props.removableSort"
+    :sort-field="props.sortField"
+    :sort-order="props.sortOrder ?? 0"
     table-style="min-width: 50rem"
     :pt="{
       root: 'border border-solid border-grayscale-20 rounded-sm',
       header: 'p-0',
     }"
     @page="handlePageChange"
+    @sort="handleSort"
   >
     <template #header>
       <template v-if="props.isUsingHeader">
@@ -259,12 +282,18 @@ const displayedPages = computed(() => {
       `"
     >
       <template #body="{ data, index }">
-        <template v-if="props.isUsingCustomBody">
-          <slot name="body" :column="column" :data="data" :index="index" />
+        <template v-if="props.isLoading">
+          <PrimeVueSkeleton />
         </template>
 
         <template v-else>
-          <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
+          <template v-if="props.isUsingCustomBody">
+            <slot name="body" :column="column" :data="data" :index="index" />
+          </template>
+
+          <template v-else>
+            <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
+          </template>
         </template>
       </template>
     </PrimeVueColumn>

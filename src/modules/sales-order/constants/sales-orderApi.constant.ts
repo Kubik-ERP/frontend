@@ -1,1 +1,0 @@
-export const SALES_ORDER_INVOICE_ENDPOINT = '/invoice'
