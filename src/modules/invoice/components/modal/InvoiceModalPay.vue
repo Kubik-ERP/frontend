@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // Interface
+import { ICashierOrderSummaryPaymentMethod } from '@/modules/cashier/interfaces/cashier-order-summary';
 import { IInvoiceProvided } from '../../interfaces';
 
 /**
@@ -34,7 +35,7 @@ const { invoice_invoiceData, invoice_modalPay, invoice_handlePayInvoice } = inje
             clearable
             option-label="name"
             option-value="id"
-            :option-disabled="item => !item.isAvailable"
+            :option-disabled="(item: ICashierOrderSummaryPaymentMethod) => !item.isAvailable"
             class="w-full"
             placeholder="Select Payment Method"
           />

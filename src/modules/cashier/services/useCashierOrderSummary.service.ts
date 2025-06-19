@@ -27,6 +27,7 @@ import {
   ICashierOrderSummaryModalSelectTable,
   ICashierOrderSummaryModalVoucher,
   ICashierOrderSummaryProvided,
+  ICashierResponseAddCustomer,
 } from '../interfaces/cashier-order-summary';
 
 import { ICashierResponseWebsocketMessage } from '../interfaces/cashier-response';
@@ -72,14 +73,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     selectedOrderType: '',
     data: CASHIER_ORDER_TYPE,
   });
-
-  /**
-   * @description Handle order type selection
-   * @returns void
-   */
-  const cashierOrderSummary_handleOrderType = () => {
-    // TODO: handle order type on submit
-  };
 
   const cashierProduct_customerState = ref<ICashierCustomerState>({
     isLoading: false,
@@ -334,8 +327,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     show: false,
   });
 
-  const cashierOrderSummary_handleModalAddCustomer = () => {
+  const cashierOrderSummary_handleModalAddCustomer = (response: ICashierResponseAddCustomer) => {
     cashierOrderSummary_modalAddCustomer.value.show = !cashierOrderSummary_modalAddCustomer.value.show;
+
+    cashierProduct_customerState.value.selectedCustomer = response.data;
   };
 
   /**
@@ -735,7 +730,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
     cashierOrderSummary_handleSaveUnpaidOrder,
 
-    cashierOrderSummary_handleOrderType,
     cashierOrderSummary_handleInvoiceDetail,
     cashierOrderSummary_handleCancelOrder,
     cashierOrderSummary_handleFetchPaymentMethod,

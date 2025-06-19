@@ -6,9 +6,9 @@ import { INVOICE_LIST_TAB } from '../constants/invoice.constant';
 import type { IInvoiceProvided } from '../interfaces/index';
 
 // Components
-import InvoiceCashierInvoice from './paper/InvoiceCashierInvoice.vue';
-import InvoiceKitchenTicket from './paper/InvoiceKitchenTicket.vue';
-import InvoiceTableTicket from './paper/InvoiceTableTicket.vue';
+import InvoicePaperCashierInvoice from './paper/InvoicePaperCashierInvoice.vue';
+import InvoicePaperKitchenTicket from './paper/InvoicePaperKitchenTicket.vue';
+import InvoicePaperTableTicket from './paper/InvoicePaperTableTicket.vue';
 
 const { invoice_activeInvoice, invoice_handleDownload, invoice_handlePrint } =
   inject<IInvoiceProvided>('invoice')!;
@@ -65,13 +65,13 @@ defineExpose({ invoiceRef, kitchenRef, tableRef, print, download });
         </PrimeVueTabList>
         <PrimeVueTabPanels>
           <PrimeVueTabPanel :value="1">
-            <InvoiceCashierInvoice />
+            <InvoicePaperCashierInvoice />
           </PrimeVueTabPanel>
           <PrimeVueTabPanel :value="2">
-            <InvoiceKitchenTicket />
+            <InvoicePaperKitchenTicket />
           </PrimeVueTabPanel>
           <PrimeVueTabPanel :value="3">
-            <InvoiceTableTicket />
+            <InvoicePaperTableTicket />
           </PrimeVueTabPanel>
         </PrimeVueTabPanels>
       </PrimeVueTabs>
@@ -81,21 +81,21 @@ defineExpose({ invoiceRef, kitchenRef, tableRef, print, download });
           ref="invoiceRef"
           class="print-invoice-paper hidden relative inset-0 mx-auto min-h-svh min-w-svw m-0 p-0 w-full h-full items-center justify-center"
         >
-          <InvoiceCashierInvoice />
+          <InvoicePaperCashierInvoice />
         </div>
 
         <div
           ref="kitchenRef"
           class="print-invoice-paper hidden relative inset-0 mx-auto min-h-svh min-w-svw m-0 p-0 w-full h-full items-center justify-center"
         >
-          <InvoiceKitchenTicket />
+          <InvoicePaperKitchenTicket />
         </div>
 
         <div
           ref="tableRef"
           class="print-invoice-paper hidden relative inset-0 mx-auto min-h-svh min-w-svw m-0 p-0 w-full h-full items-center justify-center"
         >
-          <InvoiceTableTicket />
+          <InvoicePaperTableTicket />
         </div>
       </Teleport>
     </section>
