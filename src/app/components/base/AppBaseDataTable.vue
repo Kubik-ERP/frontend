@@ -108,6 +108,12 @@ const displayedPages = computed(() => {
     }"
     @page="handlePageChange"
   >
+    <template #empty>
+      <section class="flex items-center justify-center w-full">
+        <span class="font-semibold text-sm text-text-primary">No data available</span>
+      </section>
+    </template>
+
     <template #header>
       <template v-if="props.isUsingHeader">
         <template v-if="props.isUsingCustomHeader">

@@ -11,15 +11,20 @@ import {
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import type { ICashDrawerOpenFormData, ICashDrawerRequestQuery } from '../interfaces';
+import type {
+  ICashDrawerListOpenRegisterFormData,
+  ICashDrawerListRequestQuery,
+  ICashDrawerResponse,
+  ICashDrawerStore,
+} from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
 
 export const useCashDrawerStore = defineStore('cash-drawer', {
-  state: () => ({
+  state: (): ICashDrawerStore => ({
     cashDrawer_isLoading: false,
-    cashDrawer_transactionLists: [],
+    cashDrawer_lists: null,
   }),
   getters: {
     /**
@@ -125,16 +130,18 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
      */
     async cashDrawer_list(
       storeId: string,
-      params: ICashDrawerRequestQuery,
+      params: ICashDrawerListRequestQuery,
       requestConfigurations: AxiosRequestConfig = {},
-    ): Promise<unknown> {
+    ): Promise<ICashDrawerResponse> {
       this.cashDrawer_isLoading = true;
 
       try {
-        const response = await httpClient.get(`${CASH_DRAWER_LIST_ENDPOINT}/${storeId}`, {
+        const response = await httpClient.get<ICashDrawerResponse>(`${CASH_DRAWER_LIST_ENDPOINT}/${storeId}`, {
           params,
           ...requestConfigurations,
         });
+
+        this.cashDrawer_lists = response.data.data;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -156,7 +163,7 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
      */
     async cashDrawer_open(
       cashDrawerId: string,
-      payload: ICashDrawerOpenFormData,
+      payload: ICashDrawerListOpenRegisterFormData,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
       this.cashDrawer_isLoading = true;
