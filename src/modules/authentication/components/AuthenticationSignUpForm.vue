@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Interfaces
-import type { IAuthenticationSignUpProvided } from '../interfaces/authentication-sign-up.interface';
+import type { IAuthenticationSignUpCountryInformations, IAuthenticationSignUpProvided } from '../interfaces/authentication-sign-up.interface';
 
 /**
  * @description Inject all the data and methods what we need
@@ -106,7 +106,7 @@ const {
               filter
               :options="COUNTRY_INFORMATIONS"
               :option-label="
-                value => {
+                (value: IAuthenticationSignUpCountryInformations) => {
                   return `${value.name} (${value.dialCodes})`;
                 }
               "

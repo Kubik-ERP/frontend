@@ -189,7 +189,7 @@ export interface ICashierOrderSummaryProvided {
 
   cashierProduct_customerState: Ref<ICashierCustomerState>;
 
-  cashierOrderSummary_handleModalAddCustomer: (response: ICashierResponseAddCustomer) => void;
+  cashierOrderSummary_handleModalAddCustomer: () => void;
 
   cashierOrderSummary_handleIsExpandedToggle: () => void;
 
