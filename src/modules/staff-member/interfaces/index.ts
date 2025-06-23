@@ -1,3 +1,4 @@
+export * from './staff-member-create-edit.interface';
 export * from './staff-member-list.interface';
 
 export interface IStaffMember {

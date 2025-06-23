@@ -185,34 +185,47 @@ export const useSettingPaymentMethodService = (): ISettingPaymentMethodProvided 
   /**
    * @description Handle business logic for event click button edit payment method
    */
-  const settingPaymentMethod_onDeactivate = (): void => {
-    const argsEventEmitter: IPropsDialogConfirmation = {
-      id: 'setting-payment-method-delete-confirmation-dialog',
-      description: 'Once deactivated, it will no longer be available for new transactions.',
-      iconName: 'delete-polygon',
-      isOpen: true,
-      isUsingButtonSecondary: true,
-      onClickButtonPrimary: () => {
-        settingPaymentMethod_formData.isAvailable = true; // Set isAvailable to true
+  const settingPaymentMethod_onDeactivate = (value: boolean): void => {
+    if (value) {
+      settingPaymentMethod_formData.isAvailable = value;
+    } else {
+      const argsEventEmitter: IPropsDialogConfirmation = {
+        id: 'setting-payment-method-delete-confirmation-dialog',
+        description: 'Once deactivated, it will no longer be available for new transactions.',
+        iconName: 'delete-polygon',
+        isOpen: true,
+        isUsingButtonSecondary: true,
+        onClickButtonPrimary: () => {
+          settingPaymentMethod_formData.isAvailable = true;
+          console.log(settingPaymentMethod_formData.isAvailable, 'Payment method reactivated');
 
-        // Close the confirmation dialog without deactivating
-        const argsEventEmitter: IPropsDialog = {
-          id: 'setting-payment-method-delete-confirmation-dialog',
-          isOpen: false,
-        };
+          // Close the confirmation dialog without deactivating
+          const argsEventEmitter: IPropsDialog = {
+            id: 'setting-payment-method-delete-confirmation-dialog',
+            isOpen: false,
+          };
 
-        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
-      },
-      onClickButtonSecondary: () => {
-        settingPaymentMethod_formData.isAvailable = false; // Set isAvailable to false
-      },
-      textButtonPrimary: 'Cancel',
-      textButtonSecondary: 'Deactivate Payment Method',
-      title: 'Are you sure you want to deactivate this payment method?',
-      type: 'error',
-    };
+          eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+        },
+        onClickButtonSecondary: () => {
+          settingPaymentMethod_formData.isAvailable = false;
 
-    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+          // Close the confirmation dialog without deactivating
+          const argsEventEmitter: IPropsDialog = {
+            id: 'setting-payment-method-delete-confirmation-dialog',
+            isOpen: false,
+          };
+
+          eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+        },
+        textButtonPrimary: 'Cancel',
+        textButtonSecondary: 'Deactivate Payment Method',
+        title: 'Are you sure you want to deactivate this payment method?',
+        type: 'error',
+      };
+
+      eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+    }
   };
 
   /**
@@ -244,19 +257,11 @@ export const useSettingPaymentMethodService = (): ISettingPaymentMethodProvided 
   };
 
   /**
-   * @description Watch for changes in isAvailable
+   * @description Handle business logic for toggle payment method availability
    */
-  watch(
-    settingPaymentMethod_formData,
-    value => {
-      if (value.isAvailable === false) {
-        settingPaymentMethod_onDeactivate(); // Automatically trigger deactivation confirmation if isAvailable is set to false
-      }
-    },
-    {
-      deep: true,
-    },
-  );
+  const settingPaymentMethod_toggleAvailability = (value: boolean): void => {
+    settingPaymentMethod_onDeactivate(value);
+  };
 
   return {
     settingPaymentMethod_fetchListPaymentMethods,
@@ -269,5 +274,6 @@ export const useSettingPaymentMethodService = (): ISettingPaymentMethodProvided 
     settingPaymentMethod_onCreateOrEdit,
     settingPaymentMethod_onDeactivate,
     settingPaymentMethod_onSubmit,
+    settingPaymentMethod_toggleAvailability,
   };
 };

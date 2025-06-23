@@ -34,13 +34,17 @@ const props = withDefaults(defineProps<IProps>(), {
 /**
  * @description Check if the form is invalid
  */
-const isInvalid = computed(() => props.validators.$dirty && props.validators.$invalid);
+const isInvalid = computed(() => {
+  if (!props.validators) return false;
+
+  return props.validators.$dirty && props.validators.$invalid;
+});
 
 /**
  * @description Check the error message and retrieve the first error
  */
 const error: ComputedRef<ErrorObject | null> = computed(() => {
-  if (!props.validators && (props.validators as BaseValidation)?.$errors.length === 0) return null;
+  if (!props.validators || (props.validators as BaseValidation)?.$errors.length === 0) return null;
 
   return props.validators.$errors[0];
 });
@@ -63,7 +67,11 @@ const message: ComputedRef<string> = computed(() => {
 <template>
   <div id="form-group" :class="{ [spacingBottom]: !isNotHaveSpacing }">
     <label v-if="isNameAsLabel" :class="classLabel" :for="labelFor">
-      {{ name }}<span v-if="validators.required" class="text-error-main">*</span>
+      {{ name }}
+
+      <template v-if="validators">
+        <span v-if="validators.required" class="text-error-main">*</span>
+      </template>
     </label>
     <slot
       :is-error="!!error"

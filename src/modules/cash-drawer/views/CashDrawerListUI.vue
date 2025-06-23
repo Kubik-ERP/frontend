@@ -5,7 +5,7 @@ import CashDrawerListOpenRegisterDialog from '../components/CashDrawerListOpenRe
 
 // Services
 import { useCashDrawerListService } from '../services/cash-drawer-list.service';
-import { useStaffMemberListService } from '@/modules/staff-member/services/staff-member.service';
+import { useStaffMemberListService } from '@/modules/staff-member/services/staff-member-list.service';
 
 /**
  * @description Destructure all the data and methods what we need

@@ -100,7 +100,7 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
 
     <template #content>
       <section id="content" class="flex flex-col items-center gap-3">
-        <h6 class="font-semibold text-black text-lg">
+        <h6 class="font-semibold text-black text-center text-lg">
           {{ dialogConfirmation.title }}
         </h6>
 

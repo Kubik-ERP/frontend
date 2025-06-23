@@ -3,7 +3,7 @@
 import StaffMemberListTable from '../components/StaffMemberListTable.vue';
 
 // Services
-import { useStaffMemberListService } from '../services/staff-member.service';
+import { useStaffMemberListService } from '../services/staff-member-list.service';
 
 /**
  * @description Destructure all the data and methods what we need

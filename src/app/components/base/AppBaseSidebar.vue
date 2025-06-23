@@ -211,7 +211,7 @@ const toggleSubMenu = (categoryIndex: number, menuIndex: number) => {
         <RouterLink
           :id="`additional-menu-${additionalMenuIndex}`"
           :to="additionalMenu.path"
-          class="flex items-center gap-2 p-2 basic-smooth-animation hover:bg-primary-border cursor-pointer rounded-md"
+          class="flex items-center gap-2 px-4 py-2 basic-smooth-animation hover:bg-grayscale-10 cursor-pointer rounded-md"
           :class="[route.path === additionalMenu.path ? 'bg-primary-border' : '']"
         >
           <AppBaseSvg :name="additionalMenu.iconName" class="!w-5 !h-5" />
