@@ -35,4 +35,3 @@ jobs:
             docker stop kubik-frontend || true
             docker rm kubik-frontend || true
             docker run -d --name kubik-frontend --restart always -p 8090:8090 kubik-frontend
-            docker system prune -a --volumes -f
