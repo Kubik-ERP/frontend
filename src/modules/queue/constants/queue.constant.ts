@@ -39,12 +39,23 @@ export const QUEUE_LIST_COLUMNS: IColumnDataTable[] = [
     sortable: false,
     value: 'duration',
   },
-  {
-    label: '',
-    sortable: false,
-    value: 'action',
-  }
 ];
+
+export const ORDER_TYPE_LIST = [
+  {
+    label: 'Dine In',
+    value: 'Dine In',
+  },
+  {
+    label: 'Takeaway',
+    value: 'Takeaway',
+  },
+  {
+    label: 'Self Order',
+    value: 'Self Order',
+  },
+
+]
 
 export const ORDER_STATUS_LIST = [
   {
@@ -56,12 +67,12 @@ export const ORDER_STATUS_LIST = [
     value: 'Served',
   },
   {
-    label: 'Cancelled',
-    value: 'Cancelled',
+    label: 'Complete',
+    value: 'Complete',
   },
   {
-    label: 'Completed',
-    value: 'Completed',
+    label: 'Cancelled',
+    value: 'Cancelled',
   },
 ];
 

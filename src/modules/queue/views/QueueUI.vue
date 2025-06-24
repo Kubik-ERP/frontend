@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { useQueueService } from '../services/queue.service';
-const { queueColumns, queueValues } = useQueueService();
+const { queueColumns, queueValues, OrderStatusList, OrderTypeList } = useQueueService();
 
 const search = ref('');
-const popover = ref();
 
 const handleSearch = () => {
   console.log(search.value);
 };
+
+const filter = reactive<{ date: Date; orderType: string; orderStatus: string }>({
+  date: new Date(),
+  orderType: '',
+  orderStatus: '',
+});
 
 const orderTypeClass = (orderType: string) => {
   switch (orderType) {
@@ -24,13 +29,13 @@ const orderTypeClass = (orderType: string) => {
 
 const orderStatusClass = (orderStatus: string) => {
   switch (orderStatus) {
-    case 'Paid':
-      return 'bg-background-success text-success';
-    case 'Unpaid':
-      return 'bg-warning-background text-warning-main';
+    case 'In Progress':
+      return 'bg-primary-background text-primary';
+    case 'Served':
+      return 'bg-secondary-background text-green-primary';
+    case 'Complete':
+      return 'bg-secondary-background text-secondary';
     case 'Cancelled':
-      return 'bg-error-background text-error-main';
-    case 'Refunded':
       return 'bg-error-background text-error-main';
     default:
       return '';
@@ -38,7 +43,24 @@ const orderStatusClass = (orderStatus: string) => {
 };
 </script>
 <template>
-  <div>
+  <div class="flex flex-col gap-8">
+    <div class="flex gap-2 items-center">
+      <router-link to="/customer-waiting-list">
+        <PrimeVueButton class="w-fit" label="Customer Waiting List System">
+          <template #icon>
+            <AppBaseSvg name="display" class="!w-5 !h-5" />
+          </template>
+        </PrimeVueButton>
+      </router-link>
+      <router-link to="/kds">
+        <PrimeVueButton class="w-fit" label="Kitchen Display System">
+          <template #icon>
+            <AppBaseSvg name="display" class="!w-5 !h-5" />
+          </template>
+        </PrimeVueButton>
+      </router-link>
+    </div>
+
     <AppBaseDataTable
       :data="queueValues"
       :columns="queueColumns"
@@ -54,10 +76,10 @@ const orderStatusClass = (orderStatus: string) => {
       <template #header-prefix>
         <section class="w-full">
           <div class="flex items-center gap-2">
-            <h6 class="font-semibold text-black text-xl">Order List</h6>
+            <h6 class="font-semibold text-black text-xl">Queue</h6>
             <PrimeVueChip
               class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-1"
-              :label="`${queueValues.length} Orders`"
+              :label="`${queueValues.length}`"
             />
           </div>
         </section>
@@ -80,15 +102,86 @@ const orderStatusClass = (orderStatus: string) => {
               />
             </PrimeVueIconField>
           </form>
-          <PrimeVueButton class="whitespace-nowrap" label="Kitchen Display System">
-            <template #icon>
-              <AppBaseSvg name="display" class="!w-5 !h-5" />
-            </template>
-          </PrimeVueButton>
         </div>
       </template>
 
-      <template #filter> filter </template>
+      <template #filter>
+        <section class="flex flex-col gap-2">
+          <h6 class="font-semibold text-black text-lg">Filter by</h6>
+          <div class="flex items-center gap-4">
+            <PrimeVueDatePicker
+              v-model="filter.date"
+              class="w-full min-w-80"
+              placeholder="Real time: "
+              show-on-focus
+              show-icon
+              fluid
+              selection-mode="range"
+              :manual-input="false"
+              date-format="MM dd, yy"
+            >
+            </PrimeVueDatePicker>
+
+            <PrimeVueSelect
+              v-model="filter.orderType"
+              :options="OrderTypeList"
+              placeholder="Order Type"
+              option-label="label"
+              option-value="value"
+              class="w-full min-w-52"
+            >
+              <template #option="{ option }">
+                <PrimeVueChip
+                  :class="[orderTypeClass(option.label), 'text-xs font-semibold px-1.5 py-1']"
+                  :label="option.label"
+                />
+              </template>
+              <template #value="{ value, placeholder }">
+                <span v-if="!value" class="p-placeholder">
+                  {{ placeholder }}
+                </span>
+                <PrimeVueChip
+                  v-else
+                  :class="[orderTypeClass(value), 'text-xs font-normal px-1.5 py-1']"
+                  :label="value"
+                />
+              </template>
+              <template #dropdownicon>
+                <AppBaseSvg name="chevron-down" class="!w-5 !h-5" />
+              </template>
+            </PrimeVueSelect>
+
+            <PrimeVueSelect
+              v-model="filter.orderStatus"
+              :options="OrderStatusList"
+              placeholder="Order Status"
+              option-label="label"
+              option-value="value"
+              class="w-full min-w-52"
+            >
+              <template #option="{ option }">
+                <PrimeVueChip
+                  :class="[orderStatusClass(option.label), 'text-xs font-semibold px-1.5 py-1']"
+                  :label="option.label"
+                />
+              </template>
+              <template #value="{ value, placeholder }">
+                <span v-if="!value" class="p-placeholder">
+                  {{ placeholder }}
+                </span>
+                <PrimeVueChip
+                  v-else
+                  :class="[orderStatusClass(value), 'text-xs font-normal px-1.5 py-1']"
+                  :label="value"
+                />
+              </template>
+              <template #dropdownicon>
+                <AppBaseSvg name="chevron-down" class="!w-5 !h-5" />
+              </template>
+            </PrimeVueSelect>
+          </div>
+        </section>
+      </template>
 
       <template #body="{ column, data, index }">
         <template v-if="column.value === 'index'">
@@ -96,7 +189,7 @@ const orderStatusClass = (orderStatus: string) => {
         </template>
 
         <template v-else-if="column.value === 'orderNumber'">
-          <span class="font-semibold">{{ data.orderNumber }}</span>
+          <span class="text-primary">{{ data.orderNumber }}</span>
         </template>
 
         <!-- order type -->
@@ -108,49 +201,26 @@ const orderStatusClass = (orderStatus: string) => {
         </template>
 
         <template v-else-if="column.value === 'orderStatus'">
-          <PrimeVueChip
-            :class="[orderStatusClass(data[column.value]), 'text-xs font-normal px-1.5 py-1']"
-            :label="data[column.value]"
-          />
-        </template>
-
-        <!-- action -->
-        <template v-else-if="column.value === 'action'" >
-          <PrimeVueButton variant="text" rounded aria-label="Action" @click="popover.toggle($event)">
-            <template #icon>
-              <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
-            </template>
-          </PrimeVueButton>
-
-          <PrimeVuePopover
-            ref="popover"
-            :pt="{
-              content: 'p-0',
-            }"
+          <PrimeVueSelect
+            v-model="data[column.value]"
+            :options="OrderStatusList"
+            option-label="label"
+            option-value="value"
+            class="w-full"
           >
-            <section id="popover-content" class="flex flex-col">
-              <PrimeVueButton
-                class="w-full px-4 py-3"
-                variant="text"
-              >
-                <template #default>
-                  <section id="content" class="flex items-center gap-2 w-full">
-                    <AppBaseSvg name="eye-visible" class="!w-4 !h-4" />
-                    <span class="font-normal text-sm text-text-primary">View Order Details</span>
-                  </section>
-                </template>
-              </PrimeVueButton>
-
-              <PrimeVueButton class="w-full px-4 py-3" variant="text">
-                <template #default>
-                  <section id="content" class="flex items-center gap-2 w-full">
-                    <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                    <span class="font-normal text-sm text-text-primary">Change Status</span>
-                  </section>
-                </template>
-              </PrimeVueButton>
-            </section>
-          </PrimeVuePopover>
+            <template #option="{ option }">
+              <PrimeVueChip
+                :class="[orderStatusClass(option.label), 'text-xs font-semibold px-1.5 py-1']"
+                :label="option.label"
+              />
+            </template>
+            <template #value="{ value }">
+              <PrimeVueChip :class="[orderStatusClass(value), 'text-xs font-normal px-1.5 py-1']" :label="value" />
+            </template>
+            <template #dropdownicon>
+              <AppBaseSvg name="chevron-down" class="!w-5 !h-5" />
+            </template>
+          </PrimeVueSelect>
         </template>
 
         <template v-else>
