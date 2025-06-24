@@ -60,7 +60,7 @@ export const useCustomerService = () => {
   const getAllCustomers = async (page: number, limit: number, search: string): Promise<ICustomerResponse> => {
     const response = await axios.get(`${API_URL}?page=${page}&limit=${limit}&search=${search}`);
     // console.log("🚀 ~ getAllCustomers ~ response:", response)
-    const customers: ICustomer[] = response.data.data.customers.map((item: ICustomer) => ({
+    const customers: ICustomer[] = response.data.data.data.map((item: ICustomer) => ({
       id: item.id,
       name: item.name,
       email: item.email,
