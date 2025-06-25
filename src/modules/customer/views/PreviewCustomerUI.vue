@@ -7,6 +7,8 @@ import { useCustomerDetailService } from '../services/customer-detail.service';
 
 const { customerDetails_fetchSalesInvoice } = useCustomerDetailService();
 
+const route = useRoute();
+
 const selectedPage = ref('Sales Invoice');
 const pageOption = ref(['Sales Invoice', 'Loyalty Point']);
 
@@ -14,8 +16,8 @@ const customer = ref({});
 const invoices = ref([]);
 
 onMounted(async () => {
-  const response = await customerDetails_fetchSalesInvoice('0014cc8a-748a-431b-a7f2-7449e1764f56');
-  console.log('🚀 ~ onMounted ~ response:', response);
+  const response = await customerDetails_fetchSalesInvoice(route.params.id as string);
+  // console.log('🚀 ~ onMounted ~ response:', response);
   customer.value = response.data;
   invoices.value = response.data.invoices;
 });

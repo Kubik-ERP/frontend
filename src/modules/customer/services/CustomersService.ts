@@ -24,7 +24,7 @@ export const useCustomerService = () => {
     name: '',
     gender: '',
     dob: '',
-    code: '',
+    code: '+62',
     number: '',
     email: '',
     tags: [],
@@ -128,6 +128,7 @@ export const useCustomerService = () => {
     try {
       const response = await axios.patch(`${API_URL}/${id}`, payload);
       const data: ICustomer = response.data.data.data;
+      console.log("🚀 ~ updateCustomer ~ response:", response)
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,

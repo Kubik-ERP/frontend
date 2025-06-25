@@ -21,17 +21,18 @@ function clearForm() {
 }
 
 const handleEditCustomer = async () => {
-  customer_formValidations.value.$touch();
-  // console.log('🚀 ~ handleEditCustomer ~ customer_formValidations.value:', customer_formValidations.value);
+  // customer_formValidations.value.$touch();
+  // // console.log('🚀 ~ handleEditCustomer ~ customer_formValidations.value:', customer_formValidations.value);
 
-  if (customer_formValidations.value.$invalid) return;
+  // if (customer_formValidations.value.$invalid) return;
 
   // console.log(customer_FormData);
 
   try {
-    updateCustomer(route.params.id, customer_FormData);
+    await updateCustomer(route.params.id, customer_FormData);
     clearForm();
-
+  hasConfirmedLeave = true;
+  router.push({ name: 'customer-list' });
     // router.push({
     //   name: 'customer-list',
     // });
@@ -89,7 +90,7 @@ onBeforeRouteLeave((to, from, next) => {
 const loadCustomer = async () => {
   try {
     const response = await getCustomerByID(route.params.id);
-    console.log('🚀 ~ onMounted ~ response:', response);
+    // console.log('🚀 ~ onMounted ~ response:', response);
 
     customer_FormData.name = response.name;
     customer_FormData.gender = response.gender;

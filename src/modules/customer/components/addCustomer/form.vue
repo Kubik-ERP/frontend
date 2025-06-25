@@ -40,9 +40,9 @@ function clearForm() {
 }
 
 const handleCreateCustomer = async () => {
-  customer_formValidations.value.$touch();
+  // customer_formValidations.value.$touch();
 
-  if (customer_formValidations.value.$invalid) return;
+  // if (customer_formValidations.value.$invalid) return;
 
   try {
     const response = await createCustomer(customer_FormData);
@@ -79,6 +79,7 @@ const handleCreateCustomer = async () => {
         v-model="customer_FormData.name"
         name="name"
         type="text"
+        :class="{ ...classes }"
         class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
         fluid
       />
