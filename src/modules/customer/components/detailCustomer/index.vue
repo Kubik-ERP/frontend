@@ -1,27 +1,18 @@
 <script setup lang="ts">
-const route = useRoute();
-const customerID = ref(route.params.id);
 
-const customer = ref({
-  id: '00105789127009833',
-  name: 'Brooklyn Simmons',
-  email: 'Brooklyn@gmail.com',
-  phone: '+62 851239874621',
-  address: 'Brooklyn, New York',
-  gender: 'Male',
-  dob: '2000-01-01',
-  tags: ['tag1', 'tag2', 'tag3'],
-});
+import type { ICustomerDetails } from '../../interfaces';
+
+const customer = ref(inject('customerDetails').customer as ICustomerDetails);
 </script>
 <template>
   <div class="border border-solid border-primary rounded-md p-4 mb-8">
     <section class="flex flex-col gap-2">
       <div class="flex items-center gap-8">
         <h1 class="text-xl font-semibold">{{ customer.name }}</h1>
-        <router-link :to="`/customer/edit-customer/${customerID}`">
+        <router-link :to="`/customer/edit-customer/${customer.id}`">
           <PrimeVueButton
             label="Edit Customer Data"
-            unstyled
+            variant="text"
             class="flex items-center gap-2 text-primary font-semibold text-sm"
           >
             <template #icon>
@@ -38,12 +29,12 @@ const customer = ref({
       <div class="grid grid-cols-3 gap-4 justify-evenly">
         <div class="flex flex-col">
           <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
-          <p>{{ customer.email }}</p>
+          <p class="truncate">{{ customer.email }}</p>
         </div>
 
         <div class="flex flex-col">
           <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Phone Number</label>
-          <p>{{ customer.phone }}</p>
+          <p>(+{{ customer.code }}) {{ customer.number }}</p>
         </div>
 
         <div class="flex flex-col">
@@ -58,7 +49,7 @@ const customer = ref({
 
         <div class="flex flex-col">
           <label for="dob" class="block text-sm font-medium leading-6 text-gray-900">Born Date</label>
-          <p>{{ customer.dob }}</p>
+          <p>{{ useFormatDate(customer.dob,'dd/mm/yyyy') }}</p>
         </div>
 
         <div class="flex flex-col">

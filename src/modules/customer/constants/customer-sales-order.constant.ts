@@ -1,3 +1,5 @@
+export const SALES_INVOICE_LIST_REQUEST = 'SALES_INVOICE_LIST_REQUEST';
+
 export const SALES_INVOICE_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Invoice ID',
@@ -69,5 +71,39 @@ export const SALES_INVOICE_VALUES = [
     totalPrice: 100000,
     status: 'Cancelled',
     orderType: 'Dine In',
+  },
+];
+
+export const SALES_INVOICE_ORDER_TYPE = [
+  {
+    label: 'Dine In',
+    value: 'Dine In',
+  },
+  {
+    label: 'Takeaway',
+    value: 'Takeaway',
+  },
+  {
+    label: 'Delivery',
+    value: 'Delivery',
+  },
+];
+
+export const SALES_INVOICE_PAYMENT_STATUS = [
+  {
+    label: 'Unpaid',
+    value: 'Unpaid',
+  },
+  {
+    label: 'Paid',
+    value: 'Paid',
+  },
+  {
+    label: 'Refunded',
+    value: 'Refunded',
+  },
+  {
+    label: 'Cancelled',
+    value: 'Cancelled',
   },
 ];

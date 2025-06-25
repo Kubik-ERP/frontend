@@ -1,0 +1,1 @@
+export const CUSTOMER_DETAILS_BASE_ENDPOINT = '/customers/details';

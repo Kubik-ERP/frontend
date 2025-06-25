@@ -13,6 +13,8 @@ const API_URL_TAGS = `${import.meta.env.VITE_APP_BASE_API_URL}/api/tags`;
 
 import useVuelidate from '@vuelidate/core';
 
+import { required } from '@vuelidate/validators';
+
 import eventBus from '@/plugins/mitt';
 
 // import { required } from '@vuelidate/validators';
@@ -41,7 +43,9 @@ export const useCustomerService = () => {
   //   gender: { required },
   // }));
 
-  const customer_formRules = computed(() => ({}));
+  const customer_formRules = computed(() => ({
+    name: { required },
+  }));
 
   const customer_formValidatable = computed(() => ({
     name: customer_FormData.name,
@@ -53,7 +57,7 @@ export const useCustomerService = () => {
 
   const getCustomerTags = async (): Promise<ITag[]> => {
     const response = await axios.get(API_URL_TAGS);
-    console.log("🚀 ~ getCustomerTags ~ response:", response)
+    console.log('🚀 ~ getCustomerTags ~ response:', response);
     return response.data.data;
   };
 

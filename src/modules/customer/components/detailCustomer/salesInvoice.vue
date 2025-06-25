@@ -2,13 +2,42 @@
 // Services
 import { useCustomerDetailService } from '../../services/customer-detail.service';
 
-const { customerDetail_columns, customerDetail_values } = useCustomerDetailService();
+// Interfaces
+import type { Iinvoice, ICustomerDetails } from '../../interfaces';
+
+const { customerDetail_columns, salesInvoice_paymentStatus, salesInvoice_orderType } = useCustomerDetailService();
 /**
  * @description Destructure all the data and methods what we need
  */
 
+function toTitleCaseWithSpaces(inputString: string): string {
+  if (!inputString) {
+    return ''; // Handle empty or null/undefined input
+  }
+
+  // Replace underscores with spaces
+  const withSpaces = inputString.replace(/_/g, ' ');
+
+  // Capitalize the first letter of each word
+  // This uses a regular expression to match the first character of the string
+  // and the first character after any whitespace, then converts it to uppercase.
+  const titleCase = withSpaces.replace(/\b\w/g, char => char.toUpperCase());
+
+  return titleCase;
+}
+
+
+const invoices = ref(inject('customerDetails').invoices as Iinvoice[]);
+console.log('🚀 ~ invoices:', invoices.value);
+
+const customer = ref(inject('customerDetails').customer as ICustomerDetails);
+
 const handleSearch = () => {};
+
 const search = ref('');
+const date = ref();
+const status = ref();
+const type = ref();
 
 const orderTypeClass = (orderType: string) => {
   switch (orderType) {
@@ -25,7 +54,7 @@ const orderTypeClass = (orderType: string) => {
 
 const orderStatusClass = (orderStatus: string) => {
   switch (orderStatus) {
-    case 'Paid':
+    case 'Pain':
       return 'bg-background-success text-success';
     case 'Unpaid':
       return 'bg-warning-background text-warning-main';
@@ -58,7 +87,7 @@ const orderStatusClass = (orderStatus: string) => {
     > -->
     <AppBaseDataTable
       :columns="customerDetail_columns"
-      :data="customerDetail_values"
+      :data="invoices"
       is-using-server-side-pagination
       is-using-custom-body
       is-using-custom-filter
@@ -72,7 +101,7 @@ const orderStatusClass = (orderStatus: string) => {
             <h6 class="font-semibold text-black text-xl">Daily Sales</h6>
             <PrimeVueChip
               class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-1"
-              :label="`${customerDetail_values.length} Invoices`"
+              :label="`${invoices.length} Invoices`"
             />
           </div>
           <form @submit.prevent="handleSearch">
@@ -100,14 +129,14 @@ const orderStatusClass = (orderStatus: string) => {
                   class="text-xs font-normal text-secondary-hover bg-secondary-background border border-secondary px-1.5 py-1"
                 >
                   <span class="flex items-center gap-1">
-                    <p class="font-bold">{{ customerDetail_values.length }}</p>
+                    <p class="font-bold">{{ invoices.length }}</p>
                     <p class="font-semibold">Sales</p>
                   </span>
                 </PrimeVueChip>
               </div>
               <div class="flex items-center justify-between">
                 <span class="font-semibold text-disabled">Rp</span>
-                <span class="font-bold text-primary text-2xl">100.000</span>
+                <span class="font-bold text-primary text-2xl">{{ customer.paid }}</span>
               </div>
             </div>
           </div>
@@ -118,96 +147,85 @@ const orderStatusClass = (orderStatus: string) => {
               </div>
               <div class="flex items-center justify-between">
                 <span class="font-semibold text-disabled">Rp</span>
-                <span class="font-bold text-error-main text-2xl">100.000</span>
+                <span class="font-bold text-error-main text-2xl">{{ customer.unpaid }}</span>
               </div>
+            </div>
+          </div>
+        </section>
+        <section class="flex items-center gap-4 p-4">
+          <div class="flex flex-col gap-1 w-full">
+            <span class="font-semibold inline-block text-gray-900 text-base w-48">Filter by</span>
+
+            <div class="flex items-center gap-4 w-full">
+              <PrimeVueDatePicker
+                v-model="date"
+                class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
+                placeholder="Real Time "
+                show-on-focus
+                show-icon
+                fluid
+              />
+              <PrimeVueMultiSelect
+                v-model="type"
+                display="chip"
+                :options="salesInvoice_paymentStatus"
+                option-label="label"
+                option-value="value"
+                filter
+                placeholder="Payment Status"
+                class="text-sm text-text-disabled w-full"
+              />
+
+              <PrimeVueMultiSelect
+                v-model="status"
+                display="chip"
+                :options="salesInvoice_orderType"
+                option-label="label"
+                option-value="value"
+                filter
+                placeholder="Order Status"
+                class="text-sm text-text-disabled w-full"
+              />
             </div>
           </div>
         </section>
       </template>
 
-      <template #filter>
-        <div class="flex flex-col gap-1 w-full">
-          <span class="font-semibold inline-block text-gray-900 text-base w-48">Filter by</span>
-
-          <div class="flex items-center gap-4 w-full">
-            <PrimeVueDatePicker
-              v-model="dailySales_data.filter.createdAtFrom"
-              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
-              placeholder="Real Time "
-              show-on-focus
-              show-icon
-              fluid
-            />
-
-            <PrimeVueMultiSelect
-              v-model="dailySales_data.filter.orderType"
-              display="chip"
-              :options="dailySales_listTypesOfOrderType"
-              option-label="label"
-              option-value="value"
-              filter
-              placeholder="Order Type"
-              class="text-sm text-text-disabled w-full"
-            />
-
-            <PrimeVueMultiSelect
-              v-model="dailySales_data.filter.paymentStatus"
-              display="chip"
-              :options="dailySales_listTypesOfPaymentStatus"
-              option-label="label"
-              option-value="value"
-              filter
-              placeholder="Payment Status"
-              class="text-sm text-text-disabled w-full"
-            />
-
-            <PrimeVueMultiSelect
-              v-model="dailySales_data.filter.orderStatus"
-              display="chip"
-              :options="dailySales_listTypesOfOrderStatus"
-              option-label="label"
-              option-value="value"
-              filter
-              placeholder="Order Status"
-              class="text-sm text-text-disabled w-full"
-            />
-          </div>
-        </div>
-      </template>
+      <template #filter> </template>
 
       <template #body="{ column, data }">
         <template v-if="column.value === 'invoiceID'">
-          <span class="font-semibold">{{ data.invoiceID }}</span>
+          <span class="font-semibold">{{ data.invoiceNumber }}</span>
         </template>
 
         <template v-if="column.value === 'purchaseDate'">
-          <span>{{ data.purchaseDate }}</span>
+          <span>{{ useFormatDate(data.createdAt, 'dd/mm/yyyy') }}</span>
         </template>
 
         <template v-if="column.value === 'tableNumber'">
-          <span>{{ data.tableNumber }}</span>
+          <span>{{ data.tableCode }}</span>
         </template>
 
         <template v-if="column.value === 'totalPrice'">
-          <span>{{ useCurrencyFormat(data.totalPrice) }}</span>
+          <span>{{ useCurrencyFormat(data.grandTotal) }}</span>
         </template>
 
         <template v-if="column.value === 'status'">
           <PrimeVueChip
-            :class="[orderStatusClass(data[column.value]), 'text-xs font-normal px-1.5 py-1']"
-            :label="data[column.value]"
+            :class="[orderStatusClass(useCapitalize(data.paymentStatus)), 'text-xs font-normal px-1.5 py-1']"
+            :label="useCapitalize(data.paymentStatus)"
           />
         </template>
 
         <template v-if="column.value === 'orderType'">
           <PrimeVueChip
-            :class="[orderTypeClass(data[column.value]), 'text-xs font-normal px-1.5 py-1']"
-            :label="data[column.value]"
+            :class="[orderTypeClass(toTitleCaseWithSpaces(data.orderType)), 'text-xs font-normal px-1.5 py-1']"
+            :label="toTitleCaseWithSpaces(data.orderType)"
           />
         </template>
 
         <template v-if="column.value === 'action'">
-          <router-link :to="`/invoice/${data.invoiceID}`">
+          <router-link :to="`/invoice/${data.invoiceNumber}`">
             <PrimeVueButton variant="text" rounded aria-label="Filter">
               <template #icon>
                 <AppBaseSvg name="eye-visible" class="!w-5 !h-5" />

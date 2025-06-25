@@ -1,23 +1,31 @@
 <script setup>
 import CustomerTags from '@/modules/customer/components/addCustomer/tags.vue';
 import { useCustomerService } from '../../services/CustomersService';
+
 const { customer_FormData, customer_formValidations, createCustomer } = useCustomerService();
 
 /**
  * @description Define props with default values and interfaces
  */
+
+// If this component is always rendered within a parent that handles navigation,
+// you might not strictly need useRouter or useRoute here for navigation.
+// Keeping useRoute for potential access to current route info if needed.
+
 const props = defineProps({
   isModal: {
     type: Boolean,
     default: false,
   },
-})
+});
 
 const emit = defineEmits(['close']);
 
-const handleOnClose = (response) => {
+const handleOnClose = response => {
+  // Always emit the close event after successful creation
+  // The parent will decide whether to close a modal or navigate.
   emit('close', response);
-}
+};
 
 function clearForm() {
   customer_formValidations.value.$reset();
@@ -33,23 +41,17 @@ function clearForm() {
 
 const handleCreateCustomer = async () => {
   customer_formValidations.value.$touch();
-  // console.log('🚀 ~ handleCreateCustomer ~ customer_formValidations.value:', customer_formValidations.value);
 
   if (customer_formValidations.value.$invalid) return;
-
-  // console.log(customer_FormData);
 
   try {
     const response = await createCustomer(customer_FormData);
     clearForm();
+    
+    // On successful creation, emit the 'close' event.
+    // The parent component will handle the subsequent navigation or modal closing.
+    handleOnClose(response);
 
-    if(props.isModal) {
-      handleOnClose(response)
-    }
-
-    // router.push({
-    //   name: 'customer-list',
-    // });
   } catch (error) {
     console.error(error);
   }
@@ -57,13 +59,31 @@ const handleCreateCustomer = async () => {
 </script>
 
 <template>
+  {{customer_FormData}}
+  <br>
+  errors: 
+  {{ customer_formValidations.$errors }}
+  <br>
+  invalid: 
+  {{ customer_formValidations.$invalid }}
   <form class="grid grid-cols-2 gap-8" @submit.prevent="handleCreateCustomer">
-    <!-- {{ customer_FormData }} -->
-    <!-- <br /> -->
-    <!-- {{ customer_formValidations.$errors }}
-    <br />
-    {{ customer_formValidations.$invalid }} -->
-    <div class="flex flex-col">
+    <AppBaseFormGroup 
+      v-slot="{ classes }"
+      class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+      is-name-as-label
+      label-for="name"
+      name="Customer Name"
+      :validators="customer_formValidations.name"
+    >
+      <PrimeVueInputText
+        v-model="customer_FormData.name"
+        name="name"
+        type="text"
+        class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
+        fluid
+      />
+    </AppBaseFormGroup>
+    <!-- <div class="flex flex-col">
       <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Customer Name</label>
       <div
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
@@ -79,24 +99,7 @@ const handleCreateCustomer = async () => {
           fluid
         />
       </div>
-      <!-- <AppBaseFormGroup
-        v-slot="{ classes }"
-        class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-        is-name-as-label
-        label-for="name"
-        name="Customer Name"
-        :validators="customer_formValidations.name"
-      >
-        <PrimeVueInputText
-          v-model="customer_FormData.name"
-          name="name"
-          type="text"
-          class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
-          :class="{ ...classes }"
-          fluid
-        />
-      </AppBaseFormGroup> -->
-    </div>
+    </div> -->
     <div class="flex flex-col">
       <label for="gender" class="block text-sm font-medium leading-6 text-gray-900">Gender</label>
       <div class="flex flex-wrap gap-4">
@@ -221,7 +224,7 @@ const handleCreateCustomer = async () => {
 
     <!-- canccel and add button -->
     <div class="flex gap-4 grid-cols-2">
-      <router-link v-if="!isModal" to="/customer" >
+      <router-link v-if="!props.isModal" to="/customer">
         <PrimeVueButton
           type="button"
           label="Cancel"
@@ -231,14 +234,14 @@ const handleCreateCustomer = async () => {
         ></PrimeVueButton>
       </router-link>
       <PrimeVueButton
-          v-else
-          type="button"
-          label="Cancel"
-          severity="info"
-          variant="outlined"
-          class="w-48 text-primary border-primary"
-          @click="handleOnClose()"
-        ></PrimeVueButton>
+        v-else
+        type="button"
+        label="Cancel"
+        severity="info"
+        variant="outlined"
+        class="w-48 text-primary border-primary"
+        @click="handleOnClose()"
+      ></PrimeVueButton>
 
       <PrimeVueButton type="submit" label="Add Customer" class="w-48 bg-primary border-primary"></PrimeVueButton>
     </div>

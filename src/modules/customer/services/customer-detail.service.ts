@@ -1,16 +1,24 @@
-import { IIncreasePoint, IDecreasePoint } from '../interfaces/CustomerDetailInterface';
+import type { IIncreasePoint, IDecreasePoint } from '../interfaces/CustomerDetailInterface';
+
+import { useCustomerDetailsStore } from '../store';
 
 import {
+  SALES_INVOICE_LIST_REQUEST,
   SALES_INVOICE_COLUMNS,
   SALES_INVOICE_VALUES,
   LOYALTY_POINT_COLUMNS,
   LOYALTY_POINT_VALUES,
+  SALES_INVOICE_PAYMENT_STATUS,
+  SALES_INVOICE_ORDER_TYPE,
 } from '../constants';
 
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 
 export const useCustomerDetailService = () => {
+  const store = useCustomerDetailsStore();
+  const { httpAbort_registerAbort } = useHttpAbort();
+
   const increarePoint_FormData = reactive<IIncreasePoint>({
     point: 0,
     isHaveExpiryDate: 'No Expiry Date',
@@ -51,6 +59,20 @@ export const useCustomerDetailService = () => {
     decreasePoint_FormData.notes = '';
   };
 
+  const customerDetails_fetchSalesInvoice = async (id: string): Promise<unknown> => {
+    try {
+      return await store.salesInvoice_list(id, {
+        ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
   return {
     increarePoint_FormData,
     increasePoint_formValidations,
@@ -65,5 +87,10 @@ export const useCustomerDetailService = () => {
 
     customerLoyaltyPoint_columns: LOYALTY_POINT_COLUMNS,
     customerLoyaltyPoint_values: LOYALTY_POINT_VALUES,
+
+    salesInvoice_paymentStatus: SALES_INVOICE_PAYMENT_STATUS,
+    salesInvoice_orderType: SALES_INVOICE_ORDER_TYPE,
+
+    customerDetails_fetchSalesInvoice,
   };
 };

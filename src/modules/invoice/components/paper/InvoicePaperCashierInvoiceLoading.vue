@@ -1,3 +1,4 @@
+
 <template>
   <section
     id="invoice-cashier-invoice-loading"
