@@ -60,13 +60,17 @@ export interface IStaffMemberCreateEditFormData {
 }
 
 export interface IStaffMemberCreateEditProvided {
+  staffMemberCreateEdit_columnsOfCommissions: IColumnDataTable[];
+  staffMemberCreateEdit_commisionType: globalThis.Ref<'PRODUCT' | 'VOUCHER'>;
   staffMemberCreateEdit_fetchDetailStaffMember: (staffMemberId: string) => Promise<unknown>;
   staffMemberCreateEdit_formData: IStaffMemberCreateEditFormData;
   staffMemberCreateEdit_formValidations: globalThis.Ref<Validation>;
   staffMemberCreateEdit_isEditable: globalThis.Ref<boolean>;
   staffMemberCreateEdit_isLoading: globalThis.Ref<boolean>;
   staffMemberCreateEdit_onCancel: () => void;
+  staffMemberCreateEdit_onCloseDialogCommission: () => void;
   staffMemberCreateEdit_onDelete: () => void;
+  staffMemberCreateEdit_onOpenDialogCommission: (type: 'PRODUCT' | 'VOUCHER') => void;
   staffMemberCreateEdit_onSubmit: () => Promise<unknown>;
   staffMemberCreateEdit_onUploadPhotoProfile: (event: FileUploadSelectEvent) => void;
   staffMemberCreateEdit_routeParamsId: globalThis.Ref<string | undefined>;

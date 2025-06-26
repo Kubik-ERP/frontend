@@ -1,5 +1,6 @@
 // Constants
 import {
+  STAFF_MEMBER_COLUMNS_COMISSIONS,
   STAFF_MEMBER_CREATE_REQUEST,
   STAFF_MEMBER_DELETE_REQUEST,
   STAFF_MEMBER_DETAIL_REQUEST,
@@ -37,6 +38,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   /**
    * @description Reactive data binding
    */
+  const staffMemberCreateEdit_commisionType = ref<'PRODUCT' | 'VOUCHER'>('PRODUCT');
   const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
     name: null,
     email: null,
@@ -175,6 +177,18 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   };
 
   /**
+   * @description Handle business logic for closing dialog commission
+   */
+  const staffMemberCreateEdit_onCloseDialogCommission = (): void => {
+    const argsEventEmitter: IPropsDialog = {
+      id: 'staff-member-comission-item-dialog',
+      isOpen: false,
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
    * @description Handle action on delete staff member
    */
   const staffMemberCreateEdit_onDelete = (): void => {
@@ -204,6 +218,24 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     };
 
     eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle business logic for open dialog commission
+   */
+  const staffMemberCreateEdit_onOpenDialogCommission = (type: 'PRODUCT' | 'VOUCHER'): void => {
+    staffMemberCreateEdit_commisionType.value = type;
+
+    const argsEventEmitter: IPropsDialog = {
+      id: 'staff-member-comission-item-dialog',
+      isOpen: true,
+      isUsingBackdrop: true,
+      isUsingClosableButton: false,
+      isDraggable: false,
+      width: '742px',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
   };
 
   /**
@@ -264,13 +296,17 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   };
 
   return {
+    staffMemberCreateEdit_columnsOfCommissions: STAFF_MEMBER_COLUMNS_COMISSIONS,
+    staffMemberCreateEdit_commisionType,
     staffMemberCreateEdit_formData,
     staffMemberCreateEdit_formValidations,
     staffMemberCreateEdit_isEditable,
     staffMemberCreateEdit_isLoading: staffMember_isLoading,
     staffMemberCreateEdit_fetchDetailStaffMember,
     staffMemberCreateEdit_onCancel,
+    staffMemberCreateEdit_onCloseDialogCommission,
     staffMemberCreateEdit_onDelete,
+    staffMemberCreateEdit_onOpenDialogCommission,
     staffMemberCreateEdit_onSubmit,
     staffMemberCreateEdit_onUploadPhotoProfile,
     staffMemberCreateEdit_routeParamsId,

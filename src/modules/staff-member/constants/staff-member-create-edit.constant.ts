@@ -4,6 +4,24 @@ export const STAFF_MEMBER_DETAIL_REQUEST = 'STAFF_MEMBER_DETAIL_REQUEST';
 export const STAFF_MEMBER_EDIT_REQUEST = 'STAFF_MEMBER_EDIT_REQUEST';
 export const STAFF_MEMBER_DELETE_REQUEST = 'STAFF_MEMBER_DELETE_REQUEST';
 
+export const STAFF_MEMBER_COLUMNS_COMISSIONS: IColumnDataTable[] = [
+  {
+    sortable: false,
+    label: 'Item',
+    value: 'item',
+  },
+  {
+    sortable: false,
+    label: 'Price',
+    value: 'price',
+  },
+  {
+    sortable: false,
+    label: 'Commission',
+    value: 'commission',
+  },
+];
+
 export const STAFF_MEMBER_TYPES_OF_SOCIAL_MEDIA: IDropdownItem[] = [
   {
     iconName: 'instagram',

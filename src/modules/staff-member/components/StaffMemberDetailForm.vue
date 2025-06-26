@@ -45,7 +45,7 @@ const {
             :options="staffMemberCreateEdit_typesOfUserPermissions"
             option-label="label"
             option-value="value"
-            placeholder="Select Staff Permission"
+            placeholder="Select"
             class="text-base text-text-primary w-full"
             :class="{ ...classes }"
             v-on="useListenerForm(staffMemberCreateEdit_formValidations, 'permission')"
@@ -66,7 +66,6 @@ const {
           <PrimeVueInputText
             v-model="staffMemberCreateEdit_formData.email"
             :loading="staffMemberCreateEdit_isLoading"
-            placeholder="Input your registered email"
             class="text-sm w-full"
             :class="{ ...classes }"
             v-on="useListenerForm(staffMemberCreateEdit_formValidations, 'email')"
@@ -126,7 +125,6 @@ const {
             <PrimeVueInputText
               v-model="staffMemberCreateEdit_formData.phoneNumber"
               :loading="staffMemberCreateEdit_isLoading"
-              placeholder="Input your phone number"
               class="text-sm w-full"
               :class="{ ...classes }"
               type="tel"
@@ -177,41 +175,53 @@ const {
 
       <div class="col-span-full lg:col-span-6">&nbsp;</div>
 
-      <section id="social-media" class="col-span-full lg:col-span-6 flex items-center gap-3">
-        <AppBaseFormGroup
-          v-slot="{ classes }"
-          class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-          is-name-as-label
-          label-for="socialMediaType"
-          name="Social Media"
-          spacing-bottom="mb-0"
-        >
+      <section id="social-media" class="col-span-full lg:col-span-6 flex flex-col gap-1">
+        <label for="socialMediaType" class="font-normal text-text-secondary text-sm">
+          Social Media <span class="text-text-disabled">(Optional)</span>
+        </label>
+
+        <section class="flex items-center gap-2">
           <PrimeVueSelect
             id="socialMediaType"
             filter
             :options="staffMemberCreateEdit_typesOfSocialMedia"
             option-label="label"
-            option-value="value"
-            class="text-sm h-full min-h-9 w-full"
-            :class="{ ...classes }"
-          />
-        </AppBaseFormGroup>
-
-        <section id="social-media-type" class="w-full">
-          <AppBaseFormGroup
-            class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-            is-name-as-label
-            label-for="socialMediaType"
-            name="Social Media Type"
+            :option-value="(value: IDropdownItem) => value"
+            class="text-sm h-full w-fit"
           >
-            <PrimeVueInputText
-              :loading="staffMemberCreateEdit_isLoading"
-              placeholder="Input your phone number"
-              class="text-sm w-full"
-              type="tel"
-            />
-          </AppBaseFormGroup>
+            <template #option="{ option }">
+              <section id="social-media-option" class="flex items-center gap-1">
+                <AppBaseSvg :name="option.iconName" class="!w-5 !h-5" />
+                <span class="text-sm">{{ option.label }}</span>
+              </section>
+            </template>
+
+            <template #value="{ value }">
+              <section id="social-media-value" class="flex items-center gap-1">
+                <template v-if="value">
+                  <AppBaseSvg :name="value.iconName" class="!w-5 !h-5" />
+                </template>
+              </section>
+            </template>
+          </PrimeVueSelect>
+
+          <PrimeVueInputText :loading="staffMemberCreateEdit_isLoading" class="text-sm w-full" type="text" />
         </section>
+      </section>
+
+      <section id="add-social-media" class="col-span-full lg:col-span-6 place-content-end">
+        <PrimeVueButton
+          class="border-none basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
+          severity="secondary"
+          variant="outlined"
+        >
+          <template #default>
+            <section id="content" class="flex items-center gap-2">
+              <AppBaseSvg name="plus-line" />
+              <span class="font-semibold text-xs text-primary">Add more</span>
+            </section>
+          </template>
+        </PrimeVueButton>
       </section>
     </section>
   </section>
