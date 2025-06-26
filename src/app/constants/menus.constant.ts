@@ -42,7 +42,17 @@ export const LIST_SIDEBAR_MENUS = [
         name: 'Queue',
         iconName: 'queue',
         path: '/queue',
-        isHaveSubMenus: false,
+        isHaveSubMenus: true,
+        subMenus: [
+          {
+            name: 'Customer Queue',
+            path: '/queue'
+          },
+          {
+            name: 'Kitchen Queue',
+            path: '/queue/kitchen-display'
+          },
+        ]
       },
       {
         name: 'Report',
