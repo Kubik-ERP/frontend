@@ -1,0 +1,26 @@
+{
+  "authentication": {
+    "sign-in": {
+      "continue-with-google": "Continue with Google",
+      "create-account": "Create Account",
+      "doesnt-have-account": "Doesn't have an account?",
+
+      "error-messages": {
+        "not-authenticated": "We couldn’t find an account with that email. Please check or sign up for a new account."
+      },
+
+      "form": {
+        "email": "Email",
+        "password": "Password",
+
+        "placeholder": {
+          "email": "Input your registered email",
+          "password": "Input your password"
+        }
+      },
+
+      "reset-password": "Reset Password",
+      "title": "Sign In"
+    }
+  }
+}

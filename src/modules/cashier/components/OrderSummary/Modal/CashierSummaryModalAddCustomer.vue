@@ -1,13 +1,19 @@
 <script setup lang="ts">
 // Interfaces
 import AddCustomerUI from '@/modules/customer/views/AddCustomerUI.vue';
-import { ICashierOrderSummaryProvided } from '../../../interfaces/cashier-order-summary';
+import {
+  ICashierOrderSummaryProvided,
+  ICashierResponseAddCustomer,
+} from '../../../interfaces/cashier-order-summary';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalAddCustomer, cashierOrderSummary_handleModalAddCustomer } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const {
+  cashierOrderSummary_modalAddCustomer,
+  cashierProduct_customerState,
+  cashierOrderSummary_handleModalAddCustomer,
+} = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 <template>
   <PrimeVueDialog
@@ -16,6 +22,14 @@ const { cashierOrderSummary_modalAddCustomer, cashierOrderSummary_handleModalAdd
     modal
     :style="{ width: '50rem' }"
   >
-    <AddCustomerUI :is-modal="true" @close="cashierOrderSummary_handleModalAddCustomer" />
+    <AddCustomerUI
+      :is-modal="true"
+      @close="
+        (response: ICashierResponseAddCustomer) => {
+          cashierOrderSummary_handleModalAddCustomer(response);
+          cashierProduct_customerState.selectedCustomer = response.data;
+        }
+      "
+    />
   </PrimeVueDialog>
 </template>

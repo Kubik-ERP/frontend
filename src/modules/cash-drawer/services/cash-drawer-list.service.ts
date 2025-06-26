@@ -8,8 +8,8 @@ import {
 // Interfaces
 import type {
   ICashDrawerListProvided,
-  ICashDrawerOpenFormData,
-  ICashDrawerRequestQuery,
+  ICashDrawerListOpenRegisterFormData,
+  ICashDrawerListRequestQuery,
 } from '../interfaces/cash-drawer-list.interface';
 
 // Plugins
@@ -32,19 +32,19 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
    */
   const outletStore = useOutletStore(); // Instance of the outlet store
   const store = useCashDrawerStore(); // Instance of the store
-  const { cashDrawer_isLoading, cashDrawer_transactionLists } = storeToRefs(store);
+  const { cashDrawer_isLoading, cashDrawer_lists } = storeToRefs(store);
   const { outlet_currentOutlet } = storeToRefs(outletStore);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
    * @description Reactive data binding
    */
-  const cashDrawerList_formDataOfOpenRegister = reactive<ICashDrawerOpenFormData>({
+  const cashDrawerList_formDataOfOpenRegister = reactive<ICashDrawerListOpenRegisterFormData>({
     balance: null,
     userId: null,
     notes: null,
   });
-  const cashDrawerList_queryParams = reactive<ICashDrawerRequestQuery>({
+  const cashDrawerList_queryParams = reactive<ICashDrawerListRequestQuery>({
     endDate: null,
     limit: 10,
     page: 1,
@@ -82,6 +82,39 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
   };
 
   /**
+   * @description Handle fetch api cash drawer . We call the cashDrawer_open function from the store to handle the request.
+   */
+  const cashDrawerList_fetchOpenRegister = async (): Promise<unknown> => {
+    try {
+      await store.cashDrawer_open(outlet_currentOutlet.value!.id, cashDrawerList_formDataOfOpenRegister, {
+        ...httpAbort_registerAbort(CASH_DRAWER_LIST_REQUEST),
+      });
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Cash drawer opened successfully',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      cashDrawerList_fetchListTransactions();
+      cashDrawerList_onCloseOpenRegisterDialog();
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      cashDrawerList_formValidationsOfOpenRegister.value.$reset();
+      cashDrawerList_formDataOfOpenRegister.balance = null;
+      cashDrawerList_formDataOfOpenRegister.userId = null;
+      cashDrawerList_formDataOfOpenRegister.notes = null;
+    }
+  };
+
+  /**
    * @description Handle business logic to render dynamic class of status
    */
   const cashDrawerList_getClassOfStatus = (status: string): string => {
@@ -93,6 +126,13 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
       default:
         return '';
     }
+  };
+
+  /**
+   * @description Handle business logic for changing page size
+   */
+  const cashDrawerList_onChangePage = (page: number): void => {
+    cashDrawerList_queryParams.page = page;
   };
 
   /**
@@ -122,6 +162,38 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
     eventBus.emit('AppBaseDialog', argsEventEmitter);
   };
 
+  /**
+   * @description Handle business logic on submit open register form
+   */
+  const cashDrawerList_onSubmitOpenRegisterForm = async (): Promise<void> => {
+    cashDrawerList_formValidationsOfOpenRegister.value.$touch();
+
+    if (cashDrawerList_formValidationsOfOpenRegister.value.$invalid) {
+      return;
+    }
+
+    try {
+      await cashDrawerList_fetchOpenRegister();
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Watcher for query parameters changes
+   */
+  watch(
+    () => cashDrawerList_queryParams,
+    debounce(async () => {
+      await cashDrawerList_fetchListTransactions();
+    }, 500),
+    { deep: true },
+  );
+
   return {
     cashDrawerList_columns: CASH_DRAWER_LIST_COLUMNS,
     cashDrawerList_fetchListTransactions,
@@ -129,10 +201,12 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
     cashDrawerList_formValidationsOfOpenRegister,
     cashDrawerList_getClassOfStatus,
     cashDrawerList_isLoading: cashDrawer_isLoading,
+    cashDrawerList_onChangePage,
     cashDrawerList_onCloseOpenRegisterDialog,
     cashDrawerList_onShowOpenRegisterDialog,
+    cashDrawerList_onSubmitOpenRegisterForm,
     cashDrawerList_queryParams,
     cashDrawerList_suggestionRegisterBalance: CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE,
-    cashDrawerList_values: cashDrawer_transactionLists as unknown as never[],
+    cashDrawerList_values: cashDrawer_lists,
   };
 };

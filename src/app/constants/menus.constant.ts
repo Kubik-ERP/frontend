@@ -135,7 +135,7 @@ export const LIST_SIDEBAR_MENUS = [
         subMenus: [
           {
             name: 'Staff Members',
-            path: '/',
+            path: '/staff/staff-member',
           },
           {
             name: 'Working Hours',

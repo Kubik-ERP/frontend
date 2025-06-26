@@ -5,23 +5,26 @@ import CashDrawerListOpenRegisterDialog from '../components/CashDrawerListOpenRe
 
 // Services
 import { useCashDrawerListService } from '../services/cash-drawer-list.service';
+import { useStaffMemberListService } from '@/modules/staff-member/services/staff-member-list.service';
 
 /**
  * @description Destructure all the data and methods what we need
  */
 const {
   cashDrawerList_columns,
-  // cashDrawerList_fetchListTransactions,
   cashDrawerList_formDataOfOpenRegister,
   cashDrawerList_formValidationsOfOpenRegister,
   cashDrawerList_getClassOfStatus,
   cashDrawerList_isLoading,
+  cashDrawerList_onChangePage,
   cashDrawerList_onCloseOpenRegisterDialog,
   cashDrawerList_onShowOpenRegisterDialog,
   cashDrawerList_queryParams,
   cashDrawerList_suggestionRegisterBalance,
+  cashDrawerList_onSubmitOpenRegisterForm,
   cashDrawerList_values,
 } = useCashDrawerListService();
+const { staffMemberList_dropdownItemStaff } = useStaffMemberListService();
 
 /**
  * @description Provide all the data and methods what we need
@@ -32,19 +35,18 @@ provide('cashDrawerList', {
   cashDrawerList_formValidationsOfOpenRegister,
   cashDrawerList_getClassOfStatus,
   cashDrawerList_isLoading,
+  cashDrawerList_onChangePage,
   cashDrawerList_onCloseOpenRegisterDialog,
   cashDrawerList_onShowOpenRegisterDialog,
   cashDrawerList_queryParams,
   cashDrawerList_suggestionRegisterBalance,
+  cashDrawerList_onSubmitOpenRegisterForm,
   cashDrawerList_values,
 });
 
-/**
- * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
- */
-// onMounted(async () => {
-//   await cashDrawerList_fetchListTransactions();
-// })
+provide('staffMemberList', {
+  staffMemberList_dropdownItemStaff,
+});
 </script>
 
 <template>

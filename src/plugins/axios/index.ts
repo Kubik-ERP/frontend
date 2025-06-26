@@ -20,8 +20,8 @@ httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   /**
    * @description Injected variables
    */
-  const authenticationStoe = useAuthenticationStore();
-  const { authentication_token } = storeToRefs(authenticationStoe);
+  const authenticationStore = useAuthenticationStore();
+  const { authentication_token } = storeToRefs(authenticationStore);
 
   if (authentication_token.value) {
     config.headers.Authorization = `Bearer ${authentication_token.value}`;
@@ -31,12 +31,6 @@ httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 });
 
 httpClient.interceptors.response.use(undefined, (error: AxiosError<{ message?: string }>) => {
-  /**
-   * @description Injected variables
-   */
-  const authenticationStoe = useAuthenticationStore();
-  const { authentication_token } = storeToRefs(authenticationStoe);
-
   /**
    * @description Here's we can handle various errors.
    */
@@ -57,7 +51,12 @@ httpClient.interceptors.response.use(undefined, (error: AxiosError<{ message?: s
         type: EToastType.DANGER,
       });
 
-      authentication_token.value = '';
+      // Remove the persisted states
+      localStorage.removeItem('authentication');
+      localStorage.removeItem('outlet');
+
+      // Redirect to sign-in page
+      window.location.href = '/authentication/sign-in';
 
       break;
     case 500:

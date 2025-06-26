@@ -19,6 +19,7 @@ const {
   settingPaymentMethod_onCreateOrEdit,
   settingPaymentMethod_onDeactivate,
   settingPaymentMethod_onSubmit,
+  settingPaymentMethod_toggleAvailability,
 } = useSettingPaymentMethodService();
 
 /**
@@ -31,6 +32,7 @@ provide('settingPaymentMethod', {
   settingPaymentMethod_onClose,
   settingPaymentMethod_onDeactivate,
   settingPaymentMethod_onSubmit,
+  settingPaymentMethod_toggleAvailability,
 });
 
 /**
