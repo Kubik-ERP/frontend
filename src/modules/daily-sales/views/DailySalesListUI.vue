@@ -148,6 +148,14 @@ const {
           }}</span>
         </template>
 
+        <template v-else-if="column.value === 'invoiceNumber'">
+          <router-link :to="`/invoice/${data.id}`">
+            <span class="font-normal text-sm  text-sky-600 cursor-pointer">
+              #{{ data[column.value] }}
+            </span>
+          </router-link>
+        </template>
+
         <template v-else-if="column.value === 'customer'">
           <span class="font-normal text-sm text-text-primary">{{ data[column.value].name }}</span>
         </template>

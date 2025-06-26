@@ -42,6 +42,7 @@ import { useRouter, useRoute } from 'vue-router';
 
 // Stores
 import { useCashierStore } from '../store';
+import { useOutletStore } from '@/modules/outlet/store';
 
 // Socket
 import { useSocket } from '@/plugins/socket';
@@ -59,6 +60,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description Injected variables
    */
   const store = useCashierStore();
+  const storeOutlet = useOutletStore();
 
   const { cashierProduct_selectedProduct } = storeToRefs(store);
 
@@ -69,7 +71,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   // Reactive data binding
   const cashierOrderSummary_modalOrderType = ref<ICashierOrderSummaryModalOrderType>({
     show: false,
-    selectedOrderType: '',
+    selectedOrderType: 'dine_in',
     data: CASHIER_ORDER_TYPE,
   });
 
@@ -509,6 +511,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         vouchers: cashierOrderSummary_summary.value.selectedVoucher,
         customerId: cashierProduct_customerState.value.selectedCustomer?.id,
         tableCode: cashierOrderSummary_summary.value.tableCode,
+        storeId: storeOutlet.outlet_currentOutlet?.id || '',
       };
 
       const response = await store.cashierProduct_paymentInstant(params);
@@ -568,6 +571,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         vouchers: cashierOrderSummary_summary.value.selectedVoucher,
         customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
         tableCode: cashierOrderSummary_summary.value.tableCode,
+        storeId: storeOutlet.outlet_currentOutlet?.id || '',
       };
 
       const response = await store.cashierProduct_paymentProcess(params);
@@ -614,20 +618,24 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @returns void
    */
   const cashierOrderSummary_handlePlaceOrderConfirmation = async () => {
-    switch (cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod) {
-      case '0196cf1f-f2cc-7130-a67b-2c753dbcbd32': // Cash
+    const getSelectedPaymentMethod = cashierOrderSummary_modalPaymentMethod.value.data.find(
+      f => f.id === cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
+    )?.name;
+
+    switch (getSelectedPaymentMethod?.toUpperCase()) {
+      case 'CASH':
         cashierOrderSummary_modalPlaceOrderDetail.value.show = true;
         break;
-      case '0196cf1f-f2cc-7d1c-9500-dee362da4287': // QRIS
+      case 'QRIS':
         await cashierOrderSummary_handlePlaceOrderDetail();
 
         cashierOrderSummary_modalPlaceOrderConfirmation.value.show = false;
 
         break;
-      case '0196cf1f-f2cc-7e3f-951d-cf86eb228b0b': // Debit
+      case 'DEBIT':
         cashierOrderSummary_modalPlaceOrderDetail.value.show = true;
         break;
-      case '0196cf1f-f2cc-7a21-bcd7-8e4d4d3505c2': // Credit
+      case 'CREDIT':
         cashierOrderSummary_modalPlaceOrderDetail.value.show = true;
         break;
       default:

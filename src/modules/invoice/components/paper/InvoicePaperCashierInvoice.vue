@@ -2,12 +2,14 @@
 // Component
 import InvoicePaperCashierInvoiceLoading from './InvoicePaperCashierInvoiceLoading.vue';
 
+// Constant
+import { CASHIER_ORDER_TYPE } from '@/modules/cashier/constants';
+
 // Composables
 import { useFormatDate } from '@/app/composables';
 
 // Interface
 import { IInvoiceProvided } from '../../interfaces';
-import { CASHIER_ORDER_TYPE } from '@/modules/cashier/constants';
 
 /**
  * @description Inject all the data and methods what we need
@@ -16,7 +18,7 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 
 const imageUrl = computed(() => {
   return (
-    import.meta.env.VITE_APP_BASE_API_URL + '/' + invoice_invoiceData.value.configInvoice?.companyLogoUrl || ''
+    APP_BASE_BUCKET_URL + '/' + invoice_invoiceData.value.configInvoice?.companyLogoUrl || ''
   );
 });
 </script>
@@ -35,10 +37,8 @@ const imageUrl = computed(() => {
     <section v-if="invoice_invoiceData.configInvoice.isShowCompanyLogo" id="logo">
       <AppBaseImage :src="imageUrl" :alt="invoice_invoiceData.currentOutlet.name" class="w-20 h-20" />
     </section>
-    <!-- TODO: add store name -->
     <h6 id="outlet-name" class="font-semibold text-black text-sm">{{ invoice_invoiceData.currentOutlet.name }}</h6>
 
-    <!-- TODO: Add address name -->
     <p
       v-if="invoice_invoiceData.configInvoice.isShowStoreLocation"
       id="outlet-address"
@@ -50,7 +50,6 @@ const imageUrl = computed(() => {
     <div class="invoice-datetime-or-status">
       <div class="invoice-datetime-or-status-content">
         <span class="date">{{ useFormatDate(new Date(invoice_invoiceData.data.createdAt)) }}</span>
-        <!-- TODO: add id invoice -->
         <span class="cashier">KASIR {{ invoice_invoiceData.data.invoiceNumber }}</span>
       </div>
     </div>
@@ -264,8 +263,7 @@ const imageUrl = computed(() => {
     </table>
 
     <section v-if="invoice_invoiceData.configInvoice.isShowFooter" id="closing" class="flex flex-col items-center gap-2 w-full">
-      <p id="closing-footer" class="font-normal text-justify text-black text-sm">
-        {{ invoice_invoiceData.configInvoice.footerText }}
+      <p id="closing-footer" class="font-normal text-justify text-black text-sm" v-html="invoice_invoiceData.configInvoice.footerText || ''">
       </p>
     </section>
   </section>

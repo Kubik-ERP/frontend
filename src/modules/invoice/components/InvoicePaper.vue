@@ -23,8 +23,8 @@ const tableRef = ref<HTMLElement | null>(null);
 /**
  * @description Print function
  */
-const print = () => {
-  invoice_handlePrint(invoiceRef.value!, kitchenRef.value!, tableRef.value!);
+const print = (type: string) => {
+  invoice_handlePrint(type, invoiceRef.value!, kitchenRef.value!, tableRef.value!);
 };
 
 const download = () => {

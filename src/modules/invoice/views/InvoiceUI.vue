@@ -54,8 +54,8 @@ provide<IInvoiceProvided>('invoice', {
 
 const invoicePaperRef = ref();
 
-const handlePrint = () => {
-  invoicePaperRef.value?.print();
+const handlePrint = (type: string) => {
+  invoicePaperRef.value?.print(type);
 };
 
 const handleDownload = () => {
