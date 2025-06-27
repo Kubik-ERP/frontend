@@ -1,6 +1,9 @@
 <script setup lang="ts">
-
 import type { ICustomerDetails } from '../../interfaces';
+
+import { useCustomerDetailService } from '../../services/customer-detail.service';
+
+const { customerDetails_isLoading } = useCustomerDetailService();
 
 const customer = ref(inject('customerDetails').customer as ICustomerDetails);
 </script>
@@ -8,7 +11,14 @@ const customer = ref(inject('customerDetails').customer as ICustomerDetails);
   <div class="border border-solid border-primary rounded-md p-4 mb-8">
     <section class="flex flex-col gap-2">
       <div class="flex items-center gap-8">
-        <h1 class="text-xl font-semibold">{{ customer.name }}</h1>
+        <h1 class="text-xl font-semibold">
+          <template v-if="customerDetails_isLoading">
+            <PrimeVueSkeleton width="12rem" height="1.5rem" class="rounded-md"></PrimeVueSkeleton>
+          </template>
+          <template v-else>
+            {{ customer.name }}
+          </template>
+        </h1>
         <router-link :to="`/customer/edit-customer/${customer.id}`">
           <PrimeVueButton
             label="Edit Customer Data"
@@ -21,7 +31,14 @@ const customer = ref(inject('customerDetails').customer as ICustomerDetails);
           </PrimeVueButton>
         </router-link>
       </div>
-      <p>{{ customer.id }}</p>
+      <p>
+        <template v-if="customerDetails_isLoading">
+          <PrimeVueSkeleton width="20rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
+        </template>
+        <template v-else>
+          {{ customer.email }}
+        </template>
+      </p>
     </section>
 
     <section>
@@ -29,35 +46,76 @@ const customer = ref(inject('customerDetails').customer as ICustomerDetails);
       <div class="grid grid-cols-3 gap-4 justify-evenly">
         <div class="flex flex-col">
           <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
-          <p class="truncate">{{ customer.email }}</p>
+          <p class="truncate">
+            <template v-if="customerDetails_isLoading">
+              <PrimeVueSkeleton width="16rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
+            </template>
+            <template v-else>
+              {{ customer.email }}
+            </template>
+          </p>
         </div>
 
         <div class="flex flex-col">
           <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Phone Number</label>
-          <p>(+{{ customer.code }}) {{ customer.number }}</p>
+          <p>
+            <template v-if="customerDetails_isLoading">
+              <PrimeVueSkeleton width="16rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
+            </template>
+            <template v-else> {{ '(+' + customer.code + ')' }} {{ customer.number }} </template>
+          </p>
         </div>
 
         <div class="flex flex-col">
           <label for="address" class="block text-sm font-medium leading-6 text-gray-900">Address</label>
-          <p>{{ customer.address }}</p>
+          <p>
+            <template v-if="customerDetails_isLoading">
+              <PrimeVueSkeleton width="16rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
+            </template>
+            <template v-else>
+              {{ customer.address ?? '-' }}
+            </template>
+          </p>
         </div>
 
         <div class="flex flex-col">
           <label for="gender" class="block text-sm font-medium leading-6 text-gray-900">Gender</label>
-          <p>{{ customer.gender }}</p>
+          <p>
+            <template v-if="customerDetails_isLoading">
+              <PrimeVueSkeleton width="16rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
+            </template>
+            <template v-else>
+              {{ customer.gender ?? '-' }}
+            </template>
+          </p>
         </div>
 
         <div class="flex flex-col">
           <label for="dob" class="block text-sm font-medium leading-6 text-gray-900">Born Date</label>
-          <p>{{ useFormatDate(customer.dob,'dd/mm/yyyy') }}</p>
+          <p>
+            <template v-if="customerDetails_isLoading">
+              <PrimeVueSkeleton width="16rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
+            </template>
+            <template v-else>
+              {{ useFormatDate(customer.dob, 'dd/mm/yyyy') }}
+            </template>
+          </p>
         </div>
 
         <div class="flex flex-col">
           <label for="tags" class="block text-sm font-medium leading-6 text-gray-900">Tag</label>
           <div class="flex flex-wrap gap-2">
-          <PrimeVueChip v-for="tag in customer.tags" :key="tag" class="w-fit text-xs font-semibold bg-primary-background text-primary px-1.5 py-1">{{
-            tag
-          }}</PrimeVueChip>
+            <template v-if="customerDetails_isLoading">
+              <PrimeVueSkeleton width="16rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
+            </template>
+            <template v-else>
+              <PrimeVueChip
+                v-for="tag in customer.tags"
+                :key="tag"
+                class="w-fit text-xs font-semibold bg-primary-background text-primary px-1.5 py-1"
+                >{{ tag }}</PrimeVueChip
+              >
+            </template>
           </div>
         </div>
       </div>

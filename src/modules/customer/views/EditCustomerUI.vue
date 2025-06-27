@@ -31,8 +31,8 @@ const handleEditCustomer = async () => {
   try {
     await updateCustomer(route.params.id, customer_FormData);
     clearForm();
-  hasConfirmedLeave = true;
-  router.push({ name: 'customer-list' });
+    hasConfirmedLeave = true;
+    router.push({ name: 'customer-list' });
     // router.push({
     //   name: 'customer-list',
     // });
@@ -270,15 +270,14 @@ onMounted(() => {
     <!-- canccel and add button -->
     <div class="flex items-center justify-between col-span-2">
       <div class="flex gap-2">
-        <router-link to="/customer">
-          <PrimeVueButton
-            type="button"
-            label="Cancel"
-            severity="info"
-            variant="outlined"
-            class="w-48 text-primary border-primary"
-          ></PrimeVueButton>
-        </router-link>
+        <PrimeVueButton
+          type="button"
+          label="Cancel"
+          severity="info"
+          variant="outlined"
+          class="w-48 text-primary border-primary"
+          @click="isModal ? handleOnClose() : router.back()"
+        ></PrimeVueButton>
         <PrimeVueButton
           type="submit"
           label="Edit Customer"

@@ -9,7 +9,7 @@ const { customerDetails_fetchSalesInvoice } = useCustomerDetailService();
 
 const route = useRoute();
 
-const selectedPage = ref('Sales Invoice');
+const selectedPage = ref('Loyalty Point');
 const pageOption = ref(['Sales Invoice', 'Loyalty Point']);
 
 const customer = ref({});

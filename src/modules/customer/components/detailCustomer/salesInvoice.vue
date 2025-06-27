@@ -5,30 +5,14 @@ import { useCustomerDetailService } from '../../services/customer-detail.service
 // Interfaces
 import type { Iinvoice, ICustomerDetails } from '../../interfaces';
 
-const { customerDetail_columns, salesInvoice_paymentStatus, salesInvoice_orderType } = useCustomerDetailService();
+const { customerDetail_columns, salesInvoice_paymentStatus, salesInvoice_orderType, customerDetails_isLoading } = useCustomerDetailService();
 /**
  * @description Destructure all the data and methods what we need
  */
 
-function toTitleCaseWithSpaces(inputString: string): string {
-  if (!inputString) {
-    return ''; // Handle empty or null/undefined input
-  }
-
-  // Replace underscores with spaces
-  const withSpaces = inputString.replace(/_/g, ' ');
-
-  // Capitalize the first letter of each word
-  // This uses a regular expression to match the first character of the string
-  // and the first character after any whitespace, then converts it to uppercase.
-  const titleCase = withSpaces.replace(/\b\w/g, char => char.toUpperCase());
-
-  return titleCase;
-}
-
 
 const invoices = ref(inject('customerDetails').invoices as Iinvoice[]);
-console.log('🚀 ~ invoices:', invoices.value);
+// console.log('🚀 ~ invoices:', invoices.value);
 
 const customer = ref(inject('customerDetails').customer as ICustomerDetails);
 
@@ -43,7 +27,7 @@ const orderTypeClass = (orderType: string) => {
   switch (orderType) {
     case 'Dine In':
       return 'bg-primary-background text-primary';
-    case 'Takeaway':
+    case 'Take Away':
       return 'bg-secondary-background text-green-primary';
     case 'Delivery':
       return 'text-success-main';
@@ -94,6 +78,7 @@ const orderStatusClass = (orderStatus: string) => {
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-custom-header
+      :is-loading="customerDetails_isLoading"
     >
       <template #header>
         <section class="p-4 flex items-center justify-between">
@@ -195,37 +180,37 @@ const orderStatusClass = (orderStatus: string) => {
 
       <template #body="{ column, data }">
         <template v-if="column.value === 'invoiceID'">
-          <span class="font-semibold">{{ data.invoiceNumber }}</span>
+          <span class="font-semibold">{{ data.invoice_number }}</span>
         </template>
 
         <template v-if="column.value === 'purchaseDate'">
-          <span>{{ useFormatDate(data.createdAt, 'dd/mm/yyyy') }}</span>
+          <span>{{ useFormatDate(data.created_at, 'dd/mm/yyyy') }}</span>
         </template>
 
         <template v-if="column.value === 'tableNumber'">
-          <span>{{ data.tableCode }}</span>
+          <span>{{ data.table_code }}</span>
         </template>
 
         <template v-if="column.value === 'totalPrice'">
-          <span>{{ useCurrencyFormat(data.grandTotal) }}</span>
+          <span>{{ useCurrencyFormat(data.grand_total) }}</span>
         </template>
 
         <template v-if="column.value === 'status'">
           <PrimeVueChip
-            :class="[orderStatusClass(useCapitalize(data.paymentStatus)), 'text-xs font-normal px-1.5 py-1']"
-            :label="useCapitalize(data.paymentStatus)"
+            :class="[orderStatusClass(useCapitalize(data.payment_status)), 'text-xs font-normal px-1.5 py-1']"
+            :label="useCapitalize(data.payment_status)"
           />
         </template>
 
         <template v-if="column.value === 'orderType'">
           <PrimeVueChip
-            :class="[orderTypeClass(toTitleCaseWithSpaces(data.orderType)), 'text-xs font-normal px-1.5 py-1']"
-            :label="toTitleCaseWithSpaces(data.orderType)"
+            :class="[orderTypeClass(useTitleCaseWithSpaces(data.order_type)), 'text-xs font-normal px-1.5 py-1']"
+            :label="useTitleCaseWithSpaces(data.order_type)"
           />
         </template>
 
         <template v-if="column.value === 'action'">
-          <router-link :to="`/invoice/${data.invoiceNumber}`">
+          <router-link :to="`/invoice/${data.invoice_number}`">
             <PrimeVueButton variant="text" rounded aria-label="Filter">
               <template #icon>
                 <AppBaseSvg name="eye-visible" class="!w-5 !h-5" />

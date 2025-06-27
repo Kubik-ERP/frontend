@@ -10,6 +10,9 @@ import {
   LOYALTY_POINT_VALUES,
   SALES_INVOICE_PAYMENT_STATUS,
   SALES_INVOICE_ORDER_TYPE,
+
+  LOYALTY_POINT_TYPES,
+
 } from '../constants';
 
 import useVuelidate from '@vuelidate/core';
@@ -17,6 +20,9 @@ import { required } from '@vuelidate/validators';
 
 export const useCustomerDetailService = () => {
   const store = useCustomerDetailsStore();
+
+  const {customerDetails_isLoading} = storeToRefs(store);
+
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const increarePoint_FormData = reactive<IIncreasePoint>({
@@ -73,6 +79,18 @@ export const useCustomerDetailService = () => {
     }
   };
 
+  const customerDetails_fetchLoyaltyPoint = async (id: string): Promise<unknown> => {
+    try {
+      return await store.loyaltyPoints_list(id, httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST));
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  }
+
   return {
     increarePoint_FormData,
     increasePoint_formValidations,
@@ -91,6 +109,11 @@ export const useCustomerDetailService = () => {
     salesInvoice_paymentStatus: SALES_INVOICE_PAYMENT_STATUS,
     salesInvoice_orderType: SALES_INVOICE_ORDER_TYPE,
 
+    loyaltyPoint_types: LOYALTY_POINT_TYPES,
+
+    customerDetails_isLoading,
+
     customerDetails_fetchSalesInvoice,
+    customerDetails_fetchLoyaltyPoint,
   };
 };

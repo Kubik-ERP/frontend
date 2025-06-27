@@ -36,6 +36,17 @@ export const LOYALTY_POINT_COLUMNS: IColumnDataTable[] = [
   },
 ];
 
+export const LOYALTY_POINT_TYPES = [
+  {
+    value: 'Point Addition',
+    label: 'Point Addition',
+  },
+  {
+    value: 'Point Deduction',
+    label: 'Point Deduction',
+  }
+];
+
 export const LOYALTY_POINT_VALUES = [
   {
     invoiceID: '#202408010012',
