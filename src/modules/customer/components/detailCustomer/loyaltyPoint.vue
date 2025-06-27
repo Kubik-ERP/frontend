@@ -85,8 +85,15 @@ const pointTypeFormat = (type: string, points: number) => {
                 <img :src="minusSVG" alt="" />
               </template>
             </PrimeVueButton>
-            <span class="text-5xl text-primary font-bold"
-              >{{ total }} <sub class="text-xs text-grayscale-30">pts</sub></span
+            <span class="text-5xl text-primary font-bold flex items-center gap-2"
+              >
+                <template v-if="customerDetails_isLoading">
+                  <PrimeVueSkeleton width="9rem" height="3rem" class="rounded-md"></PrimeVueSkeleton>
+                </template>
+                <template v-else>
+                  {{ total }}
+                </template>
+              <sub class="text-xs text-grayscale-30">pts</sub></span
             >
             <PrimeVueButton
               type="button"

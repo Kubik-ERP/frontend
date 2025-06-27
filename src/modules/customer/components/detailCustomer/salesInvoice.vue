@@ -180,37 +180,37 @@ const orderStatusClass = (orderStatus: string) => {
 
       <template #body="{ column, data }">
         <template v-if="column.value === 'invoiceID'">
-          <span class="font-semibold">{{ data.invoice_number }}</span>
+          <span class="font-semibold">{{ data.invoiceNumber }}</span>
         </template>
 
         <template v-if="column.value === 'purchaseDate'">
-          <span>{{ useFormatDate(data.created_at, 'dd/mm/yyyy') }}</span>
+          <span>{{ useFormatDate(data.createdAt, 'dd/mm/yyyy') }}</span>
         </template>
 
         <template v-if="column.value === 'tableNumber'">
-          <span>{{ data.table_code }}</span>
+          <span>{{ data.tableCode }}</span>
         </template>
 
         <template v-if="column.value === 'totalPrice'">
-          <span>{{ useCurrencyFormat(data.grand_total) }}</span>
+          <span>{{ useCurrencyFormat(data.grandTotal) }}</span>
         </template>
 
         <template v-if="column.value === 'status'">
           <PrimeVueChip
-            :class="[orderStatusClass(useCapitalize(data.payment_status)), 'text-xs font-normal px-1.5 py-1']"
-            :label="useCapitalize(data.payment_status)"
+            :class="[orderStatusClass(useCapitalize(data.paymentStatus)), 'text-xs font-normal px-1.5 py-1']"
+            :label="useCapitalize(data.paymentStatus)"
           />
         </template>
 
         <template v-if="column.value === 'orderType'">
           <PrimeVueChip
-            :class="[orderTypeClass(useTitleCaseWithSpaces(data.order_type)), 'text-xs font-normal px-1.5 py-1']"
-            :label="useTitleCaseWithSpaces(data.order_type)"
+            :class="[orderTypeClass(useTitleCaseWithSpaces(data.orderType)), 'text-xs font-normal px-1.5 py-1']"
+            :label="useTitleCaseWithSpaces(data.orderType)"
           />
         </template>
 
         <template v-if="column.value === 'action'">
-          <router-link :to="`/invoice/${data.invoice_number}`">
+          <router-link :to="`/invoice/${data.invoiceNumber}`">
             <PrimeVueButton variant="text" rounded aria-label="Filter">
               <template #icon>
                 <AppBaseSvg name="eye-visible" class="!w-5 !h-5" />
