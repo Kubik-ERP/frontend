@@ -10,6 +10,10 @@ export interface IAuthenticationProfile {
   phone: string;
   isVerified: boolean;
   id: number;
+  roles: {
+    id: number;
+    name: string;
+  };
 }
 
 export interface IAuthenticationStateStore {

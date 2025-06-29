@@ -31,6 +31,7 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
    * @description Injected variables
    */
   const outletStore = useOutletStore(); // Instance of the outlet store
+  const router = useRouter();
   const store = useCashDrawerStore(); // Instance of the store
   const { cashDrawer_isLoading, cashDrawer_lists } = storeToRefs(store);
   const { outlet_currentOutlet } = storeToRefs(outletStore);
@@ -98,8 +99,12 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
-      cashDrawerList_fetchListTransactions();
-      cashDrawerList_onCloseOpenRegisterDialog();
+
+      setTimeout(() => {
+        router.push({
+          name: 'cash-drawer.cash-register',
+        })
+      }, 1000)
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
