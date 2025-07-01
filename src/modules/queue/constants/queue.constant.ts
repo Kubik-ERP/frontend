@@ -1,3 +1,5 @@
+export const QUEUE_LIST_REQUEST = 'QUEUE_LIST_REQUEST'
+
 export const QUEUE_LIST_COLUMNS: IColumnDataTable[] = [
   {
     label: '#',
