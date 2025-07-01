@@ -5,7 +5,7 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalOrderType, cashierOrderSummary_handleOrderType } =
+const { cashierOrderSummary_modalOrderType } =
   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 
 // Composables
@@ -74,7 +74,6 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               :disabled="!cashierOrderSummary_modalOrderType.selectedOrderType"
               @click="
                 cashierOrderSummary_modalOrderType.show = false;
-                cashierOrderSummary_handleOrderType();
               "
             ></PrimeVueButton>
           </div>

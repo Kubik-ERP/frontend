@@ -9,6 +9,7 @@ const {
   cashDrawerList_columns,
   cashDrawerList_isLoading,
   cashDrawerList_getClassOfStatus,
+  cashDrawerList_onChangePage,
   cashDrawerList_values,
   cashDrawerList_onShowOpenRegisterDialog,
 } = inject('cashDrawerList') as ICashDrawerListProvided;
@@ -18,12 +19,20 @@ const {
   <AppBaseDataTable
     btn-cta-create-title="Open Register"
     :columns="cashDrawerList_columns"
-    :data="cashDrawerList_values"
+    :data="cashDrawerList_values?.items"
     header-title="Cash Drawer"
     is-using-btn-cta-create
     is-using-custom-body
     :is-loading="cashDrawerList_isLoading"
+    :rows-per-page="cashDrawerList_values?.meta?.perPage"
+    :total-records="cashDrawerList_values?.meta?.total"
+    :first="
+      (Number(cashDrawerList_values?.meta?.currentPage ?? 1) - 1) *
+      Number(cashDrawerList_values?.meta?.perPage ?? 0)
+    "
+    is-using-server-side-pagination
     @click-btn-cta-create="cashDrawerList_onShowOpenRegisterDialog"
+    @update:currentPage="cashDrawerList_onChangePage"
   >
     <template #body="{ column, data }">
       <template v-if="column.value === 'expectedBalance' || column.value === 'actualBalance'">
@@ -35,7 +44,9 @@ const {
       <template v-else-if="column.value === 'status'">
         <PrimeVueChip
           :class="[cashDrawerList_getClassOfStatus(data[column.value]), 'text-xs font-normal']"
-          :label="data[column.value]"
+          :label="
+            data[column.value] ? data[column.value].charAt(0).toUpperCase() + data[column.value].slice(1) : ''
+          "
         />
       </template>
 

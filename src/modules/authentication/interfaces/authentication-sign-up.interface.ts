@@ -18,6 +18,15 @@ export interface IAuthenticationSignUpFormData {
   passwordConfirmation: string;
 }
 
+export interface IAuthenticationSignUpCountryInformations {
+  name: string;
+  code: string;
+  emoji: string;
+  image: string;
+  dialCodes: string;
+  slug: string;
+}
+
 export interface IAuthenticationSignUpProvided {
   authenticationSignUp_activeStep: Ref<number>;
   authenticationSignUp_durationOtpFormatted: globalThis.ComputedRef<string | undefined>;

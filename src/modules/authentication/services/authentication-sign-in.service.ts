@@ -37,6 +37,10 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
   const authenticationSignIn_formData = reactive<IAuthenticationSignInFormData>({
     email: '',
     password: '',
+    deviceType: 'DESKTOP',
+    browser: '',
+    city: '',
+    country: '',
   });
   const authenticationSignIn_isNotAuthenticated = ref<boolean>(false);
 
@@ -54,6 +58,29 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
       $autoDirty: true,
     },
   );
+
+  /**
+   * @description Handle business logic to detect location and browser information users.
+   */
+  const authenticationSignIn_detectLocationAndBrowser = async () => {
+    try {
+      // Get the browser information
+      authenticationSignIn_formData.browser = window.navigator.userAgent;
+
+      // Get the location information
+      const response = await fetch('https://ipapi.co/json/');
+      const data = await response.json();
+
+      authenticationSignIn_formData.city = data.city || '';
+      authenticationSignIn_formData.country = data.country_name || '';
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
 
   /**
    * @description Handle fetch api authentication login. We call the fetchAuthentication_googleRedirect function from the store to handle the request.
@@ -90,7 +117,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
           validationType = 'email-verification';
         }
 
-        if (authentication_userData.value.usingPin) {
+        if (!authentication_userData.value.usingPin) {
           validationType = 'set-up-pin';
         }
       }
@@ -185,6 +212,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
   );
 
   return {
+    authenticationSignIn_detectLocationAndBrowser,
     authenticationSignIn_fetchAuthenticationGoogleRedirect,
     authenticationSignIn_formData,
     authenticationSignIn_formValidations,

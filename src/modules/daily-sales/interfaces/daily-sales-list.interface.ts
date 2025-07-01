@@ -1,5 +1,5 @@
 // Interfaces
-import { DataTableSortEvent } from 'primevue';
+import type { DataTableSortEvent } from 'primevue';
 import type { IDailySalesListResponse } from './index';
 
 export interface IDailySalesListRequestQuery {

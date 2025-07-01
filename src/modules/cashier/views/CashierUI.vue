@@ -69,7 +69,6 @@ const {
 
   cashierOrderSummary_handleSaveUnpaidOrder,
 
-  cashierOrderSummary_handleOrderType,
   cashierOrderSummary_handleInvoiceDetail,
   cashierOrderSummary_handleCancelOrder,
   cashierOrderSummary_handleFetchPaymentMethod,
@@ -143,7 +142,6 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
 
   cashierOrderSummary_handleSaveUnpaidOrder,
 
-  cashierOrderSummary_handleOrderType,
   cashierOrderSummary_handleInvoiceDetail,
   cashierOrderSummary_handleCancelOrder,
   cashierOrderSummary_handleFetchPaymentMethod,
