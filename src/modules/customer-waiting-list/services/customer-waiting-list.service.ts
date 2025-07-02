@@ -8,9 +8,17 @@ export const useCustomerWaitingListService = () => {
   const { customerWaitingList_isLoading } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
-  const getCustomerWaitingList = async (): Promise<unknown> => {
+  const getCustomerWaitingList = async (page: number, pageSize: number): Promise<unknown> => {
     try {
+
+      const params = {
+        page,
+        pageSize,
+      };
+
       return await store.customerWaitingList({
+        ...params,
+      },{
         ...httpAbort_registerAbort(CUSTOMER_WAITING_LIST_REQUEST),
       });
     } catch (error: unknown) {
@@ -23,6 +31,6 @@ export const useCustomerWaitingListService = () => {
   };
   return {
     getCustomerWaitingList,
-    customerWaitingList_isLoading,
+    isLoading:customerWaitingList_isLoading,
   };
 };

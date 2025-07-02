@@ -3,25 +3,14 @@ import { QUEUE_BASE_ENDPOINT } from '../constants';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import type { IQueueListResponse, IQueueStateStore, IQueueListRequestQuery } from '../interfaces';
+import type { IQueueStateStore, IQueueListRequestBody, IQueueListResponse } from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
 
-export const useQueueStore = defineStore('daily-sales', {
+export const useQueueStore = defineStore('queue', {
   state: (): IQueueStateStore => ({
     queue_isLoading: false,
-    queue_invoiceLists: {
-      data: {
-        items: [],
-        meta: {
-          page: 1,
-          pageSize: 10,
-          total: 10,
-          totalPages: 1,
-        },
-      },
-    },
   }),
   getters: {
     /**
@@ -32,22 +21,20 @@ export const useQueueStore = defineStore('daily-sales', {
     /**
      * @description Handle fetch api daily sales - get invoice lists
      * @url /invoice
-     * @method GET
+     * @method PUT
      * @access private
      */
-    async dailySales_list(
-      params: IQueueListRequestQuery,
+    async fetchQueue_updateOrderStatus(
+      id:string,
+      body: IQueueListRequestBody,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<IQueueListResponse> {
       this.queue_isLoading = true;
 
       try {
-        const response = await httpClient.get<IQueueListResponse>(QUEUE_BASE_ENDPOINT, {
-          params,
+        const response = await httpClient.put<IQueueListResponse>(`${QUEUE_BASE_ENDPOINT}/${id}`, body, {
           ...requestConfigurations,
         });
-
-        this.queue_invoiceLists.data = response.data.data;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {

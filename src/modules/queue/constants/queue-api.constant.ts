@@ -1,1 +1,1 @@
-export const QUEUE_BASE_ENDPOINT = '/invoice';
+export const QUEUE_BASE_ENDPOINT = '/invoice/order/status';

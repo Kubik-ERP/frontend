@@ -3,18 +3,18 @@ export const QUEUE_LIST_REQUEST = 'QUEUE_LIST_REQUEST'
 export const QUEUE_LIST_COLUMNS: IColumnDataTable[] = [
   {
     label: '#',
-    sortable: false,
+    sortable: true,
     value: 'index',
   },
   {
-    label: 'Order Number',
+    label: 'Invoice ID',
     sortable: true,
-    value: 'orderNumber',
+    value: 'invoiceNumber',
   },
   {
     label: 'Purchase Date',
     sortable: true,
-    value: 'purchaseDate',
+    value: 'createdAt',
   },
   {
     label: 'Customer',
@@ -24,7 +24,7 @@ export const QUEUE_LIST_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Table Number',
     sortable: false,
-    value: 'tableNumber',
+    value: 'tableCode',
   },
   {
     label: 'Order Type',
@@ -61,20 +61,24 @@ export const ORDER_TYPE_LIST = [
 
 export const ORDER_STATUS_LIST = [
   {
+    label: 'Placed',
+    value: 'placed',
+  },
+  {
     label: 'In Progress',
-    value: 'In Progress',
+    value: 'in_progress',
   },
   {
     label: 'Served',
-    value: 'Served',
+    value: 'served',
   },
   {
     label: 'Complete',
-    value: 'Complete',
+    value: 'completed',
   },
   {
     label: 'Cancelled',
-    value: 'Cancelled',
+    value: 'cancelled',
   },
 ];
 
