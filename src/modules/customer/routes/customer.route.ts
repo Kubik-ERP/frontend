@@ -45,6 +45,17 @@ const routes: RouteRecordRaw[] = [
           breadcrumb: 'Edit Customer',
         },
       },
+      {
+        path: 'preview-customer/:id',
+        name: 'preview-customer',
+        props: route => ({ id: route.params.id }),
+        component: () => import('../views/PreviewCustomerUI.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          breadcrumb: 'Preview Customer',
+        },
+      },
     ],
   },
 ];

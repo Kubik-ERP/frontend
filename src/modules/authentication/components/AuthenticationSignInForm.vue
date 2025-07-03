@@ -20,7 +20,9 @@ const {
     <section id="greeting-text" class="flex flex-col gap-2">
       <img src="@/app/assets/images/app-logo.png" alt="app-logo" class="w-fit h-fit" />
 
-      <h1 class="font-bold text-2xl leading-8">Hi! Welcome Back 👋</h1>
+      <h1 class="font-bold text-2xl leading-8">
+        {{ useLocalization('app.hi') }} {{ useLocalization('app.welcome-back') }}
+      </h1>
     </section>
 
     <section id="form-inputs" class="flex flex-col">
@@ -29,7 +31,7 @@ const {
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="email"
-        name="Email"
+        :name="useLocalization('authentication.sign-in.form.email')"
         :validators="authenticationSignIn_formValidations.email"
       >
         <PrimeVueIconField>
@@ -42,7 +44,7 @@ const {
           <PrimeVueInputText
             v-model="authenticationSignIn_formData.email"
             :loading="authenticationSignIn_isLoading"
-            placeholder="Input your registered email"
+            :placeholder="useLocalization('authentication.sign-in.form.placeholder.email')"
             class="text-sm w-full"
             :class="[classes, authenticationSignIn_isNotAuthenticated ? 'border-red-600' : '']"
             v-on="useListenerForm(authenticationSignIn_formValidations, 'email')"
@@ -55,7 +57,7 @@ const {
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="password"
-        name="Password"
+        :name="useLocalization('authentication.sign-in.form.password')"
         :validators="authenticationSignIn_formValidations.password"
       >
         <PrimeVueIconField>
@@ -67,7 +69,7 @@ const {
 
           <PrimeVuePassword
             v-model="authenticationSignIn_formData.password"
-            placeholder="Input your new password"
+            :placeholder="useLocalization('authentication.sign-in.form.placeholder.password')"
             class="text-sm w-full"
             toggle-mask
             :class="[classes, authenticationSignIn_isNotAuthenticated ? '[&>input]:border-red-600' : '']"
@@ -82,11 +84,11 @@ const {
       </AppBaseFormGroup>
 
       <RouterLink :to="{ name: 'reset-password' }" class="font-semibold text-blue-primary text-sm text-end">
-        Reset Password
+        {{ useLocalization('authentication.sign-in.reset-password') }}
       </RouterLink>
 
       <span v-if="authenticationSignIn_isNotAuthenticated" class="font-normal text-error-main text-sm mt-4">
-        We couldn’t find an account with that email. Please check or sign up for a new account.
+        {{ useLocalization('authentication.sign-in.error-messages.not-authenticated') }}
       </span>
     </section>
 
@@ -94,7 +96,7 @@ const {
       <section id="main-buttons" class="flex flex-col w-full gap-2">
         <PrimeVueButton
           class="bg-blue-primary border-none text-sm py-[10px]"
-          label="Submit"
+          :label="useLocalization('app.submit')"
           type="submit"
           :disabled="authenticationSignIn_formValidations.$invalid"
           :loading="authenticationSignIn_isLoading"
@@ -109,7 +111,9 @@ const {
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="google" />
-              <span class="font-normal text-sm">Sign in with Google</span>
+              <span class="font-normal text-sm">
+                {{ useLocalization('authentication.sign-in.continue-with-google') }}
+              </span>
             </section>
           </template>
         </PrimeVueButton>
@@ -118,9 +122,11 @@ const {
       <PrimeVueDivider class="bg-grayscale-20" />
 
       <span class="font-normal text-sm">
-        Doesn’t have an account?
+        {{ useLocalization('authentication.sign-in.doesnt-have-account') }}
 
-        <RouterLink :to="{ name: 'sign-up' }" class="font-semibold text-blue-primary"> Create Account </RouterLink>
+        <RouterLink :to="{ name: 'sign-up' }" class="font-semibold text-blue-primary">
+          {{ useLocalization('authentication.sign-in.create-account') }}
+        </RouterLink>
       </span>
     </section>
   </form>

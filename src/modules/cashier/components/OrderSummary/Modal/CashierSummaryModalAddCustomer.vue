@@ -26,7 +26,7 @@ const {
       :is-modal="true"
       @close="
         (response: ICashierResponseAddCustomer) => {
-          cashierOrderSummary_handleModalAddCustomer();
+          cashierOrderSummary_handleModalAddCustomer(response);
           cashierProduct_customerState.selectedCustomer = response.data;
         }
       "

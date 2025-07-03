@@ -46,13 +46,13 @@ export const LIST_SIDEBAR_MENUS = [
         subMenus: [
           {
             name: 'Customer Queue',
-            path: '/queue'
+            path: '/queue',
           },
           {
             name: 'Kitchen Queue',
-            path: '/queue/kitchen-display'
+            path: '/queue/kitchen-display',
           },
-        ]
+        ],
       },
       {
         name: 'Report',

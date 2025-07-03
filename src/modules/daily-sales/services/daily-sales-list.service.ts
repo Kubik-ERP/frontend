@@ -104,7 +104,7 @@ export const useDailySalesListService = (): IDailySalesListProvided => {
     }
 
     switch (orderStatus.toUpperCase()) {
-      case 'READY':
+      case 'PLACED':
         return 'bg-success-background text-success';
       case 'IN_PROGRESS':
         return 'bg-primary-background text-primary';

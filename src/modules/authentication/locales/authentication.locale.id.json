@@ -1,0 +1,26 @@
+{
+  "authentication": {
+    "sign-in": {
+      "continue-with-google": "Lanjutkan dengan Google",
+      "create-account": "Buat Akun",
+      "doesnt-have-account": "Tidak punya akun?",
+
+      "error-messages": {
+        "not-authenticated": "Kami tidak dapat menemukan akun dengan email tersebut. Silakan periksa atau daftar untuk akun baru."
+      },
+
+      "form": {
+        "email": "Email",
+        "password": "Kata Sandi",
+
+        "placeholder": {
+          "email": "Masukkan email terdaftar Anda",
+          "password": "Masukkan kata sandi Anda"
+        }
+      },
+
+      "reset-password": "Atur Ulang Kata Sandi",
+      "title": "Masuk"
+    }
+  }
+}

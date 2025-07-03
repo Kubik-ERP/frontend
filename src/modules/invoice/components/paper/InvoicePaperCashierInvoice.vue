@@ -17,9 +17,7 @@ import { IInvoiceProvided } from '../../interfaces';
 const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 
 const imageUrl = computed(() => {
-  return (
-    APP_BASE_BUCKET_URL + '/' + invoice_invoiceData.value.configInvoice?.companyLogoUrl || ''
-  );
+  return APP_BASE_BUCKET_URL + '/' + invoice_invoiceData.value.configInvoice?.companyLogoUrl || '';
 });
 </script>
 <template>
@@ -33,7 +31,6 @@ const imageUrl = computed(() => {
     id="invoice-paper"
     class="invoice-paper bg-white flex flex-col items-center gap-2 w-full max-w-xs lg:max-w-md p-4"
   >
-  
     <section v-if="invoice_invoiceData.configInvoice.isShowCompanyLogo" id="logo">
       <AppBaseImage :src="imageUrl" :alt="invoice_invoiceData.currentOutlet.name" class="w-20 h-20" />
     </section>
@@ -104,11 +101,12 @@ const imageUrl = computed(() => {
       class="flex items-center justify-between w-full"
     >
       <p id="label-table" class="font-normal text-black text-sm">Table No.</p>
-      <p id="table-value" class="font-normal text-black text-sm">{{invoice_invoiceData.data?.tableCode || '-' }}</p>
+      <p id="table-value" class="font-normal text-black text-sm">
+        {{ invoice_invoiceData.data?.tableCode || '-' }}
+      </p>
     </section>
 
     <table id="product-items" class="w-full">
-      
       <thead>
         <tr class="border-y border-dashed border-black py-2">
           <th class="font-normal text-black text-sm text-left w-28 py-2">Deskripsi</th>
@@ -262,9 +260,16 @@ const imageUrl = computed(() => {
       </tfoot>
     </table>
 
-    <section v-if="invoice_invoiceData.configInvoice.isShowFooter" id="closing" class="flex flex-col items-center gap-2 w-full">
-      <p id="closing-footer" class="font-normal text-justify text-black text-sm" v-html="invoice_invoiceData.configInvoice.footerText || ''">
-      </p>
+    <section
+      v-if="invoice_invoiceData.configInvoice.isShowFooter"
+      id="closing"
+      class="flex flex-col items-center gap-2 w-full"
+    >
+      <p
+        id="closing-footer"
+        class="font-normal text-justify text-black text-sm"
+        v-html="invoice_invoiceData.configInvoice.footerText || ''"
+      ></p>
     </section>
   </section>
   <section v-else-if="invoice_invoiceData.isLoading">

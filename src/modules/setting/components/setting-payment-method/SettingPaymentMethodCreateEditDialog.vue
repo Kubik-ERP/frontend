@@ -11,6 +11,7 @@ const {
   settingPaymentMethod_isLoading,
   settingPaymentMethod_onClose,
   settingPaymentMethod_onSubmit,
+  settingPaymentMethod_toggleAvailability,
 } = inject('settingPaymentMethod') as ISettingPaymentMethodProvided;
 </script>
 
@@ -44,7 +45,11 @@ const {
         <section id="active-payment-method" class="flex items-center justify-between w-full">
           <label for="activate" class="font-normal text-base text-black"> Activate this payment method </label>
 
-          <PrimeVueToggleSwitch id="activate" v-model:model-value="settingPaymentMethod_formData.isAvailable" />
+          <PrimeVueToggleSwitch
+            id="activate"
+            v-model="settingPaymentMethod_formData.isAvailable"
+            @update:model-value="settingPaymentMethod_toggleAvailability"
+          />
         </section>
       </form>
     </template>

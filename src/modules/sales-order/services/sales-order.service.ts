@@ -7,7 +7,7 @@ import type { ISalesOrderProvided } from '../interfaces/sales-order.interface';
 // Services
 import { useCashDrawerListService } from '@/modules/cash-drawer/services/cash-drawer-list.service';
 import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
-import { useStaffMemberListService } from '@/modules/staff-member/services/staff-member.service';
+import { useStaffMemberListService } from '@/modules/staff-member/services/staff-member-list.service';
 
 /**
  * @description Closure function that returns everything what we need into an object

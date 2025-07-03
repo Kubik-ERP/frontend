@@ -27,6 +27,7 @@ import {
   ICashierOrderSummaryModalSelectTable,
   ICashierOrderSummaryModalVoucher,
   ICashierOrderSummaryProvided,
+  ICashierResponseAddCustomer,
 } from '../interfaces/cashier-order-summary';
 
 import { ICashierResponseWebsocketMessage } from '../interfaces/cashier-response';
@@ -328,8 +329,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     show: false,
   });
 
-  const cashierOrderSummary_handleModalAddCustomer = () => {
+  const cashierOrderSummary_handleModalAddCustomer = (response: ICashierResponseAddCustomer) => {
     cashierOrderSummary_modalAddCustomer.value.show = !cashierOrderSummary_modalAddCustomer.value.show;
+
+    cashierProduct_customerState.value.selectedCustomer = response.data;
   };
 
   /**

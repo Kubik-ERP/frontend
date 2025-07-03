@@ -5,6 +5,10 @@ export interface IAuthenticationSignInFormData {
   email: string;
   username?: string;
   password: string;
+  deviceType: 'DESKTOP' | 'MOBILE';
+  browser: string;
+  city: string;
+  country: string;
 }
 
 export interface IAuthenticationSignInResponse {
@@ -14,6 +18,7 @@ export interface IAuthenticationSignInResponse {
 }
 
 export interface IAuthenticationSignInProvided {
+  authenticationSignIn_detectLocationAndBrowser: () => Promise<void>;
   authenticationSignIn_fetchAuthenticationGoogleRedirect: () => Promise<unknown>;
   authenticationSignIn_formData: IAuthenticationSignInFormData;
   authenticationSignIn_formValidations: globalThis.Ref<Validation>;

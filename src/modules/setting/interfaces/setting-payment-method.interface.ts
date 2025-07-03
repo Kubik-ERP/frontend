@@ -25,8 +25,9 @@ export interface ISettingPaymentMethodProvided {
   settingPaymentMethod_listValues: globalThis.Ref<ISettingPaymentMethodFormData[]>;
   settingPaymentMethod_onClose: () => void;
   settingPaymentMethod_onCreateOrEdit: (id?: ISettingPaymentMethod) => void;
-  settingPaymentMethod_onDeactivate: () => void;
+  settingPaymentMethod_onDeactivate: (value: boolean) => void;
   settingPaymentMethod_onSubmit: () => Promise<void>;
+  settingPaymentMethod_toggleAvailability: (value: boolean) => void;
 }
 
 export interface ISettingPaymentMethodResponse {

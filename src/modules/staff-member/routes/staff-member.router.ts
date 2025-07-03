@@ -17,11 +17,25 @@ export default {
       name: 'staff-member.index',
       component: () => import('../views/StaffMemberListUI.vue'),
       meta: {
-        breadcrumb: 'Staff Members',
         layout: LAYOUT_OPTIONS.DEFAULT,
         requiresAuthorization: false,
         title: 'Staff Members',
       },
     },
+    {
+      path: 'create',
+      name: 'staff-member.create',
+      component: () => import('../views/StaffMemberCreateEditUI.vue'),
+      meta: {
+        breadcrumb: 'Add Staff Member',
+        layout: LAYOUT_OPTIONS.DEFAULT,
+        requiresAuthorization: false,
+        title: 'Add New Staff Member',
+      },
+    },
   ],
+  meta: {
+    breadcrumb: 'Staff Members',
+    requiresAuthorization: false,
+  },
 } as RouteRecordRaw;

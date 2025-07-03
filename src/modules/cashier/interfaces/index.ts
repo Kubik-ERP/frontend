@@ -44,3 +44,9 @@ export interface ICashierCustomerState {
   total: number;
   selectedCustomer: ICashierCustomer | null;
 }
+
+export interface ICashierOrderType {
+  code: string;
+  label: string;
+  available: boolean;
+}

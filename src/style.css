@@ -36,7 +36,7 @@
   --p-primary-700: var(--color-primary-700);
 }
 
-.filter-white{
+.filter-white {
   filter: brightness(0) invert(1);
 }
 
@@ -123,7 +123,7 @@
   }
 
   .default-wrapper {
-    @apply relative inset-0 z-0;
+    @apply flex flex-col relative inset-0 z-0 w-full;
   }
 
   .default-wrapper-fullscreen {
@@ -181,6 +181,7 @@
   --color-success-background: #edf7ee;
   --color-warning-background: #fff5e6;
   --color-warning-main: #ffb84d;
+  --color-warning-hover: #B06900;
   --color-success: #80c684;
   --color-coplementary-border: #e0a8cb;
   --color-complementary-background: #f7e9f2;

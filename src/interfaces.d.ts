@@ -62,6 +62,7 @@ declare global {
   }
 
   interface IDropdownItem {
+    iconName?: string;
     label: string;
     value: string | number;
   }

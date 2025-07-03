@@ -13,6 +13,8 @@ const API_URL_TAGS = `${import.meta.env.VITE_APP_BASE_API_URL}/api/tags`;
 
 import useVuelidate from '@vuelidate/core';
 
+import { required } from '@vuelidate/validators';
+
 import eventBus from '@/plugins/mitt';
 
 // import { required } from '@vuelidate/validators';
@@ -22,7 +24,7 @@ export const useCustomerService = () => {
     name: '',
     gender: '',
     dob: '',
-    code: '',
+    code: '+62',
     number: '',
     email: '',
     tags: [],
@@ -41,7 +43,9 @@ export const useCustomerService = () => {
   //   gender: { required },
   // }));
 
-  const customer_formRules = computed(() => ({}));
+  const customer_formRules = computed(() => ({
+    name: { required },
+  }));
 
   const customer_formValidatable = computed(() => ({
     name: customer_FormData.name,
@@ -53,11 +57,13 @@ export const useCustomerService = () => {
 
   const getCustomerTags = async (): Promise<ITag[]> => {
     const response = await axios.get(API_URL_TAGS);
+    console.log('🚀 ~ getCustomerTags ~ response:', response);
     return response.data.data;
   };
 
   const getAllCustomers = async (page: number, limit: number, search: string): Promise<ICustomerResponse> => {
     const response = await axios.get(`${API_URL}?page=${page}&limit=${limit}&search=${search}`);
+    // console.log("🚀 ~ getAllCustomers ~ response:", response)
     const customers: ICustomer[] = response.data.data.data.map((item: ICustomer) => ({
       id: item.id,
       name: item.name,
@@ -82,7 +88,7 @@ export const useCustomerService = () => {
   const createCustomer = async (payload: ICustomerFormData): Promise<ICustomerCreateResponse> => {
     try {
       const response = await axios.post(API_URL, payload);
-      // console.log('🚀 ~ createCustomer ~ response:', response);
+      console.log('🚀 ~ createCustomer ~ response:', response);
 
       const data: ICustomer = response.data.data;
 
@@ -90,7 +96,7 @@ export const useCustomerService = () => {
         isOpen: true,
         type: EToastType.SUCCESS,
         message: 'Customer has been created successfully',
-        position: EToastPosition.BOTTOM_RIGHT,
+        position: EToastPosition.TOP_RIGHT,
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
@@ -122,12 +128,13 @@ export const useCustomerService = () => {
     try {
       const response = await axios.patch(`${API_URL}/${id}`, payload);
       const data: ICustomer = response.data.data.data;
+      console.log("🚀 ~ updateCustomer ~ response:", response)
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,
         message: 'Customer has been updated successfully',
-        position: EToastPosition.BOTTOM_RIGHT,
+        position: EToastPosition.TOP_RIGHT,
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
@@ -154,7 +161,7 @@ export const useCustomerService = () => {
         isOpen: true,
         type: EToastType.SUCCESS,
         message: 'Customer has been deleted successfully',
-        position: EToastPosition.BOTTOM_RIGHT,
+        position: EToastPosition.TOP_RIGHT,
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
