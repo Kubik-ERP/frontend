@@ -47,11 +47,17 @@ const handleCreateCustomer = async () => {
   try {
     const response = await createCustomer(customer_FormData);
     clearForm();
-    
+
     // On successful creation, emit the 'close' event.
     // The parent component will handle the subsequent navigation or modal closing.
-    handleOnClose(response);
 
+    if (props.isModal) {
+      handleOnClose(response);
+    }
+
+    // router.push({
+    //   name: 'customer-list',
+    // });
   } catch (error) {
     console.error(error);
   }
@@ -59,15 +65,15 @@ const handleCreateCustomer = async () => {
 </script>
 
 <template>
-  {{customer_FormData}}
-  <br>
-  errors: 
+  {{ customer_FormData }}
+  <br />
+  errors:
   {{ customer_formValidations.$errors }}
-  <br>
-  invalid: 
+  <br />
+  invalid:
   {{ customer_formValidations.$invalid }}
   <form class="grid grid-cols-2 gap-8" @submit.prevent="handleCreateCustomer">
-    <AppBaseFormGroup 
+    <AppBaseFormGroup
       v-slot="{ classes }"
       class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
       is-name-as-label

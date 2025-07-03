@@ -80,6 +80,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
    * @throws Error if the print fails
    */
   const invoice_handlePrint = (
+    type: string,
     invoiceRef: HTMLElement | null = null,
     kitchenRef: HTMLElement | null = null,
     cashierRef: HTMLElement | null = null,
@@ -96,14 +97,14 @@ export const useInvoiceService = (): IInvoiceProvided => {
       }, 1000);
     };
 
-    switch (invoice_activeInvoice.value) {
-      case 1:
+    switch (type) {
+      case 'invoice':
         print(invoiceRef);
         break;
-      case 2:
+      case 'kitchen':
         print(kitchenRef);
         break;
-      case 3:
+      case 'table':
         print(cashierRef);
         break;
       default:

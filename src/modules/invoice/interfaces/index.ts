@@ -88,6 +88,7 @@ export interface IInvoiceData {
   discountAmount: number;
   tableCode: string;
   paymentStatus: 'unpaid' | 'paid' | 'refund';
+  orderStatus: 'in_progress' | 'waiting' | 'served' | 'cancelled';
   createdAt: string;
   updateAt: string;
   deleteAt: string | null;
@@ -121,6 +122,7 @@ export interface IInvoiceProvided {
   invoice_otherOptions: Ref<IInvoiceOtherOptionsData>;
 
   invoice_handlePrint: (
+    type: string,
     invoiceRef: HTMLElement,
     kitchenRef: HTMLElement | null,
     cashierRef: HTMLElement | null,

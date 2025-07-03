@@ -2,7 +2,7 @@
 import { ref } from 'vue'; // Make sure ref is imported
 import excludeSVG from '@/app/assets/icons/exclude.svg';
 
-import AddCustomerForm from '@/modules/customer/components/addCustomer/form.vue'
+import AddCustomerForm from '@/modules/customer/components/addCustomer/form.vue';
 import { useRouter, onBeforeRouteLeave } from 'vue-router'; // Ensure these are imported
 
 /**
@@ -13,7 +13,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-})
+});
 
 const emit = defineEmits(['close']);
 
@@ -28,7 +28,7 @@ let hasConfirmedLeave = false; // Using `let` for reassignable flag
  * If this component is not a modal, it triggers navigation.
  * @param {any} response The response from the child component (e.g., successful data)
  */
-const handleOnClose = (response) => {
+const handleOnClose = response => {
   // If this component is NOT being used as a modal (i.e., it's a full page view)
   // and the child form successfully completed, we want to navigate.
   if (!props.isModal) {
@@ -39,7 +39,7 @@ const handleOnClose = (response) => {
   // Also, emit the close event upwards, especially if this component itself is part of a modal
   // that a grandparent component needs to close.
   emit('close', response);
-}
+};
 
 /**
  * @description Function to confirm leaving the page, typically after discarding changes.
@@ -79,9 +79,11 @@ onBeforeRouteLeave((to, from, next) => {
 
   // If not confirmed to leave, then we need to handle showing the modal or blocking.
   // Refactored to avoid 'no-negated-condition' warning.
-  if (isLeavingModal.value) { // If the modal is ALREADY visible, just block the navigation
+  if (isLeavingModal.value) {
+    // If the modal is ALREADY visible, just block the navigation
     next(false);
-  } else { // If the modal is NOT visible yet, show it and block navigation
+  } else {
+    // If the modal is NOT visible yet, show it and block navigation
     isLeavingModal.value = true; // Show the confirmation modal
     nextRoute.value = to.fullPath; // Store the target route to navigate to later
     next(false); // Prevent the current navigation attempt

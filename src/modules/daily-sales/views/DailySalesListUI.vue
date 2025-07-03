@@ -148,6 +148,12 @@ const {
           }}</span>
         </template>
 
+        <template v-else-if="column.value === 'invoiceNumber'">
+          <router-link :to="`/invoice/${data.id}`">
+            <span class="font-normal text-sm text-sky-600 cursor-pointer"> #{{ data[column.value] }} </span>
+          </router-link>
+        </template>
+
         <template v-else-if="column.value === 'customer'">
           <span class="font-normal text-sm text-text-primary">{{ data[column.value].name }}</span>
         </template>
@@ -159,14 +165,20 @@ const {
         <template v-else-if="column.value === 'orderType'">
           <PrimeVueChip
             :class="[dailySalesList_getClassOfOrderType(data[column.value]), 'text-xs font-normal']"
-            :label="dailySalesList_typesOfOrderType.find(f => f.value === data[column.value])?.label || ''"
+            :label="
+              dailySalesList_typesOfOrderType.find((f: IDropdownItem) => f.value === data[column.value])?.label ||
+              ''
+            "
           />
         </template>
 
         <template v-else-if="column.value === 'paymentStatus'">
           <PrimeVueChip
             :class="[dailySalesList_getClassOfPaymentStatus(data[column.value]), 'text-xs font-normal']"
-            :label="dailySalesList_typesOfPaymentStatus.find(f => f.value === data[column.value])?.label || ''"
+            :label="
+              dailySalesList_typesOfPaymentStatus.find((f: IDropdownItem) => f.value === data[column.value])
+                ?.label || ''
+            "
           />
         </template>
 
@@ -174,7 +186,10 @@ const {
           <template v-if="data[column.value]">
             <PrimeVueChip
               :class="[dailySalesList_getClassOfOrderStatus(data[column.value]), 'text-xs font-normal']"
-              :label="dailySalesList_typesOfOrderStatus.find(f => f.value === data[column.value])?.label || ''"
+              :label="
+                dailySalesList_typesOfOrderStatus.find((f: IDropdownItem) => f.value === data[column.value])
+                  ?.label || ''
+              "
             />
           </template>
 

@@ -8,6 +8,7 @@ import CashierSummaryButtonOrderTable from './CashierSummaryButtonOrderTable.vue
 // Interfaces
 import { AutoCompleteCompleteEvent } from 'primevue';
 import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-summary';
+import { ICashierOrderType } from '../../interfaces';
 
 /**
  * @description Inject all the data and methods what we need
@@ -128,8 +129,9 @@ const {
 
           <span class="text-primary font-semibold">
             {{
-              CASHIER_ORDER_TYPE.find(f => f.code === cashierOrderSummary_modalOrderType.selectedOrderType)
-                ?.label || 'Order Type'
+              CASHIER_ORDER_TYPE.find(
+                (f: ICashierOrderType) => f.code === cashierOrderSummary_modalOrderType.selectedOrderType,
+              )?.label || 'Order Type'
             }}
           </span>
         </div>

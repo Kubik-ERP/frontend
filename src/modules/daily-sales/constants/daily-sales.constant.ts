@@ -85,6 +85,10 @@ export const DAILY_SALES_LIST_TYPES_OF_PAYMENT_STATUS: IDropdownItem[] = [
 
 export const DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS: IDropdownItem[] = [
   {
+    label: 'Placed',
+    value: 'placed',
+  },
+  {
     label: 'In Progress',
     value: 'in_progress',
   },
