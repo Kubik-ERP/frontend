@@ -180,10 +180,12 @@
   --color-success: #80c684;
   --color-warning-background: #fff5e6;
   --color-warning-main: #ffb84d;
+  --color-warning-hover: #B06900;
   --color-success: #80c684;
   --color-coplementary-border: #e0a8cb;
   --color-complementary-background: #f7e9f2;
   --color-complementary-main: #c964a2;
+  --color-light-white: #fcfcfd;
   --font-sans: 'Inter', sans-serif;
 }
 

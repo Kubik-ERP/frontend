@@ -1,9 +1,13 @@
 <script setup>
-import { ref } from 'vue';
-import { FilterMatchMode } from '@primevue/core/api';
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
+import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
+import deleteSVG from '@/app/assets/icons/delete.svg';
+import editSVG from '@/app/assets/icons/edit.svg';
+import plusLineWhiteSVG from '@/app/assets/icons/plus-line-white.svg';
+import threeDotsSVG from '@/app/assets/icons/three-dots.svg';
+import searchSVG from '@/app/assets/icons/search.svg';
+import chevronLeftSVG from '@/app/assets/icons/chevron-left.svg';
+import chevronRightSVG from '@/app/assets/icons/chevron-right.svg';
+import eyeVisibleSVG from '@/app/assets/icons/eye-visible.svg';
 
 import { useCustomerService } from '../services/CustomersService';
 
@@ -93,6 +97,10 @@ const prevPage = () => {
   }
 };
 
+const handlePreview = () => {
+  router.push({ name: 'preview-customer', params: { id: selectedCustomer.value.id } });
+}
+
 onMounted(() => {
   loadCustomers();
   page.value = parseInt(route.query.page) || 1;
@@ -103,29 +111,21 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="m-4 p-1 border border-gray rounded-lg shadow-2xl">
+  <div class="m-4 p-1 border border-gray-200 rounded-lg shadow-2xl">
     <div>
-      <PrimeVueDataTable
-        :selection="selectedCustomer"
-        :value="customers"
-        :rows="limit"
-        :filters="filters"
-        data-key="ID"
-        paginator
-        :loading="isLoading"
-      >
+      <PrimeVueDataTable :value="customers" :rows="limit" data-key="ID" paginator>
         <template #header>
           <div class="flex justify-between">
             <div class="flex items-center justify-center gap-2">
               <h1 class="text-2xl font-bold">Customers</h1>
-              <p class="text-green-primary bg-green-primary/50 py-1 px-2 text-xs rounded-full">
+              <p class="text-green-primary bg-green-primary/10 py-1 px-2 text-xs rounded-full">
                 {{ total }} Members
               </p>
             </div>
             <div class="flex gap-4 justify-end">
               <form @submit.prevent="handleSearch">
                 <PrimeVueIconField>
-                  <PrimeVueInputIcon><i class="pi pi-search" /></PrimeVueInputIcon>
+                  <PrimeVueInputIcon><img :src="searchSVG" alt="" /></PrimeVueInputIcon>
                   <PrimeVueInputText v-model="search" placeholder="Keyword Search" />
                 </PrimeVueIconField>
               </form>
@@ -135,43 +135,88 @@ onMounted(() => {
                   type="button"
                   severity="info"
                   label="Add Customer"
-                  icon="pi pi-plus"
                   class="bg-primary border-primary"
-                />
+                >
+                  <template #icon>
+                    <img :src="plusLineWhiteSVG" alt="" />
+                  </template>
+                </PrimeVueButton>
               </router-link>
             </div>
           </div>
         </template>
-        <template #empty> No customers found. </template>
-        <template #loading> Loading customers data. Please wait. </template>
 
-        <PrimeVueColumn selection-mode="multiple" header-style="width: 3rem"></PrimeVueColumn>
-        <!-- <PrimeVueColumn sortable field="id" header="Member ID" style="width: 15%"></PrimeVueColumn> -->
-        <PrimeVueColumn sortable field="name" header="Customer Name" style="width: 20%"></PrimeVueColumn>
-        <PrimeVueColumn sortable field="email" header="Email" style="width: 20%"></PrimeVueColumn>
-        <PrimeVueColumn sortable field="phone" header="Phone Number" style="width: 20%">
+        <template #empty> No customers found. </template>
+
+        <PrimeVueColumn header="Customer Name" class="w-1/5">
           <template #body="{ data }">
-            <span>({{ data.code }}) {{ data.number }}</span>
+            <template v-if="isLoading">
+              <PrimeVueSkeleton height="1.5rem" />
+            </template>
+            <template v-else>
+              {{ data.name }}
+            </template>
           </template>
         </PrimeVueColumn>
-        <PrimeVueColumn sortable field="points" header="Loyalty Point" style="width: 20%">
+
+        <PrimeVueColumn header="Email" class="w-1/5">
           <template #body="{ data }">
-            <div class="flex gap-2">
-              {{ data.points }}
-              <p class="text-gray-400">Points</p>
-            </div>
+            <template v-if="isLoading">
+              <PrimeVueSkeleton height="1.5rem" />
+            </template>
+            <template v-else>
+              {{ data.email }}
+            </template>
           </template>
         </PrimeVueColumn>
-        <PrimeVueColumn sortable field="latestVisit" header="Lastest Visit" style="width: 20%" />
+
+        <PrimeVueColumn header="Phone Number" class="w-1/5">
+          <template #body="{ data }">
+            <template v-if="isLoading">
+              <PrimeVueSkeleton height="1.5rem" />
+            </template>
+            <template v-else>
+              <span>({{ data.code }}) {{ data.number }}</span>
+            </template>
+          </template>
+        </PrimeVueColumn>
+
+        <PrimeVueColumn header="Loyalty Point" class="w-1/5">
+          <template #body="{ data }">
+            <template v-if="isLoading">
+              <PrimeVueSkeleton height="1.5rem" />
+            </template>
+            <template v-else>
+              <div class="flex gap-2">
+                {{ data.points }}
+                <p class="text-gray-400">Points</p>
+              </div>
+            </template>
+          </template>
+        </PrimeVueColumn>
+
+        <PrimeVueColumn header="Latest Visit" class="w-1/5">
+          <template #body="{ data }">
+            <template v-if="isLoading">
+              <PrimeVueSkeleton height="1.5rem" />
+            </template>
+            <template v-else>
+              {{ data.latestVisit }}
+            </template>
+          </template>
+        </PrimeVueColumn>
 
         <PrimeVueColumn>
           <template #body="slotProps">
             <PrimeVueButton
               type="text"
-              icon="pi pi-ellipsis-v"
               class="bg-transparent text-gray-500 border-none float-end"
               @click="displayPopover($event, slotProps.data)"
-            ></PrimeVueButton>
+            >
+              <template #icon>
+                <img :src="threeDotsSVG" alt="" />
+              </template>
+            </PrimeVueButton>
           </template>
         </PrimeVueColumn>
 
@@ -179,12 +224,15 @@ onMounted(() => {
           <div class="flex items-center gap-2 justify-between w-full py-2">
             <!-- Previous Page Button -->
             <PrimeVueButton
-              icon="pi pi-angle-left"
               variant="text"
               label="Previous"
               class="border border-primary text-primary hover:bg-transparent"
               @click="prevPage()"
-            />
+            >
+              <template #icon>
+                <img :src="chevronLeftSVG" alt="" />
+              </template>
+            </PrimeVueButton>
 
             <div class="flex gap-1">
               <PrimeVueButton
@@ -202,32 +250,36 @@ onMounted(() => {
 
             <!-- Next Page Button -->
             <PrimeVueButton
-              icon="pi pi-angle-right"
               variant="text"
               label="Next"
               class="border border-primary text-primary hover:bg-transparent flex-row-reverse"
               @click="nextPage()"
-            />
+            >
+              <template #icon>
+                <img :src="chevronRightSVG" alt="" />
+              </template>
+            </PrimeVueButton>
           </div>
         </template>
       </PrimeVueDataTable>
 
       <PrimeVuePopover ref="op">
         <div class="flex flex-col items-start">
-          <PrimeVueButton
-            variant="text"
-            label="Edit"
-            icon="pi pi-pen-to-square"
-            class="text-black"
-            @click="handleEdit()"
-          />
-          <PrimeVueButton
-            variant="text"
-            label="Delete"
-            icon="pi pi-trash"
-            class="text-red-500"
-            @click="isDeleteOpen = true"
-          />
+          <PrimeVueButton variant="text" label="Preview" class="text-black" @click="handlePreview()">
+            <template #icon>
+              <img :src="eyeVisibleSVG" alt="" />
+            </template>
+          </PrimeVueButton>
+          <PrimeVueButton variant="text" label="Edit" class="text-black" @click="handleEdit()">
+            <template #icon>
+              <img :src="editSVG" alt="" />
+            </template>
+          </PrimeVueButton>
+          <PrimeVueButton variant="text" label="Delete" class="text-red-500" @click="isDeleteOpen = true">
+            <template #icon>
+              <img :src="deleteSVG" alt="" />
+            </template>
+          </PrimeVueButton>
         </div>
       </PrimeVuePopover>
 
@@ -235,18 +287,21 @@ onMounted(() => {
         <template #container>
           <div class="w-[35rem] p-8">
             <div class="flex flex-col items-center gap-4 text-center">
-              <span><i class="pi pi-trash" style="font-size: 2.5rem"></i></span>
+              <span><img :src="deletePolygonSVG" alt="" /></span>
               <h1 class="text-2xl font-semibold">Are you sure you want to delete this customer?</h1>
               <p>This action cannot be undone, and the customer will be removed from customers list</p>
               <div class="flex items-center justify-between gap-4">
                 <PrimeVueButton
                   class="text-lg w-56"
                   variant="outlined"
-                  icon="pi pi-trash"
                   label="Delete Customer"
                   severity="danger"
                   @click="handleDelete()"
-                />
+                >
+                  <template #icon>
+                    <img :src="deleteSVG" alt="" />
+                  </template>
+                </PrimeVueButton>
                 <PrimeVueButton class="w-56 text-lg bg-primary border-primary" @click="isDeleteOpen = false"
                   >Cancel
                 </PrimeVueButton>

@@ -1,8 +1,32 @@
 {
   "app": {
+    "business-type": "Tipe Bisnis",
     "cancel": "Batalkan",
+    "create-store": "Buat Toko",
+    "description": "Deskripsi",
+    "edit-profile": "Edit Profil",
+    "email": "Email",
+    "email-address": "Alamat Email",
+
+    "form": {
+      "full-name": "Nama Lengkap",
+      "email": "Email",
+      "name": "Nama",
+      "phone-number": "Nomor Telepon",
+      "username": "Nama Pengguna"
+    },
+
     "hi": "Halo!",
+    "operational-hours": "Jam Operasional",
+    "optional": "opsional",
+    "password": "Kata Sandi",
+    "phone-number": "Nomor Telepon",
+    "photo": "Foto",
+    "select-image": "Pilih Gambar",
+    "street-address": "Alamat Jalan",
+    "stores": "Toko",
     "submit": "Kirim",
+    "table-configuration": "Konfigurasi Meja",
     "welcome-back": "Selamat datang kembali 👋"
   }
 }

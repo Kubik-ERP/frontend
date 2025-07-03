@@ -1,8 +1,32 @@
 {
   "app": {
+    "business-type": "Business Type",
     "cancel": "Cancel",
+    "create-store": "Create Store",
+    "description": "Description",
+    "edit-profile": "Edit Profile",
+    "email": "Email",
+    "email-address": "Email Address",
+
+    "form": {
+      "full-name": "Full Name",
+      "email": "Email",
+      "name": "Name",
+      "phone-number": "Phone Number",
+      "username": "Username"
+    },
+
     "hi": "Hi!",
+    "operational-hours": "Operational Hours",
+    "optional": "optional",
+    "password": "Password",
+    "phone-number": "Phone Number",
+    "photo": "Photo",
+    "select-image": "Select Image",
+    "street-address": "Street Address",
+    "stores": "Stores",
     "submit": "Submit",
+    "table-configuration": "Table Configuration",
     "welcome-back": "Welcome back 👋"
   }
 }

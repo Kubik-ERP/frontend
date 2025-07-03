@@ -1,0 +1,27 @@
+{
+  "account": {
+    "assigned-staffs": "Staf yang Ditugaskan",
+    "bank-information": "Informasi Bank",
+    "details": "Rincian Akun",
+    "edit-store-details": "Edit Rincian Toko",
+    "facilities": "Fasilitas",
+    "facility": "Fasilitas",
+
+    "form": {
+      "bank-account-number": "Nomor Rekening",
+      "bank-account-name": "Nama Pemilik Rekening",
+      "bank-name": "Nama Bank",
+
+      "placeholder": {
+        "bank-name": "Pilih Bank"
+      }
+    },
+
+    "havenot-added-bank-account": "Anda belum menambahkan informasi rekening bank",
+    "havenot-added-bank-account-description": "Untuk menerima atau melakukan pembayaran melalui sistem, silakan atur rekening bank perusahaan Anda.",
+    "setup-bank-information": "Atur Informasi Bank",
+    "store-details": "Rincian Toko",
+    "store-facilities": "Fasilitas Toko",
+    "title": "Akun"
+  }
+}

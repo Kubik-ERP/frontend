@@ -10,6 +10,7 @@ interface IProps {
   columns: IColumnDataTable[];
   data: Array<unknown>;
   headerTitle?: string;
+  isUsingBorderOnHeader?: boolean;
   isUsingBtnCtaCreate?: boolean;
   isUsingCustomBody?: boolean;
   isUsingCustomFilter?: boolean;
@@ -40,6 +41,7 @@ const props = withDefaults(defineProps<IProps>(), {
   columns: () => [],
   data: () => [],
   headerTitle: '',
+  isUsingBorderOnHeader: true,
   isUsingBtnCtaCreate: false,
   isUsingCustomBody: false,
   isUsingCustomFilter: false,
@@ -125,8 +127,12 @@ const displayedPages = computed(() => {
     :sort-order="props.sortOrder ?? 0"
     table-style="min-width: 50rem"
     :pt="{
-      root: 'border border-solid border-grayscale-20 rounded-sm',
-      header: 'p-0',
+      root: 'rounded-sm',
+      header: 'border-none p-0',
+      pcPaginator: {
+        root: 'border-l border-r border-b border-t-0 border-solid border-grayscale-20 rounded-tl-none rounded-tr-none',
+      },
+      tableContainer: `border border-solid border-grayscale-20 ${!props.isUsingBorderOnHeader ? 'rounded-tl-lg rounded-tr-lg' : '!border-t-0'}`,
     }"
     @page="handlePageChange"
     @sort="handleSort"
@@ -144,7 +150,7 @@ const displayedPages = computed(() => {
         </template>
 
         <template v-else>
-          <header class="flex flex-col">
+          <header class="flex flex-col border border-solid border-grayscale-20">
             <section
               id="title-and-cta"
               class="flex items-center justify-between w-full border-b border-solid border-grayscale-20 px-6 py-5"
