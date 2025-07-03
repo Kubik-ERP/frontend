@@ -14,7 +14,7 @@ const { cashierOrderSummary_modalAddEditNotes, cashierOrderSummary_calculateEsti
   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 
 const showImageUrl = (picture: string | null) => {
-  return picture ? picture : 'assets/images/product-placeholder.png';
+  return APP_BASE_BUCKET_URL + picture 
 };
 </script>
 

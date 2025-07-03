@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/Category/CategoriesUI.vue'),
         meta: {
           title: 'Categories',
-          breadcrumb: 'Categories',
+          breadcrumb: 'Catalog Categories',
           layout: LAYOUT_OPTIONS.DEFAULT,
           requiresAuthorization: false,
         },

@@ -8,6 +8,7 @@ import { Emitter } from 'mitt';
 import components from './app/components';
 import loadAllRoutes from './app/router';
 import pinia from './app/store';
+import autoLoadLocalization from './plugins/i18n';
 
 // Socket
 import SocketPlugin from './plugins/socket/index';
@@ -28,6 +29,7 @@ import 'virtual:svg-icons-register';
 
 const initialize = async () => {
   const app = createApp(App);
+  const localization = await autoLoadLocalization();
   const router = await loadAllRoutes();
 
   /**
@@ -47,6 +49,7 @@ const initialize = async () => {
   });
 
   // Use everything what we have
+  app.use(localization);
   app.use(pinia);
   app.use(router);
   app.use(SocketPlugin);

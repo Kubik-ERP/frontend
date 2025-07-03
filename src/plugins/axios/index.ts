@@ -6,6 +6,7 @@ import { EToastPosition, EToastType } from '@/app/constants/toast.constant';
 
 // Stores
 import { useAuthenticationStore } from '@/modules/authentication/store';
+import { useOutletStore } from '@/modules/outlet/store';
 
 // MITT
 import eventBus from '../mitt';
@@ -23,8 +24,15 @@ httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const authenticationStore = useAuthenticationStore();
   const { authentication_token } = storeToRefs(authenticationStore);
 
+  const outletStore = useOutletStore();
+  const { outlet_currentOutlet } = storeToRefs(outletStore);
+
   if (authentication_token.value) {
     config.headers.Authorization = `Bearer ${authentication_token.value}`;
+  }
+
+  if (outlet_currentOutlet.value) {
+    config.headers['X-STORE-ID'] = outlet_currentOutlet.value.id;
   }
 
   return config;

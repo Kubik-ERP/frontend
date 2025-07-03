@@ -1,6 +1,11 @@
 <script setup>
 import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
 import { useCategoryService } from '../../services/Category/CategoryService';
+import excludeSVG from '@/app/assets/icons/exclude.svg';
+import closeRedSVG from '@/app/assets/icons/close-red.svg';
+import plusLineSVG from '@/app/assets/icons/plus-line.svg';
+import chevronDownSVG from '@/app/assets/icons/chevron-down.svg';
+import imageSVG from '@/app/assets/icons/image.svg';
 
 const { getAllCategories } = useCategoryService();
 const { createProduct, product_formData, product_formValidations } = useProductService();
@@ -13,7 +18,7 @@ function clearForm() {
   product_formData.discount_price = 0;
   product_formData.variants = [];
   product_formData.categories = [];
-  product_formData.imagePreview = "";
+  product_formData.imagePreview = '';
 
   product_formValidations.value.$reset();
 }
@@ -49,6 +54,8 @@ const handleCreateProduct = async () => {
     await createProduct(product_formData);
     clearForm();
     product_formValidations.value.$reset();
+    hasConfirmedLeave = true;
+    router.push({ name: 'catalog.products.index' });
   } catch (error) {
     console.error(error);
   }
@@ -91,19 +98,6 @@ const isLeavingModal = ref(false);
 
 const router = useRouter();
 
-let hasConfirmedLeave = false;
-
-const confirmLeave = () => {
-  isLeavingModal.value = false;
-  hasConfirmedLeave = true;
-
-  if (nextRoute.value) {
-    const targetRoute = nextRoute.value;
-    nextRoute.value = null;
-    router.push(targetRoute);
-  }
-};
-
 const loadCategories = async () => {
   try {
     const response = await getAllCategories(1, 100, '');
@@ -116,6 +110,19 @@ const loadCategories = async () => {
 onMounted(async () => {
   loadCategories();
 });
+
+let hasConfirmedLeave = false;
+
+const confirmLeave = () => {
+  isLeavingModal.value = false;
+  hasConfirmedLeave = true;
+
+  if (nextRoute.value) {
+    const targetRoute = nextRoute.value;
+    nextRoute.value = null;
+    router.push(targetRoute);
+  }
+};
 
 const cancelLeave = () => {
   isLeavingModal.value = false;
@@ -167,11 +174,14 @@ watch(product_formData, () => {
         <!-- PrimeVue Button as file selector -->
         <PrimeVueButton
           label="Select Image"
-          icon="pi pi-image"
           class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
           variant="outlined"
           @click="triggerFileInput"
-        />
+        >
+          <template #icon>
+            <img :src="imageSVG" alt="" />
+          </template>
+        </PrimeVueButton>
 
         <div class="grid grid-cols-2 w-full gap-8 mt-8">
           <AppBaseFormGroup
@@ -211,10 +221,12 @@ watch(product_formData, () => {
                 filter
                 placeholder="Select"
                 class="w-full text-primary"
-                dropdown-icon="pi pi-circle"
                 :class="{ ...classes }"
                 v-on="useListenerForm(product_formValidations, 'categories')"
               >
+                <template #dropdownicon>
+                  <img :src="chevronDownSVG" alt="" />
+                </template>
                 <template #option="{ option }">
                   {{ option.category }}
                 </template>
@@ -276,9 +288,11 @@ watch(product_formData, () => {
                       v-model="discount_unit"
                       :options="['Rp', '%']"
                       class="border-none bg-transparent"
-                      dropdown-icon="pi pi-circle"
                       @update:modelValue="calculateDiscount"
                     >
+                      <template #dropdownicon>
+                        <img :src="chevronDownSVG" alt="" />
+                      </template>
                       <template #option="{ option }">
                         {{ option }}
                       </template>
@@ -333,50 +347,41 @@ watch(product_formData, () => {
                   </AppBaseFormGroup>
                 </div>
 
-                <div class="flex flex-col">
-                  <div class="flex gap-2">
-                    <AppBaseFormGroup
-                      v-slot="{ classes }"
-                      class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-                      is-name-as-label
-                      label-for="variant-name"
-                      name="Variant Name"
-                      class="w-full"
-                      :validators="
-                        useFormValidateEach({
-                          validation: product_formValidations.variants,
-                          fieldIndex: index,
-                          field: 'name',
-                        })
-                      "
+                <div class="flex gap-2">
+                  <div class="flex flex-col w-full">
+                    <label
+                      for="variant-price"
+                      class="flex gap-2 text-sm font-medium leading-6 text-gray-900 w-full"
                     >
-                      <PrimeVueInputNumber
-                        :id="`variant-price-${index}`"
-                        v-model="product_formData.variants[index].price"
-                        prefix="Rp "
-                        fluid
-                        :name="`variants.${index}.price`"
-                        class="border shadow-xs border-grayscale-30 rounded-lg w-full"
-                        :class="{ ...classes }"
-                      />
-                    </AppBaseFormGroup>
-                    <PrimeVueButton
-                      icon="pi pi-times"
-                      variant="text"
-                      severity="danger"
-                      @click="removeVariant(index)"
+                      Additional Price
+                      <p class="text-gray-400">(Optional)</p>
+                    </label>
+                    <PrimeVueInputNumber
+                      :id="`variant-price-${index}`"
+                      v-model="product_formData.variants[index].price"
+                      prefix="Rp "
+                      fluid
+                      :name="`variants.${index}.price`"
+                      class="border shadow-xs border-grayscale-30 rounded-lg w-full"
+                      :class="classes"
                     />
                   </div>
+                  <PrimeVueButton variant="text" severity="danger" @click="removeVariant(index)">
+                    <img :src="closeRedSVG" alt="" />
+                  </PrimeVueButton>
                 </div>
               </div>
             </div>
 
             <PrimeVueButton
               label="Add Variant"
-              icon="pi pi-plus"
               class="mt-4 col-span-2 w-fit text-xl px-8 py-2 text-primary pl-4 bg-transparent border-none font-semibold flex items-center justify-center gap-2"
               @click="addVariant"
-            />
+            >
+              <template #icon>
+                <img :src="plusLineSVG" alt="" />
+              </template>
+            </PrimeVueButton>
           </div>
           <div class="flex gap-4 mb-8">
             <router-link to="/catalog/products">
@@ -400,7 +405,7 @@ watch(product_formData, () => {
       <template #container>
         <div class="w-[35rem] p-8">
           <div class="flex flex-col items-center gap-4 text-center">
-            <span><i class="pi pi-trash" style="font-size: 2.5rem"></i></span>
+            <img :src="excludeSVG" alt="Delete icon" class="mx-auto" />
             <h1 class="text-2xl font-semibold">Are you sure you want to leave this page?</h1>
             <p>Any changes you make to the data will be lost if you leave this page without saving</p>
             <div class="flex items-center justify-between gap-4">

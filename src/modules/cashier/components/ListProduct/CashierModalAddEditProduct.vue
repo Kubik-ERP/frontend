@@ -16,7 +16,7 @@ const {
 import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 
 const imageUrl = computed(() => {
-  return import.meta.env.VITE_APP_BASE_API_URL + '/' + cashierProduct_modalAddEditItem.value.product?.pictureUrl;
+  return APP_BASE_BUCKET_URL + cashierProduct_modalAddEditItem.value.product?.pictureUrl;
 });
 </script>
 

@@ -21,7 +21,7 @@ const { cashierProduct_productState, cashierProduct_handleOpenModalAddProduct, i
   inject<ICashierProductProvided>('cashierProduct')!;
 
 const imageUrl = computed(() => {
-  return import.meta.env.VITE_APP_BASE_API_URL + '/' + props.product.pictureUrl;
+  return APP_BASE_BUCKET_URL + props.product.pictureUrl;
 });
 </script>
 
