@@ -11,16 +11,19 @@ export default {
   path: 'products',
   name: 'catalog.products',
   component: () => AppBaseWrapper,
+  meta:{
+    requiresAuthorization: false,
+    breadcrumb: 'Catalog Products',
+  },
   children: [
     {
       path: '',
       name: 'catalog.products.index',
       component: () => import('../views/Products/ProductsUI.vue'),
       meta: {
-        breadcrumb: 'Customer',
         layout: LAYOUT_OPTIONS.DEFAULT,
         requiresAuthorization: false,
-        title: 'Customer',
+        title: 'Catalog Products',
       },
     },
     {

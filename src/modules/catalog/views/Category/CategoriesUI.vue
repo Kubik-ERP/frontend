@@ -3,7 +3,7 @@ import CategoryTable from '@/modules/catalog/components/Category/CategoryTable.v
 </script>
 
 <template>
-  <div class="m-6">
+  <div>
     <CategoryTable />
   </div>
 </template>
