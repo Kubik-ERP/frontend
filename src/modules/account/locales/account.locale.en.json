@@ -1,0 +1,27 @@
+{
+  "account": {
+    "assigned-staffs": "Assigned Staffs",
+    "bank-information": "Bank Information",
+    "details": "Account Details",
+    "edit-store-details": "Edit Store Details",
+    "facilities": "Facilities",
+    "facility": "Facility",
+
+    "form": {
+      "bank-account-number": "Account Number",
+      "bank-account-name": "Account Name",
+      "bank-name": "Bank Name",
+
+      "placeholder": {
+        "bank-name": "Select Bank"
+      }
+    },
+
+    "havenot-added-bank-account": "You haven’t added any bank account information",
+    "havenot-added-bank-account-description": "To receive or make payments through the system, please set up your company’s bank account.",
+    "setup-bank-information": "Set Up Bank Information",
+    "store-details": "Store Details",
+    "store-facilities": "Store Facilities",
+    "title": "Account"
+  }
+}

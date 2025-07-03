@@ -166,7 +166,7 @@ export const LIST_SIDEBAR_MENUS = [
       {
         name: 'Account',
         iconName: 'account-company',
-        path: '/company-account',
+        path: '/account',
         isHaveSubMenus: false,
         subMenus: [],
       },
