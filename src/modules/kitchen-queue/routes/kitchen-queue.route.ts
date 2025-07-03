@@ -14,7 +14,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'queue-kitchen-display',
-        component: () => import('../views/Kitchen-queueUI.vue'),
+        component: () => import('../views/KitchenQueueUI.vue'),
         meta: {
           requiresAuthorization: true,
           layout: LAYOUT_OPTIONS.EMPTY,
