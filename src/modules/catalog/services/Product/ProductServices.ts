@@ -119,7 +119,7 @@ export const useProductService = () => {
     const response = await axios.get(
       `${API_URL}/?categories=${categoriesID.join('%23')}&page=${page}&limit=${limit}&search=${search}`,
     );
-    console.log('🚀 ~ getProductByCategories ~ response:', response);
+    // console.log('🚀 ~ getProductByCategories ~ response:', response);
     const products: IProduct[] = response.data.data.products.map((item: IProduct) => {
       return {
         id: item.id,
@@ -144,9 +144,21 @@ export const useProductService = () => {
   const getProductById = async (id: string): Promise<IProduct> => {
     const response = await axios.get(`${API_URL}/${id}`);
 
-    console.log('🚀 ~ getProductById ~ response:', response);
+    // console.log('🚀 ~ getProductById ~ response:', response);
     const product = response.data.data;
     // console.log('🚀 ~ getProductById ~ product:', product);
+
+    const pictureUrl = product.pictureUrl
+      ? `${import.meta.env.VITE_APP_BASE_API_URL}${product.pictureUrl}`
+      : 'https://placehold.co/250';
+
+    const categories =
+      product.categoriesHasProducts?.map((item: ICategoryHasProduct) => {
+        const { id, category, description } = item.categories;
+        return { id, category, description };
+      }) || [];
+
+    const variants = product.variantHasProducts?.map((item: IVariantHasProduct) => item.variant) || [];
 
     return {
       id: product.id,
@@ -154,10 +166,9 @@ export const useProductService = () => {
       price: product.price,
       discountPrice: product.discountPrice || 0,
       isPercent: product.isPercent,
-      picture_url: `${import.meta.env.VITE_APP_BASE_API_URL}${product.pictureUrl}` || '-', // ← corrected `pictureUrl`
-      categoriesHasProducts:
-        product.categoriesHasProducts?.map((item: ICategoryHasProduct) => item.categories) || [],
-      variantHasProducts: product.variantHasProducts?.map((item: IVariantHasProduct) => item.variant) || [],
+      picture_url: pictureUrl,
+      categoriesHasProducts: categories,
+      variantHasProducts: variants,
     };
   };
 
@@ -165,19 +176,20 @@ export const useProductService = () => {
     try {
       const formData = convertProductToFormData(payload);
       // console.log('🚀 ~ createProduct ~ payload:', payload);
-      console.log('🚀 ~ createProduct ~ formData:', formData);
+      // console.log('🚀 ~ createProduct ~ formData:', formData);
 
       const response = await axios.post(API_URL, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
+      // console.log("🚀 ~ createProduct ~ response:", response)
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,
         message: 'Product has been created successfully',
-        position: EToastPosition.BOTTOM_RIGHT,
+        position: EToastPosition.TOP_RIGHT,
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
@@ -208,7 +220,7 @@ export const useProductService = () => {
         isOpen: true,
         type: EToastType.SUCCESS,
         message: 'Product has been updated successfully',
-        position: EToastPosition.BOTTOM_RIGHT,
+        position: EToastPosition.TOP_RIGHT,
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
@@ -230,11 +242,12 @@ export const useProductService = () => {
   const deleteProduct = async (id: string): Promise<void> => {
     try {
       await axios.delete(`${API_URL}/${id}`);
+
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,
         message: 'Product has been deleted successfully',
-        position: EToastPosition.BOTTOM_RIGHT,
+        position: EToastPosition.TOP_RIGHT,
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);

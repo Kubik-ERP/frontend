@@ -43,16 +43,16 @@ export const LIST_SIDEBAR_MENUS = [
         iconName: 'queue',
         path: '/queue',
         isHaveSubMenus: true,
-        subMenus: [
-          {
-            name: 'Customer Queue',
-            path: '/',
-          },
-          {
-            name: 'Kitchen Queue',
-            path: '/',
-          },
-        ],
+        // subMenus: [
+        //   {
+        //     name: 'Customer Queue',
+        //     path: '/',
+        //   },
+        //   {
+        //     name: 'Kitchen Queue',
+        //     path: '/',
+        //   },
+        // ],
       },
       {
         name: 'Report',

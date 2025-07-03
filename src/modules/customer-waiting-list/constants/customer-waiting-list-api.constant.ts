@@ -1,0 +1,1 @@
+export const CUSTOMER_WAITING_LIST_BASE_ENDPOINT = '/invoice'

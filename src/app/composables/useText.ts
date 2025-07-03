@@ -100,3 +100,19 @@ export const useFormatDateLocal = (date: string | Date | number) => {
 
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${ms}`;
 };
+
+export const useTitleCaseWithSpaces = (inputString: string): string => {
+  if (!inputString) {
+    return ''; // Handle empty or null/undefined input
+  }
+
+  // Replace underscores with spaces
+  const withSpaces = inputString.replace(/_/g, ' ');
+
+  // Capitalize the first letter of each word
+  // This uses a regular expression to match the first character of the string
+  // and the first character after any whitespace, then converts it to uppercase.
+  const titleCase = withSpaces.replace(/\b\w/g, char => char.toUpperCase());
+
+  return titleCase;
+};
