@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Icons
+import homeIconAsset from '@/app/assets/icons/home.svg';
+
 /**
  * @description Injected variables
  */
@@ -30,7 +33,7 @@ onMounted(() => {
 
     if (homeIconAnchor) {
       homeIconAnchor.classList.add('text-text-disabled', 'font-normal', 'text-sm');
-      homeIconAnchor.innerHTML = '<span class="p-breadcrumb-item-icon pi pi-home" data-pc-section="itemicon"></span>';
+      homeIconAnchor.innerHTML = `<img src="${homeIconAsset}" alt="Home" class="inline-block mr-1" /> ${homeIconAnchor.innerHTML}`;
     }
   }
 });
@@ -38,9 +41,13 @@ onMounted(() => {
 
 <template>
   <section id="breadcrumbs" class="px-10 py-3 border-b border-solid border-grayscale-10">
-    <PrimeVueBreadcrumb :home="home" :model="items" :pt="{
-      root: 'p-0',
-    }">
+    <PrimeVueBreadcrumb
+      :home="home"
+      :model="items"
+      :pt="{
+        root: 'p-0',
+      }"
+    >
       <template #item="{ item }">
         <template v-if="item.url === route.path">
           <span class="font-normal text-sm text-primary">{{ item.label }}</span>
