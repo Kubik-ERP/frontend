@@ -79,4 +79,5 @@ export interface ICustomerDetailsRequestQuery {
   limit?: number;
   status?: string;
   orderType?: string;
+  date?: Date;
 }

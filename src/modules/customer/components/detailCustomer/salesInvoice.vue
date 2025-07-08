@@ -5,55 +5,43 @@ import { useCustomerDetailService } from '../../services/customer-detail.service
 // Interfaces
 import type { Iinvoice, ICustomerDetails } from '../../interfaces';
 
-const { customerDetail_columns, salesInvoice_paymentStatus, salesInvoice_orderType, customerDetails_isLoading } = useCustomerDetailService();
+const {
+  customerDetail_columns,
+  salesInvoice_paymentStatus,
+  salesInvoice_orderType,
+  customerDetails_isLoading,
+  customerDetails_fetchSalesInvoice,
+  orderStatusClass,
+  orderTypeClass,
+  customerDetails_queryParams,
+} = useCustomerDetailService();
 /**
  * @description Destructure all the data and methods what we need
  */
-
 
 const invoices = ref(inject('customerDetails').invoices as Iinvoice[]);
 // console.log('🚀 ~ invoices:', invoices.value);
 
 const customer = ref(inject('customerDetails').customer as ICustomerDetails);
-console.log("🚀 ~ customer:", customer)
+// console.log('🚀 ~ customer:', customer);
 
 const meta = ref(inject('customerDetails').meta);
-console.log("🚀 ~ meta:", meta)
-
-const handleSearch = () => {};
+// console.log('🚀 ~ meta:', meta);
+const route = useRoute();
+watch(
+  () => customerDetails_queryParams,
+  debounce(async () => {
+    await customerDetails_fetchSalesInvoice(route.params.id as string);
+  }, 500),
+  {
+    deep: true,
+  },
+);
 
 const search = ref('');
 const date = ref();
 const status = ref();
 const type = ref();
-
-const orderTypeClass = (orderType: string) => {
-  switch (orderType) {
-    case 'Dine In':
-      return 'bg-primary-background text-primary';
-    case 'Take Away':
-      return 'bg-secondary-background text-green-primary';
-    case 'Delivery':
-      return 'text-success-main';
-    default:
-      return '';
-  }
-};
-
-const orderStatusClass = (orderStatus: string) => {
-  switch (orderStatus) {
-    case 'Pain':
-      return 'bg-background-success text-success';
-    case 'Unpaid':
-      return 'bg-warning-background text-warning-main';
-    case 'Cancelled':
-      return 'bg-error-background text-error-main';
-    case 'Refunded':
-      return 'bg-error-background text-error-main';
-    default:
-      return '';
-  }
-};
 </script>
 <template>
   <section id="customer-daily-sales" class="flex flex-col relative inset-0 z-0">
@@ -73,7 +61,7 @@ const orderStatusClass = (orderStatus: string) => {
       is-using-custom-header
       @update:currentPage="dailySales_handleOnPageChange"
     > -->
-    {{ meta }}
+    <!-- {{ meta }} -->
     <AppBaseDataTable
       :columns="customerDetail_columns"
       :data="invoices"
@@ -106,7 +94,7 @@ const orderStatusClass = (orderStatus: string) => {
               </PrimeVueInputIcon>
 
               <PrimeVueInputText
-                v-model="search"
+                v-model="customerDetails_queryParams.search"
                 placeholder="Search Invoice ID"
                 class="text-sm w-full min-w-80"
               />
@@ -148,10 +136,10 @@ const orderStatusClass = (orderStatus: string) => {
         <section class="flex items-center gap-4 p-4">
           <div class="flex flex-col gap-1 w-full">
             <span class="font-semibold inline-block text-gray-900 text-base w-48">Filter by</span>
-
+            {{ customerDetails_queryParams }}
             <div class="flex items-center gap-4 w-full">
               <PrimeVueDatePicker
-                v-model="date"
+                v-model="customerDetails_queryParams.date"
                 class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
                 placeholder="Real Time "
                 show-on-focus
@@ -159,7 +147,7 @@ const orderStatusClass = (orderStatus: string) => {
                 fluid
               />
               <PrimeVueMultiSelect
-                v-model="type"
+                v-model="customerDetails_queryParams.orderType"
                 display="chip"
                 :options="salesInvoice_paymentStatus"
                 option-label="label"
@@ -170,7 +158,7 @@ const orderStatusClass = (orderStatus: string) => {
               />
 
               <PrimeVueMultiSelect
-                v-model="status"
+                v-model="customerDetails_queryParams.status"
                 display="chip"
                 :options="salesInvoice_orderType"
                 option-label="label"

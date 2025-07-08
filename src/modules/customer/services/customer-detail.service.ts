@@ -33,6 +33,7 @@ export const useCustomerDetailService = () => {
     search: '',
     status: '',
     orderType: '',
+    date: undefined,
   });
 
   const increarePoint_FormData = reactive<IIncreasePoint>({
@@ -77,6 +78,10 @@ export const useCustomerDetailService = () => {
 
   const customerDetails_fetchSalesInvoice = async (id: string): Promise<unknown> => {
     try {
+      console.log(
+        '🚀 ~ constcustomerDetails_fetchSalesInvoice= ~ customerDetails_queryParams:',
+        customerDetails_queryParams,
+      );
       return await store.salesInvoice_list(id, customerDetails_queryParams, {
         ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
       });
@@ -86,6 +91,34 @@ export const useCustomerDetailService = () => {
       } else {
         return Promise.reject(new Error(String(error)));
       }
+    }
+  };
+
+  const orderTypeClass = (orderType: string) => {
+    switch (orderType) {
+      case 'Dine In':
+        return 'bg-primary-background text-primary';
+      case 'Take Away':
+        return 'bg-secondary-background text-green-primary';
+      case 'Delivery':
+        return 'text-success-main';
+      default:
+        return '';
+    }
+  };
+
+  const orderStatusClass = (orderStatus: string) => {
+    switch (orderStatus) {
+      case 'Pain':
+        return 'bg-background-success text-success';
+      case 'Unpaid':
+        return 'bg-warning-background text-warning-main';
+      case 'Cancelled':
+        return 'bg-error-background text-error-main';
+      case 'Refunded':
+        return 'bg-error-background text-error-main';
+      default:
+        return '';
     }
   };
 
@@ -124,6 +157,11 @@ export const useCustomerDetailService = () => {
     customerDetails_isLoading,
 
     customerDetails_fetchSalesInvoice,
+    orderStatusClass,
+    orderTypeClass,
+
     customerDetails_fetchLoyaltyPoint,
+
+    customerDetails_queryParams,
   };
 };
