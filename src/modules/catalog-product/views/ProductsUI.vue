@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue';
-import ProductVariantPill from '../../components/ProductVariantPill.vue';
-import { useCategoryService } from '../../services/Category/CategoryService';
-import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
+import ProductVariantPill from '../components/ProductVariantPill.vue';
+import { useCategoryService } from '@/modules/catalog/services/Category/CategoryService';
+import { useProductService } from '../services/catalog-product.service';
 import CategoryPill from '@/modules/catalog/components/Category/CategoryPill.vue';
 import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
 import deleteSVG from '@/app/assets/icons/delete.svg';
@@ -13,6 +13,7 @@ import searchSVG from '@/app/assets/icons/search.svg';
 import chevronDownSVG from '@/app/assets/icons/chevron-down.svg';
 import chevronLeftSVG from '@/app/assets/icons/chevron-left.svg';
 import chevronRightSVG from '@/app/assets/icons/chevron-right.svg';
+import { TabStyle } from 'primevue';
 
 const { getAllProducts, deleteProduct, getProductByCategories } = useProductService();
 
@@ -222,7 +223,7 @@ onMounted(() => {
         <template #header>
           <div class="flex justify-between">
             <div class="flex items-center">
-              <h1 class="text-2xl font-bold">Products</h1>
+              <h1 class="text-2xl font-bold">{{ useLocalization('main.table.title') }}</h1>
             </div>
             <div class="flex gap-4 justify-end">
               <div class="flex flex-col w-64 max-w-64">
@@ -233,7 +234,7 @@ onMounted(() => {
                   :options="categories"
                   option-label="category"
                   filter
-                  placeholder="Filter By Categories"
+                  :placeholder="useLocalization('main.table.filter')"
                   class="w-full text-primary"
                 >
                   <template #dropdownicon>
@@ -247,7 +248,7 @@ onMounted(() => {
               <form @submit.prevent="handleSearch">
                 <PrimeVueIconField>
                   <PrimeVueInputIcon><img :src="searchSVG" alt="" /></PrimeVueInputIcon>
-                  <PrimeVueInputText v-model="search" placeholder="Keyword Search" />
+                  <PrimeVueInputText v-model="search" :placeholder="useLocalization('main.table.search')" />
                 </PrimeVueIconField>
               </form>
 
@@ -255,7 +256,7 @@ onMounted(() => {
                 <PrimeVueButton
                   type="button"
                   severity="info"
-                  label="Add Product"
+                  :label="useLocalization('main.table.add')"
                   class="bg-primary border-primary"
                 >
                   <template #icon>
@@ -344,7 +345,7 @@ onMounted(() => {
             <PrimeVueButton
               
               variant="text"
-              label="Previous"
+              :label="useLocalization('main.table.previous-page')"
               class="border border-primary text-primary hover:bg-transparent"
               @click="prevPage()"
             >
@@ -370,7 +371,7 @@ onMounted(() => {
             <!-- Next Page Button -->
             <PrimeVueButton
               variant="text"
-              label="Next"
+              :label="useLocalization('main.table.next-page')"
               class="border border-primary text-primary hover:bg-transparent flex-row-reverse"
               @click="nextPage()"
             >
@@ -384,12 +385,12 @@ onMounted(() => {
 
       <PrimeVuePopover ref="op">
         <div class="flex flex-col items-start">
-          <PrimeVueButton variant="text" label="Edit" class="text-black" @click="EditProducts">
+          <PrimeVueButton variant="text" :label="useLocalization('main.popover.edit')" class="text-black" @click="EditProducts">
             <template #icon>
               <img :src="editSVG" alt="" />
             </template>
           </PrimeVueButton>
-          <PrimeVueButton variant="text" label="Delete" class="text-black" @click="isDeleteOpen = true">
+          <PrimeVueButton variant="text" :label="useLocalization('main.popover.delete')" class="text-black" @click="isDeleteOpen = true">
             <template #icon>
               <img :src="deleteSVG" alt="" />
             </template>
@@ -402,13 +403,13 @@ onMounted(() => {
           <div class="w-[35rem] p-8">
             <div class="flex flex-col items-center gap-4 text-center">
               <img :src="deletePolygonSVG" alt="Delete icon" class="mx-auto" />
-              <h1 class="text-2xl font-semibold">Are you sure you want to delete this product?</h1>
-              <p>This action cannot be undone, and the product will be removed from catalog</p>
+              <h1 class="text-2xl font-semibold">{{ useLocalization('main.modal.title') }}</h1>
+              <p>{{ useLocalization('main.modal.description') }}</p>
               <div class="flex items-center justify-between gap-4">
                 <PrimeVueButton
                   class="text-lg w-56 text-red-500 bg-transparent border-none"
                   variant="outlined"
-                  label="Delete Product"
+                  :label="useLocalization('main.modal.delete')"
                   severity="danger"
                   @click="
                     handleDelete(selectedProduct.id);
@@ -420,7 +421,7 @@ onMounted(() => {
                   </template>
                 </PrimeVueButton>
                 <PrimeVueButton class="w-56 text-lg bg-primary border-primary" @click="isDeleteOpen = false"
-                  >Cancel
+                  >{{ useLocalization('main.modal.cancel') }}
                 </PrimeVueButton>
               </div>
             </div>

@@ -1,0 +1,22 @@
+{
+  "main": {
+    "table": {
+      "title": "Produk",
+      "filter": "Saring Berdasarkan Kategori",
+      "search": "Pencarian Kata Kunci",
+      "add": "Tambah Produk",
+      "next-page": "Berikutnya",
+      "previous-page": "Sebelumnya"
+    },
+    "popover": {
+      "edit": "Ubah",
+      "delete": "Hapus"
+    },
+    "modal": {
+      "title": "Apakah Anda yakin ingin menghapus produk ini?",
+      "description": "Tindakan ini tidak dapat dibatalkan, dan produk akan dihapus dari katalog",
+      "delete": "Hapus Produk",
+      "cancel": "Batal"
+    }
+  }
+}

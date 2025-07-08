@@ -1,0 +1,22 @@
+{
+  "main": {
+    "table": {
+      "title": "Products",
+      "filter": "Filter By Categories",
+      "search": "Keyword Search",
+      "add": "Add Product",
+      "next-page": "Next",
+      "previous-page": "Previous"
+    },
+    "popover":{
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "modal":{
+      "title": "Are you sure you want to delete this product?",
+      "description": "This action cannot be undone, and the product will be removed from catalog",
+      "delete": "Delete Product",
+      "cancel": "Cancel"
+    }
+  }
+}

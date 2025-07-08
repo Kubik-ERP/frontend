@@ -38,10 +38,6 @@ watch(
   },
 );
 
-const search = ref('');
-const date = ref();
-const status = ref();
-const type = ref();
 </script>
 <template>
   <section id="customer-daily-sales" class="flex flex-col relative inset-0 z-0">

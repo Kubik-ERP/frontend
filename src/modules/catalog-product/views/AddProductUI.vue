@@ -1,84 +1,29 @@
 <script setup>
-import { useProductService } from '@/modules/catalog/services/Product/ProductServices';
-import { useCategoryService } from '../../services/Category/CategoryService';
+import { useProductService } from '../services/catalog-product.service';
+import { useCategoryService } from '@/modules/catalog/services/Category/CategoryService';
 import excludeSVG from '@/app/assets/icons/exclude.svg';
-import deleteSVG from '@/app/assets/icons/delete.svg';
+import closeRedSVG from '@/app/assets/icons/close-red.svg';
 import plusLineSVG from '@/app/assets/icons/plus-line.svg';
 import chevronDownSVG from '@/app/assets/icons/chevron-down.svg';
 import imageSVG from '@/app/assets/icons/image.svg';
-import confirmationSVG from '@/app/assets/icons/confirmation.svg';
-import closeRedSVG from '@/app/assets/icons/close-red.svg';
-import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
-
-const route = useRoute();
 
 const { getAllCategories } = useCategoryService();
-const { getProductById, updateProduct, deleteProduct, product_formData, product_formValidations } =
-  useProductService();
-
-const toggleVariant = ref(false);
-const categories = ref([]);
-const productID = ref(route.params.id);
+const { createProduct, product_formData, product_formValidations } = useProductService();
+const discount_unit = ref('Rp');
 function clearForm() {
   product_formData.name = '';
   product_formData.price = 0;
   product_formData.isDiscount = false;
   product_formData.discount_value = 0;
-  product_formData.is_percent = false;
   product_formData.discount_price = 0;
   product_formData.variants = [];
   product_formData.categories = [];
   product_formData.imagePreview = '';
 
-  toggleVariant.value = false;
   product_formValidations.value.$reset();
 }
 
-const loadCategories = async () => {
-  try {
-    const response = await getAllCategories(1, 100, '');
-    categories.value = response.categories;
-  } catch (error) {
-    console.error('Failed to load categories:', error);
-  }
-};
-
-const discount_unit = ref('Rp');
-
-const loadProduct = async () => {
-  try {
-    const response = await getProductById(route.params.id);
-
-    product_formData.name = response.name;
-    product_formData.price = response.price;
-    product_formData.discount_price = response.discountPrice;
-    product_formData.variants = response.variantHasProducts;
-    product_formData.categories = response.categoriesHasProducts;
-    product_formData.is_percent = response.isPercent;
-    console.log("🚀 ~ loadProduct ~ response.isPercent:", response.isPercent)
-    product_formData.imagePreview = response.picture_url;
-
-    product_formData.isDiscount = product_formData.price !== product_formData.discount_price;
-
-    if (product_formData.isDiscount) {
-      if (response.isPercent) {
-        product_formData.discount_value = 100 - (response.discountPrice / response.price) * 100;
-        discount_unit.value = '%';
-      } else {
-        product_formData.discount_value = response.price - response.discountPrice;
-        discount_unit.value = 'Rp';
-      }
-    }
-    if (product_formData.variants.length > 0) {
-      toggleVariant.value = true;
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 const fileInput = ref(null);
-
 const triggerFileInput = () => {
   fileInput.value?.click();
 };
@@ -96,28 +41,29 @@ const handleImageUpload = event => {
   }
 };
 
-const isDeleteOpen = ref(false);
+const handleCreateProduct = async () => {
+  product_formValidations.value.$touch();
+  if (product_formValidations.value.$invalid) return;
 
-const handleDelete = async () => {
+  if (!product_formData.isDiscount) {
+    // console.log('no discount');
+    product_formData.discount_price = product_formData.price;
+  }
+
   try {
-    await deleteProduct(productID.value);
-    isDeleteOpen.value = false;
+    await createProduct(product_formData);
+    clearForm();
+    product_formValidations.value.$reset();
     hasConfirmedLeave = true;
     router.push({ name: 'catalog.products.index' });
   } catch (error) {
-    console.error('Failed to delete product:', error);
+    console.error(error);
   }
 };
 
-const handleUpdateProduct = async () => {
-  try {
-    await updateProduct(productID.value, product_formData);
-  } catch (error) {
-    console.error(error);
-  } finally {
-    clearForm();
-  }
-};
+const categories = ref([]);
+
+const toggleVariant = ref(false);
 
 const addVariant = () => {
   product_formData.variants.push({
@@ -152,6 +98,19 @@ const isLeavingModal = ref(false);
 
 const router = useRouter();
 
+const loadCategories = async () => {
+  try {
+    const response = await getAllCategories(1, 100, '');
+    categories.value = response.categories;
+  } catch (error) {
+    console.error('Failed to load categories:', error);
+  }
+};
+
+onMounted(async () => {
+  loadCategories();
+});
+
 let hasConfirmedLeave = false;
 
 const confirmLeave = () => {
@@ -164,11 +123,6 @@ const confirmLeave = () => {
     router.push(targetRoute);
   }
 };
-
-onMounted(async () => {
-  loadCategories();
-  loadProduct();
-});
 
 const cancelLeave = () => {
   isLeavingModal.value = false;
@@ -191,48 +145,33 @@ onBeforeRouteLeave((to, from, next) => {
   }
 });
 
-// Modal state
-const isUpdateModal = ref(false);
-
-// Your action to call when confirming
-const confirmUpdate = async () => {
-  try {
-    // Example: updateProduct() or any async call
-    await handleUpdateProduct(); // Make sure this is defined/imported
-
-    product_formValidations.value.$reset();
-    hasConfirmedLeave = true;
-    router.push({ name: 'catalog.products.index' });
-    // Optionally show success feedback/toast here
-
-    isUpdateModal.value = false;
-  } catch (error) {
-    console.error('Failed to update product:', error);
-    // Optionally show error feedback
-  }
-};
-
-// Cancel just closes the modal
-const cancelUpdate = () => {
-  isUpdateModal.value = false;
-};
+watch(product_formData, () => {
+  calculateDiscount();
+});
 </script>
 
 <template>
   <div class="container mx-auto">
     <div class="flex flex-col gap-4">
+      <!-- {{ product_formData }} -->
+      <!-- <br />
+      {{ product_formValidations }}
+      <br />
+      {{ product_formValidations.$invalid }} -->
       <h1 class="text-2xl font-bold">Products Detail</h1>
       <h2 class="text-xl font-semibold">Product Information</h2>
-
-      <form class="flex flex-col items-center justify-center" @submit.prevent="isUpdateModal = true">
+      <form class="flex flex-col items-center justify-center" @submit.prevent="handleCreateProduct">
         <p>Photo (Optional)</p>
         <img
           class="rounded-lg mt-2 w-64 h-64 object-cover"
           :src="product_formData.imagePreview || 'https://placehold.co/250'"
           alt="Photo"
         />
+
+        <!-- Hidden File Input -->
         <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
 
+        <!-- PrimeVue Button as file selector -->
         <PrimeVueButton
           label="Select Image"
           class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
@@ -257,7 +196,7 @@ const cancelUpdate = () => {
               v-model="product_formData.name"
               name="name"
               type="text"
-              :class="classes ? '' : ''"
+              :class="{ ...classes }"
               fluid
               class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
               v-on="useListenerForm(product_formValidations, 'name')"
@@ -282,7 +221,7 @@ const cancelUpdate = () => {
                 filter
                 placeholder="Select"
                 class="w-full text-primary"
-                :class="classes ? '' : ''"
+                :class="{ ...classes }"
                 v-on="useListenerForm(product_formValidations, 'categories')"
               >
                 <template #dropdownicon>
@@ -309,7 +248,7 @@ const cancelUpdate = () => {
                 name="price"
                 fluid
                 class="border shadow-xs border-grayscale-30 rounded-lg"
-                :class="classes ? '' : ''"
+                :class="{ ...classes }"
                 v-on="useListenerForm(product_formValidations, 'price')"
                 @change="calculateDiscount"
               />
@@ -341,7 +280,7 @@ const cancelUpdate = () => {
                     :prefix="product_formData.is_percent === false ? 'Rp ' : ''"
                     :suffix="product_formData.is_percent === true ? ' %' : ''"
                     :class="classes ? '' : ''"
-                    @update:modelValue="calculateDiscount"
+                    @change="calculateDiscount"
                     v-on="useListenerForm(product_formValidations, 'discount_value')"
                   />
                   <div class="absolute right-0 flex items-center rounded-lg border-none ring-0">
@@ -350,7 +289,6 @@ const cancelUpdate = () => {
                       :options="['Rp', '%']"
                       class="border-none bg-transparent"
                       @update:modelValue="calculateDiscount"
-                      @change="calculateDiscount"
                     >
                       <template #dropdownicon>
                         <img :src="chevronDownSVG" alt="" />
@@ -404,7 +342,7 @@ const cancelUpdate = () => {
                       v-model="product_formData.variants[index].name"
                       :name="`variants`"
                       class="border shadow-xs border-grayscale-30 rounded-lg w-full"
-                      :class="classes"
+                      :class="{ ...classes }"
                     />
                   </AppBaseFormGroup>
                 </div>
@@ -445,32 +383,20 @@ const cancelUpdate = () => {
               </template>
             </PrimeVueButton>
           </div>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-4">
-              <router-link to="/catalog/products">
-                <PrimeVueButton
-                  label="Cancel"
-                  class="text-xl w-48 py-2 border-2 border-primary cursor-pointer rounded-lg text-primary bg-transparent font-semibold"
-                  unstyled
-                />
-              </router-link>
+          <div class="flex gap-4 mb-8">
+            <router-link to="/catalog/products">
               <PrimeVueButton
-                :label="'Edit Product'"
-                class="text-xl w-48 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
+                label="Cancel"
+                class="text-xl w-48 py-2 border-2 border-primary cursor-pointer rounded-lg text-primary bg-transparent font-semibold"
                 unstyled
-                type="submit"
               />
-            </div>
-
+            </router-link>
             <PrimeVueButton
-              label="Delete Product"
-              class="text-xl w-56 py-2 border-2 border-none cursor-pointer rounded-lg text-red-500 bg-transparent font-semibold"
-              @click="isDeleteOpen = true"
-            >
-              <template #icon>
-                <img :src="deleteSVG" alt="" />
-              </template>
-            </PrimeVueButton>
+              :label="'Add Product'"
+              class="text-xl w-48 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
+              unstyled
+              type="submit"
+            />
           </div>
         </div>
       </form>
@@ -479,7 +405,7 @@ const cancelUpdate = () => {
       <template #container>
         <div class="w-[35rem] p-8">
           <div class="flex flex-col items-center gap-4 text-center">
-            <span><img :src="excludeSVG" alt="" /></span>
+            <img :src="excludeSVG" alt="Delete icon" class="mx-auto" />
             <h1 class="text-2xl font-semibold">Are you sure you want to leave this page?</h1>
             <p>Any changes you make to the data will be lost if you leave this page without saving</p>
             <div class="flex items-center justify-between gap-4">
@@ -495,63 +421,6 @@ const cancelUpdate = () => {
                 @click="cancelLeave"
                 >Cancel</PrimeVueButton
               >
-            </div>
-          </div>
-        </div>
-      </template>
-    </PrimeVueDialog>
-
-    <PrimeVueDialog v-model:visible="isDeleteOpen" modal header="">
-      <template #container>
-        <div class="w-[35rem] p-8">
-          <div class="flex flex-col items-center gap-4 text-center">
-            <img :src="deletePolygonSVG" alt="Delete icon" class="mx-auto" />
-            <h1 class="text-2xl font-semibold">Are you sure you want to delete this product?</h1>
-            <p>This action cannot be undone, and the product will be removed from catalog</p>
-            <div class="flex items-center justify-between gap-4">
-              <PrimeVueButton
-                class="text-lg w-56 text-red-500 bg-transparent border-none"
-                variant="outlined"
-                label="Delete Product"
-                severity="danger"
-                @click="
-                  handleDelete();
-                  isDeleteOpen = false;
-                "
-              >
-                <template #icon>
-                  <img :src="deleteSVG" alt="" />
-                </template>
-              </PrimeVueButton>
-              <PrimeVueButton class="w-56 text-lg bg-primary border-primary" @click="isDeleteOpen = false"
-                >Cancel
-              </PrimeVueButton>
-            </div>
-          </div>
-        </div>
-      </template>
-    </PrimeVueDialog>
-
-    <PrimeVueDialog :visible="isUpdateModal" modal header="">
-      <template #container>
-        <div class="w-[35rem] p-8">
-          <div class="flex flex-col items-center gap-4 text-center">
-            <span><img :src="confirmationSVG" alt="" /></span>
-            <h1 class="text-2xl font-semibold">Are you sure want to update this product item?</h1>
-            <p>The update will affect the product items in the catalog</p>
-            <div class="flex items-center justify-between gap-4">
-              <PrimeVueButton
-                variant="text"
-                class="w-56 text-lg border-2 border-primary text-primary font-semibold"
-                @click="cancelUpdate"
-                >Cancel</PrimeVueButton
-              >
-              <PrimeVueButton
-                class="text-xl w-56 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
-                unstyled
-                label="Yes, I'm Sure"
-                @click="confirmUpdate"
-              />
             </div>
           </div>
         </div>
