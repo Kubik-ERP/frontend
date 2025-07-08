@@ -13,16 +13,17 @@ const selectedPage = ref('Sales Invoice');
 const pageOption = ref(['Sales Invoice', 'Loyalty Point']);
 
 const customer = ref({});
+const meta = ref({});
 const invoices = ref([]);
 
 onMounted(async () => {
   const response = await customerDetails_fetchSalesInvoice(route.params.id as string);
-  // console.log('🚀 ~ onMounted ~ response:', response);
   customer.value = response.data;
-  invoices.value = response.data.invoices;
+  meta.value = response.data.invoices.meta;
+  invoices.value = response.data.invoices.data;
 });
 
-provide('customerDetails', { customer, invoices });
+provide('customerDetails', { customer, invoices, meta });
 </script>
 <template>
   <div>

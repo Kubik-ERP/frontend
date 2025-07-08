@@ -15,6 +15,10 @@ const invoices = ref(inject('customerDetails').invoices as Iinvoice[]);
 // console.log('🚀 ~ invoices:', invoices.value);
 
 const customer = ref(inject('customerDetails').customer as ICustomerDetails);
+console.log("🚀 ~ customer:", customer)
+
+const meta = ref(inject('customerDetails').meta);
+console.log("🚀 ~ meta:", meta)
 
 const handleSearch = () => {};
 
@@ -69,9 +73,13 @@ const orderStatusClass = (orderStatus: string) => {
       is-using-custom-header
       @update:currentPage="dailySales_handleOnPageChange"
     > -->
+    {{ meta }}
     <AppBaseDataTable
       :columns="customerDetail_columns"
       :data="invoices"
+      :rows-per-page="meta.pageSize"
+      :total-records="meta.totalData"
+      :first="(meta.page - 1) * meta.pageSize"
       is-using-server-side-pagination
       is-using-custom-body
       is-using-custom-filter

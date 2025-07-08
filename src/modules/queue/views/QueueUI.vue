@@ -27,7 +27,7 @@ onMounted(async () => {
 <template>
   <div class="flex flex-col gap-8">
     <div class="flex gap-2 items-center">
-      <router-link to="/customer-waiting-list">
+      <router-link :to="{name: 'customer-waiting-list'}">
         <PrimeVueButton class="w-fit" label="Customer Waiting List System">
           <template #icon>
             <AppBaseSvg name="display" class="!w-5 !h-5" />

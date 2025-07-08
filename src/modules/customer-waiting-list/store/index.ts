@@ -1,6 +1,5 @@
 import { CUSTOMER_WAITING_LIST_BASE_ENDPOINT } from '../constants';
 
-
 import type { AxiosRequestConfig } from 'axios';
 import httpClient from '@/plugins/axios';
 
@@ -16,7 +15,10 @@ export const useCustomerWaitingListStore = defineStore('customer-waiting-list', 
      * @method GET
      * @access private
      */
-    async customerWaitingList(params:{page: number, pageSize: number}, requestConfigurations: AxiosRequestConfig) {
+    async customerWaitingList(
+      params: { 'X-STORE-ID': string; page: number; pageSize: number },
+      requestConfigurations: AxiosRequestConfig,
+    ) {
       try {
         this.customerWaitingList_isLoading = true;
 

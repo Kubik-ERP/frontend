@@ -65,13 +65,13 @@ const handleCreateCustomer = async () => {
 </script>
 
 <template>
-  {{ customer_FormData }}
+  <!-- {{ customer_FormData }}
   <br />
   errors:
   {{ customer_formValidations.$errors }}
   <br />
   invalid:
-  {{ customer_formValidations.$invalid }}
+  {{ customer_formValidations.$invalid }} -->
   <form class="grid grid-cols-2 gap-8" @submit.prevent="handleCreateCustomer">
     <AppBaseFormGroup
       v-slot="{ classes }"

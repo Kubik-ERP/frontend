@@ -10,6 +10,13 @@ export interface IDecreasePoint {
   notes?: string;
 }
 
+export interface IPageMeta {
+  currentPage: number;
+  pageSize: number;
+  totalData: number;
+  totalPages: number;
+}
+
 export interface Iinvoice {
   id: string; // Changed from literal string to string
   payment_methods_id: string; // Changed from literal string to string
@@ -32,6 +39,7 @@ export interface Iinvoice {
   invoice_number: string; // Changed from literal string to string
   order_status: string; // Changed from literal 'ready' to string (consider a union type like 'ready' | 'pending' | 'completed')
   store_id: string; // Changed from literal string to string
+  meta: IPageMeta;
 }
 
 export interface ICustomerDetails {
@@ -63,4 +71,12 @@ export interface IPointDetails {
 export interface points {
   total: number;
   details: IPointDetails[];
+}
+
+export interface ICustomerDetailsRequestQuery {
+  search?: string;
+  page?: number;
+  limit?: number;
+  status?: string;
+  orderType?: string;
 }

@@ -1,4 +1,8 @@
-import type { IIncreasePoint, IDecreasePoint } from '../interfaces/CustomerDetailInterface';
+import type {
+  IIncreasePoint,
+  IDecreasePoint,
+  ICustomerDetailsRequestQuery,
+} from '../interfaces/CustomerDetailInterface';
 
 import { useCustomerDetailsStore } from '../store';
 
@@ -10,9 +14,7 @@ import {
   LOYALTY_POINT_VALUES,
   SALES_INVOICE_PAYMENT_STATUS,
   SALES_INVOICE_ORDER_TYPE,
-
   LOYALTY_POINT_TYPES,
-
 } from '../constants';
 
 import useVuelidate from '@vuelidate/core';
@@ -21,9 +23,17 @@ import { required } from '@vuelidate/validators';
 export const useCustomerDetailService = () => {
   const store = useCustomerDetailsStore();
 
-  const {customerDetails_isLoading} = storeToRefs(store);
+  const { customerDetails_isLoading } = storeToRefs(store);
 
   const { httpAbort_registerAbort } = useHttpAbort();
+
+  const customerDetails_queryParams = reactive<ICustomerDetailsRequestQuery>({
+    page: 1,
+    limit: 10000,
+    search: '',
+    status: '',
+    orderType: '',
+  });
 
   const increarePoint_FormData = reactive<IIncreasePoint>({
     point: 0,
@@ -67,7 +77,7 @@ export const useCustomerDetailService = () => {
 
   const customerDetails_fetchSalesInvoice = async (id: string): Promise<unknown> => {
     try {
-      return await store.salesInvoice_list(id, {
+      return await store.salesInvoice_list(id, customerDetails_queryParams, {
         ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
       });
     } catch (error: unknown) {
@@ -89,7 +99,7 @@ export const useCustomerDetailService = () => {
         return Promise.reject(new Error(String(error)));
       }
     }
-  }
+  };
 
   return {
     increarePoint_FormData,

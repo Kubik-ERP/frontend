@@ -1,4 +1,10 @@
-import { CUSTOMER_DETAILS_BASE_ENDPOINT, LOYALTY_POINTS_ENDPOINT,CUSTOMER_SALES_ORDER_ENDPOINT } from '../constants';
+import {
+  CUSTOMER_DETAILS_BASE_ENDPOINT,
+  LOYALTY_POINTS_ENDPOINT,
+  CUSTOMER_SALES_ORDER_ENDPOINT,
+} from '../constants';
+
+import type { ICustomerDetailsRequestQuery } from '../interfaces/CustomerDetailInterface';
 
 import type { AxiosRequestConfig } from 'axios';
 
@@ -21,12 +27,20 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
      * @method GET
      * @access private
      */
-    async salesInvoice_list(id: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async salesInvoice_list(
+      id: string,
+      params: ICustomerDetailsRequestQuery,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
       this.customerDetails_isLoading = true;
       try {
-        const response = await httpClient.get(`${CUSTOMER_DETAILS_BASE_ENDPOINT}${CUSTOMER_SALES_ORDER_ENDPOINT}/${id}`, {
-          ...requestConfigurations,
-        });
+        const response = await httpClient.get(
+          `${CUSTOMER_DETAILS_BASE_ENDPOINT}${CUSTOMER_SALES_ORDER_ENDPOINT}/${id}`,
+          {
+            params,
+            ...requestConfigurations,
+          },
+        );
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

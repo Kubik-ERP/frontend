@@ -8,6 +8,7 @@ const orderComplete = ref([]);
 
 onMounted(async () => {
   const response = await getCustomerWaitingList(1,1000);
+  console.log("🚀 ~ onMounted ~ response:", response)
   const allOrder = response.data.items;
   orderComplete.value = allOrder.filter(order => order.orderStatus === 'completed');
   preparingOrder.value = allOrder.filter(order => order.orderStatus !== 'completed');
@@ -36,7 +37,7 @@ onMounted(async () => {
             :key="order"
             class="border border-grayscale-20 p-4 font-semibold whitespace-nowrap flex items-center justify-center"
           >
-            #{{ order.invoiceNumber }}
+            #{{ order.orderNumber }}
           </div>
         </div>
         <div v-else 
@@ -66,7 +67,7 @@ onMounted(async () => {
             :key="order"
             class="border border-grayscale-20 text-primary bg-primary-background p-4 font-semibold whitespace-nowrap flex items-center justify-center"
           >
-            #{{ order.invoiceNumber }}
+            #{{ order.orderNumber }}
           </div>
         </div>
 
