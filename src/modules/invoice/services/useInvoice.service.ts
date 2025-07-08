@@ -217,6 +217,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
     isLoading: false,
     data: null,
     calculate: null,
+    tableKitchenTicket: null,
     currentUser: storeAuthentication.authentication_userData,
     currentOutlet: outlet_currentOutlet.value,
     configInvoice: setting_invoice.value,
@@ -282,6 +283,36 @@ export const useInvoiceService = (): IInvoiceProvided => {
   };
 
   invoice_handleFetchInvoiceById(route.params.invoiceId as string);
+
+  /**
+   * @description Fetch kitchen table ticket by invoice ID
+   * @param invoiceId - The ID of the invoice to fetch
+   * @returns Promise<void>
+   * @throws Error if the fetch fails
+   */
+  const invoice_handleFetchKitchenTableTicket = async (invoiceId: string): Promise<void> => {
+    invoice_invoiceData.value.isLoading = true;
+
+    try {
+      const response = await store.invoice_fetchTableKitchenTicket(invoiceId);
+
+      invoice_invoiceData.value.tableKitchenTicket = response.data;
+
+      await storeSetting.fetchSetting_detailInvoiceSetting(invoice_invoiceData.value.currentOutlet?.id || '', {});
+
+      invoice_invoiceData.value.configInvoice = setting_invoice.value;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      invoice_invoiceData.value.isLoading = false;
+    }
+  };
+
+  invoice_handleFetchKitchenTableTicket(route.params.invoiceId as string);
 
   const invoice_handlePayInvoice = async () => {
     invoice_modalPay.value.show = false;

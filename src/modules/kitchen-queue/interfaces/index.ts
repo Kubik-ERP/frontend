@@ -1,6 +1,7 @@
 // Invoice item interface (individual menu item)
 export interface IInvoiceItem {
   name: string;
+  status: 'placed' | 'in_progress' | 'completed';
   variant?: string;
   qty: number;
   notes?: string;
@@ -10,9 +11,11 @@ export interface IInvoiceItem {
 export interface IInvoice {
   id: string;
   customer: string;
+  status: 'placed' | 'in_progress' | 'completed';
   eta: number;
   startTime: Date;
   tableNumber: string;
+  orderType: 'dine_in' | 'take_away' | 'self_order';
   items: IInvoiceItem[];
 }
 
@@ -41,5 +44,11 @@ export interface IKitchenQueueProvided {
   kitchenQueue_dummyRefs: Ref<HTMLElement[]>;
   kitchenQueue_columns: Ref<IInvoiceChunk[][]>;
   kitchenQueue_durations: Ref<Record<string, string>>;
-  kitchenQueue_generateColor: (index: number) => IInvoiceColor;
+  kitchenQueue_generateColor: (status: string) => IInvoiceColor;
+  kitchenQueue_handleChangeStatus: (
+    invoice_id: string,
+    index: number,
+    status: 'placed' | 'in_progress' | 'completed',
+  ) => void;
+  kitchenQueue_generateChipColor: (status: string) => string;
 }

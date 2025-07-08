@@ -34,18 +34,89 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
    * @param index - global index of the invoice
    * @returns object containing Tailwind classes for header, background, border, text
    */
-  const kitchenQueue_generateColor = (index: number): IInvoiceColor => {
+  const kitchenQueue_generateColor = (status: string): IInvoiceColor => {
     const headerColor = ['bg-[#0F3C56]', 'bg-[#782A5A]'];
     const backgroundColor = ['bg-[#EDF6FC]', 'bg-[#FFFFF]'];
     const borderColor = ['border-[#8CC8EB]', 'border-[#E0A8CB]'];
 
-    const i = index % headerColor.length;
-    return {
-      background: backgroundColor[i],
-      header: headerColor[i],
-      border: borderColor[i],
-      text: i % 2 === 0 ? 'text-gray-900' : 'text-gray-700',
-    };
+    switch (status.toUpperCase()) {
+      case 'PLACED':
+        return {
+          background: backgroundColor[0],
+          header: headerColor[0],
+          border: borderColor[0],
+          text: 'text-gray-900',
+        };
+      case 'IN_PROGRESS':
+        return {
+          background: backgroundColor[1],
+          header: headerColor[1],
+          border: borderColor[1],
+          text: 'text-gray-700',
+        };
+      case 'COMPLETED':
+        return {
+          background: 'bg-[#A8E0CB]',
+          header: 'bg-[#2A5A78]',
+          border: 'border-[#A8E0CB]',
+          text: 'text-gray-800',
+        };
+      default:
+        return {
+          background: 'bg-gray-200',
+          header: 'bg-gray-500',
+          border: 'border-gray-300',
+          text: 'text-gray-600',
+        };
+    }
+  };
+
+  /**
+   * Generate color classes for status chips
+   * @param status - current status of the invoice
+   * @returns Tailwind classes for chip background and text color
+   */
+  const kitchenQueue_generateChipColor = (status: string): string => {
+    switch (status.toUpperCase()) {
+      case 'PLACED':
+        return 'text-primary border-primary hover:bg-primary hover:text-white';
+      case 'IN_PROGRESS':
+        return 'text-amber-600 border-amber-600 hover:bg-amber-600 hover:text-white';
+      case 'COMPLETED':
+        return 'text-success border-success hover:bg-success hover:text-white';
+      default:
+        return 'text-gray-500 border-gray-500 hover:bg-gray-500 hover:text-white';
+    }
+  };
+
+  /**
+   * Handle status change for an invoice
+   * @param invoice - the invoice object to update
+   * @param newStatus - new status to set
+   */
+  const kitchenQueue_handleChangeStatus = (
+    invoice_id: string,
+    index: number,
+    status: 'placed' | 'in_progress' | 'completed',
+  ) => {
+    const invoice = kitchenQueue_invoices.find(inv => inv.id === invoice_id);
+
+    if (!invoice) return;
+
+    switch (status) {
+      case 'placed':
+        invoice.items[index].status = 'in_progress';
+        break;
+      case 'in_progress':
+        invoice.items[index].status = 'completed';
+        break;
+      case 'completed':
+        invoice.items[index].status = 'placed';
+        break;
+      default:
+        invoice.items[index].status = 'placed';
+        break;
+    }
   };
 
   /**
@@ -183,5 +254,7 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
     kitchenQueue_columns,
     kitchenQueue_durations,
     kitchenQueue_generateColor,
+    kitchenQueue_generateChipColor,
+    kitchenQueue_handleChangeStatus,
   };
 };

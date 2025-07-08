@@ -4,10 +4,19 @@ import { inject } from 'vue';
 
 // Interface
 import type { IKitchenQueueProvided } from '@/modules/kitchen-queue/interfaces';
+import {
+  DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS,
+  DAILY_SALES_LIST_TYPES_OF_ORDER_TYPE,
+} from '@/modules/daily-sales/constants';
 
 // Inject kitchen queue context
-const { kitchenQueue_columns, kitchenQueue_generateColor, kitchenQueue_durations } =
-  inject<IKitchenQueueProvided>('kitchenQueue')!;
+const {
+  kitchenQueue_columns,
+  kitchenQueue_generateColor,
+  kitchenQueue_durations,
+  kitchenQueue_generateChipColor,
+  kitchenQueue_handleChangeStatus,
+} = inject<IKitchenQueueProvided>('kitchenQueue')!;
 </script>
 
 <template>
@@ -25,12 +34,12 @@ const { kitchenQueue_columns, kitchenQueue_generateColor, kitchenQueue_durations
           v-for="(invoice, j) in col"
           :key="j"
           class="flex flex-col bg-white rounded shadow border"
-          :class="kitchenQueue_generateColor(invoice.globalIndex).border"
+          :class="kitchenQueue_generateColor(invoice.status).border"
         >
           <!-- Header invoice pertama -->
           <div
             v-if="invoice.isFirst"
-            :class="`${kitchenQueue_generateColor(invoice.globalIndex).header} text-white px-4 py-3 rounded-t`"
+            :class="`${kitchenQueue_generateColor(invoice.status).header} text-white px-4 py-3 rounded-t`"
           >
             <div class="flex justify-between">
               <div class="flex gap-2">
@@ -43,7 +52,7 @@ const { kitchenQueue_columns, kitchenQueue_generateColor, kitchenQueue_durations
             </div>
 
             <div class="flex justify-between items-center">
-              <p class="text-sm">
+              <p class="text-xs">
                 Duration:
                 <span class="font-bold">
                   {{ kitchenQueue_durations[invoice.id] || '00:00:00' }}
@@ -51,14 +60,17 @@ const { kitchenQueue_columns, kitchenQueue_generateColor, kitchenQueue_durations
               </p>
 
               <div class="flex items-center gap-2">
-                <p class="text-sm">{{ invoice.tableNumber }}</p>
-                <PrimeVueChip size="small" class="text-primary text-xs p-1 px-2">Dine In</PrimeVueChip>
+                <p class="text-xs">{{ invoice.tableNumber }}</p>
+                <PrimeVueChip size="small" class="text-primary text-[10px] p-1 px-2">{{
+                  DAILY_SALES_LIST_TYPES_OF_ORDER_TYPE.find(f => f.value === invoice.orderType)?.label ||
+                  invoice.orderType
+                }}</PrimeVueChip>
               </div>
             </div>
           </div>
 
           <!-- Content item invoice -->
-          <div :class="'space-y-2 overflow-hidden ' + kitchenQueue_generateColor(invoice.globalIndex).background">
+          <div :class="'space-y-2 overflow-hidden ' + kitchenQueue_generateColor(invoice.status).background">
             <div v-if="!invoice.isFirst" class="text-xs ml-2 pt-2 text-[#434343]">
               #{{ invoice.globalIndex }} Continue {{ invoice.indexCounter + 1 }} of
               {{ invoice.totalPage }}
@@ -77,7 +89,19 @@ const { kitchenQueue_columns, kitchenQueue_generateColor, kitchenQueue_durations
               <div v-for="(item, index) in invoice.items" :key="index" class="flex flex-col gap-1 mt-3">
                 <div class="font-semibold text-sm flex justify-between">
                   <span>{{ item.name }}</span>
-                  <PrimeVueCheckbox size="small" class="bg-transparent" />
+                  <PrimeVueButton
+                    size="small"
+                    variant="outlined"
+                    class="text-[10px] py-1 px-2 rounded-full"
+                    :class="kitchenQueue_generateChipColor(item.status)"
+                    @click="kitchenQueue_handleChangeStatus(invoice.id, index, item.status)"
+                  >
+                    {{
+                      DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS.find(f => {
+                        return f.value === item.status;
+                      })?.label || item.status
+                    }}
+                  </PrimeVueButton>
                 </div>
 
                 <div class="ml-4 flex flex-col gap-1">

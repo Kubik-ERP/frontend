@@ -15,7 +15,7 @@ const value = ref([{ label: 'Space used', value: 15, color: 'var(--p-primary-hov
           <div class="flex text-xs gap-2.5">
             <AppBaseSvg name="order-primary" />
 
-            <span>1-5 <span class="text-text-disabled">of 11</span></span>
+            <span>Showing <span class="font-semibold">11 Invoices</span></span>
           </div>
         </div>
       </template>

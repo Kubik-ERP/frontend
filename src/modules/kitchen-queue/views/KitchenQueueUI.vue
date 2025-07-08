@@ -15,6 +15,8 @@ const {
   kitchenQueue_columns,
   kitchenQueue_durations,
   kitchenQueue_generateColor,
+  kitchenQueue_generateChipColor,
+  kitchenQueue_handleChangeStatus,
 } = useKitchenQueue();
 
 /**
@@ -26,6 +28,8 @@ provide<IKitchenQueueProvided>('kitchenQueue', {
   kitchenQueue_columns,
   kitchenQueue_durations,
   kitchenQueue_generateColor,
+  kitchenQueue_generateChipColor,
+  kitchenQueue_handleChangeStatus,
 });
 </script>
 

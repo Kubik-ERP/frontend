@@ -28,6 +28,7 @@ export interface IInvoiceInvoiceData {
   currentUser: IAuthenticationProfile | null;
   currentOutlet: IOutlet | null;
   configInvoice: ISettingInvoiceDetail | null;
+  tableKitchenTicket: ITableKitcenTicketData | null;
 }
 
 export interface IInvoiceOtherOptionsData {
@@ -43,7 +44,7 @@ export interface IInvoiceCustomer {
   email: string | null;
   username: string;
   address: string | null;
-  gender: string; // ✅ baru
+  gender: string;
 }
 export interface IInvoiceProduct {
   id: string;
@@ -51,7 +52,7 @@ export interface IInvoiceProduct {
   price: number;
   discountPrice: number;
   pictureUrl: string;
-  isPercent: boolean; // ✅ baru
+  isPercent: boolean;
 }
 
 export interface IInvoiceVariant {
@@ -113,6 +114,56 @@ export interface IInvoiceData {
 
 export interface IInvoiceResponseInvoice {
   data: IInvoiceData;
+}
+
+export interface ITableKitcenTicketData {
+  id: string;
+  createdAt: string;
+  tableCode: string;
+  invoiceNumber: string;
+  users: {
+    id: number;
+    fullname: string;
+  };
+  orderType: 'dine_in' | 'take_away' | 'self_order';
+  customer: {
+    id: string;
+    name: string;
+  };
+  invoiceDetails: IInvoiceDetail[];
+  createdAtFormatted: string;
+}
+
+export interface IInvoiceDetail {
+  id: string;
+  productId: string;
+  productPrice: number;
+  variantId: string;
+  notes: string;
+  qty: number;
+  invoiceId: string;
+  variantPrice: number | null;
+  products: IProduct;
+  variant: IVariant | null;
+}
+
+export interface IProduct {
+  id: string;
+  name: string;
+  price: number;
+  discountPrice: number;
+  pictureUrl: string;
+  isPercent: boolean;
+}
+
+export interface IVariant {
+  id: string;
+  name: string;
+  price: number;
+}
+
+export interface IInvoiceResponseTableKitchenTicket {
+  data: ITableKitcenTicketData;
 }
 
 export interface IInvoiceProvided {
