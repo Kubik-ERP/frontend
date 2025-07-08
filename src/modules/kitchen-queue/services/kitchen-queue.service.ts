@@ -1,15 +1,17 @@
 // Vue
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 
-// Constant
-import { originalInvoices, randomOffset } from '../constants';
-
 // Interface
-import type { IInvoice, IInvoiceChunk, IInvoiceItem, IInvoiceColor, IKitchenQueueProvided } from '../interfaces';
+import type { IInvoiceChunk, IInvoiceColor, IKitchenQueueProvided, IItem } from '../interfaces';
+import { useKitchenQueueStore } from '../store';
+import { KITCHEN_QUEUE_INVOICE } from '../constants/kitchen-queue-api.constant';
+
+const { httpAbort_registerAbort } = useHttpAbort();
 
 export const useKitchenQueue = (): IKitchenQueueProvided => {
-  // Timestamp for now, used to simulate invoice start time
-  const kitchenQueue_now = Date.now();
+  const store = useKitchenQueueStore(); // Instance of the store
+
+  const { kitchenQueue_invoices, kitchenQueue_isLoading } = storeToRefs(store);
 
   // Dummy refs to calculate invoice item heights
   const kitchenQueue_dummyRefs = ref<HTMLElement[]>([]);
@@ -19,12 +21,6 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
 
   // Reactive durations map to display elapsed time per invoice
   const kitchenQueue_durations = ref<Record<string, string>>({});
-
-  // Reactive invoice list with randomized startTime
-  const kitchenQueue_invoices: IInvoice[] = originalInvoices.map(invoice => ({
-    ...invoice,
-    startTime: new Date(kitchenQueue_now - randomOffset()),
-  }));
 
   // Interval ID for updating durations every second
   let kitchenQueue_intervalId: ReturnType<typeof setInterval> | null = null;
@@ -99,22 +95,22 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
     index: number,
     status: 'placed' | 'in_progress' | 'completed',
   ) => {
-    const invoice = kitchenQueue_invoices.find(inv => inv.id === invoice_id);
+    const invoice = kitchenQueue_invoices.value.find(inv => inv.id === invoice_id);
 
     if (!invoice) return;
 
     switch (status) {
       case 'placed':
-        invoice.items[index].status = 'in_progress';
+        invoice.items[index].products.orderStatus = 'in_progress';
         break;
       case 'in_progress':
-        invoice.items[index].status = 'completed';
+        invoice.items[index].products.orderStatus = 'completed';
         break;
       case 'completed':
-        invoice.items[index].status = 'placed';
+        invoice.items[index].products.orderStatus = 'placed';
         break;
       default:
-        invoice.items[index].status = 'placed';
+        invoice.items[index].products.orderStatus = 'placed';
         break;
     }
   };
@@ -124,9 +120,10 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
    * @param startTime - Date object to calculate duration from
    * @returns formatted time string like "00:10:02" or "1 day 03h"
    */
-  const kitchenQueue_formatDuration = (startTime: Date): string => {
+  const kitchenQueue_formatDuration = (startTime: Date | string): string => {
+    const start = typeof startTime === 'string' ? new Date(startTime) : startTime;
     const now = Date.now();
-    const diffSec = Math.floor((now - startTime.getTime()) / 1000);
+    const diffSec = Math.floor((now - start.getTime()) / 1000);
 
     const s = diffSec % 60;
     const m = Math.floor(diffSec / 60) % 60;
@@ -134,13 +131,13 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
     const d = Math.floor(diffSec / (3600 * 24));
 
     const pad = (n: number) => n.toString().padStart(2, '0');
-    return d > 0 ? `${d} day ${pad(h)}h` : `${pad(h)}:${pad(m)}:${pad(s)}`;
+    return d > 0 ? `${d}day ${pad(h)}h` : `${pad(h)}:${pad(m)}:${pad(s)}`;
   };
 
   /**
    * Main logic to split invoice items into chunks, arrange them in columns, and initialize durations
    */
-  const KitchenQueue_chunkInvoices = async () => {
+  const kitchenQueue_chunkInvoices = async () => {
     await nextTick();
 
     const navbar = document.getElementById('kitchen-queue-navbar');
@@ -150,11 +147,11 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
     const navControlHeight = navControl?.getBoundingClientRect().height || 0;
 
     const screenHeight = window.innerHeight;
-    const headerHeight = 72;
+    const headerHeight = 110;
     const padding = 64;
     const availableHeight = screenHeight - navBarHeight - navControlHeight - padding;
 
-    const itemHeights = kitchenQueue_dummyRefs.value.map(el => el?.getBoundingClientRect().height + 2 || 60);
+    const itemHeights = kitchenQueue_dummyRefs.value.map(el => el?.getBoundingClientRect().height + 4 || 60);
 
     let offset = 0;
     let globalCounter = 1;
@@ -162,14 +159,14 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
     const invoicePageMap: Record<string, number> = {};
 
     // Loop through each invoice and chunk its items
-    for (const invoice of kitchenQueue_invoices) {
+    for (const invoice of kitchenQueue_invoices.value) {
       const currentHeights = itemHeights.slice(offset, offset + invoice.items.length);
-      const chunks: IInvoiceItem[][] = [];
-      let currentChunk: IInvoiceItem[] = [];
+      const chunks: IItem[][] = [];
+      let currentChunk: IItem[] = [];
       let currentHeight = 0;
 
       for (let i = 0; i < invoice.items.length; i++) {
-        const height = currentHeights[i] + (currentChunk.length > 0 ? 2 : 0);
+        const height = currentHeights[i] + (currentChunk.length > 0 ? 6 : 0);
         if (currentHeight + height > availableHeight) {
           chunks.push(currentChunk);
           currentChunk = [];
@@ -185,7 +182,7 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
       // Convert chunks to chunk metadata format
       for (let idx = 0; idx < chunks.length; idx++) {
         const chunk = chunks[idx];
-        const totalHeight = chunk.reduce((acc, _, i) => acc + currentHeights[i] + (i > 0 ? 8 : 0), 0);
+        const totalHeight = chunk.reduce((acc, _, i) => acc + currentHeights[i] + (i > 0 ? 2 : 0), 0);
 
         invoiceChunks.push({
           ...invoice,
@@ -210,7 +207,7 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
     let currentCol = 0;
 
     for (const chunk of invoiceChunks) {
-      const height = chunk.indexCounter > 0 ? chunk.height : chunk.height + headerHeight + 16;
+      const height = chunk.indexCounter > 0 ? chunk.height : chunk.height + headerHeight + 4;
 
       if (!kitchenQueue_columns.value[currentCol]) {
         kitchenQueue_columns.value[currentCol] = [];
@@ -228,20 +225,34 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
     }
 
     // Set durations initially
-    kitchenQueue_invoices.forEach(invoice => {
-      kitchenQueue_durations.value[invoice.id] = kitchenQueue_formatDuration(invoice.startTime);
+    kitchenQueue_invoices.value.forEach(invoice => {
+      kitchenQueue_durations.value[invoice.id] = kitchenQueue_formatDuration(invoice.createdAt);
     });
 
     // Set interval to update durations every 1 second
     kitchenQueue_intervalId = setInterval(() => {
-      kitchenQueue_invoices.forEach(invoice => {
-        kitchenQueue_durations.value[invoice.id] = kitchenQueue_formatDuration(invoice.startTime);
+      kitchenQueue_invoices.value.forEach(invoice => {
+        kitchenQueue_durations.value[invoice.id] = kitchenQueue_formatDuration(invoice.createdAt);
       });
     }, 1000);
   };
 
+  const kitchenQueue_fetchInvoices = async () => {
+    try {
+      await store.kitchenQueue_list(
+        {},
+        {
+          ...httpAbort_registerAbort(KITCHEN_QUEUE_INVOICE),
+        },
+      );
+      kitchenQueue_chunkInvoices();
+    } catch (error) {
+      console.error('Failed to fetch invoices:', error);
+    }
+  };
+
   onMounted(() => {
-    KitchenQueue_chunkInvoices();
+    kitchenQueue_fetchInvoices();
   });
 
   onBeforeUnmount(() => {
@@ -250,6 +261,7 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
 
   return {
     kitchenQueue_invoices,
+    kitchenQueue_isLoading,
     kitchenQueue_dummyRefs,
     kitchenQueue_columns,
     kitchenQueue_durations,

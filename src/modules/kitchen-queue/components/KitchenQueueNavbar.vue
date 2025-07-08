@@ -7,9 +7,11 @@ const a = ref();
     class="relative inset-0 z-0 flex items-center border-b border-solid border-grayscale-10 px-10 py-4"
   >
     <section id="left-content" class="flex items-center gap-4">
-      <img src="@/app/assets/images/app-icon.png" />
+      <router-link to="/" class="flex items-center gap-2 text-secondary-hover hover:text-secondary">
+        <img src="@/app/assets/images/app-icon.png" />
 
-      <h2 class="font-semibold text-black text-lg">Kubik POS</h2>
+        <h2 class="font-semibold text-black text-lg">Kubik POS</h2>
+      </router-link>
     </section>
 
     <section id="kitchen-queue-tab-panel" class="absolute left-1/2 transform -translate-x-1/2">

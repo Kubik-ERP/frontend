@@ -30,24 +30,25 @@ const {
         :key="i"
         class="flex flex-col space-y-4 w-72 flex-shrink-0 rounded"
       >
+        <!-- TODO: change to orderStatus -->
         <div
           v-for="(invoice, j) in col"
           :key="j"
           class="flex flex-col bg-white rounded shadow border"
-          :class="kitchenQueue_generateColor(invoice.status).border"
+          :class="kitchenQueue_generateColor(invoice.orderType).border"
         >
           <!-- Header invoice pertama -->
           <div
             v-if="invoice.isFirst"
-            :class="`${kitchenQueue_generateColor(invoice.status).header} text-white px-4 py-3 rounded-t`"
+            :class="`${kitchenQueue_generateColor(invoice.orderType).header} text-white px-4 py-3 rounded-t`"
           >
             <div class="flex justify-between">
               <div class="flex gap-2">
                 <span>#{{ invoice.globalIndex }}</span>
-                <span>{{ invoice.customer }}</span>
+                <span>{{ invoice.customerName }}</span>
               </div>
               <div>
-                <span class="text-[10px]">#{{ invoice.id }}</span>
+                <span class="text-[10px]">#{{ invoice.invoiceNumber }}</span>
               </div>
             </div>
 
@@ -60,7 +61,7 @@ const {
               </p>
 
               <div class="flex items-center gap-2">
-                <p class="text-xs">{{ invoice.tableNumber }}</p>
+                <p class="text-xs">{{ invoice.tableCode }}</p>
                 <PrimeVueChip size="small" class="text-primary text-[10px] p-1 px-2">{{
                   DAILY_SALES_LIST_TYPES_OF_ORDER_TYPE.find(f => f.value === invoice.orderType)?.label ||
                   invoice.orderType
@@ -70,7 +71,8 @@ const {
           </div>
 
           <!-- Content item invoice -->
-          <div :class="'space-y-2 overflow-hidden ' + kitchenQueue_generateColor(invoice.status).background">
+          <!-- TODO: Change to order status -->
+          <div :class="'space-y-2 overflow-hidden ' + kitchenQueue_generateColor(invoice.orderType).background">
             <div v-if="!invoice.isFirst" class="text-xs ml-2 pt-2 text-[#434343]">
               #{{ invoice.globalIndex }} Continue {{ invoice.indexCounter + 1 }} of
               {{ invoice.totalPage }}
@@ -88,29 +90,29 @@ const {
               <!-- List item -->
               <div v-for="(item, index) in invoice.items" :key="index" class="flex flex-col gap-1 mt-3">
                 <div class="font-semibold text-sm flex justify-between">
-                  <span>{{ item.name }}</span>
+                  <span>{{ item.products.name }}</span>
                   <PrimeVueButton
                     size="small"
                     variant="outlined"
                     class="text-[10px] py-1 px-2 rounded-full"
-                    :class="kitchenQueue_generateChipColor(item.status)"
-                    @click="kitchenQueue_handleChangeStatus(invoice.id, index, item.status)"
+                    :class="kitchenQueue_generateChipColor(item.products.orderStatus)"
+                    @click="kitchenQueue_handleChangeStatus(invoice.id, index, item.products.orderStatus)"
                   >
                     {{
                       DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS.find(f => {
-                        return f.value === item.status;
-                      })?.label || item.status
+                        return f.value === item.products.orderStatus;
+                      })?.label || item.products.orderStatus
                     }}
                   </PrimeVueButton>
                 </div>
 
                 <div class="ml-4 flex flex-col gap-1">
-                  <div v-if="item.variant" class="text-primary text-xs">
-                    {{ item.variant }}
+                  <div v-if="item.products.variant.name" class="text-primary text-xs">
+                    {{ item.products.variant.name }}
                   </div>
-                  <div v-if="item.notes" class="flex flex-col text-xs gap-1">
+                  <div v-if="item.products.notes" class="flex flex-col text-xs gap-1">
                     <span class="font-semibold">Notes</span>
-                    <span class="text-primary">{{ item.notes }}</span>
+                    <span class="text-primary">{{ item.products.notes }}</span>
                   </div>
                 </div>
               </div>

@@ -20,8 +20,8 @@ export interface IInvoice {
 }
 
 // Additional info for chunked invoices
-export interface IInvoiceChunk extends IInvoice {
-  items: IInvoiceItem[];
+export interface IInvoiceChunk extends IKitchenQueueData {
+  items: IItem[];
   height: number;
   invoiceId: string;
   indexCounter: number;
@@ -38,9 +38,52 @@ export interface IInvoiceColor {
   text: string;
 }
 
+export interface IKitchenQueueStateStore {
+  kitchenQueue_isLoading: boolean;
+  kitchenQueue_invoices: IKitchenQueueData[];
+}
+
+export interface IKitchenQueueListResponse {
+  statusCode: number;
+  message: string;
+  data: IKitchenQueueData[];
+}
+
+export interface IVariant {
+  id: string;
+  name: string;
+}
+
+export interface IProduct {
+  orderStatus: 'placed' | 'in_progress' | 'completed';
+  notes: string;
+  id: string;
+  name: string;
+  variant: IVariant;
+}
+
+export interface IItem {
+  products: IProduct;
+}
+
+export interface IKitchenQueueData {
+  id: string;
+  invoiceId: string;
+  invoiceNumber: string;
+  createdAt: string;
+  updatedAt: string;
+  storeId: string;
+  tableCode: string;
+  orderType: 'dine_in' | 'take_away' | string;
+  customerId: string;
+  customerName: string;
+  items: IItem[];
+}
+
 // Return type for useKitchenQueue composable
 export interface IKitchenQueueProvided {
-  kitchenQueue_invoices: IInvoice[];
+  kitchenQueue_invoices: Ref<IKitchenQueueData[]>;
+  kitchenQueue_isLoading: Ref<boolean>;
   kitchenQueue_dummyRefs: Ref<HTMLElement[]>;
   kitchenQueue_columns: Ref<IInvoiceChunk[][]>;
   kitchenQueue_durations: Ref<Record<string, string>>;

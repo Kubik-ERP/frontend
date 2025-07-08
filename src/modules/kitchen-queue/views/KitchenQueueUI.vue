@@ -3,6 +3,7 @@
 import KitchenQueueCtaButton from '../components/KitchenQueueCtaButton.vue';
 import KitchenQueueDummyItemHeight from '../components/KitchenQueueDummyItemHeight.vue';
 import KitchenQueueInvoicePreview from '../components/KitchenQueueInvoicePreview.vue';
+import KitchenQueueLoading from '../components/KitchenQueueLoading.vue';
 import KitchenQueueNavbar from '../components/KitchenQueueNavbar.vue';
 
 // Service
@@ -11,6 +12,7 @@ import { useKitchenQueue } from '../services/kitchen-queue.service';
 
 const {
   kitchenQueue_invoices,
+  kitchenQueue_isLoading,
   kitchenQueue_dummyRefs,
   kitchenQueue_columns,
   kitchenQueue_durations,
@@ -24,6 +26,7 @@ const {
  */
 provide<IKitchenQueueProvided>('kitchenQueue', {
   kitchenQueue_invoices,
+  kitchenQueue_isLoading,
   kitchenQueue_dummyRefs,
   kitchenQueue_columns,
   kitchenQueue_durations,
@@ -40,7 +43,8 @@ provide<IKitchenQueueProvided>('kitchenQueue', {
 
     <section id="kitchen-queue-content" class="w-full flex-1 overflow-hidden mt-2 box-border">
       <KitchenQueueDummyItemHeight />
-      <KitchenQueueInvoicePreview />
+      <KitchenQueueInvoicePreview v-if="!kitchenQueue_isLoading" />
+      <KitchenQueueLoading v-else />
     </section>
   </section>
 </template>
