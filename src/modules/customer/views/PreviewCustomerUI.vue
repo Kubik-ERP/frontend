@@ -5,25 +5,13 @@ import salesInvoice from '../components/detailCustomer/salesInvoice.vue';
 
 import { useCustomerDetailService } from '../services/customer-detail.service';
 
-const { customerDetails_fetchSalesInvoice } = useCustomerDetailService();
-
-const route = useRoute();
+const { customerDetails_fetchInformation } = useCustomerDetailService();
+onMounted(async () => {
+  await customerDetails_fetchInformation();
+});
 
 const selectedPage = ref('Sales Invoice');
 const pageOption = ref(['Sales Invoice', 'Loyalty Point']);
-
-const customer = ref({});
-const meta = ref({});
-const invoices = ref([]);
-
-onMounted(async () => {
-  const response = await customerDetails_fetchSalesInvoice(route.params.id as string);
-  customer.value = response.data;
-  meta.value = response.data.invoices.meta;
-  invoices.value = response.data.invoices.data;
-});
-
-provide('customerDetails', { customer, invoices, meta });
 </script>
 <template>
   <div>

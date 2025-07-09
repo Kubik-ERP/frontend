@@ -2,9 +2,6 @@
 // Services
 import { useCustomerDetailService } from '../../services/customer-detail.service';
 
-// Interfaces
-import type { Iinvoice, ICustomerDetails } from '../../interfaces';
-
 const {
   customerDetail_columns,
   salesInvoice_paymentStatus,
@@ -14,56 +11,43 @@ const {
   orderStatusClass,
   orderTypeClass,
   customerDetails_queryParams,
+  customerDetails_onChangePage,
 } = useCustomerDetailService();
-/**
- * @description Destructure all the data and methods what we need
- */
 
-const invoices = ref(inject('customerDetails').invoices as Iinvoice[]);
-// console.log('🚀 ~ invoices:', invoices.value);
+const invoice = ref([]);
+const meta = ref({});
+const detail = ref({});
 
-const customer = ref(inject('customerDetails').customer as ICustomerDetails);
-// console.log('🚀 ~ customer:', customer);
+onMounted(async () => {
+  const response = await customerDetails_fetchSalesInvoice();
+  detail.value = response.detail;
+  invoice.value = response.invoice;
+  meta.value = response.meta;
+  console.log(invoice.value);
+});
 
-const meta = ref(inject('customerDetails').meta);
-// console.log('🚀 ~ meta:', meta);
-const route = useRoute();
 watch(
   () => customerDetails_queryParams,
   debounce(async () => {
-    await customerDetails_fetchSalesInvoice(route.params.id as string);
+    const response = await customerDetails_fetchSalesInvoice();
+    detail.value = response.detail;
+    invoice.value = response.invoice;
+    meta.value = response.meta;
   }, 500),
   {
     deep: true,
   },
 );
-
 </script>
+
 <template>
   <section id="customer-daily-sales" class="flex flex-col relative inset-0 z-0">
-    <!-- <AppBaseDataTable
-      :columns="customerDetail_columns"
-      :data="customerDetail_values"
-      header-title="Daily Sales"
-      :rows-per-page="dailySales_data.meta.pageSize"
-      :total-records="dailySales_data.meta.total"
-      :first="(dailySales_data.meta.page - 1) * dailySales_data.meta.pageSize"
-      :is-loading="dailySales_data.isLoading"
-      is-using-server-side-pagination
-      is-using-custom-body
-      is-using-custom-filter
-      is-using-custom-header-prefix
-      is-using-custom-header-suffix
-      is-using-custom-header
-      @update:currentPage="dailySales_handleOnPageChange"
-    > -->
-    <!-- {{ meta }} -->
     <AppBaseDataTable
       :columns="customerDetail_columns"
-      :data="invoices"
+      :data="invoice"
       :rows-per-page="meta.pageSize"
       :total-records="meta.totalData"
-      :first="(meta.page - 1) * meta.pageSize"
+      :first="(customerDetails_queryParams.page - 1) * meta.pageSize"
       is-using-server-side-pagination
       is-using-custom-body
       is-using-custom-filter
@@ -71,6 +55,7 @@ watch(
       is-using-custom-header-suffix
       is-using-custom-header
       :is-loading="customerDetails_isLoading"
+      @update:currentPage="customerDetails_onChangePage"
     >
       <template #header>
         <section class="p-4 flex items-center justify-between">
@@ -78,10 +63,10 @@ watch(
             <h6 class="font-semibold text-black text-xl">Daily Sales</h6>
             <PrimeVueChip
               class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-1"
-              :label="`${invoices.length} Invoices`"
+              :label="`${meta.totalData} Invoices`"
             />
           </div>
-          <form @submit.prevent="handleSearch">
+          <form>
             <PrimeVueIconField>
               <PrimeVueInputIcon>
                 <template #default>
@@ -106,14 +91,14 @@ watch(
                   class="text-xs font-normal text-secondary-hover bg-secondary-background border border-secondary px-1.5 py-1"
                 >
                   <span class="flex items-center gap-1">
-                    <p class="font-bold">{{ invoices.length }}</p>
+                    <p class="font-bold">{{ meta.totalData }}</p>
                     <p class="font-semibold">Sales</p>
                   </span>
                 </PrimeVueChip>
               </div>
               <div class="flex items-center justify-between">
                 <span class="font-semibold text-disabled">Rp</span>
-                <span class="font-bold text-primary text-2xl">{{ customer.paid }}</span>
+                <span class="font-bold text-primary text-2xl">{{detail.paid}}</span>
               </div>
             </div>
           </div>
@@ -124,7 +109,7 @@ watch(
               </div>
               <div class="flex items-center justify-between">
                 <span class="font-semibold text-disabled">Rp</span>
-                <span class="font-bold text-error-main text-2xl">{{ customer.unpaid }}</span>
+                <span class="font-bold text-error-main text-2xl">{{ detail.unpaid }}</span>
               </div>
             </div>
           </div>
@@ -143,7 +128,7 @@ watch(
                 fluid
               />
               <PrimeVueMultiSelect
-                v-model="customerDetails_queryParams.orderType"
+                v-model="customerDetails_queryParams.order_type"
                 display="chip"
                 :options="salesInvoice_paymentStatus"
                 option-label="label"
@@ -154,7 +139,7 @@ watch(
               />
 
               <PrimeVueMultiSelect
-                v-model="customerDetails_queryParams.status"
+                v-model="customerDetails_queryParams.payment_status"
                 display="chip"
                 :options="salesInvoice_orderType"
                 option-label="label"
@@ -167,8 +152,6 @@ watch(
           </div>
         </section>
       </template>
-
-      <template #filter> </template>
 
       <template #body="{ column, data }">
         <template v-if="column.value === 'invoiceID'">
@@ -202,7 +185,7 @@ watch(
         </template>
 
         <template v-if="column.value === 'action'">
-          <router-link :to="`/invoice/${data.invoiceNumber}`">
+          <router-link :to="`/invoice/${data.id}`">
             <PrimeVueButton variant="text" rounded aria-label="Filter">
               <template #icon>
                 <AppBaseSvg name="eye-visible" class="!w-5 !h-5" />

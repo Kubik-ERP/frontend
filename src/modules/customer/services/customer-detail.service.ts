@@ -21,20 +21,64 @@ import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 
 export const useCustomerDetailService = () => {
+  const route = useRoute();
+  const customerId = route.params.id as string;
+  
   const store = useCustomerDetailsStore();
 
-  const { customerDetails_isLoading } = storeToRefs(store);
+  const { customerDetails_isLoading, customerDetails } = storeToRefs(store);
 
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const customerDetails_queryParams = reactive<ICustomerDetailsRequestQuery>({
     page: 1,
-    limit: 10000,
+    limit: 10,
     search: '',
-    status: '',
-    orderType: '',
+    // payment_status: '',
+    // order_type: '',
     date: undefined,
   });
+
+  function jsonToQueryString(params) {
+    const queryParts = [];
+
+    // Iterate over each key in the params object
+    for (const key in params) {
+      // Ensure the key belongs to the object itself
+      if (Object.prototype.hasOwnProperty.call(params, key)) {
+        const value = params[key];
+
+        // Skip null, undefined, or empty string values
+        if (value === null || value === undefined || value === '') {
+          continue;
+        }
+
+        // Handle the specific key mappings for arrays
+        if (key === 'payment_status' && Array.isArray(value)) {
+          // Map 'payment_status' array to 'order_type' parameters
+          value.forEach(item => {
+            queryParts.push(`order_type=${encodeURIComponent(item)}`);
+          });
+        } else if (key === 'order_type' && Array.isArray(value)) {
+          // Map 'order_type' array to 'payment_status' parameters
+          value.forEach(item => {
+            queryParts.push(`payment_status=${encodeURIComponent(item)}`);
+          });
+        } else if (Array.isArray(value)) {
+          // Generic handler for other arrays if they exist
+          value.forEach(item => {
+            queryParts.push(`${encodeURIComponent(key)}=${encodeURIComponent(item)}`);
+          });
+        } else {
+          // Handle simple key-value pairs like page and limit
+          queryParts.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+        }
+      }
+    }
+
+    // Join all parts with '&' and prepend '?' if there are any parts
+    return queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
+  }
 
   const increarePoint_FormData = reactive<IIncreasePoint>({
     point: 0,
@@ -76,15 +120,18 @@ export const useCustomerDetailService = () => {
     decreasePoint_FormData.notes = '';
   };
 
-  const customerDetails_fetchSalesInvoice = async (id: string): Promise<unknown> => {
+  const customerDetails_fetchInformation = async (): Promise<unknown> => {
     try {
-      console.log(
-        '🚀 ~ constcustomerDetails_fetchSalesInvoice= ~ customerDetails_queryParams:',
-        customerDetails_queryParams,
-      );
-      return await store.salesInvoice_list(id, customerDetails_queryParams, {
+      const formattedParams = jsonToQueryString(customerDetails_queryParams);
+
+      const response = await store.salesInvoice_list(customerId, formattedParams, {
         ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
       });
+      return response
+
+      // return await store.salesInvoice_list(id, params, {
+      //   ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
+      // });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -93,6 +140,43 @@ export const useCustomerDetailService = () => {
       }
     }
   };
+  const customerDetails_fetchSalesInvoice = async (): Promise<unknown> => {
+    try {
+
+      const formattedParams = jsonToQueryString(customerDetails_queryParams);
+
+      const response = await store.salesInvoice_list(customerId, formattedParams, {
+        ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
+      });
+      return {
+        detail: response.data,
+        invoice: response.data.invoices.data,
+        meta: response.data.invoices.meta
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  
+
+  const customerDetails_onChangePage = (page: number): void => {
+    customerDetails_queryParams.page = page;
+  };
+
+  // watch(
+  //   () => customerDetails_queryParams,
+  //   debounce(async () => {
+  //     await customerDetails_fetchSalesInvoice();
+  //   }, 500),
+  //   {
+  //     deep: true,
+  //   },
+  // );
 
   const orderTypeClass = (orderType: string) => {
     switch (orderType) {
@@ -122,9 +206,9 @@ export const useCustomerDetailService = () => {
     }
   };
 
-  const customerDetails_fetchLoyaltyPoint = async (id: string): Promise<unknown> => {
+  const customerDetails_fetchLoyaltyPoint = async (): Promise<unknown> => {
     try {
-      return await store.loyaltyPoints_list(id, httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST));
+      return await store.loyaltyPoints_list(customerId, httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST));
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -163,5 +247,10 @@ export const useCustomerDetailService = () => {
     customerDetails_fetchLoyaltyPoint,
 
     customerDetails_queryParams,
+    customerDetails_onChangePage,
+
+    customerDetails_fetchInformation,
+
+    customerDetails,
   };
 };

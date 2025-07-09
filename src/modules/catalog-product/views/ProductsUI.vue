@@ -13,7 +13,6 @@ import searchSVG from '@/app/assets/icons/search.svg';
 import chevronDownSVG from '@/app/assets/icons/chevron-down.svg';
 import chevronLeftSVG from '@/app/assets/icons/chevron-left.svg';
 import chevronRightSVG from '@/app/assets/icons/chevron-right.svg';
-import { TabStyle } from 'primevue';
 
 const { getAllProducts, deleteProduct, getProductByCategories } = useProductService();
 

@@ -77,7 +77,7 @@ export interface ICustomerDetailsRequestQuery {
   search?: string;
   page?: number;
   limit?: number;
-  status?: string;
-  orderType?: string;
+  payment_status?: string;
+  order_type?: string;
   date?: Date;
 }

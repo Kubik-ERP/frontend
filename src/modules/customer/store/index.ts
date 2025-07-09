@@ -29,18 +29,18 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
      */
     async salesInvoice_list(
       id: string,
-      params: ICustomerDetailsRequestQuery,
+      formattedParams: string,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
       this.customerDetails_isLoading = true;
       try {
         const response = await httpClient.get(
-          `${CUSTOMER_DETAILS_BASE_ENDPOINT}${CUSTOMER_SALES_ORDER_ENDPOINT}/${id}`,
+          `${CUSTOMER_DETAILS_BASE_ENDPOINT}${CUSTOMER_SALES_ORDER_ENDPOINT}/${id}${formattedParams}`,
           {
-            params,
             ...requestConfigurations,
           },
         );
+        this.customerDetails = response.data.data;
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
