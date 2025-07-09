@@ -8,15 +8,62 @@
       "next-page": "Next",
       "previous-page": "Previous"
     },
-    "popover":{
+    "popover": {
       "edit": "Edit",
       "delete": "Delete"
     },
-    "modal":{
+    "modal": {
       "title": "Are you sure you want to delete this product?",
       "description": "This action cannot be undone, and the product will be removed from catalog",
       "delete": "Delete Product",
       "cancel": "Cancel"
+    }
+  },
+  "productDetail": {
+    "title": "Products Detail",
+    "header": "Product Information",
+    "photo": {
+      "label": "Photo (Optional)",
+      "button": "Select Image"
+    },
+    "form": {
+      "productName": {
+        "label": "Product Name *",
+        "error": "Product Name field is required"
+      },
+      "category": {
+        "label": "Category *",
+        "placeholder": "Select",
+        "error": "Category field is required"
+      },
+      "price": {
+        "label": "Price *",
+        "error": "Price field is required"
+      },
+      "discount": {
+        "checkbox": "Add Discount Price",
+        "valueLabel": "Discount Value *",
+        "total": "Total Price After Discount :"
+      },
+      "variant": {
+        "label": "Variant",
+        "nameLabel": "Variant Name",
+        "nameError": "Variant Name field is required",
+        "additionalPriceLabel": "Additional Price",
+        "optionalLabel": "(Optional)",
+        "addButton": "Add Variant"
+      },
+      "button": {
+        "save": "Add Product",
+        "cancel": "Cancel",
+        "delete": "Delete Product"
+      }
+    },
+    "leavePageModal": {
+      "title": "Are you sure you want to leave this page?",
+      "description": "Any changes you make to the data will be lost if you leave this page without saving",
+      "discardButton": "Discard Changes",
+      "cancelButton": "Cancel"
     }
   }
 }

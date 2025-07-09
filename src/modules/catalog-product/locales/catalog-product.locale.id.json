@@ -18,5 +18,52 @@
       "delete": "Hapus Produk",
       "cancel": "Batal"
     }
+  },
+  "productDetail": {
+    "title": "Detail Produk",
+    "header": "Informasi Produk",
+    "photo": {
+      "label": "Foto (Opsional)",
+      "button": "Pilih Gambar"
+    },
+    "form": {
+      "productName": {
+        "label": "Nama Produk",
+        "error": "Kolom Nama Produk wajib diisi"
+      },
+      "category": {
+        "label": "Kategori",
+        "placeholder": "Pilih",
+        "error": "Kolom Kategori wajib diisi"
+      },
+      "price": {
+        "label": "Harga",
+        "error": "Kolom Harga wajib diisi"
+      },
+      "discount": {
+        "checkbox": "Tambahkan Harga Diskon",
+        "valueLabel": "Nilai Diskon",
+        "total": "Total Harga Setelah Diskon:"
+      },
+      "variant": {
+        "label": "Varian",
+        "nameLabel": "Nama Varian",
+        "nameError": "Kolom Nama Varian wajib diisi",
+        "additionalPriceLabel": "Harga Tambahan",
+        "optionalLabel": "(Opsional)",
+        "addButton": "Tambah Varian"
+      },
+      "button": {
+        "save": "Tambah produk",
+        "cancel": "Batal",
+        "delete": "Hapus Produk"
+      }
+    },
+    "leavePageModal": {
+      "title": "Anda yakin ingin meninggalkan halaman ini?",
+      "description": "Setiap perubahan yang Anda buat pada data akan hilang jika Anda meninggalkan halaman ini tanpa menyimpan",
+      "discardButton": "Buang Perubahan",
+      "cancelButton": "Batal"
+    }
   }
 }
