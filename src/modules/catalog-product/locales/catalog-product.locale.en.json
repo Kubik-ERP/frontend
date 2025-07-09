@@ -55,6 +55,7 @@
       },
       "button": {
         "save": "Add Product",
+        "edit": "Edit Product",
         "cancel": "Cancel",
         "delete": "Delete Product"
       }
@@ -63,6 +64,12 @@
       "title": "Are you sure you want to leave this page?",
       "description": "Any changes you make to the data will be lost if you leave this page without saving",
       "discardButton": "Discard Changes",
+      "cancelButton": "Cancel"
+    },
+    "deleteModal": {
+      "title": "Are you sure you want to delete this product?",
+      "description": "This action cannot be undone, and the product will be removed from catalog",
+      "deleteButton": "Delete Product",
       "cancelButton": "Cancel"
     }
   }

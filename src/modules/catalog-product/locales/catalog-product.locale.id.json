@@ -55,6 +55,7 @@
       },
       "button": {
         "save": "Tambah produk",
+        "edit": "Ubah produk",
         "cancel": "Batal",
         "delete": "Hapus Produk"
       }
@@ -63,6 +64,12 @@
       "title": "Anda yakin ingin meninggalkan halaman ini?",
       "description": "Setiap perubahan yang Anda buat pada data akan hilang jika Anda meninggalkan halaman ini tanpa menyimpan",
       "discardButton": "Buang Perubahan",
+      "cancelButton": "Batal"
+    },
+    "deleteModal": {
+      "title": "Anda yakin ingin menghapus produk ini?",
+      "description": "Tindakan ini tidak dapat dibatalkan, dan produk akan dihapus dari katalog",
+      "deleteButton": "Hapus Produk",
       "cancelButton": "Batal"
     }
   }

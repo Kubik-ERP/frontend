@@ -55,7 +55,7 @@ const loadProduct = async () => {
     product_formData.variants = response.variantHasProducts;
     product_formData.categories = response.categoriesHasProducts;
     product_formData.is_percent = response.isPercent;
-    console.log("🚀 ~ loadProduct ~ response.isPercent:", response.isPercent)
+    console.log('🚀 ~ loadProduct ~ response.isPercent:', response.isPercent);
     product_formData.imagePreview = response.picture_url;
 
     product_formData.isDiscount = product_formData.price !== product_formData.discount_price;
@@ -221,11 +221,11 @@ const cancelUpdate = () => {
 <template>
   <div class="container mx-auto">
     <div class="flex flex-col gap-4">
-      <h1 class="text-2xl font-bold">Products Detail</h1>
-      <h2 class="text-xl font-semibold">Product Information</h2>
+      <h1 class="text-2xl font-bold">{{ useLocalization('productDetail.title') }}</h1>
+      <h2 class="text-xl font-semibold">{{ useLocalization('productDetail.header') }}</h2>
 
       <form class="flex flex-col items-center justify-center" @submit.prevent="isUpdateModal = true">
-        <p>Photo (Optional)</p>
+        <p>{{ useLocalization('productDetail.photo.label') }}</p>
         <img
           class="rounded-lg mt-2 w-64 h-64 object-cover"
           :src="product_formData.imagePreview || 'https://placehold.co/250'"
@@ -234,7 +234,7 @@ const cancelUpdate = () => {
         <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
 
         <PrimeVueButton
-          label="Select Image"
+          :label="useLocalization('productDetail.photo.button')"
           class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
           variant="outlined"
           @click="triggerFileInput"
@@ -250,7 +250,7 @@ const cancelUpdate = () => {
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="name"
-            name="Product Name"
+            :name="useLocalization('productDetail.form.productName.label')"
             :validators="product_formValidations.name"
           >
             <PrimeVueInputText
@@ -270,7 +270,7 @@ const cancelUpdate = () => {
               class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
               is-name-as-label
               label-for="catergory"
-              name="Category"
+              :name="useLocalization('productDetail.form.category.label')"
               :validators="product_formValidations.categories"
             >
               <PrimeVueMultiSelect
@@ -300,7 +300,7 @@ const cancelUpdate = () => {
               class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
               is-name-as-label
               label-for="price"
-              name="Price"
+              :name="useLocalization('productDetail.form.price.label')"
               :validators="product_formValidations.price"
             >
               <PrimeVueInputNumber
@@ -319,7 +319,9 @@ const cancelUpdate = () => {
         <div class="grid grid-cols-2 h-fit w-full gap-x-8 mt-8">
           <div class="flex items-center gap-2 col-span-2">
             <PrimeVueCheckbox v-model="product_formData.isDiscount" binary @change="calculateDiscount" />
-            <label for="product_formData.isDiscount" class="font-bold"> Add Discount Price </label>
+            <label for="product_formData.isDiscount" class="font-bold">
+              {{ useLocalization('productDetail.form.discount.checkbox') }}
+            </label>
           </div>
           <div class="flex flex-col mt-4" :class="product_formData.isDiscount ? 'block' : 'hidden'">
             <AppBaseFormGroup
@@ -327,7 +329,7 @@ const cancelUpdate = () => {
               class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
               is-name-as-label
               label-for="discount_value"
-              name="Discount Value"
+              :name="useLocalization('productDetail.form.discount.valueLabel')"
               :validators="product_formValidations.discount_value"
             >
               <div class="relative w-full">
@@ -362,7 +364,8 @@ const cancelUpdate = () => {
                   </div>
                 </div>
                 <span
-                  >Total Price After Discount : <b> Rp {{ product_formData.discount_price }}</b></span
+                  >{{ useLocalization('productDetail.form.discount.total') }}
+                  <b> Rp {{ product_formData.discount_price }}</b></span
                 >
               </div>
             </AppBaseFormGroup>
@@ -389,7 +392,7 @@ const cancelUpdate = () => {
                     class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
                     is-name-as-label
                     label-for="variant-name"
-                    name="Variant Name"
+                    :name="useLocalization('productDetail.form.variant.nameLabel')"
                     class="w-full"
                     :validators="
                       useFormValidateEach({
@@ -402,7 +405,7 @@ const cancelUpdate = () => {
                     <PrimeVueInputText
                       :id="`variant-name-${index}`"
                       v-model="product_formData.variants[index].name"
-                      :name="`variants`"
+                      :name="useLocalization('productDetail.form.variant.additionalPriceLabel')"
                       class="border shadow-xs border-grayscale-30 rounded-lg w-full"
                       :class="classes"
                     />
@@ -415,8 +418,10 @@ const cancelUpdate = () => {
                       for="variant-price"
                       class="flex gap-2 text-sm font-medium leading-6 text-gray-900 w-full"
                     >
-                      Additional Price
-                      <p class="text-gray-400">(Optional)</p>
+                      {{ useLocalization('productDetail.form.variant.additionalPriceLabel') }}
+                      <p class="text-gray-400">
+                        {{ useLocalization('productDetail.form.variant.optionalLabel') }}
+                      </p>
                     </label>
                     <PrimeVueInputNumber
                       :id="`variant-price-${index}`"
@@ -436,7 +441,7 @@ const cancelUpdate = () => {
             </div>
 
             <PrimeVueButton
-              label="Add Variant"
+              :label="useLocalization('productDetail.form.variant.addButton')"
               class="mt-4 col-span-2 w-fit text-xl px-8 py-2 text-primary pl-4 bg-transparent border-none font-semibold flex items-center justify-center gap-2"
               @click="addVariant"
             >
@@ -449,13 +454,13 @@ const cancelUpdate = () => {
             <div class="flex items-center gap-4">
               <router-link to="/catalog/products">
                 <PrimeVueButton
-                  label="Cancel"
+                  :label="useLocalization('productDetail.form.button.cancel')"
                   class="text-xl w-48 py-2 border-2 border-primary cursor-pointer rounded-lg text-primary bg-transparent font-semibold"
                   unstyled
                 />
               </router-link>
               <PrimeVueButton
-                :label="'Edit Product'"
+                :label="useLocalization('productDetail.form.button.edit')"
                 class="text-xl w-48 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
                 unstyled
                 type="submit"
@@ -463,7 +468,7 @@ const cancelUpdate = () => {
             </div>
 
             <PrimeVueButton
-              label="Delete Product"
+              :label="useLocalization('productDetail.form.button.delete')"
               class="text-xl w-56 py-2 border-2 border-none cursor-pointer rounded-lg text-red-500 bg-transparent font-semibold"
               @click="isDeleteOpen = true"
             >
@@ -480,21 +485,21 @@ const cancelUpdate = () => {
         <div class="w-[35rem] p-8">
           <div class="flex flex-col items-center gap-4 text-center">
             <span><img :src="excludeSVG" alt="" /></span>
-            <h1 class="text-2xl font-semibold">Are you sure you want to leave this page?</h1>
-            <p>Any changes you make to the data will be lost if you leave this page without saving</p>
+            <h1 class="text-2xl font-semibold">{{ useLocalization('productDetail.leavePageModal.title') }}</h1>
+            <p>{{ useLocalization('productDetail.leavePageModal.description') }}</p>
             <div class="flex items-center justify-between gap-4">
               <PrimeVueButton
                 class="text-lg w-56 text-primary font-semibold"
                 variant="text"
-                label="Discard Changes"
+                :label="useLocalization('productDetail.leavePageModal.discardButton')"
                 @click="confirmLeave"
               />
               <PrimeVueButton
-                variant="text"
                 class="w-56 text-lg border-2 border-primary text-primary font-semibold"
+                variant="text"
+                :label="useLocalization('productDetail.leavePageModal.cancelButton')"
                 @click="cancelLeave"
-                >Cancel</PrimeVueButton
-              >
+              />
             </div>
           </div>
         </div>
@@ -506,13 +511,13 @@ const cancelUpdate = () => {
         <div class="w-[35rem] p-8">
           <div class="flex flex-col items-center gap-4 text-center">
             <img :src="deletePolygonSVG" alt="Delete icon" class="mx-auto" />
-            <h1 class="text-2xl font-semibold">Are you sure you want to delete this product?</h1>
-            <p>This action cannot be undone, and the product will be removed from catalog</p>
+            <h1 class="text-2xl font-semibold">{{ useLocalization('productDetail.deleteModal.title') }}</h1>
+            <p>{{ useLocalization('productDetail.deleteModal.description') }}</p>
             <div class="flex items-center justify-between gap-4">
               <PrimeVueButton
                 class="text-lg w-56 text-red-500 bg-transparent border-none"
                 variant="outlined"
-                label="Delete Product"
+                :label="useLocalization('productDetail.deleteModal.deleteButton')"
                 severity="danger"
                 @click="
                   handleDelete();
@@ -523,9 +528,11 @@ const cancelUpdate = () => {
                   <img :src="deleteSVG" alt="" />
                 </template>
               </PrimeVueButton>
-              <PrimeVueButton class="w-56 text-lg bg-primary border-primary" @click="isDeleteOpen = false"
-                >Cancel
-              </PrimeVueButton>
+              <PrimeVueButton
+                class="w-56 text-lg bg-primary border-primary"
+                :label="useLocalization('productDetail.deleteModal.cancelButton')"
+                @click="isDeleteOpen = false"
+              />
             </div>
           </div>
         </div>
