@@ -1,5 +1,5 @@
 {
-  "main": {
+  
     "table": {
       "title": "Categories",
       "searchPlaceholder": "Keyword Search",
@@ -36,4 +36,3 @@
       }
     }
   }
-}

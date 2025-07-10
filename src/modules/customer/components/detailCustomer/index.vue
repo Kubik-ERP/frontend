@@ -15,7 +15,7 @@ const { customerDetails_isLoading, customerDetails } = useCustomerDetailService(
             {{ customerDetails.name }}
           </template>
         </h1>
-        <router-link :to="`/customerDetails/edit-customerDetails/${customerDetails.id}`">
+        <router-link :to="{ name: 'edit-customer', params: { id: customerDetails.id } }">
           <PrimeVueButton
             label="Edit Customer Data"
             variant="text"

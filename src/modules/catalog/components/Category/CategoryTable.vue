@@ -245,14 +245,14 @@ onMounted(() => {
     >
       <template #header>
         <div class="flex justify-between">
-          <h1 class="text-2xl font-bold">{{ useLocalization('main.title') }}</h1>
+          <h1 class="text-2xl font-bold">{{ useLocalization('table.title') }}</h1>
           <div class="flex gap-4">
             <form @submit.prevent="handleSearch">
               <PrimeVueIconField>
                 <PrimeVueInputIcon><img :src="searchSVG" alt="" /></PrimeVueInputIcon>
                 <PrimeVueInputText
                   v-model="search"
-                  :placeholder="useLocalization('main.searchPlaceholder')"
+                  :placeholder="useLocalization('table.searchPlaceholder')"
                   @input="handleSearch"
                 />
               </PrimeVueIconField>
@@ -260,7 +260,7 @@ onMounted(() => {
             <PrimeVueButton
               type="button"
               severity="info"
-              :label="useLocalization('main.addButton')"
+              :label="useLocalization('table.addButton')"
               class="bg-primary border-primary"
               @click="openAddDialog()"
             >
@@ -276,7 +276,7 @@ onMounted(() => {
 
       <PrimeVueColumn class="w-1/2">
         <template #header>
-          <span class="flex justify-center">{{ useLocalization('main.table.headerCategory') }}</span>
+          <span class="flex justify-center">{{ useLocalization('table.table.headerCategory') }}</span>
         </template>
         <template #body="slotProps">
           <template v-if="loading">
@@ -290,7 +290,7 @@ onMounted(() => {
 
       <PrimeVueColumn class="w-1/2">
         <template #header>
-          <span class="flex justify-center">{{ useLocalization('main.table.headerDescription') }}</span>
+          <span class="flex justify-center">{{ useLocalization('table.table.headerDescription') }}</span>
         </template>
         <template #body="slotProps">
           <template v-if="loading">
@@ -320,7 +320,7 @@ onMounted(() => {
           <!-- Previous Page Button -->
           <PrimeVueButton
             variant="text"
-            :label="useLocalization('main.pagination.previous')"
+            :label="useLocalization('table.pagination.previous')"
             class="border border-primary text-primary hover:bg-transparent"
             @click="prevPage()"
           >
@@ -346,7 +346,7 @@ onMounted(() => {
           <!-- Next Page Button -->
           <PrimeVueButton
             variant="text"
-            :label="useLocalization('main.pagination.next')"
+            :label="useLocalization('table.pagination.next')"
             class="border border-primary text-primary hover:bg-transparent flex-row-reverse"
             @click="nextPage()"
           >

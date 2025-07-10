@@ -117,16 +117,43 @@ watch(
         <section class="flex items-center gap-4 p-4">
           <div class="flex flex-col gap-1 w-full">
             <span class="font-semibold inline-block text-gray-900 text-base w-48">Filter by</span>
-            {{ customerDetails_queryParams }}
             <div class="flex items-center gap-4 w-full">
-              <PrimeVueDatePicker
+              <!-- <PrimeVueDatePicker
                 v-model="customerDetails_queryParams.date"
                 class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
                 placeholder="Real Time "
                 show-on-focus
                 show-icon
                 fluid
-              />
+              /> -->
+               <PrimeVueDatePicker
+              v-model="customerDetails_queryParams.start_date"
+              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
+              placeholder="Purchase Date From"
+              show-on-focus
+              show-icon
+              fluid
+              show-time
+              show-button-bar
+              hour-format="24"
+              @clear-click="customerDetails_queryParams.start_date = null"
+            />
+
+            <PrimeVueDatePicker
+              v-model="customerDetails_queryParams.end_date"
+              :manual-input="false"
+              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
+              placeholder="Purchase Date To"
+              show-on-focus
+              show-icon
+              fluid
+              show-time
+              show-button-bar
+              show-clear
+              hour-format="24"
+              :disabled="!customerDetails_queryParams.start_date"
+              @clear-click="customerDetails_queryParams.end_date = null"
+            />
               <PrimeVueMultiSelect
                 v-model="customerDetails_queryParams.order_type"
                 display="chip"

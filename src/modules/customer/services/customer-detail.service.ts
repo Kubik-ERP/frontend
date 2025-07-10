@@ -4,6 +4,9 @@ import type {
   ICustomerDetailsRequestQuery,
 } from '../interfaces/CustomerDetailInterface';
 
+import { useFormatDateLocal } from '@/app/composables';
+
+
 import { useCustomerDetailsStore } from '../store';
 
 import {
@@ -36,7 +39,6 @@ export const useCustomerDetailService = () => {
     search: '',
     // payment_status: '',
     // order_type: '',
-    date: undefined,
   });
 
   function jsonToQueryString(params) {
@@ -143,7 +145,15 @@ export const useCustomerDetailService = () => {
   const customerDetails_fetchSalesInvoice = async (): Promise<unknown> => {
     try {
 
-      const formattedParams = jsonToQueryString(customerDetails_queryParams);
+      const {start_date, end_date, ...otherFilter} = customerDetails_queryParams;
+
+      const filteredParams = {
+        ...otherFilter,
+        start_date: start_date ? useFormatDateLocal(start_date) : null,
+        end_date: end_date ? useFormatDateLocal(end_date) : null
+      }
+
+      const formattedParams = jsonToQueryString(filteredParams);
 
       const response = await store.salesInvoice_list(customerId, formattedParams, {
         ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
