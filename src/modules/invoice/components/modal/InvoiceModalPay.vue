@@ -44,7 +44,9 @@ const { invoice_invoiceData, invoice_modalPay, invoice_handlePayInvoice } = inje
         <div class="flex w-full justify-between items-center">
           <span class="text-text-disabled">Total Price</span>
           <span class="font-semibold">{{
-            useCurrencyFormat(invoice_invoiceData.calculate?.grandTotal || 0)
+            useCurrencyFormat({
+              data: invoice_invoiceData.calculate?.grandTotal || 0,
+            })
           }}</span>
         </div>
 

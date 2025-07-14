@@ -4,7 +4,7 @@ import type { Validation } from '@vuelidate/core';
 export interface IAccountBankAccountFormData {
   bankName: string;
   accountNumber: number | null;
-  accountHolderName: string;
+  accountName: string;
 }
 
 export interface IAccountProvided {

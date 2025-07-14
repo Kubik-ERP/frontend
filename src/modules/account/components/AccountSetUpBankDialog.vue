@@ -70,10 +70,10 @@ const { account_bankAccountFormData, account_bankAccountFormValidations, account
             label-for="account-holder-name"
             :name="useLocalization('account.form.bank-account-name')"
             spacing-bottom="mb-0"
-            :validators="account_bankAccountFormValidations.accountHolderName"
+            :validators="account_bankAccountFormValidations.accountName"
           >
             <PrimeVueInputText
-              v-model="account_bankAccountFormData.accountHolderName"
+              v-model="account_bankAccountFormData.accountName"
               :class="{ ...classes }"
               class="text-sm w-full"
             />
@@ -85,7 +85,7 @@ const { account_bankAccountFormData, account_bankAccountFormValidations, account
     <template #footer>
       <footer class="flex items-center justify-end w-full gap-4">
         <PrimeVueButton
-          class="font-semibold text-base text-primary w-full max-w-40 border-2 border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
+          class="font-semibold text-base text-primary w-full max-w-40 border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
           label="Cancel"
           severity="secondary"
           variant="outlined"

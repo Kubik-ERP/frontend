@@ -153,7 +153,11 @@ const {
         </template>
 
         <template v-else-if="column.value === 'grandTotal'">
-          <span class="font-normal text-sm text-text-primary">{{ useCurrencyFormat(data[column.value]) }}</span>
+          <span class="font-normal text-sm text-text-primary">{{
+            useCurrencyFormat({
+              data: data[column.value],
+            })
+          }}</span>
         </template>
 
         <template v-else-if="column.value === 'orderType'">

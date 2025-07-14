@@ -39,8 +39,8 @@ provide('outletList', {
 /**
  * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
  */
-onMounted(() => {
-  outletList_fetchOutletLists();
+onMounted(async () => {
+  await outletList_fetchOutletLists();
 });
 </script>
 

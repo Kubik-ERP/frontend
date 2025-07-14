@@ -10,8 +10,10 @@ import { useAccountStoreDetailsService } from '../services/account-store-detail.
  */
 const {
   accountStoreDetail_activeTab,
+  accountStoreDetail_listColumnsOfAssignedStaff,
   accountStoreDetail_listColumnsOfOperationalHours,
   accountStoreDetail_listColumnsOfStoreFacilities,
+  accountStoreDetail_listValuesOfAssignedStaff,
   accountStoreDetail_listValuesOfOperationalHours,
   accountStoreDetail_listValuesOfStoreFacilities,
   accountStoreDetail_listTabs,
@@ -21,10 +23,12 @@ const {
  * @description Provide all the data and methods what we need
  */
 provide('accountStoreDetail', {
+  accountStoreDetail_listColumnsOfAssignedStaff,
   accountStoreDetail_listColumnsOfOperationalHours,
   accountStoreDetail_listColumnsOfStoreFacilities,
   accountStoreDetail_listValuesOfOperationalHours,
   accountStoreDetail_listValuesOfStoreFacilities,
+  accountStoreDetail_listValuesOfAssignedStaff,
 });
 </script>
 

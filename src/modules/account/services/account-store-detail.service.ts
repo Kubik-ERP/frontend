@@ -1,5 +1,7 @@
 // Constants
 import {
+  ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_COLUMNS,
+  ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_VALUES,
   ACCOUNT_STORE_DETAIL_FACILITY_COLUMNS,
   ACCOUNT_STORE_DETAIL_FACILITY_VALUES,
   ACCOUNT_STORE_DETAIL_LIST_TABS,
@@ -45,8 +47,10 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
   return {
     accountStoreDetail_activeTab,
     accountStoreDetail_listTabs: ACCOUNT_STORE_DETAIL_LIST_TABS,
+    accountStoreDetail_listColumnsOfAssignedStaff: ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_COLUMNS,
     accountStoreDetail_listColumnsOfOperationalHours: ACCOUNT_STORE_DETAIL_OPERATIONAL_HOURS_COLUMNS,
     accountStoreDetail_listColumnsOfStoreFacilities: ACCOUNT_STORE_DETAIL_FACILITY_COLUMNS,
+    accountStoreDetail_listValuesOfAssignedStaff: ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_VALUES as never[],
     accountStoreDetail_listValuesOfOperationalHours: ACCOUNT_STORE_DETAIL_OPERATIONAL_HOURS_VALUES as never[],
     accountStoreDetail_listValuesOfStoreFacilities: ACCOUNT_STORE_DETAIL_FACILITY_VALUES as never[],
   };

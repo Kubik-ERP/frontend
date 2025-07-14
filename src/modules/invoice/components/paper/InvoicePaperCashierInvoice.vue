@@ -31,7 +31,6 @@ const imageUrl = computed(() => {
     id="invoice-paper"
     class="invoice-paper bg-white flex flex-col items-center gap-2 w-full max-w-xs lg:max-w-md p-4"
   >
-  
     <section v-if="invoice_invoiceData.configInvoice.isShowCompanyLogo" id="logo">
       <AppBaseImage :src="imageUrl" :alt="invoice_invoiceData.currentOutlet.name" class="w-20 h-20" />
     </section>
@@ -105,11 +104,12 @@ const imageUrl = computed(() => {
       class="flex items-center justify-between w-full"
     >
       <p id="label-table" class="font-normal text-black text-sm">Table No.</p>
-      <p id="table-value" class="font-normal text-black text-sm">{{invoice_invoiceData.data?.tableCode || '-' }}</p>
+      <p id="table-value" class="font-normal text-black text-sm">
+        {{ invoice_invoiceData.data?.tableCode || '-' }}
+      </p>
     </section>
 
     <table id="product-items" class="w-full">
-      
       <thead>
         <tr class="border-y border-dashed border-black py-2">
           <th class="font-normal text-black text-sm text-left w-28 py-2">Deskripsi</th>
@@ -138,13 +138,21 @@ const imageUrl = computed(() => {
               v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
               class="font-normal text-black text-sm text-center"
             >
-              {{ useCurrencyFormat(item.productPrice) }}
+              {{
+                useCurrencyFormat({
+                  data: item.productPrice,
+                })
+              }}
             </td>
             <td
               v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
               class="font-normal text-black text-sm text-right"
             >
-              {{ useCurrencyFormat(item.productPrice * item.qty) }}
+              {{
+                useCurrencyFormat({
+                  data: item.productPrice * item.qty,
+                })
+              }}
             </td>
           </tr>
           <tr v-if="item.variant">
@@ -154,13 +162,21 @@ const imageUrl = computed(() => {
               v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
               class="font-normal text-black text-sm text-center py-2"
             >
-              {{ useCurrencyFormat(item.variant.price) }}
+              {{
+                useCurrencyFormat({
+                  data: item.variant.price,
+                })
+              }}
             </td>
             <td
               v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
               class="font-normal text-black text-sm text-right py-2"
             >
-              {{ useCurrencyFormat(item.variant.price * item.qty) }}
+              {{
+                useCurrencyFormat({
+                  data: item.variant.price * item.qty,
+                })
+              }}
             </td>
           </tr>
         </template>
@@ -174,11 +190,12 @@ const imageUrl = computed(() => {
           </td>
           <td colspan="2" class="font-normal text-black text-sm text-right py-2">
             {{
-              useCurrencyFormat(
-                invoice_invoiceData.data.paymentStatus === 'unpaid'
-                  ? invoice_invoiceData.calculate?.total || 0
-                  : invoice_invoiceData.data.subtotal,
-              )
+              useCurrencyFormat({
+                data:
+                  invoice_invoiceData.data.paymentStatus === 'unpaid'
+                    ? invoice_invoiceData.calculate?.total || 0
+                    : invoice_invoiceData.data.subtotal,
+              })
             }}
           </td>
         </tr>
@@ -187,7 +204,11 @@ const imageUrl = computed(() => {
           <td class="font-normal text-black text-sm py-2">Promo</td>
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
             -
-            {{ useCurrencyFormat(invoice_invoiceData.data.paymentStatus === 'unpaid' ? 0 : 0) }}
+            {{
+              useCurrencyFormat({
+                data: invoice_invoiceData.data.paymentStatus === 'unpaid' ? 0 : 0,
+              })
+            }}
           </td>
         </tr>
 
@@ -195,14 +216,24 @@ const imageUrl = computed(() => {
           <td class="font-normal text-black text-sm py-2">Debit</td>
           <!-- TODO: Add field debit -->
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
-            {{ useCurrencyFormat(0) }}
+            {{
+              useCurrencyFormat({
+                data: 0,
+              })
+            }}
           </td>
         </tr>
 
         <tr class="border-b border-dashed border-black">
           <td class="font-normal text-black text-sm py-2">Kembali</td>
           <!-- TODO: Add field change -->
-          <td colspan="3" class="font-normal text-black text-sm text-right py-2">{{ useCurrencyFormat(0) }}</td>
+          <td colspan="3" class="font-normal text-black text-sm text-right py-2">
+            {{
+              useCurrencyFormat({
+                data: 0,
+              })
+            }}
+          </td>
         </tr>
 
         <tr>
@@ -218,11 +249,12 @@ const imageUrl = computed(() => {
           </td>
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
             {{
-              useCurrencyFormat(
-                invoice_invoiceData.data.paymentStatus === 'unpaid'
-                  ? invoice_invoiceData.calculate?.tax || 0
-                  : invoice_invoiceData.data.taxAmount || 0,
-              )
+              useCurrencyFormat({
+                data:
+                  invoice_invoiceData.data.paymentStatus === 'unpaid'
+                    ? invoice_invoiceData.calculate?.tax || 0
+                    : invoice_invoiceData.data.taxAmount || 0,
+              })
             }}
           </td>
         </tr>
@@ -239,11 +271,12 @@ const imageUrl = computed(() => {
           </td>
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
             {{
-              useCurrencyFormat(
-                invoice_invoiceData.data.paymentStatus === 'unpaid'
-                  ? invoice_invoiceData.calculate?.serviceCharge || 0
-                  : invoice_invoiceData.data.serviceChargeAmount || 0,
-              )
+              useCurrencyFormat({
+                data:
+                  invoice_invoiceData.data.paymentStatus === 'unpaid'
+                    ? invoice_invoiceData.calculate?.serviceCharge || 0
+                    : invoice_invoiceData.data.serviceChargeAmount || 0,
+              })
             }}
           </td>
         </tr>
@@ -252,18 +285,23 @@ const imageUrl = computed(() => {
           <td colspan="2" class="font-semibold text-black text-sm text-center py-2">Total</td>
           <td colspan="2" class="font-semibold text-black text-sm text-right py-2">
             {{
-              useCurrencyFormat(
-                invoice_invoiceData.data.paymentStatus === 'unpaid'
-                  ? invoice_invoiceData.calculate?.grandTotal || 0
-                  : invoice_invoiceData.data.grandTotal || 0,
-              )
+              useCurrencyFormat({
+                data:
+                  invoice_invoiceData.data.paymentStatus === 'unpaid'
+                    ? invoice_invoiceData.calculate?.grandTotal || 0
+                    : invoice_invoiceData.data.grandTotal || 0,
+              })
             }}
           </td>
         </tr>
       </tfoot>
     </table>
 
-    <section v-if="invoice_invoiceData.configInvoice.isShowFooter" id="closing" class="flex flex-col items-center gap-2 w-full">
+    <section
+      v-if="invoice_invoiceData.configInvoice.isShowFooter"
+      id="closing"
+      class="flex flex-col items-center gap-2 w-full"
+    >
       <p id="closing-footer" class="font-normal text-justify text-black text-sm">
         {{ invoice_invoiceData.configInvoice.footerText }}
       </p>

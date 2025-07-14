@@ -14,10 +14,11 @@ const {
   dailySalesList_fetchListInvoices,
 } = useDailySalesListService();
 
-const { queueColumns, orderStatusList, orderStatusClass, calculateDeltaMMSS, changeOrderStatus } = useQueueService();
+const { queueColumns, orderStatusList, orderStatusClass, calculateDeltaMMSS, changeOrderStatus } =
+  useQueueService();
 
 const onOrderStatusChange = async (id: string, orderStatus: string) => {
-  await changeOrderStatus(id, orderStatus)
+  await changeOrderStatus(id, orderStatus);
 };
 
 onMounted(async () => {
@@ -153,7 +154,9 @@ onMounted(async () => {
 
         <template #body="{ column, data, index }">
           <template v-if="column.value === 'index'">
-            <span class="font-normal text-sm text-text-primary">{{ (dailySalesList_values.data.meta.page - 1) * dailySalesList_values.data.meta.pageSize + index + 1 }}</span>
+            <span class="font-normal text-sm text-text-primary">{{
+              (dailySalesList_values.data.meta.page - 1) * dailySalesList_values.data.meta.pageSize + index + 1
+            }}</span>
           </template>
           <template v-if="column.value === 'invoiceNumber'">
             <router-link :to="`/invoice/${data.id}`">
@@ -172,7 +175,11 @@ onMounted(async () => {
           </template>
 
           <template v-else-if="column.value === 'grandTotal'">
-            <span class="font-normal text-sm text-text-primary">{{ useCurrencyFormat(data[column.value]) }}</span>
+            <span class="font-normal text-sm text-text-primary">{{
+              useCurrencyFormat({
+                data: data[column.value],
+              })
+            }}</span>
           </template>
 
           <template v-else-if="column.value === 'orderType'">

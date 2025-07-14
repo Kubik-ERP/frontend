@@ -35,6 +35,18 @@ const routes: RouteRecordRaw[] = [
         name: 'account.store.detail',
         component: () => import('../views/AccountStoreDetailUI.vue'),
         meta: {
+          breadcrumb: 'Store Details',
+          requiresAuthorization: false,
+          title: 'Store Details',
+        },
+      },
+      {
+        path: 'store/:id/edit',
+        name: 'account.store.edit',
+        component: () => import('../views/AccountStoreEditUI.vue'),
+        meta: {
+          breadcrumb: 'Edit Store Details',
+          layout: LAYOUT_OPTIONS.OUTLET,
           requiresAuthorization: false,
           title: 'Edit Store Details',
         },

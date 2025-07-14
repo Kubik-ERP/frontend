@@ -21,7 +21,7 @@ export const useAccountService = (): IAccountProvided => {
   const account_bankAccountFormData = reactive<IAccountBankAccountFormData>({
     bankName: '',
     accountNumber: null,
-    accountHolderName: '',
+    accountName: '',
   });
 
   /**
@@ -30,7 +30,7 @@ export const useAccountService = (): IAccountProvided => {
   const account_bankAccountFormRules = computed(() => ({
     bankName: { required },
     accountNumber: { required },
-    accountHolderName: { required },
+    accountName: { required },
   }));
   const account_bankAccountFormValidations = useVuelidate(
     account_bankAccountFormRules,

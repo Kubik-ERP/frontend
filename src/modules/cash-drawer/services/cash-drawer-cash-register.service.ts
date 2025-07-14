@@ -1,32 +1,160 @@
 // Constants
 import {
+  CASH_DRAWER_DETAILS_REQUEST,
   CASH_DRAWER_LIST_COLUMNS_OF_CASH_REGISTER,
   CASH_DRAWER_LIST_TYPES_OF_CASH_REGISTER,
-  CASH_DRAWER_LIST_VALUES_OF_CASH_REGISTER,
+  CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE,
   CASH_DRAWER_TRANSACTION_REQUEST,
 } from '../constants';
 
+// Plugins
+import eventBus from '@/plugins/mitt';
+
 // Interfaces
-import type { ICashDrawerCashRegisterProvide } from '../interfaces/cash-drawer-cash-register.interface';
+import {
+  ICashDrawerCashRegisterFormDataOfCloseTransaction,
+  ICashDrawerCashRegisterQueryParamsOfTransaction,
+  type ICashDrawerCashRegisterFormDataOfTransaction,
+  type ICashDrawerCashRegisterProvide,
+} from '../interfaces/cash-drawer-cash-register.interface';
 
 // Stores
 import { useCashDrawerStore } from '../store';
+
+// Vuelidate
+import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 
 export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvide => {
   /**
    * @description Injected variables
    */
+  const route = useRoute(); // Current route
   const store = useCashDrawerStore(); // Instance of the store
+  const { cashDrawer_detail, cashDrawer_isLoading, cashDrawer_transactionOfOpenRegister } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
-   * @description Handle fetch api cash drawer . We call the cashDrawer_list function from the store to handle the request.
+   * @description Reactive data binding
    */
-  const cashDrawerCashRegister_fetchTrasanctions = async (id: string): Promise<unknown> => {
+  const cashDrawerCashRegister_differenceBalance = ref<number>(0);
+  const cashDrawerCashRegister_formDataOfTransaction = reactive<ICashDrawerCashRegisterFormDataOfTransaction>({
+    amount: null,
+    notes: null,
+  });
+  const cashDrawerCashRegister_formDataOfCloseTransaction =
+    reactive<ICashDrawerCashRegisterFormDataOfCloseTransaction>({
+      balance: null,
+      notes: null,
+    });
+  const cashDrawerCashRegister_isOpenCashRegisterSummary = ref<boolean>(false);
+  const cashDrawerCashRegister_queryParamsOfTransaction =
+    reactive<ICashDrawerCashRegisterQueryParamsOfTransaction>({
+      page: 1,
+      limit: 10,
+      type: null,
+      startDate: null,
+      endDate: null,
+    });
+  const cashDrawerCashRegister_routeParamsId = route.params?.id ? String(route.params.id) : '';
+  const cashDrawerCashRegister_typeOfTransaction = ref<'in' | 'out'>('in');
+
+  /**
+   * @description Form validations
+   */
+  const cashDrawerCashRegister_formRulesOfCloseTransaction = computed(() => ({
+    balance: { required },
+  }));
+  const cashDrawerCashRegister_formValidationsOfCloseTransaction = useVuelidate(
+    cashDrawerCashRegister_formRulesOfCloseTransaction,
+    cashDrawerCashRegister_formDataOfCloseTransaction,
+  );
+  const cashDrawerCashRegister_formRulesOfTransaction = computed(() => ({
+    amount: { required },
+  }));
+  const cashDrawerCashRegister_formValidationsOfTransaction = useVuelidate(
+    cashDrawerCashRegister_formRulesOfTransaction,
+    cashDrawerCashRegister_formDataOfTransaction,
+  );
+
+  /**
+   * @description Handle fetch api cash drawer. We call the cashDrawer_addTransaction function from the store to handle the request.
+   */
+  const cashDrawerCashRegister_fetchAddTransaction = async (): Promise<unknown> => {
     try {
-      await store.cashDrawer_transactions(id, {
-        ...httpAbort_registerAbort(CASH_DRAWER_TRANSACTION_REQUEST),
+      await store.cashDrawer_addTransaction(
+        cashDrawerCashRegister_routeParamsId,
+        cashDrawerCashRegister_typeOfTransaction.value,
+        cashDrawerCashRegister_formDataOfTransaction,
+        {
+          ...httpAbort_registerAbort(CASH_DRAWER_TRANSACTION_REQUEST),
+        },
+      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api cash drawer. We call the cashDrawer_close function from the store to handle the request.
+   */
+  const cashDrawerCashRegister_fetchCloseTransaction = async (): Promise<unknown> => {
+    try {
+      await store.cashDrawer_close(
+        cashDrawerCashRegister_routeParamsId,
+        cashDrawerCashRegister_formDataOfCloseTransaction,
+        {
+          ...httpAbort_registerAbort(CASH_DRAWER_TRANSACTION_REQUEST),
+        },
+      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api cash drawer. We call the cashDrawer_list function from the store to handle the request.
+   */
+  const cashDrawerCashRegister_fetchCashDrawerDetails = async (): Promise<unknown> => {
+    try {
+      await store.cashDrawer_details(cashDrawerCashRegister_routeParamsId, {
+        ...httpAbort_registerAbort(CASH_DRAWER_DETAILS_REQUEST),
       });
+
+      if (cashDrawer_detail.value?.actualBalance) {
+        cashDrawerCashRegister_differenceBalance.value =
+          cashDrawer_detail.value.actualBalance - (cashDrawer_detail.value.expectedBalance ?? 0);
+        cashDrawerCashRegister_formDataOfCloseTransaction.balance = cashDrawer_detail.value.actualBalance;
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api cash drawer. We call the cashDrawer_list function from the store to handle the request.
+   */
+  const cashDrawerCashRegister_fetchTrasanctions = async (): Promise<unknown> => {
+    try {
+      await store.cashDrawer_transactions(
+        cashDrawerCashRegister_routeParamsId,
+        cashDrawerCashRegister_queryParamsOfTransaction,
+        {
+          ...httpAbort_registerAbort(CASH_DRAWER_TRANSACTION_REQUEST),
+        },
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -39,28 +167,190 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
   /**
    * @description Handle business logic to return dynamic icon name of type cash register
    */
-  const cashDrawerCashRegister_getIconOfTypeCashRegister = (type: string): string => {
-    switch (type.toUpperCase()) {
-      case 'CASH IN':
-        return 'arrow-right-circle-success';
-      case 'CASH OUT':
-        return 'arrow-left-circle-danger';
-      case 'CASH REFUND':
-        return 'flip-backward-circle';
-      case 'OPENING BALANCE':
+  const cashDrawerCashRegister_getIconOfTypeCashRegister = (type: number): string => {
+    switch (type) {
+      case 0:
         return 'cashier-circle';
-      case 'SALE':
+      case 1:
+        return 'arrow-right-circle-success';
+      case 2:
         return 'receipt-circle';
+      case 3:
+        return 'arrow-left-circle-danger';
+      case 5:
+        return 'flip-backward-circle';
       default:
         return '';
     }
   };
 
+  /**
+   * @description Handle business logic to return dynamic value of type cash register
+   */
+  const cashDrawerCashRegister_getValueOfTypeCashRegister = (type: number): string => {
+    switch (type) {
+      case 0:
+        return 'Opening Balance';
+      case 1:
+        return 'Cash In';
+      case 2:
+        return 'Sale';
+      case 3:
+        return 'Cash Out';
+      case 5:
+        return 'Cash Refund';
+      default:
+        return 'Closing';
+    }
+  };
+
+  /**
+   * @description Handle business logic for closing dialog add transaction
+   */
+  const cashDrawerCashRegister_onCloseDialogAddTransaction = (): void => {
+    const argsEventEmitter: IPropsDialog = {
+      id: 'cash-drawer-add-transaction-dialog',
+      isOpen: false,
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle business logic for closing dialog close transaction
+   */
+  const cashDrawerCashRegister_onCloseDialogCloseTransaction = (): void => {
+    const argsEventEmitter: IPropsDialog = {
+      id: 'cash-drawer-close-transaction-dialog',
+      isOpen: false,
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle business logic for showing dialog add transaction
+   */
+  const cashDrawerCashRegister_onOpenDialogAddTransaction = (type: 'in' | 'out'): void => {
+    cashDrawerCashRegister_typeOfTransaction.value = type;
+
+    const argsEventEmitter: IPropsDialog = {
+      id: 'cash-drawer-add-transaction-dialog',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: '414px',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle business logic for showing dialog add transaction
+   */
+  const cashDrawerCashRegister_onOpenDialogCloseTransaction = (): void => {
+    const argsEventEmitter: IPropsDialog = {
+      id: 'cash-drawer-close-transaction-dialog',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: 'w-fit',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle business logic for submitting add transaction form
+   */
+  const cashDrawerCashRegister_onSubmitAddTransaction = async (): Promise<void> => {
+    cashDrawerCashRegister_formValidationsOfTransaction.value.$touch();
+
+    if (cashDrawerCashRegister_formValidationsOfTransaction.value.$invalid) {
+      return;
+    }
+
+    try {
+      await cashDrawerCashRegister_fetchAddTransaction();
+      await cashDrawerCashRegister_fetchCashDrawerDetails();
+      await cashDrawerCashRegister_fetchTrasanctions();
+      cashDrawerCashRegister_onCloseDialogAddTransaction();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle business logic for submitting close transaction form
+   */
+  const cashDrawerCashRegister_onSubmitCloseTransaction = async (): Promise<void> => {
+    cashDrawerCashRegister_formValidationsOfCloseTransaction.value.$touch();
+
+    if (cashDrawerCashRegister_formValidationsOfCloseTransaction.value.$invalid) {
+      return;
+    }
+
+    try {
+      await cashDrawerCashRegister_fetchCloseTransaction();
+      await cashDrawerCashRegister_fetchCashDrawerDetails();
+      await cashDrawerCashRegister_fetchTrasanctions();
+      cashDrawerCashRegister_onCloseDialogCloseTransaction();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle business logic for toggle summary of cash register
+   */
+  const cashDrawerCashRegister_toggleCashRegisterSummary = (): void => {
+    cashDrawerCashRegister_isOpenCashRegisterSummary.value =
+      !cashDrawerCashRegister_isOpenCashRegisterSummary.value;
+  };
+
+  /**
+   * @description Watcher for query parameters changes
+   */
+  watch(
+    () => cashDrawerCashRegister_queryParamsOfTransaction,
+    debounce(async () => {
+      await cashDrawerCashRegister_fetchTrasanctions();
+    }, 500),
+    { deep: true },
+  );
+
   return {
+    cashDrawerCashRegister_detail: cashDrawer_detail,
+    cashDrawerCashRegister_fetchCashDrawerDetails,
     cashDrawerCashRegister_fetchTrasanctions,
+    cashDrawerCashRegister_formDataOfCloseTransaction,
+    cashDrawerCashRegister_formDataOfTransaction,
+    cashDrawerCashRegister_formValidationsOfCloseTransaction,
+    cashDrawerCashRegister_formValidationsOfTransaction,
     cashDrawerCashRegister_getIconOfTypeCashRegister,
+    cashDrawerCashRegister_getValueOfTypeCashRegister,
+    cashDrawerCashRegister_isLoading: cashDrawer_isLoading,
+    cashDrawerCashRegister_isOpenCashRegisterSummary,
     cashDrawerCashRegister_listColumns: CASH_DRAWER_LIST_COLUMNS_OF_CASH_REGISTER,
     cashDrawerCashRegister_listTypesOfCashRegister: CASH_DRAWER_LIST_TYPES_OF_CASH_REGISTER,
-    cashDrawerCashRegister_listValuesOfCashRegister: CASH_DRAWER_LIST_VALUES_OF_CASH_REGISTER as never[],
+    cashDrawerCashRegister_listValuesOfCashRegister: cashDrawer_transactionOfOpenRegister,
+    cashDrawerCashRegister_onCloseDialogAddTransaction,
+    cashDrawerCashRegister_onCloseDialogCloseTransaction,
+    cashDrawerCashRegister_onOpenDialogAddTransaction,
+    cashDrawerCashRegister_onOpenDialogCloseTransaction,
+    cashDrawerCashRegister_onSubmitAddTransaction,
+    cashDrawerCashRegister_onSubmitCloseTransaction,
+    cashDrawerCashRegister_queryParamsOfTransaction,
+    cashDrawerCashRegister_suggestionRegisterBalance: CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE,
+    cashDrawerCashRegister_toggleCashRegisterSummary,
+    cashDrawerCashRegister_typeOfTransaction,
   };
 };

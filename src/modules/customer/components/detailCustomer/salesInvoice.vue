@@ -5,11 +5,11 @@ import { useCustomerDetailService } from '../../services/customer-detail.service
 // Interfaces
 import type { Iinvoice, ICustomerDetails } from '../../interfaces';
 
-const { customerDetail_columns, salesInvoice_paymentStatus, salesInvoice_orderType, customerDetails_isLoading } = useCustomerDetailService();
+const { customerDetail_columns, salesInvoice_paymentStatus, salesInvoice_orderType, customerDetails_isLoading } =
+  useCustomerDetailService();
 /**
  * @description Destructure all the data and methods what we need
  */
-
 
 const invoices = ref(inject('customerDetails').invoices as Iinvoice[]);
 // console.log('🚀 ~ invoices:', invoices.value);
@@ -192,7 +192,11 @@ const orderStatusClass = (orderStatus: string) => {
         </template>
 
         <template v-if="column.value === 'totalPrice'">
-          <span>{{ useCurrencyFormat(data.grandTotal) }}</span>
+          <span>{{
+            useCurrencyFormat({
+              data: data.grandTotal,
+            })
+          }}</span>
         </template>
 
         <template v-if="column.value === 'status'">

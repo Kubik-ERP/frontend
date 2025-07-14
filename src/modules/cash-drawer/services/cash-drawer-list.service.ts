@@ -87,9 +87,13 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
    */
   const cashDrawerList_fetchOpenRegister = async (): Promise<unknown> => {
     try {
-      await store.cashDrawer_open(outlet_currentOutlet.value!.id, cashDrawerList_formDataOfOpenRegister, {
-        ...httpAbort_registerAbort(CASH_DRAWER_LIST_REQUEST),
-      });
+      const result = await store.cashDrawer_open(
+        outlet_currentOutlet.value!.id,
+        cashDrawerList_formDataOfOpenRegister,
+        {
+          ...httpAbort_registerAbort(CASH_DRAWER_LIST_REQUEST),
+        },
+      );
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
@@ -103,8 +107,11 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
       setTimeout(() => {
         router.push({
           name: 'cash-drawer.cash-register',
-        })
-      }, 1000)
+          params: {
+            id: result.data.id,
+          },
+        });
+      }, 1000);
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);

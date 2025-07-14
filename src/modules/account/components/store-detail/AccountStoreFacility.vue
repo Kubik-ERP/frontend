@@ -13,7 +13,6 @@ const { accountStoreDetail_listColumnsOfStoreFacilities, accountStoreDetail_list
   <AppBaseDataTable
     :columns="accountStoreDetail_listColumnsOfStoreFacilities"
     :data="accountStoreDetail_listValuesOfStoreFacilities"
-    is-using-btn-cta-create
     is-using-custom-body
     is-using-custom-header
     :is-using-border-on-header="false"
@@ -29,9 +28,7 @@ const { accountStoreDetail_listColumnsOfStoreFacilities, accountStoreDetail_list
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="plus-line-white" />
 
-              <span class="font-semibold text-base text-white">
-                Add Store Facility
-              </span>
+              <span class="font-semibold text-base text-white"> Add Store Facility </span>
             </section>
           </template>
         </PrimeVueButton>
