@@ -1,1 +1,1 @@
-export const CUSTOMER_WAITING_LIST_BASE_ENDPOINT = '/kitchen/queue/customer'
+export const CUSTOMER_WAITING_LIST_BASE_ENDPOINT = '/customers/waiting/list'

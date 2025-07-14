@@ -17,6 +17,8 @@ import eventBus from '@/plugins/mitt';
 
 // Stores
 import { useSettingStore } from '../store';
+import { useOutletStore } from '@/modules/outlet/store';
+
 
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
@@ -30,6 +32,9 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
    * @description Injected variables
    */
   const store = useSettingStore(); // Instance of the store
+
+  const storeId = useOutletStore();
+
   const { httpAbort_registerAbort } = useHttpAbort();
   const { setting_invoice, setting_isLoading } = storeToRefs(store);
 
@@ -39,7 +44,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
   const settingInvoice_activeTab = ref<string>('cashier-invoice');
   const settingInvoice_formData = reactive<ISettingInvoiceFormData>({
     companyLogoUrl: null,
-    storeId: '8681d73d-8d50-4b50-b4fd-63357660e60d',
+    storeId: storeId.outlet_currentOutlet?.id as string,
     generalSettings: {
       isAutomaticallyPrintReceipt: true,
       isAutomaticallyPrintKitchen: true,

@@ -71,38 +71,39 @@ export const useQueueService = () => {
     }
   };
 
-  const calculateDeltaMMSS = (createdAt: string, updateAt: string): string => {
-    // Changed to const arrow function
-    // 1. Convert strings to Date objects
-    const createdDate = new Date(createdAt);
-    const updatedDate = new Date(updateAt);
+  const calculateDeltaHHMMSS = (createdAt: string, updatedAt: string): string => {
+  // 1. Convert strings to Date objects
+  const createdDate = new Date(createdAt);
+  const updatedDate = new Date(updatedAt);
 
-    // Check for invalid dates
-    if (isNaN(createdDate.getTime()) || isNaN(updatedDate.getTime())) {
-      return 'Invalid Dates';
-    }
+  // Check for invalid dates
+  if (isNaN(createdDate.getTime()) || isNaN(updatedDate.getTime())) {
+    return 'Invalid Dates';
+  }
 
-    // 2. Calculate the difference in milliseconds
-    // Use Math.abs to ensure a positive difference, regardless of order
-    const deltaMilliseconds = Math.abs(updatedDate.getTime() - createdDate.getTime());
+  // 2. Calculate the difference in milliseconds
+  const deltaMilliseconds = Math.abs(updatedDate.getTime() - createdDate.getTime());
 
-    // 3. Convert milliseconds to minutes and seconds
-    const totalSeconds = Math.floor(deltaMilliseconds / 1000); // Total seconds
-    const minutes = Math.floor(totalSeconds / 60); // Calculate minutes
-    const seconds = totalSeconds % 60; // Remaining seconds after extracting minutes
+  // 3. Convert milliseconds to hours, minutes, and seconds
+  const totalSeconds = Math.floor(deltaMilliseconds / 1000);
+  const hours = Math.floor(totalSeconds / 3600); // Calculate hours
+  const minutes = Math.floor((totalSeconds % 3600) / 60); // Calculate remaining minutes
+  const seconds = totalSeconds % 60; // Calculate remaining seconds
 
-    // 4. Format minutes and seconds to always have two digits (e.g., 5 -> "05")
-    const formattedMinutes = String(minutes).padStart(2, '0');
-    const formattedSeconds = String(seconds).padStart(2, '0');
+  // 4. Format hours, minutes, and seconds to always have two digits
+  const formattedHours = String(hours).padStart(2, '0');
+  const formattedMinutes = String(minutes).padStart(2, '0');
+  const formattedSeconds = String(seconds).padStart(2, '0');
 
-    return `${formattedMinutes}:${formattedSeconds}`;
-  };
+  // 5. Return the new HH:MM:SS format
+  return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+};
 
   return {
     queueColumns: QUEUE_LIST_COLUMNS,
     orderStatusList: ORDER_STATUS_LIST,
     changeOrderStatus,
     orderStatusClass,
-    calculateDeltaMMSS,
+    calculateDeltaHHMMSS,
   };
 };

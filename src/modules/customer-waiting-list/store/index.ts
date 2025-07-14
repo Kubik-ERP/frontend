@@ -16,14 +16,12 @@ export const useCustomerWaitingListStore = defineStore('customer-waiting-list', 
      * @access private
      */
     async customerWaitingList(
-      params: { 'X-STORE-ID': string; page: number; pageSize: number },
       requestConfigurations: AxiosRequestConfig,
     ) {
       try {
         this.customerWaitingList_isLoading = true;
 
         const response = await httpClient.get(CUSTOMER_WAITING_LIST_BASE_ENDPOINT, {
-          params,
           ...requestConfigurations,
         });
 

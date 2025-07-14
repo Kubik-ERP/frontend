@@ -1,34 +1,25 @@
 import { CUSTOMER_WAITING_LIST_REQUEST } from '../constants';
 
 import { useCustomerWaitingListStore } from '../store';
-import { useOutletStore } from '@/modules/outlet/store';
 
 export const useCustomerWaitingListService = () => {
   const store = useCustomerWaitingListStore();
 
-  const outletStore = useOutletStore();
-
   const { customerWaitingList_isLoading } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
-  const getCustomerWaitingList = async (page: number, pageSize: number): Promise<unknown> => {
+  const getCustomerWaitingList = async (): Promise<unknown> => {
     try {
-      const storeID = outletStore.outlet_currentOutlet?.id as string;
+      const response = await store.customerWaitingList({
+        ...httpAbort_registerAbort(CUSTOMER_WAITING_LIST_REQUEST),
+      });
 
-      const params = {
-        'X-STORE-ID': storeID,
-        page,
-        pageSize,
-      };
-
-      return await store.customerWaitingList(
-        {
-          ...params,
+      return Promise.resolve({
+        data: {
+          completedOrders: response.completedOrders,
+          preparingOrders: response.preparingOrders,
         },
-        {
-          ...httpAbort_registerAbort(CUSTOMER_WAITING_LIST_REQUEST),
-        },
-      );
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);

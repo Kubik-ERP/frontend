@@ -14,7 +14,7 @@ const {
   dailySalesList_fetchListInvoices,
 } = useDailySalesListService();
 
-const { queueColumns, orderStatusList, orderStatusClass, calculateDeltaMMSS, changeOrderStatus } = useQueueService();
+const { queueColumns, orderStatusList, orderStatusClass, calculateDeltaHHMMSS, changeOrderStatus } = useQueueService();
 
 const onOrderStatusChange = async (id: string, orderStatus: string) => {
   await changeOrderStatus(id, orderStatus)
@@ -218,7 +218,7 @@ onMounted(async () => {
 
           <template v-else-if="column.value === 'duration'">
             <span class="font-normal text-sm text-text-primary"
-              >{{ calculateDeltaMMSS(data.createdAt, data.paidAt) }}
+              >{{ calculateDeltaHHMMSS(data.createdAt, data.paidAt) }}
             </span>
           </template>
 
