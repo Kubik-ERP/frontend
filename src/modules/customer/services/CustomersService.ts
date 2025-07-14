@@ -31,18 +31,6 @@ export const useCustomerService = () => {
     address: '',
   });
 
-  // const customer_formRules = computed(() => ({
-  //   name: { required },
-  //   email: { required, email },
-  //   number: { required, numeric, minLength: minLength(10), maxLength: maxLength(11) },
-  //   // id: { required, minLength: minLength(16), maxLength: maxLength(16) },
-  //   address: { required },
-  //   tags: {  },
-  //   code: { required },
-  //   dob: { required },
-  //   gender: { required },
-  // }));
-
   const customer_formRules = computed(() => ({
     name: { required },
   }));
@@ -57,13 +45,11 @@ export const useCustomerService = () => {
 
   const getCustomerTags = async (): Promise<ITag[]> => {
     const response = await axios.get(API_URL_TAGS);
-    console.log('🚀 ~ getCustomerTags ~ response:', response);
     return response.data.data;
   };
 
   const getAllCustomers = async (page: number, limit: number, search: string): Promise<ICustomerResponse> => {
     const response = await axios.get(`${API_URL}?page=${page}&limit=${limit}&search=${search}`);
-    // console.log("🚀 ~ getAllCustomers ~ response:", response)
     const customers: ICustomer[] = response.data.data.data.map((item: ICustomer) => ({
       id: item.id,
       name: item.name,
@@ -80,8 +66,7 @@ export const useCustomerService = () => {
 
     return {
       customers,
-      lastPage: response.data.data.lastPage,
-      total: response.data.data.total,
+      meta: response.data.data.meta
     };
   };
 

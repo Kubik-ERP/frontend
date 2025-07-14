@@ -176,7 +176,7 @@ onMounted(async () => {
             }}</span>
           </template>
           <template v-if="column.value === 'orderNumber'">
-            <router-link :to="`/invoice/${data.id}`">
+            <router-link :to="`/invoice/${data.invoiceId}`">
               <span class="font-normal text-sm text-primary">#{{ data[column.value] }}</span>
             </router-link>
           </template>

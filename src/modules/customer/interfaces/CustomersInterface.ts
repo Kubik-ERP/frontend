@@ -23,10 +23,16 @@ export interface ICustomer {
   customersHasTag?: ICustomersHasTag[];
 }
 
+export interface IPageMeta {
+  totalData: number;
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+}
+
 export interface ICustomerResponse {
   customers: ICustomer[];
-  lastPage: number;
-  total: number;
+  meta: IPageMeta
 }
 
 export interface ICustomerFormData {

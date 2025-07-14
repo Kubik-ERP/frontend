@@ -27,14 +27,14 @@ const { customerDetails_isLoading, customerDetails } = useCustomerDetailService(
           </PrimeVueButton>
         </router-link>
       </div>
-      <p>
+      <!-- <p>
         <template v-if="customerDetails_isLoading">
           <PrimeVueSkeleton width="20rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
         </template>
         <template v-else>
-          {{ customerDetails.email }}
+          {{ customerDetails.id }}
         </template>
-      </p>
+      </p> -->
     </section>
 
     <section>
@@ -107,9 +107,9 @@ const { customerDetails_isLoading, customerDetails } = useCustomerDetailService(
             <template v-else>
               <PrimeVueChip
                 v-for="tag in customerDetails.tags"
-                :key="tag"
+                :key="tag.id"
                 class="w-fit text-xs font-semibold bg-primary-background text-primary px-1.5 py-1"
-                >{{ tag }}</PrimeVueChip
+                >{{ tag.name }}</PrimeVueChip
               >
             </template>
           </div>

@@ -96,9 +96,9 @@ watch(
                   </span>
                 </PrimeVueChip>
               </div>
-              <div class="flex items-center justify-between">
-                <span class="font-semibold text-disabled">Rp</span>
-                <span class="font-bold text-primary text-2xl">{{detail.paid}}</span>
+              <div class="flex items-center justify-end">
+                <!-- <span class="font-semibold text-disabled">Rp</span> -->
+                <span class="font-bold text-primary text-2xl">{{useCurrencyFormat(detail.paid)}}</span>
               </div>
             </div>
           </div>
@@ -107,9 +107,9 @@ watch(
               <div class="flex items-center gap-2 min-h-8">
                 <h6 class="font-semibold text-black text-sm">Unpaid Amount</h6>
               </div>
-              <div class="flex items-center justify-between">
-                <span class="font-semibold text-disabled">Rp</span>
-                <span class="font-bold text-error-main text-2xl">{{ detail.unpaid }}</span>
+              <div class="flex items-center justify-end">
+                <!-- <span class="font-semibold text-disabled">Rp</span> -->
+                <span class="font-bold text-error-main text-2xl">{{ useCurrencyFormat(detail.unpaid) }}</span>
               </div>
             </div>
           </div>
