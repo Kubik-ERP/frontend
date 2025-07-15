@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
+// import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
 import { useQueueService } from '../services/queue.service';
 // const {
 //   dailySalesList_getClassOfOrderType,

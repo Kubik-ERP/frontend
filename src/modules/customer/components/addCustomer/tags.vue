@@ -42,10 +42,10 @@ const filterTags = () => {
       tag.name.toLowerCase().includes(search.value.toLowerCase()),
   );
 };
-const openListbox = () => {
-  isListBoxOpen.value = true;
-  filterTags(); // Make sure to filter when dropdown opens
-};
+// const openListbox = () => {
+//   isListBoxOpen.value = true;
+//   filterTags(); // Make sure to filter when dropdown opens
+// };
 const addTag = selectedTag => {
   if (!selectedTags.value.some(tag => tag.name === selectedTag.name)) {
     selectedTags.value.push(selectedTag);

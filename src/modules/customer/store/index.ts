@@ -4,7 +4,7 @@ import {
   CUSTOMER_SALES_ORDER_ENDPOINT,
 } from '../constants';
 
-import type { ICustomerDetailsRequestQuery } from '../interfaces/CustomerDetailInterface';
+// import type { ICustomerDetailsRequestQuery } from '../interfaces/CustomerDetailInterface';
 
 import type { AxiosRequestConfig } from 'axios';
 
