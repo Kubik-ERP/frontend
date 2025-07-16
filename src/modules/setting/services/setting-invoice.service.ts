@@ -121,34 +121,33 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
       // --- MAPPING LOGIC ---
 
       // Map top-level properties
-      settingInvoice_formData.companyLogoUrl = setting_invoice.value?.companyLogoUrl;
-      settingInvoice_formData.storeId = setting_invoice.value?.storeId;
+      settingInvoice_formData.companyLogoUrl = setting_invoice.value?.companyLogoUrl ?? null;
 
       // Map general settings
       settingInvoice_formData.generalSettings.isAutomaticallyPrintReceipt =
-        setting_invoice.value?.isAutomaticallyPrintReceipt;
+        setting_invoice.value?.isAutomaticallyPrintReceipt ?? false;
       settingInvoice_formData.generalSettings.isAutomaticallyPrintKitchen =
-        setting_invoice.value?.isAutomaticallyPrintKitchen;
+        setting_invoice.value?.isAutomaticallyPrintKitchen ?? false;
       settingInvoice_formData.generalSettings.isAutomaticallyPrintTable =
-        setting_invoice.value?.isAutomaticallyPrintTable;
+        setting_invoice.value?.isAutomaticallyPrintTable ?? false;
 
       // Map content settings
-      settingInvoice_formData.contentSettings.footerText = setting_invoice.value?.footerText;
-      settingInvoice_formData.contentSettings.isShowCompanyLogo = setting_invoice.value?.isShowCompanyLogo;
-      settingInvoice_formData.contentSettings.isShowStoreLocation = setting_invoice.value?.isShowStoreLocation;
-      settingInvoice_formData.contentSettings.isHideCashierName = setting_invoice.value?.isHideCashierName;
-      settingInvoice_formData.contentSettings.isHideOrderType = setting_invoice.value?.isHideOrderType;
-      settingInvoice_formData.contentSettings.isHideQueueNumber = setting_invoice.value?.isHideQueueNumber;
-      settingInvoice_formData.contentSettings.isShowTableNumber = setting_invoice.value?.isShowTableNumber;
-      settingInvoice_formData.contentSettings.isHideItemPrices = setting_invoice.value?.isHideItemPrices;
-      settingInvoice_formData.contentSettings.isShowFooter = setting_invoice.value?.isShowFooter;
+      settingInvoice_formData.contentSettings.footerText = setting_invoice.value?.footerText ?? null;
+      settingInvoice_formData.contentSettings.isShowCompanyLogo = setting_invoice.value?.isShowCompanyLogo ?? false;
+      settingInvoice_formData.contentSettings.isShowStoreLocation = setting_invoice.value?.isShowStoreLocation ?? false;
+      settingInvoice_formData.contentSettings.isHideCashierName = setting_invoice.value?.isHideCashierName ?? false;
+      settingInvoice_formData.contentSettings.isHideOrderType = setting_invoice.value?.isHideOrderType ?? false;
+      settingInvoice_formData.contentSettings.isHideQueueNumber = setting_invoice.value?.isHideQueueNumber ?? false;
+      settingInvoice_formData.contentSettings.isShowTableNumber = setting_invoice.value?.isShowTableNumber ?? false;
+      settingInvoice_formData.contentSettings.isHideItemPrices = setting_invoice.value?.isHideItemPrices ?? false;
+      settingInvoice_formData.contentSettings.isShowFooter = setting_invoice.value?.isShowFooter ?? false;
       // Note: companyLogo might need special handling if it's a file upload object
 
       // Map invoice number configurations
       settingInvoice_formData.invoiceNumberConfigurations.invoicePreview = "202508010001 ~ini bentuknya gmn ya?~"; // This is a placeholder, adjust as needed
-      settingInvoice_formData.invoiceNumberConfigurations.incrementBy = setting_invoice.value?.incrementBy;
-      settingInvoice_formData.invoiceNumberConfigurations.resetSequence = setting_invoice.value?.resetSequence;
-      settingInvoice_formData.invoiceNumberConfigurations.startingNumber = setting_invoice.value?.startingNumber;
+      settingInvoice_formData.invoiceNumberConfigurations.incrementBy = setting_invoice.value?.incrementBy ?? null;
+      settingInvoice_formData.invoiceNumberConfigurations.resetSequence = setting_invoice.value?.resetSequence ?? null;
+      settingInvoice_formData.invoiceNumberConfigurations.startingNumber = setting_invoice.value?.startingNumber ?? null;
       // Note: 'invoicePreview' is not available in your API response, so its value remains unchanged.
 
       settingInvoice_mappingInvoiceDetail();
