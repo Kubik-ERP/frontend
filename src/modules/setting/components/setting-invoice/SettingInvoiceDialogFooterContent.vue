@@ -5,8 +5,18 @@ import type { ISettingInvoiceProvided } from '../../interfaces/setting-invoice.i
 /**
  * @description Inject all the data and methods what we need
  */
-const { settingInvoice_formData, settingInvoice_formValidations, settingInvoice_onCloseEditFooterContentDialog } =
-  inject<ISettingInvoiceProvided>('settingInvoice')!;
+const {
+  settingInvoice_formData,
+  footerText_formData,
+  settingInvoice_formValidations,
+  settingInvoice_onCloseEditFooterContentDialog,
+} = inject<ISettingInvoiceProvided>('settingInvoice')!;
+
+const settingInvoice_onUpdateFooterContent = () => {
+  // Here you can handle the update logic for footer content
+  settingInvoice_formData.contentSettings.footerText = footerText_formData;
+  settingInvoice_onCloseEditFooterContentDialog();
+};
 </script>
 
 <template>
@@ -25,7 +35,7 @@ const { settingInvoice_formData, settingInvoice_formValidations, settingInvoice_
         :validators="settingInvoice_formValidations.contentSettings.footerText"
       >
         <PrimeVueTextarea
-          v-model="settingInvoice_formData.contentSettings.footerText"
+          v-model="footerText_formData"
           class="text-sm w-full"
           :class="{ ...classes }"
           rows="5"
@@ -49,6 +59,7 @@ const { settingInvoice_formData, settingInvoice_formValidations, settingInvoice_
           label="Update"
           type="button"
           :disabled="settingInvoice_formValidations.contentSettings.footerText.$invalid"
+          @click="settingInvoice_onUpdateFooterContent"
         />
       </footer>
     </template>
