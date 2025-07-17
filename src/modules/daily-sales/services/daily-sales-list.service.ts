@@ -199,6 +199,6 @@ export const useDailySalesListService = (): IDailySalesListProvided => {
     dailySalesList_typesOfOrderType: DAILY_SALES_LIST_TYPES_OF_ORDER_TYPE,
     dailySalesList_typesOfPaymentStatus: DAILY_SALES_LIST_TYPES_OF_PAYMENT_STATUS,
     dailySalesList_typesOfOrderStatus: DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS,
-    dailySalesList_values: dailySales_invoiceLists.value,
+    dailySalesList_values: dailySales_invoiceLists?.value || [],
   };
 };

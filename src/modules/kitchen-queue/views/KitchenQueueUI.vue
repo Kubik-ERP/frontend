@@ -3,6 +3,7 @@
 import KitchenQueueCtaButton from '../components/KitchenQueueCtaButton.vue';
 import KitchenQueueDummyItemHeight from '../components/KitchenQueueDummyItemHeight.vue';
 import KitchenQueueInvoicePreview from '../components/KitchenQueueInvoicePreview.vue';
+import KitchenQueueLoading from '../components/KitchenQueueLoading.vue';
 import KitchenQueueNavbar from '../components/KitchenQueueNavbar.vue';
 
 // Service
@@ -11,10 +12,19 @@ import { useKitchenQueue } from '../services/kitchen-queue.service';
 
 const {
   kitchenQueue_invoices,
+  kitchenQueue_isLoading,
   kitchenQueue_dummyRefs,
   kitchenQueue_columns,
   kitchenQueue_durations,
+  kitchenQueue_meterValue,
+  kitchenQueue_scrollContainer,
   kitchenQueue_generateColor,
+  kitchenQueue_generateChipColor,
+  kitchenQueue_handleDebounceUpdateStatus,
+  kitchenQueue_handleScrollHorizontal,
+  kitchenQueue_updateScrollPosition,
+  kitchenQueue_handleUpdateStatus,
+  kitchenQueue_handleUpdateStatusBulk,
 } = useKitchenQueue();
 
 /**
@@ -22,10 +32,19 @@ const {
  */
 provide<IKitchenQueueProvided>('kitchenQueue', {
   kitchenQueue_invoices,
+  kitchenQueue_isLoading,
   kitchenQueue_dummyRefs,
   kitchenQueue_columns,
   kitchenQueue_durations,
+  kitchenQueue_meterValue,
+  kitchenQueue_scrollContainer,
   kitchenQueue_generateColor,
+  kitchenQueue_generateChipColor,
+  kitchenQueue_handleDebounceUpdateStatus,
+  kitchenQueue_handleScrollHorizontal,
+  kitchenQueue_updateScrollPosition,
+  kitchenQueue_handleUpdateStatus,
+  kitchenQueue_handleUpdateStatusBulk,
 });
 </script>
 
@@ -35,8 +54,9 @@ provide<IKitchenQueueProvided>('kitchenQueue', {
     <KitchenQueueCtaButton />
 
     <section id="kitchen-queue-content" class="w-full flex-1 overflow-hidden mt-2 box-border">
-      <KitchenQueueDummyItemHeight />
-      <KitchenQueueInvoicePreview />
+      <KitchenQueueDummyItemHeight v-if="kitchenQueue_isLoading" />
+      <KitchenQueueInvoicePreview v-if="!kitchenQueue_isLoading" />
+      <KitchenQueueLoading v-else />
     </section>
   </section>
 </template>

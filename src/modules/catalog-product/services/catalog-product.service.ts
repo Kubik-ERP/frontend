@@ -6,13 +6,13 @@ import {
   ICategoryHasProduct,
   IVariantHasProduct,
   IProductResponse,
-} from '@/modules/catalog/interfaces/Product/ProductInterface.ts';
+  ICategory
+} from '../interfaces';
 
 import useVuelidate from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
 
 import eventBus from '@/plugins/mitt';
-import { ICategory } from '../../interfaces/Category/CategoryInterface';
 
 const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/products`;
 

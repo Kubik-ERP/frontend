@@ -1,4 +1,4 @@
-export const QUEUE_LIST_REQUEST = 'QUEUE_LIST_REQUEST'
+export const DAILY_SALES_LIST_REQUEST = 'QUEUE_LIST_REQUEST'
 
 export const QUEUE_LIST_COLUMNS: IColumnDataTable[] = [
   {
@@ -9,7 +9,7 @@ export const QUEUE_LIST_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Invoice ID',
     sortable: true,
-    value: 'invoiceNumber',
+    value: 'orderNumber',
   },
   {
     label: 'Purchase Date',
@@ -24,7 +24,7 @@ export const QUEUE_LIST_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Table Number',
     sortable: false,
-    value: 'tableCode',
+    value: 'tableNumber',
   },
   {
     label: 'Order Type',
@@ -46,15 +46,15 @@ export const QUEUE_LIST_COLUMNS: IColumnDataTable[] = [
 export const ORDER_TYPE_LIST = [
   {
     label: 'Dine In',
-    value: 'Dine In',
+    value: 'dine_in',
   },
   {
     label: 'Takeaway',
-    value: 'Takeaway',
+    value: 'take_away',
   },
   {
     label: 'Self Order',
-    value: 'Self Order',
+    value: 'self_order',
   },
 
 ]

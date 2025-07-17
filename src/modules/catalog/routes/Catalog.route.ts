@@ -8,7 +8,7 @@ import { LAYOUT_OPTIONS } from '@/app/constants';
 
 // Routes
 import customerRoutes from './customer.router';
-import productRoutes from './product.router';
+// import productRoutes from '@/modules/catalog-product/routes/catalog-product.route';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -30,7 +30,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       customerRoutes,
-      productRoutes,
+      // productRoutes,
     ],
   },
 ];

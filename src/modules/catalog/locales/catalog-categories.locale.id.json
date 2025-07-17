@@ -1,0 +1,41 @@
+{
+  "table": {
+    "title": "Kategori",
+    "searchPlaceholder": "Cari Kata Kunci",
+    "addButton": "Tambah Kategori",
+    "table": {
+      "headerCategory": "Kategori",
+      "headerDescription": "Deskripsi"
+    },
+    "pagination": {
+      "previous": "Sebelumnya",
+      "next": "Berikutnya"
+    }
+  },
+  "popover": {
+    "edit": "Ubah",
+    "delete": "Hapus"
+  },
+  "modal": {
+    "title": {
+      "add": "Tambah Kategori",
+      "edit": "Ubah Kategori",
+      "delete": "Hapus Kategori"
+    },
+    "photoLabel": "Foto (Opsional)",
+    "selectImageButton": "Pilih Gambar",
+    "nameLabel": "Nama Kategori",
+    "notes": {
+      "label": "Catatan",
+      "optional": "(Opsional)"
+    },
+    "cancelButton": "Batal",
+    "addButton": "Tambah",
+    "editButton": "Ubah",
+    "deleteButton": "Hapus Kategori",
+    "delete": {
+      "title": "Anda yakin ingin menghapus kategori ini?",
+      "description": "Tindakan ini tidak dapat dibatalkan, dan kategori akan dihapus"
+    }
+  }
+}

@@ -9,7 +9,11 @@ import {
 } from '../constants/setting-invoice.constant';
 
 // Interfaces
-import type { ISettingInvoiceFormData, ISettingInvoiceProvided } from '../interfaces/setting-invoice.interface';
+import type {
+  ISettingInvoiceFormData,
+  ISettingInvoiceProvided,
+  ISettingInvoiceNumberConfigurations,
+} from '../interfaces/setting-invoice.interface';
 import type { FileUploadSelectEvent } from 'primevue';
 
 // Plugins
@@ -17,6 +21,7 @@ import eventBus from '@/plugins/mitt';
 
 // Stores
 import { useSettingStore } from '../store';
+import { useOutletStore } from '@/modules/outlet/store';
 
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
@@ -30,6 +35,9 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
    * @description Injected variables
    */
   const store = useSettingStore(); // Instance of the store
+
+  const storeId = useOutletStore();
+
   const { httpAbort_registerAbort } = useHttpAbort();
   const { setting_invoice, setting_isLoading } = storeToRefs(store);
 
@@ -39,7 +47,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
   const settingInvoice_activeTab = ref<string>('cashier-invoice');
   const settingInvoice_formData = reactive<ISettingInvoiceFormData>({
     companyLogoUrl: null,
-    storeId: '8681d73d-8d50-4b50-b4fd-63357660e60d',
+    storeId: storeId.outlet_currentOutlet?.id as string,
     generalSettings: {
       isAutomaticallyPrintReceipt: true,
       isAutomaticallyPrintKitchen: true,
@@ -70,6 +78,16 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
       startingNumber: 1,
     },
   });
+
+  const invoiceNumberConfigurations_formData = reactive<ISettingInvoiceNumberConfigurations>({
+    invoicePreview: '202508010001',
+    incrementBy: 1,
+    resetSequence: 'Daily',
+    startingNumber: 1,
+  });
+
+  const footerText_formData = ref<string | null>('please edit footer text here');
+
   const settingInvoice_isEditableInvoiceConfiguration = ref<boolean>(false);
 
   /**
@@ -97,6 +115,40 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
       await store.fetchSetting_detailInvoiceSetting(settingInvoice_formData.storeId, {
         ...httpAbort_registerAbort(SETTING_INVOICE_DETAIL_REQUEST),
       });
+      console.log('setting_invoice.value', setting_invoice.value);
+      console.log('settingInvoice_formData', settingInvoice_formData);
+
+      // --- MAPPING LOGIC ---
+
+      // Map top-level properties
+      settingInvoice_formData.companyLogoUrl = setting_invoice.value?.companyLogoUrl ?? null;
+
+      // Map general settings
+      settingInvoice_formData.generalSettings.isAutomaticallyPrintReceipt =
+        setting_invoice.value?.isAutomaticallyPrintReceipt ?? false;
+      settingInvoice_formData.generalSettings.isAutomaticallyPrintKitchen =
+        setting_invoice.value?.isAutomaticallyPrintKitchen ?? false;
+      settingInvoice_formData.generalSettings.isAutomaticallyPrintTable =
+        setting_invoice.value?.isAutomaticallyPrintTable ?? false;
+
+      // Map content settings
+      settingInvoice_formData.contentSettings.footerText = setting_invoice.value?.footerText ?? null;
+      settingInvoice_formData.contentSettings.isShowCompanyLogo = setting_invoice.value?.isShowCompanyLogo ?? false;
+      settingInvoice_formData.contentSettings.isShowStoreLocation = setting_invoice.value?.isShowStoreLocation ?? false;
+      settingInvoice_formData.contentSettings.isHideCashierName = setting_invoice.value?.isHideCashierName ?? false;
+      settingInvoice_formData.contentSettings.isHideOrderType = setting_invoice.value?.isHideOrderType ?? false;
+      settingInvoice_formData.contentSettings.isHideQueueNumber = setting_invoice.value?.isHideQueueNumber ?? false;
+      settingInvoice_formData.contentSettings.isShowTableNumber = setting_invoice.value?.isShowTableNumber ?? false;
+      settingInvoice_formData.contentSettings.isHideItemPrices = setting_invoice.value?.isHideItemPrices ?? false;
+      settingInvoice_formData.contentSettings.isShowFooter = setting_invoice.value?.isShowFooter ?? false;
+      // Note: companyLogo might need special handling if it's a file upload object
+
+      // Map invoice number configurations
+      settingInvoice_formData.invoiceNumberConfigurations.invoicePreview = "202508010001 ~ini bentuknya gmn ya?~"; // This is a placeholder, adjust as needed
+      settingInvoice_formData.invoiceNumberConfigurations.incrementBy = setting_invoice.value?.incrementBy ?? null;
+      settingInvoice_formData.invoiceNumberConfigurations.resetSequence = setting_invoice.value?.resetSequence ?? null;
+      settingInvoice_formData.invoiceNumberConfigurations.startingNumber = setting_invoice.value?.startingNumber ?? null;
+      // Note: 'invoicePreview' is not available in your API response, so its value remains unchanged.
 
       settingInvoice_mappingInvoiceDetail();
     } catch (error: unknown) {
@@ -291,6 +343,8 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
    * @description handle business logic for close dialog edit footer content
    */
   const settingInvoice_onCloseEditFooterContentDialog = (): void => {
+    footerText_formData.value = settingInvoice_formData.contentSettings.footerText;
+
     const argsEventEmitter: IPropsDialog = {
       id: 'setting-invoice-dialog-footer-content',
       isOpen: false,
@@ -303,6 +357,8 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
    * @description handle business logic for close dialog edit invoice number configuration
    */
   const settingInvoice_onCloseEditInvoiceNumberConfigurationDialog = (): void => {
+    Object.assign(invoiceNumberConfigurations_formData, settingInvoice_formData.invoiceNumberConfigurations);
+
     const argsEventEmitter: IPropsDialog = {
       id: 'setting-invoice-dialog-invoice-configuration',
       isOpen: false,
@@ -315,6 +371,8 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
    * @description Handle business logic for show dialog edit footer content
    */
   const settingInvoice_onShowEditFooterContentDialog = (): void => {
+    footerText_formData.value = settingInvoice_formData.contentSettings.footerText;
+
     const argsEventEmitter: IPropsDialog = {
       id: 'setting-invoice-dialog-footer-content',
       isOpen: true,
@@ -329,6 +387,8 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
    * @description Handle business logic for show dialog edit invoice number configuration
    */
   const settingInvoice_onShowEditInvoiceNumberConfigurationDialog = (): void => {
+    Object.assign(invoiceNumberConfigurations_formData, settingInvoice_formData.invoiceNumberConfigurations);
+
     const argsEventEmitter: IPropsDialog = {
       id: 'setting-invoice-dialog-invoice-configuration',
       isOpen: true,
@@ -381,6 +441,8 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
     settingInvoice_bindings,
     settingInvoice_fetchSettingDetail,
     settingInvoice_formData,
+    invoiceNumberConfigurations_formData,
+    footerText_formData: footerText_formData.value,
     settingInvoice_formValidations,
     settingInvoice_isEditableInvoiceConfiguration,
     settingInvoice_isLoading: setting_isLoading,

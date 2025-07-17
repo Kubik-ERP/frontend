@@ -8,6 +8,7 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
 const {
   cashierOrderSummary_modalPlaceOrderConfirmation,
   cashierOrderSummary_isButtonPlaceOrderDisabled,
+  cashierOrderSummary_modalPaymentMethod,
   cashierOrderSummary_handleSaveUnpaidOrder,
   cashierOrderSummary_isLoadingUnpaidOrder,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
@@ -30,7 +31,7 @@ const {
     <PrimeVueButton
       label="Place Order"
       class="p-3 w-1/2 bg-primary border-primary"
-      :disabled="cashierOrderSummary_isButtonPlaceOrderDisabled"
+      :disabled="cashierOrderSummary_isButtonPlaceOrderDisabled || cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod === '' ||  cashierOrderSummary_isLoadingUnpaidOrder"
       @click="cashierOrderSummary_modalPlaceOrderConfirmation.show = true"
     >
       <template #default>

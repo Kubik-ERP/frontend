@@ -97,6 +97,10 @@ export const DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS: IDropdownItem[] = [
     value: 'waiting',
   },
   {
+    label: 'Completed',
+    value: 'completed',
+  },
+  {
     label: 'Served',
     value: 'served',
   },

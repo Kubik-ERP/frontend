@@ -223,10 +223,8 @@ onMounted(() => {
 });
 </script>
 
-
 <template>
   <div class="m-4 p-1 border border-gray-200 rounded-lg shadow-2xl">
-
     <!-- <AppBaseDataTable
     header-title="Categories"
     :columns="category_columns"
@@ -247,18 +245,22 @@ onMounted(() => {
     >
       <template #header>
         <div class="flex justify-between">
-          <h1 class="text-2xl font-bold">Categories</h1>
+          <h1 class="text-2xl font-bold">{{ useLocalization('table.title') }}</h1>
           <div class="flex gap-4">
             <form @submit.prevent="handleSearch">
               <PrimeVueIconField>
                 <PrimeVueInputIcon><img :src="searchSVG" alt="" /></PrimeVueInputIcon>
-                <PrimeVueInputText v-model="search" placeholder="Keyword Search" />
+                <PrimeVueInputText
+                  v-model="search"
+                  :placeholder="useLocalization('table.searchPlaceholder')"
+                  @input="handleSearch"
+                />
               </PrimeVueIconField>
             </form>
             <PrimeVueButton
               type="button"
               severity="info"
-              label="Add Category"
+              :label="useLocalization('table.addButton')"
               class="bg-primary border-primary"
               @click="openAddDialog()"
             >
@@ -272,8 +274,10 @@ onMounted(() => {
 
       <template #empty>No categories found.</template>
 
-      <!-- <PrimeVueColumn sortable field="id" header="Category ID" style="width: 25%" /> -->
-      <PrimeVueColumn header="Category" class="w-1/2">
+      <PrimeVueColumn class="w-1/2">
+        <template #header>
+          <span class="flex justify-center">{{ useLocalization('table.table.headerCategory') }}</span>
+        </template>
         <template #body="slotProps">
           <template v-if="loading">
             <PrimeVueSkeleton height="1.5rem" />
@@ -284,10 +288,13 @@ onMounted(() => {
         </template>
       </PrimeVueColumn>
 
-      <PrimeVueColumn header="Description" class="w-1/2">
+      <PrimeVueColumn class="w-1/2">
+        <template #header>
+          <span class="flex justify-center">{{ useLocalization('table.table.headerDescription') }}</span>
+        </template>
         <template #body="slotProps">
           <template v-if="loading">
-            <PrimeVueSkeleton  height="1.5rem" />
+            <PrimeVueSkeleton height="1.5rem" />
           </template>
           <template v-else>
             {{ slotProps.data.description }}
@@ -313,14 +320,14 @@ onMounted(() => {
           <!-- Previous Page Button -->
           <PrimeVueButton
             variant="text"
-            label="Previous"
+            :label="useLocalization('table.pagination.previous')"
             class="border border-primary text-primary hover:bg-transparent"
             @click="prevPage()"
           >
             <template #icon>
               <img :src="chevronLeftSVG" alt="" />
             </template>
-        </PrimeVueButton>
+          </PrimeVueButton>
 
           <div class="flex gap-1">
             <PrimeVueButton
@@ -339,14 +346,14 @@ onMounted(() => {
           <!-- Next Page Button -->
           <PrimeVueButton
             variant="text"
-            label="Next"
+            :label="useLocalization('table.pagination.next')"
             class="border border-primary text-primary hover:bg-transparent flex-row-reverse"
             @click="nextPage()"
           >
             <template #icon>
               <img :src="chevronRightSVG" alt="" />
             </template>
-        </PrimeVueButton>
+          </PrimeVueButton>
         </div>
       </template>
     </PrimeVueDataTable>
@@ -356,7 +363,7 @@ onMounted(() => {
       <div class="flex flex-col items-start">
         <PrimeVueButton
           variant="text"
-          label="Edit"
+          :label="useLocalization('popover.edit')"
           class="text-black"
           @click="selected && displayEdit(selected.id)"
         >
@@ -364,7 +371,7 @@ onMounted(() => {
             <img :src="editSVG" alt="" />
           </template>
         </PrimeVueButton>
-        <PrimeVueButton variant="text" label="Delete" class="text-red-500" @click="isDeleteOpen = true">
+        <PrimeVueButton variant="text" :label="useLocalization('popover.delete')" class="text-red-500" @click="isDeleteOpen = true">
           <template #icon>
             <img :src="deleteSVG" alt="" />
           </template>
@@ -373,10 +380,10 @@ onMounted(() => {
     </PrimeVuePopover>
 
     <!-- Add Dialog -->
-    <PrimeVueDialog v-model:visible="isAddOpen" modal header="Add Category" class="w-[45rem]" @hide="resetForm()">
+    <PrimeVueDialog v-model:visible="isAddOpen" modal :header="useLocalization('modal.title.add')" class="w-[45rem]" @hide="resetForm()">
       <form @submit.prevent="handleAddCategory">
         <div class="flex items-center flex-col">
-          <p>Photo (Optional)</p>
+          <p>{{useLocalization('modal.photoLabel')}}</p>
           <img
             class="rounded-lg mt-2 w-64 h-64 object-cover"
             :src="category_formData.imagePreview || 'https://placehold.co/250'"
@@ -388,7 +395,7 @@ onMounted(() => {
 
           <!-- PrimeVue Button as file selector -->
           <PrimeVueButton
-            label="Select Image"
+            :label="useLocalization('modal.selectImageButton')"
             class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
             variant="outlined"
             @click="triggerFileInput"
@@ -396,14 +403,14 @@ onMounted(() => {
             <template #icon>
               <img :src="imageSVG" alt="" />
             </template>
-        </PrimeVueButton>
+          </PrimeVueButton>
         </div>
         <AppBaseFormGroup
           v-slot="{ classes }"
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="name"
-          name="Category Name"
+          :name="useLocalization('modal.nameLabel')"
           :validators="category_formValidations.name"
         >
           <PrimeVueInputText
@@ -417,12 +424,12 @@ onMounted(() => {
           />
         </AppBaseFormGroup>
         <div class="mb-8">
-          <label for="description">Notes <span class="text-gray-300">(Optional)</span></label>
+          <label for="description">{{useLocalization('modal.notes.label')}} <span class="text-gray-300">{{ useLocalization('modal.notes.optional') }}</span></label>
           <PrimeVueTextarea v-model="category_formData.description" auto-resize rows="5" class="w-full" />
         </div>
         <div class="flex justify-end gap-2">
           <PrimeVueButton
-            label="Cancel"
+            :label="useLocalization('modal.cancelButton')"
             severity="info"
             variant="outlined"
             class="w-48"
@@ -432,7 +439,7 @@ onMounted(() => {
             "
           />
           <PrimeVueButton
-            label="Add"
+            :label="useLocalization('modal.addButton')"
             class="w-48 bg-primary border-primary"
             type="submit"
             :disabled="category_formValidations.$invalid"
@@ -445,14 +452,13 @@ onMounted(() => {
     <PrimeVueDialog
       v-model:visible="isEditOpen"
       modal
-      header="Edit Category"
+      :header="useLocalization('modal.title.edit')"
       class="w-[45rem]"
       @hide="resetForm()"
     >
       <form @submit.prevent="handleEditCategory">
-        <!-- {{ category_formData.imagePreview }} -->
         <div class="flex items-center flex-col">
-          <p>Photo (Optional)</p>
+          <p>{{useLocalization('modal.photoLabel')}}</p>
           <img
             class="rounded-lg mt-2 w-64 h-64 object-cover"
             :src="category_formData.imagePreview || 'https://placehold.co/250'"
@@ -464,7 +470,7 @@ onMounted(() => {
 
           <!-- PrimeVue Button as file selector -->
           <PrimeVueButton
-            label="Select Image"
+            :label="useLocalization('modal.selectImageButton')"
             class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
             variant="outlined"
             @click="triggerFileInput"
@@ -472,14 +478,14 @@ onMounted(() => {
             <template #icon>
               <img :src="imageSVG" alt="" />
             </template>
-        </PrimeVueButton>
+          </PrimeVueButton>
         </div>
         <AppBaseFormGroup
           v-slot="{ classes }"
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="name"
-          name="Category Name"
+          :name="useLocalization('modal.nameLabel')"
           :validators="category_formValidations.name"
         >
           <PrimeVueInputText
@@ -493,22 +499,22 @@ onMounted(() => {
           />
         </AppBaseFormGroup>
         <div class="mb-8">
-          <label for="description">Notes <span class="text-gray-300">(Optional)</span></label>
+          <label for="description">{{useLocalization('modal.notes.label')}} <span class="text-gray-300">{{ useLocalization('modal.notes.optional') }}</span></label>
           <PrimeVueTextarea v-model="category_formData.description" auto-resize rows="5" class="w-full" />
         </div>
         <div class="flex justify-end gap-2">
           <PrimeVueButton
-            label="Cancel"
+            :label="useLocalization('modal.cancelButton')"
             severity="info"
             variant="outlined"
             class="w-48"
             @click="
-              isEditOpen = false;
+              isAddOpen = false;
               resetForm();
             "
           />
           <PrimeVueButton
-            label="Edit"
+            :label="useLocalization('modal.editButton')"
             class="w-48 bg-primary border-primary"
             type="submit"
             :disabled="category_formValidations.$invalid"
@@ -522,15 +528,15 @@ onMounted(() => {
       <template #container>
         <div class="w-[35rem] p-8 text-center">
           <img :src="deletePolygonSVG" alt="Delete icon" class="mx-auto mb-8" />
-          <h1 class="text-2xl font-semibold mb-2">Are you sure want to delete this product category?</h1>
-          <p class="mb-6">This will affect the categorization of products that have already been created</p>
+          <h1 class="text-2xl font-semibold mb-2">{{ useLocalization('modal.delete.title') }}</h1>
+          <p class="mb-6">{{ useLocalization('modal.delete.description') }}</p>
           <div class="flex justify-center gap-4">
             <PrimeVueButton
-              label="Delete Category"
+              :label="useLocalization('modal.deleteButton')"
               class="w-40 text-red-500 bg-transparent border-none"
               @click="selected && handleDeleteCategory(selected.id)"
             />
-            <PrimeVueButton label="Cancel" class="w-40 bg-primary border-primary" @click="isDeleteOpen = false" />
+            <PrimeVueButton :label="useLocalization('modal.cancelButton')" class="w-40 bg-primary border-primary" @click="isDeleteOpen = false" />
           </div>
         </div>
       </template>
