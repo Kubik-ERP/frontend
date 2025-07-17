@@ -31,6 +31,7 @@ const {
   invoice_invoiceData,
   invoice_modalPay,
   invoice_otherOptions,
+  invoice_invoiceDataValidation,
 
   invoice_handleDownload,
   invoice_handlePrint,
@@ -44,6 +45,7 @@ provide<IInvoiceProvided>('invoice', {
   invoice_invoiceData,
   invoice_modalPay,
   invoice_otherOptions,
+  invoice_invoiceDataValidation,
 
   invoice_handleDownload,
   invoice_handlePrint,
