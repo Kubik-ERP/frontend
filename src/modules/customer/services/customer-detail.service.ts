@@ -6,7 +6,6 @@ import type {
 
 import { useFormatDateLocal } from '@/app/composables';
 
-
 import { useCustomerDetailsStore } from '../store';
 
 import {
@@ -26,7 +25,7 @@ import { required } from '@vuelidate/validators';
 export const useCustomerDetailService = () => {
   const route = useRoute();
   const customerId = route.params.id as string;
-  
+
   const store = useCustomerDetailsStore();
 
   const { customerDetails_isLoading, customerDetails } = storeToRefs(store);
@@ -34,14 +33,16 @@ export const useCustomerDetailService = () => {
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const customerDetails_queryParams = reactive<ICustomerDetailsRequestQuery>({
+    start_date: null,
+    end_date: null,
     page: 1,
     limit: 10,
     search: '',
-    // payment_status: '',
-    // order_type: '',
+    payment_status: null,
+    order_type: null,
   });
 
-  function jsonToQueryString(params) {
+  function jsonToQueryString(params: ICustomerDetailsRequestQuery): string {
     const queryParts = [];
 
     // Iterate over each key in the params object
@@ -73,7 +74,10 @@ export const useCustomerDetailService = () => {
           });
         } else {
           // Handle simple key-value pairs like page and limit
-          queryParts.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+          // Handle simple key-value pairs like page and limit
+          queryParts.push(
+            `${encodeURIComponent(key)}=${encodeURIComponent(value instanceof Date ? value.toISOString() : String(value))}`,
+          );
         }
       }
     }
@@ -129,7 +133,7 @@ export const useCustomerDetailService = () => {
       const response = await store.salesInvoice_list(customerId, formattedParams, {
         ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
       });
-      return response
+      return response;
 
       // return await store.salesInvoice_list(id, params, {
       //   ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
@@ -144,25 +148,27 @@ export const useCustomerDetailService = () => {
   };
   const customerDetails_fetchSalesInvoice = async (): Promise<unknown> => {
     try {
-
-      const {start_date, end_date, ...otherFilter} = customerDetails_queryParams;
+      const { start_date, end_date, ...otherFilter } = customerDetails_queryParams;
 
       const filteredParams = {
         ...otherFilter,
-        start_date: start_date ? useFormatDateLocal(start_date) : null,
-        end_date: end_date ? useFormatDateLocal(end_date) : null
-      }
+        start_date: start_date ? useFormatDateLocal(new Date(start_date)) : null,
+        end_date: end_date ? useFormatDateLocal(new Date(end_date)) : null,
+      };
 
-      const formattedParams = jsonToQueryString(filteredParams);
+      const formattedParams = jsonToQueryString(filteredParams as ICustomerDetailsRequestQuery);
 
-      const response = await store.salesInvoice_list(customerId, formattedParams, {
+      // const response = await store.salesInvoice_list(customerId, formattedParams, {
+      //   ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
+      // });
+      await store.salesInvoice_list(customerId, formattedParams, {
         ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
       });
-      return {
-        detail: response.data,
-        invoice: response.data.invoices.data,
-        meta: response.data.invoices.meta
-      }
+      // return {
+      //   detail: response.data,
+      //   invoice: response.data.invoices.data,
+      //   meta: response.data.invoices.meta,
+      // };
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -172,7 +178,15 @@ export const useCustomerDetailService = () => {
     }
   };
 
-  
+  watch(
+    () => customerDetails_queryParams,
+    debounce(async () => {
+      await customerDetails_fetchSalesInvoice();
+    }, 500),
+    {
+      deep: true,
+    },
+  );
 
   const customerDetails_onChangePage = (page: number): void => {
     customerDetails_queryParams.page = page;

@@ -93,7 +93,7 @@ const { customerDetails_isLoading, customerDetails } = useCustomerDetailService(
               <PrimeVueSkeleton width="16rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
             </template>
             <template v-else>
-              {{ useFormatDate(customerDetails.dob, 'dd/mm/yyyy') }}
+              {{ useFormatDate(customerDetails.dob ?? '', 'dd/mm/yyyy') }}
             </template>
           </p>
         </div>
