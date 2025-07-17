@@ -5,7 +5,7 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_handlePlaceOrderDetail, cashierOrderSummary_modalPlaceOrderDetail } =
+const { cashierOrderSummary_handlePlaceOrderDetail, cashierOrderSummary_modalPlaceOrderDetail,cashierOrderSummary_calculateEstimation, cashierOrderSummary_paymentAmountFormValidation } =
   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 
 // Composables
@@ -31,7 +31,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               <span class="hidden lg:block text-grayscale-70 text-xs lg:text-sm">Enter payment amount</span>
             </div>
 
-            <PrimeVueButton class="text-black border-primary-border bg-primary-background">
+            <PrimeVueButton class="cursor-default text-black border-primary-border bg-primary-background">
               <div class="flex justify-between w-full">
                 <span class="text-sm lg:text-base">Payment Method</span>
                 <div class="gap-1 font-semibold flex items-center text-sm lg:text-base">
@@ -41,7 +41,11 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               </div>
             </PrimeVueButton>
 
-            <div class="flex flex-col gap-1">
+            <AppBaseFormGroup v-slot="{ classes }" class="flex flex-col gap-1"
+            label-for="payment-amount"
+            name="Payment Amount"
+            :validators="cashierOrderSummary_paymentAmountFormValidation.paymentAmount"
+            >
               <label for="payment-amount" class="text-xs lg:text-sm">Payment Amount</label>
 
               <PrimeVueIconField class="flex w-full">
@@ -50,25 +54,25 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                     <AppBaseSvg name="cash" class="!w-4 !h-4" />
                   </div>
                 </PrimeVueInputIcon>
-                <PrimeVueInputNumber id="payment-amount" class="w-full" placeholder="Enter payment amount" />
+                <PrimeVueInputNumber id="payment-amount" v-model="cashierOrderSummary_modalPlaceOrderDetail.form.paymentAmount" :class="[classes, 'w-full']" placeholder="Enter payment amount" />
               </PrimeVueIconField>
-            </div>
+            </AppBaseFormGroup>
 
             <div class="flex flex-col gap-2">
               <div class="flex justify-between">
                 <span>Money Received</span>
-                <span class="text-sm lg:text-base font-semibold">Rp 119.800.000</span>
+                <span class="text-sm lg:text-base font-semibold">{{ useCurrencyFormat(cashierOrderSummary_modalPlaceOrderDetail.form.paymentAmount) }}</span>
               </div>
               <div class="flex justify-between">
                 <span>Total Price</span>
-                <span class="text-sm lg:text-base font-semibold">Rp 119.800.000</span>
+                <span class="text-sm lg:text-base font-semibold">{{useCurrencyFormat(cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0)}}</span>
               </div>
 
               <hr />
 
               <div class="flex justify-between">
                 <span class="text-sm lg:text-base font-bold"> Change Amount </span>
-                <span class="text-sm lg:text-base font-semibold text-primary"> Rp 0 </span>
+                <span class="text-sm lg:text-base font-semibold text-primary"> {{ useCurrencyFormat((cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0) - cashierOrderSummary_modalPlaceOrderDetail.form.paymentAmount) }} </span>
               </div>
             </div>
             <div class="flex flex-col gap-2 justify-between"></div>
@@ -80,6 +84,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               type="button"
               label="Cancel"
               outlined
+              :disabled="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
               @click="closeCallback"
             ></PrimeVueButton>
 
@@ -87,8 +92,9 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               class="bg-primary border-none text-white py-2.5 w-1/2"
               type="button"
               label="Place Order"
+              :disabled="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
+              :loading="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
               @click="
-                cashierOrderSummary_modalPlaceOrderDetail.show = false;
                 cashierOrderSummary_handlePlaceOrderDetail();
               "
             ></PrimeVueButton>

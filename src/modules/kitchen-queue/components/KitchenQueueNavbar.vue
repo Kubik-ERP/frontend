@@ -1,5 +1,14 @@
 <script setup lang="ts">
 const a = ref();
+
+// Vue
+import { inject } from 'vue';
+
+// Interface
+import type { IKitchenQueueProvided } from '@/modules/kitchen-queue/interfaces';
+
+// Inject kitchen queue context
+const { kitchenQueue_invoices } = inject<IKitchenQueueProvided>('kitchenQueue')!;
 </script>
 <template>
   <nav
@@ -26,7 +35,7 @@ const a = ref();
             :class="[
               'py-2 px-12 mx-2 cursor-pointer rounded-xl text-[10px] lg:text-base bg-[#64C9B1] text-white font-semibold',
             ]"
-            >(11) Orders</PrimeVueTab
+            >({{ kitchenQueue_invoices.length }}) Orders</PrimeVueTab
           >
           <PrimeVueTab
             unstyled

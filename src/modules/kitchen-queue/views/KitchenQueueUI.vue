@@ -16,9 +16,15 @@ const {
   kitchenQueue_dummyRefs,
   kitchenQueue_columns,
   kitchenQueue_durations,
+  kitchenQueue_meterValue,
+  kitchenQueue_scrollContainer,
   kitchenQueue_generateColor,
   kitchenQueue_generateChipColor,
-  kitchenQueue_handleChangeStatus,
+  kitchenQueue_handleDebounceUpdateStatus,
+  kitchenQueue_handleScrollHorizontal,
+  kitchenQueue_updateScrollPosition,
+  kitchenQueue_handleUpdateStatus,
+  kitchenQueue_handleUpdateStatusBulk,
 } = useKitchenQueue();
 
 /**
@@ -30,9 +36,15 @@ provide<IKitchenQueueProvided>('kitchenQueue', {
   kitchenQueue_dummyRefs,
   kitchenQueue_columns,
   kitchenQueue_durations,
+  kitchenQueue_meterValue,
+  kitchenQueue_scrollContainer,
   kitchenQueue_generateColor,
   kitchenQueue_generateChipColor,
-  kitchenQueue_handleChangeStatus,
+  kitchenQueue_handleDebounceUpdateStatus,
+  kitchenQueue_handleScrollHorizontal,
+  kitchenQueue_updateScrollPosition,
+  kitchenQueue_handleUpdateStatus,
+  kitchenQueue_handleUpdateStatusBulk,
 });
 </script>
 
@@ -42,7 +54,7 @@ provide<IKitchenQueueProvided>('kitchenQueue', {
     <KitchenQueueCtaButton />
 
     <section id="kitchen-queue-content" class="w-full flex-1 overflow-hidden mt-2 box-border">
-      <KitchenQueueDummyItemHeight />
+      <KitchenQueueDummyItemHeight v-if="kitchenQueue_isLoading" />
       <KitchenQueueInvoicePreview v-if="!kitchenQueue_isLoading" />
       <KitchenQueueLoading v-else />
     </section>

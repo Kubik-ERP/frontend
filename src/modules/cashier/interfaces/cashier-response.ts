@@ -39,6 +39,7 @@ export interface IMidtransQrisPaymentData {
   statusCode: string;
   statusMessage: string;
   transactionId: string;
+  invoiceId: string;
   orderId: string;
   merchantId: string;
   grossAmount: string;

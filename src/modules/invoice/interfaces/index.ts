@@ -6,6 +6,7 @@ import {
 } from '@/modules/cashier/interfaces/cashier-response';
 import { IOutlet } from '@/modules/outlet/interfaces';
 import { ISettingInvoiceDetail } from '@/modules/setting/interfaces';
+import { Validation } from '@vuelidate/core';
 
 export interface IInvoiceModalPayData {
   show: boolean;
@@ -29,6 +30,9 @@ export interface IInvoiceInvoiceData {
   currentOutlet: IOutlet | null;
   configInvoice: ISettingInvoiceDetail | null;
   tableKitchenTicket: ITableKitcenTicketData | null;
+  form: {
+    paymentAmount: number;
+  };
 }
 
 export interface IInvoiceOtherOptionsData {
@@ -102,6 +106,9 @@ export interface IInvoiceData {
   taxAmount: number | null;
   serviceChargeAmount: number | null;
   grandTotal: number | null;
+  paymentAmount: number | null;
+  changeAmount: number | null;
+
   customer: IInvoiceCustomer;
   invoiceDetails: IInvoiceDetail[];
   invoiceCharges: [];
@@ -171,6 +178,7 @@ export interface IInvoiceProvided {
   invoice_invoiceData: Ref<IInvoiceInvoiceData>;
   invoice_modalPay: Ref<IInvoiceModalPayData>;
   invoice_otherOptions: Ref<IInvoiceOtherOptionsData>;
+  invoice_invoiceDataValidation: globalThis.Ref<Validation>;
 
   invoice_handlePrint: (
     type: string,

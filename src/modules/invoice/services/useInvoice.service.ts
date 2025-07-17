@@ -18,6 +18,8 @@ import { useSettingStore } from '@/modules/setting/store';
 
 // Constant
 import { CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT, CASHIER_PROVIDER } from '@/modules/cashier/constants';
+import useVuelidate from '@vuelidate/core';
+import { minValue, numeric, required } from '@vuelidate/validators';
 
 export const useInvoiceService = (): IInvoiceProvided => {
   const store = useInvoiceStore();
@@ -213,6 +215,14 @@ export const useInvoiceService = (): IInvoiceProvided => {
     }
   };
 
+  const invoice_formRules = {
+    paymentAmount: {
+      required,
+      numeric,
+      minValue: minValue(computed(() => invoice_invoiceData.value.calculate?.grandTotal || 0)),
+    },
+  };
+
   const invoice_invoiceData = ref<IInvoiceInvoiceData>({
     isLoading: false,
     data: null,
@@ -221,6 +231,13 @@ export const useInvoiceService = (): IInvoiceProvided => {
     currentUser: storeAuthentication.authentication_userData,
     currentOutlet: outlet_currentOutlet.value,
     configInvoice: setting_invoice.value,
+    form: {
+      paymentAmount: 0,
+    },
+  });
+
+  const invoice_invoiceDataValidation = useVuelidate(invoice_formRules, invoice_invoiceData.value.form, {
+    $autoDirty: true,
   });
 
   const invoice_handleCalculate = async () => {
@@ -315,21 +332,38 @@ export const useInvoiceService = (): IInvoiceProvided => {
   invoice_handleFetchKitchenTableTicket(route.params.invoiceId as string);
 
   const invoice_handlePayInvoice = async () => {
-    invoice_modalPay.value.show = false;
     invoice_modalPay.value.isLoading = true;
 
     try {
+      const getSelectedPaymentMethod = invoice_modalPay.value.listPayment.find(
+        item => item.id === invoice_modalPay.value.data.selectedPaymentMethod,
+      )?.name;
+
+      if(getSelectedPaymentMethod?.toUpperCase() === 'CASH') {
+        invoice_invoiceDataValidation.value.$touch();
+        if (invoice_invoiceDataValidation.value.$invalid) return;
+      }
+      
+      const provider = getSelectedPaymentMethod?.toUpperCase() === 'CASH' ? 'cash' : CASHIER_PROVIDER;
+      
       const params = {
-        provider: CASHIER_PROVIDER,
+        provider,
         paymentMethodId: invoice_modalPay.value.data.selectedPaymentMethod,
         invoiceId: route.params.invoiceId as string,
+        paymentAmount: invoice_invoiceData.value.form.paymentAmount,
       };
 
       const response = await storeCashier.cashierProduct_paymentUnpaid(params);
 
       invoice_modalPay.value.dataPayment = response.data;
 
-      invoice_modalPay.value.showModalPayment = true;
+      if(getSelectedPaymentMethod?.toUpperCase() === 'QRIS') {
+        invoice_modalPay.value.showModalPayment = true;
+      } else {
+        await invoice_handleFetchInvoiceById(route.params.invoiceId as string);
+      }
+
+      invoice_modalPay.value.show = false;
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -372,6 +406,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
     invoice_invoiceData,
     invoice_modalPay,
     invoice_otherOptions,
+    invoice_invoiceDataValidation,
 
     invoice_handleDownload,
     invoice_handlePrint,

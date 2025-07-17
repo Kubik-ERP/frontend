@@ -59,25 +59,28 @@ export interface IProduct {
   notes: string;
   id: string;
   name: string;
-  variant: IVariant;
+  variant: IVariant | null;
 }
 
 export interface IItem {
-  products: IProduct;
+  id: string;
+  product: IProduct;
 }
 
 export interface IKitchenQueueData {
-  id: string;
   invoiceId: string;
+  queueReferenceId: string;
   invoiceNumber: string;
   createdAt: string;
   updatedAt: string;
   storeId: string;
   tableCode: string;
   orderType: 'dine_in' | 'take_away' | string;
+  orderStatus: 'placed' | 'in_progress' | 'completed';
   customerId: string;
   customerName: string;
-  items: IItem[];
+  isLoading: boolean;
+  queues: IItem[];
 }
 
 // Return type for useKitchenQueue composable
@@ -87,11 +90,34 @@ export interface IKitchenQueueProvided {
   kitchenQueue_dummyRefs: Ref<HTMLElement[]>;
   kitchenQueue_columns: Ref<IInvoiceChunk[][]>;
   kitchenQueue_durations: Ref<Record<string, string>>;
+  kitchenQueue_scrollContainer: Ref<HTMLElement | null>;
+  kitchenQueue_meterValue: Ref<{
+    meter: {
+      value: number;
+      label: string;
+      color: string;
+    };
+    max: number;
+  }>;
   kitchenQueue_generateColor: (status: string) => IInvoiceColor;
-  kitchenQueue_handleChangeStatus: (
-    invoice_id: string,
-    index: number,
-    status: 'placed' | 'in_progress' | 'completed',
-  ) => void;
+
   kitchenQueue_generateChipColor: (status: string) => string;
+  kitchenQueue_handleScrollHorizontal: (direction: 'left' | 'right') => void;
+  kitchenQueue_updateScrollPosition: () => void;
+  kitchenQueue_handleDebounceUpdateStatus: (
+    queueReferenceId: string,
+    invoiceId: string,
+    queueId: string,
+    status: string,
+  ) => void;
+  kitchenQueue_handleUpdateStatus: (
+    queueReferenceId: string,
+    invoiceId: string,
+    queueId: string,
+    orderStatus: 'placed' | 'in_progress' | 'completed',
+  ) => void;
+  kitchenQueue_handleUpdateStatusBulk: (
+    queueReferenceId: string,
+    items: IItem[],
+  ) => void;
 }

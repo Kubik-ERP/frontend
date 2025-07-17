@@ -63,6 +63,8 @@ const {
 
   cashierProduct_customerState,
 
+  cashierOrderSummary_paymentAmountFormValidation,
+
   cashierOrderSummary_handleModalAddCustomer,
 
   cashierOrderSummary_handleIsExpandedToggle,
@@ -135,6 +137,8 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_isLoadingUnpaidOrder,
 
   cashierProduct_customerState,
+
+  cashierOrderSummary_paymentAmountFormValidation,
 
   cashierOrderSummary_handleModalAddCustomer,
 
