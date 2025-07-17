@@ -14,8 +14,6 @@ const emit = defineEmits(['update:modelValue']);
 
 const selectedTags = ref([...props.modelValue]);
 
-
-
 const search = ref('');
 const tags = ref([]);
 
@@ -44,10 +42,10 @@ const filterTags = () => {
       tag.name.toLowerCase().includes(search.value.toLowerCase()),
   );
 };
-const openListbox = () => {
-  isListBoxOpen.value = true;
-  filterTags(); // Make sure to filter when dropdown opens
-};
+// const openListbox = () => {
+//   isListBoxOpen.value = true;
+//   filterTags(); // Make sure to filter when dropdown opens
+// };
 const addTag = selectedTag => {
   if (!selectedTags.value.some(tag => tag.name === selectedTag.name)) {
     selectedTags.value.push(selectedTag);
@@ -86,46 +84,18 @@ const removeTag = tagToRemove => {
 };
 </script>
 
-
 <template>
   <div>
-    <PrimeVueIconField>
+    <form @submit.prevent="createTag">
       <PrimeVueInputText
         v-model="search"
-        class="w-full"
-        placeholder="Search or Create Tags"
-        @focus="openListbox"
-        @input="filterTags"
+        name="name"
+        type="text"
+        :class="{ ...classes }"
+        class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
+        fluid
       />
-      <PrimeVueInputIcon>
-        <i class="pi pi-search" />
-      </PrimeVueInputIcon>
-    </PrimeVueIconField>
-
-    <PrimeVueListbox
-      v-if="isListBoxOpen"
-      :options="filteredTags"
-      option-label="name"
-      class="w-full"
-      list-style="max-height:250px"
-    >
-      <template #option="slotProps">
-        <div class="flex items-center w-full" @click="addTag(slotProps.option)">
-          <div>{{ slotProps.option.name }}</div>
-        </div>
-      </template>
-
-      <!-- Create New Tag Button if no matches are found -->
-      <template #footer>
-        <div v-if="search" class="mb-2">
-          <PrimeVueButton
-            class="bg-blue-secondary-background/50 text-blue-primary font-semibold text-lg justify-start border-none rounded-none text-start w-full"
-            @click="createTag"
-            >+ Add "{{ search }}"</PrimeVueButton
-          >
-        </div>
-      </template>
-    </PrimeVueListbox>
+    </form>
 
     <div class="flex gap-2 mt-2 flex-wrap">
       <span

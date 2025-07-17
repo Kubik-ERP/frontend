@@ -48,14 +48,16 @@ const displayPopover = (event, product) => {
 };
 
 const customers = ref([]);
+const meta = ref({})
 
 const loadCustomers = async () => {
   isLoading.value = true;
   try {
     const response = await getAllCustomers(page.value, limit.value, search.value);
     customers.value = response.customers;
-    lastPage.value = response.lastPage;
-    total.value = response.total;
+    meta.value = response.meta
+    lastPage.value = meta.value.totalPages;
+    total.value = meta.value.totalData;
   } catch (error) {
     console.error('Failed to fetch customers:', error);
   } finally {

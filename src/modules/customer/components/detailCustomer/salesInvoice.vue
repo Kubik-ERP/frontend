@@ -2,76 +2,52 @@
 // Services
 import { useCustomerDetailService } from '../../services/customer-detail.service';
 
-// Interfaces
-import type { Iinvoice, ICustomerDetails } from '../../interfaces';
+const {
+  customerDetail_columns,
+  salesInvoice_paymentStatus,
+  salesInvoice_orderType,
+  customerDetails_isLoading,
+  customerDetails_fetchSalesInvoice,
+  orderStatusClass,
+  orderTypeClass,
+  customerDetails_queryParams,
+  customerDetails_onChangePage,
+} = useCustomerDetailService();
 
-const { customerDetail_columns, salesInvoice_paymentStatus, salesInvoice_orderType, customerDetails_isLoading } = useCustomerDetailService();
-/**
- * @description Destructure all the data and methods what we need
- */
+const invoice = ref([]);
+const meta = ref({});
+const detail = ref({});
 
+onMounted(async () => {
+  const response = await customerDetails_fetchSalesInvoice();
+  detail.value = response.detail;
+  invoice.value = response.invoice;
+  meta.value = response.meta;
+  console.log(invoice.value);
+});
 
-const invoices = ref(inject('customerDetails').invoices as Iinvoice[]);
-// console.log('🚀 ~ invoices:', invoices.value);
-
-const customer = ref(inject('customerDetails').customer as ICustomerDetails);
-
-const handleSearch = () => {};
-
-const search = ref('');
-const date = ref();
-const status = ref();
-const type = ref();
-
-const orderTypeClass = (orderType: string) => {
-  switch (orderType) {
-    case 'Dine In':
-      return 'bg-primary-background text-primary';
-    case 'Take Away':
-      return 'bg-secondary-background text-green-primary';
-    case 'Delivery':
-      return 'text-success-main';
-    default:
-      return '';
-  }
-};
-
-const orderStatusClass = (orderStatus: string) => {
-  switch (orderStatus) {
-    case 'Pain':
-      return 'bg-background-success text-success';
-    case 'Unpaid':
-      return 'bg-warning-background text-warning-main';
-    case 'Cancelled':
-      return 'bg-error-background text-error-main';
-    case 'Refunded':
-      return 'bg-error-background text-error-main';
-    default:
-      return '';
-  }
-};
+watch(
+  () => customerDetails_queryParams,
+  debounce(async () => {
+    const response = await customerDetails_fetchSalesInvoice();
+    detail.value = response.detail;
+    invoice.value = response.invoice;
+    meta.value = response.meta;
+  }, 500),
+  {
+    deep: true,
+  },
+);
 </script>
+
 <template>
   <section id="customer-daily-sales" class="flex flex-col relative inset-0 z-0">
-    <!-- <AppBaseDataTable
-      :columns="customerDetail_columns"
-      :data="customerDetail_values"
-      header-title="Daily Sales"
-      :rows-per-page="dailySales_data.meta.pageSize"
-      :total-records="dailySales_data.meta.total"
-      :first="(dailySales_data.meta.page - 1) * dailySales_data.meta.pageSize"
-      :is-loading="dailySales_data.isLoading"
-      is-using-server-side-pagination
-      is-using-custom-body
-      is-using-custom-filter
-      is-using-custom-header-prefix
-      is-using-custom-header-suffix
-      is-using-custom-header
-      @update:currentPage="dailySales_handleOnPageChange"
-    > -->
     <AppBaseDataTable
       :columns="customerDetail_columns"
-      :data="invoices"
+      :data="invoice"
+      :rows-per-page="meta.pageSize"
+      :total-records="meta.totalData"
+      :first="(customerDetails_queryParams.page - 1) * meta.pageSize"
       is-using-server-side-pagination
       is-using-custom-body
       is-using-custom-filter
@@ -79,6 +55,7 @@ const orderStatusClass = (orderStatus: string) => {
       is-using-custom-header-suffix
       is-using-custom-header
       :is-loading="customerDetails_isLoading"
+      @update:currentPage="customerDetails_onChangePage"
     >
       <template #header>
         <section class="p-4 flex items-center justify-between">
@@ -86,10 +63,10 @@ const orderStatusClass = (orderStatus: string) => {
             <h6 class="font-semibold text-black text-xl">Daily Sales</h6>
             <PrimeVueChip
               class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-1"
-              :label="`${invoices.length} Invoices`"
+              :label="`${meta.totalData} Invoices`"
             />
           </div>
-          <form @submit.prevent="handleSearch">
+          <form>
             <PrimeVueIconField>
               <PrimeVueInputIcon>
                 <template #default>
@@ -98,7 +75,7 @@ const orderStatusClass = (orderStatus: string) => {
               </PrimeVueInputIcon>
 
               <PrimeVueInputText
-                v-model="search"
+                v-model="customerDetails_queryParams.search"
                 placeholder="Search Invoice ID"
                 class="text-sm w-full min-w-80"
               />
@@ -114,14 +91,14 @@ const orderStatusClass = (orderStatus: string) => {
                   class="text-xs font-normal text-secondary-hover bg-secondary-background border border-secondary px-1.5 py-1"
                 >
                   <span class="flex items-center gap-1">
-                    <p class="font-bold">{{ invoices.length }}</p>
+                    <p class="font-bold">{{ meta.totalData }}</p>
                     <p class="font-semibold">Sales</p>
                   </span>
                 </PrimeVueChip>
               </div>
-              <div class="flex items-center justify-between">
-                <span class="font-semibold text-disabled">Rp</span>
-                <span class="font-bold text-primary text-2xl">{{ customer.paid }}</span>
+              <div class="flex items-center justify-end">
+                <!-- <span class="font-semibold text-disabled">Rp</span> -->
+                <span class="font-bold text-primary text-2xl">{{useCurrencyFormat(detail.paid)}}</span>
               </div>
             </div>
           </div>
@@ -130,9 +107,9 @@ const orderStatusClass = (orderStatus: string) => {
               <div class="flex items-center gap-2 min-h-8">
                 <h6 class="font-semibold text-black text-sm">Unpaid Amount</h6>
               </div>
-              <div class="flex items-center justify-between">
-                <span class="font-semibold text-disabled">Rp</span>
-                <span class="font-bold text-error-main text-2xl">{{ customer.unpaid }}</span>
+              <div class="flex items-center justify-end">
+                <!-- <span class="font-semibold text-disabled">Rp</span> -->
+                <span class="font-bold text-error-main text-2xl">{{ useCurrencyFormat(detail.unpaid) }}</span>
               </div>
             </div>
           </div>
@@ -140,18 +117,45 @@ const orderStatusClass = (orderStatus: string) => {
         <section class="flex items-center gap-4 p-4">
           <div class="flex flex-col gap-1 w-full">
             <span class="font-semibold inline-block text-gray-900 text-base w-48">Filter by</span>
-
             <div class="flex items-center gap-4 w-full">
-              <PrimeVueDatePicker
-                v-model="date"
+              <!-- <PrimeVueDatePicker
+                v-model="customerDetails_queryParams.date"
                 class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
                 placeholder="Real Time "
                 show-on-focus
                 show-icon
                 fluid
-              />
+              /> -->
+               <PrimeVueDatePicker
+              v-model="customerDetails_queryParams.start_date"
+              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
+              placeholder="Purchase Date From"
+              show-on-focus
+              show-icon
+              fluid
+              show-time
+              show-button-bar
+              hour-format="24"
+              @clear-click="customerDetails_queryParams.start_date = null"
+            />
+
+            <PrimeVueDatePicker
+              v-model="customerDetails_queryParams.end_date"
+              :manual-input="false"
+              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
+              placeholder="Purchase Date To"
+              show-on-focus
+              show-icon
+              fluid
+              show-time
+              show-button-bar
+              show-clear
+              hour-format="24"
+              :disabled="!customerDetails_queryParams.start_date"
+              @clear-click="customerDetails_queryParams.end_date = null"
+            />
               <PrimeVueMultiSelect
-                v-model="type"
+                v-model="customerDetails_queryParams.order_type"
                 display="chip"
                 :options="salesInvoice_paymentStatus"
                 option-label="label"
@@ -162,7 +166,7 @@ const orderStatusClass = (orderStatus: string) => {
               />
 
               <PrimeVueMultiSelect
-                v-model="status"
+                v-model="customerDetails_queryParams.payment_status"
                 display="chip"
                 :options="salesInvoice_orderType"
                 option-label="label"
@@ -175,8 +179,6 @@ const orderStatusClass = (orderStatus: string) => {
           </div>
         </section>
       </template>
-
-      <template #filter> </template>
 
       <template #body="{ column, data }">
         <template v-if="column.value === 'invoiceID'">
@@ -210,7 +212,7 @@ const orderStatusClass = (orderStatus: string) => {
         </template>
 
         <template v-if="column.value === 'action'">
-          <router-link :to="`/invoice/${data.invoiceNumber}`">
+          <router-link :to="`/invoice/${data.id}`">
             <PrimeVueButton variant="text" rounded aria-label="Filter">
               <template #icon>
                 <AppBaseSvg name="eye-visible" class="!w-5 !h-5" />

@@ -9,7 +9,7 @@ import { LAYOUT_OPTIONS } from '@/app/constants';
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/customer-waiting-list',
+    path: '/queue/customer-waiting-list',
     component: AppBaseWrapper,
     meta: {
       requiresAuthorization: false,
