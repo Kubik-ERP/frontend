@@ -14,7 +14,7 @@ const {
 
 const settingInvoice_onUpdateFooterContent = () => {
   // Here you can handle the update logic for footer content
-  settingInvoice_formData.contentSettings.footerText = footerText_formData;
+  settingInvoice_formData.contentSettings.footerText = footerText_formData.text;
   settingInvoice_onCloseEditFooterContentDialog();
 };
 </script>
@@ -23,6 +23,9 @@ const settingInvoice_onUpdateFooterContent = () => {
   <AppBaseDialog id="setting-invoice-dialog-footer-content">
     <template #header>
       <h5 class="font-semibold text-black text-lg">Edit Footer Content</h5>
+      <!-- {{ settingInvoice_formData.contentSettings.footerText }}
+      <br>
+      {{ footerText_formData.text }} -->
     </template>
 
     <template #content>
@@ -35,7 +38,7 @@ const settingInvoice_onUpdateFooterContent = () => {
         :validators="settingInvoice_formValidations.contentSettings.footerText"
       >
         <PrimeVueTextarea
-          v-model="footerText_formData"
+          v-model="footerText_formData.text"
           class="text-sm w-full"
           :class="{ ...classes }"
           rows="5"

@@ -216,7 +216,7 @@ onMounted(async () => {
               option-label="label"
               option-value="value"
               class="w-full"
-              @change="onOrderStatusChange(data.id, data[column.value])"
+              @change="onOrderStatusChange(data.invoiceId, data[column.value])"
             >
               <template #option="{ option }">
                 <PrimeVueChip

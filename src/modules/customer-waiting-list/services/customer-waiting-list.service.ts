@@ -16,8 +16,8 @@ export const useCustomerWaitingListService = () => {
 
       return Promise.resolve({
         data: {
-          completedOrders: response.completedOrders,
-          preparingOrders: response.preparingOrders,
+          completedOrders: response.data.completedOrders,
+          preparingOrders: response.data.preparingOrders,
         },
       });
     } catch (error: unknown) {
