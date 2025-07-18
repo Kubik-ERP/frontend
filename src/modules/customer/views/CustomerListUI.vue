@@ -189,7 +189,10 @@ onMounted(() => {
               <PrimeVueSkeleton height="1.5rem" />
             </template>
             <template v-else>
-              <div class="flex flex-wrap gap-1">
+              <div v-if="data.customersHasTag.length === 0">
+                <p class="text-gray-400">-</p>
+              </div>
+              <div v-else class="flex flex-wrap gap-1">
                 <span
                   v-for="tag in data.customersHasTag.map(tag => tag.tag)"
                   :key="tag"
