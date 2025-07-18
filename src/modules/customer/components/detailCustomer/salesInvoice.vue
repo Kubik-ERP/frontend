@@ -47,7 +47,6 @@ const {
       is-using-custom-header
       :is-loading="customerDetails_isLoading"
       @update:currentPage="customerDetails_onChangePage"
-      @update:currentPage="customerDetails_onChangePage"
     >
       <template #header>
         <section class="p-4 flex items-center justify-between">
@@ -58,7 +57,6 @@ const {
               :label="`${customerDetails.invoices?.meta.totalData} Invoices`"
             />
           </div>
-          <form>
           <form>
             <PrimeVueIconField>
               <PrimeVueInputIcon>
