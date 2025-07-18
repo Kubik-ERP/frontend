@@ -6,7 +6,8 @@ import { IInvoiceProvided } from '../../interfaces';
 /**
  * @description Inject all the data and methods what we need
  */
-const { invoice_invoiceData, invoice_modalPay, invoice_handlePayInvoice } = inject<IInvoiceProvided>('invoice')!;
+const { invoice_invoiceData, invoice_modalPay, invoice_invoiceDataValidation, invoice_handlePayInvoice } =
+  inject<IInvoiceProvided>('invoice')!;
 </script>
 <template>
   <PrimeVueDialog
@@ -41,12 +42,74 @@ const { invoice_invoiceData, invoice_modalPay, invoice_handlePayInvoice } = inje
           />
         </div>
 
-        <div class="flex w-full justify-between items-center">
-          <span class="text-text-disabled">Total Price</span>
-          <span class="font-semibold">{{
-            useCurrencyFormat(invoice_invoiceData.calculate?.grandTotal || 0)
-          }}</span>
-        </div>
+        <template
+          v-if="
+            invoice_modalPay.listPayment
+              .find(f => f.id === invoice_modalPay.data.selectedPaymentMethod)
+              ?.name.toUpperCase() === 'CASH'
+          "
+        >
+          <AppBaseFormGroup
+            v-slot="{ classes }"
+            class="flex flex-col gap-1"
+            label-for="payment-amount"
+            name="Payment Amount"
+            :validators="invoice_invoiceDataValidation.paymentAmount"
+          >          
+            <label for="payment-amount" class="text-xs lg:text-sm">Payment Amount</label>
+
+            <PrimeVueIconField class="flex w-full">
+              <PrimeVueInputIcon>
+                <div class="flex gap-2">
+                  <AppBaseSvg name="cash" class="!w-4 !h-4" />
+                </div>
+              </PrimeVueInputIcon>
+              <PrimeVueInputNumber
+                id="payment-amount"
+                v-model="invoice_invoiceData.form.paymentAmount"
+                :class="[classes, 'w-full']"
+                placeholder="Enter payment amount"
+              />
+            </PrimeVueIconField>
+          </AppBaseFormGroup>
+
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between">
+              <span>Money Received</span>
+              <span class="text-sm lg:text-base font-semibold">{{
+                useCurrencyFormat(invoice_invoiceData.form.paymentAmount)
+              }}</span>
+            </div>
+          </div>
+
+          <div class="flex w-full justify-between items-center">
+            <span class="text-text-disabled">Total Price</span>
+            <span class="font-semibold">{{
+              useCurrencyFormat(invoice_invoiceData.calculate?.grandTotal || 0)
+            }}</span>
+          </div>
+
+          <hr />
+
+          <div class="flex justify-between">
+            <span class="text-sm lg:text-base font-bold"> Change Amount </span>
+            <span class="text-sm lg:text-base font-semibold text-primary">
+              {{
+                useCurrencyFormat(
+                  (invoice_invoiceData?.data?.grandTotal || 0) - invoice_invoiceData.form.paymentAmount,
+                )
+              }}
+            </span>
+          </div>
+        </template>
+        <template v-else>
+          <div class="flex w-full justify-between items-center">
+            <span class="text-text-disabled">Total Price</span>
+            <span class="font-semibold">{{
+              useCurrencyFormat(invoice_invoiceData.calculate?.grandTotal || 0)
+            }}</span>
+          </div>
+        </template>
 
         <div class="flex justify-end">
           <PrimeVueButton

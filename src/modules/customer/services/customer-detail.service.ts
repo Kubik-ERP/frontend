@@ -29,6 +29,7 @@ export const useCustomerDetailService = () => {
   const store = useCustomerDetailsStore();
 
   const { customerDetails_isLoading, customerDetails } = storeToRefs(store);
+  const { customerDetails_isLoading, customerDetails } = storeToRefs(store);
 
   const { httpAbort_registerAbort } = useHttpAbort();
 

@@ -189,17 +189,18 @@ const imageUrl = computed(() => {
         </tr>
 
         <tr>
-          <td class="font-normal text-black text-sm py-2">Debit</td>
-          <!-- TODO: Add field debit -->
+          <td class="font-normal text-black text-sm py-2">{{ invoice_invoiceData?.data?.paymentMethods?.name || '' }}</td>
+          
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
-            {{ useCurrencyFormat(0) }}
+            {{ useCurrencyFormat(invoice_invoiceData.data.paymentAmount || 0) }}
           </td>
         </tr>
 
         <tr class="border-b border-dashed border-black">
           <td class="font-normal text-black text-sm py-2">Kembali</td>
-          <!-- TODO: Add field change -->
-          <td colspan="3" class="font-normal text-black text-sm text-right py-2">{{ useCurrencyFormat(0) }}</td>
+          <td colspan="3" class="font-normal text-black text-sm text-right py-2">{{ useCurrencyFormat(
+            invoice_invoiceData.data.changeAmount || 0
+          ) }}</td>
         </tr>
 
         <tr>
