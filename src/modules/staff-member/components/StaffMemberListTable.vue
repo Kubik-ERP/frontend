@@ -16,6 +16,7 @@ const {
   staffMemberList_values,
   staffMemberList_queryParams,
   staffMemberList_deleteStaffMember,
+  staffMemberList_onChangePage,
 } = inject('staffMemberList') as IStaffMemberListProvided;
 </script>
 
@@ -36,6 +37,7 @@ const {
     is-using-custom-header-suffix
     is-using-header
     :is-loading="staffMemberList_isLoading"
+    @update:currentPage="staffMemberList_onChangePage"
   >
     <template #header-prefix>
       <div class="flex items-center gap-2">

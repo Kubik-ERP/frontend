@@ -3,6 +3,9 @@ import type { IStaffMember, IStaffMeta, IStaffMemberList } from './index';
 
 export interface IStaffMemberListRequestQuery{
   search?: string | null;
+  page?: number;
+  limit?: number;
+  title?: string | null;
 }
 
 export interface IStaffMemberListResponse {
@@ -20,4 +23,5 @@ export interface IStaffMemberListProvided {
   staffMemberList_isLoading: globalThis.Ref<boolean>;
   staffMemberList_values: globalThis.Ref<IStaffMemberList>;
   staffMemberList_queryParams: IStaffMemberListRequestQuery;
+  staffMemberList_onChangePage: (page: number) => void;
 }

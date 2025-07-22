@@ -3,7 +3,7 @@ import { STAFF_MEMBER_BASE_ENDPOINT } from '../constants';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import type { IStaffMemberListResponse, IStaffMemberStore } from '../interfaces';
+import type { IStaffMemberListResponse, IStaffMemberStore, IStaffMemberListRequestQuery } from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
@@ -141,15 +141,20 @@ export const useStaffMemberStore = defineStore('staff-member', {
      * @method GET
      * @access private
      */
-    async staffMember_list(requestConfigurations: AxiosRequestConfig): Promise<IStaffMemberListResponse> {
+    async staffMember_list(
+      params: IStaffMemberListRequestQuery,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IStaffMemberListResponse> {
       this.staffMember_isLoading = true;
 
       try {
+        console.log('Fetching staff member list with params:', params);
         const response = await httpClient.get<IStaffMemberListResponse>(STAFF_MEMBER_BASE_ENDPOINT, {
+          params,
           ...requestConfigurations,
         });
-        
-        if(response.data.data.data.length > 0) {
+        console.log('Response data:', response.data);
+        if (response.data.data.data.length > 0) {
           this.staffMember_lists = response.data.data;
         }
 

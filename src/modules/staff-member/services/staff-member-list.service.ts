@@ -22,6 +22,9 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
 
   const staffMemberList_queryParams = reactive<IStaffMemberListRequestQuery>({
     search: null,
+    page: 1,
+    limit: 10,
+    title: null,
   });
   /**
    * @description Handle fetch api staff member. We call the fetchStaffMember_list function from the store to handle the request.
@@ -33,7 +36,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
 
   const staffMemberList_fetchListMembers = async (): Promise<void> => {
     try {
-      await store.staffMember_list({
+      await store.staffMember_list(staffMemberList_queryParams, {
         ...httpAbort_registerAbort(STAFF_MEMBER_LIST_REQUEST),
       });
     } catch (error: unknown) {
@@ -44,6 +47,25 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
       }
     }
   };
+
+  const staffMemberList_onChangePage = (page: number): void => {
+    staffMemberList_queryParams.page = page;
+  };
+
+  /**
+   * @description Watcher for query parameters changes
+   */
+  watch(
+    () => staffMemberList_queryParams,
+    debounce(async () => {
+      await staffMemberList_fetchListMembers();
+    }, 500),
+    { deep: true },
+  );
+
+  /**
+   * @description Handle fetch api staff member - delete
+   */
 
   const staffMemberList_deleteStaffMember = async (staffMemberId: string): Promise<void> => {
     try {
@@ -74,10 +96,14 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
   return {
     staffMemberList_columns: STAFF_MEMBER_LIST_COLUMNS,
     staffMemberList_dropdownItemStaff: staffMember_listDropdownItemStaff,
+
     staffMemberList_fetchListMembers,
     staffMemberList_deleteStaffMember,
+
     staffMemberList_isLoading: staffMember_isLoading,
     staffMemberList_values: staffMember_lists, // Access the value of the Ref
     staffMemberList_queryParams, // Expose the query params for potential use in the component
+
+    staffMemberList_onChangePage,
   };
 };
