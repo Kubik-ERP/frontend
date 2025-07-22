@@ -14,6 +14,7 @@ const {
   staffMemberList_isLoading,
   staffMemberList_values,
   staffMemberList_queryParams,
+  staffMemberList_deleteStaffMember
 } = useStaffMemberListService();
 
 /**
@@ -24,6 +25,7 @@ provide('staffMemberList', {
   staffMemberList_isLoading,
   staffMemberList_values,
   staffMemberList_queryParams,
+  staffMemberList_deleteStaffMember
 });
 
 /**

@@ -16,7 +16,7 @@ import type { IStaffMemberCreateEditFormData, IStaffMemberCreateEditProvided } f
 import eventBus from '@/plugins/mitt';
 
 // Stores
-import { useStaffMembetStore } from '../store';
+import { useStaffMemberStore } from '../store';
 
 // Vuelidate
 import { useVuelidate } from '@vuelidate/core';
@@ -31,7 +31,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    */
   const route = useRoute(); // Instance of the router
   const router = useRouter(); // Instance of the router
-  const store = useStaffMembetStore(); // Instance of the store
+  const store = useStaffMemberStore(); // Instance of the store
   const { staffMember_isLoading } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 

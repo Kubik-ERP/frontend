@@ -16,6 +16,7 @@ export interface IStaffMemberListProvided {
   staffMemberList_columns: IColumnDataTable[];
   staffMemberList_dropdownItemStaff: globalThis.Ref<IDropdownItem[]>;
   staffMemberList_fetchListMembers: () => Promise<unknown>;
+  staffMemberList_deleteStaffMember: (staffMemberId: string) => Promise<void>;
   staffMemberList_isLoading: globalThis.Ref<boolean>;
   staffMemberList_values: globalThis.Ref<IStaffMemberList>;
   staffMemberList_queryParams: IStaffMemberListRequestQuery;

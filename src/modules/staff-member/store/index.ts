@@ -8,7 +8,7 @@ import type { IStaffMemberListResponse, IStaffMemberStore } from '../interfaces'
 // Plugins
 import httpClient from '@/plugins/axios';
 
-export const useStaffMembetStore = defineStore('staff-member', {
+export const useStaffMemberStore = defineStore('staff-member', {
   state: (): IStaffMemberStore => ({
     staffMember_isLoading: false,
     staffMember_lists: {

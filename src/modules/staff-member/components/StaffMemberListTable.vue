@@ -10,13 +10,16 @@ const popover = ref();
 /**
  * @description Inject all the data and methods what we need
  */
-const { staffMemberList_columns, staffMemberList_isLoading, staffMemberList_values, staffMemberList_queryParams } =
-  inject('staffMemberList') as IStaffMemberListProvided;
+const {
+  staffMemberList_columns,
+  staffMemberList_isLoading,
+  staffMemberList_values,
+  staffMemberList_queryParams,
+  staffMemberList_deleteStaffMember,
+} = inject('staffMemberList') as IStaffMemberListProvided;
 </script>
 
 <template>
-  {{ staffMemberList_values }}
-
   <AppBaseDataTable
     btn-cta-create-title="Add Staff Member"
     :columns="staffMemberList_columns"
@@ -99,7 +102,7 @@ const { staffMemberList_columns, staffMemberList_isLoading, staffMemberList_valu
             <PrimeVueButton
               class="w-full px-4 py-3"
               variant="text"
-              @click="$router.push({ name: 'customer.edit', params: { id: data.id } })"
+              @click="$router.push({ name: 'staff-member.create', params: { id: data.id } })"
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2 w-full">
@@ -109,7 +112,11 @@ const { staffMemberList_columns, staffMemberList_isLoading, staffMemberList_valu
               </template>
             </PrimeVueButton>
 
-            <PrimeVueButton class="w-full px-4 py-3" variant="text">
+            <PrimeVueButton
+              class="w-full px-4 py-3"
+              variant="text"
+              @click="staffMemberList_deleteStaffMember(data.id)"
+            >
               <template #default>
                 <section id="content" class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="delete" class="!w-4 !h-4" />

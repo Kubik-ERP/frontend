@@ -5,7 +5,7 @@ import { STAFF_MEMBER_LIST_COLUMNS, STAFF_MEMBER_LIST_REQUEST, STAFF_MEMBER_LIST
 import type { IStaffMemberListProvided } from '../interfaces';
 
 // Store
-import { useStaffMembetStore } from '../store';
+import { useStaffMemberStore } from '../store';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -14,7 +14,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
   /**
    * @description Injected variables
    */
-  const store = useStaffMembetStore(); // Instance of the store
+  const store = useStaffMemberStore(); // Instance of the store
   const { staffMember_isLoading, staffMember_listDropdownItemStaff } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
