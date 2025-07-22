@@ -78,7 +78,7 @@ export interface ISettingInvoiceProvided {
   settingInvoice_fetchSettingDetail: () => Promise<unknown>;
   settingInvoice_formData: ISettingInvoiceFormData;
   invoiceNumberConfigurations_formData: ISettingInvoiceNumberConfigurations;
-  footerText_formData: string | null;
+  footerText_formData: { text: string | null };
   settingInvoice_formValidations: globalThis.Ref<Validation>;
   settingInvoice_isEditableInvoiceConfiguration: globalThis.Ref<boolean>;
   settingInvoice_isLoading: globalThis.Ref<boolean>;

@@ -33,7 +33,7 @@ onMounted(async () => {
           <div
             v-for="order in preparingOrder"
             :key="order"
-            class="border border-grayscale-20 p-12 text-lg font-semibold whitespace-nowrap flex items-center justify-center"
+            class="border border-grayscale-20 p-12 text-xl font-semibold whitespace-nowrap flex items-center justify-center"
           >
             #{{ order.orderNumber }}
           </div>
@@ -62,7 +62,7 @@ onMounted(async () => {
           <div
             v-for="order in orderComplete"
             :key="order"
-            class="border border-grayscale-20 text-primary bg-primary-background p-12 text-lg font-semibold whitespace-nowrap flex items-center justify-center"
+            class="border border-grayscale-20 text-primary bg-primary-background p-12 text-xl font-semibold whitespace-nowrap flex items-center justify-center"
           >
             #{{ order.orderNumber }}
           </div>

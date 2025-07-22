@@ -2,52 +2,43 @@
 // Services
 import { useCustomerDetailService } from '../../services/customer-detail.service';
 
+// import type { ICustomerDetails,Iinvoice, IPageMeta } from '../../interfaces/CustomerDetailInterface';
+
 const {
   customerDetail_columns,
   salesInvoice_paymentStatus,
   salesInvoice_orderType,
   customerDetails_isLoading,
-  customerDetails_fetchSalesInvoice,
+  // customerDetails_fetchSalesInvoice,
   orderStatusClass,
   orderTypeClass,
   customerDetails_queryParams,
   customerDetails_onChangePage,
+  customerDetails,
 } = useCustomerDetailService();
 
-const invoice = ref([]);
-const meta = ref({});
-const detail = ref({});
+// const invoice = ref<Iinvoice[]>([]);
+// const meta = ref<IPageMeta>();
+// const detail = ref<ICustomerDetails>({});
 
-onMounted(async () => {
-  const response = await customerDetails_fetchSalesInvoice();
-  detail.value = response.detail;
-  invoice.value = response.invoice;
-  meta.value = response.meta;
-  console.log(invoice.value);
-});
-
-watch(
-  () => customerDetails_queryParams,
-  debounce(async () => {
-    const response = await customerDetails_fetchSalesInvoice();
-    detail.value = response.detail;
-    invoice.value = response.invoice;
-    meta.value = response.meta;
-  }, 500),
-  {
-    deep: true,
-  },
-);
+// onMounted(async () => {
+//   console.log("🚀 ~ customerDetails:", customerDetails.value.invoices?.data);
+//   // const response = await customerDetails_fetchSalesInvoice();
+//   detail.value = customerDetails.value;
+//   invoice.value = customerDetails.value.invoices?.data || [];
+//   meta.value = customerDetails.value.invoices?.meta || {};
+// });
 </script>
 
 <template>
   <section id="customer-daily-sales" class="flex flex-col relative inset-0 z-0">
+    {{}}
     <AppBaseDataTable
       :columns="customerDetail_columns"
-      :data="invoice"
-      :rows-per-page="meta.pageSize"
-      :total-records="meta.totalData"
-      :first="(customerDetails_queryParams.page - 1) * meta.pageSize"
+      :data="customerDetails.invoices?.data"
+      :rows-per-page="customerDetails.invoices?.meta.pageSize"
+      :total-records="customerDetails.invoices?.meta.totalData"
+      :first="(customerDetails_queryParams.page - 1) * (customerDetails.invoices?.meta.pageSize ?? 0)"
       is-using-server-side-pagination
       is-using-custom-body
       is-using-custom-filter
@@ -63,7 +54,7 @@ watch(
             <h6 class="font-semibold text-black text-xl">Daily Sales</h6>
             <PrimeVueChip
               class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-1"
-              :label="`${meta.totalData} Invoices`"
+              :label="`${customerDetails.invoices?.meta.totalData} Invoices`"
             />
           </div>
           <form>
@@ -91,14 +82,16 @@ watch(
                   class="text-xs font-normal text-secondary-hover bg-secondary-background border border-secondary px-1.5 py-1"
                 >
                   <span class="flex items-center gap-1">
-                    <p class="font-bold">{{ meta.totalData }}</p>
+                    <p class="font-bold">{{ customerDetails.invoices?.meta.totalData }}</p>
                     <p class="font-semibold">Sales</p>
                   </span>
                 </PrimeVueChip>
               </div>
               <div class="flex items-center justify-end">
                 <!-- <span class="font-semibold text-disabled">Rp</span> -->
-                <span class="font-bold text-primary text-2xl">{{useCurrencyFormat(detail.paid)}}</span>
+                <span class="font-bold text-primary text-2xl">{{
+                  useCurrencyFormat(customerDetails.paid ?? 0)
+                }}</span>
               </div>
             </div>
           </div>
@@ -109,7 +102,9 @@ watch(
               </div>
               <div class="flex items-center justify-end">
                 <!-- <span class="font-semibold text-disabled">Rp</span> -->
-                <span class="font-bold text-error-main text-2xl">{{ useCurrencyFormat(detail.unpaid) }}</span>
+                <span class="font-bold text-error-main text-2xl">{{
+                  useCurrencyFormat(customerDetails.unpaid ?? 0)
+                }}</span>
               </div>
             </div>
           </div>
@@ -126,34 +121,34 @@ watch(
                 show-icon
                 fluid
               /> -->
-               <PrimeVueDatePicker
-              v-model="customerDetails_queryParams.start_date"
-              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
-              placeholder="Purchase Date From"
-              show-on-focus
-              show-icon
-              fluid
-              show-time
-              show-button-bar
-              hour-format="24"
-              @clear-click="customerDetails_queryParams.start_date = null"
-            />
+              <PrimeVueDatePicker
+                v-model="customerDetails_queryParams.start_date"
+                class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
+                placeholder="Purchase Date From"
+                show-on-focus
+                show-icon
+                fluid
+                show-time
+                show-button-bar
+                hour-format="24"
+                @clear-click="customerDetails_queryParams.start_date = null"
+              />
 
-            <PrimeVueDatePicker
-              v-model="customerDetails_queryParams.end_date"
-              :manual-input="false"
-              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
-              placeholder="Purchase Date To"
-              show-on-focus
-              show-icon
-              fluid
-              show-time
-              show-button-bar
-              show-clear
-              hour-format="24"
-              :disabled="!customerDetails_queryParams.start_date"
-              @clear-click="customerDetails_queryParams.end_date = null"
-            />
+              <PrimeVueDatePicker
+                v-model="customerDetails_queryParams.end_date"
+                :manual-input="false"
+                class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
+                placeholder="Purchase Date To"
+                show-on-focus
+                show-icon
+                fluid
+                show-time
+                show-button-bar
+                show-clear
+                hour-format="24"
+                :disabled="!customerDetails_queryParams.start_date"
+                @clear-click="customerDetails_queryParams.end_date = null"
+              />
               <PrimeVueMultiSelect
                 v-model="customerDetails_queryParams.order_type"
                 display="chip"

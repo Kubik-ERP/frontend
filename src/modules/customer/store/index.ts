@@ -8,12 +8,16 @@ import {
 
 import type { AxiosRequestConfig } from 'axios';
 
+import type { ICustomerDetailsStore,ICustomer_salesInvoice_list } from '../interfaces/CustomerDetailInterface';
+
 import httpClient from '@/plugins/axios';
 
 export const useCustomerDetailsStore = defineStore('customer-details', {
-  state: () => ({
+  state: ():ICustomerDetailsStore => ({
     customerDetails_isLoading: false,
-    customerDetails: {},
+    customerDetails: {
+      id: '0014cc8a-748a-431b-a7f2-7449e1764f56'
+    },
   }),
   getters: {
     /**
@@ -31,7 +35,7 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
       id: string,
       formattedParams: string,
       requestConfigurations: AxiosRequestConfig,
-    ): Promise<unknown> {
+    ): Promise<ICustomer_salesInvoice_list> {
       this.customerDetails_isLoading = true;
       try {
         const response = await httpClient.get(

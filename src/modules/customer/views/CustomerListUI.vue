@@ -48,14 +48,14 @@ const displayPopover = (event, product) => {
 };
 
 const customers = ref([]);
-const meta = ref({})
+const meta = ref({});
 
 const loadCustomers = async () => {
   isLoading.value = true;
   try {
     const response = await getAllCustomers(page.value, limit.value, search.value);
     customers.value = response.customers;
-    meta.value = response.meta
+    meta.value = response.meta;
     lastPage.value = meta.value.totalPages;
     total.value = meta.value.totalData;
   } catch (error) {
@@ -101,7 +101,7 @@ const prevPage = () => {
 
 const handlePreview = () => {
   router.push({ name: 'preview-customer', params: { id: selectedCustomer.value.id } });
-}
+};
 
 onMounted(() => {
   loadCustomers();
@@ -183,6 +183,27 @@ onMounted(() => {
           </template>
         </PrimeVueColumn>
 
+        <PrimeVueColumn header="Tags" class="w-1/5">
+          <template #body="{ data }">
+            <template v-if="isLoading">
+              <PrimeVueSkeleton height="1.5rem" />
+            </template>
+            <template v-else>
+              <div v-if="data.customersHasTag.length === 0">
+                <p class="text-gray-400">-</p>
+              </div>
+              <div v-else class="flex flex-wrap gap-1">
+                <span
+                  v-for="tag in data.customersHasTag.map(tag => tag.tag)"
+                  :key="tag"
+                  class="px-1.5 py-0.5 text-xs font-semibold bg-blue-secondary-background/50 rounded-full"
+                >
+                  <p class="text-primary whitespace-nowrap">{{ tag.name }}</p>
+                </span>
+              </div>
+            </template>
+          </template>
+        </PrimeVueColumn>
         <PrimeVueColumn header="Loyalty Point" class="w-1/5">
           <template #body="{ data }">
             <template v-if="isLoading">
@@ -315,6 +336,5 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
 
 <style lang="scss" scoped></style>
