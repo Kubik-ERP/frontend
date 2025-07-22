@@ -137,7 +137,7 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
         </tr>
       </tbody>
 
-      <tfoot>
+      <tfoot v-if="invoice_invoiceData.data.orderStatus !== 'completed' && invoice_invoiceData.data.orderStatus !== 'refunded' && invoice_invoiceData.data.orderStatus !== 'cancelled' && invoice_invoiceData.data.orderStatus !== 'served' &&invoice_invoiceData.data.paymentStatus !== 'paid'">
         <tr>
           <td colspan="2" class="pt-6">
             <PrimeVueButton class="w-full" severity="secondary" variant="outlined">

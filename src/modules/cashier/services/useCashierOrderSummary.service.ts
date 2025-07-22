@@ -347,10 +347,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     show: false,
   });
 
-  const cashierOrderSummary_handleModalAddCustomer = (response: ICashierResponseAddCustomer) => {
+  const cashierOrderSummary_handleModalAddCustomer = (response: ICashierResponseAddCustomer | null) => {
     cashierOrderSummary_modalAddCustomer.value.show = !cashierOrderSummary_modalAddCustomer.value.show;
 
-    cashierProduct_customerState.value.selectedCustomer = response.data;
+    if(response) {
+      cashierProduct_customerState.value.selectedCustomer = response.data;
+    }
   };
 
   /**

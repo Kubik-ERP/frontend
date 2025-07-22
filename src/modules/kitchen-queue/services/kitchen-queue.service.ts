@@ -46,6 +46,8 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
     max: 1,
   });
 
+  const kitchenQueue_listTabs = ref<'orders' | 'order-history'>('orders');
+
   /**
    * Generate color config based on index
    * @param index - global index of the invoice
@@ -311,12 +313,17 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
     invoiceId: string,
     queueId: string,
     status: string,
+    columnData: {
+      index: number;
+      itemIndex: number;
+    }
   ) => {
     kitchenQueue_handleUpdateStatus(
       queueReferenceId,
       invoiceId,
       queueId,
       kitchenQueue_handleNextStatus(status as 'placed' | 'in_progress' | 'completed'),
+      columnData,
     );
   };
 
@@ -362,7 +369,13 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
 
     invoice.orderStatus = newStatus;
 
-    await kitchenQueue_handleRefreshView();
+    // kitchenQueue_columns.value[index].forEach(chunk => {
+    //   chunk.orderStatus = newStatus;
+
+    //   chunk.queues.forEach(item => {
+    //     item.product.orderStatus = newStatus;
+    //   });
+    // });
   };
   /**
    * Update the status of an invoice in the kitchen queue
@@ -376,6 +389,10 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
     invoiceId: string,
     queueId: string,
     orderStatus: 'placed' | 'in_progress' | 'completed',
+    columnData: {
+      index: number;
+      itemIndex: number;
+    }
   ) => {
     try {
       // Find the invoice in the state and update its status
@@ -396,6 +413,8 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
       await store.kitchenQueue_updateStatusQueue(queueReferenceId, invoiceId, queueId, orderStatus, {
         ...httpAbort_registerAbort(`${KITCHEN_QUEUE_INVOICE}/${queueId}`),
       });
+
+      kitchenQueue_columns.value[columnData.index][columnData.itemIndex].orderStatus = orderStatus;
     } catch (error) {
       console.error('Failed to update invoice status:', error);
     }
@@ -451,6 +470,8 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
 
     socket.on('new-order-incoming', async (data: { storeId: string; message: string }) => {
       if (data.storeId === store.id) {
+        await kitchenQueue_fetchInvoices();
+
         await kitchenQueue_handleRefreshView();
       }
     });
@@ -466,7 +487,7 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
     if (!storeId?.id) return;
     socket.emit('unsubscribe-new-order', storeId);
 
-    socket.off('new-order-incomming');
+    socket.off('new-order-incoming');
   };
 
   onBeforeUnmount(() => {
@@ -497,6 +518,7 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
     kitchenQueue_durations,
     kitchenQueue_scrollContainer,
     kitchenQueue_meterValue,
+    kitchenQueue_listTabs,
     kitchenQueue_generateColor,
     kitchenQueue_generateChipColor,
     kitchenQueue_handleScrollHorizontal,

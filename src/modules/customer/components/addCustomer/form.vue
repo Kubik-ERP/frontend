@@ -47,10 +47,13 @@ const handleCreateCustomer = async () => {
   if (customer_formValidations.value.$invalid) return;
 
   try {
-    await createCustomer(customer_FormData);
-    
-    leavePage();
+    const response = await createCustomer(customer_FormData);
 
+    if(props.isModal) {
+      handleOnClose({ data: response.data });
+    } else {
+      leavePage();
+    }
   } catch (error) {
     console.error(error);
   }

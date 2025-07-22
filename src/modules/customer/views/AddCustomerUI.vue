@@ -11,6 +11,13 @@ function leavePage(){
     router.push({ name: 'customer-list' });
 }
 
+const props = defineProps({
+  isModal: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 
 const router = useRouter(); // Get the router instance for navigation
 
@@ -76,7 +83,7 @@ provide('confirmLeave', {
 <template>
   <div class="">
     <!-- AddCustomerForm listens for the isModal prop and emits a close event -->
-    <AddCustomerForm />
+    <AddCustomerForm :is-modal="props.isModal" />
 
     <!-- PrimeVue Dialog for "Are you sure you want to leave?" confirmation -->
     <PrimeVueDialog :visible="isLeavingModal" modal header="">

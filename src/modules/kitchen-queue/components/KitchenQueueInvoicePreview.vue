@@ -117,6 +117,10 @@ const {
                         invoice.invoiceId,
                         item.id,
                         item.product.orderStatus,
+                        {
+                          index: i,
+                          itemIndex: j,
+                        },
                       )
                     "
                   >
