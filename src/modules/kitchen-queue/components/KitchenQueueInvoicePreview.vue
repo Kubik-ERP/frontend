@@ -32,7 +32,7 @@ const {
       @scroll="kitchenQueue_updateScrollPosition"
     >
       <div
-         v-for="(col, i) in kitchenQueue_columns"
+        v-for="(col, i) in kitchenQueue_columns"
         :key="i"
         class="flex flex-col space-y-4 w-72 flex-shrink-0 rounded"
       >
@@ -40,17 +40,18 @@ const {
           v-for="(invoice, j) in col"
           :key="j"
           class="flex flex-col bg-white rounded shadow border relative"
-          :class="[kitchenQueue_generateColor(invoice.orderStatus).border, invoice.isLoading ? 'pointer-events-none opacity-50' : '']"
+          :class="[
+            kitchenQueue_generateColor(invoice.orderStatus).border,
+            invoice.isLoading ? 'pointer-events-none opacity-50' : '',
+          ]"
         >
+          <div
+            v-if="invoice.isLoading"
+            class="absolute inset-0 bg-gray-200/80 z-50 flex items-center justify-center rounded"
+          >
+            <PrimeVueProgressSpinner style="width: 30px; height: 30px" />
+          </div>
 
-        <div
-          v-if="invoice.isLoading"
-          class="absolute inset-0 bg-gray-200/80 z-50 flex items-center justify-center rounded"
-        >
-          
-          <PrimeVueProgressSpinner style="width: 30px; height: 30px" />
-        </div>
-        
           <!-- Header invoice pertama -->
           <div
             v-if="invoice.isFirst"
@@ -95,8 +96,15 @@ const {
               <!-- Tombol untuk menyelesaikan pesanan -->
               <div v-if="invoice.isFirst" class="w-full flex mb-2">
                 <PrimeVueButton
-                :disabled="invoice.items.filter(f => f.product.orderStatus === 'completed').length !== invoice.items.length"
-                class="w-full flex gap-4 py-1" icon="pi pi-check" size="small" @click="kitchenQueue_handleUpdateStatusBulk(invoice.queueReferenceId, invoice.items)">
+                  :disabled="
+                    invoice.items.filter(f => f.product.orderStatus === 'completed').length !==
+                    invoice.items.length
+                  "
+                  class="w-full flex gap-4 py-1"
+                  icon="pi pi-check"
+                  size="small"
+                  @click="kitchenQueue_handleUpdateStatusBulk(invoice.queueReferenceId, invoice.items)"
+                >
                   <AppBaseSvg name="checkCircle" />
                   Order Complete
                 </PrimeVueButton>

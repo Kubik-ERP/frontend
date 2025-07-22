@@ -3,7 +3,6 @@ import { useCustomerService } from '../../services/CustomersService';
 
 const { customer_FormData, customer_formValidations, createCustomer } = useCustomerService();
 
-
 /**
  * @description Define props with default values and interfaces
  */
@@ -21,7 +20,7 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
-let {leavePage} = inject('confirmLeave')
+let { leavePage } = inject('confirmLeave');
 
 const handleOnClose = response => {
   // Always emit the close event after successful creation
@@ -49,7 +48,7 @@ const handleCreateCustomer = async () => {
   try {
     const response = await createCustomer(customer_FormData);
 
-    if(props.isModal) {
+    if (props.isModal) {
       handleOnClose({ data: response.data });
     } else {
       leavePage();
@@ -59,7 +58,7 @@ const handleCreateCustomer = async () => {
   }
 };
 
-const search= ref('');
+const search = ref('');
 
 // Create a new tag from the search input
 const createTag = () => {
@@ -76,7 +75,6 @@ const removeTag = tagToRemove => {
     tags.value.push(tagToRemove);
   }
 };
-
 </script>
 
 <template>
@@ -129,17 +127,17 @@ const removeTag = tagToRemove => {
       />
     </div>
 
-<section class="flex flex-col">
-  <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Phone Number</label>
-  <section id="phone-information" class="flex items-center gap-3">
-      <section id="phone-code" class="w-fit">
+    <section class="flex flex-col">
+      <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Phone Number</label>
+      <section id="phone-information" class="flex items-center gap-3">
+        <section id="phone-code" class="w-fit">
           <PrimeVueSelect
             id="phoneCountryCode"
             v-model="customer_FormData.code"
             filter
             :options="COUNTRY_INFORMATIONS"
             :option-label="
-              (value) => {
+              value => {
                 return `${value.name} (${value.dialCodes})`;
               }
             "
@@ -160,18 +158,18 @@ const removeTag = tagToRemove => {
               </section>
             </template>
           </PrimeVueSelect>
-      </section>
+        </section>
 
-      <section id="phone-number" class="w-full">
+        <section id="phone-number" class="w-full">
           <PrimeVueInputText
             v-model="customer_FormData.number"
             placeholder="Input your phone number"
             class="text-sm w-full"
             type="tel"
           />
+        </section>
       </section>
     </section>
-</section>
 
     <!-- <section id="phone-information">
       <div class="flex flex-col">
@@ -242,7 +240,6 @@ const removeTag = tagToRemove => {
       </div>
     </div>
 
-    
     <div class="flex flex-col">
       <label for="tags" class="block text-sm font-medium leading-6 text-gray-900">Tag</label>
       <div>

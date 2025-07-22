@@ -3,7 +3,7 @@ import minusSVG from '@/app/assets/icons/minus.svg';
 import plusSVG from '@/app/assets/icons/plus-line.svg';
 import { useCustomerDetailService } from '../../services/customer-detail.service';
 
-const route = useRoute();
+// const route = useRoute();
 
 const points = ref();
 const total = ref();
@@ -23,13 +23,13 @@ const {
   loyaltyPoint_types,
   customerDetails_isLoading,
 
-  customerDetails_fetchLoyaltyPoint,
+  // customerDetails_fetchLoyaltyPoint,
 } = useCustomerDetailService();
 
 onMounted(async () => {
-  const response = await customerDetails_fetchLoyaltyPoint(route.params.id as string);
-  total.value = response.data.points.total;
-  points.value = response.data.points.details;
+  // const response = await customerDetails_fetchLoyaltyPoint(route.params.id as string);
+  // total.value = response.data.points.total;
+  // points.value = response.data.points.details;
 });
 
 const type = ref();
