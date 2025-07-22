@@ -107,7 +107,7 @@ const {
                   severity="secondary"
                   size="small"
                   icon="pi pi-plus"
-                  @click="cashierOrderSummary_handleModalAddCustomer()"
+                  @click="cashierOrderSummary_handleModalAddCustomer(null)"
                 />
               </div>
             </template>

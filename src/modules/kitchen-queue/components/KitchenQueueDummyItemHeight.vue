@@ -45,6 +45,10 @@ const { kitchenQueue_generateChipColor, kitchenQueue_handleDebounceUpdateStatus 
                 invoice.invoiceId,
                 invoice.queueReferenceId,
                 item.product.orderStatus,
+                {
+                  index: idx,
+                  itemIndex: idx,
+                },
               )
             "
           >
