@@ -1,8 +1,15 @@
 // Interfaces
-import type { IStaffMember } from './index';
+import type { IStaffMember, IStaffMeta, IStaffMemberList } from './index';
+
+export interface IStaffMemberListRequestQuery{
+  search?: string | null;
+}
 
 export interface IStaffMemberListResponse {
-  data: IStaffMember[] | [];
+  data: {
+    data: IStaffMember[] | [];
+    meta: IStaffMeta;
+  };
 }
 
 export interface IStaffMemberListProvided {
@@ -10,5 +17,6 @@ export interface IStaffMemberListProvided {
   staffMemberList_dropdownItemStaff: globalThis.Ref<IDropdownItem[]>;
   staffMemberList_fetchListMembers: () => Promise<unknown>;
   staffMemberList_isLoading: globalThis.Ref<boolean>;
-  staffMemberList_values: never[];
+  staffMemberList_values: globalThis.Ref<IStaffMemberList>;
+  staffMemberList_queryParams: IStaffMemberListRequestQuery;
 }

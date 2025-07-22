@@ -1,18 +1,31 @@
 export * from './staff-member-create-edit.interface';
 export * from './staff-member-list.interface';
 
+export interface IStaffMeta {
+  limit: number;
+  page: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface IStaffMember {
   id: string;
   name: string;
   email: string;
   phoneNumber: string;
-  profileUrl: string;
-  startDate: Date;
-  endDate: Date;
-  gender: string;
+  profileUrl?: string | null;
+  startDate?: Date | null;
+  endDate?: Date | null;
+  gender?: string | null;
+  title?: string | null;
+}
+
+export interface IStaffMemberList{
+  data: IStaffMember[] | [];
+  meta: IStaffMeta;
 }
 
 export interface IStaffMemberStore {
   staffMember_isLoading: boolean;
-  staffMember_lists: IStaffMember[] | [];
+  staffMember_lists: IStaffMemberList;
 }

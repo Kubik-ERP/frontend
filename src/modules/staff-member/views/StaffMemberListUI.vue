@@ -13,6 +13,7 @@ const {
   staffMemberList_fetchListMembers,
   staffMemberList_isLoading,
   staffMemberList_values,
+  staffMemberList_queryParams,
 } = useStaffMemberListService();
 
 /**
@@ -22,6 +23,7 @@ provide('staffMemberList', {
   staffMemberList_columns,
   staffMemberList_isLoading,
   staffMemberList_values,
+  staffMemberList_queryParams,
 });
 
 /**

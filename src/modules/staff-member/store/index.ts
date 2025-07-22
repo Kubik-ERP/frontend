@@ -11,14 +11,34 @@ import httpClient from '@/plugins/axios';
 export const useStaffMembetStore = defineStore('staff-member', {
   state: (): IStaffMemberStore => ({
     staffMember_isLoading: false,
-    staffMember_lists: [],
+    staffMember_lists: {
+      data: [
+        {
+          id: 'example-staff-member-id',
+          name: 'example staff member',
+          email: 'example@kubik.com',
+          phoneNumber: '+1234567890',
+          profileUrl: null,
+          startDate: null,
+          endDate: null,
+          gender: null,
+          title: null,
+        },
+      ],
+      meta: {
+        limit: 10,
+        page: 1,
+        total: 0,
+        totalPages: 0,
+      },
+    },
   }),
   getters: {
     /**
      * @description Handle business logic for mapping staff member lists to options
      */
     staffMember_listDropdownItemStaff: (state): IDropdownItem[] => {
-      return state.staffMember_lists.map(staffMember => ({
+      return state.staffMember_lists.data.map(staffMember => ({
         label: staffMember.name,
         value: staffMember.id,
       }));
@@ -128,8 +148,8 @@ export const useStaffMembetStore = defineStore('staff-member', {
         const response = await httpClient.get<IStaffMemberListResponse>(STAFF_MEMBER_BASE_ENDPOINT, {
           ...requestConfigurations,
         });
-
-        if (response.data.data.length > 0) {
+        
+        if(response.data.data.data.length > 0) {
           this.staffMember_lists = response.data.data;
         }
 

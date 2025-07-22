@@ -1,8 +1,8 @@
 // Constants
-import { STAFF_MEMBER_LIST_COLUMNS, STAFF_MEMBER_LIST_REQUEST, STAFF_MEMBER_LIST_VALUES } from '../constants';
+import { STAFF_MEMBER_LIST_COLUMNS, STAFF_MEMBER_LIST_REQUEST } from '../constants';
 
 // Interfaces
-import type { IStaffMemberListProvided } from '../interfaces';
+import type { IStaffMemberListProvided,IStaffMemberListRequestQuery } from '../interfaces';
 
 // Store
 import { useStaffMembetStore } from '../store';
@@ -15,12 +15,20 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
    * @description Injected variables
    */
   const store = useStaffMembetStore(); // Instance of the store
-  const { staffMember_isLoading, staffMember_listDropdownItemStaff } = storeToRefs(store);
+  const { staffMember_isLoading, staffMember_listDropdownItemStaff, staffMember_lists } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
    * @description Handle fetch api staff member. We call the fetchStaffMember_list function from the store to handle the request.
    */
+
+  /**
+   * @description Reactive data binding
+   */
+  const staffMemberList_queryParams = reactive<IStaffMemberListRequestQuery>({
+    search: null,
+  });
+
   const staffMemberList_fetchListMembers = async (): Promise<void> => {
     try {
       await store.staffMember_list({
@@ -40,6 +48,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
     staffMemberList_dropdownItemStaff: staffMember_listDropdownItemStaff,
     staffMemberList_fetchListMembers,
     staffMemberList_isLoading: staffMember_isLoading,
-    staffMemberList_values: STAFF_MEMBER_LIST_VALUES as never[],
+    staffMemberList_values: staffMember_lists, // Access the value of the Ref
+    staffMemberList_queryParams, // Expose the query params for potential use in the component
   };
 };
