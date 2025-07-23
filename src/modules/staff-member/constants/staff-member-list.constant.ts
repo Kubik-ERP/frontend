@@ -4,27 +4,27 @@ export const STAFF_MEMBER_LIST_REQUEST = 'STAFF_MEMBER_LIST_REQUEST';
 export const STAFF_MEMBER_LIST_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Name',
-    sortable: true,
+    sortable: false,
     value: 'name',
   },
   {
     label: 'Email',
-    sortable: true,
+    sortable: false,
     value: 'email',
   },
   {
     label: 'Phone Number',
-    sortable: true,
+    sortable: false,
     value: 'phoneNumber',
   },
   {
     label: 'Title',
-    sortable: true,
+    sortable: false,
     value: 'title',
   },
   {
     label: 'User Permission',
-    sortable: true,
+    sortable: false,
     value: 'userPermission',
   },
   {

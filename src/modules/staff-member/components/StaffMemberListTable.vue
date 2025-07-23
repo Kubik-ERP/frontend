@@ -32,7 +32,6 @@ const {
     :total-records="staffMemberList_values.meta.total"
     :first="(staffMemberList_values.meta.page - 1) * staffMemberList_values.meta.limit"
     header-title="Staff"
-    is-using-btn-cta-create
     is-using-custom-body
     is-using-custom-filter
     is-using-custom-header-prefix
@@ -130,7 +129,7 @@ const {
               <template #default>
                 <section id="content" class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Edit</span>
+                  <span class="font-normal text-sm text-text-primary">Edit | {{ data.name }}</span>
                 </section>
               </template>
             </PrimeVueButton>
@@ -143,7 +142,7 @@ const {
               <template #default>
                 <section id="content" class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="delete" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Delete</span>
+                  <span class="font-normal text-sm text-text-primary">Delete | {{ data.name }}</span>
                 </section>
               </template>
             </PrimeVueButton>
