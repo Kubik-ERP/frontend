@@ -2,8 +2,11 @@
 // Interfaces
 import type { IStaffMemberCreateEditProvided } from '../interfaces';
 
-const { staffMemberCreateEdit_columnsOfCommissions, staffMemberCreateEdit_commisionType } =
-  inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
+const {
+  staffMemberCreateEdit_columnsOfCommissions,
+  staffMemberCreateEdit_commisionType,
+  staffMemberCreateEdit_onCloseDialogCommission,
+} = inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
 </script>
 
 <template>
@@ -73,6 +76,7 @@ const { staffMemberCreateEdit_columnsOfCommissions, staffMemberCreateEdit_commis
           label="Cancel"
           severity="secondary"
           variant="outlined"
+          @click="staffMemberCreateEdit_onCloseDialogCommission"
         />
 
         <PrimeVueButton

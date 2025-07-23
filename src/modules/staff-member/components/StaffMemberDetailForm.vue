@@ -235,6 +235,54 @@ const handleImageUpload = (event: Event) => {
 
       <div class="col-span-full lg:col-span-6">&nbsp;</div>
 
+      <section id="employment-start-date" class="col-span-full lg:col-span-6 flex flex-col">
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+          is-name-as-label
+          label-for="employmentStartDate"
+          name="Employment Start Date"
+          :validators="staffMemberCreateEdit_formValidations.startDate"
+        >
+          <PrimeVueDatePicker
+            id="employmentStartDate"
+            v-model="staffMemberCreateEdit_formData.startDate"
+            :loading="staffMemberCreateEdit_isLoading"
+            class="text-sm w-full"
+            :class="{ ...classes }"
+            show-icon
+            date-format="dd/mm/yy"
+            show-button-bar
+            v-on="useListenerForm(staffMemberCreateEdit_formValidations, 'startDate')"
+            @clear-click="staffMemberCreateEdit_formData.startDate = null"
+          />
+        </AppBaseFormGroup>
+      </section>
+
+      <section id="employment-end-date" class="col-span-full lg:col-span-6">
+        <label for="employmentEndDate" class="font-normal text-sm text-text-secondary">
+          Employment End Date <span class="text-text-disabled">(Optional)</span>
+        </label>
+        <AppBaseFormGroup
+          class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+          label-for="employmentEndDate"
+          name="Employment End Date"
+          :validators="staffMemberCreateEdit_formValidations.endDate"
+        >
+          <PrimeVueDatePicker
+            id="employmentEndDate"
+            v-model="staffMemberCreateEdit_formData.endDate"
+            :loading="staffMemberCreateEdit_isLoading"
+            class="text-sm w-full"
+            date-format="dd/mm/yy"
+            show-icon
+            show-button-bar
+            v-on="useListenerForm(staffMemberCreateEdit_formValidations, 'endDate')"
+            @clear-click="staffMemberCreateEdit_formData.endDate = null"
+          />
+        </AppBaseFormGroup>
+      </section>
+
       <section id="social-media" class="col-span-full lg:col-span-6 flex flex-col gap-1">
         <label for="socialMediaType" class="font-normal text-text-secondary text-sm">
           Social Media <span class="text-text-disabled">(Optional)</span>
@@ -247,7 +295,7 @@ const handleImageUpload = (event: Event) => {
             :options="staffMemberCreateEdit_typesOfSocialMedia"
             option-label="label"
             :option-value="(value: IDropdownItem) => value"
-            class="text-sm h-full w-fit"
+            class="text-sm h-full w-fit min-w-24"
           >
             <template #option="{ option }">
               <section id="social-media-option" class="flex items-center gap-1">

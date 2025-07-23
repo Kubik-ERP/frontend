@@ -45,8 +45,8 @@ export interface IStaffMemberCreateEditFormData {
   phoneCode: string;
   phone_number: string | null;
   photoProfile: string | null;
-  startDate: string | null;
-  endDate: string | null;
+  startDate: Date | null;
+  endDate: Date | null;
   gender: string | null;
   title: string | null;
   permission: string | null;

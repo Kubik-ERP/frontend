@@ -20,7 +20,7 @@ import { useStaffMemberStore } from '../store';
 
 // Vuelidate
 import { useVuelidate } from '@vuelidate/core';
-import { email, required } from '@vuelidate/validators';
+import { email, required, helpers } from '@vuelidate/validators';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -45,7 +45,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     phoneCode: '+62',
     phone_number: '081234567890',
     photoProfile: null,
-    startDate: null,
+    startDate: new Date(),
     endDate: null,
     gender: 'male',
     title: 'Manager',
@@ -117,6 +117,15 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   });
 
   /**
+   * @description customer validation helper for after date validation
+   */
+
+  const isAfter = (value: Date | null, target: Date | null) => {
+    if (!value || !target) return true; // If either value or target is null, validation passes
+    return value > target; // Check if value is after target
+  };
+
+  /**
    * @description Form validations
    */
   const staffMemberCreateEdit_formRules = computed(() => ({
@@ -124,7 +133,9 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     email: { required, email },
     phone_number: { required },
     // phoneCode: { required },
-    // startDate: { required },
+    startDate: { required },
+    // end date must be after start date
+    endDate: { "End date must be after start date": (value: Date | null) => isAfter(value, staffMemberCreateEdit_formData.startDate) },
     gender: { required },
     // title: { required },
     permission: { required },
