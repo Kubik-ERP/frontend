@@ -1,5 +1,9 @@
 // Constants
-import { STAFF_MEMBER_LIST_COLUMNS, STAFF_MEMBER_LIST_REQUEST,STAFF_MEMBER_TYPES_OF_USER_PERMISSIONS } from '../constants';
+import {
+  STAFF_MEMBER_LIST_COLUMNS,
+  STAFF_MEMBER_LIST_REQUEST,
+  STAFF_MEMBER_TYPES_OF_USER_PERMISSIONS,
+} from '../constants';
 
 // Interfaces
 import type { IStaffMemberListProvided, IStaffMemberListRequestQuery } from '../interfaces';
@@ -17,7 +21,12 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
    * @description Injected variables
    */
   const store = useStaffMemberStore(); // Instance of the store
-  const { staffMember_isLoading, staffMember_listDropdownItemStaff, staffMember_listDropdownItemTitles, staffMember_lists } = storeToRefs(store);
+  const {
+    staffMember_isLoading,
+    staffMember_listDropdownItemStaff,
+    staffMember_listDropdownItemTitles,
+    staffMember_lists,
+  } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const staffMemberList_queryParams = reactive<IStaffMemberListRequestQuery>({
@@ -68,19 +77,17 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
    * @description Handle fetch api staff member - delete
    */
 
-  const staffMemberList_deleteStaffMember = async (staffMemberId: string): Promise<void> => {
+  const staffMemberList_fetchdeleteStaffMember = async (staffMemberId: string): Promise<void> => {
     try {
       await store.staffMember_deleteStaffMember(staffMemberId, {
         ...httpAbort_registerAbort(STAFF_MEMBER_LIST_REQUEST),
       });
-
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,
         message: 'Staff member has been deleted successfully',
         position: EToastPosition.TOP_RIGHT,
       };
-
       eventBus.emit('AppBaseToast', argsEventEmitter);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -92,6 +99,40 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
       // Optionally, you can refetch the list after deletion
       await staffMemberList_fetchListMembers();
     }
+  };
+
+  const staffMemberList_deleteStaffMember = async (staffMemberId: string): Promise<void> => {
+    const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'staff-member-list-dialog-confirmation',
+      description: 'This action cannot be undone, and the member you remove will lose access to the system',
+      iconName: 'delete-polygon',
+      isOpen: true,
+      isUsingButtonSecondary: true,
+      onClickButtonPrimary: () => {
+        const argsEventEmitter: IPropsDialogConfirmation = {
+          id: 'staff-member-list-dialog-confirmation',
+          isOpen: false,
+        };
+
+        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+      },
+      onClickButtonSecondary: async () => {
+        const argsEventEmitter: IPropsDialogConfirmation = {
+          id: 'staff-member-list-dialog-confirmation',
+          isOpen: false,
+        };
+
+        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+
+        await staffMemberList_fetchdeleteStaffMember(staffMemberId);
+      },
+      textButtonPrimary: 'Cancel',
+      textButtonSecondary: 'Delete Staff Member',
+      title: 'Are you sure want to delete this staff member?',
+      type: 'error',
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
   };
 
   return {

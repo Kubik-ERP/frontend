@@ -40,16 +40,16 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    */
   const staffMemberCreateEdit_commisionType = ref<'PRODUCT' | 'VOUCHER'>('PRODUCT');
   const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-    name: null,
-    email: null,
+    name: 'Daniel',
+    email: 'daniel@kubik.com',
     phoneCode: '+62',
-    phoneNumber: null,
+    phone_number: '081234567890',
     photoProfile: null,
     startDate: null,
     endDate: null,
-    gender: null,
-    title: null,
-    permission: null,
+    gender: 'male',
+    title: 'Manager',
+    permission: 'MANAGER',
     socialMedia: {
       facebook: null,
       instagram: null,
@@ -71,6 +71,38 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       },
     },
   });
+  // const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
+  //   name: null,
+  //   email: null,
+  //   phoneCode: '+62',
+  //   phoneNumber: null,
+  //   photoProfile: null,
+  //   startDate: null,
+  //   endDate: null,
+  //   gender: null,
+  //   title: null,
+  //   permission: null,
+  //   socialMedia: {
+  //     facebook: null,
+  //     instagram: null,
+  //     twitter: null,
+  //   },
+  //   workingHours: [],
+  //   comissions: {
+  //     productComission: {
+  //       defaultComission: null,
+  //       defaultComissionType: null,
+  //       isAllItemsHaveDefaultComission: null,
+  //       productItems: [],
+  //     },
+  //     voucherCommission: {
+  //       defaultComission: null,
+  //       defaultComissionType: null,
+  //       isAllVouchersHaveDefaultComission: null,
+  //       voucherItems: [],
+  //     },
+  //   },
+  // });
   const staffMemberCreateEdit_routeParamsId = ref<string | undefined>(route.params.id as string | undefined);
 
   /**
@@ -90,11 +122,11 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   const staffMemberCreateEdit_formRules = computed(() => ({
     name: { required },
     email: { required, email },
-    phoneNumber: { required },
-    phoneCode: { required },
-    startDate: { required },
+    phone_number: { required },
+    // phoneCode: { required },
+    // startDate: { required },
     gender: { required },
-    title: { required },
+    // title: { required },
     permission: { required },
   }));
   const staffMemberCreateEdit_formValidations = useVuelidate(
@@ -113,6 +145,16 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       await store.staffMember_createNewStaffMember(formData, {
         ...httpAbort_registerAbort(STAFF_MEMBER_CREATE_REQUEST),
       });
+      // back to the staff member index page
+      router.push({ name: 'staff-member.index' });
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Staff member has been created successfully',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -130,6 +172,16 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       await store.staffMember_deleteStaffMember(staffMemberId, {
         ...httpAbort_registerAbort(STAFF_MEMBER_DELETE_REQUEST),
       });
+      // back to the staff member index page
+      router.push({ name: 'staff-member.index' });
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Staff member has been deleted successfully',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -144,9 +196,12 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    */
   const staffMemberCreateEdit_fetchDetailStaffMember = async () => {
     try {
-      const response =await store.staffMember_fetchDetailStaffMember(staffMemberCreateEdit_routeParamsId.value as string, {
-        ...httpAbort_registerAbort(STAFF_MEMBER_DETAIL_REQUEST),
-      });
+      const response = await store.staffMember_fetchDetailStaffMember(
+        staffMemberCreateEdit_routeParamsId.value as string,
+        {
+          ...httpAbort_registerAbort(STAFF_MEMBER_DETAIL_REQUEST),
+        },
+      );
       if (response) {
         // Populate form data with the fetched staff member details
         Object.assign(staffMemberCreateEdit_formData, response.data);
@@ -168,6 +223,16 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       await store.staffMember_updateStaffMember(staffMemberId, formData, {
         ...httpAbort_registerAbort(STAFF_MEMBER_CREATE_REQUEST),
       });
+      // back to the staff member index page
+      router.push({ name: 'staff-member.index' });
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Staff member has been updated successfully',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -220,8 +285,8 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         await staffMemberCreateEdit_fetchDeleteStaffMember(staffMemberId);
       },
       textButtonPrimary: 'Cancel',
-      textButtonSecondary: 'Delete Store',
-      title: 'Are you sure want to delete this store?',
+      textButtonSecondary: 'Delete Staff Member',
+      title: 'Are you sure want to delete this staff member?',
       type: 'error',
     };
 
@@ -247,12 +312,55 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   };
 
   /**
+   * @description Handle action on update form.
+   */
+
+  const staffMemberCreateEdit_onUpdateForm = async () => {
+    // const staffMemberId = route.params.id as string;
+    // await staffMemberCreateEdit_fetchUpdateStaffMember(staffMemberId, staffMemberCreateEdit_formData);
+    // dialog
+    const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'staff-member-edit-dialog-confirmation',
+      iconName: 'confirmation',
+      isOpen: true,
+      isUsingButtonSecondary: true,
+      width: '400px',
+      onClickButtonPrimary: async () => {
+        const argsEventEmitter: IPropsDialogConfirmation = {
+          id: 'staff-member-edit-dialog-confirmation',
+          isOpen: false,
+        };
+
+        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+
+        const staffMemberId = route.params.id as string;
+        await staffMemberCreateEdit_fetchUpdateStaffMember(staffMemberId, staffMemberCreateEdit_formData);
+      },
+      onClickButtonSecondary: () => {
+        const argsEventEmitter: IPropsDialogConfirmation = {
+          id: 'staff-member-edit-dialog-confirmation',
+          isOpen: false,
+        };
+
+        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+      },
+      textButtonPrimary: "Yes, I'm Sure",
+      textButtonSecondary: 'Cancel',
+      title: 'Are you sure want to update this staff member data?',
+      type: 'info',
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
+  /**
    * @description Handle action on submit form.
    */
   const staffMemberCreateEdit_onSubmit = async () => {
     staffMemberCreateEdit_formValidations.value.$touch();
 
     if (staffMemberCreateEdit_formValidations.value.$invalid) {
+      console.log('Staff member on submit'); // Debugging log
       return;
     }
 
@@ -280,11 +388,16 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
     try {
       if (route.name === 'staff-member.create') {
-        await staffMemberCreateEdit_fetchCreateStaffMember(formData);
+        await staffMemberCreateEdit_fetchCreateStaffMember(staffMemberCreateEdit_formData);
       } else if (route.name === 'staff-member.edit') {
-        const staffMemberId = route.params.id as string;
-        await staffMemberCreateEdit_fetchUpdateStaffMember(staffMemberId, formData);
+        await staffMemberCreateEdit_onUpdateForm();
       }
+      // if (route.name === 'staff-member.create') {
+      //   await staffMemberCreateEdit_fetchCreateStaffMember(formData);
+      // } else if (route.name === 'staff-member.edit') {
+      //   const staffMemberId = route.params.id as string;
+      //   await staffMemberCreateEdit_fetchUpdateStaffMember(staffMemberId, formData);
+      // }
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);

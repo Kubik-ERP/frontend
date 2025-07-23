@@ -45,5 +45,6 @@ onMounted(async () => {
 <template>
   <section id="staff-member-list" class="flex flex-col relative inset-0 z-0">
     <StaffMemberListTable />
+    <AppBaseDialogConfirmation id="staff-member-list-dialog-confirmation" />
   </section>
 </template>

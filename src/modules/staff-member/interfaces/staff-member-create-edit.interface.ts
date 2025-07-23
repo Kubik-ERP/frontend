@@ -43,7 +43,7 @@ export interface IStaffMemberCreateEditFormData {
   name: string | null;
   email: string | null;
   phoneCode: string;
-  phoneNumber: string | null;
+  phone_number: string | null;
   photoProfile: string | null;
   startDate: string | null;
   endDate: string | null;

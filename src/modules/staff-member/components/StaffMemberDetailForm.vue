@@ -183,12 +183,12 @@ const handleImageUpload = (event: Event) => {
             :validators="staffMemberCreateEdit_formValidations.phoneNumber"
           >
             <PrimeVueInputText
-              v-model="staffMemberCreateEdit_formData.phoneNumber"
+              v-model="staffMemberCreateEdit_formData.phone_number"
               :loading="staffMemberCreateEdit_isLoading"
               class="text-sm w-full"
               :class="{ ...classes }"
               type="tel"
-              v-on="useListenerForm(staffMemberCreateEdit_formValidations, 'phoneNumber')"
+              v-on="useListenerForm(staffMemberCreateEdit_formValidations, 'phone_number')"
             />
           </AppBaseFormGroup>
         </section>
@@ -210,7 +210,7 @@ const handleImageUpload = (event: Event) => {
               input-id="option-male"
               name="businessType"
               class="text-sm"
-              value="MALE"
+              value="male"
               :class="{ ...classes }"
               v-on="useListenerForm(staffMemberCreateEdit_formValidations, 'gender')"
             />
@@ -223,7 +223,7 @@ const handleImageUpload = (event: Event) => {
               input-id="option-female"
               name="businessType"
               class="text-sm"
-              value="FEMALE"
+              value="female"
               :class="{ ...classes }"
               v-on="useListenerForm(staffMemberCreateEdit_formValidations, 'gender')"
             />
