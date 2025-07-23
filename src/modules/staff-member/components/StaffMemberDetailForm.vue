@@ -10,6 +10,23 @@ const {
   staffMemberCreateEdit_typesOfSocialMedia,
   staffMemberCreateEdit_typesOfUserPermissions,
 } = inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
+
+const fileInput = ref<HTMLInputElement | null>(null);
+
+const triggerFileInput = () => {
+  fileInput.value?.click();
+};
+
+const handleImageUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      staffMemberCreateEdit_formData.photoProfile = reader.result as string; // Update the photoProfile with the base24 string
+    };
+    reader.readAsDataURL(file);
+  }
+};
 </script>
 
 <template>
@@ -19,12 +36,55 @@ const {
     <section id="staff-information-form" class="grid-wrapper gap-4">
       <section id="staff-title" class="col-span-full lg:col-span-6 flex flex-col gap-1">
         <label for="staff-title-input" class="font-normal text-sm text-text-secondary">
+          Photo <span class="text-text-disabled">(Optional)</span>
+        </label>
+        <div class="flex items-center gap-4">
+          <img
+            class="rounded-full w-24 h-24 object-cover"
+            :src="staffMemberCreateEdit_formData.photoProfile || 'https://placehold.co/100'"
+            alt="Photo"
+          />
+          <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
+
+          <PrimeVueButton
+            label="Select Image"
+            class="shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
+            variant="outlined"
+            @click="triggerFileInput"
+          >
+            <template #icon>
+              <AppBaseSvg name="image" class="!w-5 !h-5" />
+            </template>
+          </PrimeVueButton>
+        </div>
+      </section>
+      <section id="staff-name" class="col-span-full lg:col-span-6 flex flex-col gap-1">
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+          is-name-as-label
+          label-for="staff-name"
+          name="Staff Name"
+          :validators="staffMemberCreateEdit_formValidations.name"
+        >
+          <PrimeVueInputText
+            id="staff-name"
+            v-model="staffMemberCreateEdit_formData.name"
+            :loading="staffMemberCreateEdit_isLoading"
+            class="text-sm w-full"
+            :class="{ ...classes }"
+            v-on="useListenerForm(staffMemberCreateEdit_formValidations, 'name')"
+          />
+        </AppBaseFormGroup>
+      </section>
+      <section id="staff-title" class="col-span-full lg:col-span-6 flex flex-col gap-1">
+        <label for="staff-title-input" class="font-normal text-sm text-text-secondary">
           Staff Title <span class="text-text-disabled">(Optional)</span>
         </label>
 
         <PrimeVueInputText
           id="staff-title-input"
-          v-model="staffMemberCreateEdit_formData.role"
+          v-model="staffMemberCreateEdit_formData.title"
           class="text-sm w-full"
         />
       </section>
@@ -35,7 +95,7 @@ const {
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="staff-permission"
-          name="Staff"
+          name="Staff Permission"
           :validators="staffMemberCreateEdit_formValidations.permission"
         >
           <PrimeVueSelect

@@ -190,7 +190,7 @@ export const useStaffMemberStore = defineStore('staff-member', {
     /**
      * @description Handle fetch api staff member - update
      * @url /employees/${staffMemberId}
-     * @method PUT
+     * @method PATCH
      * @access private
      */
     async staffMember_updateStaffMember(
@@ -201,7 +201,7 @@ export const useStaffMemberStore = defineStore('staff-member', {
       this.staffMember_isLoading = true;
 
       try {
-        const response = await httpClient.put<unknown>(`${STAFF_MEMBER_BASE_ENDPOINT}/${staffMemberId}`, payload, {
+        const response = await httpClient.patch<unknown>(`${STAFF_MEMBER_BASE_ENDPOINT}/${staffMemberId}`, payload, {
           ...requestConfigurations,
         });
 

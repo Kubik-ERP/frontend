@@ -44,11 +44,11 @@ export interface IStaffMemberCreateEditFormData {
   email: string | null;
   phoneCode: string;
   phoneNumber: string | null;
-  photoProfile: FileUploadSelectEvent | null;
+  photoProfile: string | null;
   startDate: string | null;
   endDate: string | null;
   gender: string | null;
-  role: string | null;
+  title: string | null;
   permission: string | null;
   socialMedia: {
     facebook: string | null;
@@ -62,7 +62,7 @@ export interface IStaffMemberCreateEditFormData {
 export interface IStaffMemberCreateEditProvided {
   staffMemberCreateEdit_columnsOfCommissions: IColumnDataTable[];
   staffMemberCreateEdit_commisionType: globalThis.Ref<'PRODUCT' | 'VOUCHER'>;
-  staffMemberCreateEdit_fetchDetailStaffMember: (staffMemberId: string) => Promise<unknown>;
+  staffMemberCreateEdit_fetchDetailStaffMember: () => Promise<unknown>;
   staffMemberCreateEdit_formData: IStaffMemberCreateEditFormData;
   staffMemberCreateEdit_formValidations: globalThis.Ref<Validation>;
   staffMemberCreateEdit_isEditable: globalThis.Ref<boolean>;

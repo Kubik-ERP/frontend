@@ -48,7 +48,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     startDate: null,
     endDate: null,
     gender: null,
-    role: null,
+    title: null,
     permission: null,
     socialMedia: {
       facebook: null,
@@ -78,7 +78,10 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    * If the route parameter 'id' exists, it means we are editing an existing outlet.
    */
   const staffMemberCreateEdit_isEditable = computed(() => {
-    return Boolean(staffMemberCreateEdit_routeParamsId.value);
+    if (route.name === 'staff-member.edit') {
+      return true;
+    }
+    return false;
   });
 
   /**
@@ -88,9 +91,10 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     name: { required },
     email: { required, email },
     phoneNumber: { required },
+    phoneCode: { required },
     startDate: { required },
     gender: { required },
-    role: { required },
+    title: { required },
     permission: { required },
   }));
   const staffMemberCreateEdit_formValidations = useVuelidate(
@@ -138,11 +142,15 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   /**
    * @description Handle fetch api staff member detail. We call the staffMember_fetchDetailStaffMember function from the store to handle the request.
    */
-  const staffMemberCreateEdit_fetchDetailStaffMember = async (staffMemberId: string) => {
+  const staffMemberCreateEdit_fetchDetailStaffMember = async () => {
     try {
-      await store.staffMember_fetchDetailStaffMember(staffMemberId, {
+      const response =await store.staffMember_fetchDetailStaffMember(staffMemberCreateEdit_routeParamsId.value as string, {
         ...httpAbort_registerAbort(STAFF_MEMBER_DETAIL_REQUEST),
       });
+      if (response) {
+        // Populate form data with the fetched staff member details
+        Object.assign(staffMemberCreateEdit_formData, response.data);
+      }
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);

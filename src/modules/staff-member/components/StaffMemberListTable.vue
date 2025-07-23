@@ -124,12 +124,12 @@ const {
             <PrimeVueButton
               class="w-full px-4 py-3"
               variant="text"
-              @click="$router.push({ name: 'staff-member.create', params: { id: data.id } })"
+              @click="$router.push({ name: 'staff-member.edit', params: { id: data.id } })"
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Edit | {{ data.name }}</span>
+                  <span class="font-normal text-sm text-text-primary">Edit | {{ data.id }}</span>
                 </section>
               </template>
             </PrimeVueButton>

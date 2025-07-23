@@ -2,7 +2,7 @@
 // Interfaces
 import type { IStaffMemberCreateEditProvided } from '../interfaces';
 
-const { staffMemberCreateEdit_isEditable, staffMemberCreateEdit_isLoading } =
+const { staffMemberCreateEdit_isEditable, staffMemberCreateEdit_isLoading,staffMemberCreateEdit_onCancel, staffMemberCreateEdit_onSubmit } =
   inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
 </script>
 
@@ -13,6 +13,7 @@ const { staffMemberCreateEdit_isEditable, staffMemberCreateEdit_isLoading } =
       label="Cancel"
       severity="secondary"
       variant="outlined"
+      @click="staffMemberCreateEdit_onCancel"
     />
 
     <PrimeVueButton
@@ -20,6 +21,7 @@ const { staffMemberCreateEdit_isEditable, staffMemberCreateEdit_isLoading } =
       :label="staffMemberCreateEdit_isEditable ? 'Save' : 'Add Staff Member'"
       type="submit"
       :loading="staffMemberCreateEdit_isLoading"
+      @click="staffMemberCreateEdit_onSubmit"
     />
   </section>
 </template>
