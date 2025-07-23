@@ -15,6 +15,8 @@ const {
   staffMemberList_isLoading,
   staffMemberList_values,
   staffMemberList_queryParams,
+  staffMemberList_typesOfUserPermissions,
+  staffMemberList_dropdownItemTitles,
   staffMemberList_deleteStaffMember,
   staffMemberList_onChangePage,
 } = inject('staffMemberList') as IStaffMemberListProvided;
@@ -79,10 +81,29 @@ const {
     </template>
 
     <template #filter>
-      <div class="flex flex-col gap-1 w-full">
-        <span class="font-semibold inline-block text-gray-900 text-base w-48">Filter by</span>
+      <div class="flex items-center gap-4 w-full">
+        <span class="font-semibold inline-block text-gray-900 text-base w-fit whitespace-nowrap">Filter by</span>
 
-        <div class="flex items-center gap-4 w-full"></div>
+        <PrimeVueMultiSelect
+          v-model="staffMemberList_queryParams.title"
+          display="chip"
+          :options="staffMemberList_dropdownItemTitles"
+          option-label="label"
+          option-value="value"
+          filter
+          placeholder="Title"
+          class="text-sm text-text-disabled w-full"
+        />
+        <PrimeVueMultiSelect
+          v-model="staffMemberList_queryParams.permission"
+          display="chip"
+          :options="staffMemberList_typesOfUserPermissions"
+          option-label="label"
+          option-value="value"
+          filter
+          placeholder="Permission"
+          class="text-sm text-text-disabled w-full"
+        />
       </div>
     </template>
 

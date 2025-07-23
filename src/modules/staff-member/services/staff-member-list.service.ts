@@ -1,5 +1,5 @@
 // Constants
-import { STAFF_MEMBER_LIST_COLUMNS, STAFF_MEMBER_LIST_REQUEST } from '../constants';
+import { STAFF_MEMBER_LIST_COLUMNS, STAFF_MEMBER_LIST_REQUEST,STAFF_MEMBER_TYPES_OF_USER_PERMISSIONS } from '../constants';
 
 // Interfaces
 import type { IStaffMemberListProvided, IStaffMemberListRequestQuery } from '../interfaces';
@@ -17,7 +17,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
    * @description Injected variables
    */
   const store = useStaffMemberStore(); // Instance of the store
-  const { staffMember_isLoading, staffMember_listDropdownItemStaff, staffMember_lists } = storeToRefs(store);
+  const { staffMember_isLoading, staffMember_listDropdownItemStaff, staffMember_listDropdownItemTitles, staffMember_lists } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const staffMemberList_queryParams = reactive<IStaffMemberListRequestQuery>({
@@ -25,6 +25,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
     page: 1,
     limit: 10,
     title: null,
+    permission: null,
   });
   /**
    * @description Handle fetch api staff member. We call the fetchStaffMember_list function from the store to handle the request.
@@ -96,6 +97,8 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
   return {
     staffMemberList_columns: STAFF_MEMBER_LIST_COLUMNS,
     staffMemberList_dropdownItemStaff: staffMember_listDropdownItemStaff,
+    staffMemberList_dropdownItemTitles: staffMember_listDropdownItemTitles,
+    staffMemberList_typesOfUserPermissions: STAFF_MEMBER_TYPES_OF_USER_PERMISSIONS,
 
     staffMemberList_fetchListMembers,
     staffMemberList_deleteStaffMember,

@@ -14,6 +14,8 @@ const {
   staffMemberList_isLoading,
   staffMemberList_values,
   staffMemberList_queryParams,
+  staffMemberList_dropdownItemTitles,
+  staffMemberList_typesOfUserPermissions,
   staffMemberList_deleteStaffMember,
   staffMemberList_onChangePage,
 } = useStaffMemberListService();
@@ -26,6 +28,8 @@ provide('staffMemberList', {
   staffMemberList_isLoading,
   staffMemberList_values,
   staffMemberList_queryParams,
+  staffMemberList_dropdownItemTitles,
+  staffMemberList_typesOfUserPermissions,
   staffMemberList_deleteStaffMember,
   staffMemberList_onChangePage,
 });

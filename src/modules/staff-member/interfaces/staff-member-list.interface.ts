@@ -6,6 +6,7 @@ export interface IStaffMemberListRequestQuery{
   page?: number;
   limit?: number;
   title?: string | null;
+  permission?: string | null;
 }
 
 export interface IStaffMemberListResponse {
@@ -18,6 +19,8 @@ export interface IStaffMemberListResponse {
 export interface IStaffMemberListProvided {
   staffMemberList_columns: IColumnDataTable[];
   staffMemberList_dropdownItemStaff: globalThis.Ref<IDropdownItem[]>;
+  staffMemberList_dropdownItemTitles: globalThis.Ref<IDropdownItem[]>;
+  staffMemberList_typesOfUserPermissions: IDropdownItem[];
   staffMemberList_fetchListMembers: () => Promise<unknown>;
   staffMemberList_deleteStaffMember: (staffMemberId: string) => Promise<void>;
   staffMemberList_isLoading: globalThis.Ref<boolean>;

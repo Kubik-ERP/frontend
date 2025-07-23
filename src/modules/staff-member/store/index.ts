@@ -43,6 +43,23 @@ export const useStaffMemberStore = defineStore('staff-member', {
         value: staffMember.id,
       }));
     },
+    /**
+     * @description Handle business logic for mapping staff member title lists to options
+     */
+    staffMember_listDropdownItemTitles: (state): IDropdownItem[] => {
+      const seen = new Set<string>();
+      return state.staffMember_lists.data
+      .filter(staffMember => staffMember.title != null && staffMember.title !== '')
+      .filter(staffMember => {
+        if (seen.has(staffMember.title!)) return false;
+        seen.add(staffMember.title!);
+        return true;
+      })
+      .map(staffMember => ({
+        label: staffMember.title!,
+        value: staffMember.title!,
+      }));
+    },
   },
   actions: {
     /**
