@@ -89,7 +89,7 @@ onBeforeRouteLeave((to, from, next) => {
 const loadCustomer = async () => {
   try {
     const response = await getCustomerByID(route.params.id);
-    console.log('🚀 ~ onMounted ~ response:', response);
+    // console.log('🚀 ~ onMounted ~ response:', response);
 
     customer_FormData.name = response.name;
     customer_FormData.gender = response.gender;
@@ -177,61 +177,48 @@ onMounted(() => {
       />
     </div>
 
-    <section id="phone-information">
-      <div class="flex flex-col">
-        <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Phone Number</label>
-        <div class="flex items-center gap-2">
-          <section id="phone-code" class="w-fit">
-            <div
-              class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-              is-name-as-label
-              label-for="code"
-              name="Code"
-              spacing-bottom="mb-0"
-            >
-              <PrimeVueSelect
-                id="code"
-                v-model="customer_FormData.code"
-                filter
-                :options="COUNTRY_INFORMATIONS"
-                option-value="dialCodes"
-                placeholder="+62"
-                class="text-sm h-full min-h-9 w-full"
-              >
-                <template #option="{ option }">
-                  <section id="phone-option" class="flex items-center gap-1">
-                    <img :src="option.image" alt="country-flag" class="w-6 h-6" />
-                    <span class="text-sm">{{ option.dialCodes }}</span>
-                  </section>
-                </template>
+    <section class="flex flex-col">
+      <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Phone Number</label>
+      <section id="phone-information" class="flex items-center gap-3">
+        <section id="phone-code" class="w-fit">
+          <PrimeVueSelect
+            id="phoneCountryCode"
+            v-model="customer_FormData.code"
+            filter
+            :options="COUNTRY_INFORMATIONS"
+            :option-label="
+              value => {
+                return `${value.name} (${value.dialCodes})`;
+              }
+            "
+            option-value="dialCodes"
+            placeholder="+62"
+            class="text-sm h-full min-h-9 w-full"
+          >
+            <template #option="{ option }">
+              <section id="phone-option" class="flex items-center gap-1">
+                <img :src="option.image" alt="country-flag" class="w-6 h-6" />
+                <span class="text-sm">{{ option.name }} ({{ option.dialCodes }})</span>
+              </section>
+            </template>
 
-                <template #value="{ value }">
-                  <section id="phone-value" class="flex items-center gap-1">
-                    <span class="text-sm">{{ value }}</span>
-                  </section>
-                </template>
-              </PrimeVueSelect>
-            </div>
-          </section>
+            <template #value="{ value }">
+              <section id="phone-value" class="flex items-center gap-1">
+                <span class="text-sm">{{ value }}</span>
+              </section>
+            </template>
+          </PrimeVueSelect>
+        </section>
 
-          <section id="phone-number" class="w-full">
-            <div
-              class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-              is-name-as-label
-              label-for="number"
-              name="Phone Number"
-              spacing-bottom="mb-0"
-            >
-              <PrimeVueInputText
-                v-model="customer_FormData.number"
-                placeholder="Input your phone number"
-                class="text-sm w-full"
-                type="tel"
-              />
-            </div>
-          </section>
-        </div>
-      </div>
+        <section id="phone-number" class="w-full">
+          <PrimeVueInputText
+            v-model="customer_FormData.number"
+            placeholder="Input your phone number"
+            class="text-sm w-full"
+            type="tel"
+          />
+        </section>
+      </section>
     </section>
 
     <div class="flex flex-col">
