@@ -7,6 +7,13 @@ const {
   staffMemberCreateEdit_commisionType,
   staffMemberCreateEdit_onCloseDialogCommission,
 } = inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
+
+/**
+ * @description This component is only temporary for development purposes.
+ */
+const commissionValue = ref(0);
+const commissionType = ref('Rp');
+const commissionTypes = ref(['Rp', '%']);
 </script>
 
 <template>
@@ -19,7 +26,35 @@ const {
 
     <template #content>
       <form class="flex flex-col gap-4 w-full">
-        <PrimeVueInputGroup>
+        <div class="flex flex-col gap-2 w-fit">
+          <label for="commission-input" class="text-base text-gray-800"> Default Product Commissions </label>
+
+          <PrimeVueInputGroup class="w-64 rounded-lg border border-gray-300 overflow-hidden">
+            <PrimeVueInputNumber
+              id="commission-input"
+              v-model="commissionValue"
+              placeholder="0"
+              :min-fraction-digits="0"
+              :max-fraction-digits="2"
+              :prefix="commissionType === 'Rp' ? 'Rp' : ''"
+              :suffix="commissionType === '%' ? '%' : ''"
+              mode="decimal"
+              input-id="commission-input-field"
+            />
+
+            <PrimeVueInputGroupAddon class="bg-transparent pr-0 pl-2">
+              <PrimeVueSelect
+                v-model="commissionType"
+                :options="commissionTypes"
+                :pt="{
+                  root: 'border-none bg-transparent shadow-none ring-0 focus:ring-0 p-0',
+                  label: 'pr-2',
+                }"
+              />
+            </PrimeVueInputGroupAddon>
+          </PrimeVueInputGroup>
+        </div>
+        <!-- <PrimeVueInputGroup>
           <PrimeVueInputNumber
             id="item-comission"
             class="w-full max-w-60"
@@ -33,7 +68,7 @@ const {
           <PrimeVueInputGroupAddon>
             <AppBaseSvg name="chevron-down" class="!w-5 !h-5" />
           </PrimeVueInputGroupAddon>
-        </PrimeVueInputGroup>
+        </PrimeVueInputGroup> -->
 
         <div class="flex items-center gap-2">
           <PrimeVueCheckbox binary />
