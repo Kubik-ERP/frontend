@@ -22,7 +22,7 @@ const { cashierProduct_productState, cashierProduct_onSearchData } =
         <PrimeVueInputText
           v-model="cashierProduct_productState.searchProduct"
           :loading="cashierProduct_productState.isLoadingProduct"
-          placeholder="Search product name or category"
+          :placeholder="useLocalization('cashier.mainSection.searchProductPlaceholder')"
           class="text-sm w-full"
         />
       </PrimeVueIconField>

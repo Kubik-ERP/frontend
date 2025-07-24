@@ -60,8 +60,8 @@ provide<IKitchenQueueProvided>('kitchenQueue', {
           <KitchenQueueCtaButton />
 
           <section id="kitchen-queue-content" class="w-full flex-1 overflow-hidden mt-2 box-border">
+            <KitchenQueueDummyItemHeight v-if="kitchenQueue_isLoading" />
             <template v-if="kitchenQueue_columns.length > 0 && !kitchenQueue_isLoading">
-              <KitchenQueueDummyItemHeight v-if="kitchenQueue_isLoading" />
               <KitchenQueueInvoicePreview v-if="!kitchenQueue_isLoading" />
             </template>
             <template v-else-if="kitchenQueue_isLoading">

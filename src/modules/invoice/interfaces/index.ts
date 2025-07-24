@@ -93,7 +93,7 @@ export interface IInvoiceData {
   discountAmount: number;
   tableCode: string;
   paymentStatus: 'unpaid' | 'paid' | 'refund' | 'cancelled';
-  orderStatus: 'in_progress' | 'waiting' | 'served' | 'cancelled' | 'refunded' | 'completed';
+  orderStatus: 'in_progress' | 'waiting' | 'served' | 'cancelled' | 'refunded' | 'completed' | 'placed';
   createdAt: string;
   updateAt: string;
   deleteAt: string | null;

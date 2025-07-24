@@ -26,8 +26,12 @@ const { cashierOrderSummary_modalPaymentMethod, cashierOrderSummary_handlePaymen
         <section id="cashier-summary-modal-payment-method" class="flex flex-col gap-6 p-6">
           <section id="cashier-summary-modal-payment-method-form" class="flex flex-col gap-3">
             <div class="flex flex-col gap-1">
-              <span class="font-semibold text-lg"> Payment Method </span>
-              <span class="text-sm text-grayscale-70"> Select Payment Method </span>
+              <span class="font-semibold text-lg">
+                {{ useLocalization('cashier.orderSummary.payment.title') }}
+              </span>
+              <span class="text-sm text-grayscale-70">
+                {{ useLocalization('cashier.orderSummary.payment.description') }}
+              </span>
             </div>
 
             <template v-if="cashierOrderSummary_modalPaymentMethod.isLoading">
@@ -42,7 +46,7 @@ const { cashierOrderSummary_modalPaymentMethod, cashierOrderSummary_handlePaymen
             </template>
             <template v-else>
               <div
-                v-for="category in route.name === 'cashier'
+                v-for="category in route.name === 'cashier' || route.name === 'cashier-order-edit'
                   ? cashierOrderSummary_modalPaymentMethod.data
                   : cashierOrderSummary_modalPaymentMethod.dataSelfOrder"
                 :key="category.id"
@@ -72,7 +76,9 @@ const { cashierOrderSummary_modalPaymentMethod, cashierOrderSummary_handlePaymen
                 <section id="cashier-summary-modal-order-type" class="flex gap-2 items-center">
                   <AppBaseSvg :name="category.iconName" class="!h-6 !w-6" />
                   <label class="font-semibold" :for="category.name">{{ category.name }}</label>
-                  <span v-if="!category.isAvailable" class="text-xs">Unavailable</span>
+                  <span v-if="!category.isAvailable" class="text-xs">{{
+                    useLocalization('cashier.unavailable')
+                  }}</span>
                 </section>
               </div>
             </template>
@@ -82,7 +88,7 @@ const { cashierOrderSummary_modalPaymentMethod, cashierOrderSummary_handlePaymen
             <PrimeVueButton
               class="border-primary text-primary py-2.5 px-8"
               type="button"
-              label="Cancel"
+              :label="useLocalization('cashier.cancel')"
               outlined
               @click="closeCallback"
             ></PrimeVueButton>
@@ -90,7 +96,7 @@ const { cashierOrderSummary_modalPaymentMethod, cashierOrderSummary_handlePaymen
             <PrimeVueButton
               class="bg-primary border-none text-white py-2.5 px-8"
               type="button"
-              label="Select Method"
+              :label="useLocalization('cashier.orderSummary.payment.selectMethod')"
               :disabled="!cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod"
               @click="
                 cashierOrderSummary_modalPaymentMethod.show = false;

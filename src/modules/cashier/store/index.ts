@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 
 // Constants
 import {
+  CASHIER_BASE_INVOICE_ENDPOINT,
   CASHIER_ENDPOINT_CATEGORIES,
   CASHIER_ENDPOINT_COSTUMERS,
   CASHIER_ENDPOINT_PAYMENT_CALCULATE_ESTIMATION,
@@ -27,7 +28,7 @@ import {
   ICashierResponseProcessCheckout,
 } from '../interfaces/cashier-response';
 
-import { ICashierStateStore } from '../interfaces';
+import { ICashierSelected, ICashierStateStore } from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
@@ -331,5 +332,35 @@ export const useCashierStore = defineStore('cashier', {
         }
       }
     },
+
+    async cashierProduct_handleEditOrder(
+      payload: {
+        invoiceId: string;
+        products: ICashierSelected[];
+      },
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<void> {
+      try {
+        const response = await httpClient.put<void>(`${CASHIER_BASE_INVOICE_ENDPOINT}/${payload.invoiceId}`, {products: payload.products.map(f=> {
+          return {
+            productId: f.productId,
+            quantity: f.quantity,
+            variantId: f.variantId,
+            notes: f.notes,
+          };
+        })}, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+    }
+  }
+      
   },
 });

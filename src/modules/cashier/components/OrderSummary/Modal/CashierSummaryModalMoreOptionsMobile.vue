@@ -25,7 +25,7 @@ const { cashierOrderSummary_modalMenuOrderItem, cashierOrderSummary_modalCancelO
             severity="danger"
             @click="cashierOrderSummary_modalCancelOrder.show = true"
           >
-            Cancel Order
+            {{ useLocalization('cashier.cancelOrder') }}
           </PrimeVueButton>
         </div>
       </template>

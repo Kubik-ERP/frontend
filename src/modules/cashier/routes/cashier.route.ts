@@ -22,6 +22,20 @@ const routes: RouteRecordRaw[] = [
           layout: LAYOUT_OPTIONS.NAVBAR,
           title: 'Cashier',
         },
+        children: [
+          {
+            path: 'order-edit/:invoiceId',
+            name: 'cashier-order-edit',
+            component: () => import('../views/CashierUI.vue'),
+            meta: {
+              requiresAuthorization: true,
+              backArrow: true,
+              backArrowPath: '/dashboard',
+              layout: LAYOUT_OPTIONS.NAVBAR,
+              title: 'Edit Order',
+            },
+          }
+        ]
       },
     ],
   },

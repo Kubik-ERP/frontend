@@ -39,14 +39,20 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                     class="!h-4 !w-4 block lg:hidden cursor-pointer"
                     @click="closeCallback"
                   />
-                  <span class="font-semibold text-lg">Table</span>
+                  <span class="font-semibold text-lg">{{
+                    useLocalization('cashier.orderSummary.table.title')
+                  }}</span>
                 </div>
                 <section id="status" class="flex lg:hidden items-center gap-2">
                   <section id="dot-status" class="w-2 h-2 rounded-full bg-success">&nbsp;</section>
-                  <span class="font-normal text-disabled text-xs">Online</span>
+                  <span class="font-normal text-disabled text-xs">{{
+                    useLocalization('cashier.mainSection.online')
+                  }}</span>
                 </section>
               </div>
-              <span class="hidden lg:block text-sm text-grayscale-70">Select Table</span>
+              <span class="hidden lg:block text-sm text-grayscale-70">{{
+                useLocalization('cashier.orderSummary.table.selectTable')
+              }}</span>
             </section>
           </section>
 
@@ -57,12 +63,12 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               class="col-span-12 lg:col-span-7 xl:col-span-9 border border-grayscale-10 flex flex-col gap-4 rounded-xs p-2 flex-1 min-h-0"
             >
               <div class="flex gap-4 items-center">
-                <span class="font-semibold">Floor</span>
+                <span class="font-semibold">{{ useLocalization('cashier.orderSummary.table.floor') }}</span>
 
                 <PrimeVueSelect
                   v-model="cashierOrderSummary_modalSelectTable.activeFloor"
                   :options="cashierOrderSummary_modalSelectTable.listFloor"
-                  placeholder="Select Floor"
+                  :placeholder="useLocalization('cashier.orderSummary.table.selectFloor')"
                   option-label="label"
                   option-value="value"
                   class="w-full"
@@ -101,13 +107,17 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                     >
                       <span class="text-xs lg:text-base font-semibold">{{ item.label }}</span>
                       <span class="text-[10px] lg:text-sm">{{
-                        item.available ? 'Available' : 'Unavailable'
+                        item.available
+                          ? useLocalization('cashier.available')
+                          : useLocalization('cashier.unavailable')
                       }}</span>
-                      <span v-if="item.available" class="text-[10px] lg:text-sm">{{ item.totalSeat }} seats</span>
+                      <span v-if="item.available" class="text-[10px] lg:text-sm"
+                        >{{ item.totalSeat }} {{ useLocalization('cashier.orderSummary.table.seats') }}</span
+                      >
                     </div>
                   </div>
                 </template>
-                <span v-else class="text-text-disabled">No Data Found</span>
+                <span v-else class="text-text-disabled">{{ useLocalization('cashier.noDataFound') }}</span>
               </div>
             </div>
 
@@ -115,10 +125,13 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
             <div
               class="col-span-12 lg:col-span-5 xl:col-span-3 flex-1 overflow-auto border border-grayscale-10 flex flex-col gap-2 lg:gap-4 rounded-xs p-2"
             >
-              <span class="text-sm lg:text-lg font-semibold">Available Table</span>
+              <span class="text-sm lg:text-lg font-semibold">{{
+                useLocalization('cashier.orderSummary.table.availableTable')
+              }}</span>
 
               <span class="text-[10px] lg:text-xs text-text-disabled"
-                >Floor {{ cashierOrderSummary_modalSelectTable.activeFloor }}</span
+                >{{ useLocalization('cashier.orderSummary.table.floor') }}
+                {{ cashierOrderSummary_modalSelectTable.activeFloor }}</span
               >
 
               <template v-if="cashierOrderSummary_getListActiveFloor.length">
@@ -150,12 +163,14 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                       :disabled="item.available === false"
                     ></PrimeVueCheckbox>
                     <span class="text-sm font-semibold">{{ item.label }}</span>
-                    <span class="text-text-disabled text-sm">{{ item.totalSeat }} Seats</span>
+                    <span class="text-text-disabled text-sm"
+                      >{{ item.totalSeat }} {{ useLocalization('cashier.orderSummary.table.seats') }}</span
+                    >
                   </div>
                 </div>
               </template>
               <div v-else class="flex w-full h-full items-center justify-center text-xs text-text-disabled">
-                No Data Found
+                {{ useLocalization('cashier.noDataFound') }}
               </div>
             </div>
           </section>
@@ -165,7 +180,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
             <PrimeVueButton
               class="border-primary hidden lg:block text-primary py-2.5 px-14"
               type="button"
-              label="Cancel"
+              :label="useLocalization('cashier.cancel')"
               outlined
               @click="closeCallback"
             ></PrimeVueButton>
@@ -173,7 +188,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
             <PrimeVueButton
               class="bg-primary w-full lg:w-fit border-none text-white py-2.5 px-14"
               type="button"
-              label="Select Table"
+              :label="useLocalization('cashier.orderSummary.table.selectTable')"
               :disabled="!cashierOrderSummary_modalSelectTable.selectedTable"
               @click="
                 cashierOrderSummary_modalSelectTable.show = false;

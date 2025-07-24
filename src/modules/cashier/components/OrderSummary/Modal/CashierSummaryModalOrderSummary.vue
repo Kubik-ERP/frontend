@@ -38,12 +38,14 @@ const {
           >
             <div class="flex items-center gap-2" @click="cashierOrderSummary_modalOrderSummary.show = false">
               <AppBaseSvg name="chevron-left" class="!h-4 !w-4 cursor-pointer" @click="closeCallback" />
-              <span class="text-lg font-semibold">Cart</span>
+              <span class="text-lg font-semibold">{{ useLocalization('cashier.mainSection.cart') }}</span>
             </div>
 
             <section id="status" class="flex lg:hidden items-center gap-2">
               <section id="dot-status" class="w-2 h-2 rounded-full bg-success">&nbsp;</section>
-              <span class="font-normal text-disabled text-xs">Online</span>
+              <span class="font-normal text-disabled text-xs">{{
+                useLocalization('cashier.mainSection.online')
+              }}</span>
             </section>
           </section>
 
@@ -53,16 +55,18 @@ const {
             id="cashier-summary-modal-order-summary-customer-detail"
             class="flex flex-col gap-2 p-4 bg-white"
           >
-            <span class="font-semibold text-sm">Customer Details</span>
+            <span class="font-semibold text-sm">{{ useLocalization('cashier.mainSection.customerDetails') }}</span>
 
             <div class="flex flex-col text-sm">
-              <span class="text-text-disabled font-normal">Table No.</span>
+              <span class="text-text-disabled font-normal">{{
+                useLocalization('cashier.mainSection.tableNo')
+              }}</span>
 
               <span>A1</span>
             </div>
 
             <div class="flex flex-col gap-2 w-full">
-              <label for="username" class="text-sm">Username</label>
+              <label for="username" class="text-sm">{{ useLocalization('cashier.mainSection.username') }}</label>
 
               <PrimeVueInputText
                 id="customer-name"
@@ -78,7 +82,9 @@ const {
           <hr class="border-b border-grayscale-10" />
 
           <section class="flex flex-col gap-2">
-            <span class="text-sm font-semibold mb-2 px-4 mt-4">Order Item</span>
+            <span class="text-sm font-semibold mb-2 px-4 mt-4">{{
+              useLocalization('cashier.mainSection.orderItem')
+            }}</span>
 
             <CashierSummaryProductList />
           </section>
@@ -112,7 +118,9 @@ const {
             <RouterLink :to="{ name: 'invoice' }" v-bind="slotProps" class="p-3 w-full border border-primary">
               <section class="flex gap-2 justify-center w-full items-center">
                 <AppBaseSvg name="order-primary" class="!h-5 !w-5" />
-                <span class="font-semibold text-primary truncate">Save Unpaid Order</span>
+                <span class="font-semibold text-primary truncate">{{
+                  useLocalization('cashier.mainSection.saveUnpaidOrder')
+                }}</span>
               </section>
             </RouterLink>
           </PrimeVueButton>

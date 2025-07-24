@@ -1,0 +1,107 @@
+{
+  "cashier": {
+    "items": "items",
+    "selected": "Terpilih",
+    "optional": "Opsional",
+    "category": "Kategori",
+    "more": "Lebih Banyak",
+    "edit": "Edit",
+    "close": "Tutup",
+    "add": "Tambah",
+    "cancel": "Batalkan",
+    "available": "Tersedia",
+    "unavailable": "Tidak Tersedia",
+    "apply": "Terapkan",
+    "noDataFound": "Tidak ada data yang ditemukan",
+    "cancelOrder": "Batalkan Pesanan",
+    "left": "Tersisa",
+    "mainSection": {
+      "searchProductPlaceholder": "Cari nama produk atau kategori",
+      "filterByCategory": "Filter berdasarkan kategori",
+      "addItem": "Tambah item",
+      "variant": "Varian",
+      "addNotes": "Tambahkan catatan",
+      "notes": "Catatan",
+      "describeNotes": "Deskripsikan catatan untuk produk ini",
+      "deleteNotes": "Hapus catatan",
+      "cart": "Keranjang",
+      "online": "Online",
+      "customerDetails": "Detail Pelanggan",
+      "tableNo": "Nomor Meja",
+      "username": "Nama Pengguna",
+      "orderItem": "Item Pesanan",
+      "saveUnpaidOrder": "Simpan Belum Bayar"
+    },
+    "orderSummary": {
+      "orderSummary": "Ringkasan Pesanan",
+      "noItemSelected": "Tidak ada item yang dipilih",
+      "promoVoucher": "Promo / Voucher",
+      "paymentMethod": "Metode Pembayaran",
+      "subTotal": "Sub Total",
+      "included": "Termasuk",
+      "excluded": "Tidak Termasuk",
+      "tax": "Pajak",
+      "service": "Layanan",
+      "total": "Total",
+      "editOrder": "Edit Pesanan",
+      "placeOrder": "Pesan Sekarang",
+      "cancel": {
+        "title": "Apakah Anda yakin ingin membatalkan pesanan ini?",
+        "description": "Semua item yang dipilih akan dihapus.",
+        "cancelOrder": "Batalkan Pesanan"
+      },
+      "invoiceDetail": {
+        "title": "Detail Faktur",
+        "receivedBy": "Diterima Oleh",
+        "notes": "Catatan",
+        "notesPlaceholder": "Deskripsikan catatan disini"
+      },
+      "orderType": {
+        "title": "Order Type",
+        "description": "Select Order Type"
+      },
+      "table": {
+        "title": "Meja",
+        "selectTable": "Pilih Meja",
+        "floor": "Lantai",
+        "selectFloor": "Pilih Lantai",
+        "seats": "Kursi",
+        "availableTable": "Meja Tersedia"
+      },
+      "voucher": {
+        "title": "Voucher",
+        "description": "Pilih atau cari voucher yang tersedia",
+        "noDataVoucher": "Tidak ada voucher yang tersedia",
+        "minimumTransaction": "Transaksi minimum",
+        "applyPromo": "Terapkan Promo",
+        "availableUntil": "Tersedia hingga",
+        "discount": "Diskon"
+      },
+      "payment": {
+        "title": "Pembayaran",
+        "description": "Pilih Metode Pembayaran",
+        "selectMethod": "Pilih Metode"
+      },
+      "placeOrderDetail": {
+        "title": "Buat Pesanan",
+        "enterPaymentAmount": "Masukkan Jumlah Pembayaran",
+        "paymentMethod": "Metode Pembayaran",
+        "cash": "Tunai",
+        "paymentAmount": "Jumlah Pembayaran",
+        "paymentAmountPlaceholder": "Masukkan jumlah pembayaran",
+        "moneyReceived": "Uang Diterima",
+        "totalPrice": "Total Harga",
+        "changeAmount": "Jumlah Kembalian",
+        "placeOrder": "Buat Pesanan"
+      },
+      "placeOrderConfirmation": {
+        "title": "Apakah kamu yakin ingin membuat pesanan ini?",
+        "description": "Pastikan pembayaran telah berhasil diproses sebelum melanjutkan pesanan dan mencetak faktur.",
+        "placeOrder": "Buat Pesanan"
+      },
+      "addCustomer": {
+        "title": "Tambah Pelanggan"
+      }
+    }
+  }
+}
