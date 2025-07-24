@@ -77,8 +77,8 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   //   },
   // });
   const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-    name: 'Ojan',
-    email: 'ojan@kubik.com',
+    name: 'Phillips',
+    email: 'phillips@kubik.com',
     phoneCode: '+62',
     phoneNumber: '81234567890',
     photoProfile: null,
@@ -90,15 +90,15 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     socialMedia: [
       {
         name: 'INSTAGRAM',
-        account: '@ojan_kubik',
+        account: '@phillips_kubik',
       },
       {
         name: 'X/TWITTER',
-        account: '@ojan_kubik',
+        account: '@phillips_kubik',
       },
       {
         name: 'FACEBOOK',
-        account: '@ojan_kubik',
+        account: '@phillips_kubik',
       },
     ],
     shift: LIST_OF_DAYS.map(day => ({
@@ -393,7 +393,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     staffMemberCreateEdit_formValidations.value.$touch();
 
     if (staffMemberCreateEdit_formValidations.value.$invalid) {
-      console.log('Staff member on submit'); // Debugging log
+      // console.log('Staff member on submit'); // Debugging log
       return;
     }
 
@@ -438,9 +438,9 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     }
 
     // (Optional) Log the result to verify
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
+    // for (const [key, value] of formData.entries()) {
+    //   console.log(`${key}: ${value}`);
+    // }
 
     try {
       if (route.name === 'staff-member.create') {
