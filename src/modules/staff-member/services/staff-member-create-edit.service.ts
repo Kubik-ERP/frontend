@@ -8,6 +8,8 @@ import {
   STAFF_MEMBER_TYPES_OF_USER_PERMISSIONS,
 } from '../constants';
 
+import { LIST_OF_DAYS } from '@/app/constants/day.constant';
+
 // Interfaces
 import type { FileUploadSelectEvent } from 'primevue';
 import type { IStaffMemberCreateEditFormData, IStaffMemberCreateEditProvided } from '../interfaces';
@@ -20,7 +22,7 @@ import { useStaffMemberStore } from '../store';
 
 // Vuelidate
 import { useVuelidate } from '@vuelidate/core';
-import { email, required, helpers } from '@vuelidate/validators';
+import { email, required } from '@vuelidate/validators';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -43,19 +45,33 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     name: 'Daniel',
     email: 'daniel@kubik.com',
     phoneCode: '+62',
-    phone_number: '081234567890',
+    phoneNumber: '81234567890',
     photoProfile: null,
     startDate: new Date(),
     endDate: null,
     gender: 'male',
     title: 'Manager',
     permission: 'MANAGER',
-    socialMedia: {
-      facebook: null,
-      instagram: null,
-      twitter: null,
-    },
-    workingHours: [],
+    socialMedia: [
+      {
+        platformName: 'INSTAGRAM',
+        accountName: '@daniel_kubik',
+      },
+      {
+        platformName: 'X/TWITTER',
+        accountName: '@daniel_kubik',
+      },
+      {
+        platformName: 'FACEBOOK',
+        accountName: '@daniel_kubik',
+      },
+    ],
+    workingHours: LIST_OF_DAYS.map(day => ({
+      day: day.value === null ? null : String(day.value),
+      startTime: null,
+      endTime: null,
+      isActive: false,
+    })),
     comissions: {
       productComission: {
         defaultComission: null,
@@ -131,11 +147,14 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   const staffMemberCreateEdit_formRules = computed(() => ({
     name: { required },
     email: { required, email },
-    phone_number: { required },
+    phoneNumber: { required },
     // phoneCode: { required },
     startDate: { required },
     // end date must be after start date
-    endDate: { "End date must be after start date": (value: Date | null) => isAfter(value, staffMemberCreateEdit_formData.startDate) },
+    endDate: {
+      'End date must be after start date': (value: Date | null) =>
+        isAfter(value, staffMemberCreateEdit_formData.startDate),
+    },
     gender: { required },
     // title: { required },
     permission: { required },
@@ -326,7 +345,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    * @description Handle action on update form.
    */
 
-  const staffMemberCreateEdit_onUpdateForm = async () => {
+  const staffMemberCreateEdit_onUpdateForm = async (formData: FormData) => {
     // const staffMemberId = route.params.id as string;
     // await staffMemberCreateEdit_fetchUpdateStaffMember(staffMemberId, staffMemberCreateEdit_formData);
     // dialog
@@ -345,7 +364,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
 
         const staffMemberId = route.params.id as string;
-        await staffMemberCreateEdit_fetchUpdateStaffMember(staffMemberId, staffMemberCreateEdit_formData);
+        await staffMemberCreateEdit_fetchUpdateStaffMember(staffMemberId, formData);
       },
       onClickButtonSecondary: () => {
         const argsEventEmitter: IPropsDialogConfirmation = {
@@ -399,9 +418,9 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
     try {
       if (route.name === 'staff-member.create') {
-        await staffMemberCreateEdit_fetchCreateStaffMember(staffMemberCreateEdit_formData);
+        await staffMemberCreateEdit_fetchCreateStaffMember(formData);
       } else if (route.name === 'staff-member.edit') {
-        await staffMemberCreateEdit_onUpdateForm();
+        await staffMemberCreateEdit_onUpdateForm(formData);
       }
       // if (route.name === 'staff-member.create') {
       //   await staffMemberCreateEdit_fetchCreateStaffMember(formData);

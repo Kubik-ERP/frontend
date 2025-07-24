@@ -6,6 +6,7 @@ export interface IStaffMemberWorkingHour {
   day: string | null;
   startTime: string | null;
   endTime: string | null;
+  isActive: boolean;
 }
 
 export interface IStaffMemberProductItemComission {
@@ -39,22 +40,23 @@ export interface IStaffMemberComissions {
   voucherCommission: IStaffMemberVoucherCommission;
 }
 
+export interface IStaffMemberSocialMedia {
+  platformName: string | null;
+  accountName: string | null;
+}
+
 export interface IStaffMemberCreateEditFormData {
   name: string | null;
   email: string | null;
   phoneCode: string;
-  phone_number: string | null;
+  phoneNumber: string | null;
   photoProfile: string | null;
   startDate: Date | null;
   endDate: Date | null;
   gender: string | null;
   title: string | null;
   permission: string | null;
-  socialMedia: {
-    facebook: string | null;
-    instagram: string | null;
-    twitter: string | null;
-  };
+  socialMedia: IStaffMemberSocialMedia[];
   workingHours: IStaffMemberWorkingHour[];
   comissions: IStaffMemberComissions;
 }

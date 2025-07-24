@@ -27,6 +27,31 @@ const handleImageUpload = (event: Event) => {
     reader.readAsDataURL(file);
   }
 };
+
+const addSocialMedia = () => {
+  staffMemberCreateEdit_formData.socialMedia.push({
+    platformName: null, // Default value
+    accountName: null,
+  });
+};
+
+/**
+ * Removes a social media entry by its index.
+ * @param index - The index of the item to remove.
+ */
+const removeSocialMedia = (index: number) => {
+  staffMemberCreateEdit_formData.socialMedia.splice(index, 1);
+};
+
+// If you want to start with one social media field by default
+if (staffMemberCreateEdit_formData.socialMedia.length === 0) {
+  addSocialMedia();
+}
+
+const findSocialMediaOption = (value: string | null) => {
+  if (!value) return null;
+  return staffMemberCreateEdit_typesOfSocialMedia.find(opt => opt.value === value);
+};
 </script>
 
 <template>
@@ -183,12 +208,12 @@ const handleImageUpload = (event: Event) => {
             :validators="staffMemberCreateEdit_formValidations.phoneNumber"
           >
             <PrimeVueInputText
-              v-model="staffMemberCreateEdit_formData.phone_number"
+              v-model="staffMemberCreateEdit_formData.phoneNumber"
               :loading="staffMemberCreateEdit_isLoading"
               class="text-sm w-full"
               :class="{ ...classes }"
               type="tel"
-              v-on="useListenerForm(staffMemberCreateEdit_formValidations, 'phone_number')"
+              v-on="useListenerForm(staffMemberCreateEdit_formValidations, 'phoneNumber')"
             />
           </AppBaseFormGroup>
         </section>
@@ -283,19 +308,24 @@ const handleImageUpload = (event: Event) => {
         </AppBaseFormGroup>
       </section>
 
-      <section id="social-media" class="col-span-full lg:col-span-6 flex flex-col gap-1">
-        <label for="socialMediaType" class="font-normal text-text-secondary text-sm">
+      <section
+        v-for="(socialMediaItem, index) in staffMemberCreateEdit_formData.socialMedia"
+        :key="index"
+        class="col-span-full lg:col-span-6 flex flex-col gap-1"
+      >
+        <label :for="`socialMediaType-${index}`" class="font-normal text-text-secondary text-sm">
           Social Media <span class="text-text-disabled">(Optional)</span>
         </label>
 
         <section class="flex items-center gap-2">
           <PrimeVueSelect
-            id="socialMediaType"
+            :id="`socialMediaType-${index}`"
+            v-model="socialMediaItem.platformName"
             filter
             :options="staffMemberCreateEdit_typesOfSocialMedia"
             option-label="label"
-            :option-value="(value: IDropdownItem) => value"
-            class="text-sm h-full w-fit min-w-24"
+            option-value="value"
+            class="text-sm h-full w-fit"
           >
             <template #option="{ option }">
               <section id="social-media-option" class="flex items-center gap-1">
@@ -304,16 +334,27 @@ const handleImageUpload = (event: Event) => {
               </section>
             </template>
 
-            <template #value="{ value }">
+            <template #value="{ value, placeholder }">
               <section id="social-media-value" class="flex items-center gap-1">
                 <template v-if="value">
-                  <AppBaseSvg :name="value.iconName" class="!w-5 !h-5" />
+                  <AppBaseSvg :name="findSocialMediaOption(value)?.iconName" class="!w-5 !h-5" />
+                </template>
+                <template v-else>
+                  <span class="text-sm text-text-disabled">{{ placeholder }}</span>
                 </template>
               </section>
             </template>
           </PrimeVueSelect>
 
-          <PrimeVueInputText :loading="staffMemberCreateEdit_isLoading" class="text-sm w-full" type="text" />
+          <PrimeVueInputText
+            v-model="socialMediaItem.accountName"
+            :loading="staffMemberCreateEdit_isLoading"
+            class="text-sm w-full"
+            type="text"
+            placeholder="Account Name / URL"
+          />
+
+          <PrimeVueButton icon="pi pi-trash" severity="danger" text rounded @click="removeSocialMedia(index)" />
         </section>
       </section>
 
@@ -322,6 +363,7 @@ const handleImageUpload = (event: Event) => {
           class="border-none basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
           severity="secondary"
           variant="outlined"
+          @click="addSocialMedia"
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">

@@ -54,19 +54,20 @@ provide('staffMemberCreateEdit', {
 });
 
 onMounted(() => {
-  if(staffMemberCreateEdit_isEditable.value) {
+  if (staffMemberCreateEdit_isEditable.value) {
     console.log('Editing an existing staff member');
     staffMemberCreateEdit_fetchDetailStaffMember();
   }
-})
-
+});
 </script>
 
 <template>
   <section id="staff-member-create-edit" class="default-wrapper gap-6">
-    <!-- {{ staffMemberCreateEdit_formData }}
-    <br>
-    {{ staffMemberCreateEdit_formValidations.$errors }} -->
+    {{ staffMemberCreateEdit_formData.socialMedia }}
+    <br />
+    {{ staffMemberCreateEdit_formData.workingHours }}
+    <!-- <br> -->
+    <!-- {{ staffMemberCreateEdit_formValidations.$errors }} -->
     <StaffMemberDetailForm />
     <StaffMemberWorkingHoursForm />
     <StaffMemberComissionsForm />
