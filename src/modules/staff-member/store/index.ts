@@ -47,19 +47,33 @@ export const useStaffMemberStore = defineStore('staff-member', {
      * @description Handle business logic for mapping staff member title lists to options
      */
     staffMember_listDropdownItemTitles: (state): IDropdownItem[] => {
-      const seen = new Set<string>();
-      return state.staffMember_lists.data
-      .filter(staffMember => staffMember.title != null && staffMember.title !== '')
-      .filter(staffMember => {
-        if (seen.has(staffMember.title!)) return false;
-        seen.add(staffMember.title!);
-        return true;
-      })
-      .map(staffMember => ({
-        label: staffMember.title!,
-        value: staffMember.title!,
-      }));
-    },
+  // Step 1: Extract and format all titles first.
+  const allFormattedTitles = state.staffMember_lists.data
+    .map(staffMember => {
+      const title = staffMember.title;
+      if (typeof title === 'string' && title.trim() !== '') {
+        const trimmed = title.trim();
+        
+        // ✅ Capitalize each word in the string
+        return trimmed
+          .toLowerCase()
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+      }
+      return null; // Return null for invalid titles
+    })
+    .filter(title => title !== null) as string[]; // Remove the nulls
+
+  // Step 2: Get unique titles using a Set.
+  const uniqueTitles = [...new Set(allFormattedTitles)];
+
+  // Step 3: Map the unique titles to the dropdown format.
+  return uniqueTitles.map(title => ({
+    label: title,
+    value: title,
+  }));
+},
   },
   actions: {
     /**
@@ -192,7 +206,7 @@ export const useStaffMemberStore = defineStore('staff-member', {
     /**
      * @description Handle fetch api staff member - update
      * @url /employees/${staffMemberId}
-     * @method PATCH
+     * @method put
      * @access private
      */
     async staffMember_updateStaffMember(
@@ -203,7 +217,7 @@ export const useStaffMemberStore = defineStore('staff-member', {
       this.staffMember_isLoading = true;
 
       try {
-        const response = await httpClient.patch<unknown>(`${STAFF_MEMBER_BASE_ENDPOINT}/${staffMemberId}`, payload, {
+        const response = await httpClient.put<unknown>(`${STAFF_MEMBER_BASE_ENDPOINT}/${staffMemberId}`, payload, {
           ...requestConfigurations,
         });
 

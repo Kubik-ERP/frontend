@@ -63,9 +63,11 @@ onMounted(() => {
 
 <template>
   <section id="staff-member-create-edit" class="default-wrapper gap-6">
-    {{ staffMemberCreateEdit_formData.socialMedia }}
+    <!-- {{ staffMemberCreateEdit_formData.socialMedia }}
     <br />
     {{ staffMemberCreateEdit_formData.workingHours }}
+    <br />
+    {{ staffMemberCreateEdit_formData.permission }} -->
     <!-- <br> -->
     <!-- {{ staffMemberCreateEdit_formValidations.$errors }} -->
     <StaffMemberDetailForm />

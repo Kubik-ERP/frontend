@@ -30,8 +30,8 @@ const handleImageUpload = (event: Event) => {
 
 const addSocialMedia = () => {
   staffMemberCreateEdit_formData.socialMedia.push({
-    platformName: null, // Default value
-    accountName: null,
+    name: null, // Default value
+    account: null,
   });
 };
 
@@ -44,9 +44,9 @@ const removeSocialMedia = (index: number) => {
 };
 
 // If you want to start with one social media field by default
-if (staffMemberCreateEdit_formData.socialMedia.length === 0) {
-  addSocialMedia();
-}
+// if (staffMemberCreateEdit_formData.socialMedia.length === 0) {
+//   addSocialMedia();
+// }
 
 const findSocialMediaOption = (value: string | null) => {
   if (!value) return null;
@@ -320,7 +320,7 @@ const findSocialMediaOption = (value: string | null) => {
         <section class="flex items-center gap-2">
           <PrimeVueSelect
             :id="`socialMediaType-${index}`"
-            v-model="socialMediaItem.platformName"
+            v-model="socialMediaItem.name"
             filter
             :options="staffMemberCreateEdit_typesOfSocialMedia"
             option-label="label"
@@ -347,7 +347,7 @@ const findSocialMediaOption = (value: string | null) => {
           </PrimeVueSelect>
 
           <PrimeVueInputText
-            v-model="socialMediaItem.accountName"
+            v-model="socialMediaItem.account"
             :loading="staffMemberCreateEdit_isLoading"
             class="text-sm w-full"
             type="text"
@@ -368,7 +368,7 @@ const findSocialMediaOption = (value: string | null) => {
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="plus-line" />
-              <span class="font-semibold text-xs text-primary">Add more</span>
+              <span class="font-semibold text-xs text-primary">Add Social Media</span>
             </section>
           </template>
         </PrimeVueButton>

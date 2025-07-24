@@ -4,7 +4,7 @@ import { LIST_OF_DAYS } from '@/app/constants/day.constant';
 const { staffMemberCreateEdit_formData } = inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
 
 const getWorkingHourForDay = (dayValue: string) => {
-  return staffMemberCreateEdit_formData.workingHours.find(wh => wh.day === dayValue)!;
+  return staffMemberCreateEdit_formData.shift.find(wh => wh.day === dayValue)!;
 };
 </script>
 
@@ -34,7 +34,7 @@ const getWorkingHourForDay = (dayValue: string) => {
               <label class="font-semibold text-black text-sm">Open Time</label>
               <PrimeVueInputGroup class="w-full">
                 <PrimeVueDatePicker
-                  v-model="getWorkingHourForDay(day.value).startTime"
+                  v-model="getWorkingHourForDay(day.value).start_time"
                   class="w-full"
                   fluid
                   time-only
@@ -50,7 +50,7 @@ const getWorkingHourForDay = (dayValue: string) => {
               <label class="font-semibold text-black text-sm">Close Time</label>
               <PrimeVueInputGroup class="w-full">
                 <PrimeVueDatePicker
-                  v-model="getWorkingHourForDay(day.value).endTime"
+                  v-model="getWorkingHourForDay(day.value).end_time"
                   class="w-full"
                   fluid
                   time-only

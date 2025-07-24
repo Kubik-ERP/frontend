@@ -41,35 +41,70 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    * @description Reactive data binding
    */
   const staffMemberCreateEdit_commisionType = ref<'PRODUCT' | 'VOUCHER'>('PRODUCT');
+  // const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
+  //   name: null,
+  //   email: null,
+  //   phoneCode: '+62',
+  //   phoneNumber: null,
+  //   photoProfile: null,
+  //   startDate: null,
+  //   endDate: null,
+  //   gender: null,
+  //   title: null,
+  //   permission: null,
+  //   socialMedia: [
+
+  //   ],
+  //   workingHours: LIST_OF_DAYS.map(day => ({
+  //     day: day.value === null ? null : String(day.value),
+  //     startTime: null,
+  //     endTime: null,
+  //     isActive: false,
+  //   })),
+  //   comissions: {
+  //     productComission: {
+  //       defaultComission: null,
+  //       defaultComissionType: null,
+  //       isAllItemsHaveDefaultComission: null,
+  //       productItems: [],
+  //     },
+  //     voucherCommission: {
+  //       defaultComission: null,
+  //       defaultComissionType: null,
+  //       isAllVouchersHaveDefaultComission: null,
+  //       voucherItems: [],
+  //     },
+  //   },
+  // });
   const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-    name: 'Daniel',
-    email: 'daniel@kubik.com',
+    name: 'Ojan',
+    email: 'ojan@kubik.com',
     phoneCode: '+62',
     phoneNumber: '81234567890',
     photoProfile: null,
     startDate: new Date(),
-    endDate: null,
+    endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
     gender: 'male',
-    title: 'Manager',
+    title: null,
     permission: 'MANAGER',
     socialMedia: [
       {
-        platformName: 'INSTAGRAM',
-        accountName: '@daniel_kubik',
+        name: 'INSTAGRAM',
+        account: '@ojan_kubik',
       },
       {
-        platformName: 'X/TWITTER',
-        accountName: '@daniel_kubik',
+        name: 'X/TWITTER',
+        account: '@ojan_kubik',
       },
       {
-        platformName: 'FACEBOOK',
-        accountName: '@daniel_kubik',
+        name: 'FACEBOOK',
+        account: '@ojan_kubik',
       },
     ],
-    workingHours: LIST_OF_DAYS.map(day => ({
+    shift: LIST_OF_DAYS.map(day => ({
       day: day.value === null ? null : String(day.value),
-      startTime: null,
-      endTime: null,
+      start_time: null,
+      end_time: null,
       isActive: false,
     })),
     comissions: {
@@ -87,38 +122,6 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       },
     },
   });
-  // const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-  //   name: null,
-  //   email: null,
-  //   phoneCode: '+62',
-  //   phoneNumber: null,
-  //   photoProfile: null,
-  //   startDate: null,
-  //   endDate: null,
-  //   gender: null,
-  //   title: null,
-  //   permission: null,
-  //   socialMedia: {
-  //     facebook: null,
-  //     instagram: null,
-  //     twitter: null,
-  //   },
-  //   workingHours: [],
-  //   comissions: {
-  //     productComission: {
-  //       defaultComission: null,
-  //       defaultComissionType: null,
-  //       isAllItemsHaveDefaultComission: null,
-  //       productItems: [],
-  //     },
-  //     voucherCommission: {
-  //       defaultComission: null,
-  //       defaultComissionType: null,
-  //       isAllVouchersHaveDefaultComission: null,
-  //       voucherItems: [],
-  //     },
-  //   },
-  // });
   const staffMemberCreateEdit_routeParamsId = ref<string | undefined>(route.params.id as string | undefined);
 
   /**
@@ -396,17 +399,35 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
     const formData = new FormData();
 
+    // Define which top-level keys you want to exclude
+    const keysToIgnore = ['comissions', 'shift'];
+
     for (const key in staffMemberCreateEdit_formData) {
       if (Object.prototype.hasOwnProperty.call(staffMemberCreateEdit_formData, key)) {
+        // ✅ If the key is in our ignore list, skip to the next one
+        if (keysToIgnore.includes(key)) {
+          continue;
+        }
+
         const value = staffMemberCreateEdit_formData[key as keyof IStaffMemberCreateEditFormData];
+
         if (value !== null && value !== undefined) {
-          // Handle special cases for complex types
-          if (key === 'photoProfile' && value instanceof File) {
+          if (Array.isArray(value)) {
+            value.forEach((item, index) => {
+              for (const itemKey in item) {
+                if (Object.prototype.hasOwnProperty.call(item, itemKey)) {
+                  const nestedValue = item[itemKey as keyof typeof item];
+                  if (nestedValue !== null && nestedValue !== undefined) {
+                    const formattedKey = `${key}[${index}][${itemKey}]`;
+                    formData.append(formattedKey, String(nestedValue));
+                  }
+                }
+              }
+            });
+          } else if (value instanceof Date) {
+            formData.append(key, value.toISOString());
+          } else if (value instanceof File) {
             formData.append(key, value);
-          } else if (key === 'socialMedia' && typeof value === 'object') {
-            formData.append(key, JSON.stringify(value));
-          } else if (key === 'workingHours' && Array.isArray(value)) {
-            formData.append(key, JSON.stringify(value));
           } else if (typeof value === 'object') {
             formData.append(key, JSON.stringify(value));
           } else {
@@ -414,6 +435,11 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
           }
         }
       }
+    }
+
+    // (Optional) Log the result to verify
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
     }
 
     try {

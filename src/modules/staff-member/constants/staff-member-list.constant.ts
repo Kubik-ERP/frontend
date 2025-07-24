@@ -25,7 +25,7 @@ export const STAFF_MEMBER_LIST_COLUMNS: IColumnDataTable[] = [
   {
     label: 'User Permission',
     sortable: false,
-    value: 'userPermission',
+    value: 'permission',
   },
   {
     label: '',

@@ -7,6 +7,19 @@ import type { IStaffMemberListProvided } from '../interfaces';
  */
 const popover = ref();
 
+// Ref to store the data of the currently selected row
+const selectedData = ref(null);
+
+/**
+ * Sets the selected data and toggles the popover.
+ * @param event - The browser click event.
+ * @param rowData - The data object from the clicked row.
+ */
+const openActionsMenu = (event, rowData) => {
+  selectedData.value = rowData;
+  popover.value.toggle(event);
+};
+
 /**
  * @description Inject all the data and methods what we need
  */
@@ -108,7 +121,7 @@ const {
 
     <template #body="{ column, data }">
       <template v-if="column.value === 'action'">
-        <PrimeVueButton variant="text" rounded aria-label="detail" @click="popover.toggle($event)">
+        <PrimeVueButton variant="text" rounded aria-label="detail" @click="openActionsMenu($event, data)">
           <template #icon>
             <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
           </template>
@@ -117,19 +130,20 @@ const {
         <PrimeVuePopover
           ref="popover"
           :pt="{
+            root: { class: 'z-[9999]' }, // ✅ This forces the popover to the top layer
             content: 'p-0',
           }"
         >
-          <section id="popover-content" class="flex flex-col">
+          <section v-if="selectedData" id="popover-content" class="flex flex-col">
             <PrimeVueButton
               class="w-full px-4 py-3"
               variant="text"
-              @click="$router.push({ name: 'staff-member.edit', params: { id: data.id } })"
+              @click="$router.push({ name: 'staff-member.edit', params: { id: selectedData.id } })"
             >
               <template #default>
-                <section id="content" class="flex items-center gap-2 w-full">
+                <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Edit | {{ data.id }}</span>
+                  <span class="font-normal text-sm text-text-primary">Edit</span>
                 </section>
               </template>
             </PrimeVueButton>
@@ -137,20 +151,37 @@ const {
             <PrimeVueButton
               class="w-full px-4 py-3"
               variant="text"
-              @click="staffMemberList_deleteStaffMember(data.id)"
+              @click="staffMemberList_deleteStaffMember(selectedData.id)"
             >
               <template #default>
-                <section id="content" class="flex items-center gap-2 w-full">
+                <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="delete" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Delete | {{ data.name }}</span>
+                  <span class="font-normal text-sm text-text-primary">Delete</span>
                 </section>
               </template>
             </PrimeVueButton>
           </section>
         </PrimeVuePopover>
       </template>
+      <template v-else-if="column.value === 'title'">
+        <span class="font-normal text-sm text-text-primary">
+          {{ data[column.value] ? useTitleCaseWithSpaces(data[column.value]) : '-' }}
+        </span>
+      </template>
+      <template v-else-if="column.value === 'phoneNumber'">
+        <span class="font-normal text-sm text-text-primary">
+          {{ data ? (data.phoneCode ? `(${data.phoneCode}) ` : '') + (data.phoneNumber ?? '') || '-' : '-' }}
+        </span>
+      </template>
+      <template v-else-if="column.value === 'permission'">
+        <span class="font-normal text-sm text-text-primary">
+          {{
+            staffMemberList_typesOfUserPermissions.find(item => item.value === data[column.value])?.label || '-'
+          }}
+        </span>
+      </template>
       <template v-else>
-        <span class="font-normaltext-text-primary"> {{ data[column.value] ?? '-' }}</span>
+        <span class="font-normal text-text-primary"> {{ data[column.value] ?? '-' }}</span>
       </template>
     </template>
   </AppBaseDataTable>

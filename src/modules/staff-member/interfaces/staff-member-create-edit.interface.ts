@@ -2,10 +2,10 @@
 import type { Validation } from '@vuelidate/core';
 import type { FileUploadSelectEvent } from 'primevue';
 
-export interface IStaffMemberWorkingHour {
+export interface IStaffMemberShift {
   day: string | null;
-  startTime: string | null;
-  endTime: string | null;
+  start_time: string | null;
+  end_time: string | null;
   isActive: boolean;
 }
 
@@ -41,8 +41,8 @@ export interface IStaffMemberComissions {
 }
 
 export interface IStaffMemberSocialMedia {
-  platformName: string | null;
-  accountName: string | null;
+  name: string | null;
+  account: string | null;
 }
 
 export interface IStaffMemberCreateEditFormData {
@@ -57,7 +57,7 @@ export interface IStaffMemberCreateEditFormData {
   title: string | null;
   permission: string | null;
   socialMedia: IStaffMemberSocialMedia[];
-  workingHours: IStaffMemberWorkingHour[];
+  shift: IStaffMemberShift[];
   comissions: IStaffMemberComissions;
 }
 
