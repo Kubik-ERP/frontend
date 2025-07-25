@@ -8,6 +8,7 @@ import CashierSummaryButtonOrderTable from './CashierSummaryButtonOrderTable.vue
 // Interfaces
 import { AutoCompleteCompleteEvent } from 'primevue';
 import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-summary';
+import { ICashierOrderType } from '../../interfaces';
 
 /**
  * @description Inject all the data and methods what we need
@@ -30,7 +31,7 @@ const {
 <template>
   <section id="cashier-summary-section" class="flex flex-col gap-2 p-4">
     <section id="cashier-summary-section-header" class="flex justify-between items-center">
-      <span class="font-semibold text-lg">Order Summary</span>
+      <span class="font-semibold text-lg">{{ useLocalization('cashier.orderSummary.orderSummary') }}</span>
 
       <PrimeVueButton
         text
@@ -40,7 +41,7 @@ const {
       >
         <i class="pi pi-ellipsis-h text-primary"></i>
 
-        <span class="text-text-disabled text-xs">More</span>
+        <span class="text-text-disabled text-xs">{{ useLocalization('cashier.more') }}</span>
       </PrimeVueButton>
 
       <PrimeVueMenu
@@ -59,7 +60,7 @@ const {
       class="flex flex-col gap-2"
     >
       <div class="flex flex-col gap-2 w-full">
-        <label for="username" class="text-sm">Username</label>
+        <label for="username" class="text-sm">{{ useLocalization('cashier.mainSection.username') }}</label>
 
         <PrimeVueIconField class="flex w-full">
           <PrimeVueInputIcon class="pi pi-user" />
@@ -106,7 +107,7 @@ const {
                   severity="secondary"
                   size="small"
                   icon="pi pi-plus"
-                  @click="cashierOrderSummary_handleModalAddCustomer()"
+                  @click="cashierOrderSummary_handleModalAddCustomer(null)"
                 />
               </div>
             </template>
@@ -128,8 +129,9 @@ const {
 
           <span class="text-primary font-semibold">
             {{
-              CASHIER_ORDER_TYPE.find(f => f.code === cashierOrderSummary_modalOrderType.selectedOrderType)
-                ?.label || 'Order Type'
+              CASHIER_ORDER_TYPE.find(
+                (f: ICashierOrderType) => f.code === cashierOrderSummary_modalOrderType.selectedOrderType,
+              )?.label || 'Order Type'
             }}
           </span>
         </div>

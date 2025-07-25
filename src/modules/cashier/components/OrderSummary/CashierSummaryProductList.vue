@@ -14,7 +14,7 @@ const { cashierOrderSummary_modalAddEditNotes, cashierOrderSummary_calculateEsti
   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 
 const showImageUrl = (picture: string | null) => {
-  return picture ? picture : 'assets/images/product-placeholder.png';
+  return APP_BASE_BUCKET_URL + picture;
 };
 </script>
 
@@ -25,7 +25,7 @@ const showImageUrl = (picture: string | null) => {
     :class="cashierProduct_selectedProduct.length === 0 ? 'justify-center' : 'justify-start'"
   >
     <div v-if="cashierProduct_selectedProduct.length === 0" class="">
-      <span class="text-grayscale-20">No item selected</span>
+      <span class="text-grayscale-20">{{ useLocalization('cashier.orderSummary.noItemSelected') }}</span>
     </div>
     <div v-else class="flex flex-col w-full justify-center items-center">
       <div
@@ -72,7 +72,9 @@ const showImageUrl = (picture: string | null) => {
 
           <div class="flex flex-col gap-1">
             <div v-if="item.variant.id">
-              <p class="font-semibold text-xs text-text-disabled">Variant</p>
+              <p class="font-semibold text-xs text-text-disabled">
+                {{ useLocalization('cashier.mainSection.variant') }}
+              </p>
               <p class="text-sm">
                 {{ item.variant.name }}
                 <span v-if="item.variant.price > 0" class="text-xs text-text-disabled"
@@ -86,7 +88,9 @@ const showImageUrl = (picture: string | null) => {
             </div>
 
             <div v-if="item.notes">
-              <p class="font-semibold text-xs text-text-disabled">Notes</p>
+              <p class="font-semibold text-xs text-text-disabled">
+                {{ useLocalization('cashier.mainSection.notes') }}
+              </p>
               <p class="text-sm">{{ item.notes }}</p>
             </div>
 
@@ -101,7 +105,9 @@ const showImageUrl = (picture: string | null) => {
             >
               <AppBaseSvg name="add-notes" />
 
-              <span class="font-semibold text-primary">{{ item.notes ? 'Edit' : 'Add Notes' }}</span>
+              <span class="font-semibold text-primary">{{
+                item.notes ? useLocalization('cashier.edit') : useLocalization('cashier.mainSection.addNotes')
+              }}</span>
             </PrimeVueButton>
           </div>
         </div>

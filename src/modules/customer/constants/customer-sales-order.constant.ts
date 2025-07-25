@@ -77,33 +77,33 @@ export const SALES_INVOICE_VALUES = [
 export const SALES_INVOICE_ORDER_TYPE = [
   {
     label: 'Dine In',
-    value: 'Dine In',
+    value: 'dine_in',
   },
   {
     label: 'Takeaway',
-    value: 'Takeaway',
+    value: 'take_away',
   },
-  {
-    label: 'Delivery',
-    value: 'Delivery',
-  },
+  // {
+  //   label: 'Delivery',
+  //   value: 'delivery',
+  // },
 ];
 
 export const SALES_INVOICE_PAYMENT_STATUS = [
   {
     label: 'Unpaid',
-    value: 'Unpaid',
+    value: 'unpaid',
   },
   {
     label: 'Paid',
-    value: 'Paid',
+    value: 'paid',
   },
   {
     label: 'Refunded',
-    value: 'Refunded',
+    value: 'refunded',
   },
   {
     label: 'Cancelled',
-    value: 'Cancelled',
+    value: 'cancelled',
   },
 ];

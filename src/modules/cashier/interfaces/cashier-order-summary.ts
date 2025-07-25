@@ -6,6 +6,7 @@ import {
   ICashierResponseCalulateEstimationItem,
   ICashierResponseMidtransQrisPayment,
 } from './cashier-response';
+import { Validation } from '@vuelidate/core';
 
 export interface ICashierOrderType {
   code: string;
@@ -60,6 +61,7 @@ export interface ICashierOrderSummaryModalPlaceOrderConfirmation {
   show: boolean;
   showModalPayment: boolean;
   isLoading: boolean;
+  form: {paymentAmount: number};
   data: Partial<ICashierResponseMidtransQrisPayment['data']>;
 }
 
@@ -182,6 +184,7 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_modalPlaceOrderConfirmation: Ref<ICashierOrderSummaryModalPlaceOrder>;
   cashierOrderSummary_modalPlaceOrderDetail: Ref<ICashierOrderSummaryModalPlaceOrderConfirmation>;
 
+  cashierOrderSummary_paymentAmountFormValidation: globalThis.Ref<Validation>,
   cashierOrderSummary_calculateEstimation: Ref<ICashierCalulateEstimationData>;
   cashierOrderSummary_summary: Ref<ICashierOrderSummary>;
   cashierOrderSummary_getListActiveFloor: ComputedRef<ICashierListTable[]>;
@@ -189,7 +192,7 @@ export interface ICashierOrderSummaryProvided {
 
   cashierProduct_customerState: Ref<ICashierCustomerState>;
 
-  cashierOrderSummary_handleModalAddCustomer: (response: ICashierResponseAddCustomer) => void;
+  cashierOrderSummary_handleModalAddCustomer: (response: ICashierResponseAddCustomer | null) => void;
 
   cashierOrderSummary_handleIsExpandedToggle: () => void;
 
@@ -211,4 +214,6 @@ export interface ICashierOrderSummaryProvided {
 
   cashierProduct_onSearchCustomer: (search: string) => void;
   cashierProduct_onScrollFetchMoreCustomers: (event: VirtualScrollerLazyEvent) => void;
+
+  cashierOrderSummary_handleEditOrder: () => void;
 }

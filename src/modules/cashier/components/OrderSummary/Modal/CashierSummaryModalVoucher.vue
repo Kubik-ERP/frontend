@@ -39,15 +39,21 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                     @click="closeCallback"
                   />
 
-                  <span class="text-lg font-semibold">Voucher</span>
+                  <span class="text-lg font-semibold">{{
+                    useLocalization('cashier.orderSummary.voucher.title')
+                  }}</span>
                 </div>
 
                 <section id="status" class="flex lg:hidden items-center gap-2">
                   <section id="dot-status" class="w-2 h-2 rounded-full bg-success">&nbsp;</section>
-                  <span class="font-normal text-disabled text-xs">Online</span>
+                  <span class="font-normal text-disabled text-xs">{{
+                    useLocalization('cashier.mainSection.online')
+                  }}</span>
                 </section>
               </div>
-              <span class="hidden lg:block text-grayscale-70 text-sm">Select or search voucher code</span>
+              <span class="hidden lg:block text-grayscale-70 text-sm">{{
+                useLocalization('cashier.orderSummary.voucher.description')
+              }}</span>
             </div>
 
             <PrimeVueIconField class="flex w-full">
@@ -56,7 +62,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                 id="customer-name"
                 v-model="cashierOrderSummary_modalVoucher.search"
                 class="w-full"
-                placeholder="Search voucher name or code"
+                :placeholder="useLocalization('cashier.orderSummary.voucher.description')"
               />
             </PrimeVueIconField>
 
@@ -64,9 +70,9 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               class="flex-grow flex flex-col overflow-y-auto border border-grayscale-10 rounded-md p-2"
               :class="{ 'justify-center items-center': !cashierOrderSummary_modalVoucher.data.length }"
             >
-              <span v-if="!cashierOrderSummary_modalVoucher.data.length" class="text-text-disabled"
-                >No Data Voucher</span
-              >
+              <span v-if="!cashierOrderSummary_modalVoucher.data.length" class="text-text-disabled">{{
+                useLocalization('cashier.orderSummary.voucher.noDataVoucher')
+              }}</span>
 
               <div
                 v-for="(item, index) in cashierOrderSummary_modalVoucher.data"
@@ -99,7 +105,8 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                             'text-text-disabled': item.available === false,
                             'text-complementary-main': item.available === true,
                           }"
-                          >Available until <span class="font-semibold">{{ item.validUntil }}</span></span
+                          >{{ useLocalization('cashier.orderSummary.voucher.availableUntil') }}
+                          <span class="font-semibold">{{ item.validUntil }}</span></span
                         >
                       </div>
                       <div
@@ -119,18 +126,22 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                           <span class="font-semibold">
                             {{ item.stock }}
                           </span>
-                          Left</span
+                          {{ useLocalization('cashier.left') }}</span
                         >
                       </div>
                     </div>
 
                     <span class="text-xs">
-                      <span class="text-text-disabled"> Minimum Transaction : </span>
+                      <span class="text-text-disabled">
+                        {{ useLocalization('cashier.orderSummary.voucher.minimumTransaction') }} :
+                      </span>
                       Rp 100.000</span
                     >
                   </div>
                   <div class="flex flex-col lg:text-right text-start gap-1">
-                    <span class="text-xs text-text-disabled">Discount</span>
+                    <span class="text-xs text-text-disabled">{{
+                      useLocalization('cashier.orderSummary.voucher.discount')
+                    }}</span>
                     <span class="font-semibold">Rp 100.000</span>
                   </div>
                 </div>
@@ -142,7 +153,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
             <PrimeVueButton
               class="border-primary hidden lg:block text-primary py-2.5 px-8"
               type="button"
-              label="Cancel"
+              :label="useLocalization('cashier.cancel')"
               outlined
               @click="closeCallback"
             ></PrimeVueButton>
@@ -150,7 +161,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
             <PrimeVueButton
               class="bg-primary w-full lg:w-fit border-none text-white py-2.5 px-8"
               type="button"
-              label="Apply Promo"
+              :label="useLocalization('cashier.orderSummary.voucher.applyPromo')"
               :disabled="!cashierOrderSummary_modalVoucher.form.voucher_code"
               @click="
                 cashierOrderSummary_modalVoucher.show = false;

@@ -63,6 +63,8 @@ const {
 
   cashierProduct_customerState,
 
+  cashierOrderSummary_paymentAmountFormValidation,
+
   cashierOrderSummary_handleModalAddCustomer,
 
   cashierOrderSummary_handleIsExpandedToggle,
@@ -82,6 +84,7 @@ const {
   cashierOrderSummary_handleSimulatePayment,
   cashierProduct_onSearchCustomer,
   cashierProduct_onScrollFetchMoreCustomers,
+  cashierOrderSummary_handleEditOrder,
 } = useCashierOrderSummaryService();
 
 /**
@@ -136,6 +139,8 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
 
   cashierProduct_customerState,
 
+  cashierOrderSummary_paymentAmountFormValidation,
+
   cashierOrderSummary_handleModalAddCustomer,
 
   cashierOrderSummary_handleIsExpandedToggle,
@@ -155,6 +160,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_handleSimulatePayment,
   cashierProduct_onSearchCustomer,
   cashierProduct_onScrollFetchMoreCustomers,
+  cashierOrderSummary_handleEditOrder,
 });
 </script>
 

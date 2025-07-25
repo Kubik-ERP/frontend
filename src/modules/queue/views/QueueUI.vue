@@ -1,21 +1,37 @@
 <script setup lang="ts">
-import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
+// import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
 import { useQueueService } from '../services/queue.service';
+// const {
+//   dailySalesList_getClassOfOrderType,
+//   dailySalesList_getClassOfPaymentStatus,
+//   dailySalesList_isLoading,
+//   dailySalesList_onChangePage,
+//   dailySales_handleOnSortChange,
+//   dailySalesList_queryParams,
+//   dailySalesList_typesOfOrderType,
+//   dailySalesList_typesOfPaymentStatus,
+//   dailySalesList_values,
+//   dailySalesList_fetchListInvoices,
+// } = useDailySalesListService();
+
 const {
-  dailySalesList_getClassOfOrderType,
-  dailySalesList_getClassOfPaymentStatus,
+  queueColumns,
+  orderStatusList,
+  orderTypeList,
+  orderStatusClass,
+  orderTypeClass,
+  calculateDeltaHHMMSS,
+  changeOrderStatus,
+
   dailySalesList_isLoading,
   dailySalesList_onChangePage,
   dailySales_handleOnSortChange,
   dailySalesList_queryParams,
-  dailySalesList_typesOfOrderType,
-  dailySalesList_typesOfPaymentStatus,
-  dailySalesList_values,
-  dailySalesList_fetchListInvoices,
-} = useDailySalesListService();
 
-const { queueColumns, orderStatusList, orderStatusClass, calculateDeltaMMSS, changeOrderStatus } =
-  useQueueService();
+  dailySalesList_values,
+
+  dailySalesList_fetchListInvoices,
+} = useQueueService();
 
 const onOrderStatusChange = async (id: string, orderStatus: string) => {
   await changeOrderStatus(id, orderStatus);
@@ -28,7 +44,7 @@ onMounted(async () => {
 <template>
   <div class="flex flex-col gap-8">
     <div class="flex gap-2 items-center">
-      <router-link to="/customer-waiting-list">
+      <router-link :to="{ name: 'customer-waiting-list' }">
         <PrimeVueButton class="w-fit" label="Customer Waiting List System">
           <template #icon>
             <AppBaseSvg name="display" class="!w-5 !h-5" />
@@ -130,7 +146,7 @@ onMounted(async () => {
               <PrimeVueMultiSelect
                 v-model="dailySalesList_queryParams.orderType"
                 display="chip"
-                :options="dailySalesList_typesOfOrderType"
+                :options="orderTypeList"
                 option-label="label"
                 option-value="value"
                 filter
@@ -147,7 +163,8 @@ onMounted(async () => {
                 filter
                 placeholder="Order Status"
                 class="text-sm text-text-disabled w-full"
-              />
+              >
+              </PrimeVueMultiSelect>
             </div>
           </div>
         </template>
@@ -158,8 +175,8 @@ onMounted(async () => {
               (dailySalesList_values.data.meta.page - 1) * dailySalesList_values.data.meta.pageSize + index + 1
             }}</span>
           </template>
-          <template v-if="column.value === 'invoiceNumber'">
-            <router-link :to="`/invoice/${data.id}`">
+          <template v-if="column.value === 'orderNumber'">
+            <router-link :to="`/invoice/${data.invoiceId}`">
               <span class="font-normal text-sm text-primary">#{{ data[column.value] }}</span>
             </router-link>
           </template>
@@ -171,7 +188,7 @@ onMounted(async () => {
           </template>
 
           <template v-else-if="column.value === 'customer'">
-            <span class="font-normal text-sm text-text-primary">{{ data[column.value].name }}</span>
+            <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
           </template>
 
           <template v-else-if="column.value === 'grandTotal'">
@@ -184,15 +201,15 @@ onMounted(async () => {
 
           <template v-else-if="column.value === 'orderType'">
             <PrimeVueChip
-              :class="[dailySalesList_getClassOfOrderType(data[column.value]), 'text-xs font-normal']"
-              :label="dailySalesList_typesOfOrderType.find(f => f.value === data[column.value])?.label || ''"
+              :class="[orderTypeClass(data[column.value]), 'text-xs font-normal']"
+              :label="useTitleCaseWithSpaces(data[column.value])"
             />
           </template>
 
           <template v-else-if="column.value === 'paymentStatus'">
             <PrimeVueChip
-              :class="[dailySalesList_getClassOfPaymentStatus(data[column.value]), 'text-xs font-normal']"
-              :label="dailySalesList_typesOfPaymentStatus.find(f => f.value === data[column.value])?.label || ''"
+              :class="[orderStatusClass(data[column.value]), 'text-xs font-normal']"
+              :label="useTitleCaseWithSpaces(data[column.value])"
             />
           </template>
 
@@ -203,7 +220,7 @@ onMounted(async () => {
               option-label="label"
               option-value="value"
               class="w-full"
-              @change="onOrderStatusChange(data.id, data[column.value])"
+              @change="onOrderStatusChange(data.invoiceId, data[column.value])"
             >
               <template #option="{ option }">
                 <PrimeVueChip
@@ -224,9 +241,10 @@ onMounted(async () => {
           </template>
 
           <template v-else-if="column.value === 'duration'">
-            <span class="font-normal text-sm text-text-primary"
-              >{{ calculateDeltaMMSS(data.createdAt, data.paidAt) }}
+            <span v-if="data[column.value] !== null" class="font-normal text-sm text-text-primary">
+              {{ calculateDeltaHHMMSS(data.createdAt, data.duration) }}
             </span>
+            <span v-else class="font-normal text-sm text-text-disabled">N/A</span>
           </template>
 
           <template v-else>

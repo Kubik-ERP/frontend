@@ -104,6 +104,8 @@ export const useDailySalesListService = (): IDailySalesListProvided => {
     }
 
     switch (orderStatus.toUpperCase()) {
+      case 'PLACED':
+        return 'bg-success-background text-success';
       case 'IN_PROGRESS':
         return 'bg-primary-background text-primary';
       case 'WAITING':
@@ -112,6 +114,10 @@ export const useDailySalesListService = (): IDailySalesListProvided => {
         return 'bg-secondary-background text-green-primary';
       case 'CANCELLED':
         return 'bg-error-background text-error-main';
+      case 'REFUNDED':
+        return 'bg-error-background text-error-main';
+      case 'COMPLETED':
+        return 'bg-complementary-background text-complementary-main';
       default:
         return '';
     }
@@ -197,6 +203,6 @@ export const useDailySalesListService = (): IDailySalesListProvided => {
     dailySalesList_typesOfOrderType: DAILY_SALES_LIST_TYPES_OF_ORDER_TYPE,
     dailySalesList_typesOfPaymentStatus: DAILY_SALES_LIST_TYPES_OF_PAYMENT_STATUS,
     dailySalesList_typesOfOrderStatus: DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS,
-    dailySalesList_values: dailySales_invoiceLists.value,
+    dailySalesList_values: dailySales_invoiceLists?.value || [],
   };
 };

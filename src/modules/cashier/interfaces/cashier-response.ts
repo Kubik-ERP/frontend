@@ -39,6 +39,7 @@ export interface IMidtransQrisPaymentData {
   statusCode: string;
   statusMessage: string;
   transactionId: string;
+  invoiceId: string;
   orderId: string;
   merchantId: string;
   grossAmount: string;
@@ -151,13 +152,13 @@ export interface ICashierCustomerHasTag {
 export interface ICashierCustomer {
   id: string;
   name: string;
-  code: string;
-  number: string;
-  dob: string;
-  email: string;
-  username: string;
-  address: string;
-  customersHasTag: ICashierCustomerHasTag[];
+  code: string | null;
+  number: string | null;
+  dob: string | null;
+  email: string | null;
+  username: string | null;
+  address: string | null;
+  customersHasTag: ICashierCustomerHasTag[] | null;
 }
 
 export interface ICashierCustomerResponse {

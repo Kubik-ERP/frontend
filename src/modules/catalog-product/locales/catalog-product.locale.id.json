@@ -1,0 +1,76 @@
+{
+  "main": {
+    "table": {
+      "title": "Produk",
+      "filter": "Saring Berdasarkan Kategori",
+      "search": "Pencarian Kata Kunci",
+      "add": "Tambah Produk",
+      "next-page": "Berikutnya",
+      "previous-page": "Sebelumnya"
+    },
+    "popover": {
+      "edit": "Ubah",
+      "delete": "Hapus"
+    },
+    "modal": {
+      "title": "Apakah Anda yakin ingin menghapus produk ini?",
+      "description": "Tindakan ini tidak dapat dibatalkan, dan produk akan dihapus dari katalog",
+      "delete": "Hapus Produk",
+      "cancel": "Batal"
+    }
+  },
+  "productDetail": {
+    "title": "Detail Produk",
+    "header": "Informasi Produk",
+    "photo": {
+      "label": "Foto (Opsional)",
+      "button": "Pilih Gambar"
+    },
+    "form": {
+      "productName": {
+        "label": "Nama Produk",
+        "error": "Kolom Nama Produk wajib diisi"
+      },
+      "category": {
+        "label": "Kategori",
+        "placeholder": "Pilih",
+        "error": "Kolom Kategori wajib diisi"
+      },
+      "price": {
+        "label": "Harga",
+        "error": "Kolom Harga wajib diisi"
+      },
+      "discount": {
+        "checkbox": "Tambahkan Harga Diskon",
+        "valueLabel": "Nilai Diskon",
+        "total": "Total Harga Setelah Diskon:"
+      },
+      "variant": {
+        "label": "Varian",
+        "nameLabel": "Nama Varian",
+        "nameError": "Kolom Nama Varian wajib diisi",
+        "additionalPriceLabel": "Harga Tambahan",
+        "optionalLabel": "(Opsional)",
+        "addButton": "Tambah Varian"
+      },
+      "button": {
+        "save": "Tambah produk",
+        "edit": "Ubah produk",
+        "cancel": "Batal",
+        "delete": "Hapus Produk"
+      }
+    },
+    "leavePageModal": {
+      "title": "Anda yakin ingin meninggalkan halaman ini?",
+      "description": "Setiap perubahan yang Anda buat pada data akan hilang jika Anda meninggalkan halaman ini tanpa menyimpan",
+      "discardButton": "Buang Perubahan",
+      "cancelButton": "Batal"
+    },
+    "deleteModal": {
+      "title": "Anda yakin ingin menghapus produk ini?",
+      "description": "Tindakan ini tidak dapat dibatalkan, dan produk akan dihapus dari katalog",
+      "deleteButton": "Hapus Produk",
+      "cancelButton": "Batal"
+    }
+  }
+}

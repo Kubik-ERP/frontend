@@ -10,6 +10,13 @@ export interface IDecreasePoint {
   notes?: string;
 }
 
+export interface IPageMeta {
+  currentPage: number;
+  pageSize: number;
+  totalData: number;
+  totalPages: number;
+}
+
 export interface Iinvoice {
   id: string; // Changed from literal string to string
   payment_methods_id: string; // Changed from literal string to string
@@ -32,21 +39,51 @@ export interface Iinvoice {
   invoice_number: string; // Changed from literal string to string
   order_status: string; // Changed from literal 'ready' to string (consider a union type like 'ready' | 'pending' | 'completed')
   store_id: string; // Changed from literal string to string
+  meta: IPageMeta;
+}
+
+export interface Itags {
+  id: string;
+  name: string;
 }
 
 export interface ICustomerDetails {
-  id: string;
-  name: string;
+  id?: string;
+  name?: string;
   code?: string;
   number?: string;
   gender?: string;
   email?: string;
-  dob?: Date;
+  dob?: string;
   address?: string;
   paid?: number;
   unpaid?: number;
   totalSales?: number;
   lastVisited?: Date;
+  tags?: Itags[];
+}
+
+export interface ICustomerDetailsStore {
+  customerDetails_isLoading: boolean;
+  customerDetails: {
+    id?: string;
+  name?: string;
+  code?: string;
+  number?: string;
+  gender?: string;
+  email?: string;
+  dob?: string;
+  address?: string;
+  paid?: number;
+  unpaid?: number;
+  totalSales?: number;
+  lastVisited?: Date;
+  tags?: Itags[];
+  invoices?: {
+    data: Iinvoice[];
+    meta: IPageMeta;
+  };
+  };
 }
 
 export interface IPointDetails {
@@ -63,4 +100,48 @@ export interface IPointDetails {
 export interface points {
   total: number;
   details: IPointDetails[];
+}
+
+export interface ICustomerDetailsRequestQuery {
+  start_date: Date | null;
+  end_date: Date | null;
+  search: string;
+  page: number;
+  limit: number;
+  payment_status: string | null;
+  order_type: string | null;
+  [key: string]: string | number | Date | null | undefined;
+}
+
+export interface ICustomerDetails_fetchSalesInvoiceResponse {
+customerDetails_isLoading: boolean;
+  customerDetails: {
+    id?: string;
+  name?: string;
+  code?: string;
+  number?: string;
+  gender?: string;
+  email?: string;
+  dob?: string;
+  address?: string;
+  paid?: number;
+  unpaid?: number;
+  totalSales?: number;
+  lastVisited?: Date;
+  tags?: Itags[];
+  invoices: {
+    data: Iinvoice[];
+    meta: IPageMeta;
+  };
+  };
+}
+
+export interface ICustomer_salesInvoice_list {
+  data: {
+    detail: ICustomerDetails;
+    invoices: {
+      data: Iinvoice[];
+      meta: IPageMeta;
+    };
+  };
 }

@@ -16,7 +16,7 @@ const {
 import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 
 const imageUrl = computed(() => {
-  return import.meta.env.VITE_APP_BASE_API_URL + '/' + cashierProduct_modalAddEditItem.value.product?.pictureUrl;
+  return APP_BASE_BUCKET_URL + cashierProduct_modalAddEditItem.value.product?.pictureUrl;
 });
 </script>
 
@@ -35,7 +35,7 @@ const imageUrl = computed(() => {
         v-if="cashierProduct_modalAddEditItem.product"
         class="overflow-auto flex flex-col gap-6 text-sm lg:text-lg p-6"
       >
-        <div class="font-semibold">Add Item</div>
+        <div class="font-semibold">{{ useLocalization('cashier.mainSection.addItem') }}</div>
 
         <div class="flex w-full items-center justify-between">
           <div class="flex items-center gap-4">
@@ -85,7 +85,7 @@ const imageUrl = computed(() => {
           v-if="(cashierProduct_modalAddEditItem?.product?.variantHasProducts?.length || 0) > 0"
           id="list-variant"
         >
-          <span class="font-semibold">Variant</span>
+          <span class="font-semibold">{{ useLocalization('cashier.mainSection.variant') }}</span>
 
           <div class="border rounded-md border-grayscale-10 overflow-auto flex flex-col max-h-48 flex-grow">
             <div
@@ -119,15 +119,15 @@ const imageUrl = computed(() => {
         >
           <AppBaseSvg name="add-notes" />
 
-          <span class="font-semibold text-primary">Add Notes</span>
+          <span class="font-semibold text-primary">{{ useLocalization('cashier.mainSection.addNotes') }}</span>
         </PrimeVueButton>
 
         <section v-else id="cashier-add-edit-product-notes" class="flex flex-col gap-2">
-          <label class="font-semibold"> Notes </label>
+          <label class="font-semibold"> {{ useLocalization('cashier.mainSection.notes') }} </label>
 
           <PrimeVueTextarea
             v-model="cashierProduct_modalAddEditItem.item.notes"
-            placeholder="Describe order notes here"
+            :placeholder="useLocalization('cashier.mainSection.describeNotes')"
             rows="4"
           />
 
@@ -144,7 +144,7 @@ const imageUrl = computed(() => {
                 <div class="flex gap-2 items-center">
                   <AppBaseSvg name="trash" />
 
-                  <span> Delete Notes </span>
+                  <span> {{ useLocalization('cashier.mainSection.deleteNotes') }} </span>
                 </div>
               </template>
             </PrimeVueButton>
@@ -152,7 +152,10 @@ const imageUrl = computed(() => {
         </section>
 
         <div class="lg:hidden flex flex-col gap-2 justify-end">
-          <label class="font-normal"> Notes <span class="text-text-disabled">(optional)</span> </label>
+          <label class="font-normal">
+            {{ useLocalization('cashier.mainSection.notes') }}
+            <span class="text-text-disabled">({{ useLocalization('cashier.optional') }})</span>
+          </label>
 
           <PrimeVueTextarea
             v-model="cashierProduct_modalAddEditItem.item.notes"

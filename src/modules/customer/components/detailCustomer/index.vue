@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import type { ICustomerDetails } from '../../interfaces';
-
 import { useCustomerDetailService } from '../../services/customer-detail.service';
 
-const { customerDetails_isLoading } = useCustomerDetailService();
-
-const customer = ref(inject('customerDetails').customer as ICustomerDetails);
+const { customerDetails_isLoading, customerDetails } = useCustomerDetailService();
 </script>
 <template>
   <div class="border border-solid border-primary rounded-md p-4 mb-8">
@@ -16,10 +12,10 @@ const customer = ref(inject('customerDetails').customer as ICustomerDetails);
             <PrimeVueSkeleton width="12rem" height="1.5rem" class="rounded-md"></PrimeVueSkeleton>
           </template>
           <template v-else>
-            {{ customer.name }}
+            {{ customerDetails.name }}
           </template>
         </h1>
-        <router-link :to="`/customer/edit-customer/${customer.id}`">
+        <router-link :to="{ name: 'edit-customer', params: { id: customerDetails.id } }">
           <PrimeVueButton
             label="Edit Customer Data"
             variant="text"
@@ -31,14 +27,14 @@ const customer = ref(inject('customerDetails').customer as ICustomerDetails);
           </PrimeVueButton>
         </router-link>
       </div>
-      <p>
+      <!-- <p>
         <template v-if="customerDetails_isLoading">
           <PrimeVueSkeleton width="20rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
         </template>
         <template v-else>
-          {{ customer.email }}
+          {{ customerDetails.id }}
         </template>
-      </p>
+      </p> -->
     </section>
 
     <section>
@@ -51,7 +47,7 @@ const customer = ref(inject('customerDetails').customer as ICustomerDetails);
               <PrimeVueSkeleton width="16rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
             </template>
             <template v-else>
-              {{ customer.email }}
+              {{ customerDetails.email }}
             </template>
           </p>
         </div>
@@ -62,7 +58,7 @@ const customer = ref(inject('customerDetails').customer as ICustomerDetails);
             <template v-if="customerDetails_isLoading">
               <PrimeVueSkeleton width="16rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
             </template>
-            <template v-else> {{ '(+' + customer.code + ')' }} {{ customer.number }} </template>
+            <template v-else> {{ '(+' + customerDetails.code + ')' }} {{ customerDetails.number }} </template>
           </p>
         </div>
 
@@ -73,7 +69,7 @@ const customer = ref(inject('customerDetails').customer as ICustomerDetails);
               <PrimeVueSkeleton width="16rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
             </template>
             <template v-else>
-              {{ customer.address ?? '-' }}
+              {{ customerDetails.address ?? '-' }}
             </template>
           </p>
         </div>
@@ -85,7 +81,7 @@ const customer = ref(inject('customerDetails').customer as ICustomerDetails);
               <PrimeVueSkeleton width="16rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
             </template>
             <template v-else>
-              {{ customer.gender ?? '-' }}
+              {{ customerDetails.gender ?? '-' }}
             </template>
           </p>
         </div>
@@ -97,7 +93,7 @@ const customer = ref(inject('customerDetails').customer as ICustomerDetails);
               <PrimeVueSkeleton width="16rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
             </template>
             <template v-else>
-              {{ useFormatDate(customer.dob, 'dd/mm/yyyy') }}
+              {{ useFormatDate(customerDetails.dob ?? '', 'dd/mm/yyyy') }}
             </template>
           </p>
         </div>
@@ -110,10 +106,10 @@ const customer = ref(inject('customerDetails').customer as ICustomerDetails);
             </template>
             <template v-else>
               <PrimeVueChip
-                v-for="tag in customer.tags"
-                :key="tag"
+                v-for="tag in customerDetails.tags"
+                :key="tag.id"
                 class="w-fit text-xs font-semibold bg-primary-background text-primary px-1.5 py-1"
-                >{{ tag }}</PrimeVueChip
+                >{{ tag.name }}</PrimeVueChip
               >
             </template>
           </div>

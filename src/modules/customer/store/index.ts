@@ -1,13 +1,23 @@
-import { CUSTOMER_DETAILS_BASE_ENDPOINT, LOYALTY_POINTS_ENDPOINT,CUSTOMER_SALES_ORDER_ENDPOINT } from '../constants';
+import {
+  CUSTOMER_DETAILS_BASE_ENDPOINT,
+  LOYALTY_POINTS_ENDPOINT,
+  CUSTOMER_SALES_ORDER_ENDPOINT,
+} from '../constants';
+
+// import type { ICustomerDetailsRequestQuery } from '../interfaces/CustomerDetailInterface';
 
 import type { AxiosRequestConfig } from 'axios';
+
+import type { ICustomerDetailsStore,ICustomer_salesInvoice_list } from '../interfaces/CustomerDetailInterface';
 
 import httpClient from '@/plugins/axios';
 
 export const useCustomerDetailsStore = defineStore('customer-details', {
-  state: () => ({
+  state: ():ICustomerDetailsStore => ({
     customerDetails_isLoading: false,
-    customerDetails: {},
+    customerDetails: {
+      id: '0014cc8a-748a-431b-a7f2-7449e1764f56'
+    },
   }),
   getters: {
     /**
@@ -21,12 +31,20 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
      * @method GET
      * @access private
      */
-    async salesInvoice_list(id: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async salesInvoice_list(
+      id: string,
+      formattedParams: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<ICustomer_salesInvoice_list> {
       this.customerDetails_isLoading = true;
       try {
-        const response = await httpClient.get(`${CUSTOMER_DETAILS_BASE_ENDPOINT}${CUSTOMER_SALES_ORDER_ENDPOINT}/${id}`, {
-          ...requestConfigurations,
-        });
+        const response = await httpClient.get(
+          `${CUSTOMER_DETAILS_BASE_ENDPOINT}${CUSTOMER_SALES_ORDER_ENDPOINT}/${id}${formattedParams}`,
+          {
+            ...requestConfigurations,
+          },
+        );
+        this.customerDetails = response.data.data;
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

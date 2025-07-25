@@ -2,9 +2,23 @@
 // emits
 const emit = defineEmits(['print', 'download']);
 
+// Constant
+import { CASHIER_ORDER_TYPE } from '@/modules/cashier/constants';
+import { DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS } from '@/modules/daily-sales/constants';
 import { INVOICE_PAYMENT_STATUS } from '../constants/invoice.constant';
+
 // Interface
 import { IInvoiceProvided } from '../interfaces/index';
+
+// Router
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+// Services
+import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
+
+const { dailySalesList_getClassOfOrderStatus, dailySalesList_getClassOfOrderType } = useDailySalesListService();
 
 /**
  * @description Inject all the data and methods what we need
@@ -99,12 +113,54 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
             }}
           </td>
         </tr>
+        <tr class="mb-2">
+          <td class="font-normal text-text-disabled text-sm pe-2 py-1">Order Type</td>
+          <td class="font-normal text-grayscale-70 text-sm">
+            <PrimeVueChip
+              :class="[
+                dailySalesList_getClassOfOrderType(invoice_invoiceData.data.orderType),
+                'text-xs font-normal',
+              ]"
+              :label="CASHIER_ORDER_TYPE.find(f => f.code === invoice_invoiceData.data?.orderType)?.label ?? ''"
+            />
+          </td>
+        </tr>
+        <tr class="pt-2">
+          <td class="font-normal text-text-disabled text-sm pe-2 py-1">Order Status</td>
+          <td class="font-normal text-grayscale-70 text-sm py-1">
+            <PrimeVueChip
+              :class="[
+                dailySalesList_getClassOfOrderStatus(invoice_invoiceData.data.orderStatus),
+                'text-xs font-normal',
+              ]"
+              :label="
+                DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS.find(f => f.value === invoice_invoiceData.data?.orderStatus)
+                  ?.label ?? ''
+              "
+            />
+          </td>
+        </tr>
       </tbody>
 
-      <tfoot>
+      <tfoot
+        v-if="
+          invoice_invoiceData.data.orderStatus === 'in_progress' ||
+          invoice_invoiceData.data.orderStatus === 'placed'
+        "
+      >
         <tr>
           <td colspan="2" class="pt-6">
-            <PrimeVueButton class="w-full" severity="secondary" variant="outlined">
+            <PrimeVueButton
+              class="w-full"
+              severity="secondary"
+              variant="outlined"
+              @click="
+                router.push({
+                  name: 'cashier-order-edit',
+                  params: { id: invoice_invoiceData.data.id },
+                })
+              "
+            >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
                   <AppBaseSvg name="edit" />
@@ -160,7 +216,7 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
             'bg-white border-primary': invoice_invoiceData.data.paymentStatus === 'unpaid',
           }"
           severity="primary"
-          @click="emit('print')"
+          @click="emit('print', 'invoice')"
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
@@ -177,6 +233,33 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
                 }"
                 >Print Invoice</span
               >
+            </section>
+          </template>
+        </PrimeVueButton>
+      </section>
+
+      <section id="print-buttons" class="flex flex-col items-center gap-4 w-full">
+        <PrimeVueButton
+          class="w-full py-4 bg-white border-primary"
+          severity="primary"
+          @click="emit('print', 'table')"
+        >
+          <template #default>
+            <section id="content" class="flex items-center gap-2">
+              <AppBaseSvg name="printer-primary" class="!w-6 !h-6" color="primary" />
+              <span class="font-semibold text-sm text-primary">Print Table Ticket</span>
+            </section>
+          </template>
+        </PrimeVueButton>
+        <PrimeVueButton
+          class="w-full py-4 bg-white border-primary"
+          severity="primary"
+          @click="emit('print', 'kitchen')"
+        >
+          <template #default>
+            <section id="content" class="flex items-center gap-2">
+              <AppBaseSvg name="printer-primary" class="!w-6 !h-6" color="primary" />
+              <span class="font-semibold text-sm text-primary">Print Kitchen Ticket</span>
             </section>
           </template>
         </PrimeVueButton>

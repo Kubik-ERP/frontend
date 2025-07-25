@@ -2,44 +2,19 @@
 import { ref } from 'vue'; // Make sure ref is imported
 import excludeSVG from '@/app/assets/icons/exclude.svg';
 
-import AddCustomerForm from '@/modules/customer/components/addCustomer/form.vue'
+import AddCustomerForm from '@/modules/customer/components/addCustomer/form.vue';
 import { useRouter, onBeforeRouteLeave } from 'vue-router'; // Ensure these are imported
 
-/**
- * @description Define props with default values and interfaces
- */
-const props = defineProps({
-  isModal: {
-    type: Boolean,
-    default: false,
-  },
-})
-
-const emit = defineEmits(['close']);
+function leavePage() {
+  hasConfirmedLeave = true;
+  router.push({ name: 'customer-list' });
+}
 
 const router = useRouter(); // Get the router instance for navigation
 
 const nextRoute = ref(null);
 const isLeavingModal = ref(false);
 let hasConfirmedLeave = false; // Using `let` for reassignable flag
-
-/**
- * @description Handles the close event from the child component.
- * If this component is not a modal, it triggers navigation.
- * @param {any} response The response from the child component (e.g., successful data)
- */
-const handleOnClose = (response) => {
-  // If this component is NOT being used as a modal (i.e., it's a full page view)
-  // and the child form successfully completed, we want to navigate.
-  if (!props.isModal) {
-    // Set the flag to bypass the onBeforeRouteLeave guard for the next navigation
-    hasConfirmedLeave = true;
-    router.push({ name: 'customer-list' }); // Manually push to the desired route
-  }
-  // Also, emit the close event upwards, especially if this component itself is part of a modal
-  // that a grandparent component needs to close.
-  emit('close', response);
-}
 
 /**
  * @description Function to confirm leaving the page, typically after discarding changes.
@@ -79,20 +54,26 @@ onBeforeRouteLeave((to, from, next) => {
 
   // If not confirmed to leave, then we need to handle showing the modal or blocking.
   // Refactored to avoid 'no-negated-condition' warning.
-  if (isLeavingModal.value) { // If the modal is ALREADY visible, just block the navigation
+  if (isLeavingModal.value) {
+    // If the modal is ALREADY visible, just block the navigation
     next(false);
-  } else { // If the modal is NOT visible yet, show it and block navigation
+  } else {
+    // If the modal is NOT visible yet, show it and block navigation
     isLeavingModal.value = true; // Show the confirmation modal
     nextRoute.value = to.fullPath; // Store the target route to navigate to later
     next(false); // Prevent the current navigation attempt
   }
+});
+
+provide('confirmLeave', {
+  leavePage,
 });
 </script>
 
 <template>
   <div class="">
     <!-- AddCustomerForm listens for the isModal prop and emits a close event -->
-    <AddCustomerForm :is-modal="props.isModal" @close="handleOnClose" />
+    <AddCustomerForm />
 
     <!-- PrimeVue Dialog for "Are you sure you want to leave?" confirmation -->
     <PrimeVueDialog :visible="isLeavingModal" modal header="">

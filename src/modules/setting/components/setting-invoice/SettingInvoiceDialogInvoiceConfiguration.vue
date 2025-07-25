@@ -1,16 +1,25 @@
 <script setup lang="ts">
 // Interfaces
 import type { ISettingInvoiceProvided } from '../../interfaces/setting-invoice.interface';
-
 /**
  * @description Inject all the data and methods what we need
  */
 const {
   settingInvoice_formData,
+  invoiceNumberConfigurations_formData,
   settingInvoice_formValidations,
   settingInvoice_listResetSequences,
   settingInvoice_onCloseEditInvoiceNumberConfigurationDialog,
 } = inject<ISettingInvoiceProvided>('settingInvoice')!;
+
+const settingInvoice_onEditInvoiceNumberConfiguration = () => {
+  settingInvoice_formData.invoiceNumberConfigurations = {
+    ...settingInvoice_formData.invoiceNumberConfigurations,
+    ...invoiceNumberConfigurations_formData,
+  };
+
+  settingInvoice_onCloseEditInvoiceNumberConfigurationDialog();
+};
 </script>
 
 <template>
@@ -32,7 +41,7 @@ const {
             :validators="settingInvoice_formValidations.invoiceNumberConfigurations.startingNumber"
           >
             <PrimeVueInputNumber
-              v-model="settingInvoice_formData.invoiceNumberConfigurations.startingNumber"
+              v-model="invoiceNumberConfigurations_formData.startingNumber"
               :class="{
                 ...classes,
               }"
@@ -53,7 +62,7 @@ const {
             :validators="settingInvoice_formValidations.invoiceNumberConfigurations.incrementBy"
           >
             <PrimeVueInputNumber
-              v-model="settingInvoice_formData.invoiceNumberConfigurations.incrementBy"
+              v-model="invoiceNumberConfigurations_formData.incrementBy"
               :class="{
                 ...classes,
               }"
@@ -74,7 +83,7 @@ const {
             :validators="settingInvoice_formValidations.invoiceNumberConfigurations.resetSequence"
           >
             <PrimeVueSelect
-              v-model="settingInvoice_formData.invoiceNumberConfigurations.resetSequence"
+              v-model="invoiceNumberConfigurations_formData.resetSequence"
               :options="settingInvoice_listResetSequences"
               option-label="label"
               option-value="value"
@@ -92,7 +101,7 @@ const {
     <template #footer>
       <footer class="flex items-center justify-end w-full gap-4">
         <PrimeVueButton
-          class="font-semibold text-base text-primary w-full max-w-40 border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
+          class="font-semibold text-base text-primary w-full max-w-40 border-2 border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
           label="Cancel"
           severity="secondary"
           variant="outlined"
@@ -104,6 +113,7 @@ const {
           label="Update"
           type="button"
           :disabled="settingInvoice_formValidations.invoiceNumberConfigurations.$invalid"
+          @click="settingInvoice_onEditInvoiceNumberConfiguration"
         />
       </footer>
     </template>

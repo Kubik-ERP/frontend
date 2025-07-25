@@ -28,13 +28,14 @@ const {
             <AppBaseSvg name="confirmation" class="!w-14 !h-14" />
 
             <div class="flex flex-col gap-3 p-2 items-center">
-              <span class="font-semibold text-base lg:text-lg">Are you sure want to place this order?</span>
+              <span class="font-semibold text-base lg:text-lg">{{
+                useLocalization('cashier.orderSummary.placeOrderConfirmation.title')
+              }}</span>
               <div class="grid grid-cols-12 py-2.5 px-4 mx-2 bg-secondary/80 rounded-xl">
                 <AppBaseSvg name="info" class="!w-3 !h-3 col-span-1 mt-1 text-secondary" />
-                <span class="text-xs lg:text-sm text-secondary-hover text-justify col-span-11"
-                  >Ensure the payment has been successfully processed before proceeding with the order and printing
-                  the invoice</span
-                >
+                <span class="text-xs lg:text-sm text-secondary-hover text-justify col-span-11">{{
+                  useLocalization('cashier.orderSummary.placeOrderConfirmation.description')
+                }}</span>
               </div>
             </div>
           </section>
@@ -43,7 +44,7 @@ const {
             <PrimeVueButton
               class="text-primary border-primary w-1/2 py-2.5 text-sm lg:text-base"
               type="button"
-              label="Cancel"
+              :label="useLocalization('cashier.cancel')"
               outlined
               :disabled="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
               @click="closeCallback"
@@ -52,7 +53,7 @@ const {
             <PrimeVueButton
               class="bg-primary w-1/2 py-2.5 text-sm lg:text-base"
               type="button"
-              label="Place Order"
+              :label="useLocalization('cashier.orderSummary.placeOrderConfirmation.placeOrder')"
               :disabled="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
               :loading="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
               @click="cashierOrderSummary_handlePlaceOrderConfirmation()"
