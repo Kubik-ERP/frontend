@@ -12,8 +12,7 @@ import { DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS } from '@/modules/daily-sales/co
 const { kitchenQueue_dummyRefs, kitchenQueue_invoices } = inject<IKitchenQueueProvided>('kitchenQueue')!;
 
 // Inject kitchen queue context
-const { kitchenQueue_generateChipColor, kitchenQueue_handleDebounceUpdateStatus } =
-  inject<IKitchenQueueProvided>('kitchenQueue')!;
+const { kitchenQueue_generateChipColor } = inject<IKitchenQueueProvided>('kitchenQueue')!;
 </script>
 
 <template>
@@ -39,14 +38,6 @@ const { kitchenQueue_generateChipColor, kitchenQueue_handleDebounceUpdateStatus 
             variant="outlined"
             class="text-[10px] py-1 px-2 rounded-full"
             :class="kitchenQueue_generateChipColor(item.product.orderStatus)"
-            @click="
-              kitchenQueue_handleDebounceUpdateStatus(
-                invoice.queueReferenceId,
-                invoice.invoiceId,
-                invoice.queueReferenceId,
-                item.product.orderStatus,
-              )
-            "
           >
             {{
               DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS.find(f => {

@@ -12,7 +12,7 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
   <section id="cashier-summary-total" class="p-4 border-b-2 border-b-grayscale-10">
     <div class="flex flex-col gap-1 pb-2 border-b-2 border-b-grayscale-10">
       <div class="flex justify-between text-sm font-semibold">
-        <span>Sub Total</span>
+        <span>{{ useLocalization('cashier.orderSummary.subTotal') }}</span>
         <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">{{
           useCurrencyFormat(cashierOrderSummary_calculateEstimation?.data?.total || 0)
         }}</span>
@@ -23,9 +23,11 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
         class="flex justify-between text-sm text-text-disabled"
       >
         <span
-          >Tax
-          <span v-if="cashierOrderSummary_calculateEstimation.data.taxInclude">(included)</span>
-          <span v-else>(excluded)</span></span
+          >{{ useLocalization('cashier.orderSummary.tax') }}
+          <span v-if="cashierOrderSummary_calculateEstimation.data.taxInclude"
+            >({{ useLocalization('cashier.orderSummary.included') }})</span
+          >
+          <span v-else>({{ useLocalization('cashier.orderSummary.excluded') }})</span></span
         >
 
         <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">{{
@@ -38,10 +40,12 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
         class="flex justify-between text-sm text-text-disabled"
       >
         <span
-          >Service
+          >{{ useLocalization('cashier.orderSummary.service') }}
 
-          <span v-if="cashierOrderSummary_calculateEstimation.data.serviceChargeInclude">(included)</span>
-          <span v-else>(excluded)</span></span
+          <span v-if="cashierOrderSummary_calculateEstimation.data.serviceChargeInclude"
+            >({{ useLocalization('cashier.orderSummary.included') }})</span
+          >
+          <span v-else>({{ useLocalization('cashier.orderSummary.excluded') }})</span></span
         >
 
         <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
@@ -52,7 +56,7 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
     </div>
 
     <div class="flex justify-between font-semibold pt-2">
-      <span>Total</span>
+      <span>{{ useLocalization('cashier.orderSummary.total') }}</span>
       <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">{{
         useCurrencyFormat(cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0)
       }}</span>

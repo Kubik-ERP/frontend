@@ -192,7 +192,7 @@ export interface ICashierOrderSummaryProvided {
 
   cashierProduct_customerState: Ref<ICashierCustomerState>;
 
-  cashierOrderSummary_handleModalAddCustomer: (response: ICashierResponseAddCustomer) => void;
+  cashierOrderSummary_handleModalAddCustomer: (response: ICashierResponseAddCustomer | null) => void;
 
   cashierOrderSummary_handleIsExpandedToggle: () => void;
 
@@ -214,4 +214,6 @@ export interface ICashierOrderSummaryProvided {
 
   cashierProduct_onSearchCustomer: (search: string) => void;
   cashierProduct_onScrollFetchMoreCustomers: (event: VirtualScrollerLazyEvent) => void;
+
+  cashierOrderSummary_handleEditOrder: () => void;
 }

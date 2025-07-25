@@ -188,9 +188,11 @@ const imageUrl = computed(() => {
           </td>
         </tr>
 
-        <tr>
-          <td class="font-normal text-black text-sm py-2">{{ invoice_invoiceData?.data?.paymentMethods?.name || '' }}</td>
-          
+        <tr v-if="invoice_invoiceData?.data?.paymentMethods?.name">
+          <td class="font-normal text-black text-sm py-2">
+            {{ invoice_invoiceData?.data?.paymentMethods?.name || '' }}
+          </td>
+
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
             {{ useCurrencyFormat(invoice_invoiceData.data.paymentAmount || 0) }}
           </td>
@@ -198,9 +200,9 @@ const imageUrl = computed(() => {
 
         <tr class="border-b border-dashed border-black">
           <td class="font-normal text-black text-sm py-2">Kembali</td>
-          <td colspan="3" class="font-normal text-black text-sm text-right py-2">{{ useCurrencyFormat(
-            invoice_invoiceData.data.changeAmount || 0
-          ) }}</td>
+          <td colspan="3" class="font-normal text-black text-sm text-right py-2">
+            {{ useCurrencyFormat(invoice_invoiceData.data.changeAmount || 0) }}
+          </td>
         </tr>
 
         <tr>

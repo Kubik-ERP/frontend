@@ -20,7 +20,7 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
     <template #container="{ closeCallback }">
       <section id="cashier-summary-add-edit-notes" class="flex flex-col gap-6 p-6">
         <section id="cashier-summary-add-edit-notes-form" class="flex flex-col gap-3">
-          <label class="font-semibold"> Notes </label>
+          <label class="font-semibold"> {{ useLocalization('cashier.mainSection.notes') }} </label>
 
           <PrimeVueTextarea
             v-model="cashierOrderSummary_modalAddEditNotes.tempValue"
