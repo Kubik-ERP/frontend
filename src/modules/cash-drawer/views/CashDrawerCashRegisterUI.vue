@@ -111,7 +111,12 @@ const dummySummaryData = computed(() => {
 });
 
 /**
- * @description Fungsi yang dipanggil saat tombol export diklik
+ * @function handleExport
+ * @description Handles the export functionality when the export button is clicked. This function checks if the PDF template
+ * reference (`pdfTemplateRef`) is available and calls the `cashDrawerCashRegister_onExportToPdf` function to generate a PDF.
+ * Logs an error if the PDF template element is not found.
+ *
+ * @throws {Error} Logs an error to the console if the PDF template element is not available.
  */
 function handleExport() {
   console.log('fired')
