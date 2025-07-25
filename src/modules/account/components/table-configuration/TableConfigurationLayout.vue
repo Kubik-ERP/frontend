@@ -81,7 +81,7 @@ onMounted(() => {
 /**
  * @description Menangani update posisi (x, y) saat meja digeser
  */
-function dragMoveListener(event: InteractEvent) {
+function dragMoveListener(event: any) {
   const target = event.target as HTMLElement;
   const tableId = target.getAttribute('data-id');
   const table = props.configuration?.tables?.find(t => t.name === tableId);
