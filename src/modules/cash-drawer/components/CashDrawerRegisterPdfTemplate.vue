@@ -1,12 +1,23 @@
 <script setup lang="ts">
 // Script setup tetap sama, tidak ada perubahan
+interface ISummaryData {
+  closeRegisterDate: string;
+  storeName: string;
+  printDate: string;
+  printTime: string;
+}
+
 interface IProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  summaryData: Record<string, any>;
+  summaryData: ISummaryData;
 }
 
 withDefaults(defineProps<IProps>(), {
-  summaryData: () => ({}),
+  summaryData: () => ({
+    closeRegisterDate: '',
+    storeName: '',
+    printDate: '',
+    printTime: '',
+  }),
 });
 </script>
 
