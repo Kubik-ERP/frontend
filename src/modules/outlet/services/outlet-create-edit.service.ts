@@ -159,7 +159,11 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
         }
 
         if (keyResponse === key) {
-          outletCreateEdit_formData[key] = outlet_detail.value![keyResponse];
+          if (key === 'businessType') {
+            outletCreateEdit_formData[key] = outlet_detail.value![keyResponse] as EOutletBusinessType;
+          } else {
+            outletCreateEdit_formData[key] = outlet_detail.value![keyResponse];
+          }
         }
       }
     }
