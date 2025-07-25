@@ -31,24 +31,46 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'store/:id/detail',
-        name: 'account.store.detail',
-        component: () => import('../views/AccountStoreDetailUI.vue'),
+        path: 'store',
+        name: 'account.store',
+        component: AppBaseWrapper,
+        children: [
+          {
+            path: ':id/detail',
+            name: 'account.store.detail',
+            component: () => import('../views/AccountStoreDetailUI.vue'),
+            meta: {
+              breadcrumb: 'Store Details',
+              requiresAuthorization: false,
+              title: 'Store Details',
+            },
+          },
+          {
+            path: ':id/edit',
+            name: 'account.store.edit',
+            component: () => import('../views/AccountStoreEditUI.vue'),
+            meta: {
+              breadcrumb: 'Edit Store Details',
+              layout: LAYOUT_OPTIONS.OUTLET,
+              requiresAuthorization: false,
+              title: 'Edit Store Details',
+            },
+          },
+          {
+            path: ':id/table-configuration',
+            name: 'account.store.table-configuration',
+            component: () => import('../views/AccountStoreTableConfigurationUI.vue'),
+            meta: {
+              breadcrumb: 'Edit Table Configuration',
+              layout: LAYOUT_OPTIONS.NAVBAR,
+              requiresAuthorization: false,
+              title: 'Edit Table Configuration',
+            },
+          },
+        ],
         meta: {
           breadcrumb: 'Store Details',
           requiresAuthorization: false,
-          title: 'Store Details',
-        },
-      },
-      {
-        path: 'store/:id/edit',
-        name: 'account.store.edit',
-        component: () => import('../views/AccountStoreEditUI.vue'),
-        meta: {
-          breadcrumb: 'Edit Store Details',
-          layout: LAYOUT_OPTIONS.OUTLET,
-          requiresAuthorization: false,
-          title: 'Edit Store Details',
         },
       },
     ],

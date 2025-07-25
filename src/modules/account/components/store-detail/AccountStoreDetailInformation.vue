@@ -1,15 +1,16 @@
 <script setup lang="ts">
 // Interfaces
-import type { IAccountStoreDetailProvided, IOperationalDay } from '../../interfaces';
+import { IOutletOperationalHour } from '@/modules/outlet/interfaces';
+import type { IAccountStoreDetailProvided } from '../../interfaces';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { accountStoreDetail_listColumnsOfOperationalHours, accountStoreDetail_listValuesOfOperationalHours } =
+const { accountStoreDetail_listColumnsOfOperationalHours, accountStoreDetail_operationalHours } =
   inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
 
-const isOperationalHoursAllClosed = (operationalHours: IOperationalDay) => {
-  return operationalHours.hours.every(slot => slot.open === 'Closed' && slot.close === 'Closed');
+const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) => {
+  return operationalHours.hours.every(slot => slot.openTime === 'Closed' && slot.closeTime === 'Closed');
 };
 </script>
 
@@ -104,10 +105,7 @@ const isOperationalHoursAllClosed = (operationalHours: IOperationalDay) => {
           </thead>
 
           <tbody>
-            <template
-              v-for="operationalHours in accountStoreDetail_listValuesOfOperationalHours"
-              :key="operationalHours.day"
-            >
+            <template v-for="operationalHours in accountStoreDetail_operationalHours" :key="operationalHours.day">
               <tr
                 v-for="(slot, slotIndex) in operationalHours.hours"
                 :key="`${operationalHours.day}-${slotIndex}`"
@@ -127,20 +125,20 @@ const isOperationalHoursAllClosed = (operationalHours: IOperationalDay) => {
                   {{ operationalHours.day }}
                 </td>
 
-                <td v-if="slot.open === 'Closed'" class="px-6 py-7 font-normal text-text-disabled text-base">
-                  {{ slot.open }}
+                <td v-if="slot.openTime === 'Closed'" class="px-6 py-7 font-normal text-text-disabled text-base">
+                  {{ slot.openTime }}
                 </td>
 
-                <td v-if="slot.close === 'Closed'" class="px-6 py-7 font-normal text-text-disabled text-base">
-                  {{ slot.close }}
+                <td v-if="slot.closeTime === 'Closed'" class="px-6 py-7 font-normal text-text-disabled text-base">
+                  {{ slot.closeTime }}
                 </td>
 
                 <template v-else>
                   <td class="px-6 py-7 font-normal text-text-primary text-base">
-                    {{ slot.open }}
+                    {{ useFormatDate(slot.openTime, 'hh:mm') }}
                   </td>
                   <td class="px-6 py-7 font-normal text-text-primary text-base">
-                    {{ slot.close }}
+                    {{ useFormatDate(slot.closeTime, 'hh:mm') }}
                   </td>
                 </template>
               </tr>

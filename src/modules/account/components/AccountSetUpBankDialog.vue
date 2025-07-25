@@ -5,8 +5,12 @@ import type { IAccountProvided } from '../interfaces';
 /**
  * @description Inject all the data and methods what we need
  */
-const { account_bankAccountFormData, account_bankAccountFormValidations, account_onCloseDialogSetUpBank } =
-  inject<IAccountProvided>('account')!;
+const {
+  account_bankAccountFormData,
+  account_bankAccountFormValidations,
+  account_onCloseDialogSetUpBank,
+  account_onSubmitBankAccount,
+} = inject<IAccountProvided>('account')!;
 </script>
 
 <template>
@@ -29,14 +33,9 @@ const { account_bankAccountFormData, account_bankAccountFormValidations, account
             spacing-bottom="mb-0"
             :validators="account_bankAccountFormValidations.bankName"
           >
-            <PrimeVueSelect
+            <PrimeVueInputText
               v-model="account_bankAccountFormData.bankName"
-              :options="[]"
-              option-label="label"
-              option-value="value"
-              :placeholder="useLocalization('account.form.placeholder.bank-name')"
               class="text-sm w-full"
-              filter
               :class="{
                 ...classes,
               }"
@@ -54,7 +53,7 @@ const { account_bankAccountFormData, account_bankAccountFormValidations, account
             spacing-bottom="mb-0"
             :validators="account_bankAccountFormValidations.accountNumber"
           >
-            <PrimeVueInputNumber
+            <PrimeVueInputText
               v-model="account_bankAccountFormData.accountNumber"
               :class="{ ...classes }"
               class="text-sm w-full"
@@ -97,6 +96,7 @@ const { account_bankAccountFormData, account_bankAccountFormValidations, account
           label="Save"
           type="button"
           :disabled="account_bankAccountFormValidations.$invalid"
+          @click="account_onSubmitBankAccount()"
         />
       </footer>
     </template>

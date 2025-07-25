@@ -18,6 +18,9 @@ import {
   type ICashDrawerCashRegisterProvide,
 } from '../interfaces/cash-drawer-cash-register.interface';
 
+// Html2Pdf
+import html2pdf from 'html2pdf.js';
+
 // Stores
 import { useCashDrawerStore } from '../store';
 
@@ -229,6 +232,35 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
   };
 
   /**
+   * @description Handle business logic for exporting register summary to PDF
+   */
+  const cashDrawerCashRegister_onExportToPdf = (element: HTMLElement): void => {
+    // Opsi untuk html2pdf
+    const options = {
+      margin: 0.5,
+      filename: `register-summary-${new Date().toISOString().slice(0, 10)}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+    };
+
+    console.log('Exporting to PDF...');
+
+    // Panggil html2pdf untuk membuat dan mengunduh PDF
+    html2pdf()
+      .from(element)
+      .set(options)
+      .save()
+      .then(() => {
+        console.log('PDF exported successfully.');
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .catch((error: any) => {
+        console.error('Error exporting PDF:', error);
+      });
+  };
+
+  /**
    * @description Handle business logic for showing dialog add transaction
    */
   const cashDrawerCashRegister_onOpenDialogAddTransaction = (type: 'in' | 'out'): void => {
@@ -344,6 +376,7 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
     cashDrawerCashRegister_listValuesOfCashRegister: cashDrawer_transactionOfOpenRegister,
     cashDrawerCashRegister_onCloseDialogAddTransaction,
     cashDrawerCashRegister_onCloseDialogCloseTransaction,
+    cashDrawerCashRegister_onExportToPdf,
     cashDrawerCashRegister_onOpenDialogAddTransaction,
     cashDrawerCashRegister_onOpenDialogCloseTransaction,
     cashDrawerCashRegister_onSubmitAddTransaction,

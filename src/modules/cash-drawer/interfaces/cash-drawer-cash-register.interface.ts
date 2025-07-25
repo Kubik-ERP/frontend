@@ -36,6 +36,7 @@ export interface ICashDrawerCashRegisterProvide {
   cashDrawerCashRegister_listValuesOfCashRegister: globalThis.Ref<ICashDrawerTransactionData>;
   cashDrawerCashRegister_onCloseDialogAddTransaction: () => void;
   cashDrawerCashRegister_onCloseDialogCloseTransaction: () => void;
+  cashDrawerCashRegister_onExportToPdf: (element: HTMLElement) => void;
   cashDrawerCashRegister_onOpenDialogAddTransaction: (type: 'in' | 'out') => void;
   cashDrawerCashRegister_onOpenDialogCloseTransaction: () => void;
   cashDrawerCashRegister_onSubmitAddTransaction: () => Promise<void>;

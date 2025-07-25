@@ -114,6 +114,7 @@ declare global {
     isUsingIcon?: boolean;
     isUsingButtonActions?: boolean;
     isUsingButtonSecondary?: boolean;
+    isUsingHtmlTagOnDescription?: boolean;
     onClickButtonPrimary?: () => void;
     onClickButtonSecondary?: () => void;
     textButtonPrimary?: string;

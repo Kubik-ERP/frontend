@@ -3,6 +3,7 @@
 import CashDrawerAddTransactionDialog from '../components/CashDrawerAddTransactionDialog.vue';
 import CashDrawerCloseTransactionDialog from '../components/CashDrawerCloseTransactionDialog.vue';
 import CashDrawerRegisterSummary from '../components/CashDrawerRegisterSummary.vue';
+import CashDrawerRegisterPdfTemplate from '../components/CashDrawerRegisterPdfTemplate.vue';
 
 // Services
 import { useCashDrawerCashRegisterService } from '../services/cash-drawer-cash-register.service';
@@ -27,6 +28,7 @@ const {
   cashDrawerCashRegister_listValuesOfCashRegister,
   cashDrawerCashRegister_onCloseDialogAddTransaction,
   cashDrawerCashRegister_onCloseDialogCloseTransaction,
+  cashDrawerCashRegister_onExportToPdf,
   cashDrawerCashRegister_onOpenDialogAddTransaction,
   cashDrawerCashRegister_onOpenDialogCloseTransaction,
   cashDrawerCashRegister_onSubmitAddTransaction,
@@ -64,6 +66,62 @@ provide('cashDrawerCashRegister', {
 onMounted(async () => {
   await Promise.all([cashDrawerCashRegister_fetchCashDrawerDetails(), cashDrawerCashRegister_fetchTrasanctions()]);
 });
+
+// 3. Buat ref untuk menampung elemen template PDF
+const pdfTemplateRef = ref<InstanceType<typeof CashDrawerRegisterPdfTemplate> | null>(null);
+
+// 4. Siapkan DUMMY DATA (sesuai permintaan Anda)
+const dummySummaryData = computed(() => {
+  const detail = cashDrawerCashRegister_detail.value;
+  // Format yang benar untuk tanggal dan waktu
+  const dateFormat = 'dd/MM/yyyy';
+  const timeFormat = 'HH:mm';
+
+  return {
+    storeName: 'KUBIK POS',
+    staffName: detail?.employees.name ?? 'Samantha',
+    openRegisterDate: useFormatDate(detail?.createdAt ?? '2025-07-24T09:00:00', dateFormat),
+    openRegisterTime: useFormatDate(detail?.createdAt ?? '2025-07-24T09:00:00', timeFormat),
+    closeRegisterDate: useFormatDate(detail?.closedAt ?? '2025-07-24T12:00:00', dateFormat),
+    closeRegisterTime: useFormatDate(detail?.closedAt ?? '2025-07-24T12:00:00', timeFormat),
+    printDate: useFormatDate(new Date(), dateFormat),
+    printTime: useFormatDate(new Date(), timeFormat),
+    financials: [
+      { label: 'Open Register Balance', value: 500000 },
+      { label: 'Cash In', value: 100000 },
+      { label: 'Cash Out', value: -200000 },
+      { label: 'Sub Total', value: 400000 },
+      { label: 'Item Discount', value: 0 },
+      { label: 'Tax', value: 40000 },
+      { label: 'Rounding', value: 0 },
+      { label: 'Total Sales', value: 440000 },
+      { label: 'Expected Cash In Drawer', value: 840000 },
+      { label: 'Counted Cash', value: 840000 },
+      { label: 'Cash Difference', value: 0 },
+    ],
+    paymentBreakdown: [
+      { label: 'Cash', value: 840000 },
+      { label: 'Debit', value: 0 },
+      { label: 'Credit', value: 0 },
+      { label: 'QRIS', value: 0 }, // Memperbaiki nilai yang salah
+      { label: 'Voucher', value: 0 },
+      { label: 'Loyalty Point', value: 0 },
+    ],
+  };
+});
+
+/**
+ * @description Fungsi yang dipanggil saat tombol export diklik
+ */
+function handleExport() {
+  console.log('fired')
+
+  if (pdfTemplateRef.value?.$el) {
+    cashDrawerCashRegister_onExportToPdf(pdfTemplateRef.value.$el);
+  } else {
+    console.error('PDF template element not found.');
+  }
+}
 </script>
 
 <template>
@@ -246,6 +304,7 @@ onMounted(async () => {
                 class="border border-solid border-primary basic-smooth-animation w-full px-3 py-2 rounded-lg hover:bg-grayscale-10"
                 severity="secondary"
                 variant="outlined"
+                @click="handleExport"
               >
                 <template #default>
                   <section id="content" class="flex items-center gap-2">
@@ -346,5 +405,9 @@ onMounted(async () => {
     <CashDrawerAddTransactionDialog />
     <CashDrawerCloseTransactionDialog />
     <CashDrawerRegisterSummary />
+
+    <div class="absolute -top-[9999px] -left-[9999px]">
+      <CashDrawerRegisterPdfTemplate ref="pdfTemplateRef" :summary-data="dummySummaryData" />
+    </div>
   </section>
 </template>
