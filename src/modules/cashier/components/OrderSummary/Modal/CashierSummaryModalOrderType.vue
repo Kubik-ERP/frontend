@@ -5,8 +5,7 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalOrderType } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierOrderSummary_modalOrderType } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 
 // Composables
 import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
@@ -24,8 +23,12 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
         <section id="cashier-summary-modal-order-type" class="flex flex-col gap-6 p-6">
           <section id="cashier-summary-modal-order-type-form" class="flex flex-col gap-3">
             <section id="cashier-summary-modal-order-type-form-title" class="flex flex-col gap-2 mb-">
-              <span class="font-semibold text-lg"> Order Type </span>
-              <span class="text-sm text-grayscale-70"> Select Order Type </span>
+              <span class="font-semibold text-lg">
+                {{ useLocalization('cashier.orderSummary.orderType.title') }}
+              </span>
+              <span class="text-sm text-grayscale-70">
+                {{ useLocalization('cashier.orderSummary.orderType.description') }}
+              </span>
             </section>
 
             <div
@@ -53,7 +56,9 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               />
               <section id="cashier-summary-modal-order-type" class="flex gap-2 items-center">
                 <label class="font-semibold" :for="category.label">{{ category.label }}</label>
-                <span v-if="!category.available" class="text-xs">Unavailable</span>
+                <span v-if="!category.available" class="text-xs">{{
+                  useLocalization('cashier.unavailable')
+                }}</span>
               </section>
             </div>
           </section>
@@ -62,7 +67,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
             <PrimeVueButton
               class="border-primary text-primary py-2.5 px-14"
               type="button"
-              label="Cancel"
+              :label="useLocalization('cashier.cancel')"
               outlined
               @click="closeCallback"
             ></PrimeVueButton>
@@ -70,11 +75,9 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
             <PrimeVueButton
               class="bg-primary border-none text-white py-2.5 px-14"
               type="button"
-              label="Apply"
+              :label="useLocalization('cashier.apply')"
               :disabled="!cashierOrderSummary_modalOrderType.selectedOrderType"
-              @click="
-                cashierOrderSummary_modalOrderType.show = false;
-              "
+              @click="cashierOrderSummary_modalOrderType.show = false"
             ></PrimeVueButton>
           </div>
         </section>

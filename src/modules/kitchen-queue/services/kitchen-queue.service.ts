@@ -213,6 +213,10 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
         colHeights[currentCol] = 0;
       }
 
+      console.log(
+        `Chunk ${chunk.invoiceId} at column ${currentCol} with height ${height}, total height now ${colHeights[currentCol]}`,
+      )
+
       kitchenQueue_columns.value[currentCol].push(chunk);
       colHeights[currentCol] += height;
     }

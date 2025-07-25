@@ -31,7 +31,7 @@ const {
 <template>
   <section id="cashier-summary-section" class="flex flex-col gap-2 p-4">
     <section id="cashier-summary-section-header" class="flex justify-between items-center">
-      <span class="font-semibold text-lg">Order Summary</span>
+      <span class="font-semibold text-lg">{{ useLocalization('cashier.orderSummary.orderSummary') }}</span>
 
       <PrimeVueButton
         text
@@ -41,7 +41,7 @@ const {
       >
         <i class="pi pi-ellipsis-h text-primary"></i>
 
-        <span class="text-text-disabled text-xs">More</span>
+        <span class="text-text-disabled text-xs">{{ useLocalization('cashier.more') }}</span>
       </PrimeVueButton>
 
       <PrimeVueMenu
@@ -60,7 +60,7 @@ const {
       class="flex flex-col gap-2"
     >
       <div class="flex flex-col gap-2 w-full">
-        <label for="username" class="text-sm">Username</label>
+        <label for="username" class="text-sm">{{ useLocalization('cashier.mainSection.username') }}</label>
 
         <PrimeVueIconField class="flex w-full">
           <PrimeVueInputIcon class="pi pi-user" />

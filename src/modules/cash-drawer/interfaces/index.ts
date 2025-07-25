@@ -1,16 +1,28 @@
 export * from './cash-drawer-list.interface';
+export * from './cash-drawer-cash-register.interface';
+
+export interface ICashDrawerStateStore {
+  cashDrawer_detail: ICashDrawerItem | null;
+  cashDrawer_isLoading: boolean;
+  cashDrawer_lists: ICashDrawerData | null;
+  cashDrawer_transactionOfOpenRegister: ICashDrawerTransactionData;
+}
+
+export interface ICashDrawerDetailResponse {
+  statusCode: number;
+  message: string;
+  data: ICashDrawerItem | null;
+}
 
 export interface ICashDrawerResponse {
   statusCode: number;
   message: string;
   data: ICashDrawerData;
 }
-
 export interface ICashDrawerData {
   items: ICashDrawerItem[];
   meta: ICashDrawerPageMeta;
 }
-
 export interface ICashDrawerItem {
   id: string;
   expectedBalance: number;
@@ -29,9 +41,37 @@ export interface ICashDrawerItem {
   employees: ICashDrawerEmploye;
 }
 
+export interface ICashDrawerTransaction {
+  amountIn: number;
+  amountOut: number;
+  cashDrawerId: string;
+  createdAt: Date;
+  createdBy: number;
+  finalAmount: number;
+  id: string;
+  type: number;
+}
+
+export interface ICashDrawerTransactionData {
+  items: ICashDrawerTransaction[];
+  meta: ISecondPageMeta;
+}
+
 export interface ICashDrawerEmploye {
   id: string;
   name: string;
+}
+
+export interface ICashDrawerOpenRegisterResponse {
+  statusCode: number;
+  message: string;
+  data: ICashDrawerItem;
+}
+
+export interface ICashDrawerTransactionResponse {
+  statusCode: number;
+  message: string;
+  data: ICashDrawerTransactionData;
 }
 
 export interface ICashDrawerPageMeta {
@@ -39,9 +79,4 @@ export interface ICashDrawerPageMeta {
   totalPages: number;
   currentPage: string;
   perPage: string;
-}
-
-export interface ICashDrawerStore {
-  cashDrawer_isLoading: boolean;
-  cashDrawer_lists: ICashDrawerData | null;
 }

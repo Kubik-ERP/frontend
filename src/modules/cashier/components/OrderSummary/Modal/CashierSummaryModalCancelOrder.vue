@@ -22,8 +22,12 @@ const { cashierOrderSummary_handleCancelOrder, cashierOrderSummary_modalCancelOr
             <AppBaseSvg name="exclude" class="!w-14 !h-14" />
 
             <div class="flex flex-col gap-3 items-center">
-              <span class="font-semibold text-base lg:text-lg">Are you sure want to cancel this order?</span>
-              <span class="text-xs lg:text-sm text-text-disabled">All selected items will be removed</span>
+              <span class="font-semibold text-base lg:text-lg">{{
+                useLocalization('cashier.orderSummary.cancel.title')
+              }}</span>
+              <span class="text-xs lg:text-sm text-text-disabled">{{
+                useLocalization('cashier.cancel.description')
+              }}</span>
             </div>
           </section>
 
@@ -31,7 +35,7 @@ const { cashierOrderSummary_handleCancelOrder, cashierOrderSummary_modalCancelOr
             <PrimeVueButton
               class="text-text-action-error text-xs lg:text-base w-1/2 py-2.5"
               type="button"
-              label="Cancel Order"
+              :label="useLocalization('cashier.orderSummary.cancel.cancelOrder')"
               variant="text"
               severity="danger"
               text
@@ -41,7 +45,7 @@ const { cashierOrderSummary_handleCancelOrder, cashierOrderSummary_modalCancelOr
             <PrimeVueButton
               class="border-primary text-xs lg:text-base text-primary w-1/2 py-2.5"
               type="button"
-              label="Close"
+              :label="useLocalization('cashier.close')"
               outlined
               @click="closeCallback"
             ></PrimeVueButton>

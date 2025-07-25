@@ -18,7 +18,7 @@ const {
 <template>
   <PrimeVueDialog
     v-model:visible="cashierOrderSummary_modalAddCustomer.show"
-    header="Add Customer"
+    :header="useLocalization('cashier.orderSummary.addCustomer.title')"
     modal
     :style="{ width: '50rem' }"
   >

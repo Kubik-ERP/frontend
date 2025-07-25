@@ -214,4 +214,6 @@ export interface ICashierOrderSummaryProvided {
 
   cashierProduct_onSearchCustomer: (search: string) => void;
   cashierProduct_onScrollFetchMoreCustomers: (event: VirtualScrollerLazyEvent) => void;
+
+  cashierOrderSummary_handleEditOrder: () => void;
 }

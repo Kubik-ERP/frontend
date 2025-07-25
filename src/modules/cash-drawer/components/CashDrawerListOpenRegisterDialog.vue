@@ -31,7 +31,7 @@ const { staffMemberList_dropdownItemStaff } = inject('staffMemberList') as IStaf
     </template>
 
     <template #content>
-      <form action="" class="grid-wrapper gap-4">
+      <form class="grid-wrapper gap-4">
         <section id="form-group" class="flex flex-col col-span-full lg:col-span-6 gap-4">
           <AppBaseFormGroup
             v-slot="{ classes }"
@@ -65,7 +65,12 @@ const { staffMemberList_dropdownItemStaff } = inject('staffMemberList') as IStaf
                   <AppBaseSvg name="plus-line" class="!w-[10px] !h-[10px]" />
 
                   <span class="font-semibold text-green-primary text-xs">
-                    {{ useCurrencyFormat(suggestionPrice) }}
+                    {{
+                      useCurrencyFormat({
+                        data: suggestionPrice,
+                        addSuffix: true,
+                      })
+                    }}
                   </span>
                 </div>
               </template>
@@ -117,7 +122,7 @@ const { staffMemberList_dropdownItemStaff } = inject('staffMemberList') as IStaf
     <template #footer>
       <footer class="flex items-center justify-end w-full gap-4">
         <PrimeVueButton
-          class="font-semibold text-base text-primary w-full max-w-40 border-2 border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
+          class="font-semibold text-base text-primary w-full max-w-40 border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
           label="Cancel"
           severity="secondary"
           variant="outlined"

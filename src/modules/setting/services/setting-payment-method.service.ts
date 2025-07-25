@@ -222,6 +222,7 @@ export const useSettingPaymentMethodService = (): ISettingPaymentMethodProvided 
         textButtonSecondary: 'Deactivate Payment Method',
         title: 'Are you sure you want to deactivate this payment method?',
         type: 'error',
+        width: 'w-fit min-w-[472px]',
       };
 
       eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);

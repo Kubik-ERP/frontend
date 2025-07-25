@@ -1,3 +1,4 @@
+r
 <script setup lang="ts">
 // Interfaces
 import type { ICashierProductProvided } from '../interfaces/cashier-product-service';
@@ -49,7 +50,7 @@ const moveDragging = (e: PointerEvent) => {
 
 <template>
   <section id="cashier-filter-by-category" class="hidden lg:flex flex-col gap-2 mb-6 mt-2">
-    <h2 class="text-xs text-text-disabled">Filter by Category</h2>
+    <h2 class="text-xs text-text-disabled">{{ useLocalization('cashier.mainSection.filterByCategory') }}</h2>
     <section
       id="cashier-filter-by-category-card"
       ref="containerRef"
@@ -85,7 +86,9 @@ const moveDragging = (e: PointerEvent) => {
               {{ category.category }}
             </p>
 
-            <p class="text-text-disabled text-xs">{{ category.categoriesHasProducts.length }} items</p>
+            <p class="text-text-disabled text-xs">
+              {{ category.categoriesHasProducts.length }} {{ useLocalization('cashier.items') }}
+            </p>
           </section>
         </template>
       </PrimeVueCard>

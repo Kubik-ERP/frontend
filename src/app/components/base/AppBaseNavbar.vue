@@ -84,7 +84,9 @@ const handleLogout = () => {
             <h6 class="font-semibold text-black text-sm">
               {{ authentication_userData?.fullname }}
             </h6>
-            <span class="font-normal text-text-disabled text-xs">Super Admin</span>
+            <span class="font-normal text-text-disabled text-xs">
+              {{ authentication_userData?.roles.name }}
+            </span>
           </section>
         </section>
 

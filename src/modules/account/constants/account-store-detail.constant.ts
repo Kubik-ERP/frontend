@@ -6,6 +6,51 @@ import AccountStoreTableConfiguration from '../components/store-detail/AccountSt
 // Interfaces
 import type { IOperationalDay } from '../interfaces';
 
+export const ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_COLUMNS: IColumnDataTable[] = [
+  {
+    sortable: false,
+    label: 'Name',
+    value: 'name',
+    width: '31.6%',
+  },
+  {
+    sortable: false,
+    label: 'Title',
+    value: 'title',
+    width: '31.6%',
+  },
+  {
+    sortable: false,
+    label: 'Phone Number',
+    value: 'phone',
+    width: '31.6%',
+  },
+  {
+    sortable: false,
+    label: '',
+    value: 'action',
+    width: '5%',
+  },
+];
+
+export const ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_VALUES = [
+  {
+    name: 'John Doe',
+    title: 'Manager',
+    phone: '0876 5432 1098',
+  },
+  {
+    name: 'Jane Smith',
+    title: 'Barista',
+    phone: '0856 7890 4321',
+  },
+  {
+    name: 'Alice Johnson',
+    title: 'Cashier',
+    phone: '0812 3456 7890',
+  },
+];
+
 export const ACCOUNT_STORE_DETAIL_FACILITY_COLUMNS: IColumnDataTable[] = [
   {
     sortable: false,

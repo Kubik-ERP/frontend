@@ -21,10 +21,14 @@ const { cashierOrderSummary_modalInvoiceDetail, cashierOrderSummary_handleInvoic
             id="cashier-summary-modal-place-order-detail-content-body"
             class="flex flex-col gap-5 flex-grow overflow-y-auto"
           >
-            <span class="text-lg font-semibold">Invoice Details</span>
+            <span class="text-lg font-semibold">{{
+              useLocalization('cashier.orderSummary.invoiceDetail.title')
+            }}</span>
 
             <div class="flex flex-col gap-1">
-              <label for="received-by" class="text-sm">Received by</label>
+              <label for="received-by" class="text-sm">{{
+                useLocalization('cashier.orderSummary.invoiceDetail.receivedBy')
+              }}</label>
               <PrimeVueInputText
                 id="received-by"
                 v-model="cashierOrderSummary_modalInvoiceDetail.form.received_by"
@@ -34,7 +38,7 @@ const { cashierOrderSummary_modalInvoiceDetail, cashierOrderSummary_handleInvoic
             </div>
 
             <div class="flex flex-col gap-1">
-              <label for="username" class="text-sm">Notes</label>
+              <label for="username" class="text-sm">{{ useLocalization('cashier.mainSection.notes') }}</label>
               <PrimeVueTextarea
                 id="notes"
                 v-model="cashierOrderSummary_modalInvoiceDetail.form.notes"
@@ -49,7 +53,7 @@ const { cashierOrderSummary_modalInvoiceDetail, cashierOrderSummary_handleInvoic
             <PrimeVueButton
               class="border-primary text-primary py-2.5 px-8"
               type="button"
-              label="Cancel"
+              :label="useLocalization('cashier.cancel')"
               outlined
               @click="closeCallback"
             ></PrimeVueButton>
@@ -57,7 +61,7 @@ const { cashierOrderSummary_modalInvoiceDetail, cashierOrderSummary_handleInvoic
             <PrimeVueButton
               class="bg-primary border-none text-white py-2.5 px-8"
               type="button"
-              label="Add"
+              :label="useLocalization('cashier.add')"
               @click="
                 cashierOrderSummary_modalInvoiceDetail.show = false;
                 cashierOrderSummary_handleInvoiceDetail();

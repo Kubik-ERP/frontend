@@ -90,7 +90,7 @@ const {
               <div class="flex items-center justify-end">
                 <!-- <span class="font-semibold text-disabled">Rp</span> -->
                 <span class="font-bold text-primary text-2xl">{{
-                  useCurrencyFormat(customerDetails.paid ?? 0)
+                  useCurrencyFormat({ data: customerDetails.paid ?? 0 })
                 }}</span>
               </div>
             </div>
@@ -103,7 +103,7 @@ const {
               <div class="flex items-center justify-end">
                 <!-- <span class="font-semibold text-disabled">Rp</span> -->
                 <span class="font-bold text-error-main text-2xl">{{
-                  useCurrencyFormat(customerDetails.unpaid ?? 0)
+                  useCurrencyFormat({ data: customerDetails.unpaid ?? 0 })
                 }}</span>
               </div>
             </div>
@@ -189,7 +189,11 @@ const {
         </template>
 
         <template v-if="column.value === 'totalPrice'">
-          <span>{{ useCurrencyFormat(data.grandTotal) }}</span>
+          <span>{{
+            useCurrencyFormat({
+              data: data.grandTotal,
+            })
+          }}</span>
         </template>
 
         <template v-if="column.value === 'status'">

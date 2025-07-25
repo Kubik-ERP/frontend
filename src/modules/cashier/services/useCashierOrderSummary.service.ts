@@ -43,6 +43,7 @@ import { useRouter, useRoute } from 'vue-router';
 
 // Stores
 import { useCashierStore } from '../store';
+import { useInvoiceStore } from '@/modules/invoice/store';
 import { useOutletStore } from '@/modules/outlet/store';
 
 // Socket
@@ -50,7 +51,7 @@ import { useSocket } from '@/plugins/socket';
 
 // Vue
 import { ref } from 'vue';
-import { ICashierCustomerState } from '../interfaces';
+import { ICashierCustomerState, ICashierSelected } from '../interfaces';
 import useVuelidate from '@vuelidate/core';
 import { minValue, numeric, required } from '@vuelidate/validators';
 
@@ -64,6 +65,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    */
   const store = useCashierStore();
   const storeOutlet = useOutletStore();
+  const storeInvoice = useInvoiceStore();
 
   const { cashierProduct_selectedProduct } = storeToRefs(store);
 
@@ -221,7 +223,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       const response = await store.cashierProduct_fetchPaymentMethod({});
 
       cashierOrderSummary_modalPaymentMethod.value.data = response.data;
-      cashierOrderSummary_modalPaymentMethod.value.show = true;
+    
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -559,7 +561,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
       if(getSelectedPaymentMethod?.toUpperCase() === 'CASH') {
         router.push({
-          name: route.name === 'cashier' ? 'invoice' : 'self-order-invoice',
+          name: (route.name === 'cashier' || route.name === 'cashier-order-edit') ? 'invoice' : 'self-order-invoice',
           params: {
             invoiceId: response.data.invoiceId,
           },
@@ -715,6 +717,120 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       }
     });
   };
+  
+  const cashierOrderSummary_handleEditOrder = async () => {
+    try {
+      const invoiceId = route.params.invoiceId as string;
+      if (!invoiceId) {
+        throw new Error('No invoice ID provided in route parameters');
+      }
+
+      await store.cashierProduct_handleEditOrder({invoiceId: invoiceId, products: cashierProduct_selectedProduct.value});
+
+      router.push({
+        name: 'invoice',
+        params: {
+          invoiceId: invoiceId,
+        },
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+      
+    }
+  }
+
+  const cashierOrderSummary_fetchInvoiceDetail = async (invoiceId: string) => {
+    try {
+      const response = await storeInvoice.invoice_fetchInvoiceById(invoiceId);
+
+      if (response.data) {
+        cashierProduct_customerState.value.selectedCustomer = {
+          id: response.data.customerId,
+          name: response.data.customer.name,
+          code: null,
+          number: null,
+          email: null,
+          address: null,
+          dob: null,
+          username: null,
+          customersHasTag: null,
+        }
+
+        cashierOrderSummary_modalOrderType.value.selectedOrderType = response.data.orderType;
+
+        cashierOrderSummary_modalSelectTable.value.selectedTable = response.data.tableCode.split(',');
+
+        cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod = response.data.paymentMethodsId || '';
+
+        cashierProduct_selectedProduct.value = response.data.invoiceDetails.map((item): ICashierSelected => {
+          return {
+            product: reactive({
+              id: item.productId,
+              name: item.products.name,
+              price: item.products.price,
+              discountPrice: item.products.discountPrice,
+              pictureUrl: item.products.pictureUrl ?? '',
+              isPercent: item.products.isPercent,
+              quantity: null,
+              variantHasProducts: null,
+              categoriesHasProducts: null,
+            }),
+            variant: item.variant
+              ? reactive({
+                  id: item.variant.id,
+                  name: item.variant.name,
+                  price: item.variant.price,
+                })
+              : reactive({
+                  id: '',
+                  name: '',
+                  price: 0,
+                }),
+            productId: item.productId,
+            variantId: item.variantId || "",
+            quantity: item.qty,
+            notes: item.notes,
+          }
+        });
+      } else {
+        console.error('No invoice data found');
+      }
+    }
+    catch (error) {
+      router.push({
+        name: 'cashier'
+      })
+
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  }
+
+  onMounted(() => {
+      if(route.name === 'cashier-order-edit') {
+        const invoiceId = route.params.invoiceId as string;
+        if (invoiceId) {
+          cashierOrderSummary_fetchInvoiceDetail(invoiceId);
+
+          cashierOrderSummary_handleFetchPaymentMethod(); 
+        } else {
+          console.error('No invoice ID provided in route parameters');
+        }
+      } else {
+        cashierProduct_selectedProduct.value = [];
+        cashierOrderSummary_modalOrderType.value.selectedOrderType = 'dine_in';
+        cashierOrderSummary_modalSelectTable.value.selectedTable = [];
+        cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod = '';
+        cashierProduct_customerState.value.selectedCustomer = null; 
+      }
+    })
 
   /**
    * @description Unsubscribe from payment events
@@ -795,5 +911,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_handleSimulatePayment,
     cashierProduct_onSearchCustomer,
     cashierProduct_onScrollFetchMoreCustomers,
+
+    cashierOrderSummary_handleEditOrder
   };
 };

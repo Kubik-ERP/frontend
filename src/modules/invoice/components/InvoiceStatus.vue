@@ -5,10 +5,15 @@ const emit = defineEmits(['print', 'download']);
 // Constant
 import { CASHIER_ORDER_TYPE } from '@/modules/cashier/constants';
 import { DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS } from '@/modules/daily-sales/constants';
-
 import { INVOICE_PAYMENT_STATUS } from '../constants/invoice.constant';
+
 // Interface
 import { IInvoiceProvided } from '../interfaces/index';
+
+// Router
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 // Services
 import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
@@ -137,10 +142,25 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
         </tr>
       </tbody>
 
-      <tfoot v-if="invoice_invoiceData.data.orderStatus !== 'completed' && invoice_invoiceData.data.orderStatus !== 'refunded' && invoice_invoiceData.data.orderStatus !== 'cancelled' && invoice_invoiceData.data.orderStatus !== 'served' &&invoice_invoiceData.data.paymentStatus !== 'paid'">
+      <tfoot
+        v-if="
+          invoice_invoiceData.data.orderStatus === 'in_progress' ||
+          invoice_invoiceData.data.orderStatus === 'placed'
+        "
+      >
         <tr>
           <td colspan="2" class="pt-6">
-            <PrimeVueButton class="w-full" severity="secondary" variant="outlined">
+            <PrimeVueButton
+              class="w-full"
+              severity="secondary"
+              variant="outlined"
+              @click="
+                router.push({
+                  name: 'cashier-order-edit',
+                  params: { id: invoice_invoiceData.data.id },
+                })
+              "
+            >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
                   <AppBaseSvg name="edit" />
@@ -226,15 +246,8 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg
-                name="printer-primary"
-                class="!w-6 !h-6"
-                color="primary"
-              />
-              <span
-                class="font-semibold text-sm text-primary"
-                >Print Table Ticket</span
-              >
+              <AppBaseSvg name="printer-primary" class="!w-6 !h-6" color="primary" />
+              <span class="font-semibold text-sm text-primary">Print Table Ticket</span>
             </section>
           </template>
         </PrimeVueButton>
@@ -245,15 +258,8 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg
-                name="printer-primary"
-                class="!w-6 !h-6"
-                color="primary"
-              />
-              <span
-                class="font-semibold text-sm text-primary"
-                >Print Kitchen Ticket</span
-              >
+              <AppBaseSvg name="printer-primary" class="!w-6 !h-6" color="primary" />
+              <span class="font-semibold text-sm text-primary">Print Kitchen Ticket</span>
             </section>
           </template>
         </PrimeVueButton>
