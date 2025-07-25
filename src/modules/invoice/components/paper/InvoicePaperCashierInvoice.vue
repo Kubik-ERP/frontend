@@ -135,13 +135,21 @@ const imageUrl = computed(() => {
               v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
               class="font-normal text-black text-sm text-center"
             >
-              {{ useCurrencyFormat(item.productPrice) }}
+              {{
+                useCurrencyFormat({
+                  data: item.productPrice,
+                })
+              }}
             </td>
             <td
               v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
               class="font-normal text-black text-sm text-right"
             >
-              {{ useCurrencyFormat(item.productPrice * item.qty) }}
+              {{
+                useCurrencyFormat({
+                  data: item.productPrice * item.qty,
+                })
+              }}
             </td>
           </tr>
           <tr v-if="item.variant">
@@ -151,13 +159,21 @@ const imageUrl = computed(() => {
               v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
               class="font-normal text-black text-sm text-center py-2"
             >
-              {{ useCurrencyFormat(item.variant.price) }}
+              {{
+                useCurrencyFormat({
+                  data: item.variant.price,
+                })
+              }}
             </td>
             <td
               v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
               class="font-normal text-black text-sm text-right py-2"
             >
-              {{ useCurrencyFormat(item.variant.price * item.qty) }}
+              {{
+                useCurrencyFormat({
+                  data: item.variant.price * item.qty,
+                })
+              }}
             </td>
           </tr>
         </template>
@@ -171,11 +187,12 @@ const imageUrl = computed(() => {
           </td>
           <td colspan="2" class="font-normal text-black text-sm text-right py-2">
             {{
-              useCurrencyFormat(
-                invoice_invoiceData.data.paymentStatus === 'unpaid'
-                  ? invoice_invoiceData.calculate?.total || 0
-                  : invoice_invoiceData.data.subtotal,
-              )
+              useCurrencyFormat({
+                data:
+                  invoice_invoiceData.data.paymentStatus === 'unpaid'
+                    ? invoice_invoiceData.calculate?.total || 0
+                    : invoice_invoiceData.data.subtotal,
+              })
             }}
           </td>
         </tr>
@@ -184,7 +201,11 @@ const imageUrl = computed(() => {
           <td class="font-normal text-black text-sm py-2">Promo</td>
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
             -
-            {{ useCurrencyFormat(invoice_invoiceData.data.paymentStatus === 'unpaid' ? 0 : 0) }}
+            {{
+              useCurrencyFormat({
+                data: invoice_invoiceData.data.paymentStatus === 'unpaid' ? 0 : 0,
+              })
+            }}
           </td>
         </tr>
 
@@ -194,14 +215,14 @@ const imageUrl = computed(() => {
           </td>
 
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
-            {{ useCurrencyFormat(invoice_invoiceData.data.paymentAmount || 0) }}
+            {{ useCurrencyFormat({ data: invoice_invoiceData.data.paymentAmount || 0 }) }}
           </td>
         </tr>
 
         <tr class="border-b border-dashed border-black">
           <td class="font-normal text-black text-sm py-2">Kembali</td>
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
-            {{ useCurrencyFormat(invoice_invoiceData.data.changeAmount || 0) }}
+            {{ useCurrencyFormat({ data: invoice_invoiceData.data.changeAmount || 0 }) }}
           </td>
         </tr>
 
@@ -218,11 +239,12 @@ const imageUrl = computed(() => {
           </td>
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
             {{
-              useCurrencyFormat(
-                invoice_invoiceData.data.paymentStatus === 'unpaid'
-                  ? invoice_invoiceData.calculate?.tax || 0
-                  : invoice_invoiceData.data.taxAmount || 0,
-              )
+              useCurrencyFormat({
+                data:
+                  invoice_invoiceData.data.paymentStatus === 'unpaid'
+                    ? invoice_invoiceData.calculate?.tax || 0
+                    : invoice_invoiceData.data.taxAmount || 0,
+              })
             }}
           </td>
         </tr>
@@ -239,11 +261,12 @@ const imageUrl = computed(() => {
           </td>
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
             {{
-              useCurrencyFormat(
-                invoice_invoiceData.data.paymentStatus === 'unpaid'
-                  ? invoice_invoiceData.calculate?.serviceCharge || 0
-                  : invoice_invoiceData.data.serviceChargeAmount || 0,
-              )
+              useCurrencyFormat({
+                data:
+                  invoice_invoiceData.data.paymentStatus === 'unpaid'
+                    ? invoice_invoiceData.calculate?.serviceCharge || 0
+                    : invoice_invoiceData.data.serviceChargeAmount || 0,
+              })
             }}
           </td>
         </tr>
@@ -252,11 +275,12 @@ const imageUrl = computed(() => {
           <td colspan="2" class="font-semibold text-black text-sm text-center py-2">Total</td>
           <td colspan="2" class="font-semibold text-black text-sm text-right py-2">
             {{
-              useCurrencyFormat(
-                invoice_invoiceData.data.paymentStatus === 'unpaid'
-                  ? invoice_invoiceData.calculate?.grandTotal || 0
-                  : invoice_invoiceData.data.grandTotal || 0,
-              )
+              useCurrencyFormat({
+                data:
+                  invoice_invoiceData.data.paymentStatus === 'unpaid'
+                    ? invoice_invoiceData.calculate?.grandTotal || 0
+                    : invoice_invoiceData.data.grandTotal || 0,
+              })
             }}
           </td>
         </tr>

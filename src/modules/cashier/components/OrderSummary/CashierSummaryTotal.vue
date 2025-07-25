@@ -14,7 +14,9 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
       <div class="flex justify-between text-sm font-semibold">
         <span>{{ useLocalization('cashier.orderSummary.subTotal') }}</span>
         <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">{{
-          useCurrencyFormat(cashierOrderSummary_calculateEstimation?.data?.total || 0)
+          useCurrencyFormat({
+            data: cashierOrderSummary_calculateEstimation?.data?.total || 0,
+          })
         }}</span>
         <PrimeVueSkeleton v-else width="6rem" />
       </div>
@@ -31,7 +33,9 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
         >
 
         <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">{{
-          useCurrencyFormat(cashierOrderSummary_calculateEstimation.data.tax)
+          useCurrencyFormat({
+            data: cashierOrderSummary_calculateEstimation.data.tax,
+          })
         }}</span>
         <PrimeVueSkeleton v-else width="6rem" />
       </div>
@@ -49,7 +53,11 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
         >
 
         <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
-          {{ useCurrencyFormat(cashierOrderSummary_calculateEstimation.data.serviceCharge) }}</span
+          {{
+            useCurrencyFormat({
+              data: cashierOrderSummary_calculateEstimation.data.serviceCharge,
+            })
+          }}</span
         >
         <PrimeVueSkeleton v-else width="6rem" />
       </div>
@@ -58,7 +66,9 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
     <div class="flex justify-between font-semibold pt-2">
       <span>{{ useLocalization('cashier.orderSummary.total') }}</span>
       <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">{{
-        useCurrencyFormat(cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0)
+        useCurrencyFormat({
+          data: cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0,
+        })
       }}</span>
       <PrimeVueSkeleton v-else width="6rem" />
     </div>

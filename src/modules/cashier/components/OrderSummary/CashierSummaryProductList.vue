@@ -53,12 +53,18 @@ const showImageUrl = (picture: string | null) => {
               <span class="text-sm font-semibold">{{ item.product.name }}</span>
               <div class="flex flex-col w-fit">
                 <span class="text-xs">{{
-                  useCurrencyFormat(item.product.discountPrice ?? item.product.price)
+                  useCurrencyFormat({
+                    data: item.product.discountPrice ?? item.product.price,
+                  })
                 }}</span>
                 <span
                   v-if="item.product.discountPrice"
                   class="text-text-disabled text-[10px] line-through text-right"
-                  >{{ useCurrencyFormat(item.product.price) }}</span
+                  >{{
+                    useCurrencyFormat({
+                      data: item.product.price,
+                    })
+                  }}</span
                 >
               </div>
             </div>
@@ -72,7 +78,11 @@ const showImageUrl = (picture: string | null) => {
               <p class="text-sm">
                 {{ item.variant.name }}
                 <span v-if="item.variant.price > 0" class="text-xs text-text-disabled"
-                  >(+{{ useCurrencyFormat(item.variant.price) }})</span
+                  >(+{{
+                    useCurrencyFormat({
+                      data: item.variant.price,
+                    })
+                  }})</span
                 >
               </p>
             </div>

@@ -1,6 +1,8 @@
 // Key Http Requests
+export const CASH_DRAWER_DETAILS_REQUEST = 'CASH_DRAWER_DETAILS_REQUEST';
 export const CASH_DRAWER_LIST_REQUEST = 'CASH_DRAWER_LIST_REQUEST';
 export const CASH_DRAWER_OPEN_REQUEST = 'CASH_DRAWER_OPEN_REQUEST';
+export const CASH_DRAWER_TRANSACTION_REQUEST = 'CASH_DRAWER_TRANSACTION_REQUEST';
 
 export const CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE: number[] = [5000, 10000, 20000, 50000, 100000];
 export const CASH_DRAWER_LIST_COLUMNS: IColumnDataTable[] = [
@@ -55,17 +57,17 @@ export const CASH_DRAWER_LIST_COLUMNS_OF_CASH_REGISTER: IColumnDataTable[] = [
   {
     label: 'Cash In (+)',
     sortable: true,
-    value: 'cashIn',
+    value: 'amountIn',
   },
   {
     label: 'Cash Out (-)',
     sortable: true,
-    value: 'cashOut',
+    value: 'amountOut',
   },
   {
     label: 'Ending Balance',
     sortable: true,
-    value: 'endingBalance',
+    value: 'finalAmount',
   },
   {
     label: 'Cashier',
@@ -82,23 +84,27 @@ export const CASH_DRAWER_LIST_COLUMNS_OF_CASH_REGISTER: IColumnDataTable[] = [
 export const CASH_DRAWER_LIST_TYPES_OF_CASH_REGISTER: IDropdownItem[] = [
   {
     label: 'Cash In',
-    value: 'cashIn',
+    value: 1,
   },
   {
     label: 'Cash Out',
-    value: 'cashOut',
+    value: 3,
   },
   {
     label: 'Cash Refund',
-    value: 'cashRefund',
+    value: 4,
   },
   {
     label: 'Opening Balance',
-    value: 'openingBalance',
+    value: 0,
   },
   {
     label: 'Sale',
-    value: 'sale',
+    value: 2,
+  },
+  {
+    label: 'Closing',
+    value: 5,
   },
 ];
 

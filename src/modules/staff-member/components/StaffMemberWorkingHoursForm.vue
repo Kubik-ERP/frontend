@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import { LIST_OF_DAYS } from '@/app/constants/day.constant';
-</script>
-
 <template>
   <section id="staff-member-commision-form" class="flex flex-col gap-4">
     <h6 class="font-semibold text-grayscale-70 text-base">Working Hours</h6>

@@ -2,6 +2,7 @@
 import {
   CASH_DRAWER_ADD_TRANSACTION_ENDPOINT,
   CASH_DRAWER_CLOSE_ENDPOINT,
+  CASH_DRAWER_DETAILS_ENDPOINT,
   CASH_DRAWER_EDIT_ENDPOINT,
   CASH_DRAWER_LIST_ENDPOINT,
   CASH_DRAWER_OPEN_ENDPOINT,
@@ -12,19 +13,34 @@ import {
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
 import type {
+  ICashDrawerDetailResponse,
   ICashDrawerListOpenRegisterFormData,
   ICashDrawerListRequestQuery,
+  ICashDrawerCashRegisterFormDataOfTransaction,
+  ICashDrawerOpenRegisterResponse,
   ICashDrawerResponse,
-  ICashDrawerStore,
+  ICashDrawerStateStore,
+  ICashDrawerCashRegisterQueryParamsOfTransaction,
+  ICashDrawerCashRegisterFormDataOfCloseTransaction,
 } from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
 
 export const useCashDrawerStore = defineStore('cash-drawer', {
-  state: (): ICashDrawerStore => ({
+  state: (): ICashDrawerStateStore => ({
+    cashDrawer_detail: null,
     cashDrawer_isLoading: false,
     cashDrawer_lists: null,
+    cashDrawer_transactionOfOpenRegister: {
+      items: [],
+      meta: {
+        currentPage: 1,
+        perPage: 10,
+        total: 1,
+        totalPages: 1,
+      },
+    },
   }),
   getters: {
     /**
@@ -41,6 +57,7 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
     async cashDrawer_addTransaction(
       cashDrawerId: string,
       type: 'in' | 'out',
+      payload: ICashDrawerCashRegisterFormDataOfTransaction,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
       this.cashDrawer_isLoading = true;
@@ -48,7 +65,7 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
       try {
         const response = await httpClient.post(
           `${CASH_DRAWER_ADD_TRANSACTION_ENDPOINT}/${type}/${cashDrawerId}`,
-          {},
+          payload,
           {
             ...requestConfigurations,
           },
@@ -72,17 +89,51 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
      * @method POST
      * @access private
      */
-    async cashDrawer_close(cashDrawerId: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async cashDrawer_close(
+      cashDrawerId: string,
+      payload: ICashDrawerCashRegisterFormDataOfCloseTransaction,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
       this.cashDrawer_isLoading = true;
 
       try {
-        const response = await httpClient.post(
-          `${CASH_DRAWER_CLOSE_ENDPOINT}/${cashDrawerId}`,
-          {},
+        const response = await httpClient.post(`${CASH_DRAWER_CLOSE_ENDPOINT}/${cashDrawerId}`, payload, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.cashDrawer_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api cash drawer - details
+     * @url /cash-drawer/details/:id
+     * @method GET
+     * @access private
+     */
+    async cashDrawer_details(
+      cashDrawerId: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<ICashDrawerDetailResponse> {
+      this.cashDrawer_isLoading = true;
+
+      try {
+        const response = await httpClient.get<ICashDrawerDetailResponse>(
+          `${CASH_DRAWER_DETAILS_ENDPOINT}/${cashDrawerId}`,
           {
             ...requestConfigurations,
           },
         );
+
+        this.cashDrawer_detail = response.data.data;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -165,13 +216,17 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
       cashDrawerId: string,
       payload: ICashDrawerListOpenRegisterFormData,
       requestConfigurations: AxiosRequestConfig,
-    ): Promise<unknown> {
+    ): Promise<ICashDrawerOpenRegisterResponse> {
       this.cashDrawer_isLoading = true;
 
       try {
-        const response = await httpClient.post(`${CASH_DRAWER_OPEN_ENDPOINT}/${cashDrawerId}`, payload, {
-          ...requestConfigurations,
-        });
+        const response = await httpClient.post<ICashDrawerOpenRegisterResponse>(
+          `${CASH_DRAWER_OPEN_ENDPOINT}/${cashDrawerId}`,
+          payload,
+          {
+            ...requestConfigurations,
+          },
+        );
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -219,14 +274,18 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
      */
     async cashDrawer_transactions(
       cashDrawerId: string,
+      params: ICashDrawerCashRegisterQueryParamsOfTransaction,
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<unknown> {
       this.cashDrawer_isLoading = true;
 
       try {
         const response = await httpClient.get(`${CASH_DRAWER_TRANSACTION_ENDPOINT}/${cashDrawerId}`, {
+          params,
           ...requestConfigurations,
         });
+
+        this.cashDrawer_transactionOfOpenRegister = response.data.data;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
