@@ -232,14 +232,21 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         Object.assign(staffMemberCreateEdit_formData, response.data);
 
         // Handle the working hours data
-        console.log('response.data.employeesShift', response.data.employeesShift);
+        // console.log('response.data.employeesShift', response.data.employeesShift);
         // Map the employeesShift to the formData.shift structure
         staffMemberCreateEdit_formData.shift = response.data.employeesShift.map(shift => ({
           day: shift.days,
           start_time: shift.startTime ? new Date(shift.startTime) : null,
           end_time: shift.endTime ? new Date(shift.endTime) : null,
-          isActive: shift.startTime !== "" && shift.endTime !== "",
+          isActive:
+            shift.startTime !== '' && shift.endTime !== '' && shift.startTime !== null && shift.endTime !== null,
         }));
+
+        // handle the image preview
+        if (response.data.profileUrl) {
+          staffMemberCreateEdit_formData.imagePreview = `${import.meta.env.VITE_APP_BASE_BUCKET_URL}/${response.data.profileUrl}`;
+        }
+
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -402,11 +409,11 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     // remove objects from shift when shift.isActive is false
     staffMemberCreateEdit_formData.shift = staffMemberCreateEdit_formData.shift.map(shift => {
       if (!shift.isActive) {
-      return {
-        ...shift,
-        start_time: "",
-        end_time: "",
-      };
+        return {
+          ...shift,
+          start_time: null,
+          end_time: null,
+        };
       }
       return shift;
     });
@@ -458,9 +465,9 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     }
 
     // (Optional) Log the result to verify
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
+    // for (const [key, value] of formData.entries()) {
+    //   console.log(`${key}: ${value}`);
+    // }
 
     try {
       if (route.name === 'staff-member.create') {

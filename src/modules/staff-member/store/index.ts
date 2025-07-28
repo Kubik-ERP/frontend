@@ -3,7 +3,7 @@ import { STAFF_MEMBER_BASE_ENDPOINT } from '../constants';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import type { IStaffMemberListResponse, IStaffMemberStore, IStaffMemberListRequestQuery } from '../interfaces';
+import type { IStaffMemberListResponse, IStaffMemberDetailsResponse,IStaffMemberStore, IStaffMemberListRequestQuery } from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
@@ -23,6 +23,7 @@ export const useStaffMemberStore = defineStore('staff-member', {
           endDate: null,
           gender: null,
           title: null,
+          employeesShift: [],
         },
       ],
       meta: {
@@ -145,17 +146,17 @@ export const useStaffMemberStore = defineStore('staff-member', {
     async staffMember_fetchDetailStaffMember(
       staffMemberId: string,
       requestConfigurations: AxiosRequestConfig,
-    ): Promise<IStaffMemberListResponse> {
+    ): Promise<IStaffMemberDetailsResponse> {
       this.staffMember_isLoading = true;
 
       try {
-        const response = await httpClient.get<IStaffMemberListResponse>(
+        const response = await httpClient.get<IStaffMemberDetailsResponse>(
           `${STAFF_MEMBER_BASE_ENDPOINT}/${staffMemberId}`,
           {
             ...requestConfigurations,
           },
         );
-
+        // console.log('Fetched staff member details:', response.data); // Debugging log
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

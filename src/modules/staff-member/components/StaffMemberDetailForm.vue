@@ -12,23 +12,6 @@ const {
   staffMemberCreateEdit_onUploadPhotoProfile,
 } = inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
 
-// const fileInput = ref<HTMLInputElement | null>(null);
-
-// const triggerFileInput = () => {
-//   fileInput.value?.click();
-// };
-
-// const handleImageUpload = (event: Event) => {
-//   const file = (event.target as HTMLInputElement).files?.[0];
-//   if (file) {
-//     const reader = new FileReader();
-//     reader.onload = () => {
-//       staffMemberCreateEdit_formData.image = reader.result as string; // Update the image with the base24 string
-//     };
-//     reader.readAsDataURL(file);
-//   }
-// };
-
 const addSocialMedia = () => {
   staffMemberCreateEdit_formData.socialMedia.push({
     name: null, // Default value
@@ -64,60 +47,44 @@ const findSocialMediaOption = (value: string | null) => {
         <label for="staff-title-input" class="font-normal text-sm text-text-secondary">
           Photo <span class="text-text-disabled">(Optional)</span>
         </label>
-        <img
-          :src="staffMemberCreateEdit_formData.imagePreview || 'https://placehold.co/100'"
-          alt="Company Logo"
-          class="rounded-full w-24 h-24 object-cover"
-        />
-        <PrimeVueFileUpload
-          v-model="staffMemberCreateEdit_formData.image"
-          url="/api/upload"
-          accept="image/*"
-          custom-upload
-          :max-file-size="1000000"
-          :show-cancel-button="false"
-          :show-upload-button="false"
-          :pt="{
-            content: 'hidden',
-            header: 'p-0',
-          }"
-          @select="staffMemberCreateEdit_onUploadPhotoProfile"
-        >
-          <template #header="{ chooseCallback }">
-            <PrimeVueButton
-              class="text-primary border-solid border-primary basic-smooth-animation hover:bg-grayscale-10 w-fit px-[18px]"
-              severity="secondary"
-              variant="outlined"
-              @click="chooseCallback()"
-            >
-              <template #default>
-                <section id="content" class="flex items-center gap-2">
-                  <AppBaseSvg name="image" />
-                  <span class="font-normal text-sm">Change Image</span>
-                </section>
-              </template>
-            </PrimeVueButton>
-          </template>
-        </PrimeVueFileUpload>
-        <!-- <div class="flex items-center gap-4">
+        <div class="flex items-center gap-4">
           <img
+            :src="staffMemberCreateEdit_formData.imagePreview || 'https://placehold.co/100'"
+            alt="Company Logo"
             class="rounded-full w-24 h-24 object-cover"
-            :src="staffMemberCreateEdit_formData.image || 'https://placehold.co/100'"
-            alt="Photo"
           />
-          <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
-
-          <PrimeVueButton
-            label="Select Image"
-            class="shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
-            variant="outlined"
-            @click="triggerFileInput"
+          <PrimeVueFileUpload
+            v-model="staffMemberCreateEdit_formData.image"
+            url="/api/upload"
+            accept="image/*"
+            custom-upload
+            :max-file-size="1000000"
+            :show-cancel-button="false"
+            :show-upload-button="false"
+            :pt="{
+              content: 'hidden',
+              header: 'p-0 border-none w-fit',
+              root: 'w-fit border-none',
+            }"
+            @select="staffMemberCreateEdit_onUploadPhotoProfile"
           >
-            <template #icon>
-              <AppBaseSvg name="image" class="!w-5 !h-5" />
+            <template #header="{ chooseCallback }">
+              <PrimeVueButton
+                class="text-primary border-solid border-primary basic-smooth-animation hover:bg-grayscale-10 w-fit px-[18px]"
+                severity="secondary"
+                variant="outlined"
+                @click="chooseCallback()"
+              >
+                <template #default>
+                  <section id="content" class="flex items-center gap-2">
+                    <AppBaseSvg name="image" />
+                    <span class="font-normal text-sm">Change Image</span>
+                  </section>
+                </template>
+              </PrimeVueButton>
             </template>
-          </PrimeVueButton>
-        </div> -->
+          </PrimeVueFileUpload>
+        </div>
       </section>
       <section id="staff-name" class="col-span-full lg:col-span-6 flex flex-col gap-1">
         <AppBaseFormGroup

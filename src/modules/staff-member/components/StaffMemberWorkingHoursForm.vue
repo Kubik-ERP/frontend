@@ -20,10 +20,10 @@ const getWorkingHourForDay = (dayValue: string | null) => {
         :key="`day-${dayIndex}`"
         class="col-span-full lg:col-span-6 flex flex-col border border-solid border-primary-border gap-4 p-4 rounded-lg"
       >
-        <template v-if="getWorkingHourForDay(day.value)">
+        <template v-if="getWorkingHourForDay(String(day.value))">
           <header class="flex items-center justify-between">
             <div class="flex items-center gap-4">
-              <PrimeVueCheckbox v-model="getWorkingHourForDay(day.value).isActive" binary />
+              <PrimeVueCheckbox v-model="getWorkingHourForDay(String(day.value)).isActive" binary />
               <span class="font-semibold text-black text-base">
                 {{ day.label }}
               </span>
@@ -35,12 +35,12 @@ const getWorkingHourForDay = (dayValue: string | null) => {
               <label class="font-semibold text-black text-sm">Open Time</label>
               <PrimeVueInputGroup class="w-full">
                 <PrimeVueDatePicker
-                  v-model="getWorkingHourForDay(day.value).start_time"
+                  v-model="getWorkingHourForDay(String(day.value)).start_time"
                   class="w-full"
                   fluid
                   time-only
                   placeholder="Select Time"
-                  :disabled="!getWorkingHourForDay(day.value).isActive"
+                  :disabled="!getWorkingHourForDay(String(day.value)).isActive"
                 />
                 <PrimeVueInputGroupAddon>
                   <AppBaseSvg name="clock" class="!w-5 !h-5" />
@@ -51,12 +51,12 @@ const getWorkingHourForDay = (dayValue: string | null) => {
               <label class="font-semibold text-black text-sm">Close Time</label>
               <PrimeVueInputGroup class="w-full">
                 <PrimeVueDatePicker
-                  v-model="getWorkingHourForDay(day.value).end_time"
+                  v-model="getWorkingHourForDay(String(day.value)).end_time"
                   class="w-full"
                   fluid
                   time-only
                   placeholder="Select Time"
-                  :disabled="!getWorkingHourForDay(day.value).isActive"
+                  :disabled="!getWorkingHourForDay(String(day.value)).isActive"
                 />
                 <PrimeVueInputGroupAddon>
                   <AppBaseSvg name="clock" class="!w-5 !h-5" />

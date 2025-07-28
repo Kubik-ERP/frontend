@@ -15,6 +15,7 @@ export interface IStaffMemberEmployeesShift{
   endTime: string | null;
 }
 
+
 export interface IStaffMember {
   id: string;
   name: string;
@@ -25,7 +26,7 @@ export interface IStaffMember {
   endDate?: Date | null;
   gender?: string | null;
   title?: string | null;
-  employeesShift?: IStaffMemberEmployeesShift[]
+  employeesShift: IStaffMemberEmployeesShift[] | [];
 }
 
 export interface IStaffMemberList{

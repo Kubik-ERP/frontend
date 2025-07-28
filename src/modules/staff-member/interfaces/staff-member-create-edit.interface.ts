@@ -1,6 +1,7 @@
 // Interfaces
 import type { Validation } from '@vuelidate/core';
 import type { FileUploadSelectEvent } from 'primevue';
+import type { IStaffMember } from './index';
 
 export interface IStaffMemberShift {
   day: string | null;
@@ -60,6 +61,10 @@ export interface IStaffMemberCreateEditFormData {
   socialMedia: IStaffMemberSocialMedia[];
   shift: IStaffMemberShift[];
   comissions: IStaffMemberComissions;
+}
+
+export interface IStaffMemberDetailsResponse {
+  data: IStaffMember;
 }
 
 export interface IStaffMemberCreateEditProvided {
