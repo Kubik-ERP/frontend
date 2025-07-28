@@ -5,12 +5,10 @@ import excludeSVG from '@/app/assets/icons/exclude.svg';
 import AddCustomerForm from '@/modules/customer/components/addCustomer/form.vue';
 import { useRouter, onBeforeRouteLeave } from 'vue-router'; // Ensure these are imported
 
-
-function leavePage(){
+function leavePage() {
   hasConfirmedLeave = true;
-    router.push({ name: 'customer-list' });
+  router.push({ name: 'customer-list' });
 }
-
 
 const router = useRouter(); // Get the router instance for navigation
 
@@ -68,9 +66,8 @@ onBeforeRouteLeave((to, from, next) => {
 });
 
 provide('confirmLeave', {
-  leavePage
-})
-
+  leavePage,
+});
 </script>
 
 <template>

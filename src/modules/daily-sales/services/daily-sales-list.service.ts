@@ -114,6 +114,10 @@ export const useDailySalesListService = (): IDailySalesListProvided => {
         return 'bg-secondary-background text-green-primary';
       case 'CANCELLED':
         return 'bg-error-background text-error-main';
+      case 'REFUNDED':
+        return 'bg-error-background text-error-main';
+      case 'COMPLETED':
+        return 'bg-complementary-background text-complementary-main';
       default:
         return '';
     }

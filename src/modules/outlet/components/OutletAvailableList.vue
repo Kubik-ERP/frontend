@@ -40,7 +40,7 @@ const {
       </template>
 
       <section id="information" class="flex flex-col items-center gap-2">
-        <h5 class="font-semibold text-base text-black">
+        <h5 class="font-semibold text-base text-black text-center">
           {{ outlet.name }}
         </h5>
 

@@ -1,6 +1,12 @@
 <script setup lang="ts">
 // Components
 import AppBaseNavbar from '@/app/components/base/AppBaseNavbar.vue';
+import AppBaseBreadcrumb from '../base/AppBaseBreadcrumb.vue';
+
+/**
+ * @description Injected variables
+ */
+const route = useRoute();
 </script>
 
 <template>
@@ -10,8 +16,9 @@ import AppBaseNavbar from '@/app/components/base/AppBaseNavbar.vue';
   >
     <section id="main-layout" class="default-wrapper col-span-12">
       <AppBaseNavbar />
+      <AppBaseBreadcrumb v-if="route.meta.breadcrumb" />
 
-      <section id="main-layout" class="w-full h-fit">
+      <section id="main-layout" class="w-full h-fit py-10 px-28">
         <RouterView />
       </section>
     </section>

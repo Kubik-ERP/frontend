@@ -61,6 +61,11 @@ declare global {
     label: string;
   }
 
+  interface IDefaultResponseFetch {
+    statusCode: number;
+    message: string;
+  }
+
   interface IDropdownItem {
     iconName?: string;
     label: string;
@@ -74,6 +79,13 @@ declare global {
   interface IPageMeta {
     page: number;
     pageSize: number;
+    total: number;
+    totalPages: number;
+  }
+
+  interface ISecondPageMeta {
+    currentPage: number;
+    perPage: number;
     total: number;
     totalPages: number;
   }
@@ -102,6 +114,7 @@ declare global {
     isUsingIcon?: boolean;
     isUsingButtonActions?: boolean;
     isUsingButtonSecondary?: boolean;
+    isUsingHtmlTagOnDescription?: boolean;
     onClickButtonPrimary?: () => void;
     onClickButtonSecondary?: () => void;
     textButtonPrimary?: string;

@@ -31,6 +31,7 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
    * @description Injected variables
    */
   const outletStore = useOutletStore(); // Instance of the outlet store
+  const router = useRouter();
   const store = useCashDrawerStore(); // Instance of the store
   const { cashDrawer_isLoading, cashDrawer_lists } = storeToRefs(store);
   const { outlet_currentOutlet } = storeToRefs(outletStore);
@@ -86,9 +87,13 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
    */
   const cashDrawerList_fetchOpenRegister = async (): Promise<unknown> => {
     try {
-      await store.cashDrawer_open(outlet_currentOutlet.value!.id, cashDrawerList_formDataOfOpenRegister, {
-        ...httpAbort_registerAbort(CASH_DRAWER_LIST_REQUEST),
-      });
+      const result = await store.cashDrawer_open(
+        outlet_currentOutlet.value!.id,
+        cashDrawerList_formDataOfOpenRegister,
+        {
+          ...httpAbort_registerAbort(CASH_DRAWER_LIST_REQUEST),
+        },
+      );
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
@@ -98,8 +103,15 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
-      cashDrawerList_fetchListTransactions();
-      cashDrawerList_onCloseOpenRegisterDialog();
+
+      setTimeout(() => {
+        router.push({
+          name: 'cash-drawer.cash-register',
+          params: {
+            id: result.data.id,
+          },
+        });
+      }, 1000);
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);

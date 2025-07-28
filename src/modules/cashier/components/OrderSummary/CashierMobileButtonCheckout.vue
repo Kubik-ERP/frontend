@@ -22,7 +22,7 @@ const { cashierOrderSummary_modalOrderSummary } = inject<ICashierOrderSummaryPro
         <section class="flex gap-2 justify-between w-full items-center">
           <div class="flex gap-2 items-center">
             <AppBaseSvg name="cart" class="!h-4 !w-5" />
-            <span class="font-semibold text-sm text-white">10 Items</span>
+            <span class="font-semibold text-sm text-white">10 {{ useLocalization('cashier.items') }}</span>
           </div>
           <span class="font-semibold text-sm text-white">Rp.120.000</span>
         </section>

@@ -99,6 +99,7 @@ export interface IKitchenQueueProvided {
     };
     max: number;
   }>;
+  kitchenQueue_listTabs: Ref<'orders' | 'order-history'>;
   kitchenQueue_generateColor: (status: string) => IInvoiceColor;
 
   kitchenQueue_generateChipColor: (status: string) => string;
@@ -109,12 +110,20 @@ export interface IKitchenQueueProvided {
     invoiceId: string,
     queueId: string,
     status: string,
+    columnData: {
+      index: number;
+      itemIndex: number;
+    }
   ) => void;
   kitchenQueue_handleUpdateStatus: (
     queueReferenceId: string,
     invoiceId: string,
     queueId: string,
     orderStatus: 'placed' | 'in_progress' | 'completed',
+    columnData: {
+      index: number;
+      itemIndex: number;
+    }
   ) => void;
   kitchenQueue_handleUpdateStatusBulk: (
     queueReferenceId: string,

@@ -22,7 +22,7 @@ const { staffMemberCreateEdit_onOpenDialogCommission } =
         </section>
 
         <PrimeVueButton
-          class="border-2 border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
+          class="border border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
           severity="secondary"
           variant="outlined"
           @click="staffMemberCreateEdit_onOpenDialogCommission('PRODUCT')"
@@ -47,7 +47,7 @@ const { staffMemberCreateEdit_onOpenDialogCommission } =
         </section>
 
         <PrimeVueButton
-          class="border-2 border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
+          class="border border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
           severity="secondary"
           variant="outlined"
           @click="staffMemberCreateEdit_onOpenDialogCommission('VOUCHER')"

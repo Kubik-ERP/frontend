@@ -84,6 +84,7 @@ const {
   cashierOrderSummary_handleSimulatePayment,
   cashierProduct_onSearchCustomer,
   cashierProduct_onScrollFetchMoreCustomers,
+  cashierOrderSummary_handleEditOrder,
 } = useCashierOrderSummaryService();
 
 /**
@@ -159,6 +160,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_handleSimulatePayment,
   cashierProduct_onSearchCustomer,
   cashierProduct_onScrollFetchMoreCustomers,
+  cashierOrderSummary_handleEditOrder,
 });
 </script>
 

@@ -1,0 +1,107 @@
+{
+  "cashier": {
+    "items": "items",
+    "selected": "Selected",
+    "optional": "Optional",
+    "category": "Category",
+    "more": "More",
+    "edit": "Edit",
+    "close": "Close",
+    "add": "Add",
+    "cancel": "Cancel",
+    "available": "Available",
+    "unavailable": "Unavailable",
+    "apply": "Apply",
+    "noDataFound": "No data found",
+    "cancelOrder": "Cancel Order",
+    "left": "Left",
+    "mainSection": {
+      "searchProductPlaceholder": "Search product name or category",
+      "filterByCategory": "Filter by category",
+      "addItem": "Add item",
+      "variant": "Variant",
+      "addNotes": "Add notes",
+      "notes": "Notes",
+      "describeNotes": "Describe notes for this product",
+      "deleteNotes": "Delete notes",
+      "cart": "Cart",
+      "online": "Online",
+      "customerDetails": "Customer Details",
+      "tableNo": "Table Number",
+      "username": "Username",
+      "orderItem": "Order Item",
+      "saveUnpaidOrder": "Save Unpaid Order"
+    },
+    "orderSummary": {
+      "orderSummary": "Order Summary",
+      "noItemSelected": "No item selected",
+      "promoVoucher": "Promo / Voucher",
+      "paymentMethod": "Payment Method",
+      "subTotal": "Sub Total",
+      "included": "Included",
+      "excluded": "Excluded",
+      "tax": "Tax",
+      "service": "Service",
+      "total": "Total",
+      "editOrder": "Edit Order",
+      "placeOrder": "Place Order",
+      "cancel": {
+        "title": "Are you sure you want to cancel this order?",
+        "description": "All selected items will be removed.",
+        "cancelOrder": "Cancel Order"
+      },
+      "invoiceDetail": {
+        "title": "Invoice Detail",
+        "receivedBy": "Received By",
+        "notes": "Notes",
+        "notesPlaceholder": "Describe notes here"
+      },
+      "orderType": {
+        "title": "Order Type",
+        "description": "Select Order Type"
+      },
+      "table": {
+        "title": "Table",
+        "selectTable": "Select Table",
+        "floor": "Floor",
+        "selectFloor": "Select Floor",
+        "seats": "Seats",
+        "availableTable": "Available Tables"
+      },
+      "voucher": {
+        "title": "Voucher",
+        "description": "Select or search for available vouchers",
+        "noDataVoucher": "No vouchers available",
+        "minimumTransaction": "Minimum transaction",
+        "applyPromo": "Apply Promo",
+        "availableUntil": "Available until",
+        "discount": "Discount"
+      },
+      "payment": {
+        "title": "Payment",
+        "description": "Select Payment Method",
+        "selectMethod": "Select Method"
+      },
+      "placeOrderDetail": {
+        "title": "Place Order",
+        "enterPaymentAmount": "Enter Payment Amount",
+        "paymentMethod": "Payment Method",
+        "cash": "Cash",
+        "paymentAmount": "Payment Amount",
+        "paymentAmountPlaceholder": "Enter payment amount",
+        "moneyReceived": "Money Received",
+        "totalPrice": "Total Price",
+        "changeAmount": "Change Amount",
+        "placeOrder": "Place Order"
+      },
+      "placeOrderConfirmation": {
+        "title": "Are you sure you want to place this order?",
+        "description": "Make sure the payment has been successfully processed before continuing and printing the invoice.",
+        "placeOrder": "Place Order"
+      },
+      "addCustomer": {
+        "title": "Add Customer"
+      }
+    }
+  }
+}

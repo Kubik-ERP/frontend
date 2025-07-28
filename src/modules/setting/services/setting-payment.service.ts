@@ -269,5 +269,6 @@ export const useSettingPaymentMethodService = (): ISettingPaymentMethodProvided 
     settingPaymentMethod_onCreateOrEdit,
     settingPaymentMethod_onDeactivate,
     settingPaymentMethod_onSubmit,
+    settingPaymentMethod_toggleAvailability: settingPaymentMethod_onDeactivate
   };
 };

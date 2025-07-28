@@ -55,7 +55,7 @@ const { invoice_invoiceData, invoice_modalPay, invoice_invoiceDataValidation, in
             label-for="payment-amount"
             name="Payment Amount"
             :validators="invoice_invoiceDataValidation.paymentAmount"
-          >          
+          >
             <label for="payment-amount" class="text-xs lg:text-sm">Payment Amount</label>
 
             <PrimeVueIconField class="flex w-full">
@@ -77,7 +77,7 @@ const { invoice_invoiceData, invoice_modalPay, invoice_invoiceDataValidation, in
             <div class="flex justify-between">
               <span>Money Received</span>
               <span class="text-sm lg:text-base font-semibold">{{
-                useCurrencyFormat(invoice_invoiceData.form.paymentAmount)
+                useCurrencyFormat({ data: invoice_invoiceData.form.paymentAmount })
               }}</span>
             </div>
           </div>
@@ -85,7 +85,7 @@ const { invoice_invoiceData, invoice_modalPay, invoice_invoiceDataValidation, in
           <div class="flex w-full justify-between items-center">
             <span class="text-text-disabled">Total Price</span>
             <span class="font-semibold">{{
-              useCurrencyFormat(invoice_invoiceData.calculate?.grandTotal || 0)
+              useCurrencyFormat({ data: invoice_invoiceData.calculate?.grandTotal || 0 })
             }}</span>
           </div>
 
@@ -95,9 +95,9 @@ const { invoice_invoiceData, invoice_modalPay, invoice_invoiceDataValidation, in
             <span class="text-sm lg:text-base font-bold"> Change Amount </span>
             <span class="text-sm lg:text-base font-semibold text-primary">
               {{
-                useCurrencyFormat(
-                  (invoice_invoiceData?.data?.grandTotal || 0) - invoice_invoiceData.form.paymentAmount,
-                )
+                useCurrencyFormat({
+                  data: (invoice_invoiceData?.data?.grandTotal || 0) - invoice_invoiceData.form.paymentAmount,
+                })
               }}
             </span>
           </div>
@@ -106,7 +106,7 @@ const { invoice_invoiceData, invoice_modalPay, invoice_invoiceDataValidation, in
           <div class="flex w-full justify-between items-center">
             <span class="text-text-disabled">Total Price</span>
             <span class="font-semibold">{{
-              useCurrencyFormat(invoice_invoiceData.calculate?.grandTotal || 0)
+              useCurrencyFormat({ data: invoice_invoiceData.calculate?.grandTotal || 0 })
             }}</span>
           </div>
         </template>

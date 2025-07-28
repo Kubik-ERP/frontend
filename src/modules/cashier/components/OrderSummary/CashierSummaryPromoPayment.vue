@@ -27,12 +27,14 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
                 {{
                   cashierOrderSummary_modalVoucher.data.find(
                     f => f.code === cashierOrderSummary_modalVoucher.form.voucher_code,
-                  )?.label || 'Promo / Voucher'
+                  )?.label || useLocalization('cashier.orderSummary.promoVoucher')
                 }}
               </span>
             </div>
             <div v-else class="flex gap-2 w-full items-center justify-between">
-              <span class="font-semibold truncate"> Promo / Voucher </span>
+              <span class="font-semibold truncate">
+                {{ useLocalization('cashier.orderSummary.promoVoucher') }}
+              </span>
 
               <AppBaseSvg name="voucher" class="!h-5 !w-5" />
             </div>
@@ -64,11 +66,13 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
                 {{
                   cashierOrderSummary_modalPaymentMethod.data.find(
                     f => f.id === cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod,
-                  )?.name || 'Payment Method'
+                  )?.name || useLocalization('cashier.orderSummary.paymentMethod')
                 }}
               </span>
             </div>
-            <span v-else class="font-semibold truncate"> Payment Method </span>
+            <span v-else class="font-semibold truncate">
+              {{ useLocalization('cashier.orderSummary.paymentMethod') }}
+            </span>
 
             <i class="pi pi-chevron-right" />
           </section>

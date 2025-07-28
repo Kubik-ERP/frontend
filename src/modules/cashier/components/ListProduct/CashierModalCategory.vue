@@ -19,7 +19,7 @@ const { cashierProduct_modalCategory, cashierProduct_productState, cashierProduc
     >
       <template #container="{ closeCallback }">
         <section id="cashier-summary-modal-order-type" class="flex flex-col px-4 py-6 gap-4">
-          <span class="font-semibold">Category</span>
+          <span class="font-semibold">{{ useLocalization('cashier.mainSection.category') }}</span>
 
           <div class="overflow-y-auto h-72">
             <section
@@ -42,7 +42,9 @@ const { cashierProduct_modalCategory, cashierProduct_productState, cashierProduc
 
               <div class="flex flex-col gap-1">
                 <span class="text-xs font-semibold">{{ category.category }}</span>
-                <span class="text-xs text-text-disabled">{{ category.categoriesHasProducts.length }} Items</span>
+                <span class="text-xs text-text-disabled"
+                  >{{ category.categoriesHasProducts.length }} {{ useLocalization('cashier.items') }}</span
+                >
               </div>
             </section>
           </div>
