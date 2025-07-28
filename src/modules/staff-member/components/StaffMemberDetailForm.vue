@@ -9,24 +9,25 @@ const {
   staffMemberCreateEdit_isLoading,
   staffMemberCreateEdit_typesOfSocialMedia,
   staffMemberCreateEdit_typesOfUserPermissions,
+  staffMemberCreateEdit_onUploadPhotoProfile,
 } = inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
 
-const fileInput = ref<HTMLInputElement | null>(null);
+// const fileInput = ref<HTMLInputElement | null>(null);
 
-const triggerFileInput = () => {
-  fileInput.value?.click();
-};
+// const triggerFileInput = () => {
+//   fileInput.value?.click();
+// };
 
-const handleImageUpload = (event: Event) => {
-  const file = (event.target as HTMLInputElement).files?.[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      staffMemberCreateEdit_formData.photoProfile = reader.result as string; // Update the photoProfile with the base24 string
-    };
-    reader.readAsDataURL(file);
-  }
-};
+// const handleImageUpload = (event: Event) => {
+//   const file = (event.target as HTMLInputElement).files?.[0];
+//   if (file) {
+//     const reader = new FileReader();
+//     reader.onload = () => {
+//       staffMemberCreateEdit_formData.image = reader.result as string; // Update the image with the base24 string
+//     };
+//     reader.readAsDataURL(file);
+//   }
+// };
 
 const addSocialMedia = () => {
   staffMemberCreateEdit_formData.socialMedia.push({
@@ -55,6 +56,7 @@ const findSocialMediaOption = (value: string | null) => {
 </script>
 
 <template>
+  {{ staffMemberCreateEdit_formData }}
   <section id="staff-member-detail-form" class="flex flex-col gap-3">
     <h6 class="font-semibold text-black text-lg">Staff Details</h6>
 
@@ -63,10 +65,45 @@ const findSocialMediaOption = (value: string | null) => {
         <label for="staff-title-input" class="font-normal text-sm text-text-secondary">
           Photo <span class="text-text-disabled">(Optional)</span>
         </label>
-        <div class="flex items-center gap-4">
+        <img
+          :src="staffMemberCreateEdit_formData.imagePreview || 'https://placehold.co/100'"
+          alt="Company Logo"
+          class="rounded-full w-24 h-24 object-cover"
+        />
+        <PrimeVueFileUpload
+          v-model="staffMemberCreateEdit_formData.image"
+          url="/api/upload"
+          accept="image/*"
+          custom-upload
+          :max-file-size="1000000"
+          :show-cancel-button="false"
+          :show-upload-button="false"
+          :pt="{
+            content: 'hidden',
+            header: 'p-0',
+          }"
+          @select="staffMemberCreateEdit_onUploadPhotoProfile"
+        >
+          <template #header="{ chooseCallback }">
+            <PrimeVueButton
+              class="text-primary border-solid border-primary basic-smooth-animation hover:bg-grayscale-10 w-fit px-[18px]"
+              severity="secondary"
+              variant="outlined"
+              @click="chooseCallback()"
+            >
+              <template #default>
+                <section id="content" class="flex items-center gap-2">
+                  <AppBaseSvg name="image" />
+                  <span class="font-normal text-sm">Change Image</span>
+                </section>
+              </template>
+            </PrimeVueButton>
+          </template>
+        </PrimeVueFileUpload>
+        <!-- <div class="flex items-center gap-4">
           <img
             class="rounded-full w-24 h-24 object-cover"
-            :src="staffMemberCreateEdit_formData.photoProfile || 'https://placehold.co/100'"
+            :src="staffMemberCreateEdit_formData.image || 'https://placehold.co/100'"
             alt="Photo"
           />
           <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
@@ -81,7 +118,7 @@ const findSocialMediaOption = (value: string | null) => {
               <AppBaseSvg name="image" class="!w-5 !h-5" />
             </template>
           </PrimeVueButton>
-        </div>
+        </div> -->
       </section>
       <section id="staff-name" class="col-span-full lg:col-span-6 flex flex-col gap-1">
         <AppBaseFormGroup
@@ -224,8 +261,8 @@ const findSocialMediaOption = (value: string | null) => {
           v-slot="{ classes }"
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
-          label-for="business-type"
-          name="Business Type"
+          label-for="gender"
+          name="Gender"
           :validators="staffMemberCreateEdit_formValidations.gender"
         >
           <div class="flex items-center gap-4 pt-4">
@@ -233,7 +270,7 @@ const findSocialMediaOption = (value: string | null) => {
               id="`option-male`"
               v-model="staffMemberCreateEdit_formData.gender"
               input-id="option-male"
-              name="businessType"
+              name="gender"
               class="text-sm"
               value="male"
               :class="{ ...classes }"
@@ -246,7 +283,7 @@ const findSocialMediaOption = (value: string | null) => {
               id="`option-female`"
               v-model="staffMemberCreateEdit_formData.gender"
               input-id="option-female"
-              name="businessType"
+              name="gender"
               class="text-sm"
               value="female"
               :class="{ ...classes }"

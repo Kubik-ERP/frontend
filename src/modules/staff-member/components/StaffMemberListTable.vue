@@ -8,15 +8,15 @@ import type { IStaffMemberListProvided } from '../interfaces';
 const popover = ref();
 
 // Ref to store the data of the currently selected row
-const selectedData = ref(null);
+const selectedData = ref<{ id: string | null } | null>(null);
 
 /**
  * Sets the selected data and toggles the popover.
  * @param event - The browser click event.
  * @param rowData - The data object from the clicked row.
  */
-const openActionsMenu = (event, rowData) => {
-  selectedData.value = rowData;
+const openActionsMenu = (event: MouseEvent, rowData: { id: string | null }) => {
+  selectedData.value = rowData || null;
   popover.value.toggle(event);
 };
 
@@ -29,13 +29,14 @@ const {
   staffMemberList_values,
   staffMemberList_queryParams,
   staffMemberList_typesOfUserPermissions,
-  staffMemberList_dropdownItemTitles,
+  // staffMemberList_dropdownItemTitles,
   staffMemberList_deleteStaffMember,
   staffMemberList_onChangePage,
 } = inject('staffMemberList') as IStaffMemberListProvided;
 </script>
 
 <template>
+  {{ staffMemberList_queryParams }}
   <AppBaseDataTable
     btn-cta-create-title="Add Staff Member"
     :columns="staffMemberList_columns"
@@ -96,7 +97,7 @@ const {
       <div class="flex items-center gap-4 w-full">
         <span class="font-semibold inline-block text-gray-900 text-base w-fit whitespace-nowrap">Filter by</span>
 
-        <PrimeVueMultiSelect
+        <!-- <PrimeVueMultiSelect
           v-model="staffMemberList_queryParams.title"
           display="chip"
           :options="staffMemberList_dropdownItemTitles"
@@ -105,7 +106,8 @@ const {
           filter
           placeholder="Title"
           class="text-sm text-text-disabled w-full"
-        />
+        /> -->
+
         <PrimeVueMultiSelect
           v-model="staffMemberList_queryParams.permission"
           display="chip"
@@ -114,7 +116,7 @@ const {
           option-value="value"
           filter
           placeholder="Permission"
-          class="text-sm text-text-disabled w-full"
+          class="text-sm text-text-disabled w-full max-w-64"
         />
       </div>
     </template>
@@ -151,7 +153,7 @@ const {
             <PrimeVueButton
               class="w-full px-4 py-3"
               variant="text"
-              @click="staffMemberList_deleteStaffMember(selectedData.id)"
+              @click="staffMemberList_deleteStaffMember(selectedData.id || '')"
             >
               <template #default>
                 <section class="flex items-center gap-2 w-full">

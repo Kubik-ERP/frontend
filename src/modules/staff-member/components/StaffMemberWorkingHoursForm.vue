@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import type { IStaffMemberCreateEditProvided } from '../interfaces';
 import { LIST_OF_DAYS } from '@/app/constants/day.constant';
 
 const { staffMemberCreateEdit_formData } = inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
 
-const getWorkingHourForDay = (dayValue: string) => {
+const getWorkingHourForDay = (dayValue: string | null) => {
   return staffMemberCreateEdit_formData.shift.find(wh => wh.day === dayValue)!;
 };
 </script>

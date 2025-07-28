@@ -5,7 +5,7 @@ export interface IStaffMemberListRequestQuery{
   search?: string | null;
   page?: number;
   limit?: number;
-  title?: string | null;
+  // title?: string | null;
   permission?: string | null;
 }
 

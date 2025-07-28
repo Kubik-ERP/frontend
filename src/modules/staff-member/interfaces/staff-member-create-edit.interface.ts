@@ -50,7 +50,8 @@ export interface IStaffMemberCreateEditFormData {
   email: string | null;
   phoneCode: string;
   phoneNumber: string | null;
-  photoProfile: string | null;
+  image: File | null;
+  imagePreview: string | null; // This will hold the preview URL of the image
   startDate: Date | null;
   endDate: Date | null;
   gender: string | null;

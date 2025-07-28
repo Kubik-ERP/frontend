@@ -33,7 +33,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
     search: null,
     page: 1,
     limit: 10,
-    title: null,
+    // title: null,
     permission: null,
   });
   /**

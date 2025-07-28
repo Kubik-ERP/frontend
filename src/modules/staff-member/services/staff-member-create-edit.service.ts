@@ -41,65 +41,20 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    * @description Reactive data binding
    */
   const staffMemberCreateEdit_commisionType = ref<'PRODUCT' | 'VOUCHER'>('PRODUCT');
-  // const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-  //   name: null,
-  //   email: null,
-  //   phoneCode: '+62',
-  //   phoneNumber: null,
-  //   photoProfile: null,
-  //   startDate: null,
-  //   endDate: null,
-  //   gender: null,
-  //   title: null,
-  //   permission: null,
-  //   socialMedia: [
-
-  //   ],
-  //   workingHours: LIST_OF_DAYS.map(day => ({
-  //     day: day.value === null ? null : String(day.value),
-  //     startTime: null,
-  //     endTime: null,
-  //     isActive: false,
-  //   })),
-  //   comissions: {
-  //     productComission: {
-  //       defaultComission: null,
-  //       defaultComissionType: null,
-  //       isAllItemsHaveDefaultComission: null,
-  //       productItems: [],
-  //     },
-  //     voucherCommission: {
-  //       defaultComission: null,
-  //       defaultComissionType: null,
-  //       isAllVouchersHaveDefaultComission: null,
-  //       voucherItems: [],
-  //     },
-  //   },
-  // });
   const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-    name: 'Phillips',
-    email: 'phillips@kubik.com',
+    name: null,
+    email: null,
     phoneCode: '+62',
-    phoneNumber: '81234567890',
-    photoProfile: null,
-    startDate: new Date(),
-    endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-    gender: 'male',
+    phoneNumber: null,
+    image: null,
+    imagePreview: null, // This will hold the preview URL of the image
+    startDate: null,
+    endDate: null,
+    gender: null,
     title: null,
-    permission: 'MANAGER',
+    permission: null,
     socialMedia: [
-      {
-        name: 'INSTAGRAM',
-        account: '@phillips_kubik',
-      },
-      {
-        name: 'X/TWITTER',
-        account: '@phillips_kubik',
-      },
-      {
-        name: 'FACEBOOK',
-        account: '@phillips_kubik',
-      },
+
     ],
     shift: LIST_OF_DAYS.map(day => ({
       day: day.value === null ? null : String(day.value),
@@ -122,6 +77,52 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       },
     },
   });
+  // const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
+  //   name: 'Phillips',
+  //   email: 'phillips@kubik.com',
+  //   phoneCode: '+62',
+  //   phoneNumber: '81234567890',
+  //   photoProfile: null,
+  //   startDate: new Date(),
+  //   endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+  //   gender: 'male',
+  //   title: null,
+  //   permission: 'MANAGER',
+  //   socialMedia: [
+  //     {
+  //       name: 'INSTAGRAM',
+  //       account: '@phillips_kubik',
+  //     },
+  //     {
+  //       name: 'X/TWITTER',
+  //       account: '@phillips_kubik',
+  //     },
+  //     {
+  //       name: 'FACEBOOK',
+  //       account: '@phillips_kubik',
+  //     },
+  //   ],
+  //   shift: LIST_OF_DAYS.map(day => ({
+  //     day: day.value === null ? null : String(day.value),
+  //     start_time: null,
+  //     end_time: null,
+  //     isActive: false,
+  //   })),
+  //   comissions: {
+  //     productComission: {
+  //       defaultComission: null,
+  //       defaultComissionType: null,
+  //       isAllItemsHaveDefaultComission: null,
+  //       productItems: [],
+  //     },
+  //     voucherCommission: {
+  //       defaultComission: null,
+  //       defaultComissionType: null,
+  //       isAllVouchersHaveDefaultComission: null,
+  //       voucherItems: [],
+  //     },
+  //   },
+  // });
   const staffMemberCreateEdit_routeParamsId = ref<string | undefined>(route.params.id as string | undefined);
 
   /**
@@ -438,9 +439,9 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     }
 
     // (Optional) Log the result to verify
-    // for (const [key, value] of formData.entries()) {
-    //   console.log(`${key}: ${value}`);
-    // }
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
 
     try {
       if (route.name === 'staff-member.create') {
@@ -468,8 +469,14 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    */
   const staffMemberCreateEdit_onUploadPhotoProfile = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {
-      staffMemberCreateEdit_formData.photoProfile = event.files[0];
+      staffMemberCreateEdit_formData.image = event.files[0];
     }
+    
+    
+    staffMemberCreateEdit_formData.imagePreview = staffMemberCreateEdit_formData.image
+      ? URL.createObjectURL(staffMemberCreateEdit_formData.image)
+      : null;
+
   };
 
   return {
