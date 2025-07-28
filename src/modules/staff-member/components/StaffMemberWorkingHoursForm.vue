@@ -5,7 +5,7 @@ import { LIST_OF_DAYS } from '@/app/constants/day.constant';
 const { staffMemberCreateEdit_formData } = inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
 
 const getWorkingHourForDay = (dayValue: string | null) => {
-  return staffMemberCreateEdit_formData.shift.find(wh => wh.day === dayValue)!;
+  return staffMemberCreateEdit_formData.shift.find(wh => wh.day?.toUpperCase() === dayValue)!;
 };
 </script>
 

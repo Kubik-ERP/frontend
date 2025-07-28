@@ -41,21 +41,57 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    * @description Reactive data binding
    */
   const staffMemberCreateEdit_commisionType = ref<'PRODUCT' | 'VOUCHER'>('PRODUCT');
+  // const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
+  //   name: null,
+  //   email: null,
+  //   phoneCode: '+62',
+  //   phoneNumber: null,
+  //   image: null,
+  //   imagePreview: null, // This will hold the preview URL of the image
+  //   startDate: null,
+  //   endDate: null,
+  //   gender: null,
+  //   title: null,
+  //   permission: null,
+  //   socialMedia: [],
+  //   shift: LIST_OF_DAYS.map(day => ({
+  //     day: day.value === null ? null : String(day.value),
+  //     start_time: new Date("2025-07-28T02:00:10.811Z"),
+  //     end_time: new Date("2025-07-28T10:00:10.811Z"),
+  //     isActive: true,
+  //   })),
+  //   comissions: {
+  //     productComission: {
+  //       defaultComission: null,
+  //       defaultComissionType: null,
+  //       isAllItemsHaveDefaultComission: null,
+  //       productItems: [],
+  //     },
+  //     voucherCommission: {
+  //       defaultComission: null,
+  //       defaultComissionType: null,
+  //       isAllVouchersHaveDefaultComission: null,
+  //       voucherItems: [],
+  //     },
+  //   },
+  // });
   const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-    name: null,
-    email: null,
+    name: 'Silvia',
+    email: 'silvia@kubik.com',
     phoneCode: '+62',
-    phoneNumber: null,
+    phoneNumber: '81234567890',
     image: null,
     imagePreview: null, // This will hold the preview URL of the image
-    startDate: null,
-    endDate: null,
-    gender: null,
-    title: null,
-    permission: null,
-    socialMedia: [
-
-    ],
+    startDate: new Date(),
+    endDate: (() => {
+      const d = new Date();
+      d.setDate(d.getDate() + 30);
+      return d;
+    })(), // Default to 30 days from now,
+    gender: 'male',
+    title: 'Admin',
+    permission: 'BASIC',
+    socialMedia: [],
     shift: LIST_OF_DAYS.map(day => ({
       day: day.value === null ? null : String(day.value),
       start_time: null,
@@ -77,52 +113,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       },
     },
   });
-  // const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-  //   name: 'Phillips',
-  //   email: 'phillips@kubik.com',
-  //   phoneCode: '+62',
-  //   phoneNumber: '81234567890',
-  //   photoProfile: null,
-  //   startDate: new Date(),
-  //   endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-  //   gender: 'male',
-  //   title: null,
-  //   permission: 'MANAGER',
-  //   socialMedia: [
-  //     {
-  //       name: 'INSTAGRAM',
-  //       account: '@phillips_kubik',
-  //     },
-  //     {
-  //       name: 'X/TWITTER',
-  //       account: '@phillips_kubik',
-  //     },
-  //     {
-  //       name: 'FACEBOOK',
-  //       account: '@phillips_kubik',
-  //     },
-  //   ],
-  //   shift: LIST_OF_DAYS.map(day => ({
-  //     day: day.value === null ? null : String(day.value),
-  //     start_time: null,
-  //     end_time: null,
-  //     isActive: false,
-  //   })),
-  //   comissions: {
-  //     productComission: {
-  //       defaultComission: null,
-  //       defaultComissionType: null,
-  //       isAllItemsHaveDefaultComission: null,
-  //       productItems: [],
-  //     },
-  //     voucherCommission: {
-  //       defaultComission: null,
-  //       defaultComissionType: null,
-  //       isAllVouchersHaveDefaultComission: null,
-  //       voucherItems: [],
-  //     },
-  //   },
-  // });
+
   const staffMemberCreateEdit_routeParamsId = ref<string | undefined>(route.params.id as string | undefined);
 
   /**
@@ -239,6 +230,16 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       if (response) {
         // Populate form data with the fetched staff member details
         Object.assign(staffMemberCreateEdit_formData, response.data);
+
+        // Handle the working hours data
+        console.log('response.data.employeesShift', response.data.employeesShift);
+        // Map the employeesShift to the formData.shift structure
+        staffMemberCreateEdit_formData.shift = response.data.employeesShift.map(shift => ({
+          day: shift.days,
+          start_time: shift.startTime ? new Date(shift.startTime) : null,
+          end_time: shift.endTime ? new Date(shift.endTime) : null,
+          isActive: shift.startTime !== "" && shift.endTime !== "",
+        }));
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -398,10 +399,22 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       return;
     }
 
+    // remove objects from shift when shift.isActive is false
+    staffMemberCreateEdit_formData.shift = staffMemberCreateEdit_formData.shift.map(shift => {
+      if (!shift.isActive) {
+      return {
+        ...shift,
+        start_time: "",
+        end_time: "",
+      };
+      }
+      return shift;
+    });
+
     const formData = new FormData();
 
     // Define which top-level keys you want to exclude
-    const keysToIgnore = ['comissions', 'shift'];
+    const keysToIgnore = ['comissions', 'imagePreview'];
 
     for (const key in staffMemberCreateEdit_formData) {
       if (Object.prototype.hasOwnProperty.call(staffMemberCreateEdit_formData, key)) {
@@ -420,13 +433,19 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
                   const nestedValue = item[itemKey as keyof typeof item];
                   if (nestedValue !== null && nestedValue !== undefined) {
                     const formattedKey = `${key}[${index}][${itemKey}]`;
+
+                    if ((nestedValue as Date) instanceof Date) {
+                      formData.append(formattedKey, (nestedValue as Date).toISOString());
+                      continue;
+                    }
+
                     formData.append(formattedKey, String(nestedValue));
                   }
                 }
               }
             });
           } else if (value instanceof Date) {
-            formData.append(key, value.toISOString());
+            formData.append(key, value.toISOString()); // Convert Date to ISO string
           } else if (value instanceof File) {
             formData.append(key, value);
           } else if (typeof value === 'object') {
@@ -471,12 +490,10 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     if (event.files && event.files.length > 0) {
       staffMemberCreateEdit_formData.image = event.files[0];
     }
-    
-    
+
     staffMemberCreateEdit_formData.imagePreview = staffMemberCreateEdit_formData.image
       ? URL.createObjectURL(staffMemberCreateEdit_formData.image)
       : null;
-
   };
 
   return {

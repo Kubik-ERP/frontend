@@ -8,6 +8,13 @@ export interface IStaffMeta {
   totalPages: number;
 }
 
+export interface IStaffMemberEmployeesShift{
+  id: string;
+  days: string | null;
+  startTime: string | null;
+  endTime: string | null;
+}
+
 export interface IStaffMember {
   id: string;
   name: string;
@@ -18,6 +25,7 @@ export interface IStaffMember {
   endDate?: Date | null;
   gender?: string | null;
   title?: string | null;
+  employeesShift?: IStaffMemberEmployeesShift[]
 }
 
 export interface IStaffMemberList{

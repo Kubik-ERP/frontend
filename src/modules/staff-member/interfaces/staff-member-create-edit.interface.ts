@@ -4,8 +4,8 @@ import type { FileUploadSelectEvent } from 'primevue';
 
 export interface IStaffMemberShift {
   day: string | null;
-  start_time: string | null;
-  end_time: string | null;
+  start_time: Date | null;
+  end_time: Date | null;
   isActive: boolean;
 }
 

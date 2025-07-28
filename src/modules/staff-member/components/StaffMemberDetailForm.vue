@@ -56,7 +56,6 @@ const findSocialMediaOption = (value: string | null) => {
 </script>
 
 <template>
-  {{ staffMemberCreateEdit_formData }}
   <section id="staff-member-detail-form" class="flex flex-col gap-3">
     <h6 class="font-semibold text-black text-lg">Staff Details</h6>
 
