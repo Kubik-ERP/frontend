@@ -144,8 +144,9 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
 
       <tfoot
         v-if="
-          invoice_invoiceData.data.orderStatus === 'in_progress' ||
-          invoice_invoiceData.data.orderStatus === 'placed'
+          invoice_invoiceData.data.paymentStatus === 'unpaid' &&
+          (invoice_invoiceData.data.orderStatus === 'in_progress' ||
+            invoice_invoiceData.data.orderStatus === 'placed')
         "
       >
         <tr>

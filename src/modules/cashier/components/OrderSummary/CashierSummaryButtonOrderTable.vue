@@ -5,11 +5,16 @@ import { CASHIER_ORDER_TYPE } from '../../constants';
 // Interfaces
 import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-summary';
 
+// Route
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
 /**
  * @description Inject all the data and methods what we need
  */
 const { cashierOrderSummary_modalOrderType, cashierOrderSummary_modalSelectTable } =
-   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 
 const props = defineProps({
   isSelfOrder: {
@@ -24,9 +29,13 @@ const props = defineProps({
       <div class="flex justify-between w-full items-center py-4 gap-2">
         <button
           :class="[
-            'flex border truncate cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5  border-text-disabled rounded-sm p-2.5 justify-between items-center',
+            'flex border truncate rounded-sm p-2.5 justify-between items-center',
             props.isSelfOrder ? 'w-full' : 'w-1/2',
+            route.name === 'cashier-order-edit'
+              ? 'cursor-not-allowed opacity-50 bg-transparent border-text-disabled'
+              : 'cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 border-text-disabled',
           ]"
+          :disabled="route.name === 'cashier-order-edit'"
           @click="cashierOrderSummary_modalOrderType.show = true"
         >
           <span v-if="cashierOrderSummary_modalOrderType.selectedOrderType" class="text-black">
@@ -41,7 +50,13 @@ const props = defineProps({
         </button>
         <button
           v-if="!props.isSelfOrder"
-          class="flex w-1/2 border truncate cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 border-text-disabled rounded-sm p-2.5 justify-between items-center"
+          :class="[
+            'flex w-1/2 border truncate rounded-sm p-2.5 justify-between items-center',
+            route.name === 'cashier-order-edit'
+              ? 'cursor-not-allowed opacity-50 bg-transparent border-text-disabled'
+              : 'cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 border-text-disabled',
+          ]"
+          :disabled="route.name === 'cashier-order-edit'"
           @click="cashierOrderSummary_modalSelectTable.show = true"
         >
           <span>

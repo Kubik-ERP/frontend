@@ -2,6 +2,11 @@
 // Interface
 import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
 
+// Route
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
 /**
  * @description Inject all the data and methods what we need
  */
@@ -16,6 +21,7 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
         class="w-full lg:w-1/2 py-2 border border-primary-border text-primary"
         :class="cashierOrderSummary_modalVoucher.form.voucher_code ? 'bg-white' : ''"
         outlined
+        :disabled="route.name === 'cashier-order-edit'"
         @click="cashierOrderSummary_modalVoucher.show = true"
       >
         <template #default>
@@ -45,6 +51,7 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
         class="w-full lg:w-1/2 py-2 border border-primary-border text-primary"
         :class="cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod ? 'bg-white' : ''"
         outlined
+        :disabled="route.name === 'cashier-order-edit'"
         @click="cashierOrderSummary_modalPaymentMethod.show = true"
       >
         <template #default>
