@@ -1,0 +1,98 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
+<script setup lang="ts">
+// Interfaces
+import type { IOutletTable } from '@/modules/outlet/interfaces';
+
+interface IProps {
+  storeTable: IOutletTable;
+}
+
+/**
+ * @description Define props with default values and interfaces
+ */
+const props = withDefaults(defineProps<IProps>(), {
+  storeTable: () => ({
+    id: '',
+    createdAt: '',
+    floorName: '',
+    storeId: '',
+    uid: 0,
+    updatedAt: '',
+    storeTables: [
+      {
+        createdAt: '',
+        floorId: '',
+        id: '',
+        name: '',
+        positionX: 0,
+        positionY: 0,
+        width: 0,
+        height: 0,
+        floorName: '',
+        isEnableQrCode: false,
+        seats: 0,
+        shape: 'RECTANGLE',
+        storeId: '',
+        uid: 0,
+        updatedAt: '',
+      },
+    ],
+  }),
+});
+</script>
+
+<template>
+  <section id="account-store-table-layout" class="flex flex-col gap-4">
+    <section
+      :id="`${props.storeTable.floorName}`"
+      class="floor-plan-container relative w-full h-[500px] bg-dots touch-none inset-0 z-0"
+    >
+      <div
+        v-for="(table, tableIndex) in props.storeTable.storeTables"
+        :key="`table-${tableIndex}`"
+        class="table-item flex flex-col items-center bg-white border-2 border-teal-400 pt-2 gap-1"
+        :class="[
+          table.shape === 'ROUND' ? 'rounded-full' : 'rounded-lg',
+          table.isEnableQrCode ? 'has-qr-code' : '',
+        ]"
+        :data-id="table.name"
+        :style="{
+          transform: `translate(${table.positionX}px, ${table.positionY}px)`,
+          width: `${table.width}px`,
+          height: `${table.height}px`,
+        }"
+      >
+        <AppBaseSvg name="eye-visible" class="!w-4 !h-4 cursor-pointer" />
+        <div class="font-bold text-sm text-secondary-hover">{{ table.name }}</div>
+        <div class="text-sm text-secondary-hover pb-2">{{ table.seats }} seats</div>
+      </div>
+    </section>
+  </section>
+</template>
+
+<style>
+/* Latar belakang titik-titik untuk container lantai */
+.floor-plan-container {
+  background-image: radial-gradient(#d1d5db 2px, transparent 2px);
+  background-size: 20px 20px;
+  border: 1px solid #8cc8eb;
+  border-radius: 4px;
+}
+
+/* Styling dasar untuk setiap item meja */
+.table-item {
+  position: absolute; /* Penting untuk positioning */
+  box-sizing: border-box; /* Agar border dan padding termasuk dalam width/height */
+  user-select: none; /* Mencegah seleksi teks saat dragging */
+}
+
+/* Mengatur agar transisi saat resize lebih mulus (opsional) */
+.table-item,
+.table-item .text {
+  transition: all 0.05s ease-in-out;
+}
+
+section#zoom-in-out {
+  box-shadow: 0px 0px 10px 2px #00000026;
+}
+</style>

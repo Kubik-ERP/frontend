@@ -1,21 +1,19 @@
 <script setup lang="ts">
 // Interfaces
 import type { IAccountProvided } from '../interfaces';
-import type { IOutletListProvided } from '@/modules/outlet/interfaces';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { account_listColumns } = inject<IAccountProvided>('account')!;
-const { outletList_isLoading, outletList_lists } = inject<IOutletListProvided>('outletList')!;
+const { account_isLoadingOfOutlet, account_listColumns, account_profile } = inject<IAccountProvided>('account')!;
 </script>
 
 <template>
   <AppBaseDataTable
     btn-cta-create-title="Create Store"
     :columns="account_listColumns"
-    :data="outletList_lists"
-    :is-loading="outletList_isLoading"
+    :data="account_profile?.stores"
+    :is-loading="account_isLoadingOfOutlet"
     header-title="Stores"
     is-using-btn-cta-create
     is-using-custom-body
@@ -44,7 +42,12 @@ const { outletList_isLoading, outletList_lists } = inject<IOutletListProvided>('
 
     <template #body="{ column, data }">
       <template v-if="column.value === 'action'">
-        <PrimeVueButton variant="text" rounded aria-label="detail">
+        <PrimeVueButton
+          variant="text"
+          rounded
+          aria-label="detail"
+          @click="$router.push({ name: 'account.store.detail', params: { id: data.id } })"
+        >
           <template #icon>
             <AppBaseSvg name="eye-visible" class="!w-5 !h-5" />
           </template>

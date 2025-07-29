@@ -30,7 +30,7 @@ const { outletCreateEdit_onCloseDialogVerifyPIN, outletCreateEdit_onSubmitDialog
     <template #footer>
       <footer class="flex items-center justify-end w-full gap-4">
         <PrimeVueButton
-          class="font-semibold text-base text-primary w-full max-w-40 border-2 border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
+          class="font-semibold text-base text-primary w-full max-w-40 border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
           label="Cancel"
           severity="secondary"
           variant="outlined"

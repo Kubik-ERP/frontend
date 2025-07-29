@@ -14,6 +14,7 @@ interface IProps {
   isUsingIcon?: boolean;
   isUsingButtonActions?: boolean;
   isUsingButtonSecondary?: boolean;
+  isUsingHtmlTagOnDescription?: boolean;
   onClickButtonPrimary?: () => void;
   onClickButtonSecondary?: () => void;
   textButtonPrimary?: string;
@@ -32,6 +33,7 @@ const props = withDefaults(defineProps<IProps>(), {
   isUsingIcon: true,
   isUsingButtonActions: true,
   isUsingButtonSecondary: false,
+  isUsingHtmlTagOnDescription: false,
   onClickButtonPrimary: () => {},
   onClickButtonSecondary: () => {},
   textButtonPrimary: 'OK',
@@ -53,6 +55,7 @@ const dialogConfirmation = ref<IProps>({
   isUsingIcon: true,
   isUsingButtonActions: true,
   isUsingButtonSecondary: false,
+  isUsingHtmlTagOnDescription: false,
   onClickButtonPrimary: () => {},
   onClickButtonSecondary: () => {},
   textButtonPrimary: 'OK',
@@ -104,9 +107,15 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
           {{ dialogConfirmation.title }}
         </h6>
 
-        <p class="font-normal text-black-secondary text-center text-sm">
-          {{ dialogConfirmation.description }}
-        </p>
+        <template v-if="dialogConfirmation.isUsingHtmlTagOnDescription">
+          <div v-html="dialogConfirmation.description"></div>
+        </template>
+
+        <template v-else>
+          <p class="font-normal text-black-secondary text-center text-sm">
+            {{ dialogConfirmation.description }}
+          </p>
+        </template>
       </section>
     </template>
 

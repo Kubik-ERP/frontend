@@ -37,7 +37,19 @@ const {
     <template #body="{ column, data }">
       <template v-if="column.value === 'expectedBalance' || column.value === 'actualBalance'">
         <span class="font-normal text-sm text-text-primary">
-          {{ useCurrencyFormat(data[column.value]) }}
+          {{
+            useCurrencyFormat({
+              data: data[column.value],
+              hidePrefix: true,
+              addSuffix: true,
+            })
+          }}
+        </span>
+      </template>
+
+      <template v-else-if="column.value === 'staffName'">
+        <span class="font-normal text-sm text-text-primary">
+          {{ data.employees.name }}
         </span>
       </template>
 
@@ -51,7 +63,17 @@ const {
       </template>
 
       <template v-else-if="column.value === 'action'">
-        <PrimeVueButton variant="text" rounded aria-label="detail">
+        <PrimeVueButton
+          variant="text"
+          rounded
+          aria-label="detail"
+          @click="
+            $router.push({
+              name: 'cash-drawer.cash-register',
+              params: { id: data.id },
+            })
+          "
+        >
           <template #icon>
             <AppBaseSvg name="eye-visible" class="!w-5 !h-5" />
           </template>

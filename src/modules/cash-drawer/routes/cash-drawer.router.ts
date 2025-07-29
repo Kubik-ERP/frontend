@@ -13,7 +13,7 @@ export default {
   component: () => AppBaseWrapper,
   children: [
     {
-      path: 'cash-register',
+      path: ':id/cash-register',
       name: 'cash-drawer.cash-register',
       component: () => import('../views/CashDrawerCashRegisterUI.vue'),
       meta: {
