@@ -117,9 +117,6 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
       await store.fetchSetting_detailInvoiceSetting(settingInvoice_formData.storeId, {
         ...httpAbort_registerAbort(SETTING_INVOICE_DETAIL_REQUEST),
       });
-      console.log('setting_invoice.value', setting_invoice.value);
-      console.log('settingInvoice_formData', settingInvoice_formData);
-
       // --- MAPPING LOGIC ---
 
       // Map top-level properties

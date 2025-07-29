@@ -6,13 +6,15 @@ import {
   ICategoryHasProduct,
   IVariantHasProduct,
   IProductResponse,
-  ICategory
+  ICategory,
 } from '../interfaces';
 
 import useVuelidate from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
 
 import eventBus from '@/plugins/mitt';
+
+import { useOutletStore } from '@/modules/outlet/store';
 
 const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/products`;
 
@@ -50,6 +52,16 @@ function convertProductToFormData(payload: CreateProductPayload): FormData {
 }
 
 export const useProductService = () => {
+  const outletStore = useOutletStore();
+
+  const storeID = outletStore.outlet_currentOutlet?.id;
+  const token = JSON.parse(localStorage.getItem('authentication') ?? '{}');
+
+  const headers = {
+    'X-STORE-ID': storeID,
+    Authorization: `Bearer ${token?.authentication_token}`,
+  };
+
   const product_formData = reactive<CreateProductPayload>({
     imageFile: undefined,
     imagePreview: '',
@@ -88,7 +100,9 @@ export const useProductService = () => {
   });
 
   const getAllProducts = async (page: number, limit: number, search: string): Promise<IProductResponse> => {
-    const response = await axios.get(`${API_URL}/?page=${page}&limit=${limit}&search=${search}`);
+    const response = await axios.get(`${API_URL}/?page=${page}&limit=${limit}&search=${search}`, {
+      headers: headers,
+    });
     const products: IProduct[] = response.data.data.products.map((item: IProduct) => ({
       id: item.id,
       name: item.name,
@@ -118,8 +132,10 @@ export const useProductService = () => {
     const categoriesID = categories.map(cat => cat.id);
     const response = await axios.get(
       `${API_URL}/?categories=${categoriesID.join('%23')}&page=${page}&limit=${limit}&search=${search}`,
+      {
+        headers: headers,
+      },
     );
-    // console.log('🚀 ~ getProductByCategories ~ response:', response);
     const products: IProduct[] = response.data.data.products.map((item: IProduct) => {
       return {
         id: item.id,
@@ -142,7 +158,9 @@ export const useProductService = () => {
   };
 
   const getProductById = async (id: string): Promise<IProduct> => {
-    const response = await axios.get(`${API_URL}/${id}`);
+    const response = await axios.get(`${API_URL}/${id}`, {
+      headers: headers,
+    });
 
     // console.log('🚀 ~ getProductById ~ response:', response);
     const product = response.data.data;
@@ -175,15 +193,14 @@ export const useProductService = () => {
   const createProduct = async (payload: CreateProductPayload): Promise<IProduct> => {
     try {
       const formData = convertProductToFormData(payload);
-      // console.log('🚀 ~ createProduct ~ payload:', payload);
-      // console.log('🚀 ~ createProduct ~ formData:', formData);
 
       const response = await axios.post(API_URL, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'X-STORE-ID': storeID,
+          Authorization: `Bearer ${token?.authentication_token}`,
         },
       });
-      // console.log("🚀 ~ createProduct ~ response:", response)
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
@@ -211,6 +228,8 @@ export const useProductService = () => {
       const response = await axios.patch(`${API_URL}/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'X-STORE-ID': storeID,
+          Authorization: `Bearer ${token?.authentication_token}`,
         },
       });
       const data: IProduct = response.data.data;
@@ -241,7 +260,9 @@ export const useProductService = () => {
 
   const deleteProduct = async (id: string): Promise<void> => {
     try {
-      await axios.delete(`${API_URL}/${id}`);
+      await axios.delete(`${API_URL}/${id}`, {
+        headers: headers,
+      });
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
