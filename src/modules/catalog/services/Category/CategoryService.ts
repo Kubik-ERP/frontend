@@ -15,6 +15,8 @@ import { required } from '@vuelidate/validators';
 
 import eventBus from '@/plugins/mitt';
 
+import { useOutletStore } from '@/modules/outlet/store';
+
 const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/categories`;
 
 function convertCategoriesToFormData(payload: CategoryPayload): FormData {
@@ -30,6 +32,16 @@ function convertCategoriesToFormData(payload: CategoryPayload): FormData {
 }
 
 export const useCategoryService = () => {
+  const outletStore = useOutletStore();
+
+  const storeID = outletStore.outlet_currentOutlet?.id;
+  const token = JSON.parse(localStorage.getItem('authentication') ?? '{}');
+
+  const headers = {
+    'X-STORE-ID': storeID,
+    Authorization: `Bearer ${token?.authentication_token}`,
+  };
+  
   const category_formData = reactive<ICategoryFormData>({
     name: '',
     description: '',
@@ -47,7 +59,9 @@ export const useCategoryService = () => {
   });
 
   const getAllCategories = async (page: number, limit: number, search: string): Promise<ICategoryResponse> => {
-    const response = await axios.get(`${API_URL}/?page=${page}&limit=${limit}&search=${search}`);
+    const response = await axios.get(`${API_URL}/?page=${page}&limit=${limit}&search=${search}`, {
+      headers: headers,
+    });
     const lastPage = response.data.data.lastPage;
     const categories: ICategory[] = response.data.data.categories.map((item: ICategory) => ({
       id: item.id,
@@ -62,11 +76,10 @@ export const useCategoryService = () => {
   const createCategory = async (payload: CategoryPayload): Promise<ICategoryAddResponse> => {
     try {
       const formData = convertCategoriesToFormData(payload);
-      // console.log("🚀 ~ createCategory ~ payload:", payload)
-      // console.log("🚀 ~ createCategory ~ formData:", formData)
       const response = await axios.post(API_URL, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          ...headers,
         },
       });
       const message = response.data.message || 'Successfully created a category.';
@@ -109,6 +122,7 @@ export const useCategoryService = () => {
       const response = await axios.patch(`${API_URL}/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          ...headers,
         },
       });
       const data: ICategory = response.data.data;
@@ -137,7 +151,9 @@ export const useCategoryService = () => {
   };
   const deleteCategory = async (id: string): Promise<number> => {
     try {
-      const response = await axios.delete(`${API_URL}/${id}`);
+      const response = await axios.delete(`${API_URL}/${id}`, {
+        headers: headers,
+      });
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,
@@ -157,9 +173,10 @@ export const useCategoryService = () => {
   };
 
   const getCategoryByID = async (id: string): Promise<ICategory> => {
-    const response = await axios.get(`${API_URL}/${id}`);
+    const response = await axios.get(`${API_URL}/${id}`, {
+      headers: headers,
+    });
     const data: ICategory = response.data.data;
-    // console.log("🚀 ~ getCategoryByID ~ response:", response)
     const pictureUrl = data.pictureUrl
       ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}/${data.pictureUrl}`
       : 'https://placehold.co/250';

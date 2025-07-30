@@ -6,7 +6,7 @@ export interface IStaffMemberListRequestQuery{
   page?: number;
   limit?: number;
   // title?: string | null;
-  permission?: string | null;
+  permission?: string[] | [];
 }
 
 export interface IStaffMemberListResponse {

@@ -34,7 +34,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
     page: 1,
     limit: 10,
     // title: null,
-    permission: null,
+    permission: [],
   });
   /**
    * @description Handle fetch api staff member. We call the fetchStaffMember_list function from the store to handle the request.
@@ -48,6 +48,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
     try {
       await store.staffMember_list(staffMemberList_queryParams, {
         ...httpAbort_registerAbort(STAFF_MEMBER_LIST_REQUEST),
+        paramsSerializer: useParamsSerializer,
       });
     } catch (error: unknown) {
       if (error instanceof Error) {

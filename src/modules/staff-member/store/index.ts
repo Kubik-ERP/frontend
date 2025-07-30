@@ -182,11 +182,12 @@ export const useStaffMemberStore = defineStore('staff-member', {
       this.staffMember_isLoading = true;
 
       try {
-
+        
         const response = await httpClient.get<IStaffMemberListResponse>(STAFF_MEMBER_BASE_ENDPOINT, {
           params,
           ...requestConfigurations,
         });
+        console.log(params)
 
         if (response.data.data.data.length > 0) {
           this.staffMember_lists = response.data.data;
