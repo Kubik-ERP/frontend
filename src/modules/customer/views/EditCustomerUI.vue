@@ -20,14 +20,13 @@ function clearForm() {
 }
 
 const handleEditCustomer = async () => {
-  // customer_formValidations.value.$touch();
-  // // console.log('🚀 ~ handleEditCustomer ~ customer_formValidations.value:', customer_formValidations.value);
-
-  // if (customer_formValidations.value.$invalid) return;
-
-  // console.log(customer_FormData);
+  customer_formValidations.value.$touch();
+  if (customer_formValidations.value.$invalid) return;
 
   try {
+    if (customer_FormData.dob) {
+      customer_FormData.dob = useFormatDateLocal(customer_FormData.dob);
+    }
     await updateCustomer(route.params.id, customer_FormData);
     clearForm();
     hasConfirmedLeave = true;
@@ -93,7 +92,9 @@ const loadCustomer = async () => {
 
     customer_FormData.name = response.name;
     customer_FormData.gender = response.gender;
-    customer_FormData.dob = new Date(response.dob);
+    if (response.dob) {
+      customer_FormData.dob = new Date(response.dob);
+    }
     customer_FormData.code = response.code;
     customer_FormData.number = response.number;
     customer_FormData.email = response.email;
@@ -104,7 +105,7 @@ const loadCustomer = async () => {
   }
 };
 
-const search=ref('')
+const search = ref('');
 // Create a new tag from the search input
 const createTag = () => {
   if (search.value && !customer_FormData.tags.some(tag => tag.name.toLowerCase() === search.value.toLowerCase())) {
@@ -129,12 +130,12 @@ onMounted(() => {
 <template>
   <form class="grid grid-cols-2 gap-8" @submit.prevent="handleEditCustomer">
     <div class="flex flex-col">
-      <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Customer Name</label>
-      <div
+      <AppBaseFormGroup
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="name"
         name="Customer Name"
+        :validators="customer_formValidations.name"
       >
         <PrimeVueInputText
           v-model="customer_FormData.name"
@@ -143,7 +144,7 @@ onMounted(() => {
           class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
           fluid
         />
-      </div>
+      </AppBaseFormGroup>
     </div>
     <div class="flex flex-col">
       <label for="gender" class="block text-sm font-medium leading-6 text-gray-900">Gender</label>
@@ -173,6 +174,7 @@ onMounted(() => {
         fluid
         icon-display="input"
         input-id="icondisplay"
+        date-format="dd/mm/yy"
         class="border shadow-xs border-grayscale-30 rounded-lg w-full"
       />
     </div>
@@ -291,6 +293,7 @@ onMounted(() => {
         <PrimeVueButton
           type="submit"
           label="Edit Customer"
+          :disabled="customer_formValidations.$invalid"
           class="w-48 bg-primary border-primary"
         ></PrimeVueButton>
       </div>

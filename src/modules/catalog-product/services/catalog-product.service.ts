@@ -239,7 +239,6 @@ export const useProductService = () => {
         },
       });
       const data: IProduct = response.data.data;
-      // console.log('🚀 ~ updateProduct ~ response:', data);
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,

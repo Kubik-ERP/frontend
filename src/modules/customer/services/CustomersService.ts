@@ -89,7 +89,6 @@ export const useCustomerService = () => {
       const response = await axios.post(API_URL, payload, {
         headers: headers,
       });
-      console.log('🚀 ~ createCustomer ~ response:', response);
 
       const data: ICustomer = response.data.data;
 
