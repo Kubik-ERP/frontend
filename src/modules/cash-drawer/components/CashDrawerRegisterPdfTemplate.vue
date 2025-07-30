@@ -1,6 +1,16 @@
 <script setup lang="ts">
 // Script setup tetap sama, tidak ada perubahan
 interface ISummaryData {
+  financials: Array<{
+    label: string;
+    value: number;
+  }>;
+  paymentBreakdown: Array<{
+    label: string;
+    value: number;
+  }>;
+  openRegisterDate: string;
+  staffName: string;
   closeRegisterDate: string;
   storeName: string;
   printDate: string;
@@ -13,6 +23,10 @@ interface IProps {
 
 withDefaults(defineProps<IProps>(), {
   summaryData: () => ({
+    financials: [],
+    paymentBreakdown: [],
+    openRegisterDate: '',
+    staffName: '',
     closeRegisterDate: '',
     storeName: '',
     printDate: '',
@@ -51,12 +65,12 @@ withDefaults(defineProps<IProps>(), {
           <tr>
             <td style="padding-right: 1rem">Open On</td>
             <td style="padding-right: 0.5rem">:</td>
-            <td>{{ summaryData.openRegisterDate }}, {{ summaryData.openRegisterTime }}</td>
+            <td>{{ summaryData.openRegisterDate }}, {{ summaryData.openRegisterDate }}</td>
           </tr>
           <tr>
             <td style="padding-right: 1rem">Closed On</td>
             <td style="padding-right: 0.5rem">:</td>
-            <td>{{ summaryData.closeRegisterDate }}, {{ summaryData.closeRegisterTime }}</td>
+            <td>{{ summaryData.closeRegisterDate }}, {{ summaryData.closeRegisterDate }}</td>
           </tr>
         </tbody>
       </table>
