@@ -251,7 +251,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
         const companyLogo = setting_invoice.value?.companyLogoUrl;
 
         if (typeof companyLogo === 'string') {
-          settingInvoice_formData.companyLogoUrl = `${import.meta.env.VITE_APP_BASE_API_URL}${companyLogo}`;
+          settingInvoice_formData.companyLogoUrl = `${import.meta.env.VITE_APP_BASE_BUCKET_URL}/${companyLogo}`;
         } else {
           settingInvoice_formData.companyLogoUrl = null;
         }
