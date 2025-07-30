@@ -131,8 +131,14 @@ export const useProductService = () => {
   ): Promise<IProductResponse> => {
     const categoriesID = categories.map(cat => cat.id);
     const response = await axios.get(
-      `${API_URL}/?categories=${categoriesID.join('%23')}&page=${page}&limit=${limit}&search=${search}`,
+      `${API_URL}`,
       {
+        params: {
+          page: page,
+          limit: limit,
+          search: search,
+          category_id: categoriesID,
+        },
         headers: headers,
       },
     );

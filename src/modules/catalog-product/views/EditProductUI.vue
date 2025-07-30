@@ -55,10 +55,8 @@ const loadProduct = async () => {
     product_formData.variants = response.variantHasProducts;
     product_formData.categories = response.categoriesHasProducts;
     product_formData.is_percent = response.isPercent;
-    console.log('🚀 ~ loadProduct ~ response.isPercent:', response.isPercent);
     product_formData.imagePreview = response.picture_url;
-
-    product_formData.isDiscount = product_formData.price !== product_formData.discount_price;
+    product_formData.isDiscount = response.discountPrice !== 0;
 
     if (product_formData.isDiscount) {
       if (response.isPercent) {

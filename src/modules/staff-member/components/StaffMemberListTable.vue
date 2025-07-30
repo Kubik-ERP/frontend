@@ -36,7 +36,6 @@ const {
 </script>
 
 <template>
-  {{ staffMemberList_queryParams }}
   <AppBaseDataTable
     btn-cta-create-title="Add Staff Member"
     :columns="staffMemberList_columns"
