@@ -3,7 +3,12 @@ import { STAFF_MEMBER_BASE_ENDPOINT } from '../constants';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import type { IStaffMemberListResponse, IStaffMemberDetailsResponse,IStaffMemberStore, IStaffMemberListRequestQuery } from '../interfaces';
+import type {
+  IStaffMemberListResponse,
+  IStaffMemberDetailsResponse,
+  IStaffMemberStore,
+  IStaffMemberListRequestQuery,
+} from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
@@ -48,33 +53,33 @@ export const useStaffMemberStore = defineStore('staff-member', {
      * @description Handle business logic for mapping staff member title lists to options
      */
     staffMember_listDropdownItemTitles: (state): IDropdownItem[] => {
-  // Step 1: Extract and format all titles first.
-  const allFormattedTitles = state.staffMember_lists.data
-    .map(staffMember => {
-      const title = staffMember.title;
-      if (typeof title === 'string' && title.trim() !== '') {
-        const trimmed = title.trim();
-        
-        // ✅ Capitalize each word in the string
-        return trimmed
-          .toLowerCase()
-          .split(' ')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
-      }
-      return null; // Return null for invalid titles
-    })
-    .filter(title => title !== null) as string[]; // Remove the nulls
+      // Step 1: Extract and format all titles first.
+      const allFormattedTitles = state.staffMember_lists.data
+        .map(staffMember => {
+          const title = staffMember.title;
+          if (typeof title === 'string' && title.trim() !== '') {
+            const trimmed = title.trim();
 
-  // Step 2: Get unique titles using a Set.
-  const uniqueTitles = [...new Set(allFormattedTitles)];
+            // ✅ Capitalize each word in the string
+            return trimmed
+              .toLowerCase()
+              .split(' ')
+              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ');
+          }
+          return null; // Return null for invalid titles
+        })
+        .filter(title => title !== null) as string[]; // Remove the nulls
 
-  // Step 3: Map the unique titles to the dropdown format.
-  return uniqueTitles.map(title => ({
-    label: title,
-    value: title,
-  }));
-},
+      // Step 2: Get unique titles using a Set.
+      const uniqueTitles = [...new Set(allFormattedTitles)];
+
+      // Step 3: Map the unique titles to the dropdown format.
+      return uniqueTitles.map(title => ({
+        label: title,
+        value: title,
+      }));
+    },
   },
   actions: {
     /**
@@ -182,16 +187,13 @@ export const useStaffMemberStore = defineStore('staff-member', {
       this.staffMember_isLoading = true;
 
       try {
-        
         const response = await httpClient.get<IStaffMemberListResponse>(STAFF_MEMBER_BASE_ENDPOINT, {
           params,
           ...requestConfigurations,
         });
-        console.log(params)
+        console.log(params);
 
-        if (response.data.data.data.length > 0) {
-          this.staffMember_lists = response.data.data;
-        }
+        this.staffMember_lists = response.data.data;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
