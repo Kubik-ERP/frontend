@@ -130,18 +130,16 @@ export const useProductService = () => {
     categories: ICategory[],
   ): Promise<IProductResponse> => {
     const categoriesID = categories.map(cat => cat.id);
-    const response = await axios.get(
-      `${API_URL}`,
-      {
-        params: {
-          page: page,
-          limit: limit,
-          search: search,
-          category_id: categoriesID,
-        },
-        headers: headers,
+    const response = await axios.get(`${API_URL}`, {
+      params: {
+        page: page,
+        limit: limit,
+        search: search,
+        category_id: categoriesID,
       },
-    );
+      headers: headers,
+      paramsSerializer: useParamsSerializer,
+    });
     const products: IProduct[] = response.data.data.products.map((item: IProduct) => {
       return {
         id: item.id,
