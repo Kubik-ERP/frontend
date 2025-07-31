@@ -76,12 +76,14 @@ const props = withDefaults(defineProps<IProps>(), {
         @click="
           () => {
             if (props.cashierPreview) {
-              const index = modelValue.indexOf(table.name);
+              if (modelValue) {
+                const index = modelValue.indexOf(table.name);
 
-              if (index === -1) {
-                modelValue.push(table.name);
-              } else {
-                modelValue.splice(index, 1);
+                if (index === -1) {
+                  modelValue.push(table.name);
+                } else {
+                  modelValue.splice(index, 1);
+                }
               }
             }
           }
