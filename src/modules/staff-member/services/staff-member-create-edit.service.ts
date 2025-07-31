@@ -8,6 +8,8 @@ import {
   STAFF_MEMBER_TYPES_OF_USER_PERMISSIONS,
 } from '../constants';
 
+import { LIST_OF_DAYS } from '@/app/constants/day.constant';
+
 // Interfaces
 import type { FileUploadSelectEvent } from 'primevue';
 import type { IStaffMemberCreateEditFormData, IStaffMemberCreateEditProvided } from '../interfaces';
@@ -16,7 +18,7 @@ import type { IStaffMemberCreateEditFormData, IStaffMemberCreateEditProvided } f
 import eventBus from '@/plugins/mitt';
 
 // Stores
-import { useStaffMembetStore } from '../store';
+import { useStaffMemberStore } from '../store';
 
 // Vuelidate
 import { useVuelidate } from '@vuelidate/core';
@@ -31,7 +33,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    */
   const route = useRoute(); // Instance of the router
   const router = useRouter(); // Instance of the router
-  const store = useStaffMembetStore(); // Instance of the store
+  const store = useStaffMemberStore(); // Instance of the store
   const { staffMember_isLoading } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
@@ -39,23 +41,63 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    * @description Reactive data binding
    */
   const staffMemberCreateEdit_commisionType = ref<'PRODUCT' | 'VOUCHER'>('PRODUCT');
+  // const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
+  //   name: null,
+  //   email: null,
+  //   phoneCode: '+62',
+  //   phoneNumber: null,
+  //   image: null,
+  //   imagePreview: null, // This will hold the preview URL of the image
+  //   startDate: null,
+  //   endDate: null,
+  //   gender: null,
+  //   title: null,
+  //   permission: null,
+  //   socialMedia: [],
+  //   shift: LIST_OF_DAYS.map(day => ({
+  //     day: day.value === null ? null : String(day.value),
+  //     start_time: new Date("2025-07-28T02:00:10.811Z"),
+  //     end_time: new Date("2025-07-28T10:00:10.811Z"),
+  //     isActive: true,
+  //   })),
+  //   comissions: {
+  //     productComission: {
+  //       defaultComission: null,
+  //       defaultComissionType: null,
+  //       isAllItemsHaveDefaultComission: null,
+  //       productItems: [],
+  //     },
+  //     voucherCommission: {
+  //       defaultComission: null,
+  //       defaultComissionType: null,
+  //       isAllVouchersHaveDefaultComission: null,
+  //       voucherItems: [],
+  //     },
+  //   },
+  // });
   const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-    name: null,
-    email: null,
+    name: 'Ahmad',
+    email: 'ahmad@kubik.com',
     phoneCode: '+62',
-    phoneNumber: null,
-    photoProfile: null,
-    startDate: null,
-    endDate: null,
-    gender: null,
-    role: null,
-    permission: null,
-    socialMedia: {
-      facebook: null,
-      instagram: null,
-      twitter: null,
-    },
-    workingHours: [],
+    phoneNumber: '81234567890',
+    image: null,
+    imagePreview: null, // This will hold the preview URL of the image
+    startDate: new Date(),
+    endDate: (() => {
+      const d = new Date();
+      d.setDate(d.getDate() + 30);
+      return d;
+    })(), // Default to 30 days from now,
+    gender: 'male',
+    title: 'Admin',
+    permission: 'BASIC',
+    socialMedia: [],
+    shift: LIST_OF_DAYS.map(day => ({
+      day: day.value === null ? null : String(day.value),
+      start_time: null,
+      end_time: null,
+      isActive: false,
+    })),
     comissions: {
       productComission: {
         defaultComission: null,
@@ -71,6 +113,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       },
     },
   });
+
   const staffMemberCreateEdit_routeParamsId = ref<string | undefined>(route.params.id as string | undefined);
 
   /**
@@ -78,8 +121,20 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    * If the route parameter 'id' exists, it means we are editing an existing outlet.
    */
   const staffMemberCreateEdit_isEditable = computed(() => {
-    return Boolean(staffMemberCreateEdit_routeParamsId.value);
+    if (route.name === 'staff-member.edit') {
+      return true;
+    }
+    return false;
   });
+
+  /**
+   * @description customer validation helper for after date validation
+   */
+
+  const isAfter = (value: Date | null, target: Date | null) => {
+    if (!value || !target) return true; // If either value or target is null, validation passes
+    return value > target; // Check if value is after target
+  };
 
   /**
    * @description Form validations
@@ -88,9 +143,15 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     name: { required },
     email: { required, email },
     phoneNumber: { required },
+    // phoneCode: { required },
     startDate: { required },
+    // end date must be after start date
+    endDate: {
+      'End date must be after start date': (value: Date | null) =>
+        isAfter(value, staffMemberCreateEdit_formData.startDate),
+    },
     gender: { required },
-    role: { required },
+    // title: { required },
     permission: { required },
   }));
   const staffMemberCreateEdit_formValidations = useVuelidate(
@@ -109,6 +170,16 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       await store.staffMember_createNewStaffMember(formData, {
         ...httpAbort_registerAbort(STAFF_MEMBER_CREATE_REQUEST),
       });
+      // back to the staff member index page
+      router.push({ name: 'staff-member.index' });
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Staff member has been created successfully',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -126,6 +197,16 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       await store.staffMember_deleteStaffMember(staffMemberId, {
         ...httpAbort_registerAbort(STAFF_MEMBER_DELETE_REQUEST),
       });
+      // back to the staff member index page
+      router.push({ name: 'staff-member.index' });
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Staff member has been deleted successfully',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -138,11 +219,35 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   /**
    * @description Handle fetch api staff member detail. We call the staffMember_fetchDetailStaffMember function from the store to handle the request.
    */
-  const staffMemberCreateEdit_fetchDetailStaffMember = async (staffMemberId: string) => {
+  const staffMemberCreateEdit_fetchDetailStaffMember = async () => {
     try {
-      await store.staffMember_fetchDetailStaffMember(staffMemberId, {
-        ...httpAbort_registerAbort(STAFF_MEMBER_DETAIL_REQUEST),
-      });
+      const response = await store.staffMember_fetchDetailStaffMember(
+        staffMemberCreateEdit_routeParamsId.value as string,
+        {
+          ...httpAbort_registerAbort(STAFF_MEMBER_DETAIL_REQUEST),
+        },
+      );
+      if (response) {
+        // Populate form data with the fetched staff member details
+        Object.assign(staffMemberCreateEdit_formData, response.data);
+
+        // Handle the working hours data
+        // console.log('response.data.employeesShift', response.data.employeesShift);
+        // Map the employeesShift to the formData.shift structure
+        staffMemberCreateEdit_formData.shift = response.data.employeesShift.map(shift => ({
+          day: shift.days,
+          start_time: shift.startTime ? new Date(shift.startTime) : null,
+          end_time: shift.endTime ? new Date(shift.endTime) : null,
+          isActive:
+            shift.startTime !== '' && shift.endTime !== '' && shift.startTime !== null && shift.endTime !== null,
+        }));
+
+        // handle the image preview
+        if (response.data.profileUrl) {
+          staffMemberCreateEdit_formData.imagePreview = `${import.meta.env.VITE_APP_BASE_BUCKET_URL}/${response.data.profileUrl}`;
+        }
+
+      }
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -160,6 +265,16 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       await store.staffMember_updateStaffMember(staffMemberId, formData, {
         ...httpAbort_registerAbort(STAFF_MEMBER_CREATE_REQUEST),
       });
+      // back to the staff member index page
+      router.push({ name: 'staff-member.index' });
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Staff member has been updated successfully',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -212,8 +327,8 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         await staffMemberCreateEdit_fetchDeleteStaffMember(staffMemberId);
       },
       textButtonPrimary: 'Cancel',
-      textButtonSecondary: 'Delete Store',
-      title: 'Are you sure want to delete this store?',
+      textButtonSecondary: 'Delete Staff Member',
+      title: 'Are you sure want to delete this staff member?',
       type: 'error',
     };
 
@@ -239,28 +354,107 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   };
 
   /**
+   * @description Handle action on update form.
+   */
+
+  const staffMemberCreateEdit_onUpdateForm = async (formData: FormData) => {
+    // const staffMemberId = route.params.id as string;
+    // await staffMemberCreateEdit_fetchUpdateStaffMember(staffMemberId, staffMemberCreateEdit_formData);
+    // dialog
+    const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'staff-member-edit-dialog-confirmation',
+      iconName: 'confirmation',
+      isOpen: true,
+      isUsingButtonSecondary: true,
+      width: '400px',
+      onClickButtonPrimary: async () => {
+        const argsEventEmitter: IPropsDialogConfirmation = {
+          id: 'staff-member-edit-dialog-confirmation',
+          isOpen: false,
+        };
+
+        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+
+        const staffMemberId = route.params.id as string;
+        await staffMemberCreateEdit_fetchUpdateStaffMember(staffMemberId, formData);
+      },
+      onClickButtonSecondary: () => {
+        const argsEventEmitter: IPropsDialogConfirmation = {
+          id: 'staff-member-edit-dialog-confirmation',
+          isOpen: false,
+        };
+
+        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+      },
+      textButtonPrimary: "Yes, I'm Sure",
+      textButtonSecondary: 'Cancel',
+      title: 'Are you sure want to update this staff member data?',
+      type: 'info',
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
+  /**
    * @description Handle action on submit form.
    */
   const staffMemberCreateEdit_onSubmit = async () => {
     staffMemberCreateEdit_formValidations.value.$touch();
 
     if (staffMemberCreateEdit_formValidations.value.$invalid) {
+      // console.log('Staff member on submit'); // Debugging log
       return;
     }
 
+    // remove objects from shift when shift.isActive is false
+    staffMemberCreateEdit_formData.shift = staffMemberCreateEdit_formData.shift.map(shift => {
+      if (!shift.isActive) {
+        return {
+          ...shift,
+          start_time: null,
+          end_time: null,
+        };
+      }
+      return shift;
+    });
+
     const formData = new FormData();
+
+    // Define which top-level keys you want to exclude
+    const keysToIgnore = ['comissions', 'imagePreview'];
 
     for (const key in staffMemberCreateEdit_formData) {
       if (Object.prototype.hasOwnProperty.call(staffMemberCreateEdit_formData, key)) {
+        // ✅ If the key is in our ignore list, skip to the next one
+        if (keysToIgnore.includes(key)) {
+          continue;
+        }
+
         const value = staffMemberCreateEdit_formData[key as keyof IStaffMemberCreateEditFormData];
+
         if (value !== null && value !== undefined) {
-          // Handle special cases for complex types
-          if (key === 'photoProfile' && value instanceof File) {
+          if (Array.isArray(value)) {
+            value.forEach((item, index) => {
+              for (const itemKey in item) {
+                if (Object.prototype.hasOwnProperty.call(item, itemKey)) {
+                  const nestedValue = item[itemKey as keyof typeof item];
+                  if (nestedValue !== null && nestedValue !== undefined) {
+                    const formattedKey = `${key}[${index}][${itemKey}]`;
+
+                    if ((nestedValue as Date) instanceof Date) {
+                      formData.append(formattedKey, (nestedValue as Date).toISOString());
+                      continue;
+                    }
+
+                    formData.append(formattedKey, String(nestedValue));
+                  }
+                }
+              }
+            });
+          } else if (value instanceof Date) {
+            formData.append(key, value.toISOString()); // Convert Date to ISO string
+          } else if (value instanceof File) {
             formData.append(key, value);
-          } else if (key === 'socialMedia' && typeof value === 'object') {
-            formData.append(key, JSON.stringify(value));
-          } else if (key === 'workingHours' && Array.isArray(value)) {
-            formData.append(key, JSON.stringify(value));
           } else if (typeof value === 'object') {
             formData.append(key, JSON.stringify(value));
           } else {
@@ -270,13 +464,23 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       }
     }
 
+    // (Optional) Log the result to verify
+    // for (const [key, value] of formData.entries()) {
+    //   console.log(`${key}: ${value}`);
+    // }
+
     try {
       if (route.name === 'staff-member.create') {
         await staffMemberCreateEdit_fetchCreateStaffMember(formData);
       } else if (route.name === 'staff-member.edit') {
-        const staffMemberId = route.params.id as string;
-        await staffMemberCreateEdit_fetchUpdateStaffMember(staffMemberId, formData);
+        await staffMemberCreateEdit_onUpdateForm(formData);
       }
+      // if (route.name === 'staff-member.create') {
+      //   await staffMemberCreateEdit_fetchCreateStaffMember(formData);
+      // } else if (route.name === 'staff-member.edit') {
+      //   const staffMemberId = route.params.id as string;
+      //   await staffMemberCreateEdit_fetchUpdateStaffMember(staffMemberId, formData);
+      // }
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -291,8 +495,12 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    */
   const staffMemberCreateEdit_onUploadPhotoProfile = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {
-      staffMemberCreateEdit_formData.photoProfile = event.files[0];
+      staffMemberCreateEdit_formData.image = event.files[0];
     }
+
+    staffMemberCreateEdit_formData.imagePreview = staffMemberCreateEdit_formData.image
+      ? URL.createObjectURL(staffMemberCreateEdit_formData.image)
+      : null;
   };
 
   return {

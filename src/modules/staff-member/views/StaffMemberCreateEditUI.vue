@@ -19,7 +19,7 @@ const {
   staffMemberCreateEdit_formValidations,
   staffMemberCreateEdit_isEditable,
   staffMemberCreateEdit_isLoading,
-  // staffMemberCreateEdit_fetchDetailStaffMember,
+  staffMemberCreateEdit_fetchDetailStaffMember,
   staffMemberCreateEdit_onCancel,
   staffMemberCreateEdit_onCloseDialogCommission,
   staffMemberCreateEdit_onDelete,
@@ -41,6 +41,7 @@ provide('staffMemberCreateEdit', {
   staffMemberCreateEdit_formValidations,
   staffMemberCreateEdit_isEditable,
   staffMemberCreateEdit_isLoading,
+  staffMemberCreateEdit_fetchDetailStaffMember,
   staffMemberCreateEdit_onCancel,
   staffMemberCreateEdit_onCloseDialogCommission,
   staffMemberCreateEdit_onDelete,
@@ -51,10 +52,24 @@ provide('staffMemberCreateEdit', {
   staffMemberCreateEdit_typesOfSocialMedia,
   staffMemberCreateEdit_typesOfUserPermissions,
 });
+
+onMounted(() => {
+  if (staffMemberCreateEdit_isEditable.value) {
+    console.log('Editing an existing staff member');
+    staffMemberCreateEdit_fetchDetailStaffMember();
+  }
+});
 </script>
 
 <template>
   <section id="staff-member-create-edit" class="default-wrapper gap-6">
+    <!-- {{ staffMemberCreateEdit_formData.socialMedia }}
+    <br />
+    {{ staffMemberCreateEdit_formData.workingHours }}
+    <br />
+    {{ staffMemberCreateEdit_formData.permission }} -->
+    <!-- <br> -->
+    <!-- {{ staffMemberCreateEdit_formValidations.$errors }} -->
     <StaffMemberDetailForm />
     <StaffMemberWorkingHoursForm />
     <StaffMemberComissionsForm />
@@ -62,5 +77,6 @@ provide('staffMemberCreateEdit', {
 
     <StaffMemberComissionItemDialog />
     <AppBaseDialogConfirmation id="staff-member-create-edit-dialog-confirmation" />
+    <AppBaseDialogConfirmation id="staff-member-edit-dialog-confirmation" />
   </section>
 </template>

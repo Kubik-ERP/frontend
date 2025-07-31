@@ -158,6 +158,12 @@ const handleSearch = () => {
   }
 };
 
+watch(search, () =>{
+  setTimeout(() => {
+    handleSearch();
+  }, 500);
+})
+
 function goToPage(p) {
   router.push({ query: { page: p.toString() } });
   page.value = p;

@@ -81,13 +81,17 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               <div class="flex justify-between">
                 <span>{{ useLocalization('cashier.orderSummary.placeOrderDetail.moneyReceived') }}</span>
                 <span class="text-sm lg:text-base font-semibold">{{
-                  useCurrencyFormat(cashierOrderSummary_modalPlaceOrderDetail.form.paymentAmount)
+                  useCurrencyFormat({
+                    data: cashierOrderSummary_modalPlaceOrderDetail.form.paymentAmount,
+                  })
                 }}</span>
               </div>
               <div class="flex justify-between">
                 <span>{{ useLocalization('cashier.orderSummary.placeOrderDetail.totalPrice') }}</span>
                 <span class="text-sm lg:text-base font-semibold">{{
-                  useCurrencyFormat(cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0)
+                  useCurrencyFormat({
+                    data: cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0,
+                  })
                 }}</span>
               </div>
 
@@ -99,10 +103,11 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                 </span>
                 <span class="text-sm lg:text-base font-semibold text-primary">
                   {{
-                    useCurrencyFormat(
-                      (cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0) -
+                    useCurrencyFormat({
+                      data:
+                        (cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0) -
                         cashierOrderSummary_modalPlaceOrderDetail.form.paymentAmount,
-                    )
+                    })
                   }}
                 </span>
               </div>
