@@ -49,5 +49,20 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
         totalPages: 1,
       },
     }) as Ref<IStaffMemberList>,
+    staffMemberList_queryParams: reactive({
+      page: 1,
+      limit: 10,
+      search: '',
+      permission: [],
+      title: [],
+    }),
+    staffMemberList_typesOfUserPermissions: [
+      { label: 'Owner', value: 'Owner' },
+      { label: 'Manager', value: 'Manager' },
+      { label: 'Sales Associate', value: 'Sales Associate' },
+    ],
+    staffMemberList_dropdownItemTitles: ref([]) as Ref<IDropdownItem[]>,
+    staffMemberList_deleteStaffMember: async () => {},
+    staffMemberList_onChangePage: () => {},
   };
 };
