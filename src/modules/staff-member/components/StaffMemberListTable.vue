@@ -27,11 +27,10 @@ const {
   staffMemberList_columns,
   staffMemberList_isLoading,
   staffMemberList_values,
-  // staffMemberList_queryParams,
-  // staffMemberList_typesOfUserPermissions,
-  // staffMemberList_dropdownItemTitles,
-  // staffMemberList_deleteStaffMember,
-  // staffMemberList_onChangePage,
+  staffMemberList_queryParams,
+  staffMemberList_typesOfUserPermissions,
+  staffMemberList_deleteStaffMember,
+  staffMemberList_onChangePage,
 } = inject('staffMemberList') as IStaffMemberListProvided;
 </script>
 
