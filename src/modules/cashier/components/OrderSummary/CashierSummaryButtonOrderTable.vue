@@ -40,8 +40,10 @@ const props = defineProps({
         >
           <span v-if="cashierOrderSummary_modalOrderType.selectedOrderType" class="text-black">
             {{
-              CASHIER_ORDER_TYPE.find(f => f.code === cashierOrderSummary_modalOrderType.selectedOrderType)
-                ?.label || 'Order Type'
+              CASHIER_ORDER_TYPE.find(
+                (f: { code: string; label: string; available: boolean }) =>
+                  f.code === cashierOrderSummary_modalOrderType.selectedOrderType,
+              )?.label || 'Order Type'
             }}
           </span>
           <span v-else class="text-text-disabled">Order Type</span>
