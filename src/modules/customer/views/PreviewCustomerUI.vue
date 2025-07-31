@@ -36,6 +36,6 @@ const pageOption = ref(['Sales Invoice', 'Loyalty Point']);
       <loyaltyPoint />
     </template>
 
-    <!-- <p>Preview {{ route.params.id }}</p> -->
+
   </div>
 </template>

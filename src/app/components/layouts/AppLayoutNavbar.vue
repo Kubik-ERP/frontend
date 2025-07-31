@@ -18,7 +18,7 @@ const route = useRoute();
       <AppBaseNavbar />
       <AppBaseBreadcrumb v-if="route.meta.breadcrumb" />
 
-      <section id="main-layout" class="w-full h-fit py-10 px-28">
+      <section id="main-layout" class="w-full h-fit">
         <RouterView />
       </section>
     </section>

@@ -65,7 +65,11 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
           'text-error-main': invoice_invoiceData.data.paymentStatus === 'refund',
         }"
       >
-        {{ INVOICE_PAYMENT_STATUS.find(f => f.id === invoice_invoiceData.data?.paymentStatus)?.name }}
+        {{
+          INVOICE_PAYMENT_STATUS.find(
+            (f: { id: number; name: string }) => f.id === invoice_invoiceData.data?.paymentStatus,
+          )?.name
+        }}
       </span>
     </PrimeVueChip>
 
@@ -121,7 +125,12 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
                 dailySalesList_getClassOfOrderType(invoice_invoiceData.data.orderType),
                 'text-xs font-normal',
               ]"
-              :label="CASHIER_ORDER_TYPE.find(f => f.code === invoice_invoiceData.data?.orderType)?.label ?? ''"
+              :label="
+                CASHIER_ORDER_TYPE.find(
+                  (f: { code: string; label: string; available: boolean }) =>
+                    f.code === invoice_invoiceData.data?.orderType,
+                )?.label ?? ''
+              "
             />
           </td>
         </tr>
@@ -134,8 +143,9 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
                 'text-xs font-normal',
               ]"
               :label="
-                DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS.find(f => f.value === invoice_invoiceData.data?.orderStatus)
-                  ?.label ?? ''
+                DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS.find(
+                  (f: IDropdownItem) => f.value === invoice_invoiceData.data?.orderStatus,
+                )?.label ?? ''
               "
             />
           </td>
@@ -144,8 +154,9 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
 
       <tfoot
         v-if="
-          invoice_invoiceData.data.orderStatus === 'in_progress' ||
-          invoice_invoiceData.data.orderStatus === 'placed'
+          invoice_invoiceData.data.paymentStatus === 'unpaid' &&
+          (invoice_invoiceData.data.orderStatus === 'in_progress' ||
+            invoice_invoiceData.data.orderStatus === 'placed')
         "
       >
         <tr>

@@ -3,24 +3,81 @@ import { STAFF_MEMBER_BASE_ENDPOINT } from '../constants';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import type { IStaffMemberListResponse, IStaffMemberStore } from '../interfaces';
+import type {
+  IStaffMemberListResponse,
+  IStaffMemberDetailsResponse,
+  IStaffMemberStore,
+  IStaffMemberListRequestQuery,
+} from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
 
-export const useStaffMembetStore = defineStore('staff-member', {
+export const useStaffMemberStore = defineStore('staff-member', {
   state: (): IStaffMemberStore => ({
     staffMember_isLoading: false,
-    staffMember_lists: [],
+    staffMember_lists: {
+      data: [
+        {
+          id: 'example-staff-member-id',
+          name: 'example staff member',
+          email: 'example@kubik.com',
+          phoneNumber: '+1234567890',
+          profileUrl: null,
+          startDate: null,
+          endDate: null,
+          gender: null,
+          title: null,
+          employeesShift: [],
+        },
+      ],
+      meta: {
+        limit: 10,
+        page: 1,
+        total: 0,
+        totalPages: 0,
+      },
+    },
   }),
   getters: {
     /**
      * @description Handle business logic for mapping staff member lists to options
      */
     staffMember_listDropdownItemStaff: (state): IDropdownItem[] => {
-      return state.staffMember_lists.map(staffMember => ({
+      return state.staffMember_lists.data.map(staffMember => ({
         label: staffMember.name,
         value: staffMember.id,
+      }));
+    },
+    /**
+     * @description Handle business logic for mapping staff member title lists to options
+     */
+    staffMember_listDropdownItemTitles: (state): IDropdownItem[] => {
+      // Step 1: Extract and format all titles first.
+      const allFormattedTitles = state.staffMember_lists.data
+        .map(staffMember => {
+          const title = staffMember.title;
+          if (typeof title === 'string' && title.trim() !== '') {
+            const trimmed = title.trim();
+
+            // ✅ Capitalize each word in the string
+            return trimmed
+              .toLowerCase()
+              .split(' ')
+              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ');
+          }
+          return null; // Return null for invalid titles
+        })
+        .filter(title => title !== null) as string[]; // Remove the nulls
+
+      // Step 2: Get unique titles using a Set.
+      const uniqueTitles = [...new Set(allFormattedTitles)];
+
+      // Step 3: Map the unique titles to the dropdown format.
+      return uniqueTitles.map(title => ({
+        label: title,
+        value: title,
       }));
     },
   },
@@ -38,6 +95,8 @@ export const useStaffMembetStore = defineStore('staff-member', {
       this.staffMember_isLoading = true;
 
       try {
+        // console.log('Creating new staff member with payload:', payload); // Debugging log
+        // Call the API to create a new staff member
         const response = await httpClient.post<unknown>(STAFF_MEMBER_BASE_ENDPOINT, payload, {
           ...requestConfigurations,
         });
@@ -92,17 +151,17 @@ export const useStaffMembetStore = defineStore('staff-member', {
     async staffMember_fetchDetailStaffMember(
       staffMemberId: string,
       requestConfigurations: AxiosRequestConfig,
-    ): Promise<IStaffMemberListResponse> {
+    ): Promise<IStaffMemberDetailsResponse> {
       this.staffMember_isLoading = true;
 
       try {
-        const response = await httpClient.get<IStaffMemberListResponse>(
+        const response = await httpClient.get<IStaffMemberDetailsResponse>(
           `${STAFF_MEMBER_BASE_ENDPOINT}/${staffMemberId}`,
           {
             ...requestConfigurations,
           },
         );
-
+        // console.log('Fetched staff member details:', response.data); // Debugging log
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -121,17 +180,20 @@ export const useStaffMembetStore = defineStore('staff-member', {
      * @method GET
      * @access private
      */
-    async staffMember_list(requestConfigurations: AxiosRequestConfig): Promise<IStaffMemberListResponse> {
+    async staffMember_list(
+      params: IStaffMemberListRequestQuery,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IStaffMemberListResponse> {
       this.staffMember_isLoading = true;
 
       try {
         const response = await httpClient.get<IStaffMemberListResponse>(STAFF_MEMBER_BASE_ENDPOINT, {
+          params,
           ...requestConfigurations,
         });
+        console.log(params);
 
-        if (response.data.data.length > 0) {
-          this.staffMember_lists = response.data.data;
-        }
+        this.staffMember_lists = response.data.data;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -148,7 +210,7 @@ export const useStaffMembetStore = defineStore('staff-member', {
     /**
      * @description Handle fetch api staff member - update
      * @url /employees/${staffMemberId}
-     * @method PUT
+     * @method put
      * @access private
      */
     async staffMember_updateStaffMember(

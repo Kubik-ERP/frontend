@@ -13,6 +13,11 @@ const {
   staffMemberList_fetchListMembers,
   staffMemberList_isLoading,
   staffMemberList_values,
+  staffMemberList_queryParams,
+  staffMemberList_dropdownItemTitles,
+  staffMemberList_typesOfUserPermissions,
+  staffMemberList_deleteStaffMember,
+  staffMemberList_onChangePage,
 } = useStaffMemberListService();
 
 /**
@@ -22,6 +27,11 @@ provide('staffMemberList', {
   staffMemberList_columns,
   staffMemberList_isLoading,
   staffMemberList_values,
+  staffMemberList_queryParams,
+  staffMemberList_dropdownItemTitles,
+  staffMemberList_typesOfUserPermissions,
+  staffMemberList_deleteStaffMember,
+  staffMemberList_onChangePage,
 });
 
 /**
@@ -35,5 +45,6 @@ onMounted(async () => {
 <template>
   <section id="staff-member-list" class="flex flex-col relative inset-0 z-0">
     <StaffMemberListTable />
+    <AppBaseDialogConfirmation id="staff-member-list-dialog-confirmation" />
   </section>
 </template>

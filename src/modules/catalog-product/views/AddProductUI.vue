@@ -393,7 +393,7 @@ watch(product_formData, () => {
             <PrimeVueButton
               :label="useLocalization('productDetail.form.button.save')"
               class="text-xl w-48 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
-              unstyled
+              :disabled="product_formValidations.$invalid"
               type="submit"
             />
           </div>

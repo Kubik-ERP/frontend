@@ -46,10 +46,14 @@ const handleCreateCustomer = async () => {
   if (customer_formValidations.value.$invalid) return;
 
   try {
-    const response = await createCustomer(customer_FormData);
+    if (customer_FormData.dob) {
+      customer_FormData.dob = useFormatDateLocal(customer_FormData.dob);
+    }
+
+    const data = await createCustomer(customer_FormData);
 
     if (props.isModal) {
-      handleOnClose({ data: response.data });
+      handleOnClose(data);
     } else {
       leavePage();
     }
@@ -123,6 +127,7 @@ const removeTag = tagToRemove => {
         fluid
         icon-display="input"
         input-id="icondisplay"
+        date-format="dd/mm/yy"
         class="border shadow-xs border-grayscale-30 rounded-lg w-full"
       />
     </div>
@@ -170,63 +175,6 @@ const removeTag = tagToRemove => {
         </section>
       </section>
     </section>
-
-    <!-- <section id="phone-information">
-      <div class="flex flex-col">
-        <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Phone Number</label>
-        <div class="flex items-center gap-2">
-          <section id="phone-code" class="w-fit">
-            <div
-              class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-              is-name-as-label
-              label-for="code"
-              name="Code"
-              spacing-bottom="mb-0"
-            >
-              <PrimeVueSelect
-                id="code"
-                v-model="customer_FormData.code"
-                filter
-                :options="COUNTRY_INFORMATIONS"
-                option-value="dialCodes"
-                placeholder="+62"
-                class="text-sm h-full min-h-9 w-full"
-              >
-                <template #option="{ option }">
-                  <section id="phone-option" class="flex items-center gap-1">
-                    <img :src="option.image" alt="country-flag" class="w-6 h-6" />
-                    <span class="text-sm">{{ option.dialCodes }}</span>
-                  </section>
-                </template>
-
-                <template #value="{ value }">
-                  <section id="phone-value" class="flex items-center gap-1">
-                    <span class="text-sm">{{ value }}</span>
-                  </section>
-                </template>
-              </PrimeVueSelect>
-            </div>
-          </section>
-
-          <section id="phone-number" class="w-full">
-            <div
-              class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-              is-name-as-label
-              label-for="number"
-              name="Phone Number"
-              spacing-bottom="mb-0"
-            >
-              <PrimeVueInputText
-                v-model="customer_FormData.number"
-                placeholder="Input your phone number"
-                class="text-sm w-full"
-                type="tel"
-              />
-            </div>
-          </section>
-        </div>
-      </div>
-    </section> -->
 
     <div class="flex flex-col">
       <div>
@@ -308,6 +256,7 @@ const removeTag = tagToRemove => {
         type="button"
         class="w-48 bg-primary border-primary"
         label="Add Customer"
+        :disabled="customer_formValidations.$invalid"
         @click="handleCreateCustomer()"
       />
     </div>
