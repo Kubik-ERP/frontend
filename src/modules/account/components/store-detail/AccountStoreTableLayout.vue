@@ -3,8 +3,11 @@
 // Interfaces
 import type { IOutletTable } from '@/modules/outlet/interfaces';
 
+const modelValue = defineModel<string[] | null>();
+
 interface IProps {
   storeTable: IOutletTable;
+  cashierPreview?: boolean;
 }
 
 /**
@@ -38,6 +41,8 @@ const props = withDefaults(defineProps<IProps>(), {
       },
     ],
   }),
+  cashierPreview: false,
+  selectedTable: null,
 });
 </script>
 
@@ -45,15 +50,22 @@ const props = withDefaults(defineProps<IProps>(), {
   <section id="account-store-table-layout" class="flex flex-col gap-4">
     <section
       :id="`${props.storeTable.floorName}`"
-      class="floor-plan-container relative w-full h-[500px] bg-dots touch-none inset-0 z-0"
+      class="relative w-full h-[500px] bg-dots inset-0 z-0"
+      :class="{
+        'floor-plan-container touch-none': !props.cashierPreview,
+      }"
     >
       <div
         v-for="(table, tableIndex) in props.storeTable.storeTables"
         :key="`table-${tableIndex}`"
-        class="table-item flex flex-col items-center bg-white border-2 border-teal-400 pt-2 gap-1"
+        class="table-item border-secondary flex flex-col items-center justify-center pt-2 gap-1"
         :class="[
           table.shape === 'ROUND' ? 'rounded-full' : 'rounded-lg',
           table.isEnableQrCode ? 'has-qr-code' : '',
+          props.cashierPreview ? 'cursor-pointer' : '',
+          (modelValue || []).includes(table.name)
+            ? 'bg-secondary-hover text-white'
+            : 'bg-white border border-teal-400 text-secondary-hover',
         ]"
         :data-id="table.name"
         :style="{
@@ -61,10 +73,24 @@ const props = withDefaults(defineProps<IProps>(), {
           width: `${table.width}px`,
           height: `${table.height}px`,
         }"
+        @click="
+          () => {
+            if (props.cashierPreview) {
+              const index = modelValue.indexOf(table.name);
+
+              if (index === -1) {
+                modelValue.push(table.name);
+              } else {
+                modelValue.splice(index, 1);
+              }
+            }
+          }
+        "
       >
-        <AppBaseSvg name="eye-visible" class="!w-4 !h-4 cursor-pointer" />
-        <div class="font-bold text-sm text-secondary-hover">{{ table.name }}</div>
-        <div class="text-sm text-secondary-hover pb-2">{{ table.seats }} seats</div>
+        <AppBaseSvg v-if="!props.cashierPreview" name="eye-visible" class="!w-4 !h-4 cursor-pointer" />
+        <div class="font-bold text-sm">{{ table.name }}</div>
+        <div v-if="props.cashierPreview" class="text-[10px] lg:text-sm">Available</div>
+        <div class="text-sm pb-2">{{ table.seats }} seats</div>
       </div>
     </section>
   </section>

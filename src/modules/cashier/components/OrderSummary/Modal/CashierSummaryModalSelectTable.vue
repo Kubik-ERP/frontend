@@ -2,6 +2,45 @@
 // Interface
 import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
 
+import type { IOutletTable } from '@/modules/outlet/interfaces';
+/**
+ * @description Destructure all the data and methods what we need
+ */
+const {
+  accountStoreTableConfiguration_fetchOutletStoreTable,
+  accountStoreDetail_listAvailableFloor,
+  accountStoreDetail_listColumnsOfAssignedStaff,
+  accountStoreDetail_listColumnsOfOperationalHours,
+  accountStoreDetail_listColumnsOfStoreFacilities,
+  accountStoreDetail_listValuesOfAssignedStaff,
+  accountStoreDetail_listValuesOfOperationalHours,
+  accountStoreDetail_listValuesOfStoreFacilities,
+  accountStoreDetail_operationalHours,
+  accountStoreDetail_selectedFloor,
+  accountStoreDetail_storeTables,
+} = useAccountStoreDetailsService();
+
+/**
+ * @description Provide all the data and methods what we need
+ */
+provide('accountStoreDetail', {
+  accountStoreTableConfiguration_fetchOutletStoreTable,
+  accountStoreDetail_listAvailableFloor,
+  accountStoreDetail_listColumnsOfAssignedStaff,
+  accountStoreDetail_listColumnsOfOperationalHours,
+  accountStoreDetail_listColumnsOfStoreFacilities,
+  accountStoreDetail_listValuesOfOperationalHours,
+  accountStoreDetail_listValuesOfStoreFacilities,
+  accountStoreDetail_listValuesOfAssignedStaff,
+  accountStoreDetail_operationalHours,
+  accountStoreDetail_selectedFloor,
+  accountStoreDetail_storeTables,
+});
+
+onMounted(() => {
+  accountStoreTableConfiguration_fetchOutletStoreTable();
+});
+
 /**
  * @description Inject all the data and methods what we need
  */
@@ -14,6 +53,8 @@ const {
 
 // Composables
 import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
+import { useAccountStoreDetailsService } from '@/modules/account/services/account-store-detail.service';
+import AccountStoreTableLayout from '@/modules/account/components/store-detail/AccountStoreTableLayout.vue';
 </script>
 <template>
   <section id="cashier-summary-modal-select-table">
@@ -66,8 +107,8 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                 <span class="font-semibold">{{ useLocalization('cashier.orderSummary.table.floor') }}</span>
 
                 <PrimeVueSelect
-                  v-model="cashierOrderSummary_modalSelectTable.activeFloor"
-                  :options="cashierOrderSummary_modalSelectTable.listFloor"
+                  v-model="accountStoreDetail_selectedFloor"
+                  :options="accountStoreDetail_listAvailableFloor"
                   :placeholder="useLocalization('cashier.orderSummary.table.selectFloor')"
                   option-label="label"
                   option-value="value"
@@ -78,44 +119,27 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 
               <!-- Scrollable Content -->
               <div
-                class="flex-1 overflow-auto"
+                class="flex-1 overflow-auto border border-grayscale-10 rounded-lg p-4"
                 :class="{
-                  'flex items-center justify-center h-full w-full': !cashierOrderSummary_getListActiveFloor.length,
+                  'flex items-center justify-center h-full w-full ':
+                    !cashierOrderSummary_getListActiveFloor.length,
                 }"
               >
-                <div
-                  class="hidden col-span-1 col-span-2 col-span-3 col-span-4 col-span-5 col-span-6 col-span-7 col-span-8 col-span-9 col-span-10 col-span-11 col-span-12"
-                ></div>
-
-                <template v-if="cashierOrderSummary_getListActiveFloor.length">
-                  <div class="grid grid-cols-12 gap-2">
-                    <div
-                      v-for="(item, key) in cashierOrderSummary_getListActiveFloor"
-                      :key="key"
-                      :class="[
-                        `col-span-${item.totalSeat}`,
-                        'relative flex flex-col items-center justify-center gap-1 border py-6',
-                        {
-                          'cursor-pointer text-secondary-hover border-secondary': item.available,
-                          'bg-secondary-hover text-white':
-                            cashierOrderSummary_modalSelectTable.selectedTable.includes(item.value),
-                          'bg-disabled text-text-disabled cursor-not-allowed border-disabled':
-                            item.available === false,
-                        },
-                      ]"
-                      @click="item.available ? cashierOrderSummary_handleToggleSelectTable(item.value) : null"
-                    >
-                      <span class="text-xs lg:text-base font-semibold">{{ item.label }}</span>
-                      <span class="text-[10px] lg:text-sm">{{
-                        item.available
-                          ? useLocalization('cashier.available')
-                          : useLocalization('cashier.unavailable')
-                      }}</span>
-                      <span v-if="item.available" class="text-[10px] lg:text-sm"
-                        >{{ item.totalSeat }} {{ useLocalization('cashier.orderSummary.table.seats') }}</span
-                      >
-                    </div>
-                  </div>
+                <template v-if="accountStoreDetail_storeTables.length">
+                  <section
+                    v-for="(storeTable, storeTableIndex) in accountStoreDetail_storeTables.filter(
+                      (f: IOutletTable) => {
+                        return f.floorName === accountStoreDetail_selectedFloor;
+                      },
+                    )"
+                    :key="`store-table-${storeTableIndex}`"
+                  >
+                    <AccountStoreTableLayout
+                      v-model="cashierOrderSummary_modalSelectTable.selectedTable"
+                      :store-table="storeTable"
+                      cashier-preview
+                    />
+                  </section>
                 </template>
                 <span v-else class="text-text-disabled">{{ useLocalization('cashier.noDataFound') }}</span>
               </div>
@@ -129,49 +153,53 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                 useLocalization('cashier.orderSummary.table.availableTable')
               }}</span>
 
-              <span class="text-[10px] lg:text-xs text-text-disabled"
-                >{{ useLocalization('cashier.orderSummary.table.floor') }}
-                {{ cashierOrderSummary_modalSelectTable.activeFloor }}</span
+              <template
+                v-for="(item, key) in accountStoreDetail_storeTables.filter((f: IOutletTable) => {
+                  return f.floorName === accountStoreDetail_selectedFloor;
+                })"
+                :key="key"
               >
+                <span class="text-[10px] lg:text-xs text-text-disabled"> {{ item.floorName }}</span>
 
-              <template v-if="cashierOrderSummary_getListActiveFloor.length">
-                <div
-                  v-for="(item, key) in cashierOrderSummary_getListActiveFloor"
-                  :key="key"
-                  class="flex flex-col gap-2"
-                >
+                <template v-if="item.storeTables.length > 0">
                   <div
-                    :class="[
-                      'flex gap-2 px-3 py-4 rounded-xs',
-                      {
-                        'cursor-pointer bg-primary-background border-primary-border':
-                          cashierOrderSummary_modalSelectTable.selectedTable.includes(item.value),
-
-                        'cursor-not-allowed bg-grayscale-20 text-text-disabled border border-grayscale-20':
-                          item.available === false,
-
-                        'cursor-pointer hover:bg-grayscale-10/25 border border-grayscale-10 hover:border-primary-border':
-                          item.available &&
-                          !cashierOrderSummary_modalSelectTable.selectedTable.includes(item.value),
-                      },
-                    ]"
-                    @click="cashierOrderSummary_handleToggleSelectTable(item.value)"
+                    v-for="(childItem, childKey) in item.storeTables"
+                    :key="childKey"
+                    class="flex flex-col gap-2"
                   >
-                    <PrimeVueCheckbox
-                      :model-value="cashierOrderSummary_modalSelectTable.selectedTable.includes(item.value)"
-                      binary
-                      :disabled="item.available === false"
-                    ></PrimeVueCheckbox>
-                    <span class="text-sm font-semibold">{{ item.label }}</span>
-                    <span class="text-text-disabled text-sm"
-                      >{{ item.totalSeat }} {{ useLocalization('cashier.orderSummary.table.seats') }}</span
+                    <div
+                      :class="[
+                        'flex gap-2 px-3 py-4 rounded-xs',
+                        {
+                          'cursor-pointer bg-primary-background border-primary-border':
+                            cashierOrderSummary_modalSelectTable.selectedTable.includes(childItem.name),
+
+                          'cursor-not-allowed bg-grayscale-20 text-text-disabled border border-grayscale-20':
+                            item.available === false,
+
+                          'cursor-pointer hover:bg-grayscale-10/25 border border-grayscale-10 hover:border-primary-border':
+                            item.available &&
+                            !cashierOrderSummary_modalSelectTable.selectedTable.includes(childItem.name),
+                        },
+                      ]"
+                      @click="cashierOrderSummary_handleToggleSelectTable(childItem.name)"
                     >
+                      <PrimeVueCheckbox
+                        :model-value="cashierOrderSummary_modalSelectTable.selectedTable.includes(childItem.name)"
+                        binary
+                        :disabled="item.available === false"
+                      ></PrimeVueCheckbox>
+                      <span class="text-sm font-semibold">{{ childItem.name }}</span>
+                      <span class="text-text-disabled text-sm"
+                        >{{ childItem.seats }} {{ useLocalization('cashier.orderSummary.table.seats') }}</span
+                      >
+                    </div>
                   </div>
+                </template>
+                <div v-else class="flex w-full h-full items-center justify-center text-xs text-text-disabled">
+                  {{ useLocalization('cashier.noDataFound') }}
                 </div>
               </template>
-              <div v-else class="flex w-full h-full items-center justify-center text-xs text-text-disabled">
-                {{ useLocalization('cashier.noDataFound') }}
-              </div>
             </div>
           </section>
 

@@ -134,7 +134,7 @@ export const useFormatDate = (
     // Date object
     date = dateInput;
   } else {
-    throw new Error('Invalid date input');
+    date = new Date(); // Default to current date if input is invalid
   }
 
   // Handle invalid date

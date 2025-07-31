@@ -50,9 +50,13 @@ const handleCreateCustomer = async () => {
       customer_FormData.dob = useFormatDateLocal(customer_FormData.dob);
     }
 
-    await createCustomer(customer_FormData);
+    const data = await createCustomer(customer_FormData);
 
-    leavePage();
+    if (props.isModal) {
+      handleOnClose(data);
+    } else {
+      leavePage();
+    }
   } catch (error) {
     console.error(error);
   }
