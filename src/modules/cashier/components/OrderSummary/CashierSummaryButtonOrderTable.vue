@@ -22,6 +22,20 @@ const props = defineProps({
     default: false,
   },
 });
+
+const selectedOrderTypeLabel = computed(() => {
+  const found = CASHIER_ORDER_TYPE.find(
+    f => f.code === cashierOrderSummary_modalOrderType.value.selectedOrderType,
+  );
+  return found?.label || 'Order Type';
+});
+
+const selectedTableLabel = computed(() => {
+  if (cashierOrderSummary_modalSelectTable.value.selectedTable?.length > 0) {
+    return cashierOrderSummary_modalSelectTable.value.selectedTable.toString();
+  }
+  return 'Select Table';
+});
 </script>
 <template>
   <section id="cashier-summary-button-order-table">
@@ -39,12 +53,7 @@ const props = defineProps({
           @click="cashierOrderSummary_modalOrderType.show = true"
         >
           <span v-if="cashierOrderSummary_modalOrderType.selectedOrderType" class="text-black">
-            {{
-              CASHIER_ORDER_TYPE.find(
-                (f: { code: string; label: string; available: boolean }) =>
-                  f.code === cashierOrderSummary_modalOrderType.selectedOrderType,
-              )?.label || 'Order Type'
-            }}
+            {{ selectedOrderTypeLabel }}
           </span>
           <span v-else class="text-text-disabled">Order Type</span>
 
@@ -67,11 +76,7 @@ const props = defineProps({
         >
           <span>
             <span v-if="cashierOrderSummary_modalSelectTable.selectedTable" class="text-black">
-              {{
-                cashierOrderSummary_modalSelectTable.selectedTable.length > 0
-                  ? cashierOrderSummary_modalSelectTable.selectedTable.toString()
-                  : 'Select Table'
-              }}
+              {{ selectedTableLabel }}
             </span>
             <span v-else class="text-text-disabled"> Select Table </span>
           </span>
