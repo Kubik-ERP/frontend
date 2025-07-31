@@ -10,7 +10,7 @@ import type { RouteRecordRaw } from 'vue-router';
 export default {
   path: 'staff-member',
   name: 'staff-member',
-  component: () => AppBaseWrapper,
+  component: AppBaseWrapper,
   children: [
     {
       path: '',
