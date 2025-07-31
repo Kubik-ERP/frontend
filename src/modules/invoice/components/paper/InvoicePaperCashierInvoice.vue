@@ -17,7 +17,7 @@ import { IInvoiceProvided } from '../../interfaces';
 const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 
 const imageUrl = computed(() => {
-  return APP_BASE_BUCKET_URL + '/' + invoice_invoiceData.value.configInvoice?.companyLogoUrl || '';
+  return APP_BASE_BUCKET_URL + invoice_invoiceData.value.configInvoice?.companyLogoUrl || '';
 });
 </script>
 <template>
