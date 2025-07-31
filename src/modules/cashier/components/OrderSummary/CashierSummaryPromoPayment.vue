@@ -32,7 +32,7 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
               <span class="font-semibold truncate">
                 {{
                   cashierOrderSummary_modalVoucher.data.find(
-                    f => f.code === cashierOrderSummary_modalVoucher.form.voucher_code,
+                    (f: { code: string }) => f.code === cashierOrderSummary_modalVoucher.form.voucher_code,
                   )?.label || useLocalization('cashier.orderSummary.promoVoucher')
                 }}
               </span>
@@ -63,7 +63,7 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
               <AppBaseSvg
                 :name="
                   cashierOrderSummary_modalPaymentMethod.data.find(
-                    f => f.id === cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod,
+                    (f: { id: string }) => f.id === cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod,
                   )?.iconName || 'voucher'
                 "
                 class="!h-5 !w-5"
@@ -72,7 +72,7 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
               <span class="font-semibold truncate">
                 {{
                   cashierOrderSummary_modalPaymentMethod.data.find(
-                    f => f.id === cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod,
+                    (f: { id: string }) => f.id === cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod,
                   )?.name || useLocalization('cashier.orderSummary.paymentMethod')
                 }}
               </span>
