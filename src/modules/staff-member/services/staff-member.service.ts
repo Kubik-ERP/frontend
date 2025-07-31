@@ -2,7 +2,7 @@
 import { STAFF_MEMBER_LIST_COLUMNS, STAFF_MEMBER_LIST_REQUEST, STAFF_MEMBER_LIST_VALUES } from '../constants';
 
 // Interfaces
-import type { IStaffMemberListProvided } from '../interfaces';
+import type { IStaffMember, IStaffMemberList, IStaffMemberListProvided } from '../interfaces';
 
 // Store
 import { useStaffMemberStore } from '../store';
@@ -23,7 +23,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
    */
   const staffMemberList_fetchListMembers = async (): Promise<void> => {
     try {
-      await store.staffMember_list({
+      await store.staffMember_list({},{
         ...httpAbort_registerAbort(STAFF_MEMBER_LIST_REQUEST),
       });
     } catch (error: unknown) {
@@ -40,6 +40,29 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
     staffMemberList_dropdownItemStaff: staffMember_listDropdownItemStaff,
     staffMemberList_fetchListMembers,
     staffMemberList_isLoading: staffMember_isLoading,
-    staffMemberList_values: STAFF_MEMBER_LIST_VALUES as never[],
+    staffMemberList_values:  ref({
+      data: STAFF_MEMBER_LIST_VALUES as unknown as IStaffMember[],
+      meta: {
+        page: 1,
+        limit: 10,
+        total: STAFF_MEMBER_LIST_VALUES.length,
+        totalPages: 1,
+      },
+    }) as Ref<IStaffMemberList>,
+    staffMemberList_queryParams: reactive({
+      page: 1,
+      limit: 10,
+      search: '',
+      permission: [],
+      title: [],
+    }),
+    staffMemberList_typesOfUserPermissions: [
+      { label: 'Owner', value: 'Owner' },
+      { label: 'Manager', value: 'Manager' },
+      { label: 'Sales Associate', value: 'Sales Associate' },
+    ],
+    staffMemberList_dropdownItemTitles: ref([]) as Ref<IDropdownItem[]>,
+    staffMemberList_deleteStaffMember: async () => {},
+    staffMemberList_onChangePage: () => {},
   };
 };

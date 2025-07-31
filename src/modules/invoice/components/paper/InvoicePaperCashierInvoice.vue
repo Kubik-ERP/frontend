@@ -19,6 +19,11 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 const imageUrl = computed(() => {
   return APP_BASE_BUCKET_URL + invoice_invoiceData.value.configInvoice?.companyLogoUrl || '';
 });
+
+const orderTypeLabel = computed(() => {
+  const type = CASHIER_ORDER_TYPE.find(f => f.code === invoice_invoiceData.value.data?.orderType);
+  return type?.label ?? '';
+});
 </script>
 <template>
   <section
@@ -81,12 +86,7 @@ const imageUrl = computed(() => {
     >
       <p id="label-order-type" class="font-normal text-black text-sm">Order Type</p>
       <p id="order-type-value" class="font-normal text-black text-sm">
-        {{
-          CASHIER_ORDER_TYPE.find(
-            (f: { code: string; label: string; available: boolean }) =>
-              f.code === invoice_invoiceData.data?.orderType,
-          )?.label ?? ''
-        }}
+        {{ orderTypeLabel }}
       </p>
     </section>
 

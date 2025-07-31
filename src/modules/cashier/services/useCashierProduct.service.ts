@@ -140,6 +140,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
           category: response.data.category,
           description: response.data.description,
           image: response.data.image,
+          pictureUrl: response.data.pictureUrl,
           categoriesHasProducts: response.data.categoriesHasProducts,
         };
 

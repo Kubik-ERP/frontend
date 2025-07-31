@@ -11,7 +11,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/catalog/products',
     name: 'catalog.products',
-    component: () => AppBaseWrapper,
+    component: AppBaseWrapper,
     meta: {
       requiresAuthorization: false,
       breadcrumb: 'Catalog Products',

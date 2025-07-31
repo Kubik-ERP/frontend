@@ -12,6 +12,25 @@ const route = useRoute();
  */
 const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod } =
   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+
+const selectedVoucherLabel = computed(() => {
+  const selected = cashierOrderSummary_modalVoucher.value.data.find(
+    f => f.code === cashierOrderSummary_modalVoucher.value.form.voucher_code,
+  );
+  return selected?.label || useLocalization('cashier.orderSummary.promoVoucher');
+});
+
+const selectedPaymentMethod = computed(() =>
+  cashierOrderSummary_modalPaymentMethod.value.data.find(
+    f => f.id === cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
+  ),
+);
+
+const selectedPaymentIcon = computed(() => selectedPaymentMethod.value?.iconName || 'voucher');
+
+const selectedPaymentName = computed(
+  () => selectedPaymentMethod.value?.name || useLocalization('cashier.orderSummary.paymentMethod'),
+);
 </script>
 
 <template>
@@ -30,11 +49,9 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
               <AppBaseSvg name="tag" class="!h-5 !w-5" />
 
               <span class="font-semibold truncate">
-                {{
-                  cashierOrderSummary_modalVoucher.data.find(
-                    (f: { code: string }) => f.code === cashierOrderSummary_modalVoucher.form.voucher_code,
-                  )?.label || useLocalization('cashier.orderSummary.promoVoucher')
-                }}
+                <span class="font-semibold truncate">
+                  {{ selectedVoucherLabel }}
+                </span>
               </span>
             </div>
             <div v-else class="flex gap-2 w-full items-center justify-between">
@@ -60,21 +77,10 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod
               v-if="cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod"
               class="flex gap-2 items-center"
             >
-              <AppBaseSvg
-                :name="
-                  cashierOrderSummary_modalPaymentMethod.data.find(
-                    (f: { id: string }) => f.id === cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod,
-                  )?.iconName || 'voucher'
-                "
-                class="!h-5 !w-5"
-              />
+              <AppBaseSvg :name="selectedPaymentIcon" class="!h-5 !w-5" />
 
               <span class="font-semibold truncate">
-                {{
-                  cashierOrderSummary_modalPaymentMethod.data.find(
-                    (f: { id: string }) => f.id === cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod,
-                  )?.name || useLocalization('cashier.orderSummary.paymentMethod')
-                }}
+                {{ selectedPaymentName }}
               </span>
             </div>
             <span v-else class="font-semibold truncate">
