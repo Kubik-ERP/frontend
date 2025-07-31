@@ -27,11 +27,11 @@ const {
   staffMemberList_columns,
   staffMemberList_isLoading,
   staffMemberList_values,
-  staffMemberList_queryParams,
-  staffMemberList_typesOfUserPermissions,
+  // staffMemberList_queryParams,
+  // staffMemberList_typesOfUserPermissions,
   // staffMemberList_dropdownItemTitles,
-  staffMemberList_deleteStaffMember,
-  staffMemberList_onChangePage,
+  // staffMemberList_deleteStaffMember,
+  // staffMemberList_onChangePage,
 } = inject('staffMemberList') as IStaffMemberListProvided;
 </script>
 
@@ -177,7 +177,8 @@ const {
       <template v-else-if="column.value === 'permission'">
         <span class="font-normal text-sm text-text-primary">
           {{
-            staffMemberList_typesOfUserPermissions.find(item => item.value === data[column.value])?.label || '-'
+            staffMemberList_typesOfUserPermissions.find((item: IDropdownItem) => item.value === data[column.value])
+              ?.label || '-'
           }}
         </span>
       </template>
