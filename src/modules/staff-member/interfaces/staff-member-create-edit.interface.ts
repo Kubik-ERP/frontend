@@ -1,11 +1,13 @@
 // Interfaces
 import type { Validation } from '@vuelidate/core';
 import type { FileUploadSelectEvent } from 'primevue';
+import type { IStaffMember } from './index';
 
-export interface IStaffMemberWorkingHour {
+export interface IStaffMemberShift {
   day: string | null;
-  startTime: string | null;
-  endTime: string | null;
+  start_time: Date | null;
+  end_time: Date | null;
+  isActive: boolean;
 }
 
 export interface IStaffMemberProductItemComission {
@@ -39,30 +41,36 @@ export interface IStaffMemberComissions {
   voucherCommission: IStaffMemberVoucherCommission;
 }
 
+export interface IStaffMemberSocialMedia {
+  name: string | null;
+  account: string | null;
+}
+
 export interface IStaffMemberCreateEditFormData {
   name: string | null;
   email: string | null;
   phoneCode: string;
   phoneNumber: string | null;
-  photoProfile: FileUploadSelectEvent | null;
-  startDate: string | null;
-  endDate: string | null;
+  image: File | null;
+  imagePreview: string | null; // This will hold the preview URL of the image
+  startDate: Date | null;
+  endDate: Date | null;
   gender: string | null;
-  role: string | null;
+  title: string | null;
   permission: string | null;
-  socialMedia: {
-    facebook: string | null;
-    instagram: string | null;
-    twitter: string | null;
-  };
-  workingHours: IStaffMemberWorkingHour[];
+  socialMedia: IStaffMemberSocialMedia[];
+  shift: IStaffMemberShift[];
   comissions: IStaffMemberComissions;
+}
+
+export interface IStaffMemberDetailsResponse {
+  data: IStaffMember;
 }
 
 export interface IStaffMemberCreateEditProvided {
   staffMemberCreateEdit_columnsOfCommissions: IColumnDataTable[];
   staffMemberCreateEdit_commisionType: globalThis.Ref<'PRODUCT' | 'VOUCHER'>;
-  staffMemberCreateEdit_fetchDetailStaffMember: (staffMemberId: string) => Promise<unknown>;
+  staffMemberCreateEdit_fetchDetailStaffMember: () => Promise<unknown>;
   staffMemberCreateEdit_formData: IStaffMemberCreateEditFormData;
   staffMemberCreateEdit_formValidations: globalThis.Ref<Validation>;
   staffMemberCreateEdit_isEditable: globalThis.Ref<boolean>;

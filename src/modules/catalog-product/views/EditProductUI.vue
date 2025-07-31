@@ -55,10 +55,8 @@ const loadProduct = async () => {
     product_formData.variants = response.variantHasProducts;
     product_formData.categories = response.categoriesHasProducts;
     product_formData.is_percent = response.isPercent;
-    console.log('🚀 ~ loadProduct ~ response.isPercent:', response.isPercent);
     product_formData.imagePreview = response.picture_url;
-
-    product_formData.isDiscount = product_formData.price !== product_formData.discount_price;
+    product_formData.isDiscount = response.discountPrice !== 0;
 
     if (product_formData.isDiscount) {
       if (response.isPercent) {
@@ -462,7 +460,7 @@ const cancelUpdate = () => {
               <PrimeVueButton
                 :label="useLocalization('productDetail.form.button.edit')"
                 class="text-xl w-48 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
-                unstyled
+                :disabled="product_formValidations.$invalid"
                 type="submit"
               />
             </div>

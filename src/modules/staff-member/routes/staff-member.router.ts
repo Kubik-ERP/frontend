@@ -33,6 +33,18 @@ export default {
         title: 'Add New Staff Member',
       },
     },
+    {
+      path: 'edit/:id',
+      props: route => ({ id: route.params.id }),
+      name: 'staff-member.edit',
+      component: () => import('../views/StaffMemberCreateEditUI.vue'),
+      meta: {
+        breadcrumb: 'Edit Staff Member',
+        layout: LAYOUT_OPTIONS.DEFAULT,
+        requiresAuthorization: false,
+        title: 'Edit Staff Member',
+      },
+    },
   ],
   meta: {
     breadcrumb: 'Staff Members',

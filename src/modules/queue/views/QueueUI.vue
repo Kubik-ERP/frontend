@@ -51,7 +51,7 @@ onMounted(async () => {
           </template>
         </PrimeVueButton>
       </router-link>
-      <router-link to="/kds">
+      <router-link :to="{ name: 'queue-kitchen-display' }">
         <PrimeVueButton class="w-fit" label="Kitchen Display System">
           <template #icon>
             <AppBaseSvg name="display" class="!w-5 !h-5" />
@@ -61,7 +61,6 @@ onMounted(async () => {
     </div>
 
     <section id="daily-sales" class="flex flex-col relative inset-0 z-0">
-      <!-- {{ dailySalesList_values }} -->
       <AppBaseDataTable
         btn-cta-create-title="Add Cash In/Out"
         :columns="queueColumns"
