@@ -57,6 +57,9 @@
   }
 
   @media print {
+    @page {
+      margin: 0;
+    }
     body #main-content {
       display: none !important;
     }
