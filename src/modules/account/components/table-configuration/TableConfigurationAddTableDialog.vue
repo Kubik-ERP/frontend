@@ -52,6 +52,7 @@ const {
               v-model="accountStoreTableConfiguration_formDataOfAddTable.name"
               :class="{ ...classes }"
               class="text-sm w-full"
+              v-on="useListenerForm(accountStoreTableConfiguration_formValidationsOfAddTable, 'name')"
             />
           </AppBaseFormGroup>
         </section>
@@ -74,6 +75,7 @@ const {
                   ...classes,
                 }"
                 placeholder="0"
+                v-on="useListenerForm(accountStoreTableConfiguration_formValidationsOfAddTable, 'seats')"
               />
 
               <PrimeVueInputGroupAddon>
@@ -101,9 +103,8 @@ const {
               placeholder="Select Table Shape"
               class="text-sm w-full"
               filter
-              :class="{
-                ...classes,
-              }"
+              :class="{ ...classes }"
+              v-on="useListenerForm(accountStoreTableConfiguration_formValidationsOfAddTable, 'shape')"
             />
           </AppBaseFormGroup>
         </section>

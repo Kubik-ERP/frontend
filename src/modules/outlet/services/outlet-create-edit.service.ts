@@ -3,19 +3,13 @@ import {
   OUTLET_CREATE_EDIT_CREATE_NEW_OUTLET_REQUEST,
   OUTLET_CREATE_EDIT_DELETE_OUTLET_REQUEST,
   OUTLET_CREATE_EDIT_DETAIL_OUTLET_REQUEST,
-  OUTLET_CREATE_EDIT_INITIAL_VALUES_OF_BUSINESS_HOURS,
   OUTLET_CREATE_EDIT_UPDATE_OUTLET_REQUEST,
 } from '../constants/outlet-create-edit.constant';
+import { STORE_INITIAL_VALUES_OF_OPERATIONAL_HOURS } from '@/app/constants';
 
 // Interfaces
 import type { FileUploadSelectEvent } from 'primevue';
-import {
-  EOutletBusinessType,
-  IOutlet,
-  IOutletBusinessHour,
-  IOutletCreateEditFormData,
-  IOutletCreateEditProvided,
-} from '../interfaces';
+import { EOutletBusinessType, IOutlet, IOutletCreateEditFormData, IOutletCreateEditProvided } from '../interfaces';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -54,7 +48,7 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
     city: '',
     postalCode: '',
     building: '',
-    businessHours: OUTLET_CREATE_EDIT_INITIAL_VALUES_OF_BUSINESS_HOURS,
+    businessHours: STORE_INITIAL_VALUES_OF_OPERATIONAL_HOURS,
   });
   const outletCreateEdit_formDataOfVerifyPin = reactive<IAuthenticationVerifyPinFormData>({
     pinConfirmation: '',
@@ -102,35 +96,30 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
       const value = outletCreateEdit_formData[typedKey];
 
       if (typedKey === 'businessHours') {
-        const businessHours = value as IOutletBusinessHour[];
-        const filteredBusinessHours = businessHours.filter(businessHour => businessHour.isOpen);
-
-        filteredBusinessHours.forEach((businessHour: IOutletBusinessHour, index: number) => {
-          for (const keyOfBusinessHour in businessHour) {
-            const typedBusinessHourKey = keyOfBusinessHour as keyof IOutletBusinessHour;
-            const businessHourValue = businessHour[typedBusinessHourKey];
-
-            // Convert boolean to string if necessary
-            const formValue =
-              typeof businessHourValue === 'boolean'
-                ? businessHourValue.toString() // Converts true -> "true", false -> "false"
-                : businessHourValue;
-
-            if (typedBusinessHourKey === 'openTime' || typedBusinessHourKey === 'closeTime') {
-              // We need to add more zero value on it. So from HH:mm to HH:mm:ss
-              let hour = new Date(formValue).getHours().toString();
-              let minute = new Date(formValue).getMinutes().toString();
-
-              // Check if hour or minute is less than 10, then add a leading zero
-              hour = +hour < 10 ? `0${hour}` : hour;
-              minute = +minute < 10 ? `0${minute}` : minute;
-
-              formData.append(`${typedKey}[${index}][${typedBusinessHourKey}]`, `${hour}:${minute}:00`);
-            } else {
-              formData.append(`${typedKey}[${index}][${typedBusinessHourKey}]`, formValue);
-            }
-          }
-        });
+        // const businessHours = value as IStoreOperationalHour[];
+        // const filteredBusinessHours = businessHours.filter(businessHour => businessHour.isOpen);
+        // filteredBusinessHours.forEach((businessHour: IStoreOperationalHour, index: number) => {
+        //   for (const keyOfBusinessHour in businessHour) {
+        //     const typedBusinessHourKey = keyOfBusinessHour as keyof IStoreOperationalHour;
+        //     const businessHourValue = businessHour[typedBusinessHourKey];
+        //     // Convert boolean to string if necessary
+        //     const formValue =
+        //       typeof businessHourValue === 'boolean'
+        //         ? businessHourValue.toString() // Converts true -> "true", false -> "false"
+        //         : businessHourValue;
+        //     if (typedBusinessHourKey === 'openTime' || typedBusinessHourKey === 'closeTime') {
+        //       // We need to add more zero value on it. So from HH:mm to HH:mm:ss
+        //       let hour = new Date(formValue).getHours().toString();
+        //       let minute = new Date(formValue).getMinutes().toString();
+        //       // Check if hour or minute is less than 10, then add a leading zero
+        //       hour = +hour < 10 ? `0${hour}` : hour;
+        //       minute = +minute < 10 ? `0${minute}` : minute;
+        //       formData.append(`${typedKey}[${index}][${typedBusinessHourKey}]`, `${hour}:${minute}:00`);
+        //     } else {
+        //       formData.append(`${typedKey}[${index}][${typedBusinessHourKey}]`, formValue);
+        //     }
+        //   }
+        // });
       } else {
         if (typedKey === 'photo' && value instanceof Blob) {
           formData.append('file', value); // Handle Blob/File for photo

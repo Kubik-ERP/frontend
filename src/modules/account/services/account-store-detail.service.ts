@@ -12,9 +12,13 @@ import {
 } from '../constants';
 
 // Interfaces
-import type { IAccountStoreDetailProvided } from '../interfaces';
+import type { IAccountStoreDetailProvided, IAccountStoreTable } from '../interfaces';
+
+// Plugins
+import eventBus from '@/plugins/mitt';
 
 // Stores
+import { useAccountStore } from '../store';
 import { useOutletStore } from '@/modules/outlet/store';
 
 /**
@@ -24,8 +28,9 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
   /**
    * @description Injected variables
    */
+  const accountStore = useAccountStore();
   const outletStore = useOutletStore();
-  const route = useRoute();
+  const { account_selectedOutlet } = storeToRefs(accountStore);
   const { outlet_isLoading, outlet_listAvailableFloor, outlet_operationalHours, outlet_tables } =
     storeToRefs(outletStore);
   const { httpAbort_registerAbort } = useHttpAbort();
@@ -35,13 +40,14 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
    */
   const accountStoreDetail_activeTab = ref<string>('store-facilities');
   const accountStoreDetail_selectedFloor = ref<string>('');
+  const accountStoreDetail_selectedTable = ref<IAccountStoreTable | null>(null);
 
   /**
    * @description Handle fetch api outlet. We call the fetchOutlet_listOperationalHours function from the store to handle the request.
    */
   const accountStoreDetail_fetchOutletListOperationalHours = async (): Promise<void> => {
     try {
-      await outletStore.fetchOutlet_listOperationalHours(route.params.id as string, {
+      await outletStore.fetchOutlet_listOperationalHours({
         ...httpAbort_registerAbort(ACCOUNT_STORE_LIST_OPERATIONAL_HOURS_REQUEST),
       });
     } catch (error: unknown) {
@@ -56,9 +62,9 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
   /**
    * @description Handle fetch api outlet. We call the fetchOutlet_storeTable function from the store to handle the request.
    */
-  const accountStoreTableConfiguration_fetchOutletStoreTable = async (): Promise<void> => {
+  const accountStoreDetail_fetchOutletStoreTable = async (): Promise<void> => {
     try {
-      await outletStore.fetchOutlet_storeTable(route.params.id as string, {
+      await outletStore.fetchOutlet_storeTable({
         ...httpAbort_registerAbort(ACCOUNT_STORE_TABLE_LIST_REQUEST),
       });
 
@@ -75,6 +81,33 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
   };
 
   /**
+   * @description Handle business logic for close dialog detail table
+   */
+  const accountStoreDetail_onCloseDialogDetailTable = (): void => {
+    eventBus.emit('AppBaseDialog', {
+      id: 'account-store-table-configuration-detail-dialog',
+      isOpen: false,
+    });
+    accountStoreDetail_selectedTable.value = null;
+  };
+
+  /**
+   * @description Handle business logic for show dialog detail table
+   */
+  const accountStoreDetail_onShowDialogDetailTable = (table: IAccountStoreTable): void => {
+    accountStoreDetail_selectedTable.value = table;
+
+    const argsEventEmitter: IPropsDialog = {
+      id: 'account-store-table-configuration-detail-dialog',
+      isOpen: true,
+      isUsingClosableButton: false,
+      width: '577px',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
    * @description Watch active tab changes
    */
   watch(accountStoreDetail_activeTab, newTab => {
@@ -84,7 +117,7 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
         break;
       }
       case 'TABLE-CONFIGURATION': {
-        accountStoreTableConfiguration_fetchOutletStoreTable();
+        accountStoreDetail_fetchOutletStoreTable();
         break;
       }
       case 'ASSIGNED-STAFFS': {
@@ -96,6 +129,13 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
       }
     }
   });
+
+  /**
+   * @description Handle business logic for returning selected table layout
+   */
+  const accountStoreDetail_selectedTableLayout = computed(() =>
+    outlet_tables.value.find(floor => floor.floorName === accountStoreDetail_selectedFloor.value),
+  );
 
   return {
     accountStoreDetail_activeTab,
@@ -109,8 +149,13 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     accountStoreDetail_listValuesOfAssignedStaff: ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_VALUES as never[],
     accountStoreDetail_listValuesOfOperationalHours: ACCOUNT_STORE_DETAIL_OPERATIONAL_HOURS_VALUES as never[],
     accountStoreDetail_listValuesOfStoreFacilities: ACCOUNT_STORE_DETAIL_FACILITY_VALUES as never[],
+    accountStoreDetail_onCloseDialogDetailTable,
+    accountStoreDetail_onShowDialogDetailTable,
     accountStoreDetail_operationalHours: outlet_operationalHours,
     accountStoreDetail_selectedFloor,
+    accountStoreDetail_selectedOutlet: account_selectedOutlet,
+    accountStoreDetail_selectedTable,
+    accountStoreDetail_selectedTableLayout,
     accountStoreDetail_storeTables: outlet_tables,
   };
 };

@@ -5,28 +5,40 @@ import type { IAccountProvided } from '../interfaces';
 /**
  * @description Inject all the data and methods what we need
  */
-const { account_profile, account_onSetUpBankAccount } = inject<IAccountProvided>('account')!;
+const { account_profile, account_onEditBankAccount, account_onSetUpBankAccount } =
+  inject<IAccountProvided>('account')!;
 </script>
 
 <template>
   <section id="bank-information" class="flex flex-col gap-2">
-    <header>
+    <header class="flex items-center gap-4">
       <h6 class="font-semibold text-black text-lg">
         {{ useLocalization('account.bank-information') }}
       </h6>
+
+      <section
+        v-if="(account_profile?.user?.banks?.length ?? 0) > 0"
+        id="edit-bank"
+        class="flex items-center gap-2 cursor-pointer"
+        @click="account_onEditBankAccount"
+      >
+        <AppBaseSvg name="edit" />
+
+        <span class="font-semibold text-primary text-sm"> Edit Bank Information </span>
+      </section>
     </header>
 
     <section
       id="content"
       class="flex items-center justify-between p-4 border border-solid border-grayscale-20 rounded-lg w-full"
     >
-      <template v-if="(account_profile?.userBanks?.length ?? 0) > 0">
+      <template v-if="(account_profile?.user.banks?.length ?? 0) > 0">
         <section id="bank" class="grid grid-rows-1 grid-cols-6 relative inset-0 z-0 gap-4 w-full">
           <section id="bank-name" class="col-span-full lg:col-span-2 flex flex-col gap-1">
             <span class="font-normal text-text-disabled text-sm"> Bank Name </span>
 
             <span class="font-normal text-black text-base">
-              {{ account_profile?.userBanks[0].bankName ?? '-' }}
+              {{ account_profile?.user.banks[0].bankName ?? '-' }}
             </span>
           </section>
 
@@ -34,7 +46,7 @@ const { account_profile, account_onSetUpBankAccount } = inject<IAccountProvided>
             <span class="font-normal text-text-disabled text-sm"> Account Number </span>
 
             <span class="font-normal text-black text-base">
-              {{ account_profile?.userBanks[0].accountNumber ?? '-' }}
+              {{ account_profile?.user.banks[0].accountNumber ?? '-' }}
             </span>
           </section>
 
@@ -42,7 +54,7 @@ const { account_profile, account_onSetUpBankAccount } = inject<IAccountProvided>
             <span class="font-normal text-text-disabled text-sm"> Account Name </span>
 
             <span class="font-normal text-black text-base">
-              {{ account_profile?.userBanks[0].accountName ?? '-' }}
+              {{ account_profile?.user.banks[0].accountName ?? '-' }}
             </span>
           </section>
         </section>

@@ -7,17 +7,6 @@ export enum EAccountStoreBusinessType {
   Retail = 'Retail',
 }
 
-export interface IAccountStoreEditHours {
-  openTime: Date | Date[] | (Date | null)[] | null | undefined;
-  closeTime: Date | Date[] | (Date | null)[] | null | undefined;
-}
-
-export interface IAccountStoreEditBusinessHour {
-  timeSlots: IAccountStoreEditHours[];
-  day: string;
-  isOpen: boolean;
-}
-
 export interface IAccountStoreEditFormData {
   storeName: string;
   email: string;
@@ -29,7 +18,7 @@ export interface IAccountStoreEditFormData {
   city: string;
   postalCode: string;
   building: string;
-  businessHours: IAccountStoreEditBusinessHour[];
+  businessHours: IStoreOperationalHour[];
 }
 
 export interface IAccountStoreEditProvided {

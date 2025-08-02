@@ -16,10 +16,11 @@ const {
   account_bankAccountFormData,
   account_bankAccountFormValidations,
   account_fetchOutletProfile,
-  account_fetchUserBanks,
   account_isLoadingOfOutlet,
   account_listColumns,
   account_onCloseDialogSetUpBank,
+  account_onDirectToDetailOutlet,
+  account_onEditBankAccount,
   account_onSetUpBankAccount,
   account_onSubmitBankAccount,
   account_profile,
@@ -35,6 +36,8 @@ provide('account', {
   account_isLoadingOfOutlet,
   account_listColumns,
   account_onCloseDialogSetUpBank,
+  account_onEditBankAccount,
+  account_onDirectToDetailOutlet,
   account_onSetUpBankAccount,
   account_onSubmitBankAccount,
   account_profile,
@@ -48,7 +51,7 @@ provide('outletList', {
  * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
  */
 onMounted(async () => {
-  await Promise.all([account_fetchOutletProfile(), account_fetchUserBanks(), outletList_fetchOutletLists()]);
+  await Promise.all([account_fetchOutletProfile(), outletList_fetchOutletLists()]);
 });
 </script>
 

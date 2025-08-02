@@ -8,6 +8,7 @@ import {
 
 // Interfaces
 import type { IAccountBankAccountFormData, IAccountProvided } from '../interfaces/account.interface';
+import type { IOutlet } from '@/modules/outlet/interfaces';
 
 // Stores
 import { useAccountStore } from '../store';
@@ -29,13 +30,16 @@ export const useAccountService = (): IAccountProvided => {
    */
   const accountStore = useAccountStore();
   const outletStore = useOutletStore();
-  const { outlet_isLoading, outlet_profile } = storeToRefs(outletStore);
+  const router = useRouter();
+  const { account_selectedOutlet } = storeToRefs(accountStore);
+  const { outlet_isLoading, outlet_profile, outlet_selectedOutletOnAccountPage } = storeToRefs(outletStore);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
    * @description Reactive data binding
    */
   const account_bankAccountFormData = reactive<IAccountBankAccountFormData>({
+    bank_id: null,
     bankName: '',
     accountNumber: '',
     accountName: '',
@@ -63,7 +67,7 @@ export const useAccountService = (): IAccountProvided => {
         ...httpAbort_registerAbort(ACCOUNT_ATTACH_BANK_REQUEST),
       });
 
-      await account_fetchUserBanks();
+      await account_fetchOutletProfile();
       account_onCloseDialogSetUpBank();
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -116,6 +120,9 @@ export const useAccountService = (): IAccountProvided => {
       await accountStore.fetchAccount_updateAttachedBank(id, account_bankAccountFormData, {
         ...httpAbort_registerAbort(ACCOUNT_USER_BANKS_REQUEST),
       });
+
+      await account_fetchOutletProfile();
+      account_onCloseDialogSetUpBank();
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -138,6 +145,46 @@ export const useAccountService = (): IAccountProvided => {
   };
 
   /**
+   * @description Handle business logic for directing user to detail outlet page
+   */
+  const account_onDirectToDetailOutlet = (outlet: IOutlet): void => {
+    account_selectedOutlet.value = outlet;
+    outlet_selectedOutletOnAccountPage!.value = outlet;
+
+    router.push({
+      name: 'account.store.detail',
+      params: {
+        id: outlet.id,
+      },
+    });
+  };
+
+  /**
+   * @description Handle business logic for show dialog set up bank account for edit
+   */
+  const account_onEditBankAccount = (): void => {
+    if (outlet_profile.value?.user.banks.length === 0) {
+      return;
+    }
+
+    const existingBank = outlet_profile!.value!.user.banks[0];
+
+    account_bankAccountFormData.bank_id = existingBank.bank_id;
+    account_bankAccountFormData.bankName = existingBank.bankName;
+    account_bankAccountFormData.accountNumber = existingBank.accountNumber;
+    account_bankAccountFormData.accountName = existingBank.accountName;
+
+    const argsEventEmitter: IPropsDialog = {
+      id: 'account-setup-bank-dialog-information',
+      isOpen: true,
+      isUsingClosableButton: false,
+      width: '534px',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
    * @description Handle business logic for show dialog set up bank account
    */
   const account_onSetUpBankAccount = (): void => {
@@ -154,7 +201,7 @@ export const useAccountService = (): IAccountProvided => {
   /**
    * @description Handle business logic for submitting the bank account form
    */
-  const account_onSubmitBankAccount = async (id?: string): Promise<void> => {
+  const account_onSubmitBankAccount = async (): Promise<void> => {
     account_bankAccountFormValidations.value.$touch();
 
     if (account_bankAccountFormValidations.value.$invalid) {
@@ -162,8 +209,8 @@ export const useAccountService = (): IAccountProvided => {
     }
 
     try {
-      if (id) {
-        await account_fetchUpdateAttachedBank(id);
+      if (account_bankAccountFormData.bank_id) {
+        await account_fetchUpdateAttachedBank(account_bankAccountFormData.bank_id);
       } else {
         await account_fetchAttachBankAccount();
       }
@@ -184,6 +231,8 @@ export const useAccountService = (): IAccountProvided => {
     account_isLoadingOfOutlet: outlet_isLoading,
     account_listColumns: ACCOUNT_LIST_COLUMNS_STORE,
     account_onCloseDialogSetUpBank,
+    account_onDirectToDetailOutlet,
+    account_onEditBankAccount,
     account_onSetUpBankAccount,
     account_onSubmitBankAccount,
     account_profile: outlet_profile,

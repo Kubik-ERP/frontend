@@ -1,5 +1,28 @@
 import { BaseValidation } from '@vuelidate/core';
 
+// Type for nested validation structure
+interface NestedValidation {
+  configurations?: {
+    $each?: {
+      $response?: {
+        $data?: Array<{
+          tables?: {
+            $each?: {
+              $response?: {
+                $data?: Array<{
+                  [key: string]: {
+                    $touch?: () => void;
+                  };
+                }>;
+              };
+            };
+          };
+        }>;
+      };
+    };
+  };
+}
+
 /**
  * @description Handle binding state form
  */
@@ -25,48 +48,94 @@ export const useListenerForm = (validations: BaseValidation, formName: string): 
 };
 
 /**
- * @description A composable to simplify accessing Vuelidate validation states for nested fields.
- * Handles single-level, nested, and sub-nested fields in a Vuelidate $each structure.
+ * @description Safe version of useListenerForm for nested validations
+ */
+export const useListenerFormNested = (
+  validation: NestedValidation,
+  floorIndex: number,
+  tableIndex: number,
+  fieldName: string,
+): IResponseListenerForm => {
+  try {
+    const fieldValidation =
+      validation?.configurations?.$each?.$response?.$data?.[floorIndex]?.tables?.$each?.$response?.$data?.[
+        tableIndex
+      ]?.[fieldName];
+
+    if (fieldValidation && fieldValidation.$touch) {
+      return {
+        input: fieldValidation.$touch,
+        blur: fieldValidation.$touch,
+      };
+    }
+  } catch (error) {
+    console.error(`Error accessing nested validation for field "${fieldName}":`, error);
+  }
+
+  // Return safe defaults if validation access fails
+  return {
+    input: () => {},
+    blur: () => {},
+  };
+};
+
+/**
+ * @description A simpler composable to access validation states for deeply nested fields.
+ * Specifically designed for the configurations[index].tables[index].field structure.
  */
 export const useFormValidateEach = ({
   validation,
   field,
   fieldIndex,
   nesting = null,
-  subNesting = null,
+  subNesting,
 }: IVuelidateValidationEachConfig): IValidationResult => {
+  // Suppress unused parameter warning
+  void subNesting;
+
   // Guard clause for required validation parameter
   if (!validation) {
     throw new Error('Parameter "validation" is required in useFormValidateEach');
   }
 
-  // Helper to safely navigate nested Vuelidate structure
-  const getErrors = (): unknown[] => {
-    try {
-      let current = validation.$each.$response;
+  try {
+    // For your specific case: configurations[floorIndex].tables[tableIndex].field
+    if (nesting && fieldIndex !== null && fieldIndex !== undefined) {
+      const floorIndex = nesting.index;
+      const tableIndex = fieldIndex;
 
-      // Handle nesting (e.g., competency[0])
-      if (nesting) {
-        current = current.$data[nesting.index][nesting.field].$each;
+      // Direct access to the nested validation structure
+      const fieldValidation =
+        validation.configurations?.$each?.$response?.$data?.[floorIndex]?.tables?.$each?.$response?.$data?.[
+          tableIndex
+        ]?.[field];
+
+      if (fieldValidation) {
+        return {
+          $invalid: fieldValidation.$invalid ?? false,
+          $dirty: fieldValidation.$dirty ?? false,
+          $errors: fieldValidation.$errors ?? [],
+        };
       }
-
-      // Handle sub-nesting (e.g., competency[0].budget[1])
-      if (subNesting) {
-        current = current.$data[subNesting.index][subNesting.field].$each;
-      }
-
-      // Get errors for the field at the specified index
-      return current.$errors[fieldIndex][field] ?? [];
-    } catch (error) {
-      console.error(`Error accessing validation for field "${field}":`, error);
-
-      return [];
     }
-  };
 
+    // Fallback: try to access the field validation directly
+    const directValidation = validation[field];
+    if (directValidation) {
+      return {
+        $invalid: directValidation.$invalid ?? false,
+        $dirty: directValidation.$dirty ?? false,
+        $errors: directValidation.$errors ?? [],
+      };
+    }
+  } catch (error) {
+    console.error(`Error accessing validation for field "${field}":`, error);
+  }
+
+  // Return safe defaults if validation access fails
   return {
-    $invalid: validation.$invalid,
-    $dirty: validation.$dirty,
-    $errors: getErrors(),
+    $invalid: false,
+    $dirty: false,
+    $errors: [],
   };
 };

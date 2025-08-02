@@ -29,6 +29,7 @@ export const useOutletStore = defineStore('outlet', {
     outlet_operationalHours: [],
     outlet_profile: null,
     outlet_tables: [],
+    outlet_selectedOutletOnAccountPage: null,
   }),
   getters: {
     /**
@@ -89,7 +90,6 @@ export const useOutletStore = defineStore('outlet', {
      * @access private
      */
     async fetchOutlet_createNewStoreTable(
-      storeId: string,
       payload: IAccountStoreTableConfigurationFormData,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
@@ -98,10 +98,6 @@ export const useOutletStore = defineStore('outlet', {
       try {
         const response = await httpClient.post<unknown>(OUTLET_TABLE_ENDPOINT, payload, {
           ...requestConfigurations,
-          headers: {
-            ...(requestConfigurations.headers || {}),
-            'X-STORE-ID': storeId,
-          },
         });
 
         return Promise.resolve(response.data);
@@ -190,7 +186,7 @@ export const useOutletStore = defineStore('outlet', {
       this.outlet_isLoading = true;
 
       try {
-        const response = await httpClient.get<IOutletDetailResponse>(`${OUTLET_BASE_ENDPOINT}/${outletId}`, {
+        const response = await httpClient.get<IOutletDetailResponse>(`${OUTLET_BASE_ENDPOINT}/store/${outletId}`, {
           ...requestConfigurations,
         });
 
@@ -242,7 +238,6 @@ export const useOutletStore = defineStore('outlet', {
      * @access private
      */
     async fetchOutlet_listOperationalHours(
-      storeId: string,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<IOutletOperationalHoursResponse> {
       this.outlet_isLoading = true;
@@ -250,10 +245,6 @@ export const useOutletStore = defineStore('outlet', {
       try {
         const response = await httpClient.get<IOutletOperationalHoursResponse>(OUTLET_OPERATIONAL_HOURS_ENDPOINT, {
           ...requestConfigurations,
-          headers: {
-            ...(requestConfigurations.headers || {}),
-            'X-STORE-ID': storeId,
-          },
         });
 
         this.outlet_operationalHours = response.data.data;
@@ -282,10 +273,6 @@ export const useOutletStore = defineStore('outlet', {
       try {
         const response = await httpClient.get<IOutletProfileResponse>(OUTLET_BASE_ENDPOINT + '/profile', {
           ...requestConfigurations,
-          headers: {
-            ...(requestConfigurations.headers || {}),
-            'X-STORE-ID': this.outlet_currentOutlet?.id || '',
-          },
         });
 
         this.outlet_profile = response.data.data;
@@ -308,19 +295,12 @@ export const useOutletStore = defineStore('outlet', {
      * @method GET
      * @access private
      */
-    async fetchOutlet_storeTable(
-      storeId: string,
-      requestConfigurations: AxiosRequestConfig,
-    ): Promise<IOutletTableResponse> {
+    async fetchOutlet_storeTable(requestConfigurations: AxiosRequestConfig): Promise<IOutletTableResponse> {
       this.outlet_isLoading = true;
 
       try {
         const response = await httpClient.get<IOutletTableResponse>(OUTLET_TABLE_ENDPOINT, {
           ...requestConfigurations,
-          headers: {
-            ...(requestConfigurations.headers || {}),
-            'X-STORE-ID': storeId,
-          },
         });
 
         this.outlet_tables = response.data.data;
@@ -352,7 +332,7 @@ export const useOutletStore = defineStore('outlet', {
       this.outlet_isLoading = true;
 
       try {
-        const response = await httpClient.put<unknown>(`${OUTLET_BASE_ENDPOINT}/${outletId}`, payload, {
+        const response = await httpClient.put<unknown>(`${OUTLET_BASE_ENDPOINT}/manage/${outletId}`, payload, {
           headers: {
             pin: pin,
           },
@@ -378,21 +358,15 @@ export const useOutletStore = defineStore('outlet', {
      * @access private
      */
     async fetchOutlet_updateProfile(
-      pin: string,
       payload: FormData,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<IOutletProfileResponse> {
       this.outlet_isLoading = true;
 
       try {
-        const response = await httpClient.put<IOutletProfileResponse>(OUTLET_BASE_ENDPOINT + '/profile', payload, {
-          headers: {
-            pin: pin,
-          },
+        const response = await httpClient.put<IOutletProfileResponse>(`${OUTLET_BASE_ENDPOINT}/profile`, payload, {
           ...requestConfigurations,
         });
-
-        this.outlet_profile = response.data.data;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -413,7 +387,6 @@ export const useOutletStore = defineStore('outlet', {
      * @access private
      */
     async fetchOutlet_updateStoreTable(
-      storeId: string,
       tableId: string,
       payload: IAccountStoreTableConfigurationFormData,
       requestConfigurations: AxiosRequestConfig,
@@ -423,10 +396,6 @@ export const useOutletStore = defineStore('outlet', {
       try {
         const response = await httpClient.put<unknown>(`${OUTLET_TABLE_ENDPOINT}/${tableId}`, payload, {
           ...requestConfigurations,
-          headers: {
-            ...(requestConfigurations.headers || {}),
-            'X-STORE-ID': storeId,
-          },
         });
 
         return Promise.resolve(response.data);
@@ -443,7 +412,7 @@ export const useOutletStore = defineStore('outlet', {
   },
   persist: {
     key: 'outlet',
-    pick: ['outlet_currentOutlet'],
+    pick: ['outlet_currentOutlet', 'outlet_profile', 'outlet_selectedOutletOnAccountPage'],
     storage: localStorage,
   },
 });

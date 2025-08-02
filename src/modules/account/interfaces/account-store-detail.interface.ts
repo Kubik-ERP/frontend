@@ -1,4 +1,5 @@
-import type { IOutletOperationalHour, IOutletTable } from '@/modules/outlet/interfaces';
+import type { IOutlet, IOutletOperationalHour, IOutletTable } from '@/modules/outlet/interfaces';
+import { IAccountStoreTable } from './account-store-table-configuration.interface';
 
 interface IHourSlot {
   open: string;
@@ -22,7 +23,12 @@ export interface IAccountStoreDetailProvided {
   accountStoreDetail_listValuesOfAssignedStaff: never[];
   accountStoreDetail_listValuesOfOperationalHours: IOperationalDay[];
   accountStoreDetail_listValuesOfStoreFacilities: never[];
+  accountStoreDetail_onCloseDialogDetailTable: () => void;
+  accountStoreDetail_onShowDialogDetailTable: (table: IAccountStoreTable) => void;
   accountStoreDetail_operationalHours: globalThis.Ref<IOutletOperationalHour[] | []>;
   accountStoreDetail_selectedFloor: globalThis.Ref<string>;
+  accountStoreDetail_selectedOutlet: globalThis.Ref<IOutlet | null>;
+  accountStoreDetail_selectedTable: globalThis.Ref<IAccountStoreTable | null>;
+  accountStoreDetail_selectedTableLayout: globalThis.Ref<IOutletTable | undefined>;
   accountStoreDetail_storeTables: globalThis.Ref<IOutletTable[] | []>;
 }

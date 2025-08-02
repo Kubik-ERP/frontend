@@ -5,7 +5,8 @@ import type { IAccountProvided } from '../interfaces';
 /**
  * @description Inject all the data and methods what we need
  */
-const { account_isLoadingOfOutlet, account_listColumns, account_profile } = inject<IAccountProvided>('account')!;
+const { account_isLoadingOfOutlet, account_listColumns, account_onDirectToDetailOutlet, account_profile } =
+  inject<IAccountProvided>('account')!;
 </script>
 
 <template>
@@ -19,6 +20,7 @@ const { account_isLoadingOfOutlet, account_listColumns, account_profile } = inje
     is-using-custom-body
     is-using-custom-header
     :is-using-border-on-header="false"
+    :is-using-pagination="false"
   >
     <template #header>
       <header class="flex items-center justify-between py-5">
@@ -26,7 +28,11 @@ const { account_isLoadingOfOutlet, account_listColumns, account_profile } = inje
           {{ useLocalization('app.stores') }}
         </h6>
 
-        <PrimeVueButton class="bg-primary border-none w-fit px-5" severity="secondary">
+        <PrimeVueButton
+          class="bg-primary border-none w-fit px-5"
+          severity="secondary"
+          @click="$router.push({ name: 'outlet.create' })"
+        >
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="plus-line-white" />
@@ -42,12 +48,7 @@ const { account_isLoadingOfOutlet, account_listColumns, account_profile } = inje
 
     <template #body="{ column, data }">
       <template v-if="column.value === 'action'">
-        <PrimeVueButton
-          variant="text"
-          rounded
-          aria-label="detail"
-          @click="$router.push({ name: 'account.store.detail', params: { id: data.id } })"
-        >
+        <PrimeVueButton variant="text" rounded aria-label="detail" @click="account_onDirectToDetailOutlet(data)">
           <template #icon>
             <AppBaseSvg name="eye-visible" class="!w-5 !h-5" />
           </template>

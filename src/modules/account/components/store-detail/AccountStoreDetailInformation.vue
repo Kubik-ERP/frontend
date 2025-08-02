@@ -6,8 +6,11 @@ import type { IAccountStoreDetailProvided } from '../../interfaces';
 /**
  * @description Inject all the data and methods what we need
  */
-const { accountStoreDetail_listColumnsOfOperationalHours, accountStoreDetail_operationalHours } =
-  inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
+const {
+  accountStoreDetail_listColumnsOfOperationalHours,
+  accountStoreDetail_operationalHours,
+  accountStoreDetail_selectedOutlet,
+} = inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
 
 const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) => {
   return operationalHours.hours.every(slot => slot.openTime === 'Closed' && slot.closeTime === 'Closed');
@@ -21,7 +24,11 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
         {{ useLocalization('account.store-details') }}
       </h6>
 
-      <router-link id="edit-profile" :to="{ name: 'account.edit' }" class="flex items-center gap-2">
+      <router-link
+        id="edit-profile"
+        :to="{ name: 'account.store.edit', params: { id: accountStoreDetail_selectedOutlet?.id } }"
+        class="flex items-center gap-2"
+      >
         <AppBaseSvg name="edit" />
 
         <span class="font-semibold text-primary text-sm">
@@ -35,11 +42,22 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
       class="flex flex-col gap-4 p-4 border border-solid border-grayscale-20 rounded-lg w-full"
     >
       <section id="user-profile" class="flex items-center gap-4">
-        <PrimeVueAvatar class="w-16 h-16" label="P" size="large" shape="circle" />
+        <PrimeVueAvatar
+          class="mr-2"
+          :image="APP_BASE_BUCKET_URL + accountStoreDetail_selectedOutlet?.photo"
+          size="xlarge"
+          shape="circle"
+        />
 
-        <div class="flex flex-col gap-4">
-          <h5 class="font-semibold text-primary text-xl">Samantha</h5>
-          <span class="font-normal text text-disabled text-xs"> Created on: March 24, 2025 </span>
+        <div class="flex flex-col">
+          <h5 class="font-semibold text-primary text-xl">
+            {{ accountStoreDetail_selectedOutlet?.name }}
+          </h5>
+          <span class="font-normal text text-disabled text-xs">
+            Created on:
+            <!-- Foramtted date into like this March 24, 2025 -->
+            {{ useFormatDate(accountStoreDetail_selectedOutlet!.createdAt, 'MMMM dd, yyyy') }}
+          </span>
         </div>
       </section>
 
@@ -49,7 +67,9 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
             {{ useLocalization('app.business-type') }}
           </span>
 
-          <span class="font-normal text-text-primary text-base"> Restaurant (FnB) </span>
+          <span class="font-normal text-text-primary text-base">
+            {{ accountStoreDetail_selectedOutlet?.businessType }}
+          </span>
         </section>
 
         <section id="business-type" class="col-span-full lg:col-span-6 flex flex-col gap-1">
@@ -57,7 +77,9 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
             {{ useLocalization('app.email-address') }}
           </span>
 
-          <span class="font-normal text-text-primary text-base"> lawsonkal@gmail.com </span>
+          <span class="font-normal text-text-primary text-base">
+            {{ accountStoreDetail_selectedOutlet?.email }}
+          </span>
         </section>
 
         <section id="business-type" class="col-span-full lg:col-span-6 flex flex-col gap-1">
@@ -65,7 +87,9 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
             {{ useLocalization('app.phone-number') }}
           </span>
 
-          <span class="font-normal text-text-primary text-base"> +62 81234567890 </span>
+          <span class="font-normal text-text-primary text-base">
+            {{ accountStoreDetail_selectedOutlet?.phoneNumber }}
+          </span>
         </section>
 
         <section id="business-type" class="col-span-full lg:col-span-6 flex flex-col gap-1">
@@ -74,7 +98,7 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
           </span>
 
           <span class="font-normal text-text-primary text-base">
-            Jl. Kaliurang KM 5, Ngaglik, Sleman, Yogyakarta
+            {{ accountStoreDetail_selectedOutlet?.address }}
           </span>
         </section>
       </section>

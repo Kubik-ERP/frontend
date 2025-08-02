@@ -15,33 +15,79 @@ const { outletCreateEdit_formData } = inject<IOutletCreateEditProvided>('outletC
       <h6 class="font-semibold text-base text-black">Busines Hours</h6>
     </section>
 
-    <template v-for="(businessHour, businessHourIndex) in outletCreateEdit_formData.businessHours"
-      :key="`business-hour-${businessHourIndex}`">
-      <section id="business-operational" class="grid grid-rows-1 grid-cols-6 gap-4">
-        <section :id="`business-operational-day-${businessHourIndex}`" class="flex items-center gap-2">
-          <PrimeVueCheckbox v-model="businessHour.isOpen" binary />
+    <section id="operational-hours" class="grid-wrapper gap-4">
+      <section
+        v-for="(day, dayIndex) in outletCreateEdit_formData.businessHours"
+        :id="`working-hours-day-${dayIndex}`"
+        :key="`day-${dayIndex}`"
+        class="col-span-full lg:col-span-6 flex flex-col border border-solid border-primary-border gap-4 p-4 rounded-lg"
+      >
+        <header class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <PrimeVueCheckbox v-model="day.isOpen" binary />
+            <span class="font-semibold text-black text-base">
+              {{ day.day }}
+            </span>
+          </div>
 
-          <span class="font-normal text-black text-sm">
-            {{ businessHour.day }}
-          </span>
-        </section>
-
-        <section :id="`business-hour-${businessHourIndex}`" class="flex items-center gap-4">
-          <PrimeVueDatePicker :id="`datepicker-business-start-hour-${businessHourIndex}-timeonly`" fluid time-only
-            @value-change="
-              (event: Date | Date[] | (Date | null)[] | null | undefined) => {
-                outletCreateEdit_formData.businessHours[businessHourIndex].openTime = event?.toString() ?? '';
+          <PrimeVueButton
+            class="border border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
+            severity="secondary"
+            variant="outlined"
+            @click="
+              () => {
+                day.timeSlots.push({ openTime: null, closeTime: null });
               }
-            " />
+            "
+          >
+            <template #default>
+              <section id="content" class="flex items-center gap-2">
+                <AppBaseSvg name="plus-line" />
+              </section>
+            </template>
+          </PrimeVueButton>
+        </header>
 
-          <PrimeVueDatePicker :id="`datepicker-business-end-hour-${businessHourIndex}-timeonly`" fluid time-only
-            @value-change="
-              (event: Date | Date[] | (Date | null)[] | null | undefined) => {
-                outletCreateEdit_formData.businessHours[businessHourIndex].closeTime = event?.toString() ?? '';
-              }
-            " />
+        <section id="working-hours-list" class="grid-wrapper gap-4">
+          <template v-for="(timeSlot, timeSlotIndex) in day.timeSlots" :key="`business-hour-${timeSlotIndex}`">
+            <section id="open-time" class="col-span-full lg:col-span-6 flex flex-col items-center gap-2">
+              <label for="open-time" class="font-semibold text-black text-sm">Open Time</label>
+
+              <PrimeVueInputGroup>
+                <PrimeVueDatePicker
+                  id="datepicker-open-time"
+                  v-model="timeSlot.openTime"
+                  class="w-full"
+                  fluid
+                  time-only
+                />
+
+                <PrimeVueInputGroupAddon>
+                  <AppBaseSvg name="clock" class="!w-5 !h-6" />
+                </PrimeVueInputGroupAddon>
+              </PrimeVueInputGroup>
+            </section>
+
+            <section id="close-time" class="col-span-full lg:col-span-6 flex flex-col items-center gap-2">
+              <label for="close-time" class="font-semibold text-black text-sm">Close Time</label>
+
+              <PrimeVueInputGroup>
+                <PrimeVueDatePicker
+                  id="datepicker-close-time"
+                  v-model="timeSlot.closeTime"
+                  class="w-full"
+                  fluid
+                  time-only
+                />
+
+                <PrimeVueInputGroupAddon>
+                  <AppBaseSvg name="clock" class="!w-5 !h-6" />
+                </PrimeVueInputGroupAddon>
+              </PrimeVueInputGroup>
+            </section>
+          </template>
         </section>
       </section>
-    </template>
+    </section>
   </section>
 </template>

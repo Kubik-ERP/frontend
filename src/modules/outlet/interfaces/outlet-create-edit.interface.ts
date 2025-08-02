@@ -25,7 +25,7 @@ export interface IOutletCreateEditFormData {
   city: string;
   postalCode: string;
   building: string;
-  businessHours: IOutletBusinessHour[];
+  businessHours: IStoreOperationalHour[];
 }
 
 export interface IOutletCreateEditProvided {

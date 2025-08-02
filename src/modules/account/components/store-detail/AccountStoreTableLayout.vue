@@ -2,6 +2,8 @@
 <script setup lang="ts">
 // Interfaces
 import type { IOutletTable } from '@/modules/outlet/interfaces';
+// Interfaces
+import type { IAccountStoreDetailProvided } from '../../interfaces';
 
 interface IProps {
   storeTable: IOutletTable;
@@ -39,6 +41,11 @@ const props = withDefaults(defineProps<IProps>(), {
     ],
   }),
 });
+
+/**
+ * @description Inject all the data and methods what we need
+ */
+const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
 </script>
 
 <template>
@@ -62,7 +69,11 @@ const props = withDefaults(defineProps<IProps>(), {
           height: `${table.height}px`,
         }"
       >
-        <AppBaseSvg name="eye-visible" class="!w-4 !h-4 cursor-pointer" />
+        <AppBaseSvg
+          name="eye-visible"
+          class="!w-4 !h-4 cursor-pointer"
+          @click="accountStoreDetail_onShowDialogDetailTable(table)"
+        />
         <div class="font-bold text-sm text-secondary-hover">{{ table.name }}</div>
         <div class="text-sm text-secondary-hover pb-2">{{ table.seats }} seats</div>
       </div>

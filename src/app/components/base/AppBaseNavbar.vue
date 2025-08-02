@@ -1,18 +1,23 @@
 <script setup lang="ts">
 // Stores
 import { useAuthenticationStore } from '@/modules/authentication/store';
+import { useOutletStore } from '@/modules/outlet/store';
 
 /**
  * @description Injected variables
  */
 const authenticationStore = useAuthenticationStore();
+const outletStore = useOutletStore();
 const route = useRoute();
 const { authentication_userData } = storeToRefs(authenticationStore);
+const { outlet_profile } = storeToRefs(outletStore);
 
 /**
  * @description Reactive data binding
  */
+const language = ref('en');
 const popover = ref();
+const popoverLocalization = ref();
 
 /**
  * @description Handle business logic for clicking the logout button
@@ -27,6 +32,28 @@ const handleLogout = () => {
 
   // Redirect to the login page
   window.location.href = '/authentication/sign-in';
+};
+
+/**
+ * @description Handle business logic for check if user online or not by using vanilla JavaScript
+ */
+const isOnline = () => {
+  return navigator.onLine;
+};
+
+/**
+ * @description Handle business logic for changing the language
+ */
+const onChangeLanguage = (selectedLanguage: string) => {
+  console.log(`Changing language to: ${selectedLanguage}`);
+
+  // Update the language in the store or state management
+  localStorage.setItem('lang', selectedLanguage);
+  language.value = selectedLanguage;
+
+  // Emit an event to notify other components about the language change
+  popoverLocalization.value.hide();
+  popover.value.hide();
 };
 </script>
 
@@ -63,8 +90,16 @@ const handleLogout = () => {
     <section id="right-content" class="flex items-center gap-2">
       <section id="status-and-notification" class="flex items-center gap-4">
         <section id="status" class="flex items-center gap-2">
-          <section id="dot-status" class="w-2 h-2 rounded-full bg-success">&nbsp;</section>
-          <span class="font-normal text-disabled text-xs">Online</span>
+          <section
+            id="dot-status"
+            class="w-2 h-2 rounded-full"
+            :class="[isOnline() ? 'bg-success' : 'bg-disabled']"
+          >
+            &nbsp;
+          </section>
+          <span class="font-normal text-disabled text-xs">
+            {{ isOnline() ? 'Online' : 'Offline' }}
+          </span>
         </section>
 
         <AppBaseSvg name="notification-primary" class="hidden lg:block !w-6 !h-6" />
@@ -78,7 +113,18 @@ const handleLogout = () => {
         @click="popover.toggle($event)"
       >
         <section id="user-profile" class="flex items-center gap-2">
-          <PrimeVueAvatar class="w-10 h-10" label="P" size="large" shape="circle" />
+          <template v-if="outlet_profile?.user.image">
+            <img
+              :src="APP_BASE_BUCKET_URL + outlet_profile?.user.image"
+              alt=""
+              srcset=""
+              class="w-10 h-10 rounded-full border-2 border-solid border-primary"
+            />
+          </template>
+
+          <template v-else>
+            <PrimeVueAvatar class="w-10 h-10" label="P" size="large" shape="circle" />
+          </template>
 
           <section id="user-information" class="hidden lg:flex flex-col w-36">
             <h6 class="font-semibold text-black text-sm">
@@ -108,12 +154,14 @@ const handleLogout = () => {
             </template>
           </PrimeVueButton>
 
-          <PrimeVueButton class="w-full px-4 py-3" variant="text">
+          <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="popoverLocalization.toggle($event)">
             <template #default>
               <section id="content" class="flex items-center gap-2 w-full">
                 <span class="font-normal text-base text-text-primary">
                   Change Language :
-                  <span class="text-primary"> English </span>
+                  <span class="text-primary">
+                    {{ language === 'en' ? '🇺🇸 English' : '🇮🇩 Indonesia' }}
+                  </span>
                 </span>
               </section>
             </template>
@@ -133,7 +181,30 @@ const handleLogout = () => {
         </section>
       </PrimeVuePopover>
 
-      <AppBaseSvg name="pin-primary" class="hidden lg:block !w-6 !h-6" />
+      <PrimeVuePopover
+        ref="popoverLocalization"
+        :pt="{
+          content: 'p-0',
+        }"
+      >
+        <section id="popover-content" class="flex flex-col">
+          <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="onChangeLanguage('en')">
+            <template #default>
+              <section id="content" class="flex items-center gap-2 w-full">
+                <span class="font-normal text-base text-text-primary">🇺🇸 English</span>
+              </section>
+            </template>
+          </PrimeVueButton>
+
+          <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="onChangeLanguage('id')">
+            <template #default>
+              <section id="content" class="flex items-center gap-2 w-full">
+                <span class="font-normal text-base text-text-primary">🇮🇩 Indonesia</span>
+              </section>
+            </template>
+          </PrimeVueButton>
+        </section>
+      </PrimeVuePopover>
     </section>
   </nav>
 </template>

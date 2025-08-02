@@ -8,8 +8,12 @@ import type { IAccountStoreDetailProvided } from '../../interfaces';
 /**
  * @description Inject all the data and methods what we need
  */
-const { accountStoreDetail_listAvailableFloor, accountStoreDetail_selectedFloor, accountStoreDetail_storeTables } =
-  inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
+const {
+  accountStoreDetail_listAvailableFloor,
+  accountStoreDetail_selectedFloor,
+  accountStoreDetail_selectedTableLayout,
+  accountStoreDetail_storeTables,
+} = inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
 </script>
 
 <template>
@@ -18,7 +22,10 @@ const { accountStoreDetail_listAvailableFloor, accountStoreDetail_selectedFloor,
       <h6 class="font-semibold text-black text-lg w-fit">Table</h6>
     </section>
 
-    <PrimeVueButton class="bg-primary border-none w-fit px-5">
+    <PrimeVueButton
+      v-if="accountStoreDetail_listAvailableFloor.length > 0"
+      class="bg-primary border-none w-fit px-5"
+    >
       <template #default>
         <section class="flex items-center gap-2">
           <AppBaseSvg name="plus-line-white" />
@@ -46,12 +53,10 @@ const { accountStoreDetail_listAvailableFloor, accountStoreDetail_selectedFloor,
       </section>
     </header>
 
-    <section
-      v-for="(storeTable, storeTableIndex) in accountStoreDetail_storeTables"
-      :key="`store-table-${storeTableIndex}`"
-    >
-      <AccountStoreTableLayout :store-table="storeTable" />
-    </section>
+    <AccountStoreTableLayout
+      v-if="accountStoreDetail_selectedTableLayout"
+      :store-table="accountStoreDetail_selectedTableLayout"
+    />
   </section>
 
   <template v-else>

@@ -79,7 +79,8 @@ const toggleSubMenu = (categoryIndex: number, menuIndex: number) => {
     <section id="content" class="flex flex-col gap-2 w-full pb-2 border-b border-solid border-grayscale-10">
       <section
         id="outlet"
-        class="flex items-center gap-2 p-2 rounded-md bg-white border border-solid border-grayscale-10"
+        class="flex items-center gap-2 p-2 rounded-md bg-white border border-solid border-grayscale-10 cursor-pointer basic-smooth-animation hover:bg-grayscale-10"
+        @click="() => $router.push({ name: 'outlet.list' })"
       >
         <AppBaseSvg name="store" class="!w-5 !h-5" />
         <section id="outlet-information" class="flex flex-col">

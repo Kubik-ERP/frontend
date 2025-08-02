@@ -3,6 +3,7 @@ import { ACCOUNT_BANK_ATTACH_ENDPOINT, ACCOUNT_USER_BANKS_ENDPOINT } from '../co
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
+import type { IOutlet } from '@/modules/outlet/interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
@@ -12,6 +13,7 @@ export const useAccountStore = defineStore('account', {
   state: () => ({
     account_bank: null,
     account_isLoading: false,
+    account_selectedOutlet: null as IOutlet | null,
   }),
   getters: {
     /**
@@ -104,5 +106,10 @@ export const useAccountStore = defineStore('account', {
         this.account_isLoading = false;
       }
     },
+  },
+  persist: {
+    key: 'account',
+    pick: ['account_selectedOutlet'],
+    storage: localStorage,
   },
 });

@@ -14,6 +14,7 @@ const {
   accountEditProfile_formData,
   accountEditProfile_formValidations,
   accountEditProfile_isLoading,
+  accountEditProfile_onSubmit,
   accountEditProfile_onUploadPhoto,
 } = useAccountEditProfileService();
 
@@ -24,6 +25,7 @@ provide('accountEditProfile', {
   accountEditProfile_formData,
   accountEditProfile_formValidations,
   accountEditProfile_isLoading,
+  accountEditProfile_onSubmit,
   accountEditProfile_onUploadPhoto,
 });
 </script>

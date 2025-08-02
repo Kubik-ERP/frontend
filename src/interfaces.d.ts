@@ -172,6 +172,17 @@ declare global {
     type: EToastType;
   }
 
+  interface IStoreHour {
+    openTime: Date | Date[] | (Date | null)[] | null | undefined;
+    closeTime: Date | Date[] | (Date | null)[] | null | undefined;
+  }
+
+  interface IStoreOperationalHour {
+    timeSlots: IStoreHour[];
+    day: string;
+    isOpen: boolean;
+  }
+
   /**
    * Interface for nesting configuration in Vuelidate validation.
    */
