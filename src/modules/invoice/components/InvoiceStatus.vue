@@ -25,6 +25,23 @@ const { dailySalesList_getClassOfOrderStatus, dailySalesList_getClassOfOrderType
  */
 const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_handleOtherOptions } =
   inject<IInvoiceProvided>('invoice')!;
+
+const paymentStatusLabel = computed(() => {
+  const status = INVOICE_PAYMENT_STATUS.find(f => f.id === invoice_invoiceData.value.data?.paymentStatus);
+  return status?.name ?? '';
+});
+
+const orderTypeLabel = computed(() => {
+  const type = CASHIER_ORDER_TYPE.find(f => f.code === invoice_invoiceData.value.data?.orderType);
+  return type?.label ?? '';
+});
+
+const orderStatusLabel = computed(() => {
+  const status = DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS.find(
+    f => f.value === invoice_invoiceData.value.data?.orderStatus,
+  );
+  return status?.label ?? '';
+});
 </script>
 
 <template>
@@ -65,7 +82,7 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
           'text-error-main': invoice_invoiceData.data.paymentStatus === 'refund',
         }"
       >
-        {{ INVOICE_PAYMENT_STATUS.find(f => f.id === invoice_invoiceData.data?.paymentStatus)?.name }}
+        {{ paymentStatusLabel }}
       </span>
     </PrimeVueChip>
 
@@ -121,7 +138,7 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
                 dailySalesList_getClassOfOrderType(invoice_invoiceData.data.orderType),
                 'text-xs font-normal',
               ]"
-              :label="CASHIER_ORDER_TYPE.find(f => f.code === invoice_invoiceData.data?.orderType)?.label ?? ''"
+              :label="orderTypeLabel"
             />
           </td>
         </tr>
@@ -133,10 +150,7 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
                 dailySalesList_getClassOfOrderStatus(invoice_invoiceData.data.orderStatus),
                 'text-xs font-normal',
               ]"
-              :label="
-                DAILY_SALES_LIST_TYPES_OF_ORDER_STATUS.find(f => f.value === invoice_invoiceData.data?.orderStatus)
-                  ?.label ?? ''
-              "
+              :label="orderStatusLabel"
             />
           </td>
         </tr>
@@ -144,8 +158,9 @@ const { invoice_invoiceData, invoice_otherOptions, invoice_modalPay, invoice_han
 
       <tfoot
         v-if="
-          invoice_invoiceData.data.orderStatus === 'in_progress' ||
-          invoice_invoiceData.data.orderStatus === 'placed'
+          invoice_invoiceData.data.paymentStatus === 'unpaid' &&
+          (invoice_invoiceData.data.orderStatus === 'in_progress' ||
+            invoice_invoiceData.data.orderStatus === 'placed')
         "
       >
         <tr>

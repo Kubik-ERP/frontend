@@ -74,6 +74,7 @@ export interface ICashierCategory {
   category: string;
   description: string;
   image: string;
+  pictureUrl: string;
   categoriesHasProducts: ICashierCategoryHasProduct[];
 }
 
@@ -90,6 +91,7 @@ export interface ICashierCategoriesHasProductResponse {
     description: string;
     category: string;
     image: string;
+    pictureUrl: string;
     categoriesHasProducts: ICashierCategoryHasProduct[];
   };
 }

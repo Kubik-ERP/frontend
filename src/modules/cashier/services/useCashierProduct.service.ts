@@ -30,8 +30,8 @@ export const useCashierProductService = (): ICashierProductProvided => {
   const cashierProduct_selectedView = ref<'image' | 'grid' | 'inline'>('image');
 
   const cashierProduct_productState = ref<ICashierProductState>({
-    isLoadingProduct: false,
-    isLoadingCategory: false,
+    isLoadingProduct: true,
+    isLoadingCategory: true,
     selectedCategory: '',
     searchProduct: '',
     listCategory: [],
@@ -140,6 +140,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
           category: response.data.category,
           description: response.data.description,
           image: response.data.image,
+          pictureUrl: response.data.pictureUrl,
           categoriesHasProducts: response.data.categoriesHasProducts,
         };
 

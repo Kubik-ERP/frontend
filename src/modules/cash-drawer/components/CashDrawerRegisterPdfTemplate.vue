@@ -121,7 +121,7 @@ withDefaults(defineProps<IProps>(), {
 
         <!-- Financial Summary -->
         <div style="border-bottom: 1px solid #d9d9d9; padding: 24px 0">
-          <table :key="key" style="width: 100%; font-size: 14px; border-collapse: collapse">
+          <table style="width: 100%; font-size: 14px; border-collapse: collapse">
             <tbody>
               <tr v-for="(item, key) in summaryData.financials" :key="key">
                 <td style="font-weight: normal">

@@ -17,7 +17,12 @@ import { IInvoiceProvided } from '../../interfaces';
 const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 
 const imageUrl = computed(() => {
-  return APP_BASE_BUCKET_URL + '/' + invoice_invoiceData.value.configInvoice?.companyLogoUrl || '';
+  return APP_BASE_BUCKET_URL + invoice_invoiceData.value.configInvoice?.companyLogoUrl || '';
+});
+
+const orderTypeLabel = computed(() => {
+  const type = CASHIER_ORDER_TYPE.find(f => f.code === invoice_invoiceData.value.data?.orderType);
+  return type?.label ?? '';
 });
 </script>
 <template>
@@ -81,7 +86,7 @@ const imageUrl = computed(() => {
     >
       <p id="label-order-type" class="font-normal text-black text-sm">Order Type</p>
       <p id="order-type-value" class="font-normal text-black text-sm">
-        {{ CASHIER_ORDER_TYPE.find(f => f.code === invoice_invoiceData.data?.orderType)?.label ?? '' }}
+        {{ orderTypeLabel }}
       </p>
     </section>
 
@@ -183,7 +188,12 @@ const imageUrl = computed(() => {
         <tr>
           <td class="font-normal text-black text-sm py-2">Sub Total</td>
           <td class="font-normal text-black text-sm text-center py-2">
-            {{ invoice_invoiceData.data.invoiceDetails.reduce((sum, item) => sum + item.qty, 0) }}
+            {{
+              (invoice_invoiceData.data.invoiceDetails as Array<{ qty: number }>).reduce(
+                (sum: number, item) => sum + item.qty,
+                0,
+              )
+            }}
           </td>
           <td colspan="2" class="font-normal text-black text-sm text-right py-2">
             {{
@@ -222,7 +232,7 @@ const imageUrl = computed(() => {
         <tr class="border-b border-dashed border-black">
           <td class="font-normal text-black text-sm py-2">Kembali</td>
           <td colspan="3" class="font-normal text-black text-sm text-right py-2">
-            {{ useCurrencyFormat({ data: invoice_invoiceData.data.changeAmount || 0 }) }}
+            {{ useCurrencyFormat({ data: invoice_invoiceData.data.changeAmount ?? 0 }) }}
           </td>
         </tr>
 

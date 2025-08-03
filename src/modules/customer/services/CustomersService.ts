@@ -17,9 +17,21 @@ import { required } from '@vuelidate/validators';
 
 import eventBus from '@/plugins/mitt';
 
+import { useOutletStore } from '@/modules/outlet/store';
+
 // import { required } from '@vuelidate/validators';
 
 export const useCustomerService = () => {
+  const outletStore = useOutletStore();
+
+  const storeID = outletStore.outlet_currentOutlet?.id;
+  const token = JSON.parse(localStorage.getItem('authentication') ?? '{}');
+
+  const headers = {
+    'X-STORE-ID': storeID,
+    Authorization: `Bearer ${token?.authentication_token}`,
+  };
+
   const customer_FormData = reactive<ICustomerFormData>({
     name: '',
     gender: '',
@@ -49,7 +61,9 @@ export const useCustomerService = () => {
   };
 
   const getAllCustomers = async (page: number, limit: number, search: string): Promise<ICustomerResponse> => {
-    const response = await axios.get(`${API_URL}?page=${page}&limit=${limit}&search=${search}`);
+    const response = await axios.get(`${API_URL}?page=${page}&limit=${limit}&search=${search}`,{
+      headers: headers,
+    });
     const customers: ICustomer[] = response.data.data.data.map((item: ICustomer) => ({
       id: item.id,
       name: item.name,
@@ -66,14 +80,15 @@ export const useCustomerService = () => {
 
     return {
       customers,
-      meta: response.data.data.meta
+      meta: response.data.data.meta,
     };
   };
 
   const createCustomer = async (payload: ICustomerFormData): Promise<ICustomerCreateResponse> => {
     try {
-      const response = await axios.post(API_URL, payload);
-      console.log('🚀 ~ createCustomer ~ response:', response);
+      const response = await axios.post(API_URL, payload, {
+        headers: headers,
+      });
 
       const data: ICustomer = response.data.data;
 
@@ -101,19 +116,19 @@ export const useCustomerService = () => {
   };
 
   const getCustomerByID = async (id: string): Promise<ICustomer> => {
-    const response = await axios.get(`${API_URL}/${id}`);
+    const response = await axios.get(`${API_URL}/${id}`, {
+      headers: headers,
+    });
     const customer: ICustomer = response.data.data;
-    // console.log("🚀 ~ getCustomerByID ~ customer:", customer)
-    // console.log("🚀 ~ getCustomerByID ~ response:", response)
-
     return customer;
   };
 
   const updateCustomer = async (id: string, payload: ICustomerFormData): Promise<ICustomerCreateResponse> => {
     try {
-      const response = await axios.patch(`${API_URL}/${id}`, payload);
+      const response = await axios.patch(`${API_URL}/${id}`, payload, {
+        headers: headers,
+      });
       const data: ICustomer = response.data.data.data;
-      console.log("🚀 ~ updateCustomer ~ response:", response)
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
@@ -140,7 +155,9 @@ export const useCustomerService = () => {
 
   const deleteCustomer = async (id: string): Promise<void> => {
     try {
-      const response = await axios.delete(`${API_URL}/${id}`);
+      const response = await axios.delete(`${API_URL}/${id}`, {
+        headers: headers,
+      });
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,

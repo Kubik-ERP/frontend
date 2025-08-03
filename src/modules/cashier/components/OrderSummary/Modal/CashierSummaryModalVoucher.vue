@@ -85,7 +85,13 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                   'border border-primary-border bg-primary-background':
                     cashierOrderSummary_modalVoucher.form.voucher_code === item.code,
                 }"
-                @click="cashierOrderSummary_modalVoucher.form.voucher_code = item.code"
+                @click="
+                  item.available === false
+                    ? null
+                    : cashierOrderSummary_modalVoucher.form.voucher_code === item.code
+                      ? (cashierOrderSummary_modalVoucher.form.voucher_code = '')
+                      : (cashierOrderSummary_modalVoucher.form.voucher_code = item.code)
+                "
               >
                 <div class="flex lg:flex-row flex-col items-start lg:items-center gap-2 justify-between">
                   <div class="flex flex-col gap-1">
@@ -162,7 +168,6 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               class="bg-primary w-full lg:w-fit border-none text-white py-2.5 px-8"
               type="button"
               :label="useLocalization('cashier.orderSummary.voucher.applyPromo')"
-              :disabled="!cashierOrderSummary_modalVoucher.form.voucher_code"
               @click="
                 cashierOrderSummary_modalVoucher.show = false;
                 cashierOrderSummary_handleVoucher();

@@ -575,7 +575,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       } else {
         return Promise.reject(new Error(String(error)));
       }
-    } 
+    } finally {
+      cashierOrderSummary_modalPlaceOrderDetail.value.isLoading = false
+    }
   };
 
   /**

@@ -5,6 +5,19 @@ import excludeSVG from '@/app/assets/icons/exclude.svg';
 import AddCustomerForm from '@/modules/customer/components/addCustomer/form.vue';
 import { useRouter, onBeforeRouteLeave } from 'vue-router'; // Ensure these are imported
 
+const props = defineProps({
+  isModal: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const emit = defineEmits(['close']);
+
+const handleOnClose = response => {
+  emit('close', response);
+};
+
 function leavePage() {
   hasConfirmedLeave = true;
   router.push({ name: 'customer-list' });
@@ -73,7 +86,7 @@ provide('confirmLeave', {
 <template>
   <div class="">
     <!-- AddCustomerForm listens for the isModal prop and emits a close event -->
-    <AddCustomerForm />
+    <AddCustomerForm :is-modal="props.isModal" @close="handleOnClose" />
 
     <!-- PrimeVue Dialog for "Are you sure you want to leave?" confirmation -->
     <PrimeVueDialog :visible="isLeavingModal" modal header="">

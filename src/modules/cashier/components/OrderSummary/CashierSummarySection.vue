@@ -10,6 +10,11 @@ import { AutoCompleteCompleteEvent } from 'primevue';
 import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-summary';
 import { ICashierOrderType } from '../../interfaces';
 
+// Route
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
 /**
  * @description Inject all the data and methods what we need
  */
@@ -78,6 +83,7 @@ const {
             :dropdown="true"
             class="w-full"
             placeholder="Please select Customer Name"
+            :disabled="route.name === 'cashier-order-edit'"
             :virtual-scroller-options="{
               itemSize: 50,
               step: cashierProduct_customerState.limit,

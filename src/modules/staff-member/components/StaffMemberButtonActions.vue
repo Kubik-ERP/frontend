@@ -2,24 +2,44 @@
 // Interfaces
 import type { IStaffMemberCreateEditProvided } from '../interfaces';
 
-const { staffMemberCreateEdit_isEditable, staffMemberCreateEdit_isLoading } =
-  inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
+const {
+  staffMemberCreateEdit_isEditable,
+  staffMemberCreateEdit_isLoading,
+  staffMemberCreateEdit_onCancel,
+  staffMemberCreateEdit_onSubmit,
+  staffMemberCreateEdit_onDelete,
+} = inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
 </script>
 
 <template>
-  <section id="button-actions" class="flex items-center mt-4 gap-4">
+  <section class="flex items-center justify-between mt-4">
+    <div id="button-actions" class="flex items-center gap-4">
+      <PrimeVueButton
+        class="border-blue-primary bg-transparent font-semibold text-sm text-blue-primary w-36 basic-smooth-animation hover:bg-grayscale-10"
+        label="Cancel"
+        severity="secondary"
+        variant="outlined"
+        @click="staffMemberCreateEdit_onCancel"
+      />
+  
+      <PrimeVueButton
+        class="bg-blue-primary border-none text-sm py-[10px] px-4 w-fit"
+        :label="staffMemberCreateEdit_isEditable ? 'Save' : 'Add Staff Member'"
+        type="submit"
+        :loading="staffMemberCreateEdit_isLoading"
+        @click="staffMemberCreateEdit_onSubmit"
+      />
+  
+    </div>
     <PrimeVueButton
-      class="border-blue-primary bg-transparent font-semibold text-sm text-blue-primary w-36 basic-smooth-animation hover:bg-grayscale-10"
-      label="Cancel"
-      severity="secondary"
-      variant="outlined"
-    />
-
-    <PrimeVueButton
-      class="bg-blue-primary border-none text-sm py-[10px] px-4 w-fit"
-      :label="staffMemberCreateEdit_isEditable ? 'Save' : 'Add Staff Member'"
-      type="submit"
-      :loading="staffMemberCreateEdit_isLoading"
-    />
+      v-if="staffMemberCreateEdit_isEditable"
+      label="Delete Staff Member"
+      class="py-2 border-2 border-none cursor-pointer  text-red-500 bg-transparent font-semibold"
+      @click="staffMemberCreateEdit_onDelete"
+    >
+      <template #icon>
+        <AppBaseSvg name="trash" class="!w-5 !h-5" />
+      </template>
+    </PrimeVueButton>
   </section>
 </template>

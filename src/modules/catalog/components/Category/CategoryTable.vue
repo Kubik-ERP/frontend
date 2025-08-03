@@ -182,9 +182,11 @@ const visiblePages = computed(() => {
 });
 
 const handleSearch = () => {
-  router.push({ query: { page: '1' } });
-  page.value = 1;
-  loadCategories();
+  setTimeout(() => {
+    router.push({ query: { page: '1' } });
+    page.value = 1;
+    loadCategories();
+  }, 300); // Debounce search input
 };
 
 function goToPage(p: number) {
@@ -371,7 +373,12 @@ onMounted(() => {
             <img :src="editSVG" alt="" />
           </template>
         </PrimeVueButton>
-        <PrimeVueButton variant="text" :label="useLocalization('popover.delete')" class="text-red-500" @click="isDeleteOpen = true">
+        <PrimeVueButton
+          variant="text"
+          :label="useLocalization('popover.delete')"
+          class="text-red-500"
+          @click="isDeleteOpen = true"
+        >
           <template #icon>
             <img :src="deleteSVG" alt="" />
           </template>
@@ -380,10 +387,16 @@ onMounted(() => {
     </PrimeVuePopover>
 
     <!-- Add Dialog -->
-    <PrimeVueDialog v-model:visible="isAddOpen" modal :header="useLocalization('modal.title.add')" class="w-[45rem]" @hide="resetForm()">
+    <PrimeVueDialog
+      v-model:visible="isAddOpen"
+      modal
+      :header="useLocalization('modal.title.add')"
+      class="w-[45rem]"
+      @hide="resetForm()"
+    >
       <form @submit.prevent="handleAddCategory">
         <div class="flex items-center flex-col">
-          <p>{{useLocalization('modal.photoLabel')}}</p>
+          <p>{{ useLocalization('modal.photoLabel') }}</p>
           <img
             class="rounded-lg mt-2 w-64 h-64 object-cover"
             :src="category_formData.imagePreview || 'https://placehold.co/250'"
@@ -424,7 +437,10 @@ onMounted(() => {
           />
         </AppBaseFormGroup>
         <div class="mb-8">
-          <label for="description">{{useLocalization('modal.notes.label')}} <span class="text-gray-300">{{ useLocalization('modal.notes.optional') }}</span></label>
+          <label for="description"
+            >{{ useLocalization('modal.notes.label') }}
+            <span class="text-gray-300">{{ useLocalization('modal.notes.optional') }}</span></label
+          >
           <PrimeVueTextarea v-model="category_formData.description" auto-resize rows="5" class="w-full" />
         </div>
         <div class="flex justify-end gap-2">
@@ -458,7 +474,7 @@ onMounted(() => {
     >
       <form @submit.prevent="handleEditCategory">
         <div class="flex items-center flex-col">
-          <p>{{useLocalization('modal.photoLabel')}}</p>
+          <p>{{ useLocalization('modal.photoLabel') }}</p>
           <img
             class="rounded-lg mt-2 w-64 h-64 object-cover"
             :src="category_formData.imagePreview || 'https://placehold.co/250'"
@@ -499,7 +515,10 @@ onMounted(() => {
           />
         </AppBaseFormGroup>
         <div class="mb-8">
-          <label for="description">{{useLocalization('modal.notes.label')}} <span class="text-gray-300">{{ useLocalization('modal.notes.optional') }}</span></label>
+          <label for="description"
+            >{{ useLocalization('modal.notes.label') }}
+            <span class="text-gray-300">{{ useLocalization('modal.notes.optional') }}</span></label
+          >
           <PrimeVueTextarea v-model="category_formData.description" auto-resize rows="5" class="w-full" />
         </div>
         <div class="flex justify-end gap-2">
@@ -509,7 +528,7 @@ onMounted(() => {
             variant="outlined"
             class="w-48"
             @click="
-              isAddOpen = false;
+              isEditOpen = false;
               resetForm();
             "
           />
@@ -536,7 +555,11 @@ onMounted(() => {
               class="w-40 text-red-500 bg-transparent border-none"
               @click="selected && handleDeleteCategory(selected.id)"
             />
-            <PrimeVueButton :label="useLocalization('modal.cancelButton')" class="w-40 bg-primary border-primary" @click="isDeleteOpen = false" />
+            <PrimeVueButton
+              :label="useLocalization('modal.cancelButton')"
+              class="w-40 bg-primary border-primary"
+              @click="isDeleteOpen = false"
+            />
           </div>
         </div>
       </template>

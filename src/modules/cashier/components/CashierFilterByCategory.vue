@@ -46,6 +46,10 @@ const moveDragging = (e: PointerEvent) => {
   const walk = (x - startX) * 1.5;
   containerRef.value.scrollLeft = scrollLeft - walk;
 };
+
+const imageUrl = (image: string) => {
+  return APP_BASE_BUCKET_URL + image;
+};
 </script>
 
 <template>
@@ -77,7 +81,7 @@ const moveDragging = (e: PointerEvent) => {
         <template #content>
           <section id="cashier-card-content" class="flex flex-col gap-[3px]">
             <AppBaseImage
-              :src="category.image"
+              :src="imageUrl(category.pictureUrl)"
               :alt="category.category"
               class="h-10 w-10 rounded-full object-cover pointer-events-none"
             />

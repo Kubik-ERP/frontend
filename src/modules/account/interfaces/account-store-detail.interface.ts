@@ -13,6 +13,7 @@ export interface IOperationalDay {
 
 export interface IAccountStoreDetailProvided {
   accountStoreDetail_activeTab: globalThis.Ref<string>;
+  accountStoreTableConfiguration_fetchOutletStoreTable: () => Promise<void>;
   accountStoreDetail_fetchOutletListOperationalHours: () => Promise<void>;
   accountStoreDetail_isLoadingOfOutlet: globalThis.Ref<boolean>;
   accountStoreDetail_listAvailableFloor: globalThis.Ref<IDropdownItem[]>;
