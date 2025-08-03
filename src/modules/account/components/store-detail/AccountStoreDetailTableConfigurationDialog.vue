@@ -98,7 +98,7 @@ const {
             $router.push({
               name: 'account.store.table-configuration',
               params: {
-                id: accountStoreDetail_selectedOutlet.id,
+                id: accountStoreDetail_selectedOutlet?.id,
               },
             })
           "
