@@ -146,7 +146,11 @@ const onChangeLanguage = (selectedLanguage: string) => {
         }"
       >
         <section id="popover-content" class="flex flex-col">
-          <PrimeVueButton class="w-full px-4 py-3" variant="text">
+          <PrimeVueButton
+            class="w-full px-4 py-3"
+            variant="text"
+            @click="() => $router.push({ name: 'account.index' })"
+          >
             <template #default>
               <section id="content" class="flex items-center gap-2 w-full">
                 <span class="font-normal text-base text-text-primary">My Account</span>

@@ -18,7 +18,6 @@ import type { IAccountStoreDetailProvided, IAccountStoreTable } from '../interfa
 import eventBus from '@/plugins/mitt';
 
 // Stores
-import { useAccountStore } from '../store';
 import { useOutletStore } from '@/modules/outlet/store';
 
 /**
@@ -28,11 +27,14 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
   /**
    * @description Injected variables
    */
-  const accountStore = useAccountStore();
   const outletStore = useOutletStore();
-  const { account_selectedOutlet } = storeToRefs(accountStore);
-  const { outlet_isLoading, outlet_listAvailableFloor, outlet_operationalHours, outlet_tables } =
-    storeToRefs(outletStore);
+  const {
+    outlet_isLoading,
+    outlet_listAvailableFloor,
+    outlet_operationalHours,
+    outlet_selectedOutletOnAccountPage,
+    outlet_tables,
+  } = storeToRefs(outletStore);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
@@ -153,7 +155,7 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     accountStoreDetail_onShowDialogDetailTable,
     accountStoreDetail_operationalHours: outlet_operationalHours,
     accountStoreDetail_selectedFloor,
-    accountStoreDetail_selectedOutlet: account_selectedOutlet,
+    accountStoreDetail_selectedOutlet: outlet_selectedOutletOnAccountPage,
     accountStoreDetail_selectedTable,
     accountStoreDetail_selectedTableLayout,
     accountStoreDetail_storeTables: outlet_tables,

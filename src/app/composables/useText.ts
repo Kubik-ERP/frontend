@@ -102,16 +102,8 @@ export const useRemoveSpace = (keywords: string) => {
  * @description Handle format date
  * - yyyy: year (e.g. 2025)
  * - mm: month (01-12)
- * - dd: day (01-31)
- * - hh: hour (00-23)
- * - MM: minutes (00-59)
- * - ss: seconds (00-59)
- * - am/pm: am or pm (12-hour format)
- */
-/**
- * @description Handle format date
- * - yyyy: year (e.g. 2025)
- * - mm: month (01-12)
+ * - MMM: short month names (Jan, Feb, Mar, etc.)
+ * - MMMM: full month names (January, February, March, etc.)
  * - dd: day (01-31)
  * - hh: hour (00-23 for 24-hour, 01-12 for 12-hour with am/pm)
  * - MM: minutes (00-59)
@@ -147,8 +139,27 @@ export const useFormatDate = (
   const ampm = hours >= 12 ? 'PM' : 'AM';
   const hours12 = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
 
+  // Month names arrays
+  const shortMonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const fullMonthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
   const map: Record<string, string | number> = {
     yyyy: date.getFullYear(),
+    MMMM: fullMonthNames[date.getMonth()],
+    MMM: shortMonthNames[date.getMonth()],
     mm: String(date.getMonth() + 1).padStart(2, '0'),
     dd: String(date.getDate()).padStart(2, '0'),
     hh: is12HourFormat ? String(hours12).padStart(2, '0') : String(hours).padStart(2, '0'),
@@ -157,7 +168,8 @@ export const useFormatDate = (
     'am/pm': ampm,
   };
 
-  return format.replace(/yyyy|mm|dd|hh|MM|ss|am\/pm/g, matched => map[matched].toString());
+  // Replace patterns in order of specificity (longer patterns first)
+  return format.replace(/yyyy|MMMM|MMM|mm|dd|hh|MM|ss|am\/pm/g, matched => map[matched].toString());
 };
 
 export const useFormatDateLocal = (date: string | Date | number) => {

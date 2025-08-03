@@ -10,7 +10,7 @@ import AppBaseSvg from '../base/AppBaseSvg.vue';
         <img src="@/app/assets/images/app-icon.png" alt="app-icon" class="w-fit h-fit" />
         <h3 class="font-bold text-base">Kubik POS</h3>
 
-        <AppBaseSvg name="chevron-left" class="w-4 h-4 cursor-pointer" />
+        <AppBaseSvg name="chevron-left" class="w-4 h-4 cursor-pointer" @click="$router.back()" />
       </section>
     </nav>
 

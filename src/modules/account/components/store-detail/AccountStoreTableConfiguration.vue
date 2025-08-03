@@ -11,6 +11,7 @@ import type { IAccountStoreDetailProvided } from '../../interfaces';
 const {
   accountStoreDetail_listAvailableFloor,
   accountStoreDetail_selectedFloor,
+  accountStoreDetail_selectedOutlet,
   accountStoreDetail_selectedTableLayout,
   accountStoreDetail_storeTables,
 } = inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
@@ -25,6 +26,14 @@ const {
     <PrimeVueButton
       v-if="accountStoreDetail_listAvailableFloor.length > 0"
       class="bg-primary border-none w-fit px-5"
+      @click="
+        $router.push({
+          name: 'account.store.table-configuration',
+          params: {
+            id: accountStoreDetail_selectedOutlet.id,
+          },
+        })
+      "
     >
       <template #default>
         <section class="flex items-center gap-2">

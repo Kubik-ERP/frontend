@@ -31,7 +31,7 @@ httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     config.headers.Authorization = `Bearer ${authentication_token.value}`;
   }
 
-  if (outlet_selectedOutletOnAccountPage?.value) {
+  if (outlet_selectedOutletOnAccountPage.value) {
     config.headers['X-STORE-ID'] = outlet_selectedOutletOnAccountPage.value.id;
   } else if (outlet_currentOutlet?.value) {
     config.headers['X-STORE-ID'] = outlet_currentOutlet.value.id;

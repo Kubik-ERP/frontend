@@ -31,7 +31,6 @@ export const useAccountService = (): IAccountProvided => {
   const accountStore = useAccountStore();
   const outletStore = useOutletStore();
   const router = useRouter();
-  const { account_selectedOutlet } = storeToRefs(accountStore);
   const { outlet_isLoading, outlet_profile, outlet_selectedOutletOnAccountPage } = storeToRefs(outletStore);
   const { httpAbort_registerAbort } = useHttpAbort();
 
@@ -148,8 +147,7 @@ export const useAccountService = (): IAccountProvided => {
    * @description Handle business logic for directing user to detail outlet page
    */
   const account_onDirectToDetailOutlet = (outlet: IOutlet): void => {
-    account_selectedOutlet.value = outlet;
-    outlet_selectedOutletOnAccountPage!.value = outlet;
+    outlet_selectedOutletOnAccountPage.value = outlet;
 
     router.push({
       name: 'account.store.detail',

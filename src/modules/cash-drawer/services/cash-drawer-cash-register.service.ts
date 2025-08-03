@@ -237,11 +237,12 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
   const cashDrawerCashRegister_onExportToPdf = (element: HTMLElement): void => {
     // Opsi untuk html2pdf
     const options = {
-      margin: 0.5,
-      filename: `register-summary-${new Date().toISOString().slice(0, 10)}.pdf`,
+      margin: 0,
+      filename: `[Backoffice] Cash Drawer Summary.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true },
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+      enableLinks: true,
     };
 
     console.log('Exporting to PDF...');

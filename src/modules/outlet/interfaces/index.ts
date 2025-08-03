@@ -87,5 +87,5 @@ export interface IOutletStateStore {
   outlet_operationalHours: IOutletOperationalHour[];
   outlet_profile: IOutletProfile | null;
   outlet_tables: IOutletTable[];
-  outlet_selectedOutletOnAccountPage?: IOutlet | null;
+  outlet_selectedOutletOnAccountPage: IOutlet | null;
 }

@@ -18,15 +18,18 @@ const {
 </script>
 
 <template>
-  <form class="form-group flex flex-col gap-10 w-full max-w-md" @submit.prevent="authenticationSignUp_onSubmit">
-    <section id="greeting-text" class="flex items-end justify-between">
+  <form
+    class="form-group flex flex-col gap-10 w-full max-w-md py-14"
+    @submit.prevent="authenticationSignUp_onSubmit"
+  >
+    <section id="greeting-text" class="flex items-end justify-between w-full">
       <section id="text-information" class="flex flex-col gap-3">
         <img src="@/app/assets/images/app-logo.png" alt="app-logo" class="w-fit h-fit" />
         <h1 class="font-bold text-2xl leading-8">Create Account</h1>
       </section>
 
       <PrimeVueButton
-        class="w-fit px-4 py-2 border-blue-primary text-blue-primary text-sm font-bold"
+        class="w-fit px-4 py-2 border-blue-primary text-blue-primary text-sm font-bold min-w-20"
         label="Sign In"
         severity="secondary"
         variant="outlined"

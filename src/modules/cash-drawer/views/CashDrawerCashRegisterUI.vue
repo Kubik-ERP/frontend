@@ -8,6 +8,15 @@ import CashDrawerRegisterPdfTemplate from '../components/CashDrawerRegisterPdfTe
 // Services
 import { useCashDrawerCashRegisterService } from '../services/cash-drawer-cash-register.service';
 
+// Stores
+import { useOutletStore } from '@/modules/outlet/store';
+
+/**
+ * @description Injected variables
+ */
+const outletStore = useOutletStore();
+const { outlet_currentOutlet } = storeToRefs(outletStore);
+
 /**
  * @description Destructure all the data and methods what we need
  */
@@ -74,11 +83,12 @@ const pdfTemplateRef = ref<InstanceType<typeof CashDrawerRegisterPdfTemplate> | 
 const dummySummaryData = computed(() => {
   const detail = cashDrawerCashRegister_detail.value;
   // Format yang benar untuk tanggal dan waktu
-  const dateFormat = 'dd/MM/yyyy';
+  // Format date like this, 24 July, 2025
+  const dateFormat = 'dd MMMM, yyyy';
   const timeFormat = 'HH:mm';
 
   return {
-    storeName: 'KUBIK POS',
+    storeName: outlet_currentOutlet.value?.name ?? 'KUBIK',
     staffName: detail?.employees.name ?? 'Samantha',
     openRegisterDate: useFormatDate(detail?.createdAt ?? '2025-07-24T09:00:00', dateFormat),
     openRegisterTime: useFormatDate(detail?.createdAt ?? '2025-07-24T09:00:00', timeFormat),
@@ -119,7 +129,7 @@ const dummySummaryData = computed(() => {
  * @throws {Error} Logs an error to the console if the PDF template element is not available.
  */
 function handleExport() {
-  console.log('fired')
+  console.log('fired');
 
   if (pdfTemplateRef.value?.$el) {
     cashDrawerCashRegister_onExportToPdf(pdfTemplateRef.value.$el);

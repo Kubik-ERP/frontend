@@ -8,8 +8,11 @@ import Qrcode from 'qrcode.vue';
 /**
  * @description Inject all the data and methods what we need
  */
-const { accountStoreDetail_onCloseDialogDetailTable, accountStoreDetail_selectedTable } =
-  inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
+const {
+  accountStoreDetail_onCloseDialogDetailTable,
+  accountStoreDetail_selectedOutlet,
+  accountStoreDetail_selectedTable,
+} = inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
 </script>
 
 <template>
@@ -91,6 +94,14 @@ const { accountStoreDetail_onCloseDialogDetailTable, accountStoreDetail_selected
           class="bg-blue-primary border-none text-base text-center py-3 w-full h-full"
           severity="secondary"
           variant="outlined"
+          @click="
+            $router.push({
+              name: 'account.store.table-configuration',
+              params: {
+                id: accountStoreDetail_selectedOutlet.id,
+              },
+            })
+          "
         >
           <template #default>
             <section id="content" class="flex items-center justify-center gap-2 w-full">

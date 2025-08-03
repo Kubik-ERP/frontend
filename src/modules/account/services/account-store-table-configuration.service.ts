@@ -7,13 +7,14 @@ import {
 } from '../constants';
 
 // Interfaces
-import {
+import type {
   IAccountStoreTable,
   IAccountStoreTableConfigurationFormData,
   IAccountStoreTableConfigurationFormDataOfAddTable,
-  type IAccountStoreTableConfigurationFormDataOfAddFloor,
-  type IAccountStoreTableConfigurationProvided,
+  IAccountStoreTableConfigurationFormDataOfAddFloor,
+  IAccountStoreTableConfigurationProvided,
 } from '../interfaces';
+import { IOutletTable } from '@/modules/outlet/interfaces';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -36,6 +37,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
   const route = useRoute();
   const router = useRouter();
   const { httpAbort_registerAbort } = useHttpAbort();
+  const { outlet_selectedOutletOnAccountPage } = storeToRefs(outletStore);
 
   /**
    * @description Reactive data binding
@@ -61,8 +63,10 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
       isEnableQrCode: false,
     });
   const accountStoreTableConfiguration_existingFloorName = ref<string>('');
+  // const accountStoreTableConfiguration_existingStoreTableId = ref<string>('');
   const accountStoreTableConfiguration_isAlreadyHaveTable = ref(false);
-  const accountStoreTableConfiguration_isEditableMode = ref(true);
+  const accountStoreTableConfiguration_isEditableMode = ref(false);
+  const accountStoreTableConfiguration_isUsingPutMethod = ref(false);
   const accountStoreTableConfiguration_isShowDialogExitConfirmation = ref(false);
   const accountStoreTableConfiguration_lists = ref<IAccountStoreTable[]>([]);
 
@@ -175,7 +179,10 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
         ...httpAbort_registerAbort(ACCOUNT_STORE_TABLE_LIST_REQUEST),
       });
 
-      console.log('Fetched store tables:', result);
+      if (result.data.length > 0) {
+        accountStoreTableConfiguration_isUsingPutMethod.value = true;
+        accountStoreTableConfiguration_onMappingExistingTableData(result.data);
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -188,25 +195,23 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
   /**
    * @description Handle fetch api outlet. We call the fetchOutlet_updateStoreTable function from the store to handle the request.
    */
-  // const accountStoreTableConfiguration_fetchUpdateStoreTable = async (
-  //   tableId: string,
-  // ): Promise<void> => {
-  //   try {
-  //     await outletStore.fetchOutlet_updateStoreTable(
-  //       route.params.id as string,
-  //       tableId,
-  //       accountStoreTableConfiguration_formData,
-  //       {
-  //         ...httpAbort_registerAbort(ACCOUNT_STORE_TABLE_DELETE_REQUEST),
-  //       });
-  //   } catch (error: unknown) {
-  //     if (error instanceof Error) {
-  //       return Promise.reject(error);
-  //     } else {
-  //       return Promise.reject(new Error(String(error)));
-  //     }
-  //   }
-  // }
+  const accountStoreTableConfiguration_fetchUpdateStoreTable = async (): Promise<void> => {
+    try {
+      await outletStore.fetchOutlet_updateStoreTable(
+        outlet_selectedOutletOnAccountPage.value!.id,
+        accountStoreTableConfiguration_formData,
+        {
+          ...httpAbort_registerAbort(ACCOUNT_STORE_TABLE_DELETE_REQUEST),
+        },
+      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
 
   /**
    * @description Handle business logic for creating a new floor configuration form data
@@ -386,6 +391,18 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
       accountStoreTableConfiguration_isEditableMode.value = false;
       accountStoreTableConfiguration_formValidationsOfAddTable.value.$reset();
     }
+  };
+
+  /**
+   * @description Handle business logic for mapping the existing table data on database to the form
+   */
+  const accountStoreTableConfiguration_onMappingExistingTableData = (tables: IOutletTable[]) => {
+    tables.forEach(table => {
+      accountStoreTableConfiguration_formData.configurations.push({
+        floorName: table.floorName,
+        tables: table.storeTables,
+      });
+    });
   };
 
   /**
@@ -632,16 +649,11 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
    */
   const accountStoreTableConfiguration_onSubmit = async (): Promise<void> => {
     try {
-      console.log('Submitting table configurations:', accountStoreTableConfiguration_formData);
-      accountStoreTableConfiguration_formValidations.value.$touch();
-
-      console.log('Form validations:', accountStoreTableConfiguration_formValidations.value);
-
-      // if (accountStoreTableConfiguration_formValidations.value.$invalid) {
-      //   return;
-      // } ! UNCOMMENT THIS LINE TO MORE SAFELY VALIDATE THE FORM
-
-      await accountStoreTableConfiguration_fetchOutletCreateNewStoreTable();
+      if (accountStoreTableConfiguration_isUsingPutMethod.value) {
+        await accountStoreTableConfiguration_fetchUpdateStoreTable();
+      } else {
+        await accountStoreTableConfiguration_fetchOutletCreateNewStoreTable();
+      }
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
