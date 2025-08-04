@@ -95,8 +95,6 @@ export const useStaffMemberStore = defineStore('staff-member', {
       this.staffMember_isLoading = true;
 
       try {
-        // console.log('Creating new staff member with payload:', payload); // Debugging log
-        // Call the API to create a new staff member
         const response = await httpClient.post<unknown>(STAFF_MEMBER_BASE_ENDPOINT, payload, {
           ...requestConfigurations,
         });
@@ -191,8 +189,6 @@ export const useStaffMemberStore = defineStore('staff-member', {
           params,
           ...requestConfigurations,
         });
-        console.log(params);
-
         this.staffMember_lists = response.data.data;
 
         return Promise.resolve(response.data);

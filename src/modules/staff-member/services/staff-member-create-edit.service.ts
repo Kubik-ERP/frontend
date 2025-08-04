@@ -8,11 +8,10 @@ import {
   STAFF_MEMBER_TYPES_OF_USER_PERMISSIONS,
 } from '../constants';
 
-import { LIST_OF_DAYS } from '@/app/constants/day.constant';
 
 // Interfaces
 import type { FileUploadSelectEvent } from 'primevue';
-import type { IStaffMemberCreateEditFormData, IStaffMemberCreateEditProvided } from '../interfaces';
+import type { IStaffMemberCreateEditFormData, IStaffMemberCreateEditProvided, IstaffHour } from '../interfaces';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -41,6 +40,39 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    * @description Reactive data binding
    */
   const staffMemberCreateEdit_commisionType = ref<'PRODUCT' | 'VOUCHER'>('PRODUCT');
+  // const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
+  //   name: 'Ahmad',
+  //   email: 'ahmad@kubik.com',
+  //   phoneCode: '+62',
+  //   phoneNumber: '81234567890',
+  //   image: null,
+  //   imagePreview: null, // This will hold the preview URL of the image
+  //   startDate: new Date(),
+  //   endDate: (() => {
+  //     const d = new Date();
+  //     d.setDate(d.getDate() + 30);
+  //     return d;
+  //   })(), // Default to 30 days from now,
+  //   gender: 'male',
+  //   title: 'Admin',
+  //   permission: 'BASIC',
+  //   socialMedia: [],
+  //   shift: STAFF_INITIAL_VALUES_OF_WORKING_HOURS,
+  //   comissions: {
+  //     productComission: {
+  //       defaultComission: null,
+  //       defaultComissionType: null,
+  //       isAllItemsHaveDefaultComission: null,
+  //       productItems: [],
+  //     },
+  //     voucherCommission: {
+  //       defaultComission: null,
+  //       defaultComissionType: null,
+  //       isAllVouchersHaveDefaultComission: null,
+  //       voucherItems: [],
+  //     },
+  //   },
+  // });
   const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
     name: null,
     email: null,
@@ -54,12 +86,107 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     title: null,
     permission: null,
     socialMedia: [],
-    shift: LIST_OF_DAYS.map(day => ({
-      day: day.value === null ? null : String(day.value),
-      start_time: null,
-      end_time: null,
-      isActive: false,
-    })),
+    shift: [
+      {
+        timeSlots: [
+          {
+            startTime: new Date('2025-07-31T01:30:00.000Z'),
+            endTime: new Date('2025-07-31T02:30:00.000Z'),
+          },
+          {
+            startTime: new Date('2025-07-31T03:30:00.000Z'),
+            endTime: new Date('2025-07-31T04:30:00.000Z'),
+          },
+          {
+            startTime: new Date('2025-07-31T05:30:00.000Z'),
+            endTime: new Date('2025-07-31T06:30:00.000Z'),
+          },
+        ],
+        day: 'Sunday',
+        isActive: true,
+      },
+      {
+        timeSlots: [
+          {
+            startTime: new Date('2025-07-31T01:30:00.000Z'),
+            endTime: new Date('2025-07-31T02:30:00.000Z'),
+          },
+          {
+            startTime: new Date('2025-07-31T05:30:00.000Z'),
+            endTime: new Date('2025-07-31T06:30:00.000Z'),
+          },
+        ],
+        day: 'Monday',
+        isActive: true,
+      },
+      {
+        timeSlots: [
+          {
+            startTime: new Date('2025-07-31T01:30:00.000Z'),
+            endTime: new Date('2025-07-31T02:30:00.000Z'),
+          },
+          {
+            startTime: new Date('2025-07-31T05:30:00.000Z'),
+            endTime: new Date('2025-07-31T06:30:00.000Z'),
+          },
+        ],
+        day: 'Tuesday',
+        isActive: true,
+      },
+      {
+        timeSlots: [
+          {
+            startTime: new Date('2025-07-31T01:30:00.000Z'),
+            endTime: new Date('2025-07-31T02:30:00.000Z'),
+          },
+        ],
+        day: 'Wednesday',
+        isActive: true,
+      },
+      {
+        timeSlots: [
+          {
+            startTime: new Date('2025-07-31T01:30:00.000Z'),
+            endTime: new Date('2025-07-31T02:30:00.000Z'),
+          },
+        ],
+        day: 'Thursday',
+        isActive: true,
+      },
+      {
+        timeSlots: [
+          {
+            startTime: new Date('2025-07-31T01:30:00.000Z'),
+            endTime: new Date('2025-07-31T02:30:00.000Z'),
+          },
+        ],
+        day: 'Friday',
+        isActive: true,
+      },
+      {
+        timeSlots: [
+          {
+            startTime: new Date('2025-07-31T01:30:00.000Z'),
+            endTime: new Date('2025-07-31T02:30:00.000Z'),
+          },
+          {
+            startTime: new Date('2025-07-31T05:30:00.000Z'),
+            endTime: new Date('2025-07-31T06:30:00.000Z'),
+          },
+          {
+            startTime: new Date('2025-07-31T07:30:00.000Z'),
+            endTime: new Date('2025-07-31T08:30:00.000Z'),
+          },
+          {
+            startTime: new Date('2025-07-31T09:30:00.000Z'),
+            endTime: new Date('2025-07-31T10:30:00.000Z'),
+          },
+        ],
+        day: 'Saturday',
+        isActive: true,
+      },
+    ],
+
     comissions: {
       productComission: {
         defaultComission: null,
@@ -234,19 +361,56 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         // Handle the working hours data
         // console.log('response.data.employeesShift', response.data.employeesShift);
         // Map the employeesShift to the formData.shift structure
-        staffMemberCreateEdit_formData.shift = response.data.employeesShift.map(shift => ({
-          day: shift.days,
-          start_time: shift.startTime ? new Date(shift.startTime) : null,
-          end_time: shift.endTime ? new Date(shift.endTime) : null,
-          isActive:
-            shift.startTime !== '' && shift.endTime !== '' && shift.startTime !== null && shift.endTime !== null,
-        }));
+        // 1. Group all shifts from the backend by their day for efficient lookup.
+        // We use a Map with a case-insensitive key (e.g., 'MONDAY').
+        const shiftsByDay = new Map();
+
+        for (const shift of response.data.employeesShift) {
+          if (shift.days) {
+            const dayKey = String(shift.days).toUpperCase();
+            if (!shiftsByDay.has(dayKey)) {
+              shiftsByDay.set(dayKey, []);
+            }
+            shiftsByDay.get(dayKey)!.push(shift);
+          }
+        }
+
+        staffMemberCreateEdit_formData.shift = LIST_OF_DAYS.map(dayInfo => {
+          const dayKey = String(dayInfo.value).toUpperCase();
+          const existingShifts = shiftsByDay.get(dayKey);
+
+          if (existingShifts && existingShifts.length > 0) {
+            // Check if any shift for this day has both openTime and endTime
+            const hasActiveShift = existingShifts.some((shift: IstaffHour) => {
+              return !!shift.startTime && !!shift.endTime;
+            });
+
+            return {
+              day: String(dayInfo.value),
+              isActive: hasActiveShift,
+              timeSlots: existingShifts.map((shift: IstaffHour) => {
+                const startTime = Array.isArray(shift.startTime) ? shift.startTime[0] : shift.startTime;
+                const endTime = Array.isArray(shift.endTime) ? shift.endTime[0] : shift.endTime;
+
+                return {
+                  startTime: startTime ? new Date(startTime) : null,
+                  endTime: endTime ? new Date(endTime) : null,
+                };
+              }),
+            };
+          } else {
+            return {
+              day: String(dayInfo.value),
+              isActive: false,
+              timeSlots: [],
+            };
+          }
+        });
 
         // handle the image preview
         if (response.data.profileUrl) {
-          staffMemberCreateEdit_formData.imagePreview = `${import.meta.env.VITE_APP_BASE_BUCKET_URL}/${response.data.profileUrl}`;
+          staffMemberCreateEdit_formData.imagePreview = `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${response.data.profileUrl}`;
         }
-
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -402,21 +566,20 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     staffMemberCreateEdit_formValidations.value.$touch();
 
     if (staffMemberCreateEdit_formValidations.value.$invalid) {
-      // console.log('Staff member on submit'); // Debugging log
       return;
     }
 
     // remove objects from shift when shift.isActive is false
-    staffMemberCreateEdit_formData.shift = staffMemberCreateEdit_formData.shift.map(shift => {
-      if (!shift.isActive) {
-        return {
-          ...shift,
-          start_time: null,
-          end_time: null,
-        };
-      }
-      return shift;
-    });
+    // staffMemberCreateEdit_formData.shift = staffMemberCreateEdit_formData.shift.map(shift => {
+    //   if (!shift.isActive) {
+    //     return {
+    //       ...shift,
+    //       start_time: null,
+    //       end_time: null,
+    //     };
+    //   }
+    //   return shift;
+    // });
 
     const formData = new FormData();
 
@@ -425,49 +588,72 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
     for (const key in staffMemberCreateEdit_formData) {
       if (Object.prototype.hasOwnProperty.call(staffMemberCreateEdit_formData, key)) {
-        // ✅ If the key is in our ignore list, skip to the next one
-        if (keysToIgnore.includes(key)) {
-          continue;
-        }
+      // Skip ignored keys
+      if (keysToIgnore.includes(key)) continue;
 
-        const value = staffMemberCreateEdit_formData[key as keyof IStaffMemberCreateEditFormData];
+      const value = staffMemberCreateEdit_formData[key as keyof IStaffMemberCreateEditFormData];
 
-        if (value !== null && value !== undefined) {
-          if (Array.isArray(value)) {
-            value.forEach((item, index) => {
-              for (const itemKey in item) {
-                if (Object.prototype.hasOwnProperty.call(item, itemKey)) {
-                  const nestedValue = item[itemKey as keyof typeof item];
-                  if (nestedValue !== null && nestedValue !== undefined) {
-                    const formattedKey = `${key}[${index}][${itemKey}]`;
-
-                    if ((nestedValue as Date) instanceof Date) {
-                      formData.append(formattedKey, (nestedValue as Date).toISOString());
-                      continue;
-                    }
-
-                    formData.append(formattedKey, String(nestedValue));
+      if (value !== null && value !== undefined) {
+        // Handle 'shift' array specially
+        if (key === 'shift' && Array.isArray(value)) {
+        value.forEach((shiftItem, shiftIndex) => {
+          if ('day' in shiftItem && 'isActive' in shiftItem && 'timeSlots' in shiftItem) {
+            formData.append(`shift[${shiftIndex}][day]`, String(shiftItem.day));
+            formData.append(`shift[${shiftIndex}][isActive]`, String(shiftItem.isActive));
+            if (Array.isArray(shiftItem.timeSlots)) {
+              shiftItem.timeSlots.forEach((slot, slotIndex) => {
+                if (slot.startTime) {
+                  let startTimeValue: Date | null = null;
+                  if (Array.isArray(slot.startTime)) {
+                    startTimeValue = slot.startTime.length > 0 ? slot.startTime[0] : null;
+                  } else {
+                    startTimeValue = slot.startTime as Date;
                   }
+                  if (startTimeValue)
+                    formData.append(
+                      `shift[${shiftIndex}][timeSlots][${slotIndex}][startTime]`,
+                      useFormatDateLocal(startTimeValue),
+                    );
                 }
-              }
-            });
-          } else if (value instanceof Date) {
-            formData.append(key, value.toISOString()); // Convert Date to ISO string
-          } else if (value instanceof File) {
-            formData.append(key, value);
-          } else if (typeof value === 'object') {
-            formData.append(key, JSON.stringify(value));
-          } else {
-            formData.append(key, String(value));
+                if (slot.endTime) {
+                  let endTimeValue: Date | null = null;
+                  if (Array.isArray(slot.endTime)) {
+                    endTimeValue = slot.endTime.length > 0 ? slot.endTime[0] : null;
+                  } else {
+                    endTimeValue = slot.endTime as Date;
+                  }
+                  if (endTimeValue)
+                    formData.append(
+                      `shift[${shiftIndex}][timeSlots][${slotIndex}][endTime]`,
+                      useFormatDateLocal(endTimeValue),
+                    );
+                }
+              });
+            }
           }
+        });
+        } else if (value instanceof Date) {
+        formData.append(key, useFormatDateLocal(value));
+        } else if (value instanceof File) {
+        formData.append(key, value);
+        } else if (typeof value === 'object' && !Array.isArray(value)) {
+        formData.append(key, JSON.stringify(value));
+        } else if (Array.isArray(value)) {
+        // For other arrays (e.g. socialMedia), serialize as JSON
+        formData.append(key, JSON.stringify(value));
+        } else {
+        formData.append(key, String(value));
         }
+      }
       }
     }
 
     // (Optional) Log the result to verify
-    // for (const [key, value] of formData.entries()) {
-    //   console.log(`${key}: ${value}`);
-    // }
+    const payload: Record<string, unknown> = {};
+    for (const [key, value] of formData.entries()) {
+      payload[key] = value;
+    }
+    console.log('FormData payload:', JSON.stringify(payload, null, 2));
 
     try {
       if (route.name === 'staff-member.create') {
@@ -475,12 +661,6 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       } else if (route.name === 'staff-member.edit') {
         await staffMemberCreateEdit_onUpdateForm(formData);
       }
-      // if (route.name === 'staff-member.create') {
-      //   await staffMemberCreateEdit_fetchCreateStaffMember(formData);
-      // } else if (route.name === 'staff-member.edit') {
-      //   const staffMemberId = route.params.id as string;
-      //   await staffMemberCreateEdit_fetchUpdateStaffMember(staffMemberId, formData);
-      // }
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
