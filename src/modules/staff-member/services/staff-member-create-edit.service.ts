@@ -8,7 +8,6 @@ import {
   STAFF_MEMBER_TYPES_OF_USER_PERMISSIONS,
 } from '../constants';
 
-import { STAFF_INITIAL_VALUES_OF_WORKING_HOURS } from '../constants';
 
 // Interfaces
 import type { FileUploadSelectEvent } from 'primevue';
@@ -624,16 +623,10 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
     try {
       if (route.name === 'staff-member.create') {
-        // await staffMemberCreateEdit_fetchCreateStaffMember(formData);
+        await staffMemberCreateEdit_fetchCreateStaffMember(formData);
       } else if (route.name === 'staff-member.edit') {
-        // await staffMemberCreateEdit_onUpdateForm(formData);
+        await staffMemberCreateEdit_onUpdateForm(formData);
       }
-      // if (route.name === 'staff-member.create') {
-      //   await staffMemberCreateEdit_fetchCreateStaffMember(formData);
-      // } else if (route.name === 'staff-member.edit') {
-      //   const staffMemberId = route.params.id as string;
-      //   await staffMemberCreateEdit_fetchUpdateStaffMember(staffMemberId, formData);
-      // }
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
