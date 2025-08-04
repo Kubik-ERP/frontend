@@ -55,7 +55,7 @@ onMounted(() => {
 
 <template>
   <section id="authentication-sign-up" class="default-wrapper-fullscreen">
-    <section id="authentication-sign-up-content" class="grid-wrapper-fullscreen h-full">
+    <section id="authentication-sign-up-content" class="grid-wrapper-fullscreen h-full min-h-dvh">
       <section id="form-content" class="col-span-9 flex items-center justify-center w-full h-full">
         <component :is="authenticationSignUp_stepper[authenticationSignUp_activeStep].component" />
       </section>

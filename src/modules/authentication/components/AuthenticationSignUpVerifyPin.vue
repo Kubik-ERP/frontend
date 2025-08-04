@@ -22,6 +22,7 @@ const {
         <div class="flex items-center gap-4">
           <PrimeVueButton
             class="bg-transparent border border-solid border-blue-primary p-2 basic-smooth-animation hover:bg-grayscale-10"
+            @click="$router.back()"
           >
             <template #default>
               <AppBaseSvg name="arrow-left" class="w-4 h-4" />
