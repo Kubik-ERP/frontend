@@ -78,10 +78,7 @@ const loadAllRoutes: () => Promise<Router> = async () => {
           next({ name: 'sign-in' });
         }
 
-        if (
-          listRouteNameOfAuthentication.includes(to.name as string) ||
-          Object.keys(outlet_currentOutlet).length === 0
-        ) {
+        if (!outlet_currentOutlet.value && !to.name.includes('outlet')) {
           next({ name: 'outlet.list' });
         }
 

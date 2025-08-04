@@ -11,7 +11,7 @@ const routes: RouteRecordRaw[] = [
     path: '/customer',
     component: AppBaseWrapper,
     meta:{
-      requiresAuthorization: false,
+      requiresAuthorization: true,
       breadcrumb: 'Customer',
     },
     children: [
@@ -20,7 +20,7 @@ const routes: RouteRecordRaw[] = [
         name: 'customer-list',
         component: () => import('../views/CustomerListUI.vue'),
         meta: {
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           layout: LAYOUT_OPTIONS.DEFAULT,
         },
       },
@@ -29,7 +29,7 @@ const routes: RouteRecordRaw[] = [
         name: 'addcustomer',
         component: () => import('../views/AddCustomerUI.vue'),
         meta: {
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           layout: LAYOUT_OPTIONS.DEFAULT,
           breadcrumb: 'Add Customer',
         },
@@ -40,7 +40,7 @@ const routes: RouteRecordRaw[] = [
         props: route => ({ id: route.params.id }),
         component: () => import('../views/EditCustomerUI.vue'),
         meta: {
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           layout: LAYOUT_OPTIONS.DEFAULT,
           breadcrumb: 'Edit Customer',
         },
@@ -51,7 +51,7 @@ const routes: RouteRecordRaw[] = [
         props: route => ({ id: route.params.id }),
         component: () => import('../views/PreviewCustomerUI.vue'),
         meta: {
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           layout: LAYOUT_OPTIONS.DEFAULT,
           breadcrumb: 'Preview Customer',
         },

@@ -13,7 +13,7 @@ const routes: RouteRecordRaw[] = [
     name: 'catalog.products',
     component: AppBaseWrapper,
     meta: {
-      requiresAuthorization: false,
+      requiresAuthorization: true,
       breadcrumb: 'Catalog Products',
     },
     children: [
@@ -23,7 +23,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/ProductsUI.vue'),
         meta: {
           layout: LAYOUT_OPTIONS.DEFAULT,
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           title: 'Catalog Products',
         },
       },
@@ -32,7 +32,7 @@ const routes: RouteRecordRaw[] = [
         name: 'catalog.products.add',
         component: () => import('../views/AddProductUI.vue'),
         meta: {
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           layout: LAYOUT_OPTIONS.DEFAULT,
           breadcrumb: 'Add Product',
           title: 'Add Product',
@@ -43,7 +43,7 @@ const routes: RouteRecordRaw[] = [
         name: 'catalog.products.edit',
         component: () => import('../views/EditProductUI.vue'),
         meta: {
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           layout: LAYOUT_OPTIONS.DEFAULT,
           breadcrumb: 'Edit Product',
           title: 'Edit Product',
@@ -60,7 +60,7 @@ export default routes;
 //   name: 'catalog.products',
 //   component: () => AppBaseWrapper,
 //   meta:{
-//     requiresAuthorization: false,
+//     requiresAuthorization: true,
 //     breadcrumb: 'Catalog Products',
 //   },
 //   children: [
@@ -70,7 +70,7 @@ export default routes;
 //       component: () => import('../views/ProductsUI.vue'),
 //       meta: {
 //         layout: LAYOUT_OPTIONS.DEFAULT,
-//         requiresAuthorization: false,
+//         requiresAuthorization: true,
 //         title: 'Catalog Products',
 //       },
 //     },
@@ -79,7 +79,7 @@ export default routes;
 //       name: 'catalog.products.add',
 //       component: () => import('../views/AddProductUI.vue'),
 //       meta: {
-//         requiresAuthorization: false,
+//         requiresAuthorization: true,
 //         layout: LAYOUT_OPTIONS.DEFAULT,
 //         breadcrumb: 'Add Product',
 //         title: 'Add Product',
@@ -90,7 +90,7 @@ export default routes;
 //       name: 'catalog.products.edit',
 //       component: () => import('../views/EditProductUI.vue'),
 //       meta: {
-//         requiresAuthorization: false,
+//         requiresAuthorization: true,
 //         layout: LAYOUT_OPTIONS.DEFAULT,
 //         breadcrumb: 'Edit Product',
 //         title: 'Edit Product',

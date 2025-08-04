@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
     path: '/queue',
     component: AppBaseWrapper,
     meta: {
-      requiresAuthorization: false,
+      requiresAuthorization: true,
     },
     children: [
       {
@@ -23,7 +23,7 @@ const routes: RouteRecordRaw[] = [
           title: 'Queue',
           breadcrumb: 'Queue',
           layout: LAYOUT_OPTIONS.DEFAULT,
-          requiresAuthorization: false,
+          requiresAuthorization: true,
         },
       },
     ],
