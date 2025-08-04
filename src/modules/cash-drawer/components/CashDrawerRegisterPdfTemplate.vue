@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Constants
+import { APP_LOGO_BASE64 } from '@/app/constants';
+
 // Script setup tetap sama, tidak ada perubahan
 interface ISummaryData {
   financials: Array<{
@@ -36,102 +39,144 @@ withDefaults(defineProps<IProps>(), {
 </script>
 
 <template>
-  <div id="pdf-template" style="font-family: sans-serif; padding: 2rem; color: #1f2937; background-color: #ffffff">
-    <h1 style="font-size: 1.875rem; font-weight: 700; text-align: center; color: #1e40af; margin-bottom: 2rem">
-      KUBIK
-    </h1>
-    <p style="text-align: center; margin-bottom: 0.5rem">
-      Here's the register summary for the shift closed on
-      {{ summaryData.closeRegisterDate }} at {{ summaryData.storeName }}
-    </p>
+  <div
+    id="pdf-template"
+    style="
+      font-family: 'Inter', Helvetica, sans-serif;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #333333;
+      background-color: #ffffff;
+      width: 100%;
+      /* max-width: 210mm; */
+      margin: 0 auto;
+      padding: 0;
+      box-sizing: border-box;
+    "
+  >
+    <div id="navbar" style="background-color: #18618b; padding: 24px 32px">
+      <img :src="APP_LOGO_BASE64" alt="KUBIXPOS Logo" style="width: 200px" />
+    </div>
 
-    <div style="border: 1px solid #d1d5db; padding: 1.5rem">
-      <h2 style="text-align: center; font-weight: 700; font-size: 1.25rem; margin-bottom: 0.25rem">
+    <div
+      id="content"
+      style="
+        color: #333333;
+        background-color: #ffffff;
+        width: 100%;
+        margin: 0 auto;
+        padding: 32px;
+        box-sizing: border-box;
+        color: #333333;
+      "
+    >
+      <p style="font-size: 16px; line-height: 20px">
+        Here’s the register summary for the shift closed on {{ summaryData.openRegisterDate }} at
         {{ summaryData.storeName }}
-      </h2>
-      <p style="text-align: center; font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem">
-        Register Summary
-        <br />
-        Printed on {{ summaryData.printDate }}, {{ summaryData.printTime }}
       </p>
 
-      <table style="width: 100%; font-size: 0.875rem; margin-bottom: 1.5rem">
-        <tbody>
-          <tr>
-            <td style="padding-right: 1rem">Staff</td>
-            <td style="padding-right: 0.5rem">:</td>
-            <td style="font-weight: 600">{{ summaryData.staffName }}</td>
-          </tr>
-          <tr>
-            <td style="padding-right: 1rem">Open On</td>
-            <td style="padding-right: 0.5rem">:</td>
-            <td>{{ summaryData.openRegisterDate }}, {{ summaryData.openRegisterDate }}</td>
-          </tr>
-          <tr>
-            <td style="padding-right: 1rem">Closed On</td>
-            <td style="padding-right: 0.5rem">:</td>
-            <td>{{ summaryData.closeRegisterDate }}, {{ summaryData.closeRegisterDate }}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <table style="width: 100%; font-size: 0.875rem; margin-bottom: 1.5rem">
-        <tbody>
-          <tr v-for="(item, key) in summaryData.financials" :key="key">
-            <td style="padding-top: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e5e7eb">
-              {{ item.label }}
-            </td>
-            <td
-              style="
-                padding-top: 0.5rem;
-                padding-bottom: 0.5rem;
-                border-bottom: 1px solid #e5e7eb;
-                text-align: right;
-              "
-            >
-              {{ useCurrencyFormat({ data: item.value, hidePrefix: true, addSuffix: true }) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3 style="font-weight: 700; margin-bottom: 0.5rem">Payment Breakdown</h3>
-      <table style="width: 100%; font-size: 0.875rem">
-        <tbody>
-          <tr v-for="(item, key) in summaryData.paymentBreakdown" :key="key">
-            <td style="padding-top: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e5e7eb">
-              {{ item.label }}
-            </td>
-            <td
-              style="
-                padding-top: 0.5rem;
-                padding-bottom: 0.5rem;
-                border-bottom: 1px solid #e5e7eb;
-                text-align: right;
-              "
-            >
-              {{ useCurrencyFormat({ data: item.value, hidePrefix: true, addSuffix: true }) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div style="text-align: center; margin-top: 2rem">
-      <p style="margin-bottom: 1rem">You can download the full register report here:</p>
-      <a
-        href="#"
+      <!-- Main Content Container -->
+      <div
         style="
-          background-color: #1d4ed8;
-          color: #ffffff;
-          font-weight: 700;
-          padding: 0.5rem 1.5rem;
-          border-radius: 0.25rem;
-          text-decoration: none;
+          border: 1px solid #8cc8eb;
+          border-radius: 4px;
+          padding: 16px;
+          margin: 32px 72px 0 72px;
+          background-color: #ffffff;
         "
-        >Download Report</a
       >
-      <p style="margin-top: 1rem">Thank you</p>
+        <!-- Store Info Header -->
+        <div style="text-align: center">
+          <h2 style="font-size: 16px; font-weight: bold; margin: 0 0 5px 0; color: #333333">
+            {{ summaryData.storeName }}
+          </h2>
+          <div style="font-size: 14px; color: #333333">
+            Register Summary<br />
+            Printed on {{ summaryData.printDate }}, {{ summaryData.printTime }}
+          </div>
+        </div>
+
+        <!-- Shift Information -->
+        <div style="border-bottom: 1px solid #d9d9d9; padding: 24px 0">
+          <table style="width: 100%; font-size: 14px; border-collapse: collapse">
+            <tbody>
+              <tr>
+                <td style="width: 25%; font-weight: normal">Staff</td>
+                <td style="width: 5%; text-align: center">:</td>
+                <td style="font-weight: bold">{{ summaryData.staffName }}</td>
+              </tr>
+              <tr>
+                <td style="font-weight: normal">Open On</td>
+                <td style="text-align: center">:</td>
+                <td style="">{{ summaryData.openRegisterDate }}</td>
+              </tr>
+              <tr>
+                <td style="font-weight: normal">Closed On</td>
+                <td style="text-align: center">:</td>
+                <td style="">{{ summaryData.closeRegisterDate }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Financial Summary -->
+        <div style="border-bottom: 1px solid #d9d9d9; padding: 24px 0">
+          <table style="width: 100%; font-size: 14px; border-collapse: collapse">
+            <tbody>
+              <tr v-for="(item, key) in summaryData.financials" :key="key">
+                <td style="font-weight: normal">
+                  {{ item.label }}
+                </td>
+                <td
+                  style="padding: 4px 0; text-align: right; font-weight: normal; font-family: 'Inter', monospace"
+                >
+                  {{ useCurrencyFormat({ data: item.value, hidePrefix: true, addSuffix: true }) }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Payment Breakdown -->
+        <div style="margin-bottom: 10px">
+          <h3 style="font-size: 14px; font-weight: 600; color: #333333">Payment Breakdown</h3>
+          <table style="width: 100%; font-size: 14px; border-collapse: collapse">
+            <tbody>
+              <tr v-for="(item, key) in summaryData.paymentBreakdown" :key="key">
+                <td style="font-weight: normal">
+                  {{ item.label }}
+                </td>
+                <td
+                  style="padding: 4px 0; text-align: right; font-weight: normal; font-family: 'Inter', monospace"
+                >
+                  {{ useCurrencyFormat({ data: item.value, hidePrefix: true, addSuffix: true }) }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
+
+    <!-- Footer Section -->
+    <!-- <div style="text-align: left; padding: 0px 32px; font-size: 16px; color: #333333; page-break-before: always">
+      <div style="margin-bottom: 16px">You can download the full register report from the system</div>
+      <div
+        style="
+          display: inline-block;
+          padding: 0px 16px;
+          background-color: #18618b;
+          border-radius: 8px;
+          color: #ffffff;
+          font-weight: 600;
+          font-size: 14px;
+          line-height: 18px;
+          height: 34px;
+        "
+      >
+        Download Full Report
+      </div>
+      <div style="margin-top: 15px; font-style: italic">Thank you for using KUBIK</div>
+    </div> -->
   </div>
 </template>

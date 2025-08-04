@@ -2,18 +2,13 @@
 import {
   ACCOUNT_STORE_EDIT_DELETE_OUTLET_REQUEST,
   ACCOUNT_STORE_EDIT_DETAIL_OUTLET_REQUEST,
-  ACCOUNT_STORE_EDIT_INITIAL_VALUES_OF_BUSINESS_HOURS,
   ACCOUNT_STORE_EDIT_UPDATE_OUTLET_REQUEST,
 } from '../constants';
+import { STORE_INITIAL_VALUES_OF_OPERATIONAL_HOURS } from '@/app/constants';
 
 // Interfaces
 import type { FileUploadSelectEvent } from 'primevue';
-import {
-  EAccountStoreBusinessType,
-  IAccountStoreEditBusinessHour,
-  IAccountStoreEditFormData,
-  IAccountStoreEditProvided,
-} from '../interfaces';
+import { EAccountStoreBusinessType, IAccountStoreEditFormData, IAccountStoreEditProvided } from '../interfaces';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -52,7 +47,7 @@ export const useAccountStoreEditService = (): IAccountStoreEditProvided => {
     city: '',
     postalCode: '',
     building: '',
-    businessHours: ACCOUNT_STORE_EDIT_INITIAL_VALUES_OF_BUSINESS_HOURS,
+    businessHours: STORE_INITIAL_VALUES_OF_OPERATIONAL_HOURS,
   });
   const accountStoreEdit_formDataOfVerifyPin = reactive<IAuthenticationVerifyPinFormData>({
     pinConfirmation: '',
@@ -337,10 +332,10 @@ export const useAccountStoreEditService = (): IAccountStoreEditProvided => {
       const value = accountStoreEdit_formData[typedKey];
 
       if (typedKey === 'businessHours') {
-        const businessHours = value as IAccountStoreEditBusinessHour[];
+        const businessHours = value as IStoreOperationalHour[];
         const filteredBusinessHours = businessHours.filter(businessHour => businessHour.isOpen);
 
-        filteredBusinessHours.forEach((businessHour: IAccountStoreEditBusinessHour) => {
+        filteredBusinessHours.forEach((businessHour: IStoreOperationalHour) => {
           if (businessHour.isOpen === false) {
             return; // Skip if the business hour is not open
           }

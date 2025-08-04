@@ -77,7 +77,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
    * @description Handle printing of the invoice
    * @param invoiceRef
    * @param kitchenRef
-   * @param cashierRef
+   * @param tableRef
    * @returns void
    * @throws Error if the print fails
    */
@@ -85,7 +85,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
     type: string,
     invoiceRef: HTMLElement | null = null,
     kitchenRef: HTMLElement | null = null,
-    cashierRef: HTMLElement | null = null,
+    tableRef: HTMLElement | null = null,
   ) => {
     const print = (ref: HTMLElement | null) => {
       if (!ref) return;
@@ -107,7 +107,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
         print(kitchenRef);
         break;
       case 'table':
-        print(cashierRef);
+        print(tableRef);
         break;
       default:
         console.error('Unknown invoice type selected');
@@ -119,14 +119,14 @@ export const useInvoiceService = (): IInvoiceProvided => {
    * @description Handle downloading of the invoice
    * @param invoiceRef
    * @param kitchenRef
-   * @param cashierRef
+   * @param tableRef
    * @returns void
    * @throws Error if the download fails
    */
   const invoice_handleDownload = (
     invoiceRef: HTMLElement | null = null,
     kitchenRef: HTMLElement | null = null,
-    cashierRef: HTMLElement | null = null,
+    tableRef: HTMLElement | null = null,
   ) => {
     const download = (ref: HTMLElement | null) => {
       if (!ref) return;
@@ -156,7 +156,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
         download(kitchenRef);
         break;
       case 3:
-        download(cashierRef);
+        download(tableRef);
         break;
       default:
         console.error('Unknown invoice type selected');

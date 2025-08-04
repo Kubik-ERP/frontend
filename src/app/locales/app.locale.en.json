@@ -17,6 +17,14 @@
     },
 
     "hi": "Hi!",
+
+    "leave-page-modal": {
+      "title": "Are you sure you want to leave this page?",
+      "description": "Any changes you make to the data will be lost if you leave this page without saving",
+      "discardButton": "Discard Changes",
+      "cancelButton": "Cancel"
+    },
+
     "operational-hours": "Operational Hours",
     "optional": "optional",
     "password": "Password",

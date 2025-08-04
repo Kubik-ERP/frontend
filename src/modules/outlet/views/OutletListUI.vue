@@ -46,7 +46,9 @@ onMounted(async () => {
 
     <section id="btn-actions" class="flex justify-center w-full">
       <PrimeVueButton
+        v-if="outletList_lists?.length > 0"
         class="bg-blue-primary border-none text-sm py-[10px] w-sm"
+        :disabled="!outletList_selectedOutlet"
         label="Continue"
         type="button"
         @click="outletList_onContinue"

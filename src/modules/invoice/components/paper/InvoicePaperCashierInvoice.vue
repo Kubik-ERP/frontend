@@ -34,7 +34,7 @@ const orderTypeLabel = computed(() => {
       invoice_invoiceData.currentOutlet
     "
     id="invoice-paper"
-    class="invoice-paper bg-white flex flex-col items-center gap-2 w-full max-w-xs lg:max-w-md p-4"
+    class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4"
   >
     <section v-if="invoice_invoiceData.configInvoice.isShowCompanyLogo" id="logo">
       <AppBaseImage :src="imageUrl" :alt="invoice_invoiceData.currentOutlet.name" class="w-20 h-20" />
@@ -323,27 +323,40 @@ const orderTypeLabel = computed(() => {
   font-size: 12px;
 }
 
-.invoice-datetime-or-status::before {
-  content: '====================================================';
-  display: block;
-  text-align: center;
-  color: #000;
-}
-
+.invoice-datetime-or-status::before,
 .invoice-datetime-or-status::after {
-  content: '====================================================';
+  content: '================================================================================================================================================================================================================================================================================================================================';
   display: block;
+  font-family: monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  width: 100%;
   text-align: center;
+  line-height: 1;
   color: #000;
 }
 
 @media (max-width: 1024px) {
+  .invoice-datetime-or-status::before,
+  .invoice-datetime-or-status::after {
+    content: '';
+    display: block;
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    width: 100%;
+    text-align: center;
+    line-height: 1;
+  }
+
   .invoice-datetime-or-status::before {
-    content: '====================================';
+    content: '================================================================================================================================================================================================================================================================================================================================';
   }
 
   .invoice-datetime-or-status::after {
-    content: '====================================';
+    content: '================================================================================================================================================================================================================================================================================================================================';
   }
 }
 

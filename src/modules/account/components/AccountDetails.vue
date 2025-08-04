@@ -1,7 +1,17 @@
+<script setup lang="ts">
+// Interfaces
+import type { IAccountProvided } from '../interfaces';
+
+/**
+ * @description Inject all the data and methods what we need
+ */
+const { account_profile } = inject<IAccountProvided>('account')!;
+</script>
+
 <template>
   <section id="account-details" class="flex flex-col gap-2 w-full">
     <header class="flex items-center gap-4">
-      <h6 class="font-normal text-black text-lg">
+      <h6 class="font-semibold text-black text-lg">
         {{ useLocalization('account.details') }}
       </h6>
 
@@ -19,9 +29,22 @@
       class="flex flex-col gap-4 p-4 border border-solid border-grayscale-20 rounded-lg w-full"
     >
       <section id="user-profile" class="flex items-center gap-4">
-        <PrimeVueAvatar class="w-16 h-16" label="P" size="large" shape="circle" />
+        <template v-if="account_profile?.user.image">
+          <img
+            :src="APP_BASE_BUCKET_URL + account_profile?.user.image"
+            alt=""
+            srcset=""
+            class="w-16 h-16 rounded-full border-2 border-solid border-primary"
+          />
+        </template>
 
-        <h5 class="font-semibold text-primary text-xl">Samantha</h5>
+        <template v-else>
+          <PrimeVueAvatar class="w-16 h-16" label="P" size="large" shape="circle" />
+        </template>
+
+        <h5 class="font-semibold text-primary text-xl">
+          {{ account_profile?.user.name }}
+        </h5>
       </section>
 
       <section id="user-information" class="grid grid-rows-1 grid-cols-6 relative inset-0 z-0 gap-4">
@@ -30,7 +53,9 @@
             {{ useLocalization('app.email') }}
           </span>
 
-          <span class="font-normal text-black text-base"> lawsonkal@gmail.com </span>
+          <span class="font-normal text-black text-base">
+            {{ account_profile?.user.email }}
+          </span>
         </section>
 
         <section id="phone-number" class="col-span-full lg:col-span-4 flex flex-col gap-1">
@@ -38,7 +63,9 @@
             {{ useLocalization('app.phone-number') }}
           </span>
 
-          <span class="font-normal text-black text-base"> +62 8123324756 </span>
+          <span class="font-normal text-black text-base">
+            {{ account_profile?.user.phone }}
+          </span>
         </section>
 
         <section id="password" class="col-span-full lg:col-span-2 flex flex-col gap-1">

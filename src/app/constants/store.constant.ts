@@ -1,21 +1,4 @@
-// Key Http Request
-export const ACCOUNT_STORE_EDIT_CREATE_NEW_OUTLET_REQUEST = 'ACCOUNT_STORE_EDIT_CREATE_NEW_OUTLET_REQUEST';
-export const ACCOUNT_STORE_EDIT_DELETE_OUTLET_REQUEST = 'ACCOUNT_STORE_EDIT_DELETE_OUTLET_REQUEST';
-export const ACCOUNT_STORE_EDIT_DETAIL_OUTLET_REQUEST = 'ACCOUNT_STORE_EDIT_DETAIL_OUTLET_REQUEST';
-export const ACCOUNT_STORE_EDIT_UPDATE_OUTLET_REQUEST = 'ACCOUNT_STORE_EDIT_UPDATE_OUTLET_REQUEST';
-
-export const ACCOUNT_STORE_EDIT_BUSINESS_TYPES: IDropdownItem[] = [
-  {
-    label: 'Restaurant (FnB)',
-    value: 'Restaurant',
-  },
-  {
-    label: 'Retail',
-    value: 'Retail',
-  },
-];
-
-export const ACCOUNT_STORE_EDIT_INITIAL_VALUES_OF_BUSINESS_HOURS: IStoreOperationalHour[] = [
+export const STORE_INITIAL_VALUES_OF_OPERATIONAL_HOURS: IStoreOperationalHour[] = [
   {
     timeSlots: [
       {

@@ -14,7 +14,7 @@ interface IProps {
   labelFor?: string;
   name: string;
   spacingBottom?: string;
-  validators: BaseValidation;
+  validators: BaseValidation | IValidationResult;
 }
 
 /**
@@ -37,16 +37,30 @@ const props = withDefaults(defineProps<IProps>(), {
 const isInvalid = computed(() => {
   if (!props.validators) return false;
 
-  return props.validators.$dirty && props.validators.$invalid;
+  // Handle IValidationResult from useFormValidateEach
+  if ('$errors' in props.validators && Array.isArray(props.validators.$errors)) {
+    return props.validators.$dirty && props.validators.$invalid;
+  }
+
+  // Handle BaseValidation from Vuelidate
+  return (props.validators as BaseValidation).$dirty && (props.validators as BaseValidation).$invalid;
 });
 
 /**
  * @description Check the error message and retrieve the first error
  */
 const error: ComputedRef<ErrorObject | null> = computed(() => {
-  if (!props.validators || (props.validators as BaseValidation)?.$errors.length === 0) return null;
+  if (!props.validators) return null;
 
-  return props.validators.$errors[0];
+  // Handle IValidationResult from useFormValidateEach
+  if ('$errors' in props.validators && Array.isArray(props.validators.$errors)) {
+    const validationResult = props.validators as IValidationResult;
+    return validationResult.$errors.length > 0 ? (validationResult.$errors[0] as ErrorObject) : null;
+  }
+
+  // Handle BaseValidation from Vuelidate
+  const baseValidation = props.validators as BaseValidation;
+  return baseValidation.$errors.length === 0 ? null : baseValidation.$errors[0];
 });
 
 /**
@@ -67,8 +81,9 @@ const message: ComputedRef<string> = computed(() => {
 <template>
   <div id="form-group" :class="{ [spacingBottom]: !isNotHaveSpacing }">
     <label v-if="isNameAsLabel" :class="classLabel" :for="labelFor">
-      {{ name }}<template v-if="validators">
-        <span v-if="validators.required" class="text-error-main">*</span>
+      {{ name
+      }}<template v-if="validators">
+        <span v-if="'required' in validators ? validators.required : false" class="text-error-main">*</span>
       </template>
     </label>
     <slot

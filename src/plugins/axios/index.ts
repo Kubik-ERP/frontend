@@ -25,13 +25,15 @@ httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const { authentication_token } = storeToRefs(authenticationStore);
 
   const outletStore = useOutletStore();
-  const { outlet_currentOutlet } = storeToRefs(outletStore);
+  const { outlet_currentOutlet, outlet_selectedOutletOnAccountPage } = storeToRefs(outletStore);
 
   if (authentication_token.value) {
     config.headers.Authorization = `Bearer ${authentication_token.value}`;
   }
 
-  if (outlet_currentOutlet.value) {
+  if (outlet_selectedOutletOnAccountPage.value) {
+    config.headers['X-STORE-ID'] = outlet_selectedOutletOnAccountPage.value.id;
+  } else if (outlet_currentOutlet?.value) {
     config.headers['X-STORE-ID'] = outlet_currentOutlet.value.id;
   }
 
@@ -63,7 +65,7 @@ httpClient.interceptors.response.use(undefined, (error: AxiosError<{ message?: s
       localStorage.removeItem('authentication');
       localStorage.removeItem('outlet');
 
-      // Redirect to sign-in page
+      // // Redirect to sign-in page
       window.location.href = '/authentication/sign-in';
 
       break;

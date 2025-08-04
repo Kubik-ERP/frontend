@@ -3,16 +3,18 @@ import {
   ACCOUNT_STORE_TABLE_CONFIGURATION_LIST_SHAPES,
   ACCOUNT_STORE_TABLE_CREATE_REQUEST,
   ACCOUNT_STORE_TABLE_DELETE_REQUEST,
+  ACCOUNT_STORE_TABLE_LIST_REQUEST,
 } from '../constants';
 
 // Interfaces
-import {
+import type {
   IAccountStoreTable,
   IAccountStoreTableConfigurationFormData,
   IAccountStoreTableConfigurationFormDataOfAddTable,
-  type IAccountStoreTableConfigurationFormDataOfAddFloor,
-  type IAccountStoreTableConfigurationProvided,
+  IAccountStoreTableConfigurationFormDataOfAddFloor,
+  IAccountStoreTableConfigurationProvided,
 } from '../interfaces';
+import { IOutletTable } from '@/modules/outlet/interfaces';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -35,6 +37,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
   const route = useRoute();
   const router = useRouter();
   const { httpAbort_registerAbort } = useHttpAbort();
+  const { outlet_selectedOutletOnAccountPage } = storeToRefs(outletStore);
 
   /**
    * @description Reactive data binding
@@ -47,8 +50,8 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
     reactive<IAccountStoreTableConfigurationFormDataOfAddFloor>({
       floorName: '',
     });
-  const accountStoreTableConfiguration_formDataOfAddTable = ref<IAccountStoreTableConfigurationFormDataOfAddTable>(
-    {
+  const accountStoreTableConfiguration_formDataOfAddTable =
+    reactive<IAccountStoreTableConfigurationFormDataOfAddTable>({
       floorName: '',
       name: '',
       seats: 0,
@@ -58,11 +61,13 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
       positionX: 0,
       positionY: 0,
       isEnableQrCode: false,
-    },
-  );
+    });
   const accountStoreTableConfiguration_existingFloorName = ref<string>('');
+  // const accountStoreTableConfiguration_existingStoreTableId = ref<string>('');
   const accountStoreTableConfiguration_isAlreadyHaveTable = ref(false);
   const accountStoreTableConfiguration_isEditableMode = ref(false);
+  const accountStoreTableConfiguration_isUsingPutMethod = ref(false);
+  const accountStoreTableConfiguration_isShowDialogExitConfirmation = ref(false);
   const accountStoreTableConfiguration_lists = ref<IAccountStoreTable[]>([]);
 
   /**
@@ -109,7 +114,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
 
   const accountStoreTableConfiguration_formValidationsOfAddTable = useVuelidate(
     accountStoreTableConfiguration_formRulesOfAddTable,
-    accountStoreTableConfiguration_formDataOfAddTable.value,
+    accountStoreTableConfiguration_formDataOfAddTable,
     {
       $autoDirty: true,
     },
@@ -120,18 +125,25 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
    */
   const accountStoreTableConfiguration_fetchOutletCreateNewStoreTable = async (): Promise<void> => {
     try {
-      await outletStore.fetchOutlet_createNewStoreTable(
-        route.params.id as string,
-        accountStoreTableConfiguration_formData,
-        {
-          ...httpAbort_registerAbort(ACCOUNT_STORE_TABLE_CREATE_REQUEST),
-        },
-      );
-
-      router.push({
-        name: 'account-store-detail',
-        params: { id: route.params.id },
+      await outletStore.fetchOutlet_createNewStoreTable(accountStoreTableConfiguration_formData, {
+        ...httpAbort_registerAbort(ACCOUNT_STORE_TABLE_CREATE_REQUEST),
       });
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Table configuration saved successfully.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      setTimeout(() => {
+        router.push({
+          name: 'account.store.detail',
+          params: { id: route.params.id },
+        });
+      }, 1000);
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -159,27 +171,47 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
   };
 
   /**
+   * @description Handle fetch api outlet. We call the fetchOutlet_storeTable function from the store to handle the request.
+   */
+  const accountStoreTableConfiguration_fetchOutletStoreTable = async (): Promise<void> => {
+    try {
+      const result = await outletStore.fetchOutlet_storeTable({
+        ...httpAbort_registerAbort(ACCOUNT_STORE_TABLE_LIST_REQUEST),
+      });
+
+      if (result.data.length > 0) {
+        accountStoreTableConfiguration_isUsingPutMethod.value = true;
+        accountStoreTableConfiguration_onMappingExistingTableData(result.data);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
    * @description Handle fetch api outlet. We call the fetchOutlet_updateStoreTable function from the store to handle the request.
    */
-  // const accountStoreTableConfiguration_fetchUpdateStoreTable = async (
-  //   tableId: string,
-  // ): Promise<void> => {
-  //   try {
-  //     await outletStore.fetchOutlet_updateStoreTable(
-  //       route.params.id as string,
-  //       tableId,
-  //       accountStoreTableConfiguration_formData,
-  //       {
-  //         ...httpAbort_registerAbort(ACCOUNT_STORE_TABLE_DELETE_REQUEST),
-  //       });
-  //   } catch (error: unknown) {
-  //     if (error instanceof Error) {
-  //       return Promise.reject(error);
-  //     } else {
-  //       return Promise.reject(new Error(String(error)));
-  //     }
-  //   }
-  // }
+  const accountStoreTableConfiguration_fetchUpdateStoreTable = async (): Promise<void> => {
+    try {
+      await outletStore.fetchOutlet_updateStoreTable(
+        outlet_selectedOutletOnAccountPage.value!.id,
+        accountStoreTableConfiguration_formData,
+        {
+          ...httpAbort_registerAbort(ACCOUNT_STORE_TABLE_DELETE_REQUEST),
+        },
+      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
 
   /**
    * @description Handle business logic for creating a new floor configuration form data
@@ -211,10 +243,11 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
     } catch (error) {
       console.error('Error adding floor configuration:', error);
     } finally {
-      // Reset the form data after adding a new floor
+      // Reset the form data and validators after adding a new floor
       accountStoreTableConfiguration_formDataOfAddFloor.floorName = '';
       accountStoreTableConfiguration_existingFloorName.value = '';
       accountStoreTableConfiguration_isEditableMode.value = false;
+      accountStoreTableConfiguration_formValidationsOfAddFloor.value.$reset();
     }
   };
 
@@ -228,10 +261,10 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
       let positionX = 0;
       let positionY = 0;
 
-      if (accountStoreTableConfiguration_formDataOfAddTable.value.shape === 'RECTANGLE') {
+      if (accountStoreTableConfiguration_formDataOfAddTable.shape === 'RECTANGLE') {
         width = 200;
         height = 100;
-      } else if (accountStoreTableConfiguration_formDataOfAddTable.value.shape === 'ROUND') {
+      } else if (accountStoreTableConfiguration_formDataOfAddTable.shape === 'ROUND') {
         width = 100;
         height = 100;
       } else {
@@ -241,7 +274,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
 
       // Check if the floor already exists
       const existingFloor = accountStoreTableConfiguration_formData.configurations.find(
-        config => config.floorName === accountStoreTableConfiguration_formDataOfAddTable.value.floorName,
+        config => config.floorName === accountStoreTableConfiguration_formDataOfAddTable.floorName,
       );
 
       if (existingFloor) {
@@ -256,7 +289,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
 
         // Add the new table to the existing floor
         existingFloor.tables!.push({
-          ...accountStoreTableConfiguration_formDataOfAddTable.value,
+          ...accountStoreTableConfiguration_formDataOfAddTable,
           positionX,
           positionY,
           width, // Default width
@@ -265,10 +298,10 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
       } else {
         // If the floor doesn't exist, create a new one with the table
         accountStoreTableConfiguration_formData.configurations.push({
-          floorName: accountStoreTableConfiguration_formDataOfAddTable.value.floorName,
+          floorName: accountStoreTableConfiguration_formDataOfAddTable.floorName,
           tables: [
             {
-              ...accountStoreTableConfiguration_formDataOfAddTable.value,
+              ...accountStoreTableConfiguration_formDataOfAddTable,
               positionX: 40,
               positionY: 40,
               width,
@@ -280,20 +313,34 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
     } catch (error) {
       console.error('Error adding table configuration:', error);
     } finally {
-      // Reset the form data after adding a new table
-      accountStoreTableConfiguration_formDataOfAddTable.value =
-        reactive<IAccountStoreTableConfigurationFormDataOfAddTable>({
-          floorName: '',
-          name: '',
-          seats: 0,
-          shape: 'SQUARE',
-          width: 0,
-          height: 0,
-          positionX: 0,
-          positionY: 0,
-          isEnableQrCode: false,
-        });
+      // Reset the form data and validators after adding a new table
+      Object.assign(accountStoreTableConfiguration_formDataOfAddTable, {
+        floorName: '',
+        name: '',
+        seats: 0,
+        shape: 'SQUARE',
+        width: 0,
+        height: 0,
+        positionX: 0,
+        positionY: 0,
+        isEnableQrCode: false,
+      });
+      accountStoreTableConfiguration_formValidationsOfAddTable.value.$reset();
     }
+  };
+
+  /**
+   * @description Handle business logic for checking if a user has already fill the floor or table form
+   *
+   * @returns boolean - true if the user has already filled the form, false otherwise
+   */
+  const accountStoreTableConfiguration_checkIfAlreadyHaveTable = (): boolean => {
+    accountStoreTableConfiguration_isAlreadyHaveTable.value =
+      accountStoreTableConfiguration_formData.configurations.some(
+        config => config.tables && config.tables.length > 0,
+      );
+
+    return accountStoreTableConfiguration_isAlreadyHaveTable.value;
   };
 
   /**
@@ -304,6 +351,12 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
       id: 'table-configuration-add-floor-dialog',
       isOpen: false,
     };
+
+    // Reset form data and validators when closing dialog
+    accountStoreTableConfiguration_formDataOfAddFloor.floorName = '';
+    accountStoreTableConfiguration_existingFloorName.value = '';
+    accountStoreTableConfiguration_isEditableMode.value = false;
+    accountStoreTableConfiguration_formValidationsOfAddFloor.value.$reset();
 
     eventBus.emit('AppBaseDialog', argsEventEmitter);
   };
@@ -324,27 +377,44 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
     } finally {
       // Reset the form data after closing the dialog
       accountStoreTableConfiguration_editableData.value = null;
-      accountStoreTableConfiguration_formDataOfAddTable.value =
-        reactive<IAccountStoreTableConfigurationFormDataOfAddTable>({
-          floorName: '',
-          name: '',
-          seats: 0,
-          shape: 'SQUARE',
-          width: 0,
-          height: 0,
-          positionX: 0,
-          positionY: 0,
-          isEnableQrCode: false,
-        });
+      Object.assign(accountStoreTableConfiguration_formDataOfAddTable, {
+        floorName: '',
+        name: '',
+        seats: 0,
+        shape: 'SQUARE',
+        width: 0,
+        height: 0,
+        positionX: 0,
+        positionY: 0,
+        isEnableQrCode: false,
+      });
       accountStoreTableConfiguration_isEditableMode.value = false;
       accountStoreTableConfiguration_formValidationsOfAddTable.value.$reset();
     }
   };
 
   /**
+   * @description Handle business logic for mapping the existing table data on database to the form
+   */
+  const accountStoreTableConfiguration_onMappingExistingTableData = (tables: IOutletTable[]) => {
+    tables.forEach(table => {
+      accountStoreTableConfiguration_formData.configurations.push({
+        floorName: table.floorName,
+        tables: table.storeTables,
+      });
+    });
+  };
+
+  /**
    * @description Handle business logic for show dialog add floor
    */
   const accountStoreTableConfiguration_onShowDialogAddFloor = (): void => {
+    // Reset form data and validators when opening dialog
+    accountStoreTableConfiguration_formDataOfAddFloor.floorName = '';
+    accountStoreTableConfiguration_existingFloorName.value = '';
+    accountStoreTableConfiguration_isEditableMode.value = false;
+    accountStoreTableConfiguration_formValidationsOfAddFloor.value.$reset();
+
     const argsEventEmitter = {
       id: 'table-configuration-add-floor-dialog',
       isOpen: true,
@@ -361,6 +431,21 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
   const accountStoreTableConfiguration_onShowDialogAddTable = (
     configuration: IAccountStoreTableConfigurationFormDataOfAddFloor,
   ): void => {
+    // Reset form data and validators when opening dialog
+    Object.assign(accountStoreTableConfiguration_formDataOfAddTable, {
+      floorName: configuration.floorName,
+      name: '',
+      seats: 0,
+      shape: 'SQUARE',
+      width: 0,
+      height: 0,
+      positionX: 0,
+      positionY: 0,
+      isEnableQrCode: false,
+    });
+    accountStoreTableConfiguration_isEditableMode.value = false;
+    accountStoreTableConfiguration_formValidationsOfAddTable.value.$reset();
+
     const argsEventEmitter = {
       id: 'table-configuration-add-table-dialog',
       isOpen: true,
@@ -368,7 +453,6 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
       width: '534px',
     };
 
-    accountStoreTableConfiguration_formDataOfAddTable.value.floorName = configuration.floorName;
     eventBus.emit('AppBaseDialog', argsEventEmitter);
   };
 
@@ -433,6 +517,8 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
     if (floor) {
       accountStoreTableConfiguration_formDataOfAddFloor.floorName = floor.floorName;
       accountStoreTableConfiguration_isEditableMode.value = true;
+      // Reset validators when opening edit dialog
+      accountStoreTableConfiguration_formValidationsOfAddFloor.value.$reset();
 
       const argsEventEmitter = {
         id: 'table-configuration-add-floor-dialog',
@@ -451,10 +537,13 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
   const accountStoreTableConfiguration_onShowDialogEditTable = (
     table: IAccountStoreTableConfigurationFormDataOfAddTable,
   ): void => {
-    accountStoreTableConfiguration_formDataOfAddTable.value = {
+    // Reset validators when opening edit dialog
+    accountStoreTableConfiguration_formValidationsOfAddTable.value.$reset();
+
+    Object.assign(accountStoreTableConfiguration_formDataOfAddTable, {
       ...table,
       floorName: table.floorName || '',
-    };
+    });
     accountStoreTableConfiguration_isEditableMode.value = true;
 
     const argsEventEmitter = {
@@ -471,7 +560,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
    * @description Handle business logic for show dialog confirmation enable QR Code
    */
   const accountStoreTableConfiguration_onShowDialogEnableQrCode = (): void => {
-    if (!accountStoreTableConfiguration_formDataOfAddTable.value.name) {
+    if (!accountStoreTableConfiguration_formDataOfAddTable.name) {
       const argsEventEmitter: IPropsDialogConfirmation = {
         id: 'account-store-table-dialog-confirmation',
         isOpen: true,
@@ -487,10 +576,31 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
 
       eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
 
-      accountStoreTableConfiguration_formDataOfAddTable.value.isEnableQrCode = false;
+      accountStoreTableConfiguration_formDataOfAddTable.isEnableQrCode = false;
       return;
     }
   };
+
+  /**
+   * @description Handle business logic for showing dialog exit confirmation
+   */
+  // const accountStoreTableConfiguration_onShowDialogExitConfirmation = (): void => {
+  //   const argsEventEmitter: IPropsDialogConfirmation = {
+  //     id: 'account-store-table-dialog-confirmation',
+  //     isOpen: true,
+  //     description: 'Are you sure you want to exit without saving changes?',
+  //     isUsingButtonSecondary: true,
+  //     onClickButtonPrimary: () => {
+  //       eventBus.emit('AppBaseDialog', { id: 'account-store-table-dialog-confirmation', isOpen: false });
+  //     },
+  //     textButtonPrimary: 'Cancel',
+  //     textButtonSecondary: 'Exit',
+  //     title: 'Exit Confirmation',
+  //     type: 'info',
+  //   };
+
+  //   eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  // };
 
   /**
    * @description Handle business logic for submit form add floor
@@ -516,9 +626,13 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
    */
   const accountStoreTableConfiguration_onSubmitFormAddTable = (): void => {
     try {
+      // Use the table-specific validation instead of the main form validation
       accountStoreTableConfiguration_formValidationsOfAddTable.value.$touch();
 
+      console.log('Table form validations:', accountStoreTableConfiguration_formValidationsOfAddTable.value);
+
       if (accountStoreTableConfiguration_formValidationsOfAddTable.value.$invalid) {
+        console.log('Table form is invalid, cannot submit');
         return;
       }
 
@@ -535,16 +649,11 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
    */
   const accountStoreTableConfiguration_onSubmit = async (): Promise<void> => {
     try {
-      console.log('Submitting table configurations:', accountStoreTableConfiguration_formData);
-      accountStoreTableConfiguration_formValidations.value.$touch();
-
-      console.log('Form validations:', accountStoreTableConfiguration_formValidations.value);
-
-      // if (accountStoreTableConfiguration_formValidations.value.$invalid) {
-      //   return;
-      // } ! UNCOMMENT THIS LINE TO MORE SAFELY VALIDATE THE FORM
-
-      await accountStoreTableConfiguration_fetchOutletCreateNewStoreTable();
+      if (accountStoreTableConfiguration_isUsingPutMethod.value) {
+        await accountStoreTableConfiguration_fetchUpdateStoreTable();
+      } else {
+        await accountStoreTableConfiguration_fetchOutletCreateNewStoreTable();
+      }
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -556,8 +665,10 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
 
   return {
     accountStoreTableConfiguration_addFloor,
+    accountStoreTableConfiguration_checkIfAlreadyHaveTable,
     accountStoreTableConfiguration_editableData,
     accountStoreTableConfiguration_fetchDeleteStoreTable,
+    accountStoreTableConfiguration_fetchOutletStoreTable,
     accountStoreTableConfiguration_formData,
     accountStoreTableConfiguration_formDataOfAddFloor,
     accountStoreTableConfiguration_formDataOfAddTable,
@@ -566,6 +677,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
     accountStoreTableConfiguration_formValidationsOfAddTable,
     accountStoreTableConfiguration_isAlreadyHaveTable,
     accountStoreTableConfiguration_isEditableMode,
+    accountStoreTableConfiguration_isShowDialogExitConfirmation,
     accountStoreTableConfiguration_lists,
     accountStoreTableConfiguration_listShapes: ACCOUNT_STORE_TABLE_CONFIGURATION_LIST_SHAPES,
     accountStoreTableConfiguration_onCloseDialogAddFloor,

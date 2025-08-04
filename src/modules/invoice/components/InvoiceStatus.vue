@@ -257,24 +257,25 @@ const orderStatusLabel = computed(() => {
         <PrimeVueButton
           class="w-full py-4 bg-white border-primary"
           severity="primary"
-          @click="emit('print', 'table')"
-        >
-          <template #default>
-            <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="printer-primary" class="!w-6 !h-6" color="primary" />
-              <span class="font-semibold text-sm text-primary">Print Table Ticket</span>
-            </section>
-          </template>
-        </PrimeVueButton>
-        <PrimeVueButton
-          class="w-full py-4 bg-white border-primary"
-          severity="primary"
           @click="emit('print', 'kitchen')"
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="printer-primary" class="!w-6 !h-6" color="primary" />
               <span class="font-semibold text-sm text-primary">Print Kitchen Ticket</span>
+            </section>
+          </template>
+        </PrimeVueButton>
+
+        <PrimeVueButton
+          class="w-full py-4 bg-white border-primary"
+          severity="primary"
+          @click="emit('print', 'table')"
+        >
+          <template #default>
+            <section id="content" class="flex items-center gap-2">
+              <AppBaseSvg name="printer-primary" class="!w-6 !h-6" color="primary" />
+              <span class="font-semibold text-sm text-primary">Print Table Ticket</span>
             </section>
           </template>
         </PrimeVueButton>

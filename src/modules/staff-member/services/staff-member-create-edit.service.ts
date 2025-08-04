@@ -74,21 +74,17 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   //   },
   // });
   const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-    name: 'Ahmad',
-    email: 'ahmad@kubik.com',
+    name: null,
+    email: null,
     phoneCode: '+62',
-    phoneNumber: '81234567890',
+    phoneNumber: null,
     image: null,
     imagePreview: null, // This will hold the preview URL of the image
-    startDate: new Date(),
-    endDate: (() => {
-      const d = new Date();
-      d.setDate(d.getDate() + 30);
-      return d;
-    })(), // Default to 30 days from now,
-    gender: 'male',
-    title: 'Admin',
-    permission: 'BASIC',
+    startDate: null,
+    endDate: null,
+    gender: null,
+    title: null,
+    permission: null,
     socialMedia: [],
     shift: [
       {
@@ -206,6 +202,44 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       },
     },
   });
+  // const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
+  //   name: 'Ahmad',
+  //   email: 'ahmad@kubik.com',
+  //   phoneCode: '+62',
+  //   phoneNumber: '81234567890',
+  //   image: null,
+  //   imagePreview: null, // This will hold the preview URL of the image
+  //   startDate: new Date(),
+  //   endDate: (() => {
+  //     const d = new Date();
+  //     d.setDate(d.getDate() + 30);
+  //     return d;
+  //   })(), // Default to 30 days from now,
+  //   gender: 'male',
+  //   title: 'Admin',
+  //   permission: 'BASIC',
+  //   socialMedia: [],
+  //   shift: LIST_OF_DAYS.map(day => ({
+  //     day: day.value === null ? null : String(day.value),
+  //     start_time: null,
+  //     end_time: null,
+  //     isActive: false,
+  //   })),
+  //   comissions: {
+  //     productComission: {
+  //       defaultComission: null,
+  //       defaultComissionType: null,
+  //       isAllItemsHaveDefaultComission: null,
+  //       productItems: [],
+  //     },
+  //     voucherCommission: {
+  //       defaultComission: null,
+  //       defaultComissionType: null,
+  //       isAllVouchersHaveDefaultComission: null,
+  //       voucherItems: [],
+  //     },
+  //   },
+  // });
 
   const staffMemberCreateEdit_routeParamsId = ref<string | undefined>(route.params.id as string | undefined);
 

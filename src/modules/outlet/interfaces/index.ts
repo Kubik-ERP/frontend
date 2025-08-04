@@ -35,6 +35,7 @@ export interface IOutlet {
 }
 
 export interface IOutletUserBank {
+  bank_id: string;
   accountName: string;
   accountNumber: string;
   bankName: string;
@@ -42,7 +43,14 @@ export interface IOutletUserBank {
 
 export interface IOutletProfile {
   stores: IOutlet[];
-  userBanks: IOutletUserBank[];
+  user: {
+    banks: IOutletUserBank[];
+    email: string;
+    id: string;
+    image: string;
+    name: string;
+    phone: string;
+  };
 }
 
 export interface IOutletTable {
@@ -79,4 +87,5 @@ export interface IOutletStateStore {
   outlet_operationalHours: IOutletOperationalHour[];
   outlet_profile: IOutletProfile | null;
   outlet_tables: IOutletTable[];
+  outlet_selectedOutletOnAccountPage: IOutlet | null;
 }

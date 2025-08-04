@@ -20,15 +20,15 @@ const { accountEditProfile_formData, accountEditProfile_formValidations, account
         label-for="fullName"
         :name="useLocalization('app.form.full-name')"
         spacing-bottom="mb-0"
-        :validators="accountEditProfile_formValidations.name"
+        :validators="accountEditProfile_formValidations.fullname"
       >
         <PrimeVueInputText
-          v-model="accountEditProfile_formData.name"
+          v-model="accountEditProfile_formData.fullname"
           :loading="accountEditProfile_isLoading"
           placeholder="Input your full name"
           class="text-sm w-full"
           :class="{ ...classes }"
-          v-on="useListenerForm(accountEditProfile_formValidations, 'name')"
+          v-on="useListenerForm(accountEditProfile_formValidations, 'fullname')"
         />
       </AppBaseFormGroup>
     </section>
@@ -54,7 +54,7 @@ const { accountEditProfile_formData, accountEditProfile_formValidations, account
       </AppBaseFormGroup>
     </section>
 
-    <section id="phone-number" class="col-span-full lg:col-span-6 flex items-center gap-3">
+    <section id="phone-number" class="col-span-full leading lg:col-span-6 flex items-center gap-3">
       <AppBaseFormGroup
         v-slot="{ classes }"
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
@@ -75,7 +75,7 @@ const { accountEditProfile_formData, accountEditProfile_formValidations, account
           "
           option-value="dialCodes"
           placeholder="+62"
-          class="text-sm h-full min-h-9 w-full"
+          class="text-sm h-full min-h-[38px] w-full"
           :class="{ ...classes }"
         >
           <template #option="{ option }">

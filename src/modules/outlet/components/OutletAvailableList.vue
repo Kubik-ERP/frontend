@@ -52,7 +52,7 @@ const {
 
     <RouterLink
       :to="{ name: 'outlet.create' }"
-      class="col-span relative inset-0 z-0 flex flex-col items-center justify-center gap-4 cursor-pointer basic-smooth-animation hover:bg-primary-background hover:[&>#box-outlet]:!bg-white py-4"
+      class="col-span-2 relative inset-0 z-0 flex flex-col items-center justify-center gap-4 cursor-pointer basic-smooth-animation hover:bg-primary-background hover:[&>#box-outlet]:!bg-white py-4"
     >
       <section id="box-outlet" class="basic-smooth-animation bg-primary-background p-5 rounded-full">
         <AppBaseSvg name="store" class="w-6 h-6" />

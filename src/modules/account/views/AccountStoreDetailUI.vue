@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Components
 import AccountStoreDetailInformation from '../components/store-detail/AccountStoreDetailInformation.vue';
+import AccountStoreDetailTableConfigurationDialog from '../components/store-detail/AccountStoreDetailTableConfigurationDialog.vue';
 
 // Services
 import { useAccountStoreDetailsService } from '../services/account-store-detail.service';
@@ -20,8 +21,13 @@ const {
   accountStoreDetail_listValuesOfOperationalHours,
   accountStoreDetail_listValuesOfStoreFacilities,
   accountStoreDetail_listTabs,
+  accountStoreDetail_onCloseDialogDetailTable,
+  accountStoreDetail_onShowDialogDetailTable,
   accountStoreDetail_operationalHours,
   accountStoreDetail_selectedFloor,
+  accountStoreDetail_selectedOutlet,
+  accountStoreDetail_selectedTable,
+  accountStoreDetail_selectedTableLayout,
   accountStoreDetail_storeTables,
 } = useAccountStoreDetailsService();
 
@@ -36,8 +42,13 @@ provide('accountStoreDetail', {
   accountStoreDetail_listValuesOfOperationalHours,
   accountStoreDetail_listValuesOfStoreFacilities,
   accountStoreDetail_listValuesOfAssignedStaff,
+  accountStoreDetail_onCloseDialogDetailTable,
+  accountStoreDetail_onShowDialogDetailTable,
   accountStoreDetail_operationalHours,
   accountStoreDetail_selectedFloor,
+  accountStoreDetail_selectedOutlet,
+  accountStoreDetail_selectedTable,
+  accountStoreDetail_selectedTableLayout,
   accountStoreDetail_storeTables,
 });
 
@@ -58,6 +69,7 @@ onMounted(async () => {
     <!-- <template v-else> -->
     <AccountStoreDetailInformation />
     <AppBaseTabs v-model:value="accountStoreDetail_activeTab" :items="accountStoreDetail_listTabs" />
+    <AccountStoreDetailTableConfigurationDialog />
     <!-- </template> -->
   </section>
 </template>
