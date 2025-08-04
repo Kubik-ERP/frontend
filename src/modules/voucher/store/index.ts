@@ -11,7 +11,6 @@ import { IVoucherViewResponse } from '../interfaces/voucher-view.interface';
 import { IVoucherEditRequest, IVoucherEditResponse } from '../interfaces/voucher-edit.interface';
 
 export const useVoucherStore = defineStore('voucher', {
-  // ✅ ubah id store
   state(): IVoucherStateStore {
     return {
       voucher_isLoading: false,
@@ -141,7 +140,7 @@ export const useVoucherStore = defineStore('voucher', {
     /**
      * @description Get voucher by ID
      * @param voucherId - ID of the voucher to fetch
-     * @returns Promise with IVoucherListResponse
+     * @returns Promise with IVoucherViewResponse
      * */
     async voucherList_getVoucherById(
       voucherId: string,
