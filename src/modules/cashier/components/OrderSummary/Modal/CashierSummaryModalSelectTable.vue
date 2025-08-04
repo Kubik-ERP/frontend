@@ -7,7 +7,7 @@ import type { IOutletTable } from '@/modules/outlet/interfaces';
  * @description Destructure all the data and methods what we need
  */
 const {
-  accountStoreTableConfiguration_fetchOutletStoreTable,
+  accountStoreDetail_fetchOutletStoreTable,
   accountStoreDetail_listAvailableFloor,
   accountStoreDetail_listColumnsOfAssignedStaff,
   accountStoreDetail_listColumnsOfOperationalHours,
@@ -24,7 +24,7 @@ const {
  * @description Provide all the data and methods what we need
  */
 provide('accountStoreDetail', {
-  accountStoreTableConfiguration_fetchOutletStoreTable,
+  accountStoreDetail_fetchOutletStoreTable,
   accountStoreDetail_listAvailableFloor,
   accountStoreDetail_listColumnsOfAssignedStaff,
   accountStoreDetail_listColumnsOfOperationalHours,
@@ -38,7 +38,7 @@ provide('accountStoreDetail', {
 });
 
 onMounted(() => {
-  accountStoreTableConfiguration_fetchOutletStoreTable();
+  accountStoreDetail_fetchOutletStoreTable();
 });
 
 /**

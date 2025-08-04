@@ -19,7 +19,7 @@ export default {
       meta: {
         breadcrumb: 'Customer',
         layout: LAYOUT_OPTIONS.DEFAULT,
-        requiresAuthorization: false,
+        requiresAuthorization: true,
         title: 'Customer',
       },
     },

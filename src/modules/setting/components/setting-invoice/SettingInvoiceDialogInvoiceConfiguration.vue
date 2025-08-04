@@ -13,6 +13,11 @@ const {
 } = inject<ISettingInvoiceProvided>('settingInvoice')!;
 
 const settingInvoice_onEditInvoiceNumberConfiguration = () => {
+  settingInvoice_formValidations.value.$touch();
+  if (settingInvoice_formValidations.value.$invalid) {
+    alert('Please fill all the required fields');
+    return;
+  }
   settingInvoice_formData.invoiceNumberConfigurations = {
     ...settingInvoice_formData.invoiceNumberConfigurations,
     ...invoiceNumberConfigurations_formData,
@@ -41,7 +46,7 @@ const settingInvoice_onEditInvoiceNumberConfiguration = () => {
             :validators="settingInvoice_formValidations.invoiceNumberConfigurations.startingNumber"
           >
             <PrimeVueInputNumber
-              v-model="invoiceNumberConfigurations_formData.startingNumber"
+              v-model="settingInvoice_formData.invoiceNumberConfigurations.startingNumber"
               :class="{
                 ...classes,
               }"
@@ -62,7 +67,7 @@ const settingInvoice_onEditInvoiceNumberConfiguration = () => {
             :validators="settingInvoice_formValidations.invoiceNumberConfigurations.incrementBy"
           >
             <PrimeVueInputNumber
-              v-model="invoiceNumberConfigurations_formData.incrementBy"
+              v-model="settingInvoice_formData.invoiceNumberConfigurations.incrementBy"
               :class="{
                 ...classes,
               }"
@@ -83,7 +88,7 @@ const settingInvoice_onEditInvoiceNumberConfiguration = () => {
             :validators="settingInvoice_formValidations.invoiceNumberConfigurations.resetSequence"
           >
             <PrimeVueSelect
-              v-model="invoiceNumberConfigurations_formData.resetSequence"
+              v-model="settingInvoice_formData.invoiceNumberConfigurations.resetSequence"
               :options="settingInvoice_listResetSequences"
               option-label="label"
               option-value="value"

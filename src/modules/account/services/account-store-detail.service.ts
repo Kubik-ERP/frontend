@@ -141,8 +141,8 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
 
   return {
     accountStoreDetail_activeTab,
-    accountStoreTableConfiguration_fetchOutletStoreTable,
     accountStoreDetail_fetchOutletListOperationalHours,
+    accountStoreDetail_fetchOutletStoreTable,
     accountStoreDetail_isLoadingOfOutlet: outlet_isLoading,
     accountStoreDetail_listAvailableFloor: outlet_listAvailableFloor,
     accountStoreDetail_listTabs: ACCOUNT_STORE_DETAIL_LIST_TABS,

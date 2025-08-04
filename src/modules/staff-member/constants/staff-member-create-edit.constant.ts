@@ -1,3 +1,5 @@
+import { IstaffWorkingHour } from '../interfaces/';
+
 // Key Http Requests
 export const STAFF_MEMBER_CREATE_REQUEST = 'STAFF_MEMBER_CREATE_REQUEST';
 export const STAFF_MEMBER_DETAIL_REQUEST = 'STAFF_MEMBER_DETAIL_REQUEST';
@@ -68,5 +70,78 @@ export const STAFF_MEMBER_TYPES_OF_USER_PERMISSIONS: IDropdownItem[] = [
   {
     label: 'Owner',
     value: 'OWNER',
+  },
+];
+
+export const STAFF_INITIAL_VALUES_OF_WORKING_HOURS: IstaffWorkingHour[] = [
+  {
+    timeSlots: [
+      {
+        startTime: null,
+        endTime: null,
+      },
+    ],
+    day: 'Sunday',
+    isActive: false,
+  },
+  {
+    timeSlots: [
+      {
+        startTime: null,
+        endTime: null,
+      },
+    ],
+    day: 'Monday',
+    isActive: false,
+  },
+  {
+    timeSlots: [
+      {
+        startTime: null,
+        endTime: null,
+      },
+    ],
+    day: 'Tuesday',
+    isActive: false,
+  },
+  {
+    timeSlots: [
+      {
+        startTime: null,
+        endTime: null,
+      },
+    ],
+    day: 'Wednesday',
+    isActive: false,
+  },
+  {
+    timeSlots: [
+      {
+        startTime: null,
+        endTime: null,
+      },
+    ],
+    day: 'Thursday',
+    isActive: false,
+  },
+  {
+    timeSlots: [
+      {
+        startTime: null,
+        endTime: null,
+      },
+    ],
+    day: 'Friday',
+    isActive: false,
+  },
+  {
+    timeSlots: [
+      {
+        startTime: null,
+        endTime: null,
+      },
+    ],
+    day: 'Saturday',
+    isActive: false,
   },
 ];

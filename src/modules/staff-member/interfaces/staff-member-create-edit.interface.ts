@@ -52,21 +52,31 @@ export interface IStaffMemberCreateEditFormData {
   phoneCode: string;
   phoneNumber: string | null;
   image: File | null;
-  imagePreview: string | null; // This will hold the preview URL of the image
+  imagePreview: string | null;
   startDate: Date | null;
   endDate: Date | null;
   gender: string | null;
   title: string | null;
   permission: string | null;
   socialMedia: IStaffMemberSocialMedia[];
-  shift: IStaffMemberShift[];
+  shift: IstaffWorkingHour[];
   comissions: IStaffMemberComissions;
+}
+
+export interface IstaffHour {
+  startTime: Date | Date[] | (Date | null)[] | null | undefined;
+  endTime: Date | Date[] | (Date | null)[] | null | undefined;
+}
+
+export interface IstaffWorkingHour {
+  timeSlots: IstaffHour[];
+  day: string;
+  isActive: boolean;
 }
 
 export interface IStaffMemberDetailsResponse {
   data: IStaffMember;
 }
-
 export interface IStaffMemberCreateEditProvided {
   staffMemberCreateEdit_columnsOfCommissions: IColumnDataTable[];
   staffMemberCreateEdit_commisionType: globalThis.Ref<'PRODUCT' | 'VOUCHER'>;
