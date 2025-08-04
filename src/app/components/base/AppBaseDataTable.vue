@@ -31,6 +31,8 @@ interface IProps {
   first?: number;
   isUsingServerSidePagination?: boolean;
   onPageChange?: (event: { page: number; rows: number }) => void;
+  searchValue?: string;
+  searchPlaceholder?: string;
 }
 
 /**
@@ -62,9 +64,19 @@ const props = withDefaults(defineProps<IProps>(), {
   first: 1,
   isUsingServerSidePagination: false,
   onPageChange: () => {},
+  searchValue: '',
+  searchPlaceholder: 'Search...',
 });
 
-const emits = defineEmits(['clickBtnCtaCreate', 'update:currentPage', 'update:sort']);
+const emits = defineEmits(['clickBtnCtaCreate', 'update:currentPage', 'update:sort', 'update:searchValue']);
+
+/**
+ * @description Computed property for two-way binding of search value
+ */
+const searchModel = computed({
+  get: () => props.searchValue,
+  set: (value: string) => emits('update:searchValue', value),
+});
 
 /**
  * @description Handle page change event
@@ -178,7 +190,11 @@ const displayedPages = computed(() => {
                       </template>
                     </PrimeVueInputIcon>
 
-                    <PrimeVueInputText placeholder="Search by Member ID or Name" class="text-sm w-full min-w-80" />
+                    <PrimeVueInputText
+                      v-model="searchModel"
+                      :placeholder="props.searchPlaceholder"
+                      class="text-sm w-full min-w-80"
+                    />
                   </PrimeVueIconField>
 
                   <template v-if="props.isUsingBtnCtaCreate">

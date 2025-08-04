@@ -1,7 +1,8 @@
-import type { RouteRecordRaw } from 'vue-router';
-
 // Components
 import AppBaseWrapper from '@/app/components/base/AppBaseWrapper.vue';
+
+// Interfaces
+import type { RouteRecordRaw } from 'vue-router';
 
 // Routes
 import staffMemberRouter from '@/modules/staff-member/routes/staff-member.router';
