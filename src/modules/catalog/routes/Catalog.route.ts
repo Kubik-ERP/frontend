@@ -15,7 +15,7 @@ const routes: RouteRecordRaw[] = [
     path: '/catalog',
     component: AppBaseWrapper,
     meta: {
-      requiresAuthorization: false,
+      requiresAuthorization: true,
     },
     children: [
       {
@@ -26,7 +26,7 @@ const routes: RouteRecordRaw[] = [
           title: 'Categories',
           breadcrumb: 'Catalog Categories',
           layout: LAYOUT_OPTIONS.DEFAULT,
-          requiresAuthorization: false,
+          requiresAuthorization: true,
         },
       },
       customerRoutes,

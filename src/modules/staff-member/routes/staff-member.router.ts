@@ -18,7 +18,7 @@ export default {
       component: () => import('../views/StaffMemberListUI.vue'),
       meta: {
         layout: LAYOUT_OPTIONS.DEFAULT,
-        requiresAuthorization: false,
+        requiresAuthorization: true,
         title: 'Staff Members',
       },
     },
@@ -29,7 +29,7 @@ export default {
       meta: {
         breadcrumb: 'Add Staff Member',
         layout: LAYOUT_OPTIONS.DEFAULT,
-        requiresAuthorization: false,
+        requiresAuthorization: true,
         title: 'Add New Staff Member',
       },
     },
@@ -41,13 +41,13 @@ export default {
       meta: {
         breadcrumb: 'Edit Staff Member',
         layout: LAYOUT_OPTIONS.DEFAULT,
-        requiresAuthorization: false,
+        requiresAuthorization: true,
         title: 'Edit Staff Member',
       },
     },
   ],
   meta: {
     breadcrumb: 'Staff Members',
-    requiresAuthorization: false,
+    requiresAuthorization: true,
   },
 } as RouteRecordRaw;

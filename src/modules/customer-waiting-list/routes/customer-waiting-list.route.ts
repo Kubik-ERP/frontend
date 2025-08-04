@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
     path: '/queue/customer-waiting-list',
     component: AppBaseWrapper,
     meta: {
-      requiresAuthorization: false,
+      requiresAuthorization: true,
     },
     children: [
       {
@@ -23,7 +23,7 @@ const routes: RouteRecordRaw[] = [
           title: 'customer waiting list',
           breadcrumb: 'customer waiting list',
           layout: LAYOUT_OPTIONS.OUTLET,
-          requiresAuthorization: false,
+          requiresAuthorization: true,
         },
       },
     ],
