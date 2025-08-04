@@ -61,7 +61,6 @@ const settingInvoice_onUpdateFooterContent = () => {
           class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
           label="Update"
           type="button"
-          :disabled="settingInvoice_formValidations.contentSettings.footerText.$invalid"
           @click="settingInvoice_onUpdateFooterContent"
         />
       </footer>

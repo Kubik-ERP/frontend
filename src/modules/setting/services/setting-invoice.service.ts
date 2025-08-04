@@ -55,13 +55,14 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
     },
     contentSettings: {
       companyLogo: null,
-      footerText: `
-        <p id="label-social-media" class="font-normal text-black text-sm text-center">Social Media</p>
-        <p id="social-media-ig" class="font-normal text-black text-sm text-center">Instagram : @lawsonkal</p>
-        <p id="closing-text" class="font-normal text-black text-sm text-center">
-          Terima kasih dan kami tunggu kehadiran Anda kembali
-        </p>
-      `,
+      footerText: "Terima Kasih",
+      // footerText: `
+      //   <p id="label-social-media" class="font-normal text-black text-sm text-center">Social Media</p>
+      //   <p id="social-media-ig" class="font-normal text-black text-sm text-center">Instagram : @lawsonkal</p>
+      //   <p id="closing-text" class="font-normal text-black text-sm text-center">
+      //     Terima kasih dan kami tunggu kehadiran Anda kembali
+      //   </p>
+      // `,
       isShowCompanyLogo: true,
       isShowStoreLocation: true,
       isHideCashierName: false,
@@ -131,7 +132,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
         setting_invoice.value?.isAutomaticallyPrintTable ?? false;
 
       // Map content settings
-      settingInvoice_formData.contentSettings.footerText = setting_invoice.value?.footerText ?? null;
+      settingInvoice_formData.contentSettings.footerText = setting_invoice.value?.footerText ?? "footer text";
       settingInvoice_formData.contentSettings.isShowCompanyLogo =
         setting_invoice.value?.isShowCompanyLogo ?? false;
       settingInvoice_formData.contentSettings.isShowStoreLocation =
@@ -148,11 +149,11 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
       // Note: companyLogo might need special handling if it's a file upload object
 
       // Map invoice number configurations
-      settingInvoice_formData.invoiceNumberConfigurations.incrementBy = setting_invoice.value?.incrementBy ?? null;
+      settingInvoice_formData.invoiceNumberConfigurations.incrementBy = setting_invoice.value?.incrementBy ?? 1;
       settingInvoice_formData.invoiceNumberConfigurations.resetSequence =
-        setting_invoice.value?.resetSequence ?? null;
+        setting_invoice.value?.resetSequence ?? "Daily";
       settingInvoice_formData.invoiceNumberConfigurations.startingNumber =
-        setting_invoice.value?.startingNumber ?? null;
+        setting_invoice.value?.startingNumber ?? 1;
       settingInvoice_formData.invoiceNumberConfigurations.invoicePreview = generateInvoicePreview();
       // Note: 'invoicePreview' is not available in your API response, so its value remains unchanged.
 

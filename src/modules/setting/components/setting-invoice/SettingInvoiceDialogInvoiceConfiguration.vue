@@ -15,7 +15,6 @@ const {
 const settingInvoice_onEditInvoiceNumberConfiguration = () => {
   settingInvoice_formValidations.value.$touch();
   if (settingInvoice_formValidations.value.$invalid) {
-    alert('Please fill all the required fields');
     return;
   }
   settingInvoice_formData.invoiceNumberConfigurations = {
@@ -32,7 +31,6 @@ const settingInvoice_onEditInvoiceNumberConfiguration = () => {
     <template #header>
       <h5 class="font-semibold text-black text-lg">Invoice Number Configuration</h5>
     </template>
-
     <template #content>
       <section id="form-groups" class="grid-wrapper gap-4">
         <section id="form-input" class="col-span-full lg:col-span-6">
