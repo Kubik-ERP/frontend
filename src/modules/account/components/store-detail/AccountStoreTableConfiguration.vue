@@ -1,23 +1,30 @@
 <script setup lang="ts">
+// Components
+import AccountStoreTableLayout from './AccountStoreTableLayout.vue';
+
 // Interfaces
-import type { IAccountStoreTableConfigurationProvided } from '../../interfaces';
+import type { IAccountStoreDetailProvided } from '../../interfaces';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { accountStoreTableConfiguration_onShowDialogAddFloor } = inject<IAccountStoreTableConfigurationProvided>(
-  'accountStoreTableConfiguration',
-)!;
+const {
+  accountStoreDetail_listAvailableFloor,
+  accountStoreDetail_selectedFloor,
+  accountStoreDetail_selectedOutlet,
+  accountStoreDetail_selectedTableLayout,
+  accountStoreDetail_storeTables,
+} = inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
 </script>
 
 <template>
-  <section
-    id="account-store-table-configuration-not-found"
-    class="flex items-center justify-between border border-solid border-grayscale-10 p-4 rounded-lg w-full"
-  >
-    <h6 class="font-bold text-primary text-lg">Please create a floor name before setting up tables</h6>
+  <header class="flex items-center justify-between w-full mb-4">
+    <section id="left-content" class="flex items-center gap-2">
+      <h6 class="font-semibold text-black text-lg w-fit">Table</h6>
+    </section>
 
     <PrimeVueButton
+      v-if="accountStoreDetail_listAvailableFloor.length > 0"
       class="bg-primary border-none w-fit px-5"
       @click="
         $router.push({
@@ -29,12 +36,55 @@ const { accountStoreTableConfiguration_onShowDialogAddFloor } = inject<IAccountS
       "
     >
       <template #default>
-        <section id="content" class="flex items-center gap-2">
+        <section class="flex items-center gap-2">
           <AppBaseSvg name="plus-line-white" />
-
-          <span class="font-semibold text-base text-white"> Add Floor </span>
+          <span class="font-semibold text-base text-white">Edit Table</span>
         </section>
       </template>
     </PrimeVueButton>
+  </header>
+
+  <section
+    v-if="accountStoreDetail_storeTables?.length > 0"
+    class="flex flex-col gap-4 p-4 border border-solid border-grayscale-10"
+  >
+    <header class="flex items-center justify-between w-full">
+      <section id="left-content" class="flex items-center gap-2">
+        <h6 class="font-semibold text-black text-lg w-fit">Floor</h6>
+
+        <PrimeVueSelect
+          v-model="accountStoreDetail_selectedFloor"
+          :options="accountStoreDetail_listAvailableFloor"
+          option-label="label"
+          option-value="value"
+          class="text-sm w-full min-w-40"
+        />
+      </section>
+    </header>
+
+    <AccountStoreTableLayout
+      v-if="accountStoreDetail_selectedTableLayout"
+      :store-table="accountStoreDetail_selectedTableLayout"
+    />
   </section>
+
+  <template v-else>
+    <section
+      id="account-store-table-configuration"
+      class="flex items-center justify-between border border-solid border-grayscale-10 p-4 rounded-lg"
+    >
+      <section id="no-tables-configuration-information" class="flex flex-col gap-2">
+        <h6 class="font-bold text-primary text-lg">No tables configured yet</h6>
+
+        <p class="font-normal text-base text-grayscale-70">Start by adding tables to set up your floor layout</p>
+      </section>
+
+      <PrimeVueButton
+        class="bg-blue-primary border-none text-base py-3 px-5 w-fit"
+        label="Set Up Table"
+        type="button"
+        @click="$router.push({ name: 'account.store.table-configuration' })"
+      />
+    </section>
+  </template>
 </template>
