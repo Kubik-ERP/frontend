@@ -19,8 +19,14 @@ const { accountStoreTableConfiguration_onShowDialogAddFloor } = inject<IAccountS
 
     <PrimeVueButton
       class="bg-primary border-none w-fit px-5"
-      severity="secondary"
-      @click="accountStoreTableConfiguration_onShowDialogAddFloor"
+      @click="
+        $router.push({
+          name: 'account.store.table-configuration',
+          params: {
+            id: accountStoreDetail_selectedOutlet?.id,
+          },
+        })
+      "
     >
       <template #default>
         <section id="content" class="flex items-center gap-2">

@@ -41,7 +41,7 @@ export const useCategoryService = () => {
     'X-STORE-ID': storeID,
     Authorization: `Bearer ${token?.authentication_token}`,
   };
-  
+
   const category_formData = reactive<ICategoryFormData>({
     name: '',
     description: '',
