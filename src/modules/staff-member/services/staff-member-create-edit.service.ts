@@ -548,48 +548,26 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         if (value !== null && value !== undefined) {
           // Handle 'shift' array specially
           if (key === 'shift' && Array.isArray(value)) {
-            value.forEach((shiftItem, shiftIndex) => {
-              if ('day' in shiftItem && 'isActive' in shiftItem && 'timeSlots' in shiftItem) {
-                formData.append(`shift[${shiftIndex}][day]`, String(shiftItem.day));
-                formData.append(`shift[${shiftIndex}][isActive]`, String(shiftItem.isActive));
-                if (Array.isArray(shiftItem.timeSlots)) {
-                  shiftItem.timeSlots.forEach((slot) => {
-                    if (slot.startTime) {
-                      let startTimeValue: string | null = null;
-                      if (Array.isArray(slot.startTime)) {
-                        startTimeValue =
-                          slot.startTime.length > 0 && slot.startTime[0] !== null && slot.startTime[0] !== undefined
-                            ? slot.startTime[0].toISOString().substring(11, 16)
-                            : null;
-                      } else {
-                        startTimeValue = slot.startTime.toISOString().substring(11, 16);
-                      }
-                      if (startTimeValue)
-                        formData.append(
-                          `shift[${shiftIndex}][startTime]`,
-                          startTimeValue,
-                        );
-                    }
-                    if (slot.endTime) {
-                      let endTimeValue: string | null = null;
-                      if (Array.isArray(slot.endTime)) {
-                        endTimeValue =
-                          slot.endTime?.length > 0 && slot.endTime[0] !== null && slot.endTime[0] !== undefined
-                            ? slot.endTime[0].toISOString().substring(11, 16)
-                            : null;
-                      } else {
-                        endTimeValue = slot.endTime.toISOString().substring(11, 16);
-                      }
-                      if (endTimeValue)
-                        formData.append(
-                          `shift[${shiftIndex}][endTime]`,
-                          endTimeValue,
-                        );
-                    }
-                  });
-                }
-              }
+        value.forEach((shiftItem, shiftIndex) => {
+          // Always send the day and its active status
+          formData.append(`shift[${shiftIndex}][day]`, String(shiftItem.day));
+          formData.append(`shift[${shiftIndex}][isActive]`, String(shiftItem.isActive));
+
+          // Only process time slots if the day is active
+          if (shiftItem.isActive && shiftItem.timeSlots && shiftItem.timeSlots.length > 0) {
+            
+            // Loop through EACH time slot for the current day
+            shiftItem.timeSlots.forEach((slot, slotIndex) => {
+              const startTime = slot.startTime ? new Date(slot.startTime).toISOString().substring(11, 16) : '';
+              const endTime = slot.endTime ? new Date(slot.endTime).toISOString().substring(11, 16) : '';
+
+              // Append each time with its own index
+              formData.append(`shift[${shiftIndex}][start_time][${slotIndex}]`, startTime);
+              formData.append(`shift[${shiftIndex}][end_time][${slotIndex}]`, endTime);
             });
+          }
+        });
+        // ✅ END OF ADJUSTED SHIFT LOGIC
           } else if (value instanceof Date) {
             formData.append(key, value.toISOString());
           } else if (value instanceof File) {
