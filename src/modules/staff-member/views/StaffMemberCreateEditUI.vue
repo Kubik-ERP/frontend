@@ -55,7 +55,6 @@ provide('staffMemberCreateEdit', {
 
 onMounted(() => {
   if (staffMemberCreateEdit_isEditable.value) {
-    console.log('Editing an existing staff member');
     staffMemberCreateEdit_fetchDetailStaffMember();
   }
 });

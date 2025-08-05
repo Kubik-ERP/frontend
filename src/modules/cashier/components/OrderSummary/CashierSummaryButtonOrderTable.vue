@@ -39,7 +39,7 @@ const selectedTableLabel = computed(() => {
 </script>
 <template>
   <section id="cashier-summary-button-order-table">
-    <div class="border-t-2 border-t-grayscale-10">
+    <div class="border-t-2 border-t-grayscale-10 mx-4 lg:mx-0">
       <div class="flex justify-between w-full items-center py-4 gap-2">
         <button
           :class="[

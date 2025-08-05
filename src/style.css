@@ -56,10 +56,16 @@
     font-variation-settings: 'opsz' 14;
   }
 
+  @page {
+    size: auto;
+    margin: 0;
+  }
+
   @media print {
-    @page {
-      margin: 0;
+    html {
+      height: auto !important ;
     }
+
     body #main-content {
       display: none !important;
     }
@@ -68,24 +74,29 @@
       margin: 0;
       padding: 0;
       background: white;
+      height: auto !important;
+    }
+
+    editor-card {
+      display: none !important;
     }
 
     html,
     body {
       margin: 0;
       padding: 0;
-      height: 100%;
+      height: auto;
       width: 100%;
     }
 
     .invoice-paper {
       margin: 0 auto;
       width: 100%;
-      max-width: 800px;
-      padding: 2px !important;
+      max-width: 100mm;
       box-sizing: border-box;
       page-break-after: always;
-      font-size: 0.35em;
+      font-size: 0.25em;
+      padding: 2px;
     }
 
     .invoice-paper * {

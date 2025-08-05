@@ -111,191 +111,193 @@ const orderTypeLabel = computed(() => {
       </p>
     </section>
 
-    <table id="product-items" class="w-full">
-      <thead>
-        <tr class="border-y border-dashed border-black py-2">
-          <th class="font-normal text-black text-sm text-left w-28 py-2">Deskripsi</th>
-          <th class="font-normal text-black text-sm text-center w-10 py-2">Qty</th>
-          <th
-            v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
-            class="font-normal text-black text-sm text-center w-28 py-2"
-          >
-            Harga
-          </th>
-          <th
-            v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
-            class="font-normal text-black text-sm text-right w-28 py-2"
-          >
-            Sub Total
-          </th>
-        </tr>
-      </thead>
+    <section class="flex flex-col w-full">
+      <table id="product-items" class="w-full">
+        <thead>
+          <tr class="border-y border-dashed border-black py-2">
+            <th class="font-normal pr-0.5 text-black text-xs text-left py-2">Deskripsi</th>
+            <th class="font-normal pr-0.5 text-black text-xs text-center w-10 py-2">Qty</th>
+            <th
+              v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
+              class="font-normal pr-0.5 text-black text-xs text-center py-2"
+            >
+              Harga
+            </th>
+            <th
+              v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
+              class="font-normal pr-0.5 text-black text-xs text-right py-2"
+            >
+              Sub Total
+            </th>
+          </tr>
+        </thead>
 
-      <tbody class="border-b border-solid border-black">
-        <template v-for="item in invoice_invoiceData.data.invoiceDetails" :key="item.id">
+        <tbody class="border-b border-solid border-black">
+          <template v-for="item in invoice_invoiceData.data.invoiceDetails" :key="item.id">
+            <tr>
+              <td class="font-normal pr-0.5 text-black text-xs">{{ item.products.name }}</td>
+              <td class="font-normal pr-0.5 text-black text-xs text-center">{{ item.qty }}</td>
+              <td
+                v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
+                class="font-normal pr-0.5 text-black text-xs text-center"
+              >
+                {{
+                  useCurrencyFormat({
+                    data: item.productPrice,
+                  })
+                }}
+              </td>
+              <td
+                v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
+                class="font-normal pr-0.5 text-black text-xs text-right"
+              >
+                {{
+                  useCurrencyFormat({
+                    data: item.productPrice * item.qty,
+                  })
+                }}
+              </td>
+            </tr>
+            <tr v-if="item.variant">
+              <td class="pl-4 font-normal pr-0.5 text-black text-xs italic py-2">{{ item.variant.name }}</td>
+              <td class="font-normal pr-0.5 text-black text-xs text-center py-2"></td>
+              <td
+                v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
+                class="font-normal pr-0.5 text-black text-xs text-center py-2"
+              >
+                {{
+                  useCurrencyFormat({
+                    data: item.variant.price,
+                  })
+                }}
+              </td>
+              <td
+                v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
+                class="font-normal pr-0.5 text-black text-xs text-right py-2"
+              >
+                {{
+                  useCurrencyFormat({
+                    data: item.variant.price * item.qty,
+                  })
+                }}
+              </td>
+            </tr>
+          </template>
+        </tbody>
+
+        <tfoot class="border-b border-solid border-grayscale-10">
           <tr>
-            <td class="font-normal text-black text-sm">{{ item.products.name }}</td>
-            <td class="font-normal text-black text-sm text-center">{{ item.qty }}</td>
-            <td
-              v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
-              class="font-normal text-black text-sm text-center"
-            >
+            <td class="font-normal text-black text-sm py-2">Sub Total</td>
+            <td class="font-normal text-black text-sm text-center py-2">
               {{
-                useCurrencyFormat({
-                  data: item.productPrice,
-                })
+                (invoice_invoiceData.data.invoiceDetails as Array<{ qty: number }>).reduce(
+                  (sum: number, item) => sum + item.qty,
+                  0,
+                )
               }}
             </td>
-            <td
-              v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
-              class="font-normal text-black text-sm text-right"
-            >
+            <td colspan="2" class="font-normal text-black text-sm text-right py-2">
               {{
                 useCurrencyFormat({
-                  data: item.productPrice * item.qty,
-                })
-              }}
-            </td>
-          </tr>
-          <tr v-if="item.variant">
-            <td class="pl-4 font-normal text-black text-xs italic py-2">{{ item.variant.name }}</td>
-            <td class="font-normal text-black text-sm text-center py-2"></td>
-            <td
-              v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
-              class="font-normal text-black text-sm text-center py-2"
-            >
-              {{
-                useCurrencyFormat({
-                  data: item.variant.price,
-                })
-              }}
-            </td>
-            <td
-              v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
-              class="font-normal text-black text-sm text-right py-2"
-            >
-              {{
-                useCurrencyFormat({
-                  data: item.variant.price * item.qty,
+                  data:
+                    invoice_invoiceData.data.paymentStatus === 'unpaid'
+                      ? invoice_invoiceData.calculate?.total || 0
+                      : invoice_invoiceData.data.subtotal,
                 })
               }}
             </td>
           </tr>
-        </template>
-      </tbody>
 
-      <tfoot class="border-b border-solid border-grayscale-10">
-        <tr>
-          <td class="font-normal text-black text-sm py-2">Sub Total</td>
-          <td class="font-normal text-black text-sm text-center py-2">
-            {{
-              (invoice_invoiceData.data.invoiceDetails as Array<{ qty: number }>).reduce(
-                (sum: number, item) => sum + item.qty,
-                0,
-              )
-            }}
-          </td>
-          <td colspan="2" class="font-normal text-black text-sm text-right py-2">
-            {{
-              useCurrencyFormat({
-                data:
-                  invoice_invoiceData.data.paymentStatus === 'unpaid'
-                    ? invoice_invoiceData.calculate?.total || 0
-                    : invoice_invoiceData.data.subtotal,
-              })
-            }}
-          </td>
-        </tr>
+          <tr>
+            <td class="font-normal text-black text-sm py-2">Promo</td>
+            <td colspan="3" class="font-normal text-black text-sm text-right py-2">
+              -
+              {{
+                useCurrencyFormat({
+                  data: invoice_invoiceData.data.paymentStatus === 'unpaid' ? 0 : 0,
+                })
+              }}
+            </td>
+          </tr>
 
-        <tr>
-          <td class="font-normal text-black text-sm py-2">Promo</td>
-          <td colspan="3" class="font-normal text-black text-sm text-right py-2">
-            -
-            {{
-              useCurrencyFormat({
-                data: invoice_invoiceData.data.paymentStatus === 'unpaid' ? 0 : 0,
-              })
-            }}
-          </td>
-        </tr>
+          <tr v-if="invoice_invoiceData?.data?.paymentMethods?.name">
+            <td class="font-normal text-black text-sm py-2">
+              {{ invoice_invoiceData?.data?.paymentMethods?.name || '' }}
+            </td>
 
-        <tr v-if="invoice_invoiceData?.data?.paymentMethods?.name">
-          <td class="font-normal text-black text-sm py-2">
-            {{ invoice_invoiceData?.data?.paymentMethods?.name || '' }}
-          </td>
+            <td colspan="3" class="font-normal text-black text-sm text-right py-2">
+              {{ useCurrencyFormat({ data: invoice_invoiceData.data.paymentAmount || 0 }) }}
+            </td>
+          </tr>
 
-          <td colspan="3" class="font-normal text-black text-sm text-right py-2">
-            {{ useCurrencyFormat({ data: invoice_invoiceData.data.paymentAmount || 0 }) }}
-          </td>
-        </tr>
+          <tr class="border-b border-dashed border-black">
+            <td class="font-normal text-black text-sm py-2">Kembali</td>
+            <td colspan="3" class="font-normal text-black text-sm text-right py-2">
+              {{ useCurrencyFormat({ data: invoice_invoiceData.data.changeAmount ?? 0 }) }}
+            </td>
+          </tr>
 
-        <tr class="border-b border-dashed border-black">
-          <td class="font-normal text-black text-sm py-2">Kembali</td>
-          <td colspan="3" class="font-normal text-black text-sm text-right py-2">
-            {{ useCurrencyFormat({ data: invoice_invoiceData.data.changeAmount ?? 0 }) }}
-          </td>
-        </tr>
+          <tr>
+            <td colspan="2" class="items-center font-normal text-black text-xs py-2">
+              Tax
 
-        <tr>
-          <td class="flex items-center font-normal text-black text-sm py-2">
-            Tax
+              <span
+                v-if="invoice_invoiceData.data.paymentStatus === 'unpaid'"
+                class="ml-0.5 text-[10px] italic text-text-disabled"
+              >
+                ({{ invoice_invoiceData.calculate?.taxInclude ? 'included' : 'excluded' }})
+              </span>
+            </td>
+            <td colspan="2" class="font-normal text-black text-sm text-right py-2">
+              {{
+                useCurrencyFormat({
+                  data:
+                    invoice_invoiceData.data.paymentStatus === 'unpaid'
+                      ? invoice_invoiceData.calculate?.tax || 0
+                      : invoice_invoiceData.data.taxAmount || 0,
+                })
+              }}
+            </td>
+          </tr>
+          <tr class="border-b border-solid border-black">
+            <td colspan="2" class="items-center font-normal text-black text-xs py-2">
+              Service
 
-            <div
-              v-if="invoice_invoiceData.data.paymentStatus === 'unpaid'"
-              class="ml-1 text-xs italic text-text-disabled"
-            >
-              ({{ invoice_invoiceData.calculate?.taxInclude ? 'included' : 'excluded' }})
-            </div>
-          </td>
-          <td colspan="3" class="font-normal text-black text-sm text-right py-2">
-            {{
-              useCurrencyFormat({
-                data:
-                  invoice_invoiceData.data.paymentStatus === 'unpaid'
-                    ? invoice_invoiceData.calculate?.tax || 0
-                    : invoice_invoiceData.data.taxAmount || 0,
-              })
-            }}
-          </td>
-        </tr>
-        <tr class="border-b border-solid border-black">
-          <td class="flex items-center font-normal text-black text-sm py-2">
-            Service
+              <span
+                v-if="invoice_invoiceData.data.paymentStatus === 'unpaid'"
+                class="ml-0.5 text-[10px] italic text-text-disabled"
+              >
+                ({{ invoice_invoiceData.calculate?.serviceChargeInclude ? 'included' : 'excluded' }})
+              </span>
+            </td>
+            <td colspan="2" class="font-normal text-black text-sm text-right py-2">
+              {{
+                useCurrencyFormat({
+                  data:
+                    invoice_invoiceData.data.paymentStatus === 'unpaid'
+                      ? invoice_invoiceData.calculate?.serviceCharge || 0
+                      : invoice_invoiceData.data.serviceChargeAmount || 0,
+                })
+              }}
+            </td>
+          </tr>
 
-            <div
-              v-if="invoice_invoiceData.data.paymentStatus === 'unpaid'"
-              class="ml-1 text-xs italic text-text-disabled"
-            >
-              ({{ invoice_invoiceData.calculate?.serviceChargeInclude ? 'included' : 'excluded' }})
-            </div>
-          </td>
-          <td colspan="3" class="font-normal text-black text-sm text-right py-2">
-            {{
-              useCurrencyFormat({
-                data:
-                  invoice_invoiceData.data.paymentStatus === 'unpaid'
-                    ? invoice_invoiceData.calculate?.serviceCharge || 0
-                    : invoice_invoiceData.data.serviceChargeAmount || 0,
-              })
-            }}
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="2" class="font-semibold text-black text-sm text-center py-2">Total</td>
-          <td colspan="2" class="font-semibold text-black text-sm text-right py-2">
-            {{
-              useCurrencyFormat({
-                data:
-                  invoice_invoiceData.data.paymentStatus === 'unpaid'
-                    ? invoice_invoiceData.calculate?.grandTotal || 0
-                    : invoice_invoiceData.data.grandTotal || 0,
-              })
-            }}
-          </td>
-        </tr>
-      </tfoot>
-    </table>
+          <tr>
+            <td colspan="2" class="font-semibold text-black text-sm text-center py-2">Total</td>
+            <td colspan="2" class="font-semibold text-black text-sm text-right py-2">
+              {{
+                useCurrencyFormat({
+                  data:
+                    invoice_invoiceData.data.paymentStatus === 'unpaid'
+                      ? invoice_invoiceData.calculate?.grandTotal || 0
+                      : invoice_invoiceData.data.grandTotal || 0,
+                })
+              }}
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
 
     <section
       v-if="invoice_invoiceData.configInvoice.isShowFooter"

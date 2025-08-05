@@ -57,7 +57,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
     invoice_modalPay.value.isLoading = true;
 
     try {
-      const response = await storeCashier.cashierProduct_fetchPaymentMethod({});
+      const response = await storeCashier.cashierProduct_fetchPaymentMethod(route.name === 'self-order-invoice');
 
       invoice_modalPay.value.listPayment = response.data;
     } catch (error: unknown) {
@@ -339,13 +339,13 @@ export const useInvoiceService = (): IInvoiceProvided => {
         item => item.id === invoice_modalPay.value.data.selectedPaymentMethod,
       )?.name;
 
-      if(getSelectedPaymentMethod?.toUpperCase() === 'CASH') {
+      if (getSelectedPaymentMethod?.toUpperCase() === 'CASH') {
         invoice_invoiceDataValidation.value.$touch();
         if (invoice_invoiceDataValidation.value.$invalid) return;
       }
-      
+
       const provider = getSelectedPaymentMethod?.toUpperCase() === 'CASH' ? 'cash' : CASHIER_PROVIDER;
-      
+
       const params = {
         provider,
         paymentMethodId: invoice_modalPay.value.data.selectedPaymentMethod,
@@ -357,7 +357,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
 
       invoice_modalPay.value.dataPayment = response.data;
 
-      if(getSelectedPaymentMethod?.toUpperCase() === 'QRIS') {
+      if (getSelectedPaymentMethod?.toUpperCase() === 'QRIS') {
         invoice_modalPay.value.showModalPayment = true;
       } else {
         await invoice_handleFetchInvoiceById(route.params.invoiceId as string);
@@ -400,8 +400,6 @@ export const useInvoiceService = (): IInvoiceProvided => {
       invoice_handleFetchInvoiceById(route.params.invoiceId as string);
     }
   };
-
-  
 
   return {
     invoice_activeInvoice,

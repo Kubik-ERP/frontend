@@ -97,12 +97,14 @@ const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetai
         "
       >
         <AppBaseSvg
+          v-if="!props.cashierPreview"
           name="eye-visible"
           class="!w-4 !h-4 cursor-pointer"
           @click="accountStoreDetail_onShowDialogDetailTable(table)"
         />
-        <div class="font-bold text-sm text-secondary-hover">{{ table.name }}</div>
-        <div class="text-sm text-secondary-hover pb-2">{{ table.seats }} seats</div>
+        <div class="font-bold text-sm">{{ table.name }}</div>
+        <div v-if="props.cashierPreview" class="text-[10px] lg:text-sm">Available</div>
+        <div class="text-sm pb-2">{{ table.seats }} seats</div>
       </div>
     </section>
   </section>
