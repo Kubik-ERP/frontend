@@ -192,13 +192,20 @@ const removeTag = tagToRemove => {
       <label for="tags" class="block text-sm font-medium leading-6 text-gray-900">Tag</label>
       <div>
         <form @submit.prevent="createTag">
-          <PrimeVueInputText
-            v-model="search"
-            name="name"
-            type="text"
-            class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
-            fluid
-          />
+          <PrimeVueIconField>
+            <PrimeVueInputText
+              v-model="search"
+              name="name"
+              type="text"
+              class="border shadow-xs border-grayscale-30 rounded-lg p-2 w-full"
+              fluid
+            />
+            <PrimeVueInputIcon>
+              <template #default>
+                <AppBaseSvg name="search" />
+              </template>
+            </PrimeVueInputIcon>
+          </PrimeVueIconField>
         </form>
 
         <div class="flex gap-2 mt-2 flex-wrap">
@@ -254,7 +261,7 @@ const removeTag = tagToRemove => {
 
       <PrimeVueButton
         type="button"
-        class="w-48 bg-primary border-primary"
+        class="w-48 bg-primary border-primary disabled:bg-grayscale-20 disabled:text-white disabled:border-grayscale-20"
         label="Add Customer"
         :disabled="customer_formValidations.$invalid"
         @click="handleCreateCustomer()"
