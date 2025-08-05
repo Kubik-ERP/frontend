@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/DashboardUI.vue'),
         meta: {
           breadcrumb: 'Dashboard',
-          requiresAuthorization: true,
+          requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.DEFAULT,
         },
       },

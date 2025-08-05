@@ -17,6 +17,7 @@ interface ExpandedState {
   };
 }
 const expandedMenus = ref<ExpandedState>({});
+const isCollapsed = ref<boolean>(false);
 
 // Compute which submenus should be open based on the current route
 const autoExpandMenus = () => {
@@ -54,41 +55,60 @@ const toggleSubMenu = (categoryIndex: number, menuIndex: number) => {
   }
   expandedMenus.value[categoryIndex][menuIndex] = !expandedMenus.value[categoryIndex][menuIndex];
 };
+
+// Toggle sidebar collapse
+const toggleSidebar = () => {
+  isCollapsed.value = !isCollapsed.value;
+};
 </script>
 
 <template>
   <aside
     id="sidebar"
-    class="sticky inset-0 z-0 col-span-2 flex flex-col gap-4 w-full bg-background border-r border-solid border-grayscale-10 px-4 py-2"
+    class="sticky inset-0 z-0 flex flex-col gap-4 bg-background border-r border-solid border-grayscale-10 px-4 py-2 transition-all duration-300 ease-in-out"
+    :class="[isCollapsed ? 'w-20' : 'w-64']"
   >
     <!-- Hide Icon -->
     <section
       id="trigger-icon"
       class="absolute top-8 -right-4 flex items-center justify-center w-8 h-8 bg-white rounded-full basic-smooth-animation hover:bg-grayscale-10 cursor-pointer"
+      @click="toggleSidebar"
     >
-      <AppBaseSvg name="chevron-left-secondary" class="!w-[18px] !h-[18px]" />
+      <AppBaseSvg :name="isCollapsed ? 'chevron-right' : 'chevron-left-secondary'" class="!w-[18px] !h-[18px]" />
     </section>
 
     <!-- Header -->
-    <header class="flex items-center gap-2">
-      <img src="@/app/assets/images/app-icon.png" alt="app-icon" class="w-fit h-fit" />
-      <h1 class="font-bold text-base leading-8">Kubik POS</h1>
+    <header class="flex items-center gap-2 overflow-hidden">
+      <img src="@/app/assets/images/app-icon.png" alt="app-icon" class="w-fit h-fit flex-shrink-0" />
+      <h1
+        v-show="!isCollapsed"
+        class="font-bold text-base leading-8 whitespace-nowrap transition-opacity duration-300"
+        :class="{ 'opacity-0': isCollapsed }"
+      >
+        Kubik POS
+      </h1>
     </header>
 
     <!-- Main Content -->
     <section id="content" class="flex flex-col gap-2 w-full pb-2 border-b border-solid border-grayscale-10">
       <section
         id="outlet"
-        class="flex items-center gap-2 p-2 rounded-md bg-white border border-solid border-grayscale-10 cursor-pointer basic-smooth-animation hover:bg-grayscale-10"
+        class="flex items-center p-2 rounded-md bg-white border border-solid border-grayscale-10 cursor-pointer basic-smooth-animation hover:bg-grayscale-10 overflow-hidden"
+        :class="[isCollapsed ? 'justify-center' : 'gap-2']"
         @click="() => $router.push({ name: 'outlet.list' })"
       >
-        <AppBaseSvg name="store" class="!w-5 !h-5" />
-        <section id="outlet-information" class="flex flex-col">
-          <h5 class="font-semibold text-black text-sm">
+        <AppBaseSvg name="store" class="!w-5 !h-5 flex-shrink-0" />
+        <section
+          v-show="!isCollapsed"
+          id="outlet-information"
+          class="flex flex-col transition-opacity duration-300 min-w-0"
+          :class="{ 'opacity-0': isCollapsed }"
+        >
+          <h5 class="font-semibold text-black text-sm truncate">
             {{ outlet_currentOutlet?.name }}
           </h5>
 
-          <p class="font-normal text-text-disabled text-[10px]">
+          <p class="font-normal text-text-disabled text-[10px] truncate">
             {{ outlet_currentOutlet?.address }}
           </p>
         </section>
@@ -103,8 +123,10 @@ const toggleSubMenu = (categoryIndex: number, menuIndex: number) => {
           <li>
             <!-- Category Header (no chevron) -->
             <div
+              v-show="!isCollapsed"
               v-ripple
-              class="px-4 py-2 flex items-center text-surface-500 dark:text-surface-400 cursor-default"
+              class="px-4 py-2 flex items-center text-surface-500 dark:text-surface-400 cursor-default transition-opacity duration-300"
+              :class="{ 'opacity-0': isCollapsed }"
             >
               <span id="menu-category" class="font-normal text-text-disabled text-xs">
                 {{ menuCategory.name }}
@@ -117,7 +139,7 @@ const toggleSubMenu = (categoryIndex: number, menuIndex: number) => {
                 :id="`menu-${menuIndex}`"
                 :key="`menu-${menuIndex}`"
               >
-                <template v-if="menu.subMenus?.length">
+                <template v-if="menu.subMenus?.length && !isCollapsed">
                   <a
                     v-ripple
                     class="flex items-center cursor-pointer px-4 py-2 rounded duration-150 transition-colors p-ripple gap-2"
@@ -134,7 +156,7 @@ const toggleSubMenu = (categoryIndex: number, menuIndex: number) => {
                       :class="[menu.subMenus.some(subMenu => subMenu.path === route.path) ? 'filter-white' : '']"
                     />
                     <span
-                      class="font-normal text-base"
+                      class="font-normal text-base whitespace-nowrap"
                       :class="[
                         menu.subMenus.some(subMenu => subMenu.path === route.path) ? 'text-white' : 'text-black',
                       ]"
@@ -176,21 +198,51 @@ const toggleSubMenu = (categoryIndex: number, menuIndex: number) => {
                     </li>
                   </ul>
                 </template>
-                <template v-else>
-                  <RouterLink
+
+                <!-- Collapsed submenu or collapsed single menu item -->
+                <template v-else-if="menu.subMenus?.length && isCollapsed">
+                  <div
                     v-ripple
-                    :to="menu.path"
-                    class="flex items-center cursor-pointer px-4 py-2 rounded text-surface-700 hover:bg-grayscale-10 dark:text-surface-0 dark:hover:bg-grayscale-10 duration-150 transition-colors p-ripple gap-2"
-                    :class="[route.path === menu.path ? 'bg-primary text-white' : '']"
+                    class="flex items-center justify-center cursor-pointer px-2 py-2 rounded duration-150 transition-colors p-ripple mb-1"
+                    :class="[
+                      menu.subMenus.some(subMenu => subMenu.path === route.path)
+                        ? 'bg-primary text-white'
+                        : 'text-black hover:bg-grayscale-10',
+                    ]"
+                    :title="menu.name"
                   >
                     <AppBaseSvg
                       :name="menu.iconName"
                       class="!w-5 !h-5"
+                      :class="[menu.subMenus.some(subMenu => subMenu.path === route.path) ? 'filter-white' : '']"
+                    />
+                  </div>
+                </template>
+
+                <!-- Regular menu items -->
+                <template v-else>
+                  <RouterLink
+                    v-ripple
+                    :to="menu.path"
+                    class="flex items-center cursor-pointer py-2 rounded text-surface-700 hover:bg-grayscale-10 dark:text-surface-0 dark:hover:bg-grayscale-10 duration-150 transition-colors p-ripple"
+                    :class="[
+                      route.path === menu.path ? 'bg-primary text-white' : '',
+                      isCollapsed ? 'justify-center px-2' : 'gap-2 px-4',
+                    ]"
+                    :title="isCollapsed ? menu.name : ''"
+                  >
+                    <AppBaseSvg
+                      :name="menu.iconName"
+                      class="!w-5 !h-5 flex-shrink-0"
                       :class="[route.path === menu.path ? 'filter-white' : '']"
                     />
                     <p
-                      class="font-normal text-base"
-                      :class="[route.path === menu.path ? 'text-white' : 'text-black']"
+                      v-show="!isCollapsed"
+                      class="font-normal text-base whitespace-nowrap transition-opacity duration-300"
+                      :class="[
+                        route.path === menu.path ? 'text-white' : 'text-black',
+                        { 'opacity-0': isCollapsed },
+                      ]"
                     >
                       {{ menu.name }}
                     </p>
@@ -212,11 +264,19 @@ const toggleSubMenu = (categoryIndex: number, menuIndex: number) => {
         <RouterLink
           :id="`additional-menu-${additionalMenuIndex}`"
           :to="additionalMenu.path"
-          class="flex items-center gap-2 px-4 py-2 basic-smooth-animation hover:bg-grayscale-10 cursor-pointer rounded-md"
-          :class="[route.path === additionalMenu.path ? 'bg-primary-border' : '']"
+          class="flex items-center py-2 basic-smooth-animation hover:bg-grayscale-10 cursor-pointer rounded-md"
+          :class="[
+            route.path === additionalMenu.path ? 'bg-primary-border' : '',
+            isCollapsed ? 'justify-center px-2' : 'gap-2 px-4',
+          ]"
+          :title="isCollapsed ? additionalMenu.name : ''"
         >
-          <AppBaseSvg :name="additionalMenu.iconName" class="!w-5 !h-5" />
-          <p class="font-normal text-base text-black">
+          <AppBaseSvg :name="additionalMenu.iconName" class="!w-5 !h-5 flex-shrink-0" />
+          <p
+            v-show="!isCollapsed"
+            class="font-normal text-base text-black whitespace-nowrap transition-opacity duration-300"
+            :class="{ 'opacity-0': isCollapsed }"
+          >
             {{ additionalMenu.name }}
           </p>
         </RouterLink>

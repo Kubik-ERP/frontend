@@ -43,12 +43,22 @@ const {
       </AppBaseFormGroup>
     </section>
 
-    <PrimeVueButton
-      class="bg-blue-primary border-none text-sm py-[10px]"
-      label="Create PIN"
-      type="submit"
-      :disabled="authenticationSignUp_formValidationsOfSetUpPin.$invalid"
-      :loading="authenticationSignUp_isLoading"
-    />
+    <section id="form-buttons" class="flex flex-col gap-3">
+      <PrimeVueButton
+        class="bg-blue-primary border-none text-sm py-[10px]"
+        label="Create PIN"
+        type="submit"
+        :disabled="authenticationSignUp_formValidationsOfSetUpPin.$invalid"
+        :loading="authenticationSignUp_isLoading"
+      />
+
+      <PrimeVueButton
+        class="bg-transparent border border-solid border-grayscale-30 text-sm py-[10px] text-grayscale-70 hover:bg-grayscale-10 basic-smooth-animation"
+        label="Setup PIN Later"
+        variant="outlined"
+        severity="secondary"
+        @click="$router.push({ name: 'dashboard' })"
+      />
+    </section>
   </form>
 </template>
