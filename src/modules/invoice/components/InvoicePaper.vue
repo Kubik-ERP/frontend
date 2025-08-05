@@ -79,7 +79,7 @@ defineExpose({ invoiceRef, kitchenRef, tableRef, print, download });
       <Teleport to="body">
         <div
           ref="invoiceRef"
-          class="print-invoice-paper relative inset-0 mx-auto min-w-svw m-0 p-0 w-full items-center justify-center"
+          class="print-invoice-paper hidden relative inset-0 mx-auto min-w-svw m-0 p-0 w-full items-center justify-center"
         >
           <InvoicePaperCashierInvoice />
         </div>

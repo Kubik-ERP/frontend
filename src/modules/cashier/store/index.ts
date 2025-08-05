@@ -266,13 +266,19 @@ export const useCashierStore = defineStore('cashier', {
      * @access public
      */
     async cashierProduct_fetchPaymentMethod(
+      isSelfOrder: boolean,
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<ICashierOrderSummaryPaymentMethodResponse> {
       try {
+        console.log(isSelfOrder, 'akjsdljaslkdjlk');
         const response = await httpClient.get<ICashierOrderSummaryPaymentMethodResponse>(
           CASHIER_ENDPOINT_PAYMENT_METHOD,
           {
             ...requestConfigurations,
+            params: {
+              ...(requestConfigurations.params || {}),
+              isSelfOrder,
+            },
           },
         );
 
@@ -341,16 +347,22 @@ export const useCashierStore = defineStore('cashier', {
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<void> {
       try {
-        const response = await httpClient.put<void>(`${CASHIER_BASE_INVOICE_ENDPOINT}/${payload.invoiceId}`, {products: payload.products.map(f=> {
-          return {
-            productId: f.productId,
-            quantity: f.quantity,
-            variantId: f.variantId,
-            notes: f.notes,
-          };
-        })}, {
-          ...requestConfigurations,
-        });
+        const response = await httpClient.put<void>(
+          `${CASHIER_BASE_INVOICE_ENDPOINT}/${payload.invoiceId}`,
+          {
+            products: payload.products.map(f => {
+              return {
+                productId: f.productId,
+                quantity: f.quantity,
+                variantId: f.variantId,
+                notes: f.notes,
+              };
+            }),
+          },
+          {
+            ...requestConfigurations,
+          },
+        );
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -359,8 +371,7 @@ export const useCashierStore = defineStore('cashier', {
         } else {
           return Promise.reject(new Error(String(error)));
         }
-    }
-  }
-      
+      }
+    },
   },
 });
