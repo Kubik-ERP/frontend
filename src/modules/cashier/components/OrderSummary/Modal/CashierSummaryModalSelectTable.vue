@@ -165,13 +165,13 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
                   <div
                     v-for="(childItem, childKey) in item.storeTables"
                     :key="childKey"
-                    class="flex flex-col gap-2"
+                    class="flex flex-col gap-2 border border-grayscale-20 rounded-xl"
                   >
                     <div
                       :class="[
-                        'flex gap-2 px-3 py-4 rounded-xs',
+                        'flex gap-2 px-3 py-4 rounded-xl',
                         {
-                          'cursor-pointer bg-primary-background border-primary-border':
+                          'cursor-pointer bg-primary-background border-primary-border border drop-shadow-xl drop-shadow-primary-background':
                             cashierOrderSummary_modalSelectTable.selectedTable.includes(childItem.name),
 
                           'cursor-not-allowed bg-grayscale-20 text-text-disabled border border-grayscale-20': false,
@@ -185,7 +185,7 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
                       <PrimeVueCheckbox
                         :model-value="cashierOrderSummary_modalSelectTable.selectedTable.includes(childItem.name)"
                         binary
-                        :disabled="false"
+                        :readonly="true"
                       ></PrimeVueCheckbox>
                       <span class="text-sm font-semibold">{{ childItem.name }}</span>
                       <span class="text-text-disabled text-sm"
@@ -198,6 +198,18 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
                   {{ useLocalization('cashier.noDataFound') }}
                 </div>
               </template>
+
+              <section
+                v-if="cashierOrderSummary_modalSelectTable.selectedTable.length > 1"
+                id="alert-table-will-merge"
+                class="flex gap-2 bg-secondary p-2 rounded-xl drop-shadow-lg drop-shadow-secondary/60"
+              >
+                <AppBaseSvg name="info-secondary" class="mt-1" />
+                <div class="flex flex-col">
+                  <span class="font-semibold text-secondary-hover">Table will be merged</span>
+                  <span class="text-secondary-hover text-xs">Selected tables will be merged as one order</span>
+                </div>
+              </section>
             </div>
           </section>
 

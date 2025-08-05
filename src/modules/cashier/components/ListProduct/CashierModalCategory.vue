@@ -19,17 +19,21 @@ const { cashierProduct_modalCategory, cashierProduct_productState, cashierProduc
     >
       <template #container="{ closeCallback }">
         <section id="cashier-summary-modal-order-type" class="flex flex-col px-4 py-6 gap-4">
-          <span class="font-semibold">{{ useLocalization('cashier.mainSection.category') }}</span>
+          <span class="font-semibold">{{ useLocalization('cashier.category') }}</span>
 
           <div class="overflow-y-auto h-72">
             <section
               v-for="category in cashierProduct_productState.listCategory"
               id="cashier-modal-category-item"
               :key="category.id"
-              class="flex gap-4 py-2"
+              class="flex gap-4 p-2"
+              :class="{
+                'border-primary-border border bg-primary-background rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]':
+                  cashierProduct_productState.selectedCategory === category.id,
+              }"
               @click="
                 () => {
-                  cashierProduct_handleSelectCategory(category.category);
+                  cashierProduct_handleSelectCategory(category.id);
                   closeCallback();
                 }
               "

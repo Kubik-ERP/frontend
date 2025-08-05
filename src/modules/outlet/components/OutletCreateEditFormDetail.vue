@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Constants
 import { OUTLET_CREATE_EDIT_BUSINESS_TYPES } from '../constants/outlet-create-edit.constant';
+import { FILE_UPLOAD_LIMITS, FILE_UPLOAD_LIMITS_DISPLAY } from '@/app/constants/file-upload.constant';
 
 // Interfaces
 import type { IOutletCreateEditProvided } from '../interfaces/outlet-create-edit.interface';
@@ -164,7 +165,8 @@ const {
           url="/api/upload"
           accept="image/*"
           custom-upload
-          :max-file-size="1000000"
+          :max-file-size="FILE_UPLOAD_LIMITS.IMAGE_MAX_SIZE"
+          :file-limit="1"
           :show-cancel-button="false"
           :show-upload-button="false"
           :pt="{
@@ -197,6 +199,9 @@ const {
               <span class="absolute top-28 font-normal text-black-secondary text-xs">
                 or
                 <span class="font-semibold"> Drop Image here </span>
+              </span>
+              <span class="absolute bottom-6 font-normal text-black-secondary text-xs">
+                Maximum file size: {{ FILE_UPLOAD_LIMITS_DISPLAY.IMAGE_MAX_SIZE_MB }}
               </span>
             </section>
           </template>

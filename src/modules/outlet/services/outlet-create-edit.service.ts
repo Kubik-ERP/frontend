@@ -5,7 +5,13 @@ import {
   OUTLET_CREATE_EDIT_DETAIL_OUTLET_REQUEST,
   OUTLET_CREATE_EDIT_UPDATE_OUTLET_REQUEST,
 } from '../constants/outlet-create-edit.constant';
-import { STORE_INITIAL_VALUES_OF_OPERATIONAL_HOURS } from '@/app/constants';
+import {
+  FILE_UPLOAD_LIMITS,
+  FILE_UPLOAD_LIMITS_DISPLAY,
+  formatFileSize,
+  validateFileSize,
+} from '@/app/constants/file-upload.constant';
+import { STORE_INITIAL_VALUES_OF_OPERATIONAL_HOURS, EToastPosition, EToastType } from '@/app/constants';
 
 // Interfaces
 import type { FileUploadSelectEvent } from 'primevue';
@@ -235,6 +241,33 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
   };
 
   /**
+   * @description Handle business logic for resetting form data and validations
+   */
+  const outletCreateEdit_onResetForm = (): void => {
+    // Reset main form data
+    Object.assign(outletCreateEdit_formData, {
+      storeName: '',
+      email: '',
+      phoneCode: '+62',
+      phoneNumber: '',
+      businessType: EOutletBusinessType.RestaurantFnB,
+      streetAddress: '',
+      photo: null,
+      city: '',
+      postalCode: '',
+      building: '',
+      businessHours: STORE_INITIAL_VALUES_OF_OPERATIONAL_HOURS,
+    });
+
+    // Reset PIN form data
+    outletCreateEdit_formDataOfVerifyPin.pinConfirmation = '';
+
+    // Reset validation states
+    outletCreateEdit_formValidations.value.$reset();
+    outletCreateEdit_isPinInvalid.value = false;
+  };
+
+  /**
    * @description Handle action on cancel button
    */
   const outletCreateEdit_onCancel = (): void => {
@@ -245,7 +278,10 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
    * @description Handle action on cancel button on dialog verify pin
    */
   const outletCreateEdit_onCloseDialogVerifyPIN = (): void => {
+    // Reset PIN form data and validation state
+    outletCreateEdit_formDataOfVerifyPin.pinConfirmation = '';
     outletCreateEdit_isPinInvalid.value = false;
+
     const argsEventEmitter: IPropsDialogPinVerification = {
       isOpen: false,
     };
@@ -259,6 +295,10 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
   const outletCreateEdit_onDeleteOutlet = async (): Promise<void> => {
     try {
       await outletCreateEdit_fetchDeleteOutlet(outletCreateEdit_routeParamsId.value!);
+
+      // Reset PIN form data after successful deletion
+      outletCreateEdit_formDataOfVerifyPin.pinConfirmation = '';
+      outletCreateEdit_isPinInvalid.value = false;
 
       router.push({ name: 'outlet.list' });
     } catch (error: unknown) {
@@ -297,6 +337,10 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
         eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
       },
       onClickButtonSecondary: () => {
+        // Reset PIN data before showing PIN verification dialog
+        outletCreateEdit_formDataOfVerifyPin.pinConfirmation = '';
+        outletCreateEdit_isPinInvalid.value = false;
+
         const argsEventEmitter: IPropsDialogPinVerification = {
           isOpen: true,
           isInvalid: outletCreateEdit_isPinInvalid.value,
@@ -328,6 +372,10 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
 
       if (outletCreateEdit_formValidations.value.$invalid) return;
 
+      // Reset PIN data before showing dialog
+      outletCreateEdit_formDataOfVerifyPin.pinConfirmation = '';
+      outletCreateEdit_isPinInvalid.value = false;
+
       const argsEventEmitter: IPropsDialogPinVerification = {
         isOpen: true,
         isInvalid: outletCreateEdit_isPinInvalid.value,
@@ -356,6 +404,8 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
         await outletCreateEdit_fetchCreateNewOutlet(formData);
       }
 
+      // Reset form and validations after successful submission
+      outletCreateEdit_onResetForm();
       outletCreateEdit_onCloseDialogVerifyPIN();
       router.push({ name: 'outlet.list' });
     } catch (error: unknown) {
@@ -372,7 +422,32 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
    */
   const outletCreateEdit_onUploadPhoto = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {
-      outletCreateEdit_formData.photo = event.files[0]; // Assign the first file
+      const file = event.files[0];
+
+      // Validate file size
+      if (!validateFileSize(file, FILE_UPLOAD_LIMITS.IMAGE_MAX_SIZE)) {
+        // Show error toast
+        eventBus.emit('AppBaseToast', {
+          isOpen: true,
+          message: `File size is too large. Maximum allowed size is ${FILE_UPLOAD_LIMITS_DISPLAY.IMAGE_MAX_SIZE_MB}. Your file size is ${formatFileSize(file.size)}.`,
+          position: EToastPosition.TOP_RIGHT,
+          type: EToastType.DANGER,
+        });
+        return;
+      }
+
+      // Validate file type (additional check)
+      if (!file.type.startsWith('image/')) {
+        eventBus.emit('AppBaseToast', {
+          isOpen: true,
+          message: 'Please select a valid image file (JPG, PNG, GIF, WebP).',
+          position: EToastPosition.TOP_RIGHT,
+          type: EToastType.DANGER,
+        });
+        return;
+      }
+
+      outletCreateEdit_formData.photo = file;
     }
   };
 
@@ -387,6 +462,7 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
     outletCreateEdit_onCloseDialogVerifyPIN,
     outletCreateEdit_onDeleteOutlet,
     outletCreateEdit_onRemovePhoto,
+    outletCreateEdit_onResetForm,
     outletCreateEdit_onShowDialogDeleteOutlet,
     outletCreateEdit_onSubmit,
     outletCreateEdit_onSubmitDialogVerifyPIN,

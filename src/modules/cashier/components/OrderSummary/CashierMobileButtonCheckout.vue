@@ -1,11 +1,15 @@
 <script setup lang="ts">
 // Interface
 import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import { ICashierProductProvided } from '../../interfaces/cashier-product-service';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalOrderSummary } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierOrderSummary_modalOrderSummary, cashierOrderSummary_calculateEstimation } =
+  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+
+const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cashierProduct')!;
 </script>
 <template>
   <section
@@ -16,15 +20,26 @@ const { cashierOrderSummary_modalOrderSummary } = inject<ICashierOrderSummaryPro
       class="border-none w-full text-white py-2.5 px-8"
       type="button"
       label="Place Order"
+      :disabled="cashierProduct_selectedProduct.length === 0"
       @click="cashierOrderSummary_modalOrderSummary.show = true"
     >
       <template #default>
         <section class="flex gap-2 justify-between w-full items-center">
           <div class="flex gap-2 items-center">
             <AppBaseSvg name="cart" class="!h-4 !w-5" />
-            <span class="font-semibold text-sm text-white">10 {{ useLocalization('cashier.items') }}</span>
+            <span class="font-semibold text-sm text-white"
+              >{{ cashierProduct_selectedProduct.length }} {{ useLocalization('cashier.items') }}</span
+            >
           </div>
-          <span class="font-semibold text-sm text-white">Rp.120.000</span>
+          <span
+            v-if="!cashierOrderSummary_calculateEstimation.isLoading"
+            class="font-semibold text-sm text-white"
+            >{{
+              useCurrencyFormat({
+                data: cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0,
+              })
+            }}</span
+          >
         </section>
       </template>
     </PrimeVueButton>
