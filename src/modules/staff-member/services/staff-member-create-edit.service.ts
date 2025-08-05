@@ -73,8 +73,8 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   //   },
   // });
   const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-    name: 'alex',
-    email: 'alex@kubik.com',
+    name: 'sutejo',
+    email: 'sutejo@kubik.com',
     phoneCode: '+62',
     phoneNumber: '81234567890',
     image: null,
@@ -291,16 +291,10 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
           ...httpAbort_registerAbort(STAFF_MEMBER_DETAIL_REQUEST),
         },
       );
-      // console.log('Fetched staff member details:', response.data);
       if (response) {
         // Populate form data with the fetched staff member details
         Object.assign(staffMemberCreateEdit_formData, response.data);
 
-        // Handle the working hours data
-        // console.log('response.data.employeesShift', response.data.employeesShift);
-        // Map the employeesShift to the formData.shift structure
-        // 1. Group all shifts from the backend by their day for efficient lookup.
-        // We use a Map with a case-insensitive key (e.g., 'MONDAY').
         const shiftsByDay = new Map();
 
         for (const shift of response.data.employeesShift) {
@@ -524,60 +518,46 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     // });
 
     const formData = new FormData();
-
-    // Define which top-level keys you want to exclude
     const keysToIgnore = ['comissions', 'imagePreview'];
 
     for (const key in staffMemberCreateEdit_formData) {
       if (Object.prototype.hasOwnProperty.call(staffMemberCreateEdit_formData, key)) {
-        // Skip ignored keys
         if (keysToIgnore.includes(key)) continue;
 
         const value = staffMemberCreateEdit_formData[key as keyof IStaffMemberCreateEditFormData];
 
         if (value !== null && value !== undefined) {
-          // Handle 'shift' array specially
+          // ✅ START of corrected 'shift' logic
           if (key === 'shift' && Array.isArray(value)) {
-            value.forEach((shiftItem, shiftIndex) => {
-              if (!shiftItem || !('day' in shiftItem) || !('isActive' in shiftItem)) {
-                console.error(`Invalid shift item at index ${shiftIndex}. Skipping...`, shiftItem);
-                return;
-              }
+            let shiftIndex = 0; // Initialize a counter for the flattened list
 
-              // Always send the day and its active status
-              formData.append(`shift[${shiftIndex}][day]`, String(shiftItem.day));
-              formData.append(`shift[${shiftIndex}][isActive]`, String(shiftItem.isActive));
+            // Loop through each day object (e.g., { day: 'Sunday', timeSlots: [...] })
+            (value as { day: string; timeSlots: IstaffHour[]; isActive: boolean; }[]).forEach((dayItem) => {
+              if (dayItem.isActive && dayItem.timeSlots && dayItem.timeSlots.length > 0) {
+                // If the day is active, loop through its time slots
+                dayItem.timeSlots.forEach(slot => {
+                  // For EACH time slot, create a full shift entry in FormData
+                  formData.append(`shift[${shiftIndex}][day]`, String(dayItem.day));
+                  formData.append(`shift[${shiftIndex}][isActive]`, 'true');
 
-              // Only process time slots if the day is active and timeSlots property exists
-              if (shiftItem.isActive && 'timeSlots' in shiftItem && Array.isArray(shiftItem.timeSlots) && shiftItem.timeSlots.length > 0) {
-                // Loop through EACH time slot for the current day
-                shiftItem.timeSlots.forEach((slot, slotIndex) => {
-                  if (!slot || !('startTime' in slot) || !('endTime' in slot)) {
-                    console.error(`Invalid time slot at index ${slotIndex} in shift item at index ${shiftIndex}. Skipping...`, slot);
-                    return;
-                  }
+                  const startTime = slot.startTime ? new Date(slot.startTime as Date).toISOString().substring(11, 16) : '';
+                  const endTime = slot.endTime ? new Date(slot.endTime as Date).toISOString().substring(11, 16) : '';
 
-                  let startTime = '';
-                  let endTime = '';
+                  formData.append(`shift[${shiftIndex}][start_time]`, startTime);
+                  formData.append(`shift[${shiftIndex}][end_time]`, endTime);
 
-                  try {
-                    if (slot.startTime) {
-                      startTime = new Date(slot.startTime as Date).toISOString().substring(11, 16);
-                    }
-                    if (slot.endTime) {
-                      endTime = new Date(slot.endTime as Date).toISOString().substring(11, 16);
-                    }
-                  } catch (error) {
-                    console.error(`Invalid time slot at index ${slotIndex} in shift item at index ${shiftIndex}. Skipping...`, slot, error);
-                    return;
-                  }
-
-                  // Append each time with its own index
-                  formData.append(`shift[${shiftIndex}][start_time][${slotIndex}]`, startTime);
-                  formData.append(`shift[${shiftIndex}][end_time][${slotIndex}]`, endTime);
+                  shiftIndex = shiftIndex + 1; // Increment the main counter for the next time slot
                 });
+              } else {
+                // For inactive days, create one entry with empty times
+                formData.append(`shift[${shiftIndex}][day]`, String(dayItem.day));
+                formData.append(`shift[${shiftIndex}][isActive]`, 'false');
+                formData.append(`shift[${shiftIndex}][start_time]`, '');
+                formData.append(`shift[${shiftIndex}][end_time]`, '');
+                shiftIndex = shiftIndex + 1; // Increment the main counter
               }
             });
+            // ✅ END of corrected 'shift' logic
           } else if (value instanceof Date) {
             formData.append(key, value.toISOString());
           } else if (value instanceof File) {
@@ -585,9 +565,8 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
           } else if (typeof value === 'object' && !Array.isArray(value)) {
             formData.append(key, JSON.stringify(value));
           } else if (Array.isArray(value)) {
-            // For other arrays (e.g. socialMedia), serialize as JSON
             if (key === 'socialMedia' && (value === null || value.length === 0)) {
-              continue; // Skip appending empty or null socialMedia array
+              continue;
             }
             formData.append(key, JSON.stringify(value));
           } else {
@@ -598,11 +577,11 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     }
 
     // (Optional) Log the result to verify
-    const payload: Record<string, unknown> = {};
-    for (const [key, value] of formData.entries()) {
-      payload[key] = value;
-    }
-    console.log('FormData payload:', JSON.stringify(payload, null, 2));
+    // const payload: Record<string, unknown> = {};
+    // for (const [key, value] of formData.entries()) {
+    //   payload[key] = value;
+    // }
+    // console.log('FormData payload:', JSON.stringify(payload, null, 2));
 
     try {
       if (route.name === 'staff-member.create') {
