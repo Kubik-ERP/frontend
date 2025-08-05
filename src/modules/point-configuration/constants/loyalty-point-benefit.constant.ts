@@ -118,7 +118,7 @@ export const LOYALTY_POINT_BENEFIT_LIST_DATA = [
       },
       {
         id: '6',
-        name: 'Cake',
+        name: 'Birthday Cake',
         quantity: 1,
       },
     ],
@@ -146,6 +146,28 @@ export const LOYALTY_POINT_BENEFIT_LIST_DATA = [
       {
         id: '10',
         name: 'Cheese Burger',
+        quantity: 1,
+      }
+    ],
+  },
+  {
+    type: 'Free Items',
+    benefitName: 'Happy Meal Deals',
+    pointNeeds: 10,
+    discountFreeItems: [
+      {
+        id: '11',
+        name: 'Ice Cream',
+        quantity: 1,
+      },
+      {
+        id: '12',
+        name: 'Croissant',
+        quantity: 1,
+      },
+      {
+        id: '13',
+        name: 'French Fries',
         quantity: 1,
       }
     ],
