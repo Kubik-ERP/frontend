@@ -178,24 +178,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     isLoading: false,
     selectedPaymentMethod: '',
     data: [],
-    dataSelfOrder: [
-      {
-        sortNo: 1,
-        id: '1',
-        iconName: 'cash',
-        name: 'Pay at Cashier',
-        isAvailable: true,
-      },
-      {
-        sortNo: 4,
-        id: '4',
-        iconName: 'qris',
-        name: 'QRIS',
-        isAvailable: false,
-      },
-    ],
   });
-
 
   const cashierOrderSummary_calculateEstimation = ref<ICashierCalulateEstimationData>({
     isLoading: false,
@@ -211,7 +194,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     },
   });
 
-
   /**
    * @description Handle order type selection
    * @returns void
@@ -220,10 +202,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_modalPaymentMethod.value.isLoading = true;
 
     try {
-      const response = await store.cashierProduct_fetchPaymentMethod({});
+      const response = await store.cashierProduct_fetchPaymentMethod(route.name === 'self-order', {});
 
       cashierOrderSummary_modalPaymentMethod.value.data = response.data;
-    
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -352,7 +333,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_handleModalAddCustomer = (response: ICashierResponseAddCustomer | null) => {
     cashierOrderSummary_modalAddCustomer.value.show = !cashierOrderSummary_modalAddCustomer.value.show;
 
-    if(response) {
+    if (response) {
       cashierProduct_customerState.value.selectedCustomer = response.data;
     }
   };
@@ -429,24 +410,23 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     isLoading: false,
     showModalPayment: false,
     data: {},
-    form: {paymentAmount: 0},
+    form: { paymentAmount: 0 },
   });
 
   const cashierOrderSummary_formRules = {
     paymentAmount: {
       required,
       numeric,
-      minValue: minValue(computed(() => cashierOrderSummary_calculateEstimation.value.data.grandTotal))
+      minValue: minValue(computed(() => cashierOrderSummary_calculateEstimation.value.data.grandTotal)),
     },
   };
- 
 
   const cashierOrderSummary_paymentAmountFormValidation = useVuelidate(
     cashierOrderSummary_formRules,
     cashierOrderSummary_modalPlaceOrderDetail.value.form,
     {
       $autoDirty: true,
-    }
+    },
   );
 
   /**
@@ -531,7 +511,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       f => f.id === cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
     )?.name;
 
-    if(getSelectedPaymentMethod?.toUpperCase() === 'CASH') {
+    if (getSelectedPaymentMethod?.toUpperCase() === 'CASH') {
       cashierOrderSummary_paymentAmountFormValidation.value.$touch();
 
       if (cashierOrderSummary_paymentAmountFormValidation.value.$invalid) return;
@@ -540,7 +520,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_modalPlaceOrderDetail.value.show = false;
     cashierOrderSummary_modalPlaceOrderDetail.value.isLoading = true;
 
-    const provider = getSelectedPaymentMethod?.toUpperCase() === 'CASH' ? 'cash' : cashierOrderSummary_summary.value.provider;
+    const provider =
+      getSelectedPaymentMethod?.toUpperCase() === 'CASH' ? 'cash' : cashierOrderSummary_summary.value.provider;
 
     try {
       const params = {
@@ -559,13 +540,13 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
       cashierOrderSummary_modalPlaceOrderDetail.value.data = response.data;
 
-      if(getSelectedPaymentMethod?.toUpperCase() === 'CASH') {
+      if (getSelectedPaymentMethod?.toUpperCase() === 'CASH') {
         router.push({
-          name: (route.name === 'cashier' || route.name === 'cashier-order-edit') ? 'invoice' : 'self-order-invoice',
+          name: route.name === 'cashier' || route.name === 'cashier-order-edit' ? 'invoice' : 'self-order-invoice',
           params: {
             invoiceId: response.data.invoiceId,
           },
-        })
+        });
       } else {
         cashierOrderSummary_modalPlaceOrderDetail.value.showModalPayment = true;
       }
@@ -576,7 +557,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         return Promise.reject(new Error(String(error)));
       }
     } finally {
-      cashierOrderSummary_modalPlaceOrderDetail.value.isLoading = false
+      cashierOrderSummary_modalPlaceOrderDetail.value.isLoading = false;
     }
   };
 
@@ -628,7 +609,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
       store.cashierProduct_selectedProduct = [];
 
-      if (route.name === 'cashier') {
+      if (route.name === 'cashier' || route.name === 'cashier-order-edit') {
         router.push({
           name: 'invoice',
           params: {
@@ -719,7 +700,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       }
     });
   };
-  
+
   const cashierOrderSummary_handleEditOrder = async () => {
     try {
       const invoiceId = route.params.invoiceId as string;
@@ -727,7 +708,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         throw new Error('No invoice ID provided in route parameters');
       }
 
-      await store.cashierProduct_handleEditOrder({invoiceId: invoiceId, products: cashierProduct_selectedProduct.value});
+      await store.cashierProduct_handleEditOrder({
+        invoiceId: invoiceId,
+        products: cashierProduct_selectedProduct.value,
+      });
 
       router.push({
         name: 'invoice',
@@ -741,9 +725,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       } else {
         return Promise.reject(new Error(String(error)));
       }
-      
     }
-  }
+  };
 
   const cashierOrderSummary_fetchInvoiceDetail = async (invoiceId: string) => {
     try {
@@ -760,7 +743,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           dob: null,
           username: null,
           customersHasTag: null,
-        }
+        };
 
         cashierOrderSummary_modalOrderType.value.selectedOrderType = response.data.orderType;
 
@@ -793,19 +776,18 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
                   price: 0,
                 }),
             productId: item.productId,
-            variantId: item.variantId || "",
+            variantId: item.variantId || '',
             quantity: item.qty,
             notes: item.notes,
-          }
+          };
         });
       } else {
         console.error('No invoice data found');
       }
-    }
-    catch (error) {
+    } catch (error) {
       router.push({
-        name: 'cashier'
-      })
+        name: 'cashier',
+      });
 
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -813,26 +795,26 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         return Promise.reject(new Error(String(error)));
       }
     }
-  }
+  };
 
   onMounted(() => {
-      if(route.name === 'cashier-order-edit') {
-        const invoiceId = route.params.invoiceId as string;
-        if (invoiceId) {
-          cashierOrderSummary_fetchInvoiceDetail(invoiceId);
+    if (route.name === 'cashier-order-edit') {
+      const invoiceId = route.params.invoiceId as string;
+      if (invoiceId) {
+        cashierOrderSummary_fetchInvoiceDetail(invoiceId);
 
-          cashierOrderSummary_handleFetchPaymentMethod(); 
-        } else {
-          console.error('No invoice ID provided in route parameters');
-        }
+        cashierOrderSummary_handleFetchPaymentMethod();
       } else {
-        cashierProduct_selectedProduct.value = [];
-        cashierOrderSummary_modalOrderType.value.selectedOrderType = 'dine_in';
-        cashierOrderSummary_modalSelectTable.value.selectedTable = [];
-        cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod = '';
-        cashierProduct_customerState.value.selectedCustomer = null; 
+        console.error('No invoice ID provided in route parameters');
       }
-    })
+    } else {
+      cashierProduct_selectedProduct.value = [];
+      cashierOrderSummary_modalOrderType.value.selectedOrderType = 'dine_in';
+      cashierOrderSummary_modalSelectTable.value.selectedTable = [];
+      cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod = '';
+      cashierProduct_customerState.value.selectedCustomer = null;
+    }
+  });
 
   /**
    * @description Unsubscribe from payment events
@@ -914,6 +896,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierProduct_onSearchCustomer,
     cashierProduct_onScrollFetchMoreCustomers,
 
-    cashierOrderSummary_handleEditOrder
+    cashierOrderSummary_handleEditOrder,
   };
 };

@@ -37,7 +37,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
   /**
    * @description Reactive data binding
    */
-  const authenticationSignUp_activeStep = ref<number>(1);
+  const authenticationSignUp_activeStep = ref<number>(0);
   const authenticationSignUp_durationOtp = ref<number>(0);
   const authenticationSignUp_formData = reactive<IAuthenticationSignUpFormData>({
     fullName: '',
