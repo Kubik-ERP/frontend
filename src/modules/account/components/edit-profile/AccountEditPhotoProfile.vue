@@ -47,7 +47,7 @@ const uriProfileImage = computed(() => {
       url="/api/upload"
       accept="image/*"
       custom-upload
-      :max-file-size="1000000"
+      :max-file-size="2097152"
       :show-cancel-button="false"
       :show-upload-button="false"
       :pt="{

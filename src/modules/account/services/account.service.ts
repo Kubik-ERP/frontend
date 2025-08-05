@@ -14,6 +14,9 @@ import type { IOutlet } from '@/modules/outlet/interfaces';
 import { useAccountStore } from '../store';
 import { useOutletStore } from '@/modules/outlet/store';
 
+// Composables
+import { useGlobalLoading } from '@/app/composables/useGlobalLoading';
+
 // Plugins
 import eventBus from '@/plugins/mitt';
 
@@ -33,6 +36,7 @@ export const useAccountService = (): IAccountProvided => {
   const router = useRouter();
   const { outlet_isLoading, outlet_profile, outlet_selectedOutletOnAccountPage } = storeToRefs(outletStore);
   const { httpAbort_registerAbort } = useHttpAbort();
+  const { withLoading } = useGlobalLoading();
 
   /**
    * @description Reactive data binding
@@ -82,9 +86,12 @@ export const useAccountService = (): IAccountProvided => {
    */
   const account_fetchOutletProfile = async (): Promise<void> => {
     try {
-      await outletStore.fetchOutlet_profile({
-        ...httpAbort_registerAbort(ACCOUNT_PROFILE_REQUEST),
-      });
+      await withLoading(
+        outletStore.fetchOutlet_profile({
+          ...httpAbort_registerAbort(ACCOUNT_PROFILE_REQUEST),
+        }),
+        { requestId: ACCOUNT_PROFILE_REQUEST },
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
