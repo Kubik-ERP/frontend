@@ -6,15 +6,15 @@ export interface ISettingInvoiceDetail extends IPropsInvoicePaper {
   id: number;
   companyLogoUrl: string | null;
   companyLogo: File | null;
-    footerText: string | null;
-    isShowCompanyLogo: boolean;
-    isShowStoreLocation: boolean;
-    isHideCashierName: boolean;
-    isHideOrderType: boolean;
-    isHideQueueNumber: boolean;
-    isShowTableNumber: boolean;
-    isHideItemPrices: boolean;
-    isShowFooter: boolean;
+  footerText: string | null;
+  isShowCompanyLogo: boolean;
+  isShowStoreLocation: boolean;
+  isHideCashierName: boolean;
+  isHideOrderType: boolean;
+  isHideQueueNumber: boolean;
+  isShowTableNumber: boolean;
+  isHideItemPrices: boolean;
+  isShowFooter: boolean;
 }
 
 export interface ISettingInvoiceDetailResponse {
@@ -80,6 +80,8 @@ export interface ISettingInvoiceProvided {
   invoiceNumberConfigurations_formData: ISettingInvoiceNumberConfigurations;
   footerText_formData: { text: string | null };
   settingInvoice_formValidations: globalThis.Ref<Validation>;
+  invoiceNumberConfigurations_formValidations: globalThis.Ref<Validation>;
+  footerText_formValidations: globalThis.Ref<Validation>;
   settingInvoice_isEditableInvoiceConfiguration: globalThis.Ref<boolean>;
   settingInvoice_isLoading: globalThis.Ref<boolean>;
   settingInvoice_listContentSettings: IDefaultContent[];

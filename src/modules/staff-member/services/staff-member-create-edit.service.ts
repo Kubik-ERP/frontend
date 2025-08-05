@@ -8,7 +8,6 @@ import {
   STAFF_MEMBER_TYPES_OF_USER_PERMISSIONS,
 } from '../constants';
 
-
 // Interfaces
 import type { FileUploadSelectEvent } from 'primevue';
 import type { IStaffMemberCreateEditFormData, IStaffMemberCreateEditProvided, IstaffHour } from '../interfaces';
@@ -74,17 +73,17 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   //   },
   // });
   const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-    name: null,
-    email: null,
+    name: 'Sachio',
+    email: 'sachio@kubik.com',
     phoneCode: '+62',
-    phoneNumber: null,
+    phoneNumber: '81234567890',
     image: null,
     imagePreview: null, // This will hold the preview URL of the image
-    startDate: null,
-    endDate: null,
-    gender: null,
-    title: null,
-    permission: null,
+    startDate: new Date(),
+    endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    gender: 'male',
+    title: '',
+    permission: 'MANAGER',
     socialMedia: [],
     shift: [
       {
@@ -202,44 +201,6 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       },
     },
   });
-  // const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-  //   name: 'Ahmad',
-  //   email: 'ahmad@kubik.com',
-  //   phoneCode: '+62',
-  //   phoneNumber: '81234567890',
-  //   image: null,
-  //   imagePreview: null, // This will hold the preview URL of the image
-  //   startDate: new Date(),
-  //   endDate: (() => {
-  //     const d = new Date();
-  //     d.setDate(d.getDate() + 30);
-  //     return d;
-  //   })(), // Default to 30 days from now,
-  //   gender: 'male',
-  //   title: 'Admin',
-  //   permission: 'BASIC',
-  //   socialMedia: [],
-  //   shift: LIST_OF_DAYS.map(day => ({
-  //     day: day.value === null ? null : String(day.value),
-  //     start_time: null,
-  //     end_time: null,
-  //     isActive: false,
-  //   })),
-  //   comissions: {
-  //     productComission: {
-  //       defaultComission: null,
-  //       defaultComissionType: null,
-  //       isAllItemsHaveDefaultComission: null,
-  //       productItems: [],
-  //     },
-  //     voucherCommission: {
-  //       defaultComission: null,
-  //       defaultComissionType: null,
-  //       isAllVouchersHaveDefaultComission: null,
-  //       voucherItems: [],
-  //     },
-  //   },
-  // });
 
   const staffMemberCreateEdit_routeParamsId = ref<string | undefined>(route.params.id as string | undefined);
 
@@ -409,6 +370,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
         // handle the image preview
         if (response.data.profileUrl) {
+          staffMemberCreateEdit_formData.imagePreview = `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${response.data.profileUrl}`;
           staffMemberCreateEdit_formData.imagePreview = `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${response.data.profileUrl}`;
         }
       }
@@ -588,72 +550,75 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
     for (const key in staffMemberCreateEdit_formData) {
       if (Object.prototype.hasOwnProperty.call(staffMemberCreateEdit_formData, key)) {
-      // Skip ignored keys
-      if (keysToIgnore.includes(key)) continue;
+        // Skip ignored keys
+        if (keysToIgnore.includes(key)) continue;
 
-      const value = staffMemberCreateEdit_formData[key as keyof IStaffMemberCreateEditFormData];
+        const value = staffMemberCreateEdit_formData[key as keyof IStaffMemberCreateEditFormData];
 
-      if (value !== null && value !== undefined) {
-        // Handle 'shift' array specially
-        if (key === 'shift' && Array.isArray(value)) {
-        value.forEach((shiftItem, shiftIndex) => {
-          if ('day' in shiftItem && 'isActive' in shiftItem && 'timeSlots' in shiftItem) {
-            formData.append(`shift[${shiftIndex}][day]`, String(shiftItem.day));
-            formData.append(`shift[${shiftIndex}][isActive]`, String(shiftItem.isActive));
-            if (Array.isArray(shiftItem.timeSlots)) {
-              shiftItem.timeSlots.forEach((slot, slotIndex) => {
-                if (slot.startTime) {
-                  let startTimeValue: Date | null = null;
-                  if (Array.isArray(slot.startTime)) {
-                    startTimeValue = slot.startTime.length > 0 ? slot.startTime[0] : null;
-                  } else {
-                    startTimeValue = slot.startTime as Date;
-                  }
-                  if (startTimeValue)
-                    formData.append(
-                      `shift[${shiftIndex}][timeSlots][${slotIndex}][startTime]`,
-                      useFormatDateLocal(startTimeValue),
-                    );
+        if (value !== null && value !== undefined) {
+          // Handle 'shift' array specially
+          if (key === 'shift' && Array.isArray(value)) {
+            value.forEach((shiftItem, shiftIndex) => {
+              if ('day' in shiftItem && 'isActive' in shiftItem && 'timeSlots' in shiftItem) {
+                formData.append(`shift[${shiftIndex}][day]`, String(shiftItem.day));
+                formData.append(`shift[${shiftIndex}][isActive]`, String(shiftItem.isActive));
+                if (Array.isArray(shiftItem.timeSlots)) {
+                  shiftItem.timeSlots.forEach((slot, slotIndex) => {
+                    if (slot.startTime) {
+                      let startTimeValue: Date | null = null;
+                      if (Array.isArray(slot.startTime)) {
+                        startTimeValue = slot.startTime.length > 0 ? slot.startTime[0] : null;
+                      } else {
+                        startTimeValue = slot.startTime as Date;
+                      }
+                      if (startTimeValue)
+                        formData.append(
+                          `shift[${shiftIndex}][timeSlots][${slotIndex}][startTime]`,
+                          useFormatDateLocal(startTimeValue),
+                        );
+                    }
+                    if (slot.endTime) {
+                      let endTimeValue: Date | null = null;
+                      if (Array.isArray(slot.endTime)) {
+                        endTimeValue = slot.endTime.length > 0 ? slot.endTime[0] : null;
+                      } else {
+                        endTimeValue = slot.endTime as Date;
+                      }
+                      if (endTimeValue)
+                        formData.append(
+                          `shift[${shiftIndex}][timeSlots][${slotIndex}][endTime]`,
+                          useFormatDateLocal(endTimeValue),
+                        );
+                    }
+                  });
                 }
-                if (slot.endTime) {
-                  let endTimeValue: Date | null = null;
-                  if (Array.isArray(slot.endTime)) {
-                    endTimeValue = slot.endTime.length > 0 ? slot.endTime[0] : null;
-                  } else {
-                    endTimeValue = slot.endTime as Date;
-                  }
-                  if (endTimeValue)
-                    formData.append(
-                      `shift[${shiftIndex}][timeSlots][${slotIndex}][endTime]`,
-                      useFormatDateLocal(endTimeValue),
-                    );
-                }
-              });
+              }
+            });
+          } else if (value instanceof Date) {
+            formData.append(key, useFormatDateLocal(value));
+          } else if (value instanceof File) {
+            formData.append(key, value);
+          } else if (typeof value === 'object' && !Array.isArray(value)) {
+            formData.append(key, JSON.stringify(value));
+          } else if (Array.isArray(value)) {
+            // For other arrays (e.g. socialMedia), serialize as JSON
+            if (key === 'socialMedia' && (value === null || value.length === 0)) {
+              continue; // Skip appending empty or null socialMedia array
             }
+            formData.append(key, JSON.stringify(value));
+          } else {
+            formData.append(key, String(value));
           }
-        });
-        } else if (value instanceof Date) {
-        formData.append(key, useFormatDateLocal(value));
-        } else if (value instanceof File) {
-        formData.append(key, value);
-        } else if (typeof value === 'object' && !Array.isArray(value)) {
-        formData.append(key, JSON.stringify(value));
-        } else if (Array.isArray(value)) {
-        // For other arrays (e.g. socialMedia), serialize as JSON
-        formData.append(key, JSON.stringify(value));
-        } else {
-        formData.append(key, String(value));
         }
-      }
       }
     }
 
     // (Optional) Log the result to verify
-    const payload: Record<string, unknown> = {};
-    for (const [key, value] of formData.entries()) {
-      payload[key] = value;
-    }
-    console.log('FormData payload:', JSON.stringify(payload, null, 2));
+    // const payload: Record<string, unknown> = {};
+    // for (const [key, value] of formData.entries()) {
+    //   payload[key] = value;
+    // }
+    // console.log('FormData payload:', JSON.stringify(payload, null, 2));
 
     try {
       if (route.name === 'staff-member.create') {
