@@ -332,20 +332,10 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
                 return {
                   startTime: startTime
-                    ? new Date(
-                        new Date().toISOString().split('T')[0] +
-                          'T' +
-                          startTime +
-                          ':00.000Z',
-                      )
+                    ? new Date(new Date().toISOString().split('T')[0] + 'T' + startTime + ':00.000Z')
                     : null,
                   endTime: endTime
-                    ? new Date(
-                        new Date().toISOString().split('T')[0] +
-                          'T' +
-                          endTime +
-                          ':00.000Z',
-                      )
+                    ? new Date(new Date().toISOString().split('T')[0] + 'T' + endTime + ':00.000Z')
                     : null,
                 };
               }),
@@ -548,26 +538,46 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         if (value !== null && value !== undefined) {
           // Handle 'shift' array specially
           if (key === 'shift' && Array.isArray(value)) {
-        value.forEach((shiftItem, shiftIndex) => {
-          // Always send the day and its active status
-          formData.append(`shift[${shiftIndex}][day]`, String(shiftItem.day));
-          formData.append(`shift[${shiftIndex}][isActive]`, String(shiftItem.isActive));
+            value.forEach((shiftItem, shiftIndex) => {
+              if (!shiftItem || !('day' in shiftItem) || !('isActive' in shiftItem)) {
+                console.error(`Invalid shift item at index ${shiftIndex}. Skipping...`, shiftItem);
+                return;
+              }
 
-          // Only process time slots if the day is active
-          if (shiftItem.isActive && shiftItem.timeSlots && shiftItem.timeSlots.length > 0) {
-            
-            // Loop through EACH time slot for the current day
-            shiftItem.timeSlots.forEach((slot, slotIndex) => {
-              const startTime = slot.startTime ? new Date(slot.startTime).toISOString().substring(11, 16) : '';
-              const endTime = slot.endTime ? new Date(slot.endTime).toISOString().substring(11, 16) : '';
+              // Always send the day and its active status
+              formData.append(`shift[${shiftIndex}][day]`, String(shiftItem.day));
+              formData.append(`shift[${shiftIndex}][isActive]`, String(shiftItem.isActive));
 
-              // Append each time with its own index
-              formData.append(`shift[${shiftIndex}][start_time][${slotIndex}]`, startTime);
-              formData.append(`shift[${shiftIndex}][end_time][${slotIndex}]`, endTime);
+              // Only process time slots if the day is active and timeSlots property exists
+              if (shiftItem.isActive && 'timeSlots' in shiftItem && Array.isArray(shiftItem.timeSlots) && shiftItem.timeSlots.length > 0) {
+                // Loop through EACH time slot for the current day
+                shiftItem.timeSlots.forEach((slot, slotIndex) => {
+                  if (!slot || !('startTime' in slot) || !('endTime' in slot)) {
+                    console.error(`Invalid time slot at index ${slotIndex} in shift item at index ${shiftIndex}. Skipping...`, slot);
+                    return;
+                  }
+
+                  let startTime = '';
+                  let endTime = '';
+
+                  try {
+                    if (slot.startTime) {
+                      startTime = new Date(slot.startTime as Date).toISOString().substring(11, 16);
+                    }
+                    if (slot.endTime) {
+                      endTime = new Date(slot.endTime as Date).toISOString().substring(11, 16);
+                    }
+                  } catch (error) {
+                    console.error(`Invalid time slot at index ${slotIndex} in shift item at index ${shiftIndex}. Skipping...`, slot, error);
+                    return;
+                  }
+
+                  // Append each time with its own index
+                  formData.append(`shift[${shiftIndex}][start_time][${slotIndex}]`, startTime);
+                  formData.append(`shift[${shiftIndex}][end_time][${slotIndex}]`, endTime);
+                });
+              }
             });
-          }
-        });
-        // ✅ END OF ADJUSTED SHIFT LOGIC
           } else if (value instanceof Date) {
             formData.append(key, value.toISOString());
           } else if (value instanceof File) {
