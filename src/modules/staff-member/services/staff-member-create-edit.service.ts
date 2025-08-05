@@ -11,7 +11,6 @@ import {
 // Interfaces
 import type { FileUploadSelectEvent } from 'primevue';
 import type { IStaffMemberCreateEditFormData, IStaffMemberCreateEditProvided, IstaffHour } from '../interfaces';
-import type { IStaffMemberCreateEditFormData, IStaffMemberCreateEditProvided, IstaffHour } from '../interfaces';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -554,7 +553,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         // Skip ignored keys
         if (keysToIgnore.includes(key)) continue;
 
-      const value = staffMemberCreateEdit_formData[key as keyof IStaffMemberCreateEditFormData];
+        const value = staffMemberCreateEdit_formData[key as keyof IStaffMemberCreateEditFormData];
 
         if (value !== null && value !== undefined) {
           // Handle 'shift' array specially
