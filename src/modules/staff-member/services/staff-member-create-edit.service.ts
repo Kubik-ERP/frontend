@@ -73,8 +73,8 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   //   },
   // });
   const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-    name: 'sudirman',
-    email: 'sudirman@kubik.com',
+    name: 'alex',
+    email: 'alex@kubik.com',
     phoneCode: '+62',
     phoneNumber: '81234567890',
     image: null,
@@ -96,10 +96,6 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
             startTime: new Date('2025-07-31T03:30:00.000Z'),
             endTime: new Date('2025-07-31T04:30:00.000Z'),
           },
-          {
-            startTime: new Date('2025-07-31T05:30:00.000Z'),
-            endTime: new Date('2025-07-31T06:30:00.000Z'),
-          },
         ],
         day: 'Sunday',
         isActive: true,
@@ -110,10 +106,6 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
             startTime: new Date('2025-07-31T01:30:00.000Z'),
             endTime: new Date('2025-07-31T02:30:00.000Z'),
           },
-          {
-            startTime: new Date('2025-07-31T05:30:00.000Z'),
-            endTime: new Date('2025-07-31T06:30:00.000Z'),
-          },
         ],
         day: 'Monday',
         isActive: true,
@@ -123,10 +115,6 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
           {
             startTime: new Date('2025-07-31T01:30:00.000Z'),
             endTime: new Date('2025-07-31T02:30:00.000Z'),
-          },
-          {
-            startTime: new Date('2025-07-31T05:30:00.000Z'),
-            endTime: new Date('2025-07-31T06:30:00.000Z'),
           },
         ],
         day: 'Tuesday',
@@ -167,18 +155,6 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
           {
             startTime: new Date('2025-07-31T01:30:00.000Z'),
             endTime: new Date('2025-07-31T02:30:00.000Z'),
-          },
-          {
-            startTime: new Date('2025-07-31T05:30:00.000Z'),
-            endTime: new Date('2025-07-31T06:30:00.000Z'),
-          },
-          {
-            startTime: new Date('2025-07-31T07:30:00.000Z'),
-            endTime: new Date('2025-07-31T08:30:00.000Z'),
-          },
-          {
-            startTime: new Date('2025-07-31T09:30:00.000Z'),
-            endTime: new Date('2025-07-31T10:30:00.000Z'),
           },
         ],
         day: 'Saturday',
@@ -634,11 +610,11 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     }
 
     // (Optional) Log the result to verify
-    // const payload: Record<string, unknown> = {};
-    // for (const [key, value] of formData.entries()) {
-    //   payload[key] = value;
-    // }
-    // console.log('FormData payload:', JSON.stringify(payload, null, 2));
+    const payload: Record<string, unknown> = {};
+    for (const [key, value] of formData.entries()) {
+      payload[key] = value;
+    }
+    console.log('FormData payload:', JSON.stringify(payload, null, 2));
 
     try {
       if (route.name === 'staff-member.create') {
