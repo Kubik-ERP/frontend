@@ -38,7 +38,7 @@ const {
   <AppBaseDataTable
     btn-cta-create-title="Add Staff Member"
     :columns="staffMemberList_columns"
-    :data="staffMemberList_values.data"
+    :data="staffMemberList_values.employees"
     is-using-server-side-pagination
     :rows-per-page="staffMemberList_values.meta.limit"
     :total-records="staffMemberList_values.meta.total"
