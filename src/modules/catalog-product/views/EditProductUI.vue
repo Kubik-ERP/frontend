@@ -11,7 +11,7 @@ import closeRedSVG from '@/app/assets/icons/close-red.svg';
 import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
 
 const route = useRoute();
-
+const loading = ref(false);
 const { getAllCategories } = useCategoryService();
 const { getProductById, updateProduct, deleteProduct, product_formData, product_formValidations } =
   useProductService();
@@ -36,10 +36,13 @@ function clearForm() {
 
 const loadCategories = async () => {
   try {
+    loading.value = true;
     const response = await getAllCategories(1, 100, '');
     categories.value = response.categories;
   } catch (error) {
     console.error('Failed to load categories:', error);
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -47,6 +50,7 @@ const discount_unit = ref('Rp');
 
 const loadProduct = async () => {
   try {
+    loading.value = true;
     const response = await getProductById(route.params.id);
 
     product_formData.name = response.name;
@@ -72,6 +76,8 @@ const loadProduct = async () => {
     }
   } catch (error) {
     console.error(error);
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -98,22 +104,27 @@ const isDeleteOpen = ref(false);
 
 const handleDelete = async () => {
   try {
+    loading.value = true;
     await deleteProduct(productID.value);
     isDeleteOpen.value = false;
     hasConfirmedLeave = true;
     router.push({ name: 'catalog.products.index' });
   } catch (error) {
     console.error('Failed to delete product:', error);
+  }   finally {
+    loading.value = false;
   }
 };
 
 const handleUpdateProduct = async () => {
   try {
+    loading.value = true;
     await updateProduct(productID.value, product_formData);
   } catch (error) {
     console.error(error);
   } finally {
     clearForm();
+    loading.value = false;
   }
 };
 
@@ -460,6 +471,7 @@ const cancelUpdate = () => {
               <PrimeVueButton
                 :label="useLocalization('productDetail.form.button.edit')"
                 class="text-xl w-48 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
+                :loading="loading"
                 :disabled="product_formValidations.$invalid"
                 type="submit"
               />

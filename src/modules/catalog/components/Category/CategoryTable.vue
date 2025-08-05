@@ -96,7 +96,8 @@ const handleAddCategory = async () => {
   category_formValidations.value.$touch();
   if (category_formValidations.value.$invalid) return;
   try {
-    const newCategory = await createCategory({
+    loading.value = true;
+    await createCategory({
       category: category_formData.name,
       description: category_formData.description || '-',
       imageFile: category_formData.imageFile,
@@ -106,14 +107,15 @@ const handleAddCategory = async () => {
     isAddOpen.value = false;
     category_formData.name = '';
     category_formData.description = '';
-    if (newCategory.statusCode === 500) {
-      alert(`${newCategory.message}`);
-    }
     resetForm();
   } catch (error) {
     console.error('Failed to create category:', error);
     console.error(error);
     alert('Something went wrong while creating the category.');
+  }
+  finally
+  {
+    loading.value = false;
   }
 };
 const openAddDialog = () => {
@@ -456,6 +458,7 @@ onMounted(() => {
           />
           <PrimeVueButton
             :label="useLocalization('modal.addButton')"
+            :loading="loading"
             class="w-48 bg-primary border-primary"
             type="submit"
             :disabled="category_formValidations.$invalid"
@@ -534,6 +537,7 @@ onMounted(() => {
           />
           <PrimeVueButton
             :label="useLocalization('modal.editButton')"
+            :loading="loading"
             class="w-48 bg-primary border-primary"
             type="submit"
             :disabled="category_formValidations.$invalid"
