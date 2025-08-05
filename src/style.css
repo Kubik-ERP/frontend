@@ -81,11 +81,10 @@
     .invoice-paper {
       margin: 0 auto;
       width: 100%;
-      max-width: 800px;
       padding: 2px !important;
       box-sizing: border-box;
       page-break-after: always;
-      font-size: 0.75em;
+      font-size: 0.45em;
     }
 
     .invoice-paper * {
