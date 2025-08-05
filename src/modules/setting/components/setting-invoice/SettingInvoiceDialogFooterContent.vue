@@ -8,11 +8,15 @@ import type { ISettingInvoiceProvided } from '../../interfaces/setting-invoice.i
 const {
   settingInvoice_formData,
   footerText_formData,
-  settingInvoice_formValidations,
+  footerText_formValidations,
   settingInvoice_onCloseEditFooterContentDialog,
 } = inject<ISettingInvoiceProvided>('settingInvoice')!;
 
 const settingInvoice_onUpdateFooterContent = () => {
+  footerText_formValidations.value.$touch();
+  if (footerText_formValidations.value.$invalid) {
+    return;
+  }
   // Here you can handle the update logic for footer content
   settingInvoice_formData.contentSettings.footerText = footerText_formData.text;
   settingInvoice_onCloseEditFooterContentDialog();
@@ -23,9 +27,6 @@ const settingInvoice_onUpdateFooterContent = () => {
   <AppBaseDialog id="setting-invoice-dialog-footer-content">
     <template #header>
       <h5 class="font-semibold text-black text-lg">Edit Footer Content</h5>
-      <!-- {{ settingInvoice_formData.contentSettings.footerText }}
-      <br>
-      {{ footerText_formData.text }} -->
     </template>
 
     <template #content>
@@ -35,14 +36,14 @@ const settingInvoice_onUpdateFooterContent = () => {
         is-name-as-label
         label-for="footer-text"
         name="Footer Content"
-        :validators="settingInvoice_formValidations.contentSettings.footerText"
+        :validators="footerText_formValidations.text"
       >
         <PrimeVueTextarea
           v-model="footerText_formData.text"
           class="text-sm w-full"
           :class="{ ...classes }"
           rows="5"
-          v-on="useListenerForm(settingInvoice_formValidations.contentSettings, 'footerText')"
+          v-on="useListenerForm(footerText_formValidations, 'text')"
         />
       </AppBaseFormGroup>
     </template>
@@ -61,6 +62,7 @@ const settingInvoice_onUpdateFooterContent = () => {
           class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
           label="Update"
           type="button"
+          :disabled="footerText_formValidations.$invalid"
           @click="settingInvoice_onUpdateFooterContent"
         />
       </footer>

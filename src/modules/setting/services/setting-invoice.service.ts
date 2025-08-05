@@ -55,7 +55,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
     },
     contentSettings: {
       companyLogo: null,
-      footerText: "Terima Kasih",
+      footerText: 'Terima Kasih',
       // footerText: `
       //   <p id="label-social-media" class="font-normal text-black text-sm text-center">Social Media</p>
       //   <p id="social-media-ig" class="font-normal text-black text-sm text-center">Instagram : @lawsonkal</p>
@@ -96,6 +96,34 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
   /**
    * @description Form validations
    */
+  const invoiceNumberConfigurations_formRules = computed(() => ({
+    incrementBy: { required },
+    resetSequence: { required },
+    startingNumber: { required },
+  }));
+  const invoiceNumberConfigurations_formValidations = useVuelidate(
+    invoiceNumberConfigurations_formRules,
+    invoiceNumberConfigurations_formData,
+    {
+      $autoDirty: true,
+    },
+  );
+  /**
+   * @description Form validations
+   */
+  const footerText_formRules = computed(() => ({
+    text: { required },
+  }));
+  const footerText_formValidations = useVuelidate(
+    footerText_formRules,
+    footerText_formData,
+    {
+      $autoDirty: true,
+    },
+  );
+  /**
+   * @description Form validations
+   */
   const settingInvoice_formRules = computed(() => ({
     contentSettings: {
       footerText: { required },
@@ -132,7 +160,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
         setting_invoice.value?.isAutomaticallyPrintTable ?? false;
 
       // Map content settings
-      settingInvoice_formData.contentSettings.footerText = setting_invoice.value?.footerText ?? "footer text";
+      settingInvoice_formData.contentSettings.footerText = setting_invoice.value?.footerText ?? 'footer text';
       settingInvoice_formData.contentSettings.isShowCompanyLogo =
         setting_invoice.value?.isShowCompanyLogo ?? false;
       settingInvoice_formData.contentSettings.isShowStoreLocation =
@@ -151,7 +179,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
       // Map invoice number configurations
       settingInvoice_formData.invoiceNumberConfigurations.incrementBy = setting_invoice.value?.incrementBy ?? 1;
       settingInvoice_formData.invoiceNumberConfigurations.resetSequence =
-        setting_invoice.value?.resetSequence ?? "Daily";
+        setting_invoice.value?.resetSequence ?? 'Daily';
       settingInvoice_formData.invoiceNumberConfigurations.startingNumber =
         setting_invoice.value?.startingNumber ?? 1;
       settingInvoice_formData.invoiceNumberConfigurations.invoicePreview = generateInvoicePreview();
@@ -469,6 +497,8 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
     invoiceNumberConfigurations_formData,
     footerText_formData,
     settingInvoice_formValidations,
+    invoiceNumberConfigurations_formValidations,
+    footerText_formValidations,
     settingInvoice_isEditableInvoiceConfiguration,
     settingInvoice_isLoading: setting_isLoading,
     settingInvoice_listContentSettings: LIST_CONTENT_SETTINGS_INVOICE,
