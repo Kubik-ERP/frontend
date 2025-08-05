@@ -56,10 +56,12 @@
     font-variation-settings: 'opsz' 14;
   }
 
+  @page {
+    size: auto;
+    margin: 0;
+  }
+
   @media print {
-    @page {
-      margin: 0;
-    }
     body #main-content {
       display: none !important;
     }
@@ -81,6 +83,7 @@
     .invoice-paper {
       margin: 0 auto;
       width: 100%;
+      max-width: 100mm;
       padding: 2px !important;
       box-sizing: border-box;
       page-break-after: always;
