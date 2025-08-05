@@ -73,8 +73,8 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
   //   },
   // });
   const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-    name: 'Sachio',
-    email: 'sachio@kubik.com',
+    name: 'sudirman',
+    email: 'sudirman@kubik.com',
     phoneCode: '+62',
     phoneNumber: '81234567890',
     image: null,
@@ -315,7 +315,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
           ...httpAbort_registerAbort(STAFF_MEMBER_DETAIL_REQUEST),
         },
       );
-      console.log('Fetched staff member details:', response.data);
+      // console.log('Fetched staff member details:', response.data);
       if (response) {
         // Populate form data with the fetched staff member details
         Object.assign(staffMemberCreateEdit_formData, response.data);
@@ -355,8 +355,22 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
                 const endTime = Array.isArray(shift.endTime) ? shift.endTime[0] : shift.endTime;
 
                 return {
-                  startTime: startTime ? new Date(startTime) : null,
-                  endTime: endTime ? new Date(endTime) : null,
+                  startTime: startTime
+                    ? new Date(
+                        new Date().toISOString().split('T')[0] +
+                          'T' +
+                          startTime +
+                          ':00.000Z',
+                      )
+                    : null,
+                  endTime: endTime
+                    ? new Date(
+                        new Date().toISOString().split('T')[0] +
+                          'T' +
+                          endTime +
+                          ':00.000Z',
+                      )
+                    : null,
                 };
               }),
             };
@@ -576,7 +590,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
                       }
                       if (startTimeValue)
                         formData.append(
-                          `shift[${shiftIndex}][timeSlots][startTime]`,
+                          `shift[${shiftIndex}][startTime]`,
                           startTimeValue,
                         );
                     }
@@ -592,7 +606,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
                       }
                       if (endTimeValue)
                         formData.append(
-                          `shift[${shiftIndex}][timeSlots][endTime]`,
+                          `shift[${shiftIndex}][endTime]`,
                           endTimeValue,
                         );
                     }
@@ -601,7 +615,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
               }
             });
           } else if (value instanceof Date) {
-            formData.append(key, useFormatDateLocal(value));
+            formData.append(key, value.toISOString());
           } else if (value instanceof File) {
             formData.append(key, value);
           } else if (typeof value === 'object' && !Array.isArray(value)) {
