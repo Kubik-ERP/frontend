@@ -11,7 +11,6 @@ import {
 // Interfaces
 import type { FileUploadSelectEvent } from 'primevue';
 import type { IStaffMemberCreateEditFormData, IStaffMemberCreateEditProvided, IstaffHour } from '../interfaces';
-import type { IStaffMemberCreateEditFormData, IStaffMemberCreateEditProvided, IstaffHour } from '../interfaces';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -316,6 +315,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
           ...httpAbort_registerAbort(STAFF_MEMBER_DETAIL_REQUEST),
         },
       );
+      console.log('Fetched staff member details:', response.data);
       if (response) {
         // Populate form data with the fetched staff member details
         Object.assign(staffMemberCreateEdit_formData, response.data);
@@ -371,7 +371,6 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
         // handle the image preview
         if (response.data.profileUrl) {
-          staffMemberCreateEdit_formData.imagePreview = `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${response.data.profileUrl}`;
           staffMemberCreateEdit_formData.imagePreview = `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${response.data.profileUrl}`;
         }
       }
@@ -564,31 +563,37 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
                 formData.append(`shift[${shiftIndex}][day]`, String(shiftItem.day));
                 formData.append(`shift[${shiftIndex}][isActive]`, String(shiftItem.isActive));
                 if (Array.isArray(shiftItem.timeSlots)) {
-                  shiftItem.timeSlots.forEach((slot, slotIndex) => {
+                  shiftItem.timeSlots.forEach((slot) => {
                     if (slot.startTime) {
-                      let startTimeValue: Date | null = null;
+                      let startTimeValue: string | null = null;
                       if (Array.isArray(slot.startTime)) {
-                        startTimeValue = slot.startTime.length > 0 ? slot.startTime[0] : null;
+                        startTimeValue =
+                          slot.startTime.length > 0 && slot.startTime[0] !== null && slot.startTime[0] !== undefined
+                            ? slot.startTime[0].toISOString().substring(11, 16)
+                            : null;
                       } else {
-                        startTimeValue = slot.startTime as Date;
+                        startTimeValue = slot.startTime.toISOString().substring(11, 16);
                       }
                       if (startTimeValue)
                         formData.append(
-                          `shift[${shiftIndex}][timeSlots][${slotIndex}][startTime]`,
-                          useFormatDateLocal(startTimeValue),
+                          `shift[${shiftIndex}][timeSlots][startTime]`,
+                          startTimeValue,
                         );
                     }
                     if (slot.endTime) {
-                      let endTimeValue: Date | null = null;
+                      let endTimeValue: string | null = null;
                       if (Array.isArray(slot.endTime)) {
-                        endTimeValue = slot.endTime.length > 0 ? slot.endTime[0] : null;
+                        endTimeValue =
+                          slot.endTime?.length > 0 && slot.endTime[0] !== null && slot.endTime[0] !== undefined
+                            ? slot.endTime[0].toISOString().substring(11, 16)
+                            : null;
                       } else {
-                        endTimeValue = slot.endTime as Date;
+                        endTimeValue = slot.endTime.toISOString().substring(11, 16);
                       }
                       if (endTimeValue)
                         formData.append(
-                          `shift[${shiftIndex}][timeSlots][${slotIndex}][endTime]`,
-                          useFormatDateLocal(endTimeValue),
+                          `shift[${shiftIndex}][timeSlots][endTime]`,
+                          endTimeValue,
                         );
                     }
                   });
