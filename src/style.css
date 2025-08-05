@@ -85,7 +85,7 @@
       padding: 2px !important;
       box-sizing: border-box;
       page-break-after: always;
-      font-size: 0.35em;
+      font-size: 0.75em;
     }
 
     .invoice-paper * {
