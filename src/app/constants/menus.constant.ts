@@ -194,8 +194,20 @@ export const LIST_SIDEBAR_MENUS = [
             path: '/pos-setting/payment-method',
           },
           {
+            name: 'Loyalty Point',
+            path: '/pos-setting/point-configuration',
+          },
+          {
+            name: 'Rounding',
+            path: '/',
+          },
+          {
             name: 'Tax & Service Charge',
             path: '/pos-setting/tax-service',
+          },
+          {
+            name: 'Notification',
+            path: '/',
           },
           {
             name: 'Invoice',
