@@ -11,6 +11,7 @@ import {
 // Interfaces
 import type { FileUploadSelectEvent } from 'primevue';
 import type { IStaffMemberCreateEditFormData, IStaffMemberCreateEditProvided, IstaffHour } from '../interfaces';
+import type { IStaffMemberCreateEditFormData, IStaffMemberCreateEditProvided, IstaffHour } from '../interfaces';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -371,6 +372,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         // handle the image preview
         if (response.data.profileUrl) {
           staffMemberCreateEdit_formData.imagePreview = `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${response.data.profileUrl}`;
+          staffMemberCreateEdit_formData.imagePreview = `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${response.data.profileUrl}`;
         }
       }
     } catch (error) {
@@ -552,7 +554,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         // Skip ignored keys
         if (keysToIgnore.includes(key)) continue;
 
-        const value = staffMemberCreateEdit_formData[key as keyof IStaffMemberCreateEditFormData];
+      const value = staffMemberCreateEdit_formData[key as keyof IStaffMemberCreateEditFormData];
 
         if (value !== null && value !== undefined) {
           // Handle 'shift' array specially

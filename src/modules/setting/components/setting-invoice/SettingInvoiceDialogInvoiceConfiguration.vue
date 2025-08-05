@@ -46,7 +46,7 @@ const settingInvoice_onEditInvoiceNumberConfiguration = () => {
             :validators="invoiceNumberConfigurations_formValidations.startingNumber"
           >
             <PrimeVueInputNumber
-              v-model="invoiceNumberConfigurations_formData.startingNumber"
+              v-model="settingInvoice_formData.invoiceNumberConfigurations.startingNumber"
               :class="{
                 ...classes,
               }"
@@ -67,7 +67,7 @@ const settingInvoice_onEditInvoiceNumberConfiguration = () => {
             :validators="invoiceNumberConfigurations_formValidations.incrementBy"
           >
             <PrimeVueInputNumber
-              v-model="invoiceNumberConfigurations_formData.incrementBy"
+              v-model="settingInvoice_formData.invoiceNumberConfigurations.incrementBy"
               :class="{
                 ...classes,
               }"
@@ -88,7 +88,7 @@ const settingInvoice_onEditInvoiceNumberConfiguration = () => {
             :validators="invoiceNumberConfigurations_formValidations.resetSequence"
           >
             <PrimeVueSelect
-              v-model="invoiceNumberConfigurations_formData.resetSequence"
+              v-model="settingInvoice_formData.invoiceNumberConfigurations.resetSequence"
               :options="settingInvoice_listResetSequences"
               option-label="label"
               option-value="value"
