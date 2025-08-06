@@ -39,7 +39,8 @@ export const LOYALTY_POINT_BENEFIT_LIST_DATA = [
     benefitName: 'Discount Rp 10.000',
     pointNeeds: 10,
     discountFreeItems: {
-      discount: 10000,
+      value: 10000,
+      unit: 'Rp',
       isPercent: false,
     },
   },
@@ -48,7 +49,8 @@ export const LOYALTY_POINT_BENEFIT_LIST_DATA = [
     benefitName: 'Discount 10%',
     pointNeeds: 5,
     discountFreeItems: {
-      discount: 10,
+      value: 10,
+      unit: '%',
       isPercent: true,
     },
   },
@@ -57,7 +59,8 @@ export const LOYALTY_POINT_BENEFIT_LIST_DATA = [
     benefitName: 'Discount 50%',
     pointNeeds: 20,
     discountFreeItems: {
-      discount: 50,
+      value: 50,
+      unit: '%',
       isPercent: true,
     },
   },
@@ -66,7 +69,8 @@ export const LOYALTY_POINT_BENEFIT_LIST_DATA = [
     benefitName: 'Discount Rp 10.000',
     pointNeeds: 10,
     discountFreeItems: {
-      discount: 10000,
+      value: 10000,
+      unit: 'Rp',
       isPercent: false,
     },
   },
@@ -75,7 +79,8 @@ export const LOYALTY_POINT_BENEFIT_LIST_DATA = [
     benefitName: 'Discount Rp 10.000',
     pointNeeds: 20,
     discountFreeItems: {
-      discount: 10000,
+      value: 10000,
+      unit: 'Rp',
       isPercent: false,
     },
   },

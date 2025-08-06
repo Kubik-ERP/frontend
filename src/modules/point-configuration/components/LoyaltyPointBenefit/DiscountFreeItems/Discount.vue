@@ -8,5 +8,5 @@ defineProps({
 });
 </script>
 <template>
-  <span v-if="data.isPercent"> {{ data.discount }}% </span><span v-else> Rp {{ data.discount }}</span>
+  <span v-if="data.isPercent"> {{ data.value }}% </span><span v-else> Rp {{ data.value }}</span>
 </template>
