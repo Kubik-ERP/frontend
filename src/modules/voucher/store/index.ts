@@ -2,7 +2,7 @@ import { VOUCHER_BASE_ENDPOINT } from '../constants';
 
 // type
 import { AxiosRequestConfig } from 'axios';
-import { IVoucherListResponse, IVoucherStateStore, IVoucherListRequestQuery, IVoucherCreateRequest, IVoucherCreateResponse } from '../interfaces';
+import { IVoucherListResponse, IVoucherStateStore, IVoucherListRequestQuery, IVoucherCreateRequest, IVoucherCreateResponse, IVoucherActiveResponse } from '../interfaces';
 
 // plugins
 import httpClient from '@/plugins/axios';
@@ -100,8 +100,7 @@ export const useVoucherStore = defineStore('voucher', {
         const response = await httpClient.post<IVoucherCreateResponse>(`${VOUCHER_BASE_ENDPOINT}`, voucher, {
           ...requestConfigurations,
         });
-
-        console.log('Create Voucher Response:', response.data);
+        console.log(response.data.message);
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -151,6 +150,26 @@ export const useVoucherStore = defineStore('voucher', {
         const response = await httpClient.get<IVoucherViewResponse>(`${VOUCHER_BASE_ENDPOINT}/${voucherId}`, {
           ...requestConfigurations,
         });
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        return Promise.reject(error instanceof Error ? error : new Error(String(error)));
+      } finally {
+        this.voucher_isLoading = false;
+      }
+    },
+
+    /**
+     * @description get voucher active
+     */
+    async voucherList_getActiveVoucher(
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<IVoucherActiveResponse> {
+      this.voucher_isLoading = true;
+      try {
+        const response = await httpClient.get<IVoucherActiveResponse>(`${VOUCHER_BASE_ENDPOINT}/active`, {
+          ...requestConfigurations,
+        });
+
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         return Promise.reject(error instanceof Error ? error : new Error(String(error)));

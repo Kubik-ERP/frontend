@@ -198,7 +198,7 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_isLoadingUnpaidOrder: Ref<boolean>;
   cashierOrderSummary_handleSaveUnpaidOrder: () => void;
 
-  cashierOrderSummary_handleVoucher: () => void;
+  cashierOrderSummary_handleVoucher: (code: string) => void;
   cashierOrderSummary_handleFetchPaymentMethod: () => void;
   cashierOrderSummary_handlePaymentMethod: () => void;
   cashierOrderSummary_handleInvoiceDetail: () => void;
