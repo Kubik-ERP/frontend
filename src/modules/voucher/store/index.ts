@@ -2,7 +2,14 @@ import { VOUCHER_BASE_ENDPOINT } from '../constants';
 
 // type
 import { AxiosRequestConfig } from 'axios';
-import { IVoucherListResponse, IVoucherStateStore, IVoucherListRequestQuery, IVoucherCreateRequest, IVoucherCreateResponse, IVoucherActiveResponse } from '../interfaces';
+import {
+  IVoucherListResponse,
+  IVoucherStateStore,
+  IVoucherListRequestQuery,
+  IVoucherCreateRequest,
+  IVoucherCreateResponse,
+  IVoucherActiveResponse,
+} from '../interfaces';
 
 // plugins
 import httpClient from '@/plugins/axios';
@@ -123,9 +130,13 @@ export const useVoucherStore = defineStore('voucher', {
     ): Promise<IVoucherEditResponse> {
       this.voucher_isLoading = true;
       try {
-        const response = await httpClient.put<IVoucherEditResponse>(`${VOUCHER_BASE_ENDPOINT}/${voucherId}`, voucher, {
-          ...requestConfigurations,
-        });
+        const response = await httpClient.put<IVoucherEditResponse>(
+          `${VOUCHER_BASE_ENDPOINT}/${voucherId}`,
+          voucher,
+          {
+            ...requestConfigurations,
+          },
+        );
         console.log('Update Voucher Response:', response.data);
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -134,7 +145,6 @@ export const useVoucherStore = defineStore('voucher', {
         this.voucher_isLoading = false;
       }
     },
-
 
     /**
      * @description Get voucher by ID
@@ -162,11 +172,31 @@ export const useVoucherStore = defineStore('voucher', {
      * @description get voucher active
      */
     async voucherList_getActiveVoucher(
+      search: string,
+      productIds: string[],
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<IVoucherActiveResponse> {
       this.voucher_isLoading = true;
       try {
+        console.log(search);
         const response = await httpClient.get<IVoucherActiveResponse>(`${VOUCHER_BASE_ENDPOINT}/active`, {
+          params: {
+            search: search,
+            productIds: productIds,
+          },
+          paramsSerializer: params => {
+            const query = new URLSearchParams();
+
+            Object.entries(params).forEach(([key, value]) => {
+              if (Array.isArray(value)) {
+                value.forEach(v => query.append(key, v));
+              } else if (value !== undefined && value !== null) {
+                query.append(key, String(value));
+              }
+            });
+
+            return query.toString();
+          },
           ...requestConfigurations,
         });
 
@@ -176,6 +206,6 @@ export const useVoucherStore = defineStore('voucher', {
       } finally {
         this.voucher_isLoading = false;
       }
-    }
+    },
   },
 });
