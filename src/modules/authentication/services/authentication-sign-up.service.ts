@@ -29,7 +29,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
    * @description Injected variables
    */
   const route = useRoute(); // Instance of the route
-  // const router = useRouter(); // Instance of the router
+  const router = useRouter(); // Instance of the router
   const store = useAuthenticationStore(); // Instance of the store
   const { authentication_isLoading, authentication_token } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
@@ -198,7 +198,7 @@ export const useAuthenticationRegisterService = (): IAuthenticationSignUpProvide
         ...httpAbort_registerAbort(AUTHENTICATION_SIGN_UP_REQUEST),
       });
 
-      // router.push({ name: 'sign-in' });
+      router.push({ name: 'sign-in' });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);

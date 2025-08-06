@@ -15,7 +15,7 @@ import { STORE_INITIAL_VALUES_OF_OPERATIONAL_HOURS, EToastPosition, EToastType }
 
 // Interfaces
 import type { FileUploadSelectEvent } from 'primevue';
-import { EOutletBusinessType, IOutlet, IOutletCreateEditFormData, IOutletCreateEditProvided } from '../interfaces';
+import { EOutletBusinessType, IOutletCreateEditFormData, IOutletCreateEditProvided } from '../interfaces';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -144,23 +144,27 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
    * @description Handle business logic for mapping data of outlet detail to the form
    */
   const outletCreateEdit_onMappingResponseDetail = () => {
-    const outletKeys = Object.keys(outlet_detail.value!) as (keyof IOutlet)[];
-    const formDataKeys = Object.keys(outletCreateEdit_formData) as (keyof IOutletCreateEditFormData)[];
+    if (!outlet_detail.value) return;
 
-    for (const key of formDataKeys) {
-      for (const keyResponse of outletKeys) {
-        if (key === 'photo') {
-          return;
-        }
+    const detail = outlet_detail.value;
 
-        if (keyResponse === key) {
-          if (key === 'businessType') {
-            outletCreateEdit_formData[key] = outlet_detail.value![keyResponse] as EOutletBusinessType;
-          } else {
-            outletCreateEdit_formData[key] = outlet_detail.value![keyResponse];
-          }
-        }
-      }
+    // Map the API response fields to form data fields
+    outletCreateEdit_formData.storeName = detail.name || '';
+    outletCreateEdit_formData.email = detail.email || '';
+    outletCreateEdit_formData.phoneNumber = detail.phoneNumber || '';
+    outletCreateEdit_formData.businessType =
+      (detail.businessType as EOutletBusinessType) || EOutletBusinessType.RestaurantFnB;
+    outletCreateEdit_formData.streetAddress = detail.address || '';
+    outletCreateEdit_formData.city = detail.city || '';
+    outletCreateEdit_formData.postalCode = detail.postalCode || '';
+    outletCreateEdit_formData.building = detail.building || '';
+
+    // Note: photo field is kept as null since we don't want to populate file uploads from API
+    // operationalHours mapping would need to be handled separately based on your IStoreOperationalHour structure
+    if (detail.operationalHours && detail.operationalHours.length > 0) {
+      // Map operational hours if they exist in the response
+      // This would need to be implemented based on your IStoreOperationalHour interface
+      // outletCreateEdit_formData.businessHours = mappedOperationalHours;
     }
   };
 

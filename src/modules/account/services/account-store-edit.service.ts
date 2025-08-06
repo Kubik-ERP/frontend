@@ -141,22 +141,32 @@ export const useAccountStoreEditService = (): IAccountStoreEditProvided => {
   /**
    * @description Handle business logic for mapping data of outlet detail to the form
    */
-  // const accountStoreEdit_onMappingResponseDetail = () => {
-  //   const outletKeys = Object.keys(outlet_detail.value!) as (keyof IOutlet)[];
-  //   const formDataKeys = Object.keys(accountStoreEdit_formData) as (keyof IOutletCreateEditFormData)[];
+  const accountStoreEdit_onMappingResponseDetail = () => {
+    const { outlet_detail } = storeToRefs(store);
 
-  //   for (const key of formDataKeys) {
-  //     for (const keyResponse of outletKeys) {
-  //       if (key === 'photo') {
-  //         return;
-  //       }
+    if (!outlet_detail.value) return;
 
-  //       if (keyResponse === key) {
-  //         accountStoreEdit_formData[key] = outlet_detail.value![keyResponse];
-  //       }
-  //     }
-  //   }
-  // };
+    const detail = outlet_detail.value;
+
+    // Map the API response fields to form data fields
+    accountStoreEdit_formData.storeName = detail.name || '';
+    accountStoreEdit_formData.email = detail.email || '';
+    accountStoreEdit_formData.phoneNumber = detail.phoneNumber || '';
+    accountStoreEdit_formData.businessType =
+      (detail.businessType as EAccountStoreBusinessType) || EAccountStoreBusinessType.RestaurantFnB;
+    accountStoreEdit_formData.streetAddress = detail.address || '';
+    accountStoreEdit_formData.city = detail.city || '';
+    accountStoreEdit_formData.postalCode = detail.postalCode || '';
+    accountStoreEdit_formData.building = detail.building || '';
+
+    // Note: photo field is kept as null since we don't want to populate file uploads from API
+    // operationalHours mapping would need to be handled separately based on your IStoreOperationalHour structure
+    if (detail.operationalHours && detail.operationalHours.length > 0) {
+      // Map operational hours if they exist in the response
+      // This would need to be implemented based on your IStoreOperationalHour interface
+      // accountStoreEdit_formData.businessHours = mappedOperationalHours;
+    }
+  };
 
   /**
    * @description Handle fetch api outlet. We call the fetchOutlet_deleteOutlet function from the store to handle the request.
@@ -186,7 +196,7 @@ export const useAccountStoreEditService = (): IAccountStoreEditProvided => {
         ...httpAbort_registerAbort(ACCOUNT_STORE_EDIT_DETAIL_OUTLET_REQUEST),
       });
 
-      // accountStoreEdit_onMappingResponseDetail();
+      accountStoreEdit_onMappingResponseDetail();
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
