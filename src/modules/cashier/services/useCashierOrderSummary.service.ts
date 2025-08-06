@@ -378,7 +378,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       const data = response.data;
 
       voucherData.value = data.map((voucher: IVoucher) => {
-        const total = computed(() => cashierOrderSummary_calculateEstimation.value.data.grandTotal).value
+        const total = cashierOrderSummary_calculateEstimation.value.data.total
         const isAvailable =
           total >= voucher.minPrice &&
           (voucher.maxPrice === 0 || total <= voucher.maxPrice);
