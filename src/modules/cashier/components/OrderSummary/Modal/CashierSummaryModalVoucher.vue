@@ -8,6 +8,12 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
 const { cashierOrderSummary_modalVoucher, cashierOrderSummary_handleVoucher } =
   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 
+const localSearch = ref('');
+
+watch(localSearch, (newVal) => {
+  cashierOrderSummary_modalVoucher.value.search = newVal
+});
+
 // Composables
 import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 </script>
@@ -60,7 +66,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               <PrimeVueInputIcon class="pi pi-user" />
               <PrimeVueInputText
                 id="customer-name"
-                v-model="cashierOrderSummary_modalVoucher.search"
+                v-model="localSearch"
                 class="w-full"
                 :placeholder="useLocalization('cashier.orderSummary.voucher.description')"
               />

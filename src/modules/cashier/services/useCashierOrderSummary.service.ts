@@ -284,9 +284,20 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     },
     search: '',
     get data() {
-      return voucherData.value; // selalu mengikuti ref
+      return voucherData.value;
     },
   });
+
+  watch(
+    () => [cashierProduct_selectedProduct.value, cashierOrderSummary_modalVoucher.value.show, cashierOrderSummary_modalVoucher.value.search],
+    async () => {
+      if (cashierOrderSummary_modalVoucher.value.show && cashierProduct_selectedProduct.value.length > 0) {
+
+        debouncedCalculateEstimation();
+        getVoucherActive(cashierOrderSummary_modalVoucher.value.search ,cashierProduct_selectedProduct.value.map(p => p.productId));
+      }
+    },
+  );
 
   /**
    * @description Handle voucher selection
@@ -372,16 +383,16 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description Handle voucher selection
    * @returns void
    */
-  const getVoucherActive = async () => {
+  const getVoucherActive = async (search: string ,productIds: string[]) => {
     try {
-      const response = await storeVoucher.voucherList_getActiveVoucher();
+      const response = await storeVoucher.voucherList_getActiveVoucher(search, productIds);
       const data = response.data;
 
       voucherData.value = data.map((voucher: IVoucher) => {
-        const total = cashierOrderSummary_calculateEstimation.value.data.total
-        const isAvailable =
-          total >= voucher.minPrice &&
-          (voucher.maxPrice === 0 || total <= voucher.maxPrice);
+        const total = cashierOrderSummary_calculateEstimation.value.data.grandTotal;
+        const isAmountMatch = total >= voucher.minPrice;
+
+        const isAvailable = isAmountMatch;
 
         return {
           code: voucher.promoCode,
@@ -396,17 +407,15 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           stock: voucher.quota,
         };
       });
-
-      console.log('voucherData:', voucherData.value);
     } catch (error: unknown) {
       console.error(error);
     }
   };
-  getVoucherActive();
 
   const cashierOrderSummary_handleVoucher = (code: string) => {
-    const voucherSelected = voucherData.value.find(v => v.code === code)
-    console.log(voucherSelected)
+    const voucherSelected = voucherData.value.find(v => v.code === code);
+    cashierOrderSummary_modalVoucher.value.form.voucher_code = voucherSelected!.code;
+    console.log(cashierOrderSummary_modalVoucher.value);
   };
 
   const cashierOrderSummary_modalAddEditNotes = ref<ICashierOrderSummaryModalAddEdit>({
