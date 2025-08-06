@@ -57,6 +57,7 @@ import viteCompression from 'vite-plugin-compression';
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 
 export default defineConfig({
+
   plugins: [
     AutoImport({
       dts: 'src/auto-imports.d.ts',

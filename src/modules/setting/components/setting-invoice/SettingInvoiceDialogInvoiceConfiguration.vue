@@ -7,12 +7,18 @@ import type { ISettingInvoiceProvided } from '../../interfaces/setting-invoice.i
 const {
   settingInvoice_formData,
   invoiceNumberConfigurations_formData,
-  settingInvoice_formValidations,
+  invoiceNumberConfigurations_formValidations,
   settingInvoice_listResetSequences,
   settingInvoice_onCloseEditInvoiceNumberConfigurationDialog,
 } = inject<ISettingInvoiceProvided>('settingInvoice')!;
 
 const settingInvoice_onEditInvoiceNumberConfiguration = () => {
+  invoiceNumberConfigurations_formValidations.value.$touch();
+
+  if (invoiceNumberConfigurations_formValidations.value.$invalid) {
+    return;
+  }
+
   settingInvoice_formData.invoiceNumberConfigurations = {
     ...settingInvoice_formData.invoiceNumberConfigurations,
     ...invoiceNumberConfigurations_formData,
@@ -27,7 +33,6 @@ const settingInvoice_onEditInvoiceNumberConfiguration = () => {
     <template #header>
       <h5 class="font-semibold text-black text-lg">Invoice Number Configuration</h5>
     </template>
-
     <template #content>
       <section id="form-groups" class="grid-wrapper gap-4">
         <section id="form-input" class="col-span-full lg:col-span-6">
@@ -38,10 +43,10 @@ const settingInvoice_onEditInvoiceNumberConfiguration = () => {
             label-for="starting-number"
             name="Starting Number"
             spacing-bottom="mb-0"
-            :validators="settingInvoice_formValidations.invoiceNumberConfigurations.startingNumber"
+            :validators="invoiceNumberConfigurations_formValidations.startingNumber"
           >
             <PrimeVueInputNumber
-              v-model="invoiceNumberConfigurations_formData.startingNumber"
+              v-model="settingInvoice_formData.invoiceNumberConfigurations.startingNumber"
               :class="{
                 ...classes,
               }"
@@ -59,10 +64,10 @@ const settingInvoice_onEditInvoiceNumberConfiguration = () => {
             label-for="increment-by"
             name="Increment By"
             spacing-bottom="mb-0"
-            :validators="settingInvoice_formValidations.invoiceNumberConfigurations.incrementBy"
+            :validators="invoiceNumberConfigurations_formValidations.incrementBy"
           >
             <PrimeVueInputNumber
-              v-model="invoiceNumberConfigurations_formData.incrementBy"
+              v-model="settingInvoice_formData.invoiceNumberConfigurations.incrementBy"
               :class="{
                 ...classes,
               }"
@@ -80,10 +85,10 @@ const settingInvoice_onEditInvoiceNumberConfiguration = () => {
             label-for="reset-sequence"
             name="Reset Sequence"
             spacing-bottom="mb-0"
-            :validators="settingInvoice_formValidations.invoiceNumberConfigurations.resetSequence"
+            :validators="invoiceNumberConfigurations_formValidations.resetSequence"
           >
             <PrimeVueSelect
-              v-model="invoiceNumberConfigurations_formData.resetSequence"
+              v-model="settingInvoice_formData.invoiceNumberConfigurations.resetSequence"
               :options="settingInvoice_listResetSequences"
               option-label="label"
               option-value="value"
@@ -112,7 +117,7 @@ const settingInvoice_onEditInvoiceNumberConfiguration = () => {
           class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
           label="Update"
           type="button"
-          :disabled="settingInvoice_formValidations.invoiceNumberConfigurations.$invalid"
+          :disabled="invoiceNumberConfigurations_formValidations.$invalid"
           @click="settingInvoice_onEditInvoiceNumberConfiguration"
         />
       </footer>

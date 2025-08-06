@@ -1,70 +1,83 @@
 <script setup lang="ts">
 import type { IStaffMemberCreateEditProvided } from '../interfaces';
-import { LIST_OF_DAYS } from '@/app/constants/day.constant';
-
+// import { LIST_OF_DAYS } from '@/app/constants/day.constant';
+// const getWorkingHourForDay = (dayValue: string | null) => {
+//   return staffMemberCreateEdit_formData.shift.find(wh => wh.day?.toUpperCase() === dayValue)!;
+// };
 const { staffMemberCreateEdit_formData } = inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
-
-const getWorkingHourForDay = (dayValue: string | null) => {
-  return staffMemberCreateEdit_formData.shift.find(wh => wh.day?.toUpperCase() === dayValue)!;
-};
 </script>
 
 <template>
-  <section id="staff-member-commision-form" class="flex flex-col gap-4">
-    <h6 class="font-semibold text-grayscale-70 text-base">Working Hours</h6>
+  <section id="staff-member-working-hours-form" class="flex flex-col gap-4">
+    <section id="information" class="flex flex-col gap-2">
+      <h5 class="font-semibold text-black text-lg">Working Hours</h5>
+      <h6 class="font-semibold text-base text-black">Business Hours</h6>
+    </section>
 
-    <section id="working-hours-cards" class="grid-wrapper gap-4">
+    <section id="working-hours" class="grid-wrapper gap-4">
       <section
-        v-for="(day, dayIndex) in LIST_OF_DAYS"
-        :id="`working-hours-day-${day.value}`"
+        v-for="(day, dayIndex) in staffMemberCreateEdit_formData.shift"
+        :id="`working-hours-day-${dayIndex}`"
         :key="`day-${dayIndex}`"
         class="col-span-full lg:col-span-6 flex flex-col border border-solid border-primary-border gap-4 p-4 rounded-lg"
       >
-        <template v-if="getWorkingHourForDay(String(day.value))">
-          <header class="flex items-center justify-between">
-            <div class="flex items-center gap-4">
-              <PrimeVueCheckbox v-model="getWorkingHourForDay(String(day.value)).isActive" binary />
-              <span class="font-semibold text-black text-base">
-                {{ day.label }}
-              </span>
-            </div>
-          </header>
+        <header class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <PrimeVueCheckbox v-model="day.isActive" binary />
+            <span class="font-semibold text-black text-base">
+              {{ day.day }}
+            </span>
+          </div>
+          <PrimeVueButton
+            class="border border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
+            severity="secondary"
+            variant="outlined"
+            @click="() => day.timeSlots.push({ startTime: null, endTime: null })"
+          >
+            <template #default>
+              <section id="content" class="flex items-center gap-2">
+                <AppBaseSvg name="plus-line" />
+              </section>
+            </template>
+          </PrimeVueButton>
+        </header>
 
-          <section id="working-hours-list" class="grid-wrapper gap-4">
-            <section id="open-time" class="col-span-full lg:col-span-6 flex flex-col gap-2">
-              <label class="font-semibold text-black text-sm">Open Time</label>
-              <PrimeVueInputGroup class="w-full">
+        <section id="working-hours-list" class="grid-wrapper gap-4">
+          <template v-for="(timeSlot, timeSlotIndex) in day.timeSlots" :key="`working-hour-${timeSlotIndex}`">
+            <section id="open-time" class="col-span-full lg:col-span-6 flex flex-col items-center gap-2">
+              <label for="open-time" class="font-semibold text-black text-sm">Open Time</label>
+              <PrimeVueInputGroup>
                 <PrimeVueDatePicker
-                  v-model="getWorkingHourForDay(String(day.value)).start_time"
+                  id="datepicker-open-time"
+                  v-model="timeSlot.startTime"
                   class="w-full"
                   fluid
                   time-only
-                  placeholder="Select Time"
-                  :disabled="!getWorkingHourForDay(String(day.value)).isActive"
+                  :disabled="!day.isActive"
                 />
                 <PrimeVueInputGroupAddon>
-                  <AppBaseSvg name="clock" class="!w-5 !h-5" />
+                  <AppBaseSvg name="clock" class="!w-5 !h-6" />
                 </PrimeVueInputGroupAddon>
               </PrimeVueInputGroup>
             </section>
-            <section id="close-time" class="col-span-full lg:col-span-6 flex flex-col gap-2">
-              <label class="font-semibold text-black text-sm">Close Time</label>
-              <PrimeVueInputGroup class="w-full">
+            <section id="close-time" class="col-span-full lg:col-span-6 flex flex-col items-center gap-2">
+              <label for="close-time" class="font-semibold text-black text-sm">Close Time</label>
+              <PrimeVueInputGroup>
                 <PrimeVueDatePicker
-                  v-model="getWorkingHourForDay(String(day.value)).end_time"
+                  id="datepicker-close-time"
+                  v-model="timeSlot.endTime"
                   class="w-full"
                   fluid
                   time-only
-                  placeholder="Select Time"
-                  :disabled="!getWorkingHourForDay(String(day.value)).isActive"
+                  :disabled="!day.isActive"
                 />
                 <PrimeVueInputGroupAddon>
-                  <AppBaseSvg name="clock" class="!w-5 !h-5" />
+                  <AppBaseSvg name="clock" class="!w-5 !h-6" />
                 </PrimeVueInputGroupAddon>
               </PrimeVueInputGroup>
             </section>
-          </section>
-        </template>
+          </template>
+        </section>
       </section>
     </section>
   </section>

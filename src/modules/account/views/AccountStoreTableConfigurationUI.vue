@@ -143,7 +143,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section id="account-store-table-configuration" class="flex flex-col items-center gap-4 w-full">
+  <section id="account-store-table-configuration" class="container flex flex-col items-center gap-4 w-full mt-10">
     <template v-if="accountStoreTableConfiguration_formData.configurations.length > 0">
       <section
         v-for="(configuration, configurationIndex) in accountStoreTableConfiguration_formData.configurations"

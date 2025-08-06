@@ -17,7 +17,7 @@ export const useStaffMemberStore = defineStore('staff-member', {
   state: (): IStaffMemberStore => ({
     staffMember_isLoading: false,
     staffMember_lists: {
-      data: [
+      employees: [
         {
           id: 'example-staff-member-id',
           name: 'example staff member',
@@ -44,7 +44,7 @@ export const useStaffMemberStore = defineStore('staff-member', {
      * @description Handle business logic for mapping staff member lists to options
      */
     staffMember_listDropdownItemStaff: (state): IDropdownItem[] => {
-      return state.staffMember_lists.data.map(staffMember => ({
+      return state.staffMember_lists.employees.map(staffMember => ({
         label: staffMember.name,
         value: staffMember.id,
       }));
@@ -54,7 +54,7 @@ export const useStaffMemberStore = defineStore('staff-member', {
      */
     staffMember_listDropdownItemTitles: (state): IDropdownItem[] => {
       // Step 1: Extract and format all titles first.
-      const allFormattedTitles = state.staffMember_lists.data
+      const allFormattedTitles = state.staffMember_lists.employees
         .map(staffMember => {
           const title = staffMember.title;
           if (typeof title === 'string' && title.trim() !== '') {
@@ -95,8 +95,6 @@ export const useStaffMemberStore = defineStore('staff-member', {
       this.staffMember_isLoading = true;
 
       try {
-        // console.log('Creating new staff member with payload:', payload); // Debugging log
-        // Call the API to create a new staff member
         const response = await httpClient.post<unknown>(STAFF_MEMBER_BASE_ENDPOINT, payload, {
           ...requestConfigurations,
         });
@@ -191,9 +189,10 @@ export const useStaffMemberStore = defineStore('staff-member', {
           params,
           ...requestConfigurations,
         });
-        console.log(params);
-
-        this.staffMember_lists = response.data.data;
+        this.staffMember_lists = {
+          employees: response.data.data.data || [],
+          meta: response.data.data.meta,
+        };
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {

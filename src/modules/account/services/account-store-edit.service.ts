@@ -87,76 +87,94 @@ export const useAccountStoreEditService = (): IAccountStoreEditProvided => {
   /**
    * @description Handle business logic for mapping formdata
    */
-  // const accountStoreEdit_onMappingFormData = (): FormData => {
-  //   const formData = new FormData();
+  const accountStoreEdit_onMappingFormData = (): FormData => {
+    const formData = new FormData();
 
-  //   for (const key in accountStoreEdit_formData) {
-  //     const typedKey = key as keyof IOutletCreateEditFormData;
-  //     const value = accountStoreEdit_formData[typedKey];
+    for (const key in accountStoreEdit_formData) {
+      const typedKey = key as keyof IAccountStoreEditFormData;
+      const value = accountStoreEdit_formData[typedKey];
 
-  //     if (typedKey === 'businessHours') {
-  //       const businessHours = value as IOutletBusinessHour[];
-  //       const filteredBusinessHours = businessHours.filter(businessHour => businessHour.isOpen);
+      if (typedKey === 'businessHours') {
+        const businessHours = value as IStoreOperationalHour[];
+        const filteredBusinessHours = businessHours.filter(businessHour => businessHour.isOpen);
+        let globalIndex = 0;
 
-  //       filteredBusinessHours.forEach((businessHour: IOutletBusinessHour, index: number) => {
-  //         for (const keyOfBusinessHour in businessHour) {
-  //           const typedBusinessHourKey = keyOfBusinessHour as keyof IOutletBusinessHour;
-  //           const businessHourValue = businessHour[typedBusinessHourKey];
+        filteredBusinessHours.forEach((businessHour: IStoreOperationalHour) => {
+          if (businessHour.isOpen && businessHour.timeSlots) {
+            businessHour.timeSlots.forEach(timeSlot => {
+              if (timeSlot.openTime && timeSlot.closeTime) {
+                formData.append(`${typedKey}[${globalIndex}][day]`, businessHour.day);
 
-  //           // Convert boolean to string if necessary
-  //           const formValue =
-  //             typeof businessHourValue === 'boolean'
-  //               ? businessHourValue.toString() // Converts true -> "true", false -> "false"
-  //               : businessHourValue;
+                // Handle openTime
+                let openTimeValue: string;
+                if (typeof timeSlot.openTime === 'string') {
+                  openTimeValue = timeSlot.openTime;
+                } else if (timeSlot.openTime instanceof Date) {
+                  const hour = timeSlot.openTime.getHours().toString().padStart(2, '0');
+                  const minute = timeSlot.openTime.getMinutes().toString().padStart(2, '0');
+                  openTimeValue = `${hour}:${minute}:00`;
+                } else {
+                  openTimeValue = String(timeSlot.openTime);
+                }
+                formData.append(`${typedKey}[${globalIndex}][openTime]`, openTimeValue);
 
-  //           if (typedBusinessHourKey === 'openTime' || typedBusinessHourKey === 'closeTime') {
-  //             // We need to add more zero value on it. So from HH:mm to HH:mm:ss
-  //             let hour = new Date(formValue).getHours().toString();
-  //             let minute = new Date(formValue).getMinutes().toString();
+                // Handle closeTime
+                let closeTimeValue: string;
+                if (typeof timeSlot.closeTime === 'string') {
+                  closeTimeValue = timeSlot.closeTime;
+                } else if (timeSlot.closeTime instanceof Date) {
+                  const hour = timeSlot.closeTime.getHours().toString().padStart(2, '0');
+                  const minute = timeSlot.closeTime.getMinutes().toString().padStart(2, '0');
+                  closeTimeValue = `${hour}:${minute}:00`;
+                } else {
+                  closeTimeValue = String(timeSlot.closeTime);
+                }
+                formData.append(`${typedKey}[${globalIndex}][closeTime]`, closeTimeValue);
 
-  //             // Check if hour or minute is less than 10, then add a leading zero
-  //             hour = +hour < 10 ? `0${hour}` : hour;
-  //             minute = +minute < 10 ? `0${minute}` : minute;
+                globalIndex += 1;
+              }
+            });
+          }
+        });
+      } else if (typedKey === 'photo' && value instanceof Blob) {
+        formData.append('file', value); // Handle Blob/File for photo
+      } else if (typeof value === 'string') {
+        formData.append(typedKey, value); // Handle string fields
+      }
+    }
 
-  //             formData.append(`${typedKey}[${index}][${typedBusinessHourKey}]`, `${hour}:${minute}:00`);
-  //           } else {
-  //             formData.append(`${typedKey}[${index}][${typedBusinessHourKey}]`, formValue);
-  //           }
-  //         }
-  //       });
-  //     } else {
-  //       if (typedKey === 'photo' && value instanceof Blob) {
-  //         formData.append('file', value); // Handle Blob/File for photo
-  //       }
-
-  //       if (typeof value === 'string') {
-  //         formData.append(typedKey, value); // Handle string fields
-  //       }
-  //     }
-  //   }
-
-  //   return formData;
-  // };
+    return formData;
+  };
 
   /**
    * @description Handle business logic for mapping data of outlet detail to the form
    */
-  // const accountStoreEdit_onMappingResponseDetail = () => {
-  //   const outletKeys = Object.keys(outlet_detail.value!) as (keyof IOutlet)[];
-  //   const formDataKeys = Object.keys(accountStoreEdit_formData) as (keyof IOutletCreateEditFormData)[];
+  const accountStoreEdit_onMappingResponseDetail = () => {
+    const { outlet_detail } = storeToRefs(store);
 
-  //   for (const key of formDataKeys) {
-  //     for (const keyResponse of outletKeys) {
-  //       if (key === 'photo') {
-  //         return;
-  //       }
+    if (!outlet_detail.value) return;
 
-  //       if (keyResponse === key) {
-  //         accountStoreEdit_formData[key] = outlet_detail.value![keyResponse];
-  //       }
-  //     }
-  //   }
-  // };
+    const detail = outlet_detail.value;
+
+    // Map the API response fields to form data fields
+    accountStoreEdit_formData.storeName = detail.name || '';
+    accountStoreEdit_formData.email = detail.email || '';
+    accountStoreEdit_formData.phoneNumber = detail.phoneNumber || '';
+    accountStoreEdit_formData.businessType =
+      (detail.businessType as EAccountStoreBusinessType) || EAccountStoreBusinessType.RestaurantFnB;
+    accountStoreEdit_formData.streetAddress = detail.address || '';
+    accountStoreEdit_formData.city = detail.city || '';
+    accountStoreEdit_formData.postalCode = detail.postalCode || '';
+    accountStoreEdit_formData.building = detail.building || '';
+
+    // Note: photo field is kept as null since we don't want to populate file uploads from API
+    // operationalHours mapping would need to be handled separately based on your IStoreOperationalHour structure
+    if (detail.operationalHours && detail.operationalHours.length > 0) {
+      // Map operational hours if they exist in the response
+      // This would need to be implemented based on your IStoreOperationalHour interface
+      // accountStoreEdit_formData.businessHours = mappedOperationalHours;
+    }
+  };
 
   /**
    * @description Handle fetch api outlet. We call the fetchOutlet_deleteOutlet function from the store to handle the request.
@@ -186,7 +204,7 @@ export const useAccountStoreEditService = (): IAccountStoreEditProvided => {
         ...httpAbort_registerAbort(ACCOUNT_STORE_EDIT_DETAIL_OUTLET_REQUEST),
       });
 
-      // accountStoreEdit_onMappingResponseDetail();
+      accountStoreEdit_onMappingResponseDetail();
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -322,66 +340,6 @@ export const useAccountStoreEditService = (): IAccountStoreEditProvided => {
     } catch (error) {
       console.error(error);
     }
-  };
-
-  const accountStoreEdit_onMappingFormData = (): FormData => {
-    const formData = new FormData();
-
-    for (const key in accountStoreEdit_formData) {
-      const typedKey = key as keyof IAccountStoreEditFormData;
-      const value = accountStoreEdit_formData[typedKey];
-
-      if (typedKey === 'businessHours') {
-        const businessHours = value as IStoreOperationalHour[];
-        const filteredBusinessHours = businessHours.filter(businessHour => businessHour.isOpen);
-
-        filteredBusinessHours.forEach((businessHour: IStoreOperationalHour) => {
-          if (businessHour.isOpen === false) {
-            return; // Skip if the business hour is not open
-          }
-
-          businessHour.timeSlots.forEach((timeSlot, timeSlotIndex) => {
-            formData.append(`${typedKey}[${timeSlotIndex}][isOpen]`, businessHour.isOpen.toString());
-            formData.append(`${typedKey}[${timeSlotIndex}][day]`, businessHour.day);
-            if (timeSlot.openTime !== undefined && timeSlot.openTime !== null) {
-              // Make a value like this: HH:mm:ss
-              let value;
-
-              if (typeof timeSlot.openTime === 'string') {
-                value = timeSlot.openTime;
-              } else if (timeSlot.openTime instanceof Date) {
-                value = timeSlot.openTime.toISOString();
-                value = value.slice(11, 19); // Extract HH:mm:ss from the ISO
-              } else {
-                value = String(timeSlot.openTime);
-              }
-
-              formData.append(`${typedKey}[${timeSlotIndex}][openTime]`, value);
-            }
-            if (timeSlot.closeTime !== undefined && timeSlot.closeTime !== null) {
-              let value;
-
-              if (typeof timeSlot.closeTime === 'string') {
-                value = timeSlot.closeTime;
-              } else if (timeSlot.closeTime instanceof Date) {
-                value = timeSlot.closeTime.toISOString();
-                value = value.slice(11, 19); // Extract HH:mm:ss from the ISO
-              } else {
-                value = String(timeSlot.closeTime);
-              }
-
-              formData.append(`${typedKey}[${timeSlotIndex}][closeTime]`, value);
-            }
-          });
-        });
-      } else if (typedKey === 'photo' && value instanceof Blob) {
-        formData.append('file', value); // Handle Blob/File for photo
-      } else if (typeof value === 'string') {
-        formData.append(typedKey, value); // Handle string fields
-      }
-    }
-
-    return formData;
   };
 
   /**

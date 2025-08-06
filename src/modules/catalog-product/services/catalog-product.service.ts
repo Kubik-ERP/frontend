@@ -188,7 +188,7 @@ export const useProductService = () => {
       // console.log('🚀 ~ getProductById ~ product:', product);
 
       const pictureUrl = product.pictureUrl
-        ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}/${product.pictureUrl}`
+        ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${product.pictureUrl}`
         : 'https://placehold.co/250';
 
       const categories =

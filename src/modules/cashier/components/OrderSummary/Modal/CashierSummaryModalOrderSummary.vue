@@ -10,6 +10,7 @@ import CashierSummaryButtonOrderTable from '../CashierSummaryButtonOrderTable.vu
 
 // Route
 import { useRoute } from 'vue-router';
+import { AutoCompleteCompleteEvent } from 'primevue';
 const route = useRoute();
 
 /**
@@ -17,9 +18,13 @@ const route = useRoute();
  */
 const {
   cashierOrderSummary_modalOrderSummary,
-  cashierOrderSummary_data,
+  cashierOrderSummary_handleModalAddCustomer,
+  cashierProduct_customerState,
   cashierOrderSummary_modalMenuOrderItem,
   cashierOrderSummary_modalPlaceOrderConfirmation,
+  cashierOrderSummary_calculateEstimation,
+  cashierProduct_onScrollFetchMoreCustomers,
+  cashierProduct_onSearchCustomer,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 <template>
@@ -68,16 +73,64 @@ const {
             <div class="flex flex-col gap-2 w-full">
               <label for="username" class="text-sm">{{ useLocalization('cashier.mainSection.username') }}</label>
 
-              <PrimeVueInputText
-                id="customer-name"
-                v-model="cashierOrderSummary_data.customerName"
-                class="w-full"
-                placeholder="Please input Customer Name"
-              />
+              <PrimeVueIconField class="flex w-full">
+                <PrimeVueInputIcon class="pi pi-user" />
+
+                <PrimeVueAutoComplete
+                  v-model="cashierProduct_customerState.selectedCustomer"
+                  :suggestions="cashierProduct_customerState.customerList"
+                  :options="cashierProduct_customerState.customerList"
+                  :field="'name'"
+                  :option-value="'id'"
+                  :option-value-key="'id'"
+                  option-label="name"
+                  :min-length="1"
+                  :loading="cashierProduct_customerState.isLoading"
+                  :dropdown="true"
+                  class="w-full"
+                  placeholder="Please select Customer Name"
+                  :disabled="route.name === 'cashier-order-edit'"
+                  :virtual-scroller-options="{
+                    itemSize: 50,
+                    step: cashierProduct_customerState.limit,
+                    lazy: true,
+                    delay: 300,
+                    loading: cashierProduct_customerState.isLoading,
+                    onLazyLoad: cashierProduct_onScrollFetchMoreCustomers,
+                  }"
+                  @complete="(event: AutoCompleteCompleteEvent) => cashierProduct_onSearchCustomer(event.query)"
+                >
+                  <template #option="slotProps">
+                    <div class="flex gap-1 text-xs w-full items-center">
+                      <div class="flex flex-col w-full">
+                        <div class="font-semibold">{{ slotProps.option.name }}</div>
+                        <span class="text-[10px] text-text-disabled">{{ slotProps.option.email }}</span>
+                      </div>
+                      <div class="text-[10px]">({{ slotProps.option.code }}) {{ slotProps.option.number }}</div>
+                    </div>
+                  </template>
+
+                  <template #footer>
+                    <div class="px-1 py-1">
+                      <PrimeVueButton
+                        label="Add New"
+                        fluid
+                        text
+                        severity="secondary"
+                        size="small"
+                        icon="pi pi-plus"
+                        @click="cashierOrderSummary_handleModalAddCustomer(null)"
+                      />
+                    </div>
+                  </template>
+                </PrimeVueAutoComplete>
+              </PrimeVueIconField>
             </div>
           </section>
 
-          <CashierSummaryButtonOrderTable />
+          <CashierSummaryButtonOrderTable
+            :is-self-order="!(route.name === 'cashier' || route.name === 'cashier-order-edit')"
+          />
 
           <hr class="border-b border-grayscale-10" />
 
@@ -101,7 +154,11 @@ const {
           <div class="flex justify-between items-center">
             <div class="flex gap-2 items-center">
               <AppBaseSvg name="cash" class="!h-6 !w-6" />
-              <span class="font-semibold text-sm">Rp.120.000</span>
+              <span v-if="!cashierOrderSummary_calculateEstimation.isLoading" class="font-semibold text-sm">{{
+                useCurrencyFormat({
+                  data: cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0,
+                })
+              }}</span>
             </div>
 
             <PrimeVueButton
@@ -114,7 +171,13 @@ const {
             </PrimeVueButton>
           </div>
 
-          <PrimeVueButton v-if="route.name === 'cashier'" v-slot="slotProps" as-child outlined class="w-full">
+          <PrimeVueButton
+            v-if="route.name === 'cashier' || route.name === 'cashier-order-edit'"
+            v-slot="slotProps"
+            as-child
+            outlined
+            class="w-full"
+          >
             <RouterLink :to="{ name: 'invoice' }" v-bind="slotProps" class="p-3 w-full border border-primary">
               <section class="flex gap-2 justify-center w-full items-center">
                 <AppBaseSvg name="order-primary" class="!h-5 !w-5" />

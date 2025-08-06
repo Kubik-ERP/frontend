@@ -48,7 +48,7 @@ const routes: RouteRecordRaw[] = [
         name: 'static-invoice',
         component: () => import('../views/StaticInvoice.vue'),
         meta: {
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           layout: LAYOUT_OPTIONS.EMPTY,
           title: 'Invoice',
         },

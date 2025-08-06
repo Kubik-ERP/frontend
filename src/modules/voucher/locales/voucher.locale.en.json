@@ -1,0 +1,93 @@
+{
+  "voucher": {
+    "main": {
+      "table": {
+        "title": "Title",
+        "promoCode": "Promo Code",
+        "validityPariode": "Validity Periode",
+        "lastUpdated": "Last Updated",
+        "status": "Status Voucher"
+      },
+      "popover": {
+        "add": "Add Voucher",
+        "view": "View Detail",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "modal": {
+        "title": "Are you sure you want to delete this voucher?",
+        "description": "This action cannot be undone, and the voucher will be removed from database",
+        "delete": "Delete Voucher",
+        "cancel": "Cancel"
+      }
+    },
+    "createEditVoucher": {
+      "title": "Create Voucher",
+      "titleEdit": "Edit Voucher",
+      "field": {
+        "title": "Voucher Title",
+        "code": "Promo Code",
+        "validity": "Validity Period",
+        "quota": "Quota",
+        "optional": "(Optional)",
+        "discount": "Discount",
+        "percentage": "Percentage",
+        "discountPercentage": "Discount Percentage",
+        "maxDiscountPrice": "Max Discount Price",
+        "minTransaction": "Minimum Transaction",
+        "productSelection": "Product",
+        "productAll": "All Product",
+        "productSelected": "Selected Product",
+        "searchProduct": "Search Product",
+        "noItemSelected": "No Item Selected"
+      },
+      "preview": {
+        "title": "Voucher Preview",
+        "orderSummary": "Order Summary",
+        "subtotal": "Subtotal",
+        "discountApplied": "Discount Applied",
+        "tax": "Tax (10%)",
+        "finalTotal": "Final Total",
+        "discountDetails": "Discount Details",
+        "name": "Name",
+        "type": "Type",
+        "value": "Value",
+        "period": "Period",
+        "fixedAmount": "Fixed Amount",
+        "confirm": "Confirm",
+        "cancel": "Cancel"
+      },
+      "leavePageModal": {
+        "title": "Are you sure you want to leave this page?",
+        "description": "Any changes you make to the data will be lost if you leave this page without saving",
+        "discardButton": "Discard Changes",
+        "cancelButton": "Cancel"
+      }
+    },
+    "details": {
+      "title": "Voucher Detail",
+      "header": "Voucher Information",
+      "field": {
+        "name": "Title",
+        "code": "Voucher Code",
+        "validity": "Validity Period",
+        "quota": "Quota",
+        "discount": "Discount",
+        "min-transaction": "Minimum Transaction",
+        "is-percentage": "Percentage Discount",
+        "discount-percent": "Discount Percentage",
+        "max-discount-price": "Maximum Discount Price",
+        "discount-nominal": "Discount Amount",
+        "product-scope": "Product Scope",
+        "all-products": "All Products",
+        "selected-products": "Selected Products",
+        "last-update": "Last Update"
+      }
+    },
+    "productDetail": {
+      "name" : "Name Product",
+      "category": "Category",
+      "price": "Price"
+    }
+  }
+}

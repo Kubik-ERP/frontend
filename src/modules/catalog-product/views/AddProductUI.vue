@@ -10,6 +10,7 @@ import imageSVG from '@/app/assets/icons/image.svg';
 const { getAllCategories } = useCategoryService();
 const { createProduct, product_formData, product_formValidations } = useProductService();
 const discount_unit = ref('Rp');
+const loading = ref(false);
 function clearForm() {
   product_formData.name = '';
   product_formData.price = 0;
@@ -51,6 +52,7 @@ const handleCreateProduct = async () => {
   }
 
   try {
+    loading.value = true;
     await createProduct(product_formData);
     clearForm();
     product_formValidations.value.$reset();
@@ -58,6 +60,10 @@ const handleCreateProduct = async () => {
     router.push({ name: 'catalog.products.index' });
   } catch (error) {
     console.error(error);
+  }
+  finally
+  {
+    loading.value = false;
   }
 };
 
@@ -100,10 +106,13 @@ const router = useRouter();
 
 const loadCategories = async () => {
   try {
+    loading.value = true;
     const response = await getAllCategories(1, 100, '');
     categories.value = response.categories;
   } catch (error) {
     console.error('Failed to load categories:', error);
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -392,6 +401,7 @@ watch(product_formData, () => {
             </router-link>
             <PrimeVueButton
               :label="useLocalization('productDetail.form.button.save')"
+              :loading="loading"
               class="text-xl w-48 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
               :disabled="product_formValidations.$invalid"
               type="submit"

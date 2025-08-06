@@ -16,7 +16,7 @@ const routes: RouteRecordRaw[] = [
         name: 'account.index',
         component: () => import('../views/AccountUI.vue'),
         meta: {
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           title: 'Account',
         },
       },
@@ -26,7 +26,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/AccountEditProfileUI.vue'),
         meta: {
           breadcrumb: 'Edit Profile',
-          requiresAuthorization: false,
+          requiresAuthorization: true,
           title: 'Edit Profile',
         },
       },
@@ -41,7 +41,7 @@ const routes: RouteRecordRaw[] = [
             component: () => import('../views/AccountStoreDetailUI.vue'),
             meta: {
               breadcrumb: 'Store Details',
-              requiresAuthorization: false,
+              requiresAuthorization: true,
               title: 'Store Details',
             },
           },
@@ -52,7 +52,7 @@ const routes: RouteRecordRaw[] = [
             meta: {
               breadcrumb: 'Edit Store Details',
               layout: LAYOUT_OPTIONS.OUTLET,
-              requiresAuthorization: false,
+              requiresAuthorization: true,
               title: 'Edit Store Details',
             },
           },
@@ -63,21 +63,21 @@ const routes: RouteRecordRaw[] = [
             meta: {
               breadcrumb: 'Edit Table Configuration',
               layout: LAYOUT_OPTIONS.NAVBAR,
-              requiresAuthorization: false,
+              requiresAuthorization: true,
               title: 'Edit Table Configuration',
             },
           },
         ],
         meta: {
           breadcrumb: 'Store Details',
-          requiresAuthorization: false,
+          requiresAuthorization: true,
         },
       },
     ],
     meta: {
       breadcrumb: 'Account',
       layout: LAYOUT_OPTIONS.DEFAULT,
-      requiresAuthorization: false,
+      requiresAuthorization: true,
     },
   },
 ];

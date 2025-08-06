@@ -5,11 +5,17 @@ import {
   OUTLET_CREATE_EDIT_DETAIL_OUTLET_REQUEST,
   OUTLET_CREATE_EDIT_UPDATE_OUTLET_REQUEST,
 } from '../constants/outlet-create-edit.constant';
-import { STORE_INITIAL_VALUES_OF_OPERATIONAL_HOURS } from '@/app/constants';
+import {
+  FILE_UPLOAD_LIMITS,
+  FILE_UPLOAD_LIMITS_DISPLAY,
+  formatFileSize,
+  validateFileSize,
+} from '@/app/constants/file-upload.constant';
+import { STORE_INITIAL_VALUES_OF_OPERATIONAL_HOURS, EToastPosition, EToastType } from '@/app/constants';
 
 // Interfaces
 import type { FileUploadSelectEvent } from 'primevue';
-import { EOutletBusinessType, IOutlet, IOutletCreateEditFormData, IOutletCreateEditProvided } from '../interfaces';
+import { EOutletBusinessType, IOutletCreateEditFormData, IOutletCreateEditProvided } from '../interfaces';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -96,38 +102,51 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
       const value = outletCreateEdit_formData[typedKey];
 
       if (typedKey === 'businessHours') {
-        // const businessHours = value as IStoreOperationalHour[];
-        // const filteredBusinessHours = businessHours.filter(businessHour => businessHour.isOpen);
-        // filteredBusinessHours.forEach((businessHour: IStoreOperationalHour, index: number) => {
-        //   for (const keyOfBusinessHour in businessHour) {
-        //     const typedBusinessHourKey = keyOfBusinessHour as keyof IStoreOperationalHour;
-        //     const businessHourValue = businessHour[typedBusinessHourKey];
-        //     // Convert boolean to string if necessary
-        //     const formValue =
-        //       typeof businessHourValue === 'boolean'
-        //         ? businessHourValue.toString() // Converts true -> "true", false -> "false"
-        //         : businessHourValue;
-        //     if (typedBusinessHourKey === 'openTime' || typedBusinessHourKey === 'closeTime') {
-        //       // We need to add more zero value on it. So from HH:mm to HH:mm:ss
-        //       let hour = new Date(formValue).getHours().toString();
-        //       let minute = new Date(formValue).getMinutes().toString();
-        //       // Check if hour or minute is less than 10, then add a leading zero
-        //       hour = +hour < 10 ? `0${hour}` : hour;
-        //       minute = +minute < 10 ? `0${minute}` : minute;
-        //       formData.append(`${typedKey}[${index}][${typedBusinessHourKey}]`, `${hour}:${minute}:00`);
-        //     } else {
-        //       formData.append(`${typedKey}[${index}][${typedBusinessHourKey}]`, formValue);
-        //     }
-        //   }
-        // });
-      } else {
-        if (typedKey === 'photo' && value instanceof Blob) {
-          formData.append('file', value); // Handle Blob/File for photo
-        }
+        const businessHours = value as IStoreOperationalHour[];
+        const filteredBusinessHours = businessHours.filter(businessHour => businessHour.isOpen);
+        let globalIndex = 0;
 
-        if (typeof value === 'string') {
-          formData.append(typedKey, value); // Handle string fields
-        }
+        filteredBusinessHours.forEach((businessHour: IStoreOperationalHour) => {
+          if (businessHour.isOpen && businessHour.timeSlots) {
+            businessHour.timeSlots.forEach(timeSlot => {
+              if (timeSlot.openTime && timeSlot.closeTime) {
+                formData.append(`${typedKey}[${globalIndex}][day]`, businessHour.day);
+
+                // Handle openTime
+                let openTimeValue: string;
+                if (typeof timeSlot.openTime === 'string') {
+                  openTimeValue = timeSlot.openTime;
+                } else if (timeSlot.openTime instanceof Date) {
+                  const hour = timeSlot.openTime.getHours().toString().padStart(2, '0');
+                  const minute = timeSlot.openTime.getMinutes().toString().padStart(2, '0');
+                  openTimeValue = `${hour}:${minute}:00`;
+                } else {
+                  openTimeValue = String(timeSlot.openTime);
+                }
+                formData.append(`${typedKey}[${globalIndex}][openTime]`, openTimeValue);
+
+                // Handle closeTime
+                let closeTimeValue: string;
+                if (typeof timeSlot.closeTime === 'string') {
+                  closeTimeValue = timeSlot.closeTime;
+                } else if (timeSlot.closeTime instanceof Date) {
+                  const hour = timeSlot.closeTime.getHours().toString().padStart(2, '0');
+                  const minute = timeSlot.closeTime.getMinutes().toString().padStart(2, '0');
+                  closeTimeValue = `${hour}:${minute}:00`;
+                } else {
+                  closeTimeValue = String(timeSlot.closeTime);
+                }
+                formData.append(`${typedKey}[${globalIndex}][closeTime]`, closeTimeValue);
+
+                globalIndex += 1;
+              }
+            });
+          }
+        });
+      } else if (typedKey === 'photo' && value instanceof Blob) {
+        formData.append('file', value); // Handle Blob/File for photo
+      } else if (typeof value === 'string') {
+        formData.append(typedKey, value); // Handle string fields
       }
     }
 
@@ -138,23 +157,27 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
    * @description Handle business logic for mapping data of outlet detail to the form
    */
   const outletCreateEdit_onMappingResponseDetail = () => {
-    const outletKeys = Object.keys(outlet_detail.value!) as (keyof IOutlet)[];
-    const formDataKeys = Object.keys(outletCreateEdit_formData) as (keyof IOutletCreateEditFormData)[];
+    if (!outlet_detail.value) return;
 
-    for (const key of formDataKeys) {
-      for (const keyResponse of outletKeys) {
-        if (key === 'photo') {
-          return;
-        }
+    const detail = outlet_detail.value;
 
-        if (keyResponse === key) {
-          if (key === 'businessType') {
-            outletCreateEdit_formData[key] = outlet_detail.value![keyResponse] as EOutletBusinessType;
-          } else {
-            outletCreateEdit_formData[key] = outlet_detail.value![keyResponse];
-          }
-        }
-      }
+    // Map the API response fields to form data fields
+    outletCreateEdit_formData.storeName = detail.name || '';
+    outletCreateEdit_formData.email = detail.email || '';
+    outletCreateEdit_formData.phoneNumber = detail.phoneNumber || '';
+    outletCreateEdit_formData.businessType =
+      (detail.businessType as EOutletBusinessType) || EOutletBusinessType.RestaurantFnB;
+    outletCreateEdit_formData.streetAddress = detail.address || '';
+    outletCreateEdit_formData.city = detail.city || '';
+    outletCreateEdit_formData.postalCode = detail.postalCode || '';
+    outletCreateEdit_formData.building = detail.building || '';
+
+    // Note: photo field is kept as null since we don't want to populate file uploads from API
+    // operationalHours mapping would need to be handled separately based on your IStoreOperationalHour structure
+    if (detail.operationalHours && detail.operationalHours.length > 0) {
+      // Map operational hours if they exist in the response
+      // This would need to be implemented based on your IStoreOperationalHour interface
+      // outletCreateEdit_formData.businessHours = mappedOperationalHours;
     }
   };
 
@@ -235,6 +258,33 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
   };
 
   /**
+   * @description Handle business logic for resetting form data and validations
+   */
+  const outletCreateEdit_onResetForm = (): void => {
+    // Reset main form data
+    Object.assign(outletCreateEdit_formData, {
+      storeName: '',
+      email: '',
+      phoneCode: '+62',
+      phoneNumber: '',
+      businessType: EOutletBusinessType.RestaurantFnB,
+      streetAddress: '',
+      photo: null,
+      city: '',
+      postalCode: '',
+      building: '',
+      businessHours: STORE_INITIAL_VALUES_OF_OPERATIONAL_HOURS,
+    });
+
+    // Reset PIN form data
+    outletCreateEdit_formDataOfVerifyPin.pinConfirmation = '';
+
+    // Reset validation states
+    outletCreateEdit_formValidations.value.$reset();
+    outletCreateEdit_isPinInvalid.value = false;
+  };
+
+  /**
    * @description Handle action on cancel button
    */
   const outletCreateEdit_onCancel = (): void => {
@@ -245,7 +295,10 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
    * @description Handle action on cancel button on dialog verify pin
    */
   const outletCreateEdit_onCloseDialogVerifyPIN = (): void => {
+    // Reset PIN form data and validation state
+    outletCreateEdit_formDataOfVerifyPin.pinConfirmation = '';
     outletCreateEdit_isPinInvalid.value = false;
+
     const argsEventEmitter: IPropsDialogPinVerification = {
       isOpen: false,
     };
@@ -259,6 +312,10 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
   const outletCreateEdit_onDeleteOutlet = async (): Promise<void> => {
     try {
       await outletCreateEdit_fetchDeleteOutlet(outletCreateEdit_routeParamsId.value!);
+
+      // Reset PIN form data after successful deletion
+      outletCreateEdit_formDataOfVerifyPin.pinConfirmation = '';
+      outletCreateEdit_isPinInvalid.value = false;
 
       router.push({ name: 'outlet.list' });
     } catch (error: unknown) {
@@ -297,6 +354,10 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
         eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
       },
       onClickButtonSecondary: () => {
+        // Reset PIN data before showing PIN verification dialog
+        outletCreateEdit_formDataOfVerifyPin.pinConfirmation = '';
+        outletCreateEdit_isPinInvalid.value = false;
+
         const argsEventEmitter: IPropsDialogPinVerification = {
           isOpen: true,
           isInvalid: outletCreateEdit_isPinInvalid.value,
@@ -328,6 +389,10 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
 
       if (outletCreateEdit_formValidations.value.$invalid) return;
 
+      // Reset PIN data before showing dialog
+      outletCreateEdit_formDataOfVerifyPin.pinConfirmation = '';
+      outletCreateEdit_isPinInvalid.value = false;
+
       const argsEventEmitter: IPropsDialogPinVerification = {
         isOpen: true,
         isInvalid: outletCreateEdit_isPinInvalid.value,
@@ -356,6 +421,8 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
         await outletCreateEdit_fetchCreateNewOutlet(formData);
       }
 
+      // Reset form and validations after successful submission
+      outletCreateEdit_onResetForm();
       outletCreateEdit_onCloseDialogVerifyPIN();
       router.push({ name: 'outlet.list' });
     } catch (error: unknown) {
@@ -372,7 +439,32 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
    */
   const outletCreateEdit_onUploadPhoto = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {
-      outletCreateEdit_formData.photo = event.files[0]; // Assign the first file
+      const file = event.files[0];
+
+      // Validate file size
+      if (!validateFileSize(file, FILE_UPLOAD_LIMITS.IMAGE_MAX_SIZE)) {
+        // Show error toast
+        eventBus.emit('AppBaseToast', {
+          isOpen: true,
+          message: `File size is too large. Maximum allowed size is ${FILE_UPLOAD_LIMITS_DISPLAY.IMAGE_MAX_SIZE_MB}. Your file size is ${formatFileSize(file.size)}.`,
+          position: EToastPosition.TOP_RIGHT,
+          type: EToastType.DANGER,
+        });
+        return;
+      }
+
+      // Validate file type (additional check)
+      if (!file.type.startsWith('image/')) {
+        eventBus.emit('AppBaseToast', {
+          isOpen: true,
+          message: 'Please select a valid image file (JPG, PNG, GIF, WebP).',
+          position: EToastPosition.TOP_RIGHT,
+          type: EToastType.DANGER,
+        });
+        return;
+      }
+
+      outletCreateEdit_formData.photo = file;
     }
   };
 
@@ -387,6 +479,7 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
     outletCreateEdit_onCloseDialogVerifyPIN,
     outletCreateEdit_onDeleteOutlet,
     outletCreateEdit_onRemovePhoto,
+    outletCreateEdit_onResetForm,
     outletCreateEdit_onShowDialogDeleteOutlet,
     outletCreateEdit_onSubmit,
     outletCreateEdit_onSubmitDialogVerifyPIN,

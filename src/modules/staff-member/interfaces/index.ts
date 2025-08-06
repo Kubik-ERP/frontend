@@ -30,7 +30,7 @@ export interface IStaffMember {
 }
 
 export interface IStaffMemberList{
-  data: IStaffMember[] | [];
+  employees: IStaffMember[] | [];
   meta: IStaffMeta;
 }
 

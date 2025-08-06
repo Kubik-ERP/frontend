@@ -10,7 +10,10 @@ const { accountStoreTableConfiguration_onShowDialogAddFloor, accountStoreTableCo
 </script>
 
 <template>
-  <section id="account-table-configuration-button-actions" class="flex items-center gap-4">
+  <section
+    id="account-table-configuration-button-actions"
+    class="flex items-center justify-center gap-4 w-full pb-5"
+  >
     <PrimeVueButton
       class="border border-solid border-green-primary bg-transparent w-fit px-5 basic-smooth-animation hover:bg-green-primary hover:[&_span]:!text-white"
       severity="secondary"

@@ -55,13 +55,14 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
     },
     contentSettings: {
       companyLogo: null,
-      footerText: `
-        <p id="label-social-media" class="font-normal text-black text-sm text-center">Social Media</p>
-        <p id="social-media-ig" class="font-normal text-black text-sm text-center">Instagram : @lawsonkal</p>
-        <p id="closing-text" class="font-normal text-black text-sm text-center">
-          Terima kasih dan kami tunggu kehadiran Anda kembali
-        </p>
-      `,
+      footerText: 'Terima Kasih',
+      // footerText: `
+      //   <p id="label-social-media" class="font-normal text-black text-sm text-center">Social Media</p>
+      //   <p id="social-media-ig" class="font-normal text-black text-sm text-center">Instagram : @lawsonkal</p>
+      //   <p id="closing-text" class="font-normal text-black text-sm text-center">
+      //     Terima kasih dan kami tunggu kehadiran Anda kembali
+      //   </p>
+      // `,
       isShowCompanyLogo: true,
       isShowStoreLocation: true,
       isHideCashierName: false,
@@ -92,6 +93,34 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
 
   const settingInvoice_isEditableInvoiceConfiguration = ref<boolean>(false);
 
+  /**
+   * @description Form validations
+   */
+  const invoiceNumberConfigurations_formRules = computed(() => ({
+    incrementBy: { required },
+    resetSequence: { required },
+    startingNumber: { required },
+  }));
+  const invoiceNumberConfigurations_formValidations = useVuelidate(
+    invoiceNumberConfigurations_formRules,
+    invoiceNumberConfigurations_formData,
+    {
+      $autoDirty: true,
+    },
+  );
+  /**
+   * @description Form validations
+   */
+  const footerText_formRules = computed(() => ({
+    text: { required },
+  }));
+  const footerText_formValidations = useVuelidate(
+    footerText_formRules,
+    footerText_formData,
+    {
+      $autoDirty: true,
+    },
+  );
   /**
    * @description Form validations
    */
@@ -131,7 +160,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
         setting_invoice.value?.isAutomaticallyPrintTable ?? false;
 
       // Map content settings
-      settingInvoice_formData.contentSettings.footerText = setting_invoice.value?.footerText ?? null;
+      settingInvoice_formData.contentSettings.footerText = setting_invoice.value?.footerText ?? 'footer text';
       settingInvoice_formData.contentSettings.isShowCompanyLogo =
         setting_invoice.value?.isShowCompanyLogo ?? false;
       settingInvoice_formData.contentSettings.isShowStoreLocation =
@@ -148,11 +177,11 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
       // Note: companyLogo might need special handling if it's a file upload object
 
       // Map invoice number configurations
-      settingInvoice_formData.invoiceNumberConfigurations.incrementBy = setting_invoice.value?.incrementBy ?? null;
+      settingInvoice_formData.invoiceNumberConfigurations.incrementBy = setting_invoice.value?.incrementBy ?? 1;
       settingInvoice_formData.invoiceNumberConfigurations.resetSequence =
-        setting_invoice.value?.resetSequence ?? null;
+        setting_invoice.value?.resetSequence ?? 'Daily';
       settingInvoice_formData.invoiceNumberConfigurations.startingNumber =
-        setting_invoice.value?.startingNumber ?? null;
+        setting_invoice.value?.startingNumber ?? 1;
       settingInvoice_formData.invoiceNumberConfigurations.invoicePreview = generateInvoicePreview();
       // Note: 'invoicePreview' is not available in your API response, so its value remains unchanged.
 
@@ -251,7 +280,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
         const companyLogo = setting_invoice.value?.companyLogoUrl;
 
         if (typeof companyLogo === 'string') {
-          settingInvoice_formData.companyLogoUrl = `${import.meta.env.VITE_APP_BASE_BUCKET_URL}/${companyLogo}`;
+          settingInvoice_formData.companyLogoUrl = `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${companyLogo}`;
         } else {
           settingInvoice_formData.companyLogoUrl = null;
         }
@@ -468,6 +497,8 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
     invoiceNumberConfigurations_formData,
     footerText_formData,
     settingInvoice_formValidations,
+    invoiceNumberConfigurations_formValidations,
+    footerText_formValidations,
     settingInvoice_isEditableInvoiceConfiguration,
     settingInvoice_isLoading: setting_isLoading,
     settingInvoice_listContentSettings: LIST_CONTENT_SETTINGS_INVOICE,

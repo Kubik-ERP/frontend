@@ -2,11 +2,6 @@
 // Interface
 import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
 
-// routes
-import { useRoute } from 'vue-router';
-
-const route = useRoute();
-
 /**
  * @description Inject all the data and methods what we need
  */
@@ -46,9 +41,7 @@ const { cashierOrderSummary_modalPaymentMethod, cashierOrderSummary_handlePaymen
             </template>
             <template v-else>
               <div
-                v-for="category in route.name === 'cashier' || route.name === 'cashier-order-edit'
-                  ? cashierOrderSummary_modalPaymentMethod.data
-                  : cashierOrderSummary_modalPaymentMethod.dataSelfOrder"
+                v-for="category in cashierOrderSummary_modalPaymentMethod.data"
                 :key="category.id"
                 class="flex items-center gap-2 rounded-xs px-3 py-4"
                 :class="{

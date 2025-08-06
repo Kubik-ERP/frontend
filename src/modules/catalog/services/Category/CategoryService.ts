@@ -41,7 +41,7 @@ export const useCategoryService = () => {
     'X-STORE-ID': storeID,
     Authorization: `Bearer ${token?.authentication_token}`,
   };
-  
+
   const category_formData = reactive<ICategoryFormData>({
     name: '',
     description: '',
@@ -178,7 +178,7 @@ export const useCategoryService = () => {
     });
     const data: ICategory = response.data.data;
     const pictureUrl = data.pictureUrl
-      ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}/${data.pictureUrl}`
+      ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${data.pictureUrl}`
       : 'https://placehold.co/250';
 
     return {

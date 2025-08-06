@@ -61,7 +61,7 @@ export interface ICashierOrderSummaryModalPlaceOrderConfirmation {
   show: boolean;
   showModalPayment: boolean;
   isLoading: boolean;
-  form: {paymentAmount: number};
+  form: { paymentAmount: number };
   data: Partial<ICashierResponseMidtransQrisPayment['data']>;
 }
 
@@ -92,7 +92,6 @@ export interface ICashierOrderSummaryModalPaymentMethod {
   isLoading: boolean;
   selectedPaymentMethod: string;
   data: ICashierOrderSummaryPaymentMethod[];
-  dataSelfOrder: ICashierOrderSummaryPaymentMethod[];
 }
 
 export interface ICashierOrderSummaryModalAddCustomer {
@@ -184,7 +183,7 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_modalPlaceOrderConfirmation: Ref<ICashierOrderSummaryModalPlaceOrder>;
   cashierOrderSummary_modalPlaceOrderDetail: Ref<ICashierOrderSummaryModalPlaceOrderConfirmation>;
 
-  cashierOrderSummary_paymentAmountFormValidation: globalThis.Ref<Validation>,
+  cashierOrderSummary_paymentAmountFormValidation: globalThis.Ref<Validation>;
   cashierOrderSummary_calculateEstimation: Ref<ICashierCalulateEstimationData>;
   cashierOrderSummary_summary: Ref<ICashierOrderSummary>;
   cashierOrderSummary_getListActiveFloor: ComputedRef<ICashierListTable[]>;
@@ -199,7 +198,7 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_isLoadingUnpaidOrder: Ref<boolean>;
   cashierOrderSummary_handleSaveUnpaidOrder: () => void;
 
-  cashierOrderSummary_handleVoucher: () => void;
+  cashierOrderSummary_handleVoucher: (code: string) => void;
   cashierOrderSummary_handleFetchPaymentMethod: () => void;
   cashierOrderSummary_handlePaymentMethod: () => void;
   cashierOrderSummary_handleInvoiceDetail: () => void;

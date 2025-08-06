@@ -8,6 +8,12 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
 const { cashierOrderSummary_modalVoucher, cashierOrderSummary_handleVoucher } =
   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 
+const localSearch = ref('');
+
+watch(localSearch, (newVal) => {
+  cashierOrderSummary_modalVoucher.value.search = newVal
+});
+
 // Composables
 import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 </script>
@@ -60,7 +66,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               <PrimeVueInputIcon class="pi pi-user" />
               <PrimeVueInputText
                 id="customer-name"
-                v-model="cashierOrderSummary_modalVoucher.search"
+                v-model="localSearch"
                 class="w-full"
                 :placeholder="useLocalization('cashier.orderSummary.voucher.description')"
               />
@@ -141,15 +147,22 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                       <span class="text-text-disabled">
                         {{ useLocalization('cashier.orderSummary.voucher.minimumTransaction') }} :
                       </span>
-                      Rp 100.000</span
+                      Rp.{{ item.minPurchase.toLocaleString() }}</span
                     >
                   </div>
-                  <div class="flex flex-col lg:text-right text-start gap-1">
-                    <span class="text-xs text-text-disabled">{{
-                      useLocalization('cashier.orderSummary.voucher.discount')
-                    }}</span>
-                    <span class="font-semibold">Rp 100.000</span>
-                  </div>
+                 <div class="flex flex-col lg:text-right text-start gap-1">
+                  <span class="text-xs text-text-disabled">
+                    {{ useLocalization('cashier.orderSummary.voucher.discount') }}
+                  </span>
+
+                  <span class="font-semibold">
+                    {{
+                      item.type === 'percentage'
+                        ? item.discount + '%'
+                        : 'Rp ' + item.discount.toLocaleString()
+                    }}
+                  </span>
+                </div>
                 </div>
               </div>
             </section>
@@ -170,7 +183,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               :label="useLocalization('cashier.orderSummary.voucher.applyPromo')"
               @click="
                 cashierOrderSummary_modalVoucher.show = false;
-                cashierOrderSummary_handleVoucher();
+                cashierOrderSummary_handleVoucher(cashierOrderSummary_modalVoucher.form.voucher_code);
               "
             ></PrimeVueButton>
           </div>
