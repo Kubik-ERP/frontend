@@ -2,7 +2,7 @@ import { VOUCHER_BASE_ENDPOINT } from '../constants';
 
 // type
 import { AxiosRequestConfig } from 'axios';
-import { IVoucherListResponse, IVoucherStateStore, IVoucherListRequestQuery, IVoucherCreateRequest, IVoucherCreateResponse } from '../interfaces';
+import { IVoucherListResponse, IVoucherStateStore, IVoucherListRequestQuery, IVoucherCreateRequest, IVoucherCreateResponse, IVoucherActiveResponse } from '../interfaces';
 
 // plugins
 import httpClient from '@/plugins/axios';
@@ -11,7 +11,6 @@ import { IVoucherViewResponse } from '../interfaces/voucher-view.interface';
 import { IVoucherEditRequest, IVoucherEditResponse } from '../interfaces/voucher-edit.interface';
 
 export const useVoucherStore = defineStore('voucher', {
-  // ✅ ubah id store
   state(): IVoucherStateStore {
     return {
       voucher_isLoading: false,
@@ -101,8 +100,7 @@ export const useVoucherStore = defineStore('voucher', {
         const response = await httpClient.post<IVoucherCreateResponse>(`${VOUCHER_BASE_ENDPOINT}`, voucher, {
           ...requestConfigurations,
         });
-
-        console.log('Create Voucher Response:', response.data);
+        console.log(response.data.message);
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -141,7 +139,7 @@ export const useVoucherStore = defineStore('voucher', {
     /**
      * @description Get voucher by ID
      * @param voucherId - ID of the voucher to fetch
-     * @returns Promise with IVoucherListResponse
+     * @returns Promise with IVoucherViewResponse
      * */
     async voucherList_getVoucherById(
       voucherId: string,
@@ -152,6 +150,26 @@ export const useVoucherStore = defineStore('voucher', {
         const response = await httpClient.get<IVoucherViewResponse>(`${VOUCHER_BASE_ENDPOINT}/${voucherId}`, {
           ...requestConfigurations,
         });
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        return Promise.reject(error instanceof Error ? error : new Error(String(error)));
+      } finally {
+        this.voucher_isLoading = false;
+      }
+    },
+
+    /**
+     * @description get voucher active
+     */
+    async voucherList_getActiveVoucher(
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<IVoucherActiveResponse> {
+      this.voucher_isLoading = true;
+      try {
+        const response = await httpClient.get<IVoucherActiveResponse>(`${VOUCHER_BASE_ENDPOINT}/active`, {
+          ...requestConfigurations,
+        });
+
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         return Promise.reject(error instanceof Error ? error : new Error(String(error)));

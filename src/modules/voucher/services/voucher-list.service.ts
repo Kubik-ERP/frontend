@@ -8,13 +8,16 @@ export const useVoucherListService = (): IVoucherListProvided => {
   const store = useVoucherStore();
   const { voucher_isLoading, voucher_lists } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
+  const h7 = new Date();
+  h7.setDate(h7.getDate() - 7);
+
+  const formattedH7 = `${String(h7.getDate()).padStart(2, '0')}-${String(h7.getMonth() + 1).padStart(2, '0')}-${h7.getFullYear()}`;
 
   const voucherList_queryParams = reactive<IVoucherListRequestQuery>({
-    startDate: '',
-    endDate: '',
+    startDate: formattedH7,
     page: 1,
     pageSize: 10,
-    orderBy: 'updatedAt',
+    orderBy: null,
     orderDirection: 'desc',
   });
 
@@ -54,7 +57,9 @@ export const useVoucherListService = (): IVoucherListProvided => {
    * Handle sort change
    */
   const voucher_handleOnSortChange = (event: DataTableSortEvent): void => {
-    voucherList_queryParams.orderBy = event.sortField as string;
+    const sortField = event.sortField as string
+    const final = sortField  == 'validityPeriod' ? 'validityPeriod' : 'updatedAt';
+    voucherList_queryParams.orderBy = final;
     voucherList_queryParams.orderDirection = event.sortOrder === 1 ? "asc" : "desc";
     voucherList_fetchListVouchers();
   };
@@ -83,6 +88,14 @@ export const useVoucherListService = (): IVoucherListProvided => {
       await voucherList_fetchListVouchers();
     }
   };
+
+  /**
+   * Filter by startPeriode
+   */
+  const voucherList_handleFilter = (date: string) => {
+    voucherList_queryParams.startDate = date;
+    voucherList_fetchListVouchers();
+  }
 
   /**
    * Dialog confirmation delete voucher
@@ -134,5 +147,6 @@ export const useVoucherListService = (): IVoucherListProvided => {
     voucherList_fetchListVouchers,
     voucherList_deleteVoucher: voucherList_deleteVoucher,
     voucherList_values: voucher_lists,
+    voucherList_handleFilter
   };
 };

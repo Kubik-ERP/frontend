@@ -10,6 +10,7 @@ import { IVoucherEditRequest } from "../interfaces/voucher-edit.interface";
 // --- API Service (Edit)
 const {
   voucherEdit_formData,
+  voucherFormDataValidations,
   voucherEdit_fetchVoucher,
   voucherEdit_submit,
   voucherEdit_isLoading,
@@ -44,6 +45,7 @@ onMounted(async () => {
 
   // Mapping dari data API ke form UI
   const v = voucherEdit_formData.value;
+  console.log(v.hasProducts.products)
   form.value.title = v.name;
   form.value.promoCode = v.promoCode;
   form.value.validity = v.startPeriod && v.endPeriod ? [
@@ -91,7 +93,7 @@ const buildVoucherPayload = (): IVoucherEditRequest => {
     isPercent: form.value.isPercentage,
     hasProducts: {
       type: form.value.productScope === "all" ? "all" : "specific",
-      products: form.value.productScope === "selected"
+      products: form.value.productScope === "specific"
         ? form.value.selectedProducts.filter(Boolean)
         : [],
     },
@@ -176,21 +178,23 @@ function removeSelectedProduct(id: string) {
 </script>
 
 <template>
-  <section class="flex flex-col gap-5 p-6 w-full max-w-6xl">
+  <section class="flex flex-col gap- p-6 w-full max-w-6xl">
     <form @submit.prevent="isUpdateModal = true">
       <!-- Title & Validity -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <AppBaseFormGroup class="flex flex-col gap-1" :class="{ '!mb-0': form.validity }"
-          :error="!form.title && 'Title is required'" :label="useLocalization('voucher.create.title')">
-          <label class="font-normal text-sm text-text-secondary">Title*</label>
-          <PrimeVueInputText v-model="form.title" placeholder="PROMO RAMADHAN" class="text-sm w-full" />
+        <AppBaseFormGroup v-slot="{ classes }" class="flex flex-col gap-1" :class="{ '!mb-0': form.validity }"
+          label-for="title" is-name-as-label :name="useLocalization('voucher.createEditVoucher.field.title')"
+          :validators="voucherFormDataValidations.name">
+          <PrimeVueInputText v-model="form.title" name="title" placeholder="PROMO RAMADHAN" :class="{ ...classes }"
+            class="text-sm w-full" />
         </AppBaseFormGroup>
 
-        <div class="flex flex-col gap-1">
-          <label class="font-normal text-sm text-text-secondary">Validity Period*</label>
-          <PrimeVueDatePicker v-model="form.validity" selection-mode="range" date-format="dd/mm/yy" show-icon
-            class="text-sm w-full" />
-        </div>
+        <AppBaseFormGroup v-slot="{ classes }" class-label="font-normal text-sm text-text-secondary w-full"
+          is-name-as-label label-for="validity" :name="useLocalization('voucher.createEditVoucher.field.validity')"
+          :validators="voucherFormDataValidations.startDate">
+          <PrimeVueDatePicker v-model="form.validity" name="validity" selection-mode="range" date-format="dd/mm/yy"
+            show-icon :class="{ ...classes }" class="text-sm w-full" />
+        </AppBaseFormGroup>
       </div>
 
       <!-- Quota & Promo Code -->
@@ -221,54 +225,61 @@ function removeSelectedProduct(id: string) {
         </div>
 
         <!-- Promo Code Input -->
-        <div class="flex flex-col gap-1">
-          <label class="font-normal text-sm text-text-secondary">Promo Code*</label>
-          <PrimeVueInputText v-model="form.promoCode" placeholder="PROMO2025" class="text-sm w-full" />
-        </div>
+        <AppBaseFormGroup v-slot="{ classes }" class="flex flex-col gap-1" is-name-as-label
+          :name="useLocalization('voucher.createEditVoucher.field.code')" :validators="voucherFormDataValidations.code">
+          <PrimeVueInputText v-model="form.promoCode" name="code" placeholder="PROMO2025" :class="{ ...classes }"
+            class="text-sm w-full" />
+        </AppBaseFormGroup>
       </div>
 
       <!-- Discount -->
-      <div class="flex flex-row gap-3 mt-2 w-full">
-        <div class="flex flex-col gap-1 w-full">
-          <label class="font-normal text-sm text-text-secondary">Discount*</label>
+      <div class="flex flex-row gap-6 mt-4 w-full">
+        <!-- Discount -->
+        <AppBaseFormGroup v-slot="{ classes }" class="flex flex-col gap-1 w-full" is-name-as-label
+          :name="useLocalization('voucher.createEditVoucher.field.discount')"
+          :validators="voucherFormDataValidations.amount">
           <PrimeVueInputNumber v-model="form.discountNominal" :disabled="form.isPercentage" mode="currency"
-            currency="IDR" locale="id-ID" class="text-sm w-full" />
-        </div>
-
+            currency="IDR" locale="id-ID" :class="{ ...classes }" class="text-sm w-full" />
+        </AppBaseFormGroup>
 
         <!-- Minimum Transaction -->
-        <div class="flex flex-col gap-1 w-full">
-          <div class="flex flex-row gap-2 items-start">
+        <AppBaseFormGroup v-slot="{ classes }" class="flex flex-col gap-1 w-full" name="minTransaction"
+          :label="useLocalization('voucher.createEditVoucher.field.minTransaction')"
+          :validators="voucherFormDataValidations.minTransaction">
+          <div class="flex flex-row gap-2 items-start mb-1">
             <PrimeVueCheckbox v-model="form.enableMinTransaction" binary />
-            <label class="font-normal text-sm text-text-secondary">
-              Minimum Transaction <span class="text-text-disabled">(Optional)</span>
-            </label>
+            <span class="font-normal text-sm text-text-secondary">
+              {{ useLocalization('voucher.createEditVoucher.field.minTransaction') }}
+              <span class="text-text-disabled">(Optional)</span>
+            </span>
           </div>
 
-          <div class="flex items-center gap-2">
-            <PrimeVueInputNumber v-model="form.minTransaction" :disabled="!form.enableMinTransaction" mode="currency"
-              currency="IDR" locale="id-ID" class="text-sm w-full" />
-          </div>
-        </div>
+          <PrimeVueInputNumber v-model="form.minTransaction" :disabled="!form.enableMinTransaction" mode="currency"
+            currency="IDR" locale="id-ID" :class="{ ...classes }" class="text-sm w-full" />
+        </AppBaseFormGroup>
       </div>
 
       <!-- Discount Type -->
-      <div class="flex items-center gap-2 w-48 mt-6">
+      <div class="flex items-center gap-2 w-48 mt-2">
         <PrimeVueInputSwitch v-model="form.isPercentage" />
         <span class="text-sm text-text-secondary">Percentage</span>
       </div>
 
       <div v-if="form.isPercentage" class="flex flex-row gap-3 mt-2 w-1/2">
-        <div class="flex flex-col gap-1 w-full">
-          <label class="font-normal text-sm text-text-secondary">Discount Percentage*</label>
+        <AppBaseFormGroup v-slot="{ classes }" class="flex flex-col gap-1 w-full" is-name-as-label
+          :name="useLocalization('voucher.createEditVoucher.field.discountPercentage')"
+          :validators="voucherFormDataValidations.amount">
           <PrimeVueInputNumber v-model="form.discountPercent" :disabled="!form.isPercentage" mode="decimal"
-            class="text-sm w-full" />
-        </div>
-        <div class="flex flex-col gap-1 w-full">
-          <label class="font-normal text-sm text-text-secondary">Max Discount Price*</label>
+            :class="{ ...classes }" class="text-sm w-full" />
+        </AppBaseFormGroup>
+
+        <!-- Max Discount Price -->
+        <AppBaseFormGroup v-slot="{ classes }" class="flex flex-col gap-1 w-full" is-name-as-label
+          :name="useLocalization('voucher.createEditVoucher.field.maxDiscountPrice')"
+          :validators="voucherFormDataValidations.maxDiscountPrice">
           <PrimeVueInputNumber v-model="form.maxDiscountPrice" :disabled="!form.isPercentage" mode="currency"
-            currency="IDR" locale="id-ID" class="text-sm w-full" />
-        </div>
+            currency="IDR" locale="id-ID" :class="{ ...classes }" class="text-sm w-full" />
+        </AppBaseFormGroup>
       </div>
 
       <!-- Product Selection -->

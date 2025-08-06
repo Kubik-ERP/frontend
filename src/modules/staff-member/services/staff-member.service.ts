@@ -1,8 +1,8 @@
 // Constants
-import { STAFF_MEMBER_LIST_COLUMNS, STAFF_MEMBER_LIST_REQUEST, STAFF_MEMBER_LIST_VALUES } from '../constants';
+import { STAFF_MEMBER_LIST_COLUMNS, STAFF_MEMBER_LIST_REQUEST } from '../constants';
 
 // Interfaces
-import type { IStaffMember, IStaffMemberList, IStaffMemberListProvided } from '../interfaces';
+import type { IStaffMemberListProvided } from '../interfaces';
 
 // Store
 import { useStaffMemberStore } from '../store';
@@ -15,7 +15,12 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
    * @description Injected variables
    */
   const store = useStaffMemberStore(); // Instance of the store
-  const { staffMember_isLoading, staffMember_listDropdownItemStaff } = storeToRefs(store);
+  const {
+    staffMember_isLoading,
+    staffMember_listDropdownItemStaff,
+    staffMember_listDropdownItemTitles,
+    staffMember_lists,
+  } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
@@ -23,9 +28,12 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
    */
   const staffMemberList_fetchListMembers = async (): Promise<void> => {
     try {
-      await store.staffMember_list({},{
-        ...httpAbort_registerAbort(STAFF_MEMBER_LIST_REQUEST),
-      });
+      await store.staffMember_list(
+        {},
+        {
+          ...httpAbort_registerAbort(STAFF_MEMBER_LIST_REQUEST),
+        },
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -40,15 +48,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
     staffMemberList_dropdownItemStaff: staffMember_listDropdownItemStaff,
     staffMemberList_fetchListMembers,
     staffMemberList_isLoading: staffMember_isLoading,
-    staffMemberList_values:  ref({
-      data: STAFF_MEMBER_LIST_VALUES as unknown as IStaffMember[],
-      meta: {
-        page: 1,
-        limit: 10,
-        total: STAFF_MEMBER_LIST_VALUES.length,
-        totalPages: 1,
-      },
-    }) as Ref<IStaffMemberList>,
+    staffMemberList_values: staffMember_lists,
     staffMemberList_queryParams: reactive({
       page: 1,
       limit: 10,
@@ -61,7 +61,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
       { label: 'Manager', value: 'Manager' },
       { label: 'Sales Associate', value: 'Sales Associate' },
     ],
-    staffMemberList_dropdownItemTitles: ref([]) as Ref<IDropdownItem[]>,
+    staffMemberList_dropdownItemTitles: staffMember_listDropdownItemTitles,
     staffMemberList_deleteStaffMember: async () => {},
     staffMemberList_onChangePage: () => {},
   };

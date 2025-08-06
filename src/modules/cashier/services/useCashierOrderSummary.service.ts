@@ -4,7 +4,7 @@ import {
   CASHIER_ORDER_TYPE,
   CASHIER_DUMMY_LIST_FLOOR,
   CASHIER_DUMMY_LIST_TABLE,
-  CASHIER_DUMMY_VOUCHER,
+  // CASHIER_DUMMY_VOUCHER,
   CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT,
 } from '../constants';
 
@@ -28,6 +28,7 @@ import {
   ICashierOrderSummaryModalVoucher,
   ICashierOrderSummaryProvided,
   ICashierResponseAddCustomer,
+  ICashierVoucher,
 } from '../interfaces/cashier-order-summary';
 
 import { ICashierResponseWebsocketMessage } from '../interfaces/cashier-response';
@@ -54,6 +55,8 @@ import { ref } from 'vue';
 import { ICashierCustomerState, ICashierSelected } from '../interfaces';
 import useVuelidate from '@vuelidate/core';
 import { minValue, numeric, required } from '@vuelidate/validators';
+import { useVoucherStore } from '@/modules/voucher/store';
+import { IVoucher } from '@/modules/voucher/interfaces';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   // Router
@@ -66,6 +69,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const store = useCashierStore();
   const storeOutlet = useOutletStore();
   const storeInvoice = useInvoiceStore();
+  const storeVoucher = useVoucherStore();
+  const voucherData = ref<ICashierVoucher[]>([]);
 
   const { cashierProduct_selectedProduct } = storeToRefs(store);
 
@@ -278,7 +283,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       voucher_code: '',
     },
     search: '',
-    data: CASHIER_DUMMY_VOUCHER,
+    get data() {
+      return voucherData.value; // selalu mengikuti ref
+    },
   });
 
   /**
@@ -365,7 +372,42 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description Handle voucher selection
    * @returns void
    */
-  const cashierOrderSummary_handleVoucher = () => {};
+  const getVoucherActive = async () => {
+    try {
+      const response = await storeVoucher.voucherList_getActiveVoucher();
+      const data = response.data;
+
+      voucherData.value = data.map((voucher: IVoucher) => {
+        const total = cashierOrderSummary_calculateEstimation.value.data.total
+        const isAvailable =
+          total >= voucher.minPrice &&
+          (voucher.maxPrice === 0 || total <= voucher.maxPrice);
+
+        return {
+          code: voucher.promoCode,
+          label: voucher.promoCode,
+          available: isAvailable,
+          discount: voucher.amount,
+          minPurchase: voucher.minPrice,
+          maxDiscount: voucher.maxPrice,
+          validFrom: new Date(voucher.startPeriod).toISOString().split('T')[0],
+          validUntil: new Date(voucher.endPeriod).toISOString().split('T')[0],
+          type: voucher.isPercent ? 'percentage' : 'nominal',
+          stock: voucher.quota,
+        };
+      });
+
+      console.log('voucherData:', voucherData.value);
+    } catch (error: unknown) {
+      console.error(error);
+    }
+  };
+  getVoucherActive();
+
+  const cashierOrderSummary_handleVoucher = (code: string) => {
+    const voucherSelected = voucherData.value.find(v => v.code === code)
+    console.log(voucherSelected)
+  };
 
   const cashierOrderSummary_modalAddEditNotes = ref<ICashierOrderSummaryModalAddEdit>({
     show: false,

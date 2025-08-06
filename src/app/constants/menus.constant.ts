@@ -130,10 +130,6 @@ export const LIST_SIDEBAR_MENUS = [
             name: 'Master Voucher',
             path: '/voucher',
           },
-          {
-            name: 'Master Diskon',
-            path: '/',
-          },
         ],
       },
       {

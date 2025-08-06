@@ -1,0 +1,94 @@
+{
+  "voucher": {
+    "main": {
+      "table": {
+        "title": "Judul",
+        "promoCode": "Kode Promo",
+        "validityPariode": "Periode Berlaku",
+        "lastUpdated": "Terakhir Diperbarui",
+        "status": "Status Voucher"
+      },
+      "popover": {
+        "add": "Tambah Voucher",
+        "view": "Lihat Detail",
+        "edit": "Ubah",
+        "delete": "Hapus"
+      },
+      "modal": {
+        "title": "Apakah Anda yakin ingin menghapus voucher ini?",
+        "description": "Tindakan ini tidak dapat dibatalkan, dan voucher akan dihapus dari database",
+        "delete": "Hapus Voucher",
+        "cancel": "Batal"
+      }
+    },
+    "createEditVoucher": {
+      "titleCreate": "Buat Voucher",
+      "titleEdit": "Ubah Voucher",
+      "field": {
+        "titleCreate": "Buat Voucher",
+        "titleEdit": "Edit Voucher",
+        "code": "Kode Promo",
+        "validity": "Periode Berlaku",
+        "quota": "Kuota",
+        "optional": "(Opsional)",
+        "discount": "Diskon",
+        "percentage": "Persentase",
+        "discountPercentage": "Persentase Diskon",
+        "maxDiscountPrice": "Maksimal Harga Diskon",
+        "minTransaction": "Transaksi Minimum",
+        "productSelection": "Produk",
+        "productAll": "Semua Produk",
+        "productSelected": "Produk Tertentu",
+        "searchProduct": "Cari Produk",
+        "noItemSelected": "Tidak Ada Item Dipilih"
+      },
+      "preview": {
+        "title": "Pratinjau Voucher",
+        "orderSummary": "Ringkasan Pesanan",
+        "subtotal": "Subtotal",
+        "discountApplied": "Diskon Diterapkan",
+        "tax": "Pajak (10%)",
+        "finalTotal": "Total Akhir",
+        "discountDetails": "Detail Diskon",
+        "name": "Nama",
+        "type": "Tipe",
+        "value": "Nilai",
+        "period": "Periode",
+        "fixedAmount": "Jumlah Tetap",
+        "confirm": "Konfirmasi",
+        "cancel": "Batal"
+      },
+      "leavePageModal": {
+        "title": "Apakah Anda yakin ingin meninggalkan halaman ini?",
+        "description": "Perubahan yang Anda buat pada data akan hilang jika Anda meninggalkan halaman ini tanpa menyimpan",
+        "discardButton": "Buang Perubahan",
+        "cancelButton": "Batal"
+      }
+    },
+    "details": {
+      "title": "Detail Voucher",
+      "header": "Informasi Voucher",
+      "field": {
+        "name": "Judul",
+        "code": "Kode Voucher",
+        "validity": "Periode Berlaku",
+        "quota": "Kuota",
+        "discount": "Diskon",
+        "min-transaction": "Transaksi Minimum",
+        "is-percentage": "Diskon Persentase",
+        "discount-percent": "Persentase Diskon",
+        "max-discount-price": "Maksimal Harga Diskon",
+        "discount-nominal": "Jumlah Diskon",
+        "product-scope": "Cakupan Produk",
+        "all-products": "Semua Produk",
+        "selected-products": "Produk Terpilih",
+        "last-update": "Pembaruan Terakhir"
+      }
+    },
+    "productDetail": {
+      "name" : "Nama Produk",
+      "category": "Kategori",
+      "price": "Harga"
+    }
+  }
+}

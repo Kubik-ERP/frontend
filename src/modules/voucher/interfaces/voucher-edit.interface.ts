@@ -1,3 +1,4 @@
+import { Validation } from "@vuelidate/core";
 import { IVoucher } from ".";
 
 export interface IVoucherEditRequest {
@@ -48,6 +49,7 @@ export const mapFormToVoucherPayload = (
 
 export type IVoucherEditProvided = {
     voucherEdit_formData: globalThis.Ref<IVoucherEditRequest>
+    voucherFormDataValidations: globalThis.Ref<Validation>
     voucherEdit_isLoading: globalThis.Ref<boolean>;
     voucherEdit_Response: globalThis.Ref<IVoucherEditResponse | null>;
     voucherEdit_ResponseUpdate: globalThis.Ref<IVoucherEditResponse | null>;
