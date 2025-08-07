@@ -38,6 +38,7 @@ const {
 </script>
 <template>
   <section id="customer-loyalty-point" class="flex flex-col relative inset-0 z-0">
+    {{ isEdit }}
     <AppBaseDataTable
       :columns="customerLoyaltyPoint_columns"
       :data="loyaltyPoints_list.data"
@@ -175,7 +176,7 @@ const {
     >
       <form
         @submit.prevent="
-          isEdit ? customerDetails_fetchIncreasePointOnSubmit() : customerDetails_fetchIncreasePointOnEdit()
+          isEdit ? customerDetails_fetchIncreasePointOnEdit() : customerDetails_fetchIncreasePointOnSubmit()
         "
       >
         <AppBaseFormGroup
@@ -263,7 +264,7 @@ const {
     <PrimeVueDialog v-model:visible="isDecreasePointOpen" modal header="Decrease Point" class="w-[45rem]">
       <form
         @submit.prevent="
-          isEdit ? customerDetails_fetchDecreasePointOnSubmit() : customerDetails_fetchDecreasePointOnEdit()
+          isEdit ? customerDetails_fetchDecreasePointOnEdit() : customerDetails_fetchDecreasePointOnSubmit()
         "
       >
         <AppBaseFormGroup

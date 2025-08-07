@@ -230,7 +230,6 @@ export const useCustomerDetailService = () => {
   const isIncreasePointOpen = ref(false);
   const isDecreasePointOpen = ref(false);
 
-  
   const pointTypeClass = (type: string) => {
     if (type === 'point_addition') return 'bg-primary-background text-primary';
     if (type === 'point_deduction') return 'bg-error-background text-error-main';
@@ -373,7 +372,7 @@ export const useCustomerDetailService = () => {
     try {
       increasePoint_formValidations.value.$reset();
       if (increasePoint_formValidations.value.$invalid) return;
-      
+
       await store.increasePoint_onEdit(
         httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
         selectedPointId.value as string,
@@ -409,16 +408,16 @@ export const useCustomerDetailService = () => {
       increarePoint_FormData.ExpiryDate = data.expiryDate;
       increarePoint_FormData.notes = data.notes;
 
+      isEdit.value = true;
       isIncreasePointOpen.value = true;
-
     } else if (data.type === 'point_deduction') {
       selectedPointId.value = data.id;
 
       decreasePoint_FormData.point = data.value;
       decreasePoint_FormData.notes = data.notes;
 
+      isEdit.value = true;
       isDecreasePointOpen.value = true;
-
     }
   };
 
