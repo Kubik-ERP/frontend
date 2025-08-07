@@ -23,6 +23,7 @@ import httpClient from '@/plugins/axios';
 
 export const useCustomerDetailsStore = defineStore('customer-details', {
   state: (): ICustomerDetailsStore => ({
+    loyaltyPoints_isLoading: false,
     customerDetails_isLoading: false,
     customerDetails: {
       id: '0014cc8a-748a-431b-a7f2-7449e1764f56',
@@ -87,7 +88,7 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
       requestConfigurations: AxiosRequestConfig,
       params: ICustomerLoyaltyPointQuery,
     ): Promise<IloyaltyPoints> {
-      this.customerDetails_isLoading = true;
+      this.loyaltyPoints_isLoading = true;
       try {
         const response = await httpClient.get(
           `${CUSTOMER_DETAILS_BASE_ENDPOINT}${LOYALTY_POINTS_ENDPOINT}/${id}`,
@@ -105,7 +106,7 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
           return Promise.reject(new Error(String(error)));
         }
       } finally {
-        this.customerDetails_isLoading = false;
+        this.loyaltyPoints_isLoading = false;
       }
     },
 
@@ -114,7 +115,7 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
       data: IIncreasePoint,
       customer_id: string,
     ): Promise<IloyaltyPoints> {
-      this.customerDetails_isLoading = true;
+      this.loyaltyPoints_isLoading = true;
       try {
         const response = await httpClient.post(
           `${CUSTOMER_DETAILS_BASE_ENDPOINT}${LOYALTY_POINTS_ENDPOINT}${INCREASE_POINT_ENDPOINT}`,
@@ -137,7 +138,7 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
           return Promise.reject(new Error(String(error)));
         }
       } finally {
-        this.customerDetails_isLoading = false;
+        this.loyaltyPoints_isLoading = false;
       }
     },
     async increasePoint_onEdit(
@@ -146,7 +147,7 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
       data: IIncreasePoint,
       customer_id: string,
     ): Promise<IloyaltyPoints> {
-      this.customerDetails_isLoading = true;
+      this.loyaltyPoints_isLoading = true;
       try {
         const response = await httpClient.patch(
           `${CUSTOMER_DETAILS_BASE_ENDPOINT}${LOYALTY_POINTS_ENDPOINT}/${id}`,
@@ -169,7 +170,7 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
           return Promise.reject(new Error(String(error)));
         }
       } finally {
-        this.customerDetails_isLoading = false;
+        this.loyaltyPoints_isLoading = false;
       }
     },
 
@@ -178,7 +179,7 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
       data: IDecreasePoint,
       customerId: string,
     ): Promise<IloyaltyPoints> {
-      this.customerDetails_isLoading = true;
+      this.loyaltyPoints_isLoading = true;
       try {
         const response = await httpClient.post(
           `${CUSTOMER_DETAILS_BASE_ENDPOINT}${LOYALTY_POINTS_ENDPOINT}${DECREASE_POINT_ENDPOINT}`,
@@ -199,7 +200,7 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
           return Promise.reject(new Error(String(error)));
         }
       } finally {
-        this.customerDetails_isLoading = false;
+        this.loyaltyPoints_isLoading = false;
       }
     },
     async decreasePoint_onEdit(
@@ -208,7 +209,7 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
       id: string,
       customerId: string,
     ): Promise<IloyaltyPoints> {
-      this.customerDetails_isLoading = true;
+      this.loyaltyPoints_isLoading = true;
       try {
         const response = await httpClient.patch(
           `${CUSTOMER_DETAILS_BASE_ENDPOINT}${LOYALTY_POINTS_ENDPOINT}/${id}`,
@@ -229,7 +230,7 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
           return Promise.reject(new Error(String(error)));
         }
       } finally {
-        this.customerDetails_isLoading = false;
+        this.loyaltyPoints_isLoading = false;
       }
     },
   },

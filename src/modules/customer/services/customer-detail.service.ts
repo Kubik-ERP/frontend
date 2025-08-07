@@ -37,7 +37,8 @@ export const useCustomerDetailService = () => {
 
   const store = useCustomerDetailsStore();
 
-  const { customerDetails_isLoading, customerDetails, loyaltyPoints_list } = storeToRefs(store);
+  const { customerDetails_isLoading, customerDetails, loyaltyPoints_list, loyaltyPoints_isLoading } =
+    storeToRefs(store);
 
   const { httpAbort_registerAbort } = useHttpAbort();
 
@@ -442,6 +443,7 @@ export const useCustomerDetailService = () => {
     loyaltyPoint_types: LOYALTY_POINT_TYPES,
 
     customerDetails_isLoading,
+    loyaltyPoints_isLoading,
 
     customerDetails_fetchSalesInvoice,
     orderStatusClass,

@@ -15,7 +15,7 @@ const {
   customerLoyaltyPoint_columns,
 
   loyaltyPoint_types,
-  customerDetails_isLoading,
+  loyaltyPoints_isLoading,
   loyaltyPoints_list,
 
   loyaltyPoint_onChangePage,
@@ -30,15 +30,20 @@ const {
   customerDetails_fetchDecreasePointOnEdit,
   customerDetails_fetchDecreasePointOnSubmit,
   customerDetails_fetchIncreasePointOnEdit,
+  customerDetails_fetchLoyaltyPoint,
 
   handle_editLoyaltyPoints,
 
   isEdit,
 } = useCustomerDetailService();
+
+onMounted(async () => {
+  await customerDetails_fetchLoyaltyPoint();
+});
+
 </script>
 <template>
   <section id="customer-loyalty-point" class="flex flex-col relative inset-0 z-0">
-    {{ isEdit }}
     <AppBaseDataTable
       :columns="customerLoyaltyPoint_columns"
       :data="loyaltyPoints_list.data"
@@ -49,7 +54,7 @@ const {
       is-using-custom-body
       is-using-custom-header
       is-using-custom-filter
-      :is-loading="customerDetails_isLoading"
+      :is-loading="loyaltyPoints_isLoading"
       @update:currentPage="loyaltyPoint_onChangePage"
     >
       <template #header>
@@ -69,7 +74,7 @@ const {
               </template>
             </PrimeVueButton>
             <span class="text-5xl text-primary font-bold flex items-center gap-2">
-              <template v-if="customerDetails_isLoading">
+              <template v-if="loyaltyPoints_isLoading">
                 <PrimeVueSkeleton width="9rem" height="3rem" class="rounded-md"></PrimeVueSkeleton>
               </template>
               <template v-else>

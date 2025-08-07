@@ -64,6 +64,7 @@ export interface ICustomerDetails {
 }
 
 export interface ICustomerDetailsStore {
+  loyaltyPoints_isLoading: boolean;
   customerDetails_isLoading: boolean;
   customerDetails: {
     id?: string;
