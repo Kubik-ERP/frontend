@@ -16,6 +16,7 @@ const {
   voucherList_onChangePage,
   voucher_handleOnSortChange,
   voucherList_deleteVoucher,
+  voucherList_handleFilter,
 } = useVoucherListService();
 
 onMounted(async () => {
@@ -67,6 +68,18 @@ const handleDelete = async (row: IVoucher | null) => {
 
   await voucherList_deleteVoucher(row.id);
 };
+
+/**
+ * filter
+ */
+const selectedDate = ref<Date | null>(null);
+
+const formatDate = (date: Date) => {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
 </script>
 
 
@@ -76,8 +89,10 @@ const handleDelete = async (row: IVoucher | null) => {
       :rows-per-page="voucherList_values.data.meta.pageSize" :total-records="voucherList_values.data.meta.total"
       :first="(voucherList_values.data.meta.page - 1) * voucherList_values.data.meta.pageSize"
       :is-loading="voucherList_isLoading" :sort-field="voucherList_queryParams.orderBy"
+
       :sort-order="voucherList_queryParams.orderDirection === 'asc' ? 1 : -1" is-using-server-side-pagination
       is-using-custom-header-prefix is-using-custom-header-suffix is-using-header is-using-custom-body
+      :is-using-custom-filter="true"
       @update:currentPage="voucherList_onChangePage" @update:sort="voucher_handleOnSortChange">
       <!-- Header Prefix -->
       <template #header-prefix>
@@ -87,11 +102,33 @@ const handleDelete = async (row: IVoucher | null) => {
             :label="`${activeVoucherCount} Active Vouchers`" />
 
         </div>
-        <PrimeVueButton class="w-fit" label="Add Voucher" @click="goToCreate">
+        <PrimeVueButton class="w-fit" :label="useLocalization('voucher.main.popover.add')" @click="goToCreate">
           <template #icon>
             <AppBaseSvg name="plus-line-white" class="!w-5 !h-5" />
           </template>
         </PrimeVueButton>
+      </template>
+
+      <template #filter>
+        <div class="grid grid-col gap-y-2">
+          <span class="font-semibold inline-block text-gray-900 text-base w-48">Filter by</span>
+
+          <div class="flex items-center gap-4 w-full">
+            <PrimeVueDatePicker
+              v-model="selectedDate"
+              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
+              placeholder="Last test 7 day"
+              show-on-focus
+              show-icon
+              fluid
+              show-button-bar
+              @update:modelValue="(val) => {
+                 const date = Array.isArray(val) ? val[0] : val;
+                 if (date) voucherList_handleFilter(formatDate(date));
+              }"
+            />
+          </div>
+        </div>
       </template>
 
       <!-- Body Table -->
@@ -112,7 +149,7 @@ const handleDelete = async (row: IVoucher | null) => {
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleView(selectedData)">
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="eye-visible" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">View</span>
+                  <span class="font-normal text-sm text-text-primary">{{ useLocalization('voucher.main.popover.view') }}</span>
                 </section>
               </PrimeVueButton>
 
@@ -120,7 +157,7 @@ const handleDelete = async (row: IVoucher | null) => {
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleEdit(selectedData)">
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Edit</span>
+                  <span class="font-normal text-sm text-text-primary">{{ useLocalization('voucher.main.popover.edit') }}</span>
                 </section>
               </PrimeVueButton>
 
@@ -128,7 +165,7 @@ const handleDelete = async (row: IVoucher | null) => {
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleDelete(selectedData)">
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="delete" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Delete</span>
+                  <span class="font-normal text-sm text-text-primary">{{ useLocalization('voucher.main.popover.delete') }}</span>
                 </section>
               </PrimeVueButton>
             </section>

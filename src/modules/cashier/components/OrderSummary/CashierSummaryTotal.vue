@@ -20,6 +20,28 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
         }}</span>
         <PrimeVueSkeleton v-else width="6rem" />
       </div>
+
+            <div
+        v-if="cashierOrderSummary_calculateEstimation.data.voucherAmount"
+        class="flex justify-between text-sm text-text-disabled"
+      >
+        <span
+          >Voucher
+
+
+          <span >({{ useLocalization('cashier.orderSummary.excluded') }})</span></span
+        >
+
+        <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
+          - {{
+            useCurrencyFormat({
+              data: cashierOrderSummary_calculateEstimation.data.voucherAmount,
+            })
+          }}</span
+        >
+        <PrimeVueSkeleton v-else width="6rem" />
+      </div>
+
       <div
         v-if="cashierOrderSummary_calculateEstimation.data.tax"
         class="flex justify-between text-sm text-text-disabled"
