@@ -12,6 +12,7 @@ export type IVoucher = {
   startPeriod: string;
   endPeriod: string;
   isPercent: boolean;
+  remainingQuota?: number;
   status: 'active' |  'expired' | 'upcoming'
   voucherHasProducts? : IVoucherHasProducts[]
   isApplyAllProducts: boolean,

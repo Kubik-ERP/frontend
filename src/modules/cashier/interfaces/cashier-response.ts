@@ -17,6 +17,7 @@ export interface ICashierResponseCalulateEstimationItem {
   tax: number | null;
   taxInclude: boolean;
   items: ICashierResponseCalulateEstimationItem[];
+  voucherAmount: number;
 }
 
 export interface ICashierResponseCalulateEstimation {
