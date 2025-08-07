@@ -69,7 +69,7 @@ declare global {
   interface IDropdownItem {
     iconName?: string;
     label: string;
-    value: string | number;
+    value: string | number | Record<string, unknown>;
   }
 
   interface IObjectFileUpload extends File {
