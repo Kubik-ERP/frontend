@@ -14,6 +14,7 @@ interface IProps {
   isUsingBtnCtaCreate?: boolean;
   isUsingCustomBody?: boolean;
   isUsingCustomFilter?: boolean;
+  isUsingCustomFooter?: boolean;
   isUsingCustomHeader?: boolean;
   isUsingCustomHeaderPrefix?: boolean;
   isUsingCustomHeaderSuffix?: boolean;
@@ -31,6 +32,10 @@ interface IProps {
   first?: number;
   isUsingServerSidePagination?: boolean;
   onPageChange?: (event: { page: number; rows: number }) => void;
+  searchValue?: string;
+  searchPlaceholder?: string;
+  maxVisibleRows?: number;
+  scrollHeight?: string;
 }
 
 /**
@@ -45,6 +50,7 @@ const props = withDefaults(defineProps<IProps>(), {
   isUsingBtnCtaCreate: false,
   isUsingCustomBody: false,
   isUsingCustomFilter: false,
+  isUsingCustomFooter: false,
   isUsingCustomHeader: false,
   isUsingCustomHeaderPrefix: false,
   isUsingCustomHeaderSuffix: false,
@@ -62,9 +68,21 @@ const props = withDefaults(defineProps<IProps>(), {
   first: 1,
   isUsingServerSidePagination: false,
   onPageChange: () => {},
+  searchValue: '',
+  searchPlaceholder: 'Search...',
+  maxVisibleRows: 0,
+  scrollHeight: 'auto',
 });
 
-const emits = defineEmits(['clickBtnCtaCreate', 'update:currentPage', 'update:sort']);
+const emits = defineEmits(['clickBtnCtaCreate', 'update:currentPage', 'update:sort', 'update:searchValue']);
+
+/**
+ * @description Computed property for two-way binding of search value
+ */
+const searchModel = computed({
+  get: () => props.searchValue,
+  set: (value: string) => emits('update:searchValue', value),
+});
 
 /**
  * @description Handle page change event
@@ -112,11 +130,31 @@ const displayedPages = computed(() => {
 
   return pages;
 });
+
+/**
+ * @description Computed property for scroll height when maxVisibleRows is set
+ */
+const computedScrollHeight = computed(() => {
+  if (props.maxVisibleRows > 0) {
+    // Approximate height per row (adjust based on your row height)
+    const rowHeight = 60; // 60px per row (adjust as needed)
+    const headerHeight = 48; // Header height
+    return `${props.maxVisibleRows * rowHeight + headerHeight}px`;
+  }
+  return props.scrollHeight;
+});
+
+/**
+ * @description Check if scrollable mode is enabled
+ */
+const isScrollable = computed(() => {
+  return props.maxVisibleRows > 0 || props.scrollHeight !== 'auto';
+});
 </script>
 
 <template>
   <PrimeVueDataTable
-    :paginator="props.isUsingPagination"
+    :paginator="props.isUsingPagination && !props.isUsingCustomFooter"
     :value="props.data"
     :rows="props.rowsPerPage"
     :first="props.first"
@@ -125,14 +163,16 @@ const displayedPages = computed(() => {
     :removable-sort="props.removableSort"
     :sort-field="props.sortField"
     :sort-order="props.sortOrder ?? 0"
+    :scroll-height="isScrollable ? computedScrollHeight : undefined"
+    :scrollable="isScrollable"
     table-style="min-width: 50rem"
     :pt="{
       root: 'rounded-sm',
       header: 'border-none p-0',
+      tableContainer: `border border-solid border-grayscale-20 ${!props.isUsingBorderOnHeader ? 'rounded-tl-lg rounded-tr-lg' : '!border-t-0'} ${props.isUsingCustomFooter ? '!border-b-0 !rounded-bl-none !rounded-br-none' : ''}`,
       pcPaginator: {
-        root: 'border-l border-r border-b border-t-0 border-solid border-grayscale-20 rounded-tl-none rounded-tr-none',
+        root: `border-l border-r border-b border-t-0 border-solid border-grayscale-20 rounded-tl-none rounded-tr-none ${props.isUsingCustomFooter ? 'hidden' : ''}`,
       },
-      tableContainer: `border border-solid border-grayscale-20 ${!props.isUsingBorderOnHeader ? 'rounded-tl-lg rounded-tr-lg' : '!border-t-0'}`,
     }"
     @page="handlePageChange"
     @sort="handleSort"
@@ -178,7 +218,11 @@ const displayedPages = computed(() => {
                       </template>
                     </PrimeVueInputIcon>
 
-                    <PrimeVueInputText placeholder="Search by Member ID or Name" class="text-sm w-full min-w-80" />
+                    <PrimeVueInputText
+                      v-model="searchModel"
+                      :placeholder="props.searchPlaceholder"
+                      class="text-sm w-full min-w-80"
+                    />
                   </PrimeVueIconField>
 
                   <template v-if="props.isUsingBtnCtaCreate">
@@ -310,4 +354,12 @@ const displayedPages = computed(() => {
       </template>
     </PrimeVueColumn>
   </PrimeVueDataTable>
+
+  <!-- Custom Footer Section -->
+  <section
+    v-if="props.isUsingCustomFooter"
+    class="border-l border-r border-b border-solid border-grayscale-20 bg-background rounded-bl-lg rounded-br-lg px-4 py-3 -mt-8"
+  >
+    <slot name="footer" />
+  </section>
 </template>
