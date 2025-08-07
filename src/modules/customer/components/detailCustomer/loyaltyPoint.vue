@@ -125,7 +125,7 @@ const {
 
         <template v-else-if="column.value === 'purchaseDate'">
           <span class="font-normal text-sm text-text-primary">{{
-            useFormatDate(data.expiryDate, 'dd/mm/yyyy')
+            data.invoiceId ? useFormatDate(data.createdAt, 'dd/mm/yyyy') : '-'
           }}</span>
         </template>
 
