@@ -490,7 +490,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       cashierProduct_customerState.value.selectedCustomer?.id === null ||
       cashierProduct_customerState.value.selectedCustomer?.id === undefined ||
       cashierOrderSummary_modalOrderType.value.selectedOrderType === '' ||
-      cashierOrderSummary_modalSelectTable.value.selectedTable.length === 0 ||
+      (cashierOrderSummary_modalOrderType.value.selectedOrderType === 'take_away'
+        ? false
+        : cashierOrderSummary_modalSelectTable.value.selectedTable.length === 0) ||
       cashierProduct_selectedProduct.value.length === 0;
 
     return isDisabled;
