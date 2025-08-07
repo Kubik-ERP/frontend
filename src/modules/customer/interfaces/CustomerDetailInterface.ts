@@ -1,13 +1,13 @@
 export interface IIncreasePoint {
   point: number;
   isHaveExpiryDate: string;
-  ExpiryDate?: Date;
-  notes?: string;
+  ExpiryDate?: Date | null;
+  notes?: string | null;
 }
 
 export interface IDecreasePoint {
   point: number;
-  notes?: string;
+  notes?: string | null;
 }
 
 export interface IPageMeta {
@@ -67,22 +67,45 @@ export interface ICustomerDetailsStore {
   customerDetails_isLoading: boolean;
   customerDetails: {
     id?: string;
-  name?: string;
-  code?: string;
-  number?: string;
-  gender?: string;
-  email?: string;
-  dob?: string;
-  address?: string;
-  paid?: number;
-  unpaid?: number;
-  totalSales?: number;
-  lastVisited?: Date;
-  tags?: Itags[];
-  invoices?: {
-    data: Iinvoice[];
-    meta: IPageMeta;
+    name?: string;
+    code?: string;
+    number?: string;
+    gender?: string;
+    email?: string;
+    dob?: string;
+    address?: string;
+    paid?: number;
+    unpaid?: number;
+    totalSales?: number;
+    lastVisited?: Date;
+    tags?: Itags[];
+    invoices?: {
+      data: Iinvoice[];
+      meta: IPageMeta;
+    };
   };
+  loyaltyPoints_list: points;
+}
+
+export interface IloyaltyPoints1 {
+  points?: points;
+}
+export interface IloyaltyPoints {
+  data: {
+    id?: string;
+    name?: string;
+    code?: string;
+    number?: string;
+    gender?: string;
+    email?: string;
+    dob?: string;
+    address?: string;
+    paid?: number;
+    unpaid?: number;
+    totalSales?: number;
+    lastVisited?: Date;
+    tags?: Itags[];
+    points: points;
   };
 }
 
@@ -99,9 +122,21 @@ export interface IPointDetails {
 
 export interface points {
   total: number;
-  details: IPointDetails[];
+  data: IPointDetails[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
 
+export interface ICustomerLoyaltyPointQuery {
+  page: number;
+  limit: number;
+  type?: string | null;
+  date?: Date | null;
+}
 export interface ICustomerDetailsRequestQuery {
   start_date: Date | null;
   end_date: Date | null;
@@ -114,25 +149,25 @@ export interface ICustomerDetailsRequestQuery {
 }
 
 export interface ICustomerDetails_fetchSalesInvoiceResponse {
-customerDetails_isLoading: boolean;
+  customerDetails_isLoading: boolean;
   customerDetails: {
     id?: string;
-  name?: string;
-  code?: string;
-  number?: string;
-  gender?: string;
-  email?: string;
-  dob?: string;
-  address?: string;
-  paid?: number;
-  unpaid?: number;
-  totalSales?: number;
-  lastVisited?: Date;
-  tags?: Itags[];
-  invoices: {
-    data: Iinvoice[];
-    meta: IPageMeta;
-  };
+    name?: string;
+    code?: string;
+    number?: string;
+    gender?: string;
+    email?: string;
+    dob?: string;
+    address?: string;
+    paid?: number;
+    unpaid?: number;
+    totalSales?: number;
+    lastVisited?: Date;
+    tags?: Itags[];
+    invoices: {
+      data: Iinvoice[];
+      meta: IPageMeta;
+    };
   };
 }
 

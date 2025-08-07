@@ -32,7 +32,6 @@ const {
 
 <template>
   <section id="customer-daily-sales" class="flex flex-col relative inset-0 z-0">
-    {{}}
     <AppBaseDataTable
       :columns="customerDetail_columns"
       :data="customerDetails.invoices?.data"
