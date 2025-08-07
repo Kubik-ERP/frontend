@@ -108,7 +108,7 @@ export const LIST_SIDEBAR_MENUS = [
           },
           {
             name: 'Master Supplier',
-            path: '/',
+            path: '/supplier',
           },
           {
             name: 'Master Brand',

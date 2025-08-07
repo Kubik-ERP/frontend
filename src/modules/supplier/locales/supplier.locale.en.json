@@ -1,0 +1,56 @@
+{
+  "supplier": {
+    "title": "Master Supplier",
+    "list": {
+      "header": "Master Supplier",
+      "addNew": "Add New Supplier",
+      "search": "Search ID or Supplier Name",
+      "columns": {
+        "supplierId": "Supplier ID",
+        "supplierName": "Supplier Name",
+        "contactPerson": "Contact Person",
+        "phoneNumber": "Phone Number",
+        "email": "Email",
+        "address": "Address"
+      }
+    },
+    "form": {
+      "create": {
+        "title": "Add New Supplier",
+        "subtitle": "Fill in the details to create a new supplier"
+      },
+      "edit": {
+        "title": "Edit Supplier",
+        "subtitle": "Update supplier information"
+      },
+      "fields": {
+        "supplierName": "Supplier Name",
+        "contactPerson": "Contact Person",
+        "phoneNumber": "Phone Number",
+        "email": "Email",
+        "address": "Address",
+        "bankInformation": "Bank Information (Optional)",
+        "bankName": "Bank Name",
+        "bankAccountName": "Account Name",
+        "bankAccountNumber": "Account Number",
+        "taxIdNumber": "Tax ID Number"
+      },
+      "placeholders": {
+        "supplierName": "Enter supplier name",
+        "contactPerson": "Enter contact person name",
+        "phoneNumber": "Enter phone number",
+        "email": "Enter email address",
+        "address": "Enter supplier address",
+        "bankName": "Enter bank name",
+        "bankAccountName": "Enter account name",
+        "bankAccountNumber": "Enter account number",
+        "taxIdNumber": "Enter tax identification number"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "create": "Create Supplier",
+        "update": "Update Supplier"
+      }
+    }
+  }
+}
