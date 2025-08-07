@@ -12,15 +12,17 @@ export type IVoucher = {
   startPeriod: string;
   endPeriod: string;
   isPercent: boolean;
+  remainingQuota?: number;
   status: 'active' |  'expired' | 'upcoming'
   voucherHasProducts? : IVoucherHasProducts[]
+  isApplyAllProducts: boolean,
   createdAt: string;
   updatedAt: string;
 };
 
 type IVoucherHasProducts = {
   voucherId: string;
-  productId: string;
+  productsId: string;
   products: IProductVoucher
 };
 
@@ -46,6 +48,12 @@ export type IVoucherListResponse = {
     meta: IPageMeta;
   };
 };
+
+export type IVoucherActiveResponse = {
+   statusCode: number;
+  message?: string;
+  data: IVoucher[] | []
+}
 
 export type IVoucherStateStore = {
   voucher_isLoading: boolean;

@@ -16,6 +16,7 @@ const {
   voucherList_onChangePage,
   voucher_handleOnSortChange,
   voucherList_deleteVoucher,
+  voucherList_handleFilter,
 } = useVoucherListService();
 
 onMounted(async () => {
@@ -27,9 +28,7 @@ onMounted(async () => {
  */
 const voucherStore = useVoucherStore();
 const activeVoucherCount = computed(() => {
-  return voucherStore.voucher_lists.data.items.filter(
-    (item: IVoucher) => item.status === 'active'
-  ).length;
+  return voucherStore.voucher_lists.data.items.filter((item: IVoucher) => item.status === 'active').length;
 });
 
 /**
@@ -45,7 +44,6 @@ const router = useRouter();
 const goToCreate = () => router.push({ name: 'voucher.create' });
 const goToEdit = (id: string, name: string) => router.push({ name: 'voucher.edit', params: { id, name } });
 const goToView = (id: string, name: string) => router.push({ name: 'voucher.view', params: { id, name } });
-
 
 const openActionsMenu = (event: MouseEvent, rowData: IVoucher) => {
   selectedData.value = rowData;
@@ -67,31 +65,79 @@ const handleDelete = async (row: IVoucher | null) => {
 
   await voucherList_deleteVoucher(row.id);
 };
-</script>
 
+/**
+ * filter
+ */
+const selectedDate = ref<Date | null>(null);
+
+const formatDate = (date: Date) => {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+</script>
 
 <template>
   <section id="voucher-list" class="flex flex-col relative inset-0 z-0">
-    <AppBaseDataTable :columns="voucherList_columns" :data="voucherList_values.data.items" header-title="Vouchers"
-      :rows-per-page="voucherList_values.data.meta.pageSize" :total-records="voucherList_values.data.meta.total"
+    <AppBaseDataTable
+      :columns="voucherList_columns"
+      :data="voucherList_values.data.items"
+      header-title="Vouchers"
+      :rows-per-page="voucherList_values.data.meta.pageSize"
+      :total-records="voucherList_values.data.meta.total"
       :first="(voucherList_values.data.meta.page - 1) * voucherList_values.data.meta.pageSize"
-      :is-loading="voucherList_isLoading" :sort-field="voucherList_queryParams.orderBy"
-      :sort-order="voucherList_queryParams.orderDirection === 'asc' ? 1 : -1" is-using-server-side-pagination
-      is-using-custom-header-prefix is-using-custom-header-suffix is-using-header is-using-custom-body
-      @update:currentPage="voucherList_onChangePage" @update:sort="voucher_handleOnSortChange">
+      :is-loading="voucherList_isLoading"
+      :sort-field="voucherList_queryParams.orderBy"
+      :sort-order="voucherList_queryParams.orderDirection === 'asc' ? 1 : -1"
+      is-using-server-side-pagination
+      is-using-custom-header-prefix
+      is-using-custom-header-suffix
+      is-using-header
+      is-using-custom-body
+      :is-using-custom-filter="true"
+      @update:currentPage="voucherList_onChangePage"
+      @update:sort="voucher_handleOnSortChange"
+    >
       <!-- Header Prefix -->
       <template #header-prefix>
         <div class="flex items-center gap-2">
           <h6 class="font-semibold text-gray-900 text-xl">Voucher</h6>
-          <PrimeVueChip class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-0.5"
-            :label="`${activeVoucherCount} Active Vouchers`" />
-
+          <PrimeVueChip
+            class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-0.5"
+            :label="`${activeVoucherCount} Active Vouchers`"
+          />
         </div>
-        <PrimeVueButton class="w-fit" label="Add Voucher" @click="goToCreate">
+        <PrimeVueButton class="w-fit" :label="useLocalization('voucher.main.popover.add')" @click="goToCreate">
           <template #icon>
             <AppBaseSvg name="plus-line-white" class="!w-5 !h-5" />
           </template>
         </PrimeVueButton>
+      </template>
+
+      <template #filter>
+        <div class="grid grid-col gap-y-2">
+          <span class="font-semibold inline-block text-gray-900 text-base w-48">Filter by</span>
+
+          <div class="flex items-center gap-4 w-full">
+            <PrimeVueDatePicker
+              v-model="selectedDate"
+              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
+              placeholder="Last test 7 day"
+              show-on-focus
+              show-icon
+              fluid
+              show-button-bar
+              @update:modelValue="
+                (val: Date | Date[] | null) => {
+                  const date = Array.isArray(val) ? val[0] : val;
+                  if (date) voucherList_handleFilter(formatDate(date));
+                }
+              "
+            />
+          </div>
+        </div>
       </template>
 
       <!-- Body Table -->
@@ -103,16 +149,21 @@ const handleDelete = async (row: IVoucher | null) => {
             </template>
           </PrimeVueButton>
 
-          <PrimeVuePopover ref="popover" :pt="{
-            root: { class: 'z-[9999]' },
-            content: 'p-0',
-          }">
+          <PrimeVuePopover
+            ref="popover"
+            :pt="{
+              root: { class: 'z-[9999]' },
+              content: 'p-0',
+            }"
+          >
             <section v-if="selectedData" class="flex flex-col">
               <!-- View -->
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleView(selectedData)">
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="eye-visible" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">View</span>
+                  <span class="font-normal text-sm text-text-primary">{{
+                    useLocalization('voucher.main.popover.view')
+                  }}</span>
                 </section>
               </PrimeVueButton>
 
@@ -120,7 +171,9 @@ const handleDelete = async (row: IVoucher | null) => {
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleEdit(selectedData)">
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Edit</span>
+                  <span class="font-normal text-sm text-text-primary">{{
+                    useLocalization('voucher.main.popover.edit')
+                  }}</span>
                 </section>
               </PrimeVueButton>
 
@@ -128,14 +181,14 @@ const handleDelete = async (row: IVoucher | null) => {
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleDelete(selectedData)">
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="delete" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Delete</span>
+                  <span class="font-normal text-sm text-text-primary">{{
+                    useLocalization('voucher.main.popover.delete')
+                  }}</span>
                 </section>
               </PrimeVueButton>
             </section>
           </PrimeVuePopover>
         </template>
-
-
 
         <template v-else-if="column.value === 'name'">
           <span class="font-normal text-sm text-text-primary">
@@ -154,16 +207,22 @@ const handleDelete = async (row: IVoucher | null) => {
         </template>
 
         <template v-else-if="column.value === 'status'">
-          <span v-if="data[column.value] === 'active'"
-            class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+          <span
+            v-if="data[column.value] === 'active'"
+            class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700"
+          >
             Active
           </span>
-          <span v-else-if="data[column.value] === 'expired'"
-            class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+          <span
+            v-else-if="data[column.value] === 'expired'"
+            class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700"
+          >
             Expired
           </span>
-          <span v-else-if="data[column.value] === 'upcoming'"
-            class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+          <span
+            v-else-if="data[column.value] === 'upcoming'"
+            class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700"
+          >
             Upcoming
           </span>
           <span v-else class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">

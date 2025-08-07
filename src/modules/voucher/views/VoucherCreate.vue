@@ -24,8 +24,8 @@ provide('voucher', {
 </script>
 
 <template>
-  <div class="voucher-create-edit-ui">
-    <section id="voucher-create-edit-ui" class="flex flex-col justify-center items-center relative inset-0 z-0 mt-5">
+  <div class="voucher-create-ui">
+    <section id="voucher-create-ui" class="flex flex-col justify-center items-center relative inset-0 z-0 mt-5">
        <VoucherFormCreate />
     </section>
   </div>

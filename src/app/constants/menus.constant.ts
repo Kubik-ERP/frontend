@@ -115,10 +115,17 @@ export const LIST_SIDEBAR_MENUS = [
             path: '/',
           },
           {
-            name: 'Inventory Category',
+            name: 'Inventory Categories',
             path: '/',
           },
         ],
+      },
+      {
+        name: 'Purchase Order',
+        iconName: 'receipt',
+        path: '/purchase-order',
+        isHaveSubMenus: false,
+        subMenus: [],
       },
       {
         name: 'Marketing',
@@ -129,10 +136,6 @@ export const LIST_SIDEBAR_MENUS = [
           {
             name: 'Master Voucher',
             path: '/voucher',
-          },
-          {
-            name: 'Master Diskon',
-            path: '/',
           },
         ],
       },
@@ -159,13 +162,6 @@ export const LIST_SIDEBAR_MENUS = [
             path: '/',
           },
         ],
-      },
-      {
-        name: 'Purchasing',
-        iconName: 'receipt',
-        path: '/purchasing',
-        isHaveSubMenus: false,
-        subMenus: [],
       },
     ],
   },

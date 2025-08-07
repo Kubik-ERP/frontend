@@ -2,8 +2,7 @@ import { DataTableSortEvent } from "primevue";
 import { IVoucherListResponse } from "./index";
 
 export type IVoucherListRequestQuery = {
-  startDate: string;
-  endDate: string
+  startDate: string | null;
   page: number;
   pageSize: number;
   orderBy: string | null;
@@ -19,5 +18,6 @@ export interface IVoucherListProvided {
    voucherList_fetchListVouchers: () => Promise<unknown>;
    voucherList_deleteVoucher: (voucherId: string) => Promise<void>;
    voucherList_values: globalThis.Ref<IVoucherListResponse>;
+   voucherList_handleFilter: (date: string) => void;
 }
 
