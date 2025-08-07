@@ -115,7 +115,8 @@ export const useCustomerDetailService = () => {
     increarePoint_FormData.isHaveExpiryDate = 'No Expiry Date';
     increarePoint_FormData.ExpiryDate = null;
     increarePoint_FormData.notes = null;
-
+    selectedPointId.value = '';
+    isEdit.value = false;
     increasePoint_formValidations.value.$reset();
 
     isIncreasePointOpen.value = false;
@@ -137,7 +138,8 @@ export const useCustomerDetailService = () => {
   const decreasePoint_ResetFormData = () => {
     decreasePoint_FormData.point = 0;
     decreasePoint_FormData.notes = '';
-
+    selectedPointId.value = '';
+    isEdit.value = false;
     decreasePoint_formValidations.value.$reset();
 
     isDecreasePointOpen.value = false;
@@ -363,7 +365,6 @@ export const useCustomerDetailService = () => {
       }
     } finally {
       decreasePoint_ResetFormData();
-      selectedPointId.value = '';
       await customerDetails_fetchLoyaltyPoint();
     }
   };
@@ -395,7 +396,6 @@ export const useCustomerDetailService = () => {
       }
     } finally {
       increarePoint_ResetFormData();
-      selectedPointId.value = '';
       await customerDetails_fetchLoyaltyPoint();
     }
   };
