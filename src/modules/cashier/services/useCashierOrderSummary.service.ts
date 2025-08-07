@@ -57,6 +57,7 @@ import useVuelidate from '@vuelidate/core';
 import { minValue, numeric, required } from '@vuelidate/validators';
 import { useVoucherStore } from '@/modules/voucher/store';
 import { IVoucher } from '@/modules/voucher/interfaces';
+// import CashierSummaryModalVoucher from '../components/OrderSummary/Modal/CashierSummaryModalVoucher.vue';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   // Router
@@ -196,6 +197,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       tax: 0,
       taxInclude: false,
       items: [],
+      voucherAmount: 0,
     },
   });
 
@@ -280,6 +282,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_modalVoucher = ref<ICashierOrderSummaryModalVoucher>({
     show: false,
     form: {
+      voucherId: '',
       voucher_code: '',
     },
     search: '',
@@ -292,9 +295,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     () => [cashierProduct_selectedProduct.value, cashierOrderSummary_modalVoucher.value.show, cashierOrderSummary_modalVoucher.value.search],
     async () => {
       if (cashierOrderSummary_modalVoucher.value.show && cashierProduct_selectedProduct.value.length > 0) {
-
         debouncedCalculateEstimation();
         getVoucherActive(cashierOrderSummary_modalVoucher.value.search ,cashierProduct_selectedProduct.value.map(p => p.productId));
+      }
+
+      if (cashierOrderSummary_modalVoucher.value.form.voucherId) {
+        debouncedCalculateEstimation();
       }
     },
   );
@@ -308,7 +314,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     orderId: '1234',
     orderType: '',
     tableNumber: '',
-    promoCode: '',
+    voucherId: '',
     paymentMethod: '',
     isExpanded: true,
     isExpandedVisible: false,
@@ -395,6 +401,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         const isAvailable = isAmountMatch;
 
         return {
+          id: voucher.id,
           code: voucher.promoCode,
           label: voucher.promoCode,
           available: isAvailable,
@@ -404,7 +411,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           validFrom: new Date(voucher.startPeriod).toISOString().split('T')[0],
           validUntil: new Date(voucher.endPeriod).toISOString().split('T')[0],
           type: voucher.isPercent ? 'percentage' : 'nominal',
-          stock: voucher.quota,
+          stock: voucher.remainingQuota || 0,
         };
       });
     } catch (error: unknown) {
@@ -412,10 +419,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     }
   };
 
-  const cashierOrderSummary_handleVoucher = (code: string) => {
-    const voucherSelected = voucherData.value.find(v => v.code === code);
-    cashierOrderSummary_modalVoucher.value.form.voucher_code = voucherSelected!.code;
-    console.log(cashierOrderSummary_modalVoucher.value);
+  const cashierOrderSummary_handleVoucher = (id: string) => {
+    cashierOrderSummary_modalVoucher.value.show = false;
+    cashierOrderSummary_modalVoucher.value.form.voucherId = id;
+    debouncedCalculateEstimation();
   };
 
   const cashierOrderSummary_modalAddEditNotes = ref<ICashierOrderSummaryModalAddEdit>({
@@ -448,7 +455,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       },
       paymentMethod: cashierOrderSummary_data.value.paymentMethod,
       tableCode: cashierOrderSummary_modalSelectTable.value.selectedTable.toString(),
-      selectedVoucher: cashierOrderSummary_modalVoucher.value.form.voucher_code,
+      selectedVoucher: cashierOrderSummary_modalVoucher.value.form.voucherId,
       customerName: cashierProduct_customerState.value.selectedCustomer?.id || '',
       product: cashierProduct_selectedProduct.value,
     };
@@ -507,6 +514,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
     try {
       const response = await store.cashierProduct_calculateEstimation({
+        voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId,
         products: cashierOrderSummary_summary.value.product,
         orderType: cashierOrderSummary_summary.value.orderType,
       });
@@ -549,6 +557,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           tax: 0,
           taxInclude: false,
           items: [],
+          voucherAmount: 0,
         };
       }
     },

@@ -15,6 +15,7 @@ export interface ICashierOrderType {
 }
 
 export interface ICashierVoucher {
+  id: string
   code: string;
   label: string;
   available: boolean;
@@ -110,6 +111,7 @@ export interface ICashierOrderSummaryModalPlaceOrder {
 export interface ICashierOrderSummaryModalVoucher {
   show: boolean;
   form: {
+    voucherId: string;
     voucher_code: string;
   };
   search: string;
@@ -121,7 +123,7 @@ export interface ICashierOrderSummaryData {
   orderId: string;
   orderType: string;
   tableNumber: string;
-  promoCode: string;
+  voucherId: string;
   paymentMethod: string;
   isExpanded: boolean;
   isExpandedVisible: boolean;

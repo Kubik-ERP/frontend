@@ -9,6 +9,7 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_handleVoucher } =
   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 
 const localSearch = ref('');
+// const localId = ref('');
 
 watch(localSearch, (newVal) => {
   cashierOrderSummary_modalVoucher.value.search = newVal
@@ -92,11 +93,21 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                     cashierOrderSummary_modalVoucher.form.voucher_code === item.code,
                 }"
                 @click="
-                  item.available === false
-                    ? null
-                    : cashierOrderSummary_modalVoucher.form.voucher_code === item.code
-                      ? (cashierOrderSummary_modalVoucher.form.voucher_code = '')
-                      : (cashierOrderSummary_modalVoucher.form.voucher_code = item.code)
+                  () => {
+                    if (!item.available) {
+                      cashierOrderSummary_modalVoucher.form.voucher_code = ''
+                      cashierOrderSummary_modalVoucher.form.voucherId = ''
+                      return
+                    }
+
+                    if (cashierOrderSummary_modalVoucher.form.voucher_code === item.code) {
+                      cashierOrderSummary_modalVoucher.form.voucher_code = ''
+                      cashierOrderSummary_modalVoucher.form.voucherId = ''
+                    } else {
+                      cashierOrderSummary_modalVoucher.form.voucher_code = item.code
+                      cashierOrderSummary_modalVoucher.form.voucherId = item.id
+                    }
+                  }
                 "
               >
                 <div class="flex lg:flex-row flex-col items-start lg:items-center gap-2 justify-between">
@@ -182,8 +193,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               type="button"
               :label="useLocalization('cashier.orderSummary.voucher.applyPromo')"
               @click="
-                cashierOrderSummary_modalVoucher.show = false;
-                cashierOrderSummary_handleVoucher(cashierOrderSummary_modalVoucher.form.voucher_code);
+                cashierOrderSummary_handleVoucher(cashierOrderSummary_modalVoucher.form.voucherId);
               "
             ></PrimeVueButton>
           </div>
