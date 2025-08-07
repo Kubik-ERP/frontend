@@ -30,16 +30,12 @@ const {
   customerDetails_fetchDecreasePointOnEdit,
   customerDetails_fetchDecreasePointOnSubmit,
   customerDetails_fetchIncreasePointOnEdit,
-  customerDetails_fetchLoyaltyPoint,
 
   handle_editLoyaltyPoints,
 
   isEdit,
 } = useCustomerDetailService();
 
-onMounted(async () => {
-  await customerDetails_fetchLoyaltyPoint();
-});
 
 </script>
 <template>
