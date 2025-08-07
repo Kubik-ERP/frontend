@@ -12,7 +12,7 @@ import eventBus from "@/plugins/mitt";
 
 export const useVoucherCreateService = (): IVoucherCreateProvided => {
   const store = useVoucherStore();
-  const router = useRouter();
+  // const router = useRouter();
   /* ----------------------------------
    * 1️⃣ Form Data
    * ---------------------------------- */
@@ -83,10 +83,6 @@ export const useVoucherCreateService = (): IVoucherCreateProvided => {
 
       const result = await store.voucherList_createVoucher(payload);
 
-      if (!result || result.statusCode !== 201) {
-        throw new Error(result?.message || "Failed to create voucher.");
-      }
-
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,
@@ -96,29 +92,8 @@ export const useVoucherCreateService = (): IVoucherCreateProvided => {
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
       voucherFormReset();
-
-      router.push({
-        name: "voucher.index",
-      });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        const argsEventEmitter: IPropsToast = {
-          isOpen: true,
-          type: EToastType.DANGER,
-          message: error.message || "Failed to create voucher.",
-          position: EToastPosition.TOP_RIGHT,
-        };
-        eventBus.emit('AppBaseToast', argsEventEmitter);
-      }
-      console.error("❌ Error creating voucher:", error);
-      const argsEventEmitter: IPropsToast = {
-        isOpen: true,
-        type: EToastType.DANGER,
-        message: "Failed to create voucher.",
-        position: EToastPosition.TOP_RIGHT,
-      };
-      eventBus.emit('AppBaseToast', argsEventEmitter);
-      throw error;
+    } catch (error) {
+      console.error(error);
     } finally {
       voucherFormIsLoading.value = false;
     }

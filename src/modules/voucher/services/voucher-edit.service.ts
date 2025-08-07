@@ -4,6 +4,7 @@ import { useVoucherStore } from "../store";
 import type { IVoucherEditRequest } from "../interfaces/voucher-edit.interface";
 import type { IVoucherViewResponse } from "../interfaces/voucher-view.interface";
 import eventBus from "@/plugins/mitt";
+import useVuelidate from "@vuelidate/core";
 
 export const useVoucherEditService = () => {
   const store = useVoucherStore();
@@ -29,6 +30,44 @@ export const useVoucherEditService = () => {
     },
   });
 
+   const voucherFormDataRules = computed(() => ({
+      name: { required: true },
+      code: { required: true },
+      amount: { required: true },
+      minPrice: { required: false, },
+      startDate: { required: true },
+      endDate: { required: true },
+      status: { required: true },
+      quota: { required: false },
+      is_percentage: { required: true },
+      maxDiscountPrice: { required: false },
+      products: { required: false },
+      type: { required: true },
+    }));
+
+    const voucherFormDataValidatable = computed(() => ({
+      name: voucherEdit_formData.value.name,
+      code: voucherEdit_formData.value.promoCode,
+      amount: voucherEdit_formData.value.amount,
+      minPrice: voucherEdit_formData.value.minPrice,
+      startDate: voucherEdit_formData.value.startPeriod,
+      endDate: voucherEdit_formData.value.endPeriod,
+      status: voucherEdit_formData.value.status,
+      quota: voucherEdit_formData.value.quota,
+      is_percentage: voucherEdit_formData.value.isPercent,
+      maxDiscountPrice: voucherEdit_formData.value.maxPrice,
+      products: voucherEdit_formData.value.hasProducts.products,
+      type: voucherEdit_formData.value.hasProducts.type,
+    }));
+
+    const voucherFormDataValidations = useVuelidate(
+      voucherFormDataRules,
+      voucherFormDataValidatable,
+      {
+        $autoDirty: true,
+      }
+    );
+
   /** Fetch voucher by ID dan isi form */
   const voucherEdit_fetchVoucher = async (voucherId: string) => {
     voucherEdit_isLoading.value = true;
@@ -37,7 +76,7 @@ export const useVoucherEditService = () => {
       voucherEdit_voucher.value = response;
 
       const data = response.data;
-
+      console.log(data.voucherHasProducts)
       voucherEdit_formData.value = {
         name: data.name,
         promoCode: data.promoCode,
@@ -51,7 +90,7 @@ export const useVoucherEditService = () => {
         isPercent: data.isPercent,
         hasProducts: {
           type: data.voucherHasProducts?.length ? "specific" : "all",
-          products: data.voucherHasProducts?.map((p) => p.productId) || [],
+          products: data.voucherHasProducts?.map((p) => p.productsId) || [],
         },
       };
     } catch (error) {
@@ -108,6 +147,7 @@ export const useVoucherEditService = () => {
 
   return {
     voucherEdit_isLoading,
+    voucherFormDataValidations,
     voucherEdit_voucher,
     voucherEdit_formData,
     voucherEdit_fetchVoucher,

@@ -3,8 +3,8 @@ import VoucherFormEdit from '../components/VoucherFormEdit.vue';
 </script>
 
 <template>
-  <div class="voucher-create-edit-ui">
-    <section id="voucher-create-edit-ui" class="flex flex-col justify-center items-center relative inset-0 z-0 mt-5">
+  <div class="voucher-edit-ui">
+    <section id="voucher-edit-ui" class="flex flex-col justify-center items-center relative inset-0 z-0 mt-5">
        <VoucherFormEdit />
     </section>
   </div>
