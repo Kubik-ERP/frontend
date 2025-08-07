@@ -2,6 +2,7 @@
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useVoucherViewService } from "../services/voucher-view.service";
+import { PRODUCT_SELECTED_LIST_COLUMNS } from "../constants";
 
 const {
   voucherView_voucher,
@@ -99,54 +100,42 @@ const endPeriod = computed(() => {
 
         <div>
           <p class="text-gray-500 text-sm mb-1">{{ useLocalization('voucher.details.field.product-scope') }}</p>
-          <p class="text-black">{{ voucherView_voucher?.data.isApplyAllProducts ? "All Product" : useLocalization('voucher.details.field.selected-products') }}</p>
+          <p class="text-black">{{ voucherView_voucher?.data.isApplyAllProducts ? "All Product" :
+            useLocalization('voucher.details.field.selected-products') }}</p>
         </div>
       </div>
 
       <!-- Product Table -->
-      <div v-if="!voucherView_voucher?.data.isApplyAllProducts" class="border border-primary rounded-md overflow-hidden">
-        <table class="w-full text-left border-collapse">
-          <thead class="bg-gray-100">
-            <tr>
-              <th class="py-2 px-4 text-sm font-medium text-primary">{{ useLocalization('voucher.productDetail.name') }}
-              </th>
-              <th class="py-2 px-4 text-sm font-medium text-primary">{{ useLocalization('voucher.productDetail.category')
-                }}
-              </th>
-              <th class="py-2 px-4 text-sm font-medium text-primary">{{ useLocalization('voucher.productDetail.price') }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in voucherView_voucher?.data.voucherHasProducts || []" :key="item.productsId"
-              class="border-t hover:bg-gray-50 transition">
-              <!-- Product Name -->
-              <td class="py-2 px-4">{{ item.products?.name || '-' }}</td>
+      <div v-if="voucherView_voucher?.data.isApplyAllProducts == false" class="mt-6">
+        <AppBaseDataTable :columns="PRODUCT_SELECTED_LIST_COLUMNS" header-title="Product Selected"
+          :data="voucherView_voucher?.data.voucherHasProducts" :is-using-custom-body="true" :is-using-pagination="false"
+          :is-using-header="false" :is-using-filter="false" class="border border-gray-200 rounded-md overflow-hidden">
+          <template #body="{ column, data }">
+            <template v-if="column.value === 'name'">
+              <span>{{ data.products?.name || '-' }}</span>
+            </template>
 
-              <!-- Category -->
-              <td class="py-2 px-4">{{ item.products.category}}</td>
+            <template v-else-if="column.value === 'category'">
+              <span>{{ data.products?.category || '-' }}</span>
+            </template>
 
-              <!-- Price -->
-              <td class="py-2 px-4">
-                <template v-if="item.products?.discountPrice">
-                  <div class="flex flex-col">
-                    <span class="text-gray-400 line-through text-sm">
-                      {{ formatCurrency(item.products.price) }}
-                    </span>
-                    <span class="font-semibold text-black">
-                      {{ formatCurrency(item.products.discountPrice) }}
-                    </span>
-                  </div>
-                </template>
-                <template v-else>
-                  <span class="font-semibold text-black">
-                    {{ formatCurrency(item.products?.price || 0) }}
-                  </span>
-                </template>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            <template v-else-if="column.value === 'price'">
+              <div v-if="data.products?.discountPrice" class="flex flex-col">
+                <span class="text-gray-400 line-through text-sm">
+                  {{ formatCurrency(data.products.price) }}
+                </span>
+                <span class="font-semibold text-black">
+                  {{ formatCurrency(data.products.discountPrice) }}
+                </span>
+              </div>
+              <div v-else>
+                <span class="font-semibold text-black">
+                  {{ formatCurrency(data.products?.price || 0) }}
+                </span>
+              </div>
+            </template>
+          </template>
+        </AppBaseDataTable>
       </div>
 
       <!-- Action Button -->
@@ -155,11 +144,8 @@ const endPeriod = computed(() => {
           class="flex items-center gap-2 px-4 py-2 border border-primary text-primary rounded-md hover:bg-blue-50 transition"
           @click="voucherView_handleEdit(voucherView_voucher?.data.id || '')">
           <!-- Icon Edit -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M15.232 5.232l3.536 3.536M9 11l3 3L22 4l-3-3-10 10zm0 0l-3 3m3-3L4 20" />
-          </svg>
-          {{ useLocalization('voucher.main.popover.edit') }}
+          <AppBaseSvg name="edit" class="!w-4 !h-4" />
+          Edit Voucher
         </button>
       </div>
 
