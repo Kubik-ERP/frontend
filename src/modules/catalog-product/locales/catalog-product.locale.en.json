@@ -28,16 +28,16 @@
     },
     "form": {
       "productName": {
-        "label": "Product Name *",
+        "label": "Product Name",
         "error": "Product Name field is required"
       },
       "category": {
-        "label": "Category *",
+        "label": "Category",
         "placeholder": "Select",
         "error": "Category field is required"
       },
       "price": {
-        "label": "Price *",
+        "label": "Price",
         "error": "Price field is required"
       },
       "discount": {

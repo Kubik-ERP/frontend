@@ -130,7 +130,7 @@ const formatDate = (date: Date) => {
               fluid
               show-button-bar
               @update:modelValue="
-                (val: Date | Date[] | null) => {
+                (val: Date | Date[] | (Date | null)[] | null | undefined) => {
                   const date = Array.isArray(val) ? val[0] : val;
                   if (date) voucherList_handleFilter(formatDate(date));
                 }
