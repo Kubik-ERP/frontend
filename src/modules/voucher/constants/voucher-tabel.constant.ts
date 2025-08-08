@@ -32,3 +32,21 @@ export const VOUCHER_LIST_COLUMNS: IColumnDataTable[] = [
     value: 'action',
   },
 ]
+
+export const PRODUCT_SELECTED_LIST_COLUMNS: IColumnDataTable[] = [
+  {
+    value: 'name',
+    label: 'Name',
+    sortable: false,
+  },
+  {
+    value: 'category',
+    label: 'Category',
+    sortable: false,
+  },
+  {
+    value: 'price',
+    label: 'Price',
+    sortable: false,
+  },
+]

@@ -36,7 +36,7 @@ const {
             placeholder="Search by SKU, Item Name, or Brand"
             class="text-base text-text-primary w-full"
             @change="
-              (event: any) => {
+              event => {
                 if (event.value) {
                   // Add to staging area (formData) only, not to selectedProductItems yet
                   const existingIndex = purchaseOrderCreateEdit_formData.productItems.findIndex(

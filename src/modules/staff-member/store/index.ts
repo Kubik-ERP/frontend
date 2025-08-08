@@ -28,6 +28,7 @@ export const useStaffMemberStore = defineStore('staff-member', {
           endDate: null,
           gender: null,
           title: null,
+          employeesHasSocialMedia: [],
           employeesShift: [],
         },
       ],

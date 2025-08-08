@@ -76,7 +76,7 @@ watch(searchValue, newValue => {
           variant="text"
           rounded
           aria-label="detail"
-          @click="(event: Event) => popovers[`popover-${data.poNumber}`]?.toggle(event)"
+          @click="event => popovers[`popover-${data.poNumber}`]?.toggle(event)"
         >
           <template #icon>
             <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
@@ -85,7 +85,7 @@ watch(searchValue, newValue => {
 
         <PrimeVuePopover
           :ref="
-            (el: any) => {
+            el => {
               if (el) popovers[`popover-${data.poNumber}`] = el;
             }
           "

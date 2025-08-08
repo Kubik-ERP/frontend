@@ -543,6 +543,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
         if (value !== null && value !== undefined) {
           // ✅ START of corrected 'shift' logic
+          // ✅ START of corrected 'shift' logic
           if (key === 'shift' && Array.isArray(value)) {
             let shiftIndex = 0; // Initialize a counter for the flattened list
 
