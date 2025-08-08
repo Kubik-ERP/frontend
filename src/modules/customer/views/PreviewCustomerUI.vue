@@ -5,9 +5,10 @@ import salesInvoice from '../components/detailCustomer/salesInvoice.vue';
 
 import { useCustomerDetailService } from '../services/customer-detail.service';
 
-const { customerDetails_fetchInformation } = useCustomerDetailService();
+const { customerDetails_fetchInformation, customerDetails_fetchLoyaltyPoint } = useCustomerDetailService();
 onMounted(async () => {
   await customerDetails_fetchInformation();
+  await customerDetails_fetchLoyaltyPoint();
 });
 
 const selectedPage = ref('Sales Invoice');
@@ -35,7 +36,5 @@ const pageOption = ref(['Sales Invoice', 'Loyalty Point']);
     <template v-if="selectedPage === 'Loyalty Point'">
       <loyaltyPoint />
     </template>
-
-
   </div>
 </template>

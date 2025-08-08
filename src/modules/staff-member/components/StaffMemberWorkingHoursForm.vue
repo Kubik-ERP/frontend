@@ -11,7 +11,6 @@ const { staffMemberCreateEdit_formData } = inject<IStaffMemberCreateEditProvided
   <section id="staff-member-working-hours-form" class="flex flex-col gap-4">
     <section id="information" class="flex flex-col gap-2">
       <h5 class="font-semibold text-black text-lg">Working Hours</h5>
-      <h6 class="font-semibold text-base text-black">Business Hours</h6>
     </section>
 
     <section id="working-hours" class="grid-wrapper gap-4">

@@ -28,6 +28,7 @@ export const useStaffMemberStore = defineStore('staff-member', {
           endDate: null,
           gender: null,
           title: null,
+          employeesHasSocialMedia: [],
           employeesShift: [],
         },
       ],
@@ -190,7 +191,7 @@ export const useStaffMemberStore = defineStore('staff-member', {
           ...requestConfigurations,
         });
         this.staffMember_lists = {
-          employees: response.data.data.data || [],
+          employees: response.data.data.employees || [],
           meta: response.data.data.meta,
         };
 

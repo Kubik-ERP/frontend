@@ -1,0 +1,1 @@
+export const POINT_CONFIGURATION_BASE_ENDPOINT = '/point-configuration';

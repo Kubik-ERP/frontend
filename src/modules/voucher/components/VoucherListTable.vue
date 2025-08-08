@@ -28,9 +28,7 @@ onMounted(async () => {
  */
 const voucherStore = useVoucherStore();
 const activeVoucherCount = computed(() => {
-  return voucherStore.voucher_lists.data.items.filter(
-    (item: IVoucher) => item.status === 'active'
-  ).length;
+  return voucherStore.voucher_lists.data.items.filter((item: IVoucher) => item.status === 'active').length;
 });
 
 /**
@@ -46,7 +44,6 @@ const router = useRouter();
 const goToCreate = () => router.push({ name: 'voucher.create' });
 const goToEdit = (id: string, name: string) => router.push({ name: 'voucher.edit', params: { id, name } });
 const goToView = (id: string, name: string) => router.push({ name: 'voucher.view', params: { id, name } });
-
 
 const openActionsMenu = (event: MouseEvent, rowData: IVoucher) => {
   selectedData.value = rowData;
@@ -82,11 +79,14 @@ const formatDate = (date: Date) => {
 };
 </script>
 
-
 <template>
   <section id="voucher-list" class="flex flex-col relative inset-0 z-0">
-    <AppBaseDataTable :columns="voucherList_columns" :data="voucherList_values.data.items" header-title="Vouchers"
-      :rows-per-page="voucherList_values.data.meta.pageSize" :total-records="voucherList_values.data.meta.total"
+    <AppBaseDataTable
+      :columns="voucherList_columns"
+      :data="voucherList_values.data.items"
+      header-title="Vouchers"
+      :rows-per-page="voucherList_values.data.meta.pageSize"
+      :total-records="voucherList_values.data.meta.total"
       :first="(voucherList_values.data.meta.page - 1) * voucherList_values.data.meta.pageSize"
       :is-loading="voucherList_isLoading" :sort-field="voucherList_queryParams.orderBy"
 
@@ -98,9 +98,10 @@ const formatDate = (date: Date) => {
       <template #header-prefix>
         <div class="flex items-center gap-2">
           <h6 class="font-semibold text-gray-900 text-xl">Voucher</h6>
-          <PrimeVueChip class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-0.5"
-            :label="`${activeVoucherCount} Active Vouchers`" />
-
+          <PrimeVueChip
+            class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-0.5"
+            :label="`${activeVoucherCount} Active Vouchers`"
+          />
         </div>
         <PrimeVueButton class="w-fit" :label="useLocalization('voucher.main.popover.add')" @click="goToCreate">
           <template #icon>
@@ -140,10 +141,13 @@ const formatDate = (date: Date) => {
             </template>
           </PrimeVueButton>
 
-          <PrimeVuePopover ref="popover" :pt="{
-            root: { class: 'z-[9999]' },
-            content: 'p-0',
-          }">
+          <PrimeVuePopover
+            ref="popover"
+            :pt="{
+              root: { class: 'z-[9999]' },
+              content: 'p-0',
+            }"
+          >
             <section v-if="selectedData" class="flex flex-col">
               <!-- View -->
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleView(selectedData)">
@@ -172,8 +176,6 @@ const formatDate = (date: Date) => {
           </PrimeVuePopover>
         </template>
 
-
-
         <template v-else-if="column.value === 'name'">
           <span class="font-normal text-sm text-text-primary">
             {{ data[column.value] || '-' }}
@@ -191,16 +193,22 @@ const formatDate = (date: Date) => {
         </template>
 
         <template v-else-if="column.value === 'status'">
-          <span v-if="data[column.value] === 'active'"
-            class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+          <span
+            v-if="data[column.value] === 'active'"
+            class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700"
+          >
             Active
           </span>
-          <span v-else-if="data[column.value] === 'expired'"
-            class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+          <span
+            v-else-if="data[column.value] === 'expired'"
+            class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700"
+          >
             Expired
           </span>
-          <span v-else-if="data[column.value] === 'upcoming'"
-            class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+          <span
+            v-else-if="data[column.value] === 'upcoming'"
+            class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700"
+          >
             Upcoming
           </span>
           <span v-else class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
