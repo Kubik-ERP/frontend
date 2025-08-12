@@ -591,11 +591,11 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         orderType: cashierOrderSummary_summary.value.orderType,
         provider: provider,
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
-        vouchers: cashierOrderSummary_summary.value.selectedVoucher,
         customerId: cashierProduct_customerState.value.selectedCustomer?.id,
         tableCode: cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
         paymentAmount: cashierOrderSummary_modalPlaceOrderDetail.value.form.paymentAmount || null,
+        voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId || null,
       };
 
       const response = await store.cashierProduct_paymentInstant(params);

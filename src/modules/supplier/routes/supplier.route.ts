@@ -47,6 +47,17 @@ const routes: RouteRecordRaw[] = [
           title: 'Edit Supplier',
         },
       },
+      {
+        path: 'view/:id',
+        name: 'supplier.preview',
+        component: () => import('@/modules/supplier/views/SupplierPreviewUI.vue'),
+        meta: {
+          requiresAuthorization: true,
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          breadcrumb: 'Preview Supplier',
+          title: 'Preview Supplier',
+        },
+      },
     ],
   },
 ];

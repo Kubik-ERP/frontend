@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue';
 import { IVoucher } from '../interfaces';
 import { useVoucherListService } from '../services/voucher-list.service';
 import { useVoucherStore } from '../store';
+import eventBus from '@/plugins/mitt';
 
 /**
  * Ambil data & method dari service
@@ -55,9 +56,33 @@ const handleView = (row: IVoucher | null) => {
   goToView(row.id, row.name);
 };
 
+
 const handleEdit = (row: IVoucher | null) => {
   if (!row) return;
-  goToEdit(row.id, row.name);
+  if (row.isApplied) {
+    eventBus.emit('AppBaseDialogConfirmation', {
+      id: 'voucher-list-dialog-confirmation',
+      description: 'This voucher is currently applied to an order and cannot be edit.',
+      iconName: 'info',
+      isOpen: true,
+      onClickButtonPrimary: () => {
+        // Close dialog (Cancel)
+        const argsEventEmitter: IPropsDialogConfirmation = {
+          id: 'voucher-list-dialog-confirmation',
+          isOpen: false,
+        };
+        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+      },
+
+      textButtonPrimary: 'Cancel',
+      title: 'Cant edit voucher',
+      type: 'warning',
+    });
+    return;
+  } else {
+    goToEdit(row.id, row.name);
+  }
+
 };
 
 const handleDelete = async (row: IVoucher | null) => {
@@ -81,27 +106,20 @@ const formatDate = (date: Date) => {
 
 <template>
   <section id="voucher-list" class="flex flex-col relative inset-0 z-0">
-    <AppBaseDataTable
-      :columns="voucherList_columns"
-      :data="voucherList_values.data.items"
-      header-title="Vouchers"
-      :rows-per-page="voucherList_values.data.meta.pageSize"
-      :total-records="voucherList_values.data.meta.total"
+    <AppBaseDataTable :columns="voucherList_columns" :data="voucherList_values.data.items" header-title="Vouchers"
+      :rows-per-page="voucherList_values.data.meta.pageSize" :total-records="voucherList_values.data.meta.total"
       :first="(voucherList_values.data.meta.page - 1) * voucherList_values.data.meta.pageSize"
       :is-loading="voucherList_isLoading" :sort-field="voucherList_queryParams.orderBy"
-
       :sort-order="voucherList_queryParams.orderDirection === 'asc' ? 1 : -1" is-using-server-side-pagination
       is-using-custom-header-prefix is-using-custom-header-suffix is-using-header is-using-custom-body
-      :is-using-custom-filter="true"
-      @update:currentPage="voucherList_onChangePage" @update:sort="voucher_handleOnSortChange">
+      :is-using-custom-filter="true" @update:currentPage="voucherList_onChangePage"
+      @update:sort="voucher_handleOnSortChange">
       <!-- Header Prefix -->
       <template #header-prefix>
         <div class="flex items-center gap-2">
           <h6 class="font-semibold text-gray-900 text-xl">Voucher</h6>
-          <PrimeVueChip
-            class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-0.5"
-            :label="`${activeVoucherCount} Active Vouchers`"
-          />
+          <PrimeVueChip class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-0.5"
+            :label="`${activeVoucherCount} Active Vouchers`" />
         </div>
         <PrimeVueButton class="w-fit" :label="useLocalization('voucher.main.popover.add')" @click="goToCreate">
           <template #icon>
@@ -115,19 +133,12 @@ const formatDate = (date: Date) => {
           <span class="font-semibold inline-block text-gray-900 text-base w-48">Filter by</span>
 
           <div class="flex items-center gap-4 w-full">
-            <PrimeVueDatePicker
-              v-model="selectedDate"
+            <PrimeVueDatePicker v-model="selectedDate"
               class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
-              placeholder="Last test 7 day"
-              show-on-focus
-              show-icon
-              fluid
-              show-button-bar
-              @update:modelValue="(val) => {
-                 const date = Array.isArray(val) ? val[0] : val;
-                 if (date) voucherList_handleFilter(formatDate(date));
-              }"
-            />
+              placeholder="Last test 7 day" show-on-focus show-icon fluid show-button-bar @update:modelValue="(val) => {
+                const date = Array.isArray(val) ? val[0] : val;
+                if (date) voucherList_handleFilter(formatDate(date));
+              }" />
           </div>
         </div>
       </template>
@@ -141,19 +152,17 @@ const formatDate = (date: Date) => {
             </template>
           </PrimeVueButton>
 
-          <PrimeVuePopover
-            ref="popover"
-            :pt="{
-              root: { class: 'z-[9999]' },
-              content: 'p-0',
-            }"
-          >
+          <PrimeVuePopover ref="popover" :pt="{
+            root: { class: 'z-[9999]' },
+            content: 'p-0',
+          }">
             <section v-if="selectedData" class="flex flex-col">
               <!-- View -->
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleView(selectedData)">
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="eye-visible" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">{{ useLocalization('voucher.main.popover.view') }}</span>
+                  <span class="font-normal text-sm text-text-primary">{{ useLocalization('voucher.main.popover.view')
+                  }}</span>
                 </section>
               </PrimeVueButton>
 
@@ -161,7 +170,8 @@ const formatDate = (date: Date) => {
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleEdit(selectedData)">
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">{{ useLocalization('voucher.main.popover.edit') }}</span>
+                  <span class="font-normal text-sm text-text-primary">{{ useLocalization('voucher.main.popover.edit')
+                  }}</span>
                 </section>
               </PrimeVueButton>
 
@@ -169,7 +179,8 @@ const formatDate = (date: Date) => {
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleDelete(selectedData)">
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="delete" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">{{ useLocalization('voucher.main.popover.delete') }}</span>
+                  <span class="font-normal text-sm text-text-primary">{{ useLocalization('voucher.main.popover.delete')
+                  }}</span>
                 </section>
               </PrimeVueButton>
             </section>
@@ -193,22 +204,16 @@ const formatDate = (date: Date) => {
         </template>
 
         <template v-else-if="column.value === 'status'">
-          <span
-            v-if="data[column.value] === 'active'"
-            class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700"
-          >
+          <span v-if="data[column.value] === 'active'"
+            class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
             Active
           </span>
-          <span
-            v-else-if="data[column.value] === 'expired'"
-            class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700"
-          >
+          <span v-else-if="data[column.value] === 'expired'"
+            class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
             Expired
           </span>
-          <span
-            v-else-if="data[column.value] === 'upcoming'"
-            class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700"
-          >
+          <span v-else-if="data[column.value] === 'upcoming'"
+            class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
             Upcoming
           </span>
           <span v-else class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">

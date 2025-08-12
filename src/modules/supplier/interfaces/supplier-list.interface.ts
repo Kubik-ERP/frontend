@@ -20,5 +20,6 @@ export interface ISupplierListProvided {
   supplierList_values: globalThis.Ref<ISupplierListResponse>;
   supplierList_onCreateSupplier: () => void;
   supplierList_onEditSupplier: (supplierId: string) => void;
-  supplierList_onDeleteSupplier: (supplierId: string) => void;
+  supplierList_onDeleteSupplier: (supplierId: string, editMode? : boolean) => void;
+  supplierList_onPreviewSupplier: (supplierId: string) => void;
 }

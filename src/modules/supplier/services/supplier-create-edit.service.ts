@@ -9,7 +9,8 @@ import { useSupplierStore } from '../store';
 
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
-import { required, email } from '@vuelidate/validators';
+import { required } from '@vuelidate/validators';
+import eventBus from '@/plugins/mitt';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -42,8 +43,7 @@ export const useSupplierCreateEditService = () => {
     supplierName: { required },
     contactPerson: { required },
     phoneNumber: { required },
-    email: { required, email },
-    address: { required },
+    email: { required, email: true },
   }));
 
   const supplierForm_formValidations = useVuelidate(supplierForm_formRules, supplierForm_formData, {
@@ -98,6 +98,7 @@ export const useSupplierCreateEditService = () => {
     supplierForm_formValidations.value.$touch();
 
     if (supplierForm_formValidations.value.$invalid) {
+      console.warn('Form is invalid, cannot submit');
       return;
     }
 
@@ -113,6 +114,16 @@ export const useSupplierCreateEditService = () => {
           ...httpAbort_registerAbort('SUPPLIER_CREATE'),
         });
       }
+
+      const meesage = supplierForm_isEditMode.value ? 'Supplier has been updated successfully' : 'Supplier has been created successfully';
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: meesage,
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
 
       // Navigate back to supplier list
       router.push({ name: 'supplier-list' });

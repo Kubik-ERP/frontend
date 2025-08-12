@@ -12,6 +12,7 @@ import { DataTableSortEvent } from 'primevue';
 
 // Stores
 import { useSupplierStore } from '../store';
+import eventBus from '@/plugins/mitt';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -134,6 +135,52 @@ export const useSupplierListService = (): ISupplierListProvided => {
     }
   };
 
+  const supplierList_onDeleteSupplierDialog = async (voucherId: string, editMode?: boolean): Promise<void> => {
+    const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'supplier-list-dialog-confirmation',
+      description:
+        'This action cannot be undone, and the supplier you remove will be deleted permanently.',
+      iconName: 'delete-polygon',
+      isOpen: true,
+      isUsingButtonSecondary: true,
+      onClickButtonPrimary: () => {
+        // Close dialog (Cancel)
+        const argsEventEmitter: IPropsDialogConfirmation = {
+          id: 'supplier-list-dialog-confirmation',
+          isOpen: false,
+        };
+        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+      },
+      onClickButtonSecondary: async () => {
+        // Close dialog
+        const argsEventEmitter: IPropsDialogConfirmation = {
+          id: 'supplier-list-dialog-confirmation',
+          isOpen: false,
+        };
+        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+
+        // Proceed delete
+
+        if (editMode === true) {
+          await supplierList_onDeleteSupplier(voucherId);
+          router.push({ name: 'supplier-list', params: { id: voucherId } });
+        } else {
+          await supplierList_onDeleteSupplier(voucherId);
+        }
+      },
+      textButtonPrimary: 'Cancel',
+      textButtonSecondary: 'Delete Supplier',
+      title: 'Are you sure want to delete this supplier?',
+      type: 'error',
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
+    const supplierList_onPreviewSupplier = (supplierId: string) => {
+    router.push({ name: 'supplier.preview', params: { id: supplierId } });
+  };
+
   return {
     supplierList_columns: SUPPLIER_LIST_COLUMNS,
     supplierList_fetchSuppliers,
@@ -144,6 +191,7 @@ export const useSupplierListService = (): ISupplierListProvided => {
     supplierList_values: supplier_supplierLists,
     supplierList_onCreateSupplier,
     supplierList_onEditSupplier,
-    supplierList_onDeleteSupplier,
+    supplierList_onDeleteSupplier: supplierList_onDeleteSupplierDialog,
+    supplierList_onPreviewSupplier
   };
 };

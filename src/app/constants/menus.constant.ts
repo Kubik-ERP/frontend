@@ -112,11 +112,11 @@ export const LIST_SIDEBAR_MENUS = [
           },
           {
             name: 'Master Brand',
-            path: '/',
+            path: '/brand',
           },
           {
             name: 'Inventory Categories',
-            path: '/',
+            path: '/inventory-category',
           },
         ],
       },

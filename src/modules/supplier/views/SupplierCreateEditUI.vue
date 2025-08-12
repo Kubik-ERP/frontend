@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // Services
 import { useSupplierCreateEditService } from '../services/supplier-create-edit.service';
-
+import { useSupplierListService } from '../services/supplier-list.service';
+import confirmationSVG from '@/app/assets/icons/confirmation.svg';
 /**
  * @description Destructure all the data and methods what we need
  */
@@ -14,6 +15,10 @@ const {
   supplierForm_onCancel,
 } = useSupplierCreateEditService();
 
+const{
+  supplierList_onDeleteSupplier,
+} = useSupplierListService()
+
 // Initialize page title
 const pageTitle = computed(() => (supplierForm_isEditMode.value ? 'Edit Supplier' : 'Add Supplier'));
 
@@ -25,6 +30,31 @@ const isFormValid = computed(() => {
     supplierForm_formData.phoneNumber?.trim()
   );
 });
+
+
+/**
+ * @description Handle delete action for the supplier.
+ */
+
+ const route = useRoute();
+//  const router = useRouter();
+const handleDeleteSupplier = async () => {
+  console.log('Deleting supplier with ID:', route.params.id);
+  supplierList_onDeleteSupplier(route.params.id as string, true);
+};
+
+const isUpdateModal = ref(false);
+
+const cancelUpdate = () => {
+  isUpdateModal.value = false;
+};
+
+const confirmUpdate = () => {
+  isUpdateModal.value = false;
+  supplierForm_onSubmit();
+};
+
+
 </script>
 
 <template>
@@ -41,10 +71,10 @@ const isFormValid = computed(() => {
       </h1>
     </div>
 
-    <form class="space-y-8" @submit.prevent="supplierForm_onSubmit">
+    <form class="space-y-8" @submit.prevent="supplierForm_isEditMode ? isUpdateModal = true : supplierForm_onSubmit()">
       <!-- Supplier Details Section -->
       <div class="space-y-6">
-        <h2 class="text-lg font-semibold text-gray-900">Supplier Details</h2>
+        <h2 class="text-lg font-semibold text-primary-500">Supplier Details</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Supplier Name -->
@@ -156,7 +186,7 @@ const isFormValid = computed(() => {
 
       <!-- Payment & Banking Information Section -->
       <div class="space-y-6">
-        <h2 class="text-lg font-semibold text-gray-900">Payment & Banking Information</h2>
+        <h2 class="text-lg font-semibold text-primary-500">Payment & Banking Information</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Bank Name -->
@@ -244,14 +274,43 @@ const isFormValid = computed(() => {
           type="submit"
           :class="[
             'px-6 py-2 rounded-md',
-            isFormValid ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-400 text-white cursor-not-allowed',
+            isFormValid ? 'bg-primary hover:bg-primary-600 text-white' : 'bg-gray-400 text-white cursor-not-allowed',
           ]"
           :loading="supplierForm_isLoading"
           :disabled="!isFormValid"
         >
           {{ supplierForm_isEditMode ? 'Update Supplier' : 'Add Supplier' }}
         </PrimeVueButton>
+          <!-- Delete Button -->
+        <PrimeVueButton
+          v-if="supplierForm_isEditMode"
+          type="button"
+          class="absolute buttom-6 right-6 px-6 py-2 bg-white border-none text-red-600 rounded-md"
+          @click="handleDeleteSupplier"
+          >
+        <AppBaseSvg name="delete" class="!w-4 !h-4" />
+          Delete
+        </PrimeVueButton>
       </div>
     </form>
   </section>
+   <AppBaseDialogConfirmation id="supplier-list-dialog-confirmation" />
+    <PrimeVueDialog :visible="isUpdateModal" modal header="">
+    <template #container>
+      <div class="w-[35rem] p-8">
+        <div class="flex flex-col items-center gap-4 text-center">
+          <span><img :src="confirmationSVG" alt="" /></span>
+          <h1 class="text-2xl font-semibold">Are you sure want to update this voucher item?</h1>
+          <p>The update will affect the voucher items</p>
+          <div class="flex items-center justify-between gap-4">
+            <PrimeVueButton variant="text" class="w-56 text-lg border-2 border-primary text-primary font-semibold"
+              @click="cancelUpdate">Cancel</PrimeVueButton>
+            <PrimeVueButton
+              class="text-xl w-56 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
+              unstyled label="Yes, I'm Sure" @click="confirmUpdate" />
+          </div>
+        </div>
+      </div>
+    </template>
+  </PrimeVueDialog>
 </template>
