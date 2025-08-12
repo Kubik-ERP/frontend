@@ -10,7 +10,12 @@ import {
 
 // Interfaces
 import type { FileUploadSelectEvent } from 'primevue';
-import type { IStaffMemberCreateEditFormData, IStaffMemberCreateEditProvided, IstaffHour } from '../interfaces';
+import type {
+  IStaffMemberCreateEditFormData,
+  IStaffMemberCreateEditProvided,
+  IstaffHour,
+  IStaffMemberSocialMedia,
+} from '../interfaces';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -292,6 +297,16 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         },
       );
       if (response) {
+        // populate form data with the fetched staff member social media
+        staffMemberCreateEdit_formData.socialMedia = response.data.employeesHasSocialMedia.map(
+          (socialMedia: IStaffMemberSocialMedia) => {
+            return {
+              name: socialMedia.mediaName,
+              account: socialMedia.accountName,
+            };
+          },
+        );
+
         // Populate form data with the fetched staff member details
         Object.assign(staffMemberCreateEdit_formData, response.data);
 
@@ -528,11 +543,12 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
         if (value !== null && value !== undefined) {
           // ✅ START of corrected 'shift' logic
+          // ✅ START of corrected 'shift' logic
           if (key === 'shift' && Array.isArray(value)) {
             let shiftIndex = 0; // Initialize a counter for the flattened list
 
             // Loop through each day object (e.g., { day: 'Sunday', timeSlots: [...] })
-            (value as { day: string; timeSlots: IstaffHour[]; isActive: boolean; }[]).forEach((dayItem) => {
+            (value as { day: string; timeSlots: IstaffHour[]; isActive: boolean }[]).forEach(dayItem => {
               if (dayItem.isActive && dayItem.timeSlots && dayItem.timeSlots.length > 0) {
                 // If the day is active, loop through its time slots
                 dayItem.timeSlots.forEach(slot => {
@@ -540,8 +556,12 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
                   formData.append(`shift[${shiftIndex}][day]`, String(dayItem.day));
                   formData.append(`shift[${shiftIndex}][isActive]`, 'true');
 
-                  const startTime = slot.startTime ? new Date(slot.startTime as Date).toISOString().substring(11, 16) : '';
-                  const endTime = slot.endTime ? new Date(slot.endTime as Date).toISOString().substring(11, 16) : '';
+                  const startTime = slot.startTime
+                    ? new Date(slot.startTime as Date).toISOString().substring(11, 16)
+                    : '';
+                  const endTime = slot.endTime
+                    ? new Date(slot.endTime as Date).toISOString().substring(11, 16)
+                    : '';
 
                   formData.append(`shift[${shiftIndex}][start_time]`, startTime);
                   formData.append(`shift[${shiftIndex}][end_time]`, endTime);
@@ -565,10 +585,14 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
           } else if (typeof value === 'object' && !Array.isArray(value)) {
             formData.append(key, JSON.stringify(value));
           } else if (Array.isArray(value)) {
-            if (key === 'socialMedia' && (value === null || value.length === 0)) {
-              continue;
+            if (key === 'socialMedia' && Array.isArray(value) && value.every(item => 'name' in item)) {
+              value.forEach((socialMediaItem, index) => {
+                formData.append(`socialMedia[${index}][name]`, socialMediaItem.name ?? '');
+                formData.append(`socialMedia[${index}][account]`, socialMediaItem.account ?? '');
+              });
+            } else {
+              formData.append(key, JSON.stringify(value));
             }
-            formData.append(key, JSON.stringify(value));
           } else {
             formData.append(key, String(value));
           }

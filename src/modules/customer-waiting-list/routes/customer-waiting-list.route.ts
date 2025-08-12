@@ -6,7 +6,6 @@ import AppBaseWrapper from '@/app/components/base/AppBaseWrapper.vue';
 // Constants
 import { LAYOUT_OPTIONS } from '@/app/constants';
 
-
 const routes: RouteRecordRaw[] = [
   {
     path: '/queue/customer-waiting-list',
@@ -22,8 +21,11 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: 'customer waiting list',
           breadcrumb: 'customer waiting list',
-          layout: LAYOUT_OPTIONS.OUTLET,
+
           requiresAuthorization: true,
+          backArrow: true,
+          backArrowPath: '/dashboard',
+          layout: LAYOUT_OPTIONS.NAVBAR,
         },
       },
     ],

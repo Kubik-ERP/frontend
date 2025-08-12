@@ -70,7 +70,7 @@ export const useCustomerService = () => {
       email: item.email,
       code: item.code,
       number: item.number || '-',
-      points: item.points || 0,
+      points: item.point || 0,
       latestVisit: item.latestVisit || '-',
       customersHasTag: item.customersHasTag,
       username: item.username,

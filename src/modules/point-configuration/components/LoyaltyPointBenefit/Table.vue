@@ -1,0 +1,104 @@
+<script setup lang="ts">
+// type
+import type { ILoyaltyPointBenefitProvided } from '@/modules/point-configuration/interfaces/loyalty-point-benefit.interface';
+
+//components
+import Discount from './DiscountFreeItems/Discount.vue';
+import FreeItems from './DiscountFreeItems/FreeItems.vue';
+
+// services
+const {
+  loyaltyPointBenefit_values,
+  loyaltyPointBenefit_columns,
+  loyaltyPointBenefit_onShowDialogDiscount,
+  loyaltyPointBenefit_onShowDialogFreeItems,
+  dailySalesList_onChangePage,
+} = inject<ILoyaltyPointBenefitProvided>('loyaltyPointBenefit')!;
+
+const popover = ref();
+</script>
+<template>
+  <section id="loyalty-point-benefit-table" class="flex flex-col relative inset-0 z-0">
+    <AppBaseDataTable
+      :data="loyaltyPointBenefit_values"
+      :columns="loyaltyPointBenefit_columns"
+      header-title="Loyalty Point Benefit"
+      :rows-per-page="10"
+      :total-records="100"
+      :first="1"
+      is-using-server-side-pagination
+      :is-using-filter="false"
+      is-using-custom-body
+      is-using-custom-header-prefix
+      is-using-custom-header-suffix
+      @update:currentPage="dailySalesList_onChangePage"
+    >
+      <template #header-prefix>
+        <h1 class="font-bold text-2xl text-text-primary">Loyalty Point Benefit</h1>
+      </template>
+      <template #header-suffix>
+        <PrimeVueButton class="w-fit" label="Add Benefit" @click="popover.toggle($event)">
+          <template #icon>
+            <AppBaseSvg name="plus-line-white" class="!w-5 !h-5" />
+          </template>
+        </PrimeVueButton>
+        <PrimeVuePopover
+          ref="popover"
+          :pt="{
+            content: 'p-0',
+          }"
+        >
+          <section id="popover-content" class="flex flex-col">
+            <PrimeVueButton
+              class="w-full px-4 py-3"
+              variant="text"
+              @click="loyaltyPointBenefit_onShowDialogDiscount()"
+            >
+              <template #default>
+                <section id="content" class="flex items-center gap-2 w-full">
+                  <AppBaseSvg name="cash" class="!w-4 !h-4" />
+                  <span class="font-normal text-sm text-text-primary">Discount</span>
+                </section>
+              </template>
+            </PrimeVueButton>
+            <PrimeVueButton
+              class="w-full px-4 py-3"
+              variant="text"
+              @click="loyaltyPointBenefit_onShowDialogFreeItems()"
+            >
+              <template #default>
+                <section id="content" class="flex items-center gap-2 w-full">
+                  <AppBaseSvg name="inventory" class="!w-4 !h-4" />
+                  <span class="font-normal text-sm text-text-primary">Free Items</span>
+                </section>
+              </template>
+            </PrimeVueButton>
+          </section>
+        </PrimeVuePopover>
+      </template>
+      <template #body="{ column, data, index }">
+        <template v-if="column.value === 'index'">
+          <span class="font-normal text-sm text-text-primary"> {{ index + 1 }}</span>
+        </template>
+        <template v-else-if="column.value === 'discountFreeItems'">
+          <div v-if="data['type'] === 'Discount'" class="font-normal text-sm text-text-primary">
+            <Discount :data="data[column.value]" />
+          </div>
+          <div v-else class="font-normal text-sm text-text-primary">
+            <FreeItems :data="data[column.value]" />
+          </div>
+        </template>
+        <template v-else-if="column.value === 'action'">
+          <PrimeVueButton variant="text" rounded aria-label="detail">
+            <template #icon>
+              <AppBaseSvg name="edit" class="!w-5 !h-5" />
+            </template>
+          </PrimeVueButton>
+        </template>
+        <template v-else>
+          <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
+        </template>
+      </template>
+    </AppBaseDataTable>
+  </section>
+</template>

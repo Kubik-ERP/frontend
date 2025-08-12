@@ -133,7 +133,7 @@ const {
               variant="text"
               rounded
               aria-label="detail"
-              @click="event => popovers[`popover-${data.poNumber}`]?.toggle(event)"
+              @click="(event: Event) => popovers[`popover-${data.poNumber}`]?.toggle(event)"
             >
               <template #icon>
                 <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
@@ -142,7 +142,7 @@ const {
 
             <PrimeVuePopover
               :ref="
-                el => {
+                (el: any) => {
                   if (el) popovers[`popover-${data.poNumber}`] = el;
                 }
               "

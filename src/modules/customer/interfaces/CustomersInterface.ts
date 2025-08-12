@@ -18,7 +18,7 @@ export interface ICustomer {
   email?: string;
   username?: string;
   address?: string;
-  points?: number;
+  point?: number;
   latestVisit?: string;
   customersHasTag?: ICustomersHasTag[];
 }

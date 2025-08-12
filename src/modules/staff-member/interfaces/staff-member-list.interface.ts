@@ -11,7 +11,7 @@ export interface IStaffMemberListRequestQuery{
 
 export interface IStaffMemberListResponse {
   data: {
-    data: IStaffMember[] | [];
+    employees: IStaffMember[] | [];
     meta: IStaffMeta;
   };
 }

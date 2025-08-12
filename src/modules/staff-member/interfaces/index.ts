@@ -15,6 +15,10 @@ export interface IStaffMemberEmployeesShift{
   endTime: string | null;
 }
 
+export interface IStaffMemberSocialMedia{
+  mediaName: string | null;
+  accountName: string | null;
+}
 
 export interface IStaffMember {
   id: string;
@@ -27,6 +31,7 @@ export interface IStaffMember {
   gender?: string | null;
   title?: string | null;
   employeesShift: IStaffMemberEmployeesShift[] | [];
+  employeesHasSocialMedia: IStaffMemberSocialMedia[] | [];
 }
 
 export interface IStaffMemberList{

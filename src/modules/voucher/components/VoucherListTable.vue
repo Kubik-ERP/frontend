@@ -97,8 +97,8 @@ const handleDelete = async (row: IVoucher | null) => {
 const selectedDate = ref<Date | null>(null);
 
 const formatDate = (date: Date) => {
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear();
   return `${day}-${month}-${year}`;
 };
@@ -109,11 +109,18 @@ const formatDate = (date: Date) => {
     <AppBaseDataTable :columns="voucherList_columns" :data="voucherList_values.data.items" header-title="Vouchers"
       :rows-per-page="voucherList_values.data.meta.pageSize" :total-records="voucherList_values.data.meta.total"
       :first="(voucherList_values.data.meta.page - 1) * voucherList_values.data.meta.pageSize"
-      :is-loading="voucherList_isLoading" :sort-field="voucherList_queryParams.orderBy"
-      :sort-order="voucherList_queryParams.orderDirection === 'asc' ? 1 : -1" is-using-server-side-pagination
-      is-using-custom-header-prefix is-using-custom-header-suffix is-using-header is-using-custom-body
-      :is-using-custom-filter="true" @update:currentPage="voucherList_onChangePage"
-      @update:sort="voucher_handleOnSortChange">
+      :is-loading="voucherList_isLoading"
+      :sort-field="voucherList_queryParams.orderBy"
+      :sort-order="voucherList_queryParams.orderDirection === 'asc' ? 1 : -1"
+      is-using-server-side-pagination
+      is-using-custom-header-prefix
+      is-using-custom-header-suffix
+      is-using-header
+      is-using-custom-body
+      :is-using-custom-filter="true"
+      @update:currentPage="voucherList_onChangePage"
+      @update:sort="voucher_handleOnSortChange"
+    >
       <!-- Header Prefix -->
       <template #header-prefix>
         <div class="flex items-center gap-2">
@@ -135,10 +142,18 @@ const formatDate = (date: Date) => {
           <div class="flex items-center gap-4 w-full">
             <PrimeVueDatePicker v-model="selectedDate"
               class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
-              placeholder="Last test 7 day" show-on-focus show-icon fluid show-button-bar @update:modelValue="(val) => {
-                const date = Array.isArray(val) ? val[0] : val;
-                if (date) voucherList_handleFilter(formatDate(date));
-              }" />
+              placeholder="Last test 7 day"
+              show-on-focus
+              show-icon
+              fluid
+              show-button-bar
+              @update:modelValue="
+                (val: Date | Date[] | (Date | null)[] | null | undefined) => {
+                  const date = Array.isArray(val) ? val[0] : val;
+                  if (date) voucherList_handleFilter(formatDate(date));
+                }
+              "
+            />
           </div>
         </div>
       </template>
@@ -161,7 +176,8 @@ const formatDate = (date: Date) => {
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleView(selectedData)">
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="eye-visible" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">{{ useLocalization('voucher.main.popover.view')
+                  <span class="font-normal text-sm text-text-primary">{{
+                    useLocalization('voucher.main.popover.view')
                   }}</span>
                 </section>
               </PrimeVueButton>
@@ -170,7 +186,8 @@ const formatDate = (date: Date) => {
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleEdit(selectedData)">
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">{{ useLocalization('voucher.main.popover.edit')
+                  <span class="font-normal text-sm text-text-primary">{{
+                    useLocalization('voucher.main.popover.edit')
                   }}</span>
                 </section>
               </PrimeVueButton>
@@ -179,7 +196,8 @@ const formatDate = (date: Date) => {
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleDelete(selectedData)">
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="delete" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">{{ useLocalization('voucher.main.popover.delete')
+                  <span class="font-normal text-sm text-text-primary">{{
+                    useLocalization('voucher.main.popover.delete')
                   }}</span>
                 </section>
               </PrimeVueButton>
