@@ -1,1 +1,1 @@
-export const POINT_CONFIGURATION_BASE_ENDPOINT = '/point-configuration';
+export const POINT_CONFIGURATION_BASE_ENDPOINT = '/loyalty-benefit';

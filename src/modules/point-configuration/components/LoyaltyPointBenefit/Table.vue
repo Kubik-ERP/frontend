@@ -8,11 +8,14 @@ import FreeItems from './DiscountFreeItems/FreeItems.vue';
 
 // services
 const {
-  loyaltyPointBenefit_values,
   loyaltyPointBenefit_columns,
   loyaltyPointBenefit_onShowDialogDiscount,
+  loyaltyPointBenefit_onShowEditDialogDiscount,
   loyaltyPointBenefit_onShowDialogFreeItems,
+  loyaltyPointBenefit_onShowEditDialogFreeItems,
   dailySalesList_onChangePage,
+  loyaltyPointBenefit_list,
+  loyaltyPointBenefit_isLoading,
 } = inject<ILoyaltyPointBenefitProvided>('loyaltyPointBenefit')!;
 
 const popover = ref();
@@ -20,14 +23,18 @@ const popover = ref();
 <template>
   <section id="loyalty-point-benefit-table" class="flex flex-col relative inset-0 z-0">
     <AppBaseDataTable
-      :data="loyaltyPointBenefit_values"
+      :data="loyaltyPointBenefit_list.loyaltyBenefits.items"
       :columns="loyaltyPointBenefit_columns"
       header-title="Loyalty Point Benefit"
-      :rows-per-page="10"
-      :total-records="100"
-      :first="1"
+      :rows-per-page="loyaltyPointBenefit_list.loyaltyBenefits.meta.limit"
+      :total-records="loyaltyPointBenefit_list.loyaltyBenefits.meta.total"
+      :first="
+        (loyaltyPointBenefit_list.loyaltyBenefits.meta.page - 1) *
+        loyaltyPointBenefit_list.loyaltyBenefits.meta.limit
+      "
       is-using-server-side-pagination
       :is-using-filter="false"
+      :is-loading="loyaltyPointBenefit_isLoading"
       is-using-custom-body
       is-using-custom-header-prefix
       is-using-custom-header-suffix
@@ -81,7 +88,7 @@ const popover = ref();
           <span class="font-normal text-sm text-text-primary"> {{ index + 1 }}</span>
         </template>
         <template v-else-if="column.value === 'discountFreeItems'">
-          <div v-if="data['type'] === 'Discount'" class="font-normal text-sm text-text-primary">
+          <div v-if="data['type'] === 'discount'" class="font-normal text-sm text-text-primary">
             <Discount :data="data[column.value]" />
           </div>
           <div v-else class="font-normal text-sm text-text-primary">
@@ -89,7 +96,16 @@ const popover = ref();
           </div>
         </template>
         <template v-else-if="column.value === 'action'">
-          <PrimeVueButton variant="text" rounded aria-label="detail">
+          <PrimeVueButton
+            variant="text"
+            rounded
+            aria-label="detail"
+            @click="
+              data.type === 'discount'
+                ? loyaltyPointBenefit_onShowEditDialogDiscount(data)
+                : loyaltyPointBenefit_onShowEditDialogFreeItems(data)
+            "
+          >
             <template #icon>
               <AppBaseSvg name="edit" class="!w-5 !h-5" />
             </template>

@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { ILoyaltyPointBenefitProvided } from '@/modules/point-configuration/interfaces/loyalty-point-benefit.interface';
-const { discountBenefit_formData, discountBenefit_formValidations, loyaltyPointBenefit_onCloseDialogDiscount, loyaltyPointBenefit_onSubmitDialogDiscount } =
-  inject<ILoyaltyPointBenefitProvided>('loyaltyPointBenefit')!;
+const {
+  discountBenefit_formData,
+  discountBenefit_formValidations,
+  loyaltyPointBenefit_onCloseDialogDiscount,
+  loyaltyPointBenefit_onSubmitDialogDiscount,
+  loyaltyPointBenefit_onSubmitEditDialogDiscount,
+  isEdit,
+} = inject<ILoyaltyPointBenefitProvided>('loyaltyPointBenefit')!;
 </script>
 <template>
   <AppBaseDialog id="loyalty-point-benefit-dialog-discount">
@@ -169,11 +175,12 @@ const { discountBenefit_formData, discountBenefit_formValidations, loyaltyPointB
         <PrimeVueButton
           class="bg-primary border-none min-w-44 disabled:bg-grayscale-20"
           :disabled="discountBenefit_formValidations.$invalid"
-          @click="loyaltyPointBenefit_onSubmitDialogDiscount()"
+          :label="isEdit ? 'Edit' : 'Add'"
+          @click="isEdit ? loyaltyPointBenefit_onSubmitEditDialogDiscount() : loyaltyPointBenefit_onSubmitDialogDiscount()"
         >
-          <template #default>
+          <!-- <template #default>
             <span class="font-semibold text-base text-white">Add</span>
-          </template>
+          </template> -->
         </PrimeVueButton>
       </section>
     </template>
