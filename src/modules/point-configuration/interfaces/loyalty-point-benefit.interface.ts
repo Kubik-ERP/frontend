@@ -14,7 +14,7 @@ export type IDiscount = {
 };
 
 export type ILoyaltyPointBenefit = {
-  id: string;
+  id?: string | null;
   type: string;
   benefitName: string;
   pointNeeds: number;
@@ -28,7 +28,14 @@ export type IDiscountFormData = {
   discountPrice: IDiscount;
 };
 
+export type IProductListRequestQuery = {
+  page: number;
+  limit: number;
+  search?: string | null;
+};
+
 export type IFreeItemFormData = {
+  id?: string | null;
   name: string;
   pointNeeds: number;
   freeItems: IFreeItems[];
@@ -41,6 +48,8 @@ export interface ILoyaltyPointBenefitProvided {
   loyaltyPointBenefit_isLoading: globalThis.Ref<boolean>;
 
   isEdit: globalThis.Ref<boolean>;
+
+  loyaltyPointBenefit_fetchProductList: () => Promise<void>;
 
   discountBenefit_formData: IDiscountFormData;
   discountBenefit_formValidations: globalThis.Ref<Validation>;
@@ -57,9 +66,13 @@ export interface ILoyaltyPointBenefitProvided {
   freeItemsBenefit_formData: IFreeItemFormData;
   freeItemsBenefit_formValidations: globalThis.Ref<Validation>;
   loyaltyPointBenefit_onSubmitDialogFreeItems: () => Promise<void>;
-  loyaltyPointBenefit_onShowEditDialogFreeItems: (data: IFreeItemFormData) => void;
+  loyaltyPointBenefit_onSubmitEditDialogFreeItems: () => Promise<void>;
+  loyaltyPointBenefit_onShowEditDialogFreeItems: (data: ILoyaltyPointBenefit) => void;
   loyaltyPointBenefit_onShowDialogFreeItems: () => void;
   loyaltyPointBenefit_onCloseDialogFreeItems: () => void;
+
+  productList_isLoading: globalThis.Ref<boolean>;
+  loyaltyPointBenefit_productList: globalThis.Ref<IProduct[]>;
 }
 
 export type IPointConfigurationListRequestQuery = {
@@ -81,7 +94,29 @@ export type IPointConfigurationListResponse = {
   loyaltySettingsId?: string | null;
 };
 
+export type IProduct = {
+  id: string;
+  name: string;
+  category: string;
+  freeItems?: IFreeItems[] | null;
+};
+
+export type IProductListResponse = {
+  id: string;
+  name: string;
+  categoriesHasProducts: [
+    {
+      categories: {
+        id: string;
+        category: string;
+      };
+    },
+  ];
+};
+
 export type IPointConfigurationStore = {
   loyaltyPointBenefit_isLoading: boolean;
+  productList_isLoading: boolean;
   loyaltyPointBenefit_list: IPointConfigurationListResponse;
+  loyaltyPointBenefit_productList: IProduct[];
 };

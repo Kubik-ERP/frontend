@@ -16,6 +16,8 @@ const {
   loyaltyPointBenefit_isLoading,
   isEdit,
 
+  loyaltyPointBenefit_fetchProductList,
+
   discountBenefit_formData,
   discountBenefit_formValidations,
   loyaltyPointBenefit_onSubmitDialogDiscount,
@@ -31,9 +33,13 @@ const {
   freeItemsBenefit_formData,
   freeItemsBenefit_formValidations,
   loyaltyPointBenefit_onSubmitDialogFreeItems,
+  loyaltyPointBenefit_onSubmitEditDialogFreeItems,
   loyaltyPointBenefit_onShowEditDialogFreeItems,
   loyaltyPointBenefit_onShowDialogFreeItems,
   loyaltyPointBenefit_onCloseDialogFreeItems,
+
+  productList_isLoading,
+  loyaltyPointBenefit_productList,
 } = useLoyaltyPointBenefitService();
 
 provide('loyaltyPointBenefit', {
@@ -44,6 +50,8 @@ provide('loyaltyPointBenefit', {
   loyaltyPointBenefit_isLoading,
   isEdit,
 
+  loyaltyPointBenefit_fetchProductList,
+
   discountBenefit_formData,
   discountBenefit_formValidations,
   loyaltyPointBenefit_onSubmitDialogDiscount,
@@ -59,13 +67,18 @@ provide('loyaltyPointBenefit', {
   freeItemsBenefit_formData,
   freeItemsBenefit_formValidations,
   loyaltyPointBenefit_onSubmitDialogFreeItems,
+  loyaltyPointBenefit_onSubmitEditDialogFreeItems,
   loyaltyPointBenefit_onShowEditDialogFreeItems,
   loyaltyPointBenefit_onShowDialogFreeItems,
   loyaltyPointBenefit_onCloseDialogFreeItems,
+
+  productList_isLoading,
+  loyaltyPointBenefit_productList,
 });
 
 onMounted(async () => {
   await loyaltyPointBenefit_fetchList();
+  await loyaltyPointBenefit_fetchProductList();
 });
 </script>
 

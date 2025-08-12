@@ -7,6 +7,8 @@ import type {
   IPointConfigurationStore,
   IPointConfigurationListRequestQuery,
   IPointConfigurationListResponse,
+  IProductListRequestQuery,
+  IProductListResponse,
 } from '../interfaces';
 
 // Plugins
@@ -15,6 +17,7 @@ import httpClient from '@/plugins/axios';
 export const usePointConfigurationStore = defineStore('point-configuration', {
   state: (): IPointConfigurationStore => ({
     loyaltyPointBenefit_isLoading: false,
+    productList_isLoading: false,
     loyaltyPointBenefit_list: {
       loyaltyBenefits: {
         items: [],
@@ -28,6 +31,13 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
       loyaltySettingsStatus: false,
       loyaltySettingsId: null,
     },
+    loyaltyPointBenefit_productList: [
+      {
+        id: '',
+        name: '',
+        category: '',
+      },
+    ],
   }),
   actions: {
     /**
@@ -114,6 +124,103 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
           ...requestConfigurations,
         });
         console.log('🚀 ~ response:', response);
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.loyaltyPointBenefit_isLoading = false;
+      }
+    },
+
+    async loyaltyPointBenefit_fetchProductList(
+      params: IProductListRequestQuery,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.productList_isLoading = true;
+      try {
+        const response = await httpClient.get(`/products`, {
+          params,
+          ...requestConfigurations,
+        });
+        this.loyaltyPointBenefit_productList = response.data.data.products.map((product: IProductListResponse) => {
+          return {
+            id: product.id,
+            name: product.name,
+            category: product.categoriesHasProducts[0].categories.category,
+          };
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.productList_isLoading = false;
+      }
+    },
+
+    async loyaltyBenefit_addFreeItems(
+      payload: {
+        benefitType: string;
+        benefitName: string;
+        pointNeeds: number;
+        items: [
+          {
+            productId: string;
+            quantity: number;
+          },
+        ];
+      },
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.loyaltyPointBenefit_isLoading = true;
+      try {
+        const response = await httpClient.post(
+          `${POINT_CONFIGURATION_BASE_ENDPOINT}/${this.loyaltyPointBenefit_list.loyaltySettingsId}`,
+          payload,
+          {
+            ...requestConfigurations,
+          },
+        );
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.loyaltyPointBenefit_isLoading = false;
+      }
+    },
+
+    async loyaltyBenefit_updateFreeItems(
+      payload: {
+        id: string;
+        benefitType: string;
+        benefitName: string;
+        pointNeeds: number;
+        items: [
+          {
+            productId: string;
+            quantity: number;
+          },
+        ];
+      },
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.loyaltyPointBenefit_isLoading = true;
+      try {
+        const response = await httpClient.patch(`${POINT_CONFIGURATION_BASE_ENDPOINT}/${payload.id}`, payload, {
+          ...requestConfigurations,
+        });
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

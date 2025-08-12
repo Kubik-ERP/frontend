@@ -51,6 +51,7 @@ const {
             show-buttons
             button-layout="horizontal"
             fluid
+            :min="0"
             :step="1"
             :class="{
               ...classes,
@@ -140,6 +141,7 @@ const {
                 v-model="discountBenefit_formData.discountPrice.value"
                 class="w-full"
                 name="discount-price"
+                :min="0"
                 :class="{ ...classes }"
               />
               <div class="absolute right-0 flex items-center rounded-lg border-none ring-0">

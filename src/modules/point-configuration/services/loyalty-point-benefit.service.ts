@@ -11,6 +11,7 @@ import type {
   IFreeItemFormData,
   IPointConfigurationListRequestQuery,
   ILoyaltyPointBenefit,
+  IProductListRequestQuery,
 } from '../interfaces/loyalty-point-benefit.interface';
 
 // Plugins
@@ -18,14 +19,19 @@ import eventBus from '@/plugins/mitt';
 
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
-import { required } from '@vuelidate/validators';
+import { required, helpers, minValue } from '@vuelidate/validators';
 
 // store
 import { usePointConfigurationStore } from '../store';
 
 export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided => {
   const store = usePointConfigurationStore();
-  const { loyaltyPointBenefit_isLoading, loyaltyPointBenefit_list } = storeToRefs(store);
+  const {
+    loyaltyPointBenefit_isLoading,
+    loyaltyPointBenefit_list,
+    productList_isLoading,
+    loyaltyPointBenefit_productList,
+  } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const isEdit = ref(false);
@@ -203,18 +209,10 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
    */
 
   const freeItemsBenefit_formData = reactive<IFreeItemFormData>({
+    id: null,
     name: 'Free Item',
     pointNeeds: 50,
-    freeItems: [
-      {
-        name: 'Free Item 1',
-        quantity: 1,
-      },
-      {
-        name: 'Free Item 2',
-        quantity: 1,
-      },
-    ],
+    freeItems: [],
   });
 
   const freeItemsBenefit_formRules = computed(() => ({
@@ -224,15 +222,36 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
     pointNeeds: {
       required,
     },
+    freeItems: {
+      required: helpers.withMessage('At least one free item is required', required),
+      $each: helpers.forEach({
+        quantity: {
+          required: helpers.withMessage('Quantity is required', required),
+          minValue: helpers.withMessage('Quantity must be at least 1', minValue(1)),
+        },
+      }),
+    },
   }));
 
   const freeItemsBenefit_formValidations = useVuelidate(freeItemsBenefit_formRules, freeItemsBenefit_formData, {
     $autoDirty: true,
   });
 
-  const loyaltyPointBenefit_onSubmitDialogFreeItems = (): Promise<void> => {
+  const loyaltyPointBenefit_onSubmitDialogFreeItems = async (): Promise<void> => {
     try {
-      console.log(`freeItemsBenefit_formData`, freeItemsBenefit_formData);
+      const payload = {
+        benefitType: 'free_items',
+        benefitName: freeItemsBenefit_formData.name,
+        pointNeeds: freeItemsBenefit_formData.pointNeeds,
+        items: freeItemsBenefit_formData.freeItems.map(item => ({
+          productId: item.id,
+          quantity: item.quantity,
+        })),
+      };
+
+      await store.loyaltyBenefit_addFreeItems(payload, {
+        ...httpAbort_registerAbort('LOYALTY_POINT_BENEFIT_CREATE_FREE_ITEMS_REQUEST'),
+      });
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
@@ -251,6 +270,45 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
       }
     } finally {
       loyaltyPointBenefit_onCloseDialogFreeItems();
+      loyaltyPointBenefit_fetchList();
+    }
+  };
+
+  const loyaltyPointBenefit_onSubmitEditDialogFreeItems = async (): Promise<void> => {
+    try {
+      const payload = {
+        id: freeItemsBenefit_formData.id!,
+        benefitType: 'free_items',
+        benefitName: freeItemsBenefit_formData.name,
+        pointNeeds: freeItemsBenefit_formData.pointNeeds,
+        items: freeItemsBenefit_formData.freeItems.map(item => ({
+          productId: item.id,
+          quantity: item.quantity,
+        })),
+      };
+
+      await store.loyaltyBenefit_updateFreeItems(payload, {
+        ...httpAbort_registerAbort('LOYALTY_POINT_BENEFIT_UPDATE_FREE_ITEMS_REQUEST'),
+      });
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Free Items Benefit has been updated successfully.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      return Promise.resolve();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      loyaltyPointBenefit_onCloseDialogFreeItems();
+      loyaltyPointBenefit_fetchList();
     }
   };
 
@@ -263,8 +321,13 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
     };
     eventBus.emit('AppBaseDialog', argsEventEmitter);
   };
-  const loyaltyPointBenefit_onShowEditDialogFreeItems = (data: IFreeItemFormData): void => {
-    console.log(data);
+  const loyaltyPointBenefit_onShowEditDialogFreeItems = (data: ILoyaltyPointBenefit): void => {
+    console.log(JSON.stringify(data, null, 2));
+    isEdit.value = true;
+    freeItemsBenefit_formData.id = data.id;
+    freeItemsBenefit_formData.name = data.benefitName;
+    freeItemsBenefit_formData.pointNeeds = data.pointNeeds;
+    freeItemsBenefit_formData.freeItems = Array.isArray(data.discountFreeItems) ? data.discountFreeItems : [];
     const argsEventEmitter: IPropsDialog = {
       id: 'loyalty-point-benefit-dialog-free-items',
       isOpen: true,
@@ -274,7 +337,16 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
     eventBus.emit('AppBaseDialog', argsEventEmitter);
   };
 
+  const freeItemsBenefit_formDataReset = (): void => {
+    isEdit.value = false;
+    freeItemsBenefit_formData.name = '';
+    freeItemsBenefit_formData.pointNeeds = 0;
+    freeItemsBenefit_formData.freeItems = [];
+    freeItemsBenefit_formValidations.value.$reset();
+  };
+
   const loyaltyPointBenefit_onCloseDialogFreeItems = (): void => {
+    freeItemsBenefit_formDataReset();
     const argsEventEmitter: IPropsDialog = {
       id: 'loyalty-point-benefit-dialog-free-items',
       isOpen: false,
@@ -291,6 +363,26 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
     try {
       await store.loyaltyPointBenefit_fetchlist(loyaltyPointBenefit_queryParams, {
         ...httpAbort_registerAbort(LOYALTY_POINT_BENEFIT_LIST_REQUEST),
+        paramsSerializer: useParamsSerializer,
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
+
+  const product_queryParams = reactive<IProductListRequestQuery>({
+    page: 1,
+    limit: 100,
+    search: '',
+  });
+  const loyaltyPointBenefit_fetchProductList = async (): Promise<void> => {
+    try {
+      await store.loyaltyPointBenefit_fetchProductList(product_queryParams, {
+        ...httpAbort_registerAbort('LOYALTY_POINT_BENEFIT_PRODUCT_LIST'),
         paramsSerializer: useParamsSerializer,
       });
     } catch (error: unknown) {
@@ -321,6 +413,8 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
     loyaltyPointBenefit_isLoading,
     isEdit,
 
+    loyaltyPointBenefit_fetchProductList,
+
     discountBenefit_formData,
     discountBenefit_formValidations,
     loyaltyPointBenefit_onSubmitDialogDiscount,
@@ -336,8 +430,12 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
     freeItemsBenefit_formData,
     freeItemsBenefit_formValidations,
     loyaltyPointBenefit_onSubmitDialogFreeItems,
+    loyaltyPointBenefit_onSubmitEditDialogFreeItems,
     loyaltyPointBenefit_onShowEditDialogFreeItems,
     loyaltyPointBenefit_onShowDialogFreeItems,
     loyaltyPointBenefit_onCloseDialogFreeItems,
+
+    productList_isLoading,
+    loyaltyPointBenefit_productList,
   };
 };

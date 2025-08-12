@@ -87,6 +87,11 @@ const popover = ref();
         <template v-if="column.value === 'index'">
           <span class="font-normal text-sm text-text-primary"> {{ index + 1 }}</span>
         </template>
+        <template v-else-if="column.value === 'type'">
+          <span class="font-normal text-sm text-text-primary">
+            {{ data[column.value] === 'discount' ? 'Discount' : 'Free Items' }}</span
+          >
+        </template>
         <template v-else-if="column.value === 'discountFreeItems'">
           <div v-if="data['type'] === 'discount'" class="font-normal text-sm text-text-primary">
             <Discount :data="data[column.value]" />
