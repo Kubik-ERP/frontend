@@ -41,6 +41,8 @@ export interface IStaffMemberComissions {
   voucherCommission: IStaffMemberVoucherCommission;
 }
 
+
+
 export interface IStaffMemberSocialMedia {
   name: string | null;
   account: string | null;

@@ -14,6 +14,7 @@ import AppCommonUnauthorized from '../components/common/AppCommonUnauthorized.vu
 // Stores
 import { useAuthenticationStore } from '@/modules/authentication/store';
 import { useOutletStore } from '@/modules/outlet/store';
+import { useRbacStore } from '@/app/store/rbac.store';
 
 /**
  * Autoload route
@@ -57,6 +58,7 @@ const loadAllRoutes: () => Promise<Router> = async () => {
   router.beforeEach((to: RouteLocationNormalized, _from: RouteLocationNormalized, next: NavigationGuardNext) => {
     const authenticationStore = useAuthenticationStore();
     const outletStore = useOutletStore();
+    const rbacStore = useRbacStore();
     const { authentication_token } = storeToRefs(authenticationStore);
     const { outlet_currentOutlet } = storeToRefs(outletStore);
 
@@ -84,6 +86,15 @@ const loadAllRoutes: () => Promise<Router> = async () => {
 
         if (listRouteNameOfAuthentication.includes(to.name as string)) {
           next({ name: 'dashboard' });
+        }
+
+        // RBAC Permission Check
+        if (to.name && rbacStore.rbac_hasRole) {
+          const hasPermission = rbacStore.rbac_checkRoutePermission(to.name as string);
+          if (!hasPermission) {
+            next({ name: 'not-authorized' });
+            return;
+          }
         }
 
         next();

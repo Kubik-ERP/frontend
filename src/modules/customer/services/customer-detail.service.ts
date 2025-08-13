@@ -2,6 +2,9 @@ import type {
   IIncreasePoint,
   IDecreasePoint,
   ICustomerDetailsRequestQuery,
+  IloyaltyPoints,
+  ICustomerLoyaltyPointQuery,
+  IPointDetails,
 } from '../interfaces/CustomerDetailInterface';
 
 import { useFormatDateLocal } from '@/app/composables';
@@ -19,6 +22,9 @@ import {
   LOYALTY_POINT_TYPES,
 } from '../constants';
 
+// Plugins
+import eventBus from '@/plugins/mitt';
+
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 
@@ -26,9 +32,13 @@ export const useCustomerDetailService = () => {
   const route = useRoute();
   const customerId = route.params.id as string;
 
+  const isEdit = ref(false);
+  const selectedPointId = ref<string>();
+
   const store = useCustomerDetailsStore();
 
-  const { customerDetails_isLoading, customerDetails } = storeToRefs(store);
+  const { customerDetails_isLoading, customerDetails, loyaltyPoints_list, loyaltyPoints_isLoading } =
+    storeToRefs(store);
 
   const { httpAbort_registerAbort } = useHttpAbort();
 
@@ -89,8 +99,8 @@ export const useCustomerDetailService = () => {
   const increarePoint_FormData = reactive<IIncreasePoint>({
     point: 0,
     isHaveExpiryDate: 'No Expiry Date',
-    ExpiryDate: new Date(),
-    notes: '',
+    ExpiryDate: null,
+    notes: null,
   });
 
   const increasePoint_formRules = computed(() => ({
@@ -104,13 +114,18 @@ export const useCustomerDetailService = () => {
   const increarePoint_ResetFormData = () => {
     increarePoint_FormData.point = 0;
     increarePoint_FormData.isHaveExpiryDate = 'No Expiry Date';
-    increarePoint_FormData.ExpiryDate = new Date();
-    increarePoint_FormData.notes = '';
+    increarePoint_FormData.ExpiryDate = null;
+    increarePoint_FormData.notes = null;
+    selectedPointId.value = '';
+    isEdit.value = false;
+    increasePoint_formValidations.value.$reset();
+
+    isIncreasePointOpen.value = false;
   };
 
   const decreasePoint_FormData = reactive<IDecreasePoint>({
     point: 0,
-    notes: '',
+    notes: null,
   });
 
   const decreasePoint_formRules = computed(() => ({
@@ -124,6 +139,11 @@ export const useCustomerDetailService = () => {
   const decreasePoint_ResetFormData = () => {
     decreasePoint_FormData.point = 0;
     decreasePoint_FormData.notes = '';
+    selectedPointId.value = '';
+    isEdit.value = false;
+    decreasePoint_formValidations.value.$reset();
+
+    isDecreasePointOpen.value = false;
   };
 
   const customerDetails_fetchInformation = async (): Promise<unknown> => {
@@ -134,10 +154,6 @@ export const useCustomerDetailService = () => {
         ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
       });
       return response;
-
-      // return await store.salesInvoice_list(id, params, {
-      //   ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
-      // });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -158,17 +174,9 @@ export const useCustomerDetailService = () => {
 
       const formattedParams = jsonToQueryString(filteredParams as ICustomerDetailsRequestQuery);
 
-      // const response = await store.salesInvoice_list(customerId, formattedParams, {
-      //   ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
-      // });
       await store.salesInvoice_list(customerId, formattedParams, {
         ...httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
       });
-      // return {
-      //   detail: response.data,
-      //   invoice: response.data.invoices.data,
-      //   meta: response.data.invoices.meta,
-      // };
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -176,6 +184,10 @@ export const useCustomerDetailService = () => {
         return Promise.reject(new Error(String(error)));
       }
     }
+  };
+
+  const customerDetails_onChangePage = (page: number): void => {
+    customerDetails_queryParams.page = page;
   };
 
   watch(
@@ -187,20 +199,6 @@ export const useCustomerDetailService = () => {
       deep: true,
     },
   );
-
-  const customerDetails_onChangePage = (page: number): void => {
-    customerDetails_queryParams.page = page;
-  };
-
-  // watch(
-  //   () => customerDetails_queryParams,
-  //   debounce(async () => {
-  //     await customerDetails_fetchSalesInvoice();
-  //   }, 500),
-  //   {
-  //     deep: true,
-  //   },
-  // );
 
   const orderTypeClass = (orderType: string) => {
     switch (orderType) {
@@ -230,15 +228,197 @@ export const useCustomerDetailService = () => {
     }
   };
 
-  const customerDetails_fetchLoyaltyPoint = async (): Promise<unknown> => {
+  const isIncreasePointOpen = ref(false);
+  const isDecreasePointOpen = ref(false);
+
+  const pointTypeClass = (type: string) => {
+    if (type === 'point_addition') return 'bg-primary-background text-primary';
+    if (type === 'point_deduction') return 'bg-error-background text-error-main';
+  };
+
+  const pointTypeFormat = (type: string, points: number) => {
+    if (type === 'point_addition') return '+ ' + points;
+    else if (type === 'point_deduction') return '- ' + points;
+    else return points;
+  };
+
+  const customerDetails_fetchLoyaltyPoint = async (): Promise<IloyaltyPoints> => {
     try {
-      return await store.loyaltyPoints_list(customerId, httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST));
+      return await store.fetch_loyaltyPoints_list(
+        customerId,
+        httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
+        loyaltyPoint_queryParams,
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
         return Promise.reject(new Error(String(error)));
       }
+    }
+  };
+
+  const loyaltyPoint_queryParams = reactive<ICustomerLoyaltyPointQuery>({
+    page: 1,
+    limit: 10,
+    type: null,
+    date: null,
+  });
+
+  const loyaltyPoint_onChangePage = (page: number): void => {
+    loyaltyPoint_queryParams.page = page;
+  };
+
+  watch(
+    () => loyaltyPoint_queryParams,
+    debounce(async () => {
+      await customerDetails_fetchLoyaltyPoint();
+    }, 500),
+    {
+      deep: true,
+    },
+  );
+
+  const customerDetails_fetchIncreasePointOnSubmit = async (): Promise<void> => {
+    try {
+      increasePoint_formValidations.value.$reset();
+      if (increasePoint_formValidations.value.$invalid) return;
+      await store.increasePoint_onSubmit(
+        httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
+        increarePoint_FormData,
+        customerId,
+      );
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Point Addition has been created successfully',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      increasePoint_formValidations.value.$reset();
+      increarePoint_ResetFormData();
+      await customerDetails_fetchLoyaltyPoint();
+    }
+  };
+
+  const customerDetails_fetchDecreasePointOnSubmit = async (): Promise<void> => {
+    try {
+      decreasePoint_formValidations.value.$reset();
+      if (decreasePoint_formValidations.value.$invalid) return;
+      await store.decreasePoint_onSubmit(
+        httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
+        decreasePoint_FormData,
+        customerId,
+      );
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Point Deduction has been created successfully',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      decreasePoint_formValidations.value.$reset();
+      decreasePoint_ResetFormData();
+      await customerDetails_fetchLoyaltyPoint();
+    }
+  };
+
+  const customerDetails_fetchDecreasePointOnEdit = async (): Promise<void> => {
+    try {
+      decreasePoint_formValidations.value.$reset();
+      if (decreasePoint_formValidations.value.$invalid) return;
+      await store.decreasePoint_onEdit(
+        httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
+        decreasePoint_FormData,
+        selectedPointId.value as string,
+        customerId,
+      );
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Point Deduction has been Edited successfully',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      decreasePoint_ResetFormData();
+      await customerDetails_fetchLoyaltyPoint();
+    }
+  };
+
+  const customerDetails_fetchIncreasePointOnEdit = async (): Promise<void> => {
+    try {
+      increasePoint_formValidations.value.$reset();
+      if (increasePoint_formValidations.value.$invalid) return;
+
+      await store.increasePoint_onEdit(
+        httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
+        selectedPointId.value as string,
+        increarePoint_FormData,
+        customerId,
+      );
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Point Addition has been Edited successfully',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      increarePoint_ResetFormData();
+      await customerDetails_fetchLoyaltyPoint();
+    }
+  };
+
+  const handle_editLoyaltyPoints = async (data: IPointDetails) => {
+    if (data.type === 'point_addition') {
+      selectedPointId.value = data.id;
+
+      increarePoint_FormData.point = data.value;
+      increarePoint_FormData.isHaveExpiryDate = data.expiryDate ? 'Specific Date' : 'No Expiry Date';
+      increarePoint_FormData.ExpiryDate = data.expiryDate;
+      increarePoint_FormData.notes = data.notes;
+
+      isEdit.value = true;
+      isIncreasePointOpen.value = true;
+    } else if (data.type === 'point_deduction') {
+      selectedPointId.value = data.id;
+
+      decreasePoint_FormData.point = data.value;
+      decreasePoint_FormData.notes = data.notes;
+
+      isEdit.value = true;
+      isDecreasePointOpen.value = true;
     }
   };
 
@@ -263,12 +443,15 @@ export const useCustomerDetailService = () => {
     loyaltyPoint_types: LOYALTY_POINT_TYPES,
 
     customerDetails_isLoading,
+    loyaltyPoints_isLoading,
 
     customerDetails_fetchSalesInvoice,
     orderStatusClass,
     orderTypeClass,
 
     customerDetails_fetchLoyaltyPoint,
+    loyaltyPoint_onChangePage,
+    loyaltyPoint_queryParams,
 
     customerDetails_queryParams,
     customerDetails_onChangePage,
@@ -276,5 +459,20 @@ export const useCustomerDetailService = () => {
     customerDetails_fetchInformation,
 
     customerDetails,
+    loyaltyPoints_list,
+
+    isEdit,
+
+    customerDetails_fetchIncreasePointOnSubmit,
+    customerDetails_fetchDecreasePointOnEdit,
+    customerDetails_fetchDecreasePointOnSubmit,
+    customerDetails_fetchIncreasePointOnEdit,
+
+    isIncreasePointOpen,
+    isDecreasePointOpen,
+    pointTypeClass,
+    pointTypeFormat,
+
+    handle_editLoyaltyPoints,
   };
 };

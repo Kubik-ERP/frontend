@@ -38,11 +38,11 @@ export const LOYALTY_POINT_COLUMNS: IColumnDataTable[] = [
 
 export const LOYALTY_POINT_TYPES = [
   {
-    value: 'Point Addition',
+    value: 'point_addition',
     label: 'Point Addition',
   },
   {
-    value: 'Point Deduction',
+    value: 'point_deduction',
     label: 'Point Deduction',
   }
 ];

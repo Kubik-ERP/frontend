@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Composables
+import { useRbac } from '@/app/composables/useRbac';
+
 // Interfaces
 import type { IPurchaseOrderListProvided } from '../interfaces';
 
@@ -8,6 +11,13 @@ import type { IPurchaseOrderListProvided } from '../interfaces';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const popovers = ref<Record<string, any>>({});
 const searchValue = ref('');
+
+/**
+ * @description RBAC permissions
+ */
+const rbac = useRbac();
+const canCreatePurchaseOrder = rbac.canCreate('purchaseOrder');
+const canUpdatePurchaseOrder = rbac.canUpdate('purchaseOrder');
 
 /**
  * @description Inject all the data and methods what we need
@@ -36,8 +46,8 @@ watch(searchValue, newValue => {
     btn-cta-create-title="Create New PO"
     :columns="purchaseOrderList_columns"
     :data="purchaseOrderList_values"
-    header-title="Purhcase Order List"
-    is-using-btn-cta-create
+    header-title="Purchase Order List"
+    :is-using-btn-cta-create="canCreatePurchaseOrder"
     is-using-custom-body
     :is-using-filter="false"
     is-using-search-on-header
@@ -76,7 +86,7 @@ watch(searchValue, newValue => {
           variant="text"
           rounded
           aria-label="detail"
-          @click="event => popovers[`popover-${data.poNumber}`]?.toggle(event)"
+          @click="(event: Event) => popovers[`popover-${data.poNumber}`]?.toggle(event)"
         >
           <template #icon>
             <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
@@ -85,7 +95,7 @@ watch(searchValue, newValue => {
 
         <PrimeVuePopover
           :ref="
-            el => {
+            (el: any) => {
               if (el) popovers[`popover-${data.poNumber}`] = el;
             }
           "
@@ -108,7 +118,9 @@ watch(searchValue, newValue => {
             </PrimeVueButton>
 
             <PrimeVueButton
-              v-show="purchaseOrderList_onShowButtonDeliveryOrderDocument(data.orderStatus)"
+              v-if="
+                canUpdatePurchaseOrder && purchaseOrderList_onShowButtonDeliveryOrderDocument(data.orderStatus)
+              "
               class="w-full px-4 py-3"
               variant="text"
             >
@@ -121,7 +133,7 @@ watch(searchValue, newValue => {
             </PrimeVueButton>
 
             <PrimeVueButton
-              v-show="purchaseOrderList_onShowButtonCancelPO(data.orderStatus)"
+              v-if="canUpdatePurchaseOrder && purchaseOrderList_onShowButtonCancelPO(data.orderStatus)"
               class="w-full px-4 py-3"
               variant="text"
             >

@@ -3,12 +3,6 @@ import minusSVG from '@/app/assets/icons/minus.svg';
 import plusSVG from '@/app/assets/icons/plus-line.svg';
 import { useCustomerDetailService } from '../../services/customer-detail.service';
 
-// const route = useRoute();
-
-const points = ref();
-const total = ref();
-const date = ref();
-
 const {
   increarePoint_FormData,
   increasePoint_formValidations,
@@ -21,53 +15,43 @@ const {
   customerLoyaltyPoint_columns,
 
   loyaltyPoint_types,
-  customerDetails_isLoading,
+  loyaltyPoints_isLoading,
+  loyaltyPoints_list,
 
-  // customerDetails_fetchLoyaltyPoint,
+  loyaltyPoint_onChangePage,
+  loyaltyPoint_queryParams,
+
+  isIncreasePointOpen,
+  isDecreasePointOpen,
+  pointTypeClass,
+  pointTypeFormat,
+
+  customerDetails_fetchIncreasePointOnSubmit,
+  customerDetails_fetchDecreasePointOnEdit,
+  customerDetails_fetchDecreasePointOnSubmit,
+  customerDetails_fetchIncreasePointOnEdit,
+
+  handle_editLoyaltyPoints,
+
+  isEdit,
 } = useCustomerDetailService();
 
-onMounted(async () => {
-  // const response = await customerDetails_fetchLoyaltyPoint(route.params.id as string);
-  // total.value = response.data.points.total;
-  // points.value = response.data.points.details;
-});
 
-const type = ref();
-
-const isIncreasePointOpen = ref(false);
-const isDecreasePointOpen = ref(false);
-
-const handleIncreasePoint = () => {
-  console.log(increarePoint_FormData);
-  isIncreasePointOpen.value = false;
-};
-
-const handleDecreasePoint = () => {
-  console.log(decreasePoint_FormData);
-  isDecreasePointOpen.value = false;
-};
-
-const pointTypeClass = (type: string) => {
-  if (type === 'point_addition') return 'bg-primary-background text-primary';
-  if (type === 'point_deduction') return 'bg-error-background text-error-main';
-};
-
-const pointTypeFormat = (type: string, points: number) => {
-  if (type === 'point_addition') return '+ ' + points;
-  else if (type === 'point_deduction') return '- ' + points;
-  else return points;
-};
 </script>
 <template>
   <section id="customer-loyalty-point" class="flex flex-col relative inset-0 z-0">
     <AppBaseDataTable
       :columns="customerLoyaltyPoint_columns"
-      :data="points"
+      :data="loyaltyPoints_list.data"
+      :rows-per-page="loyaltyPoints_list.meta.limit"
+      :total-records="loyaltyPoints_list.meta.total"
+      :first="(loyaltyPoints_list.meta.page - 1) * loyaltyPoints_list.meta.limit"
       is-using-server-side-pagination
       is-using-custom-body
       is-using-custom-header
       is-using-custom-filter
-      :is-loading="customerDetails_isLoading"
+      :is-loading="loyaltyPoints_isLoading"
+      @update:currentPage="loyaltyPoint_onChangePage"
     >
       <template #header>
         <section class="flex flex-col items-center gap-2 py-4">
@@ -85,14 +69,13 @@ const pointTypeFormat = (type: string, points: number) => {
                 <img :src="minusSVG" alt="" />
               </template>
             </PrimeVueButton>
-            <span class="text-5xl text-primary font-bold flex items-center gap-2"
-              >
-                <template v-if="customerDetails_isLoading">
-                  <PrimeVueSkeleton width="9rem" height="3rem" class="rounded-md"></PrimeVueSkeleton>
-                </template>
-                <template v-else>
-                  {{ total }}
-                </template>
+            <span class="text-5xl text-primary font-bold flex items-center gap-2">
+              <template v-if="loyaltyPoints_isLoading">
+                <PrimeVueSkeleton width="9rem" height="3rem" class="rounded-md"></PrimeVueSkeleton>
+              </template>
+              <template v-else>
+                {{ loyaltyPoints_list.total }}
+              </template>
               <sub class="text-xs text-grayscale-30">pts</sub></span
             >
             <PrimeVueButton
@@ -113,15 +96,17 @@ const pointTypeFormat = (type: string, points: number) => {
           <div class="flex items-center gap-4 w-full">
             <span class="font-semibold inline-block text-gray-900 text-base">Filter by</span>
             <PrimeVueDatePicker
-              v-model="date"
+              v-model="loyaltyPoint_queryParams.date"
               class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
               placeholder="Real Time "
               show-on-focus
               show-icon
               fluid
+              show-clear
+              @clear-click="loyaltyPoint_queryParams.date = null"
             />
-            <PrimeVueMultiSelect
-              v-model="type"
+            <PrimeVueSelect
+              v-model="loyaltyPoint_queryParams.type"
               display="chip"
               :options="loyaltyPoint_types"
               option-label="label"
@@ -129,6 +114,7 @@ const pointTypeFormat = (type: string, points: number) => {
               filter
               placeholder="Payment Status"
               class="text-sm text-text-disabled w-64"
+              show-clear
             />
           </div>
         </section>
@@ -136,12 +122,12 @@ const pointTypeFormat = (type: string, points: number) => {
 
       <template #body="{ column, data }">
         <template v-if="column.value === 'invoiceID'">
-          <span class="font-normal text-sm text-text-primary">{{ data.invoice.invoiceNumber }}</span>
+          <span class="font-normal text-sm text-text-primary">{{ data.invoiceID ?? '-' }}</span>
         </template>
 
         <template v-else-if="column.value === 'purchaseDate'">
           <span class="font-normal text-sm text-text-primary">{{
-            useFormatDate(data.invoice.createdAt, 'dd/mm/yyyy')
+            data.invoiceId ? useFormatDate(data.createdAt, 'dd/mm/yyyy') : '-'
           }}</span>
         </template>
 
@@ -163,7 +149,6 @@ const pointTypeFormat = (type: string, points: number) => {
           </span>
         </template>
 
-        <!-- notes -->
         <template v-else-if="column.value === 'notes'">
           <span class="font-normal text-sm text-text-primary">
             <template v-if="data.notes !== null">{{ data.notes }}</template>
@@ -171,15 +156,12 @@ const pointTypeFormat = (type: string, points: number) => {
           </span>
         </template>
 
-        <!-- action -->
         <template v-else-if="column.value === 'action'">
-          <router-link :to="`/invoice/${data.invoiceId}`">
-            <PrimeVueButton variant="text" rounded aria-label="Edit">
-              <template #icon>
-                <AppBaseSvg name="edit" class="!w-5 !h-5" />
-              </template>
-            </PrimeVueButton>
-          </router-link>
+          <PrimeVueButton variant="text" rounded aria-label="Edit" @click="() => handle_editLoyaltyPoints(data)">
+            <template #icon>
+              <AppBaseSvg name="edit" class="!w-5 !h-5" />
+            </template>
+          </PrimeVueButton>
         </template>
       </template>
     </AppBaseDataTable>
@@ -193,7 +175,11 @@ const pointTypeFormat = (type: string, points: number) => {
       class="w-[45rem]"
       @hide="increarePoint_ResetFormData()"
     >
-      <form @submit.prevent="handleIncreasePoint">
+      <form
+        @submit.prevent="
+          isEdit ? customerDetails_fetchIncreasePointOnEdit() : customerDetails_fetchIncreasePointOnSubmit()
+        "
+      >
         <AppBaseFormGroup
           v-slot="{ classes }"
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
@@ -247,6 +233,7 @@ const pointTypeFormat = (type: string, points: number) => {
               icon-display="input"
               input-id="icondisplay"
               class="border shadow-xs border-grayscale-30 rounded-lg mt-4"
+              date-format="dd/mm/yy"
             />
           </div>
         </div>
@@ -276,7 +263,11 @@ const pointTypeFormat = (type: string, points: number) => {
     </PrimeVueDialog>
 
     <PrimeVueDialog v-model:visible="isDecreasePointOpen" modal header="Decrease Point" class="w-[45rem]">
-      <form @submit.prevent="handleDecreasePoint">
+      <form
+        @submit.prevent="
+          isEdit ? customerDetails_fetchDecreasePointOnEdit() : customerDetails_fetchDecreasePointOnSubmit()
+        "
+      >
         <AppBaseFormGroup
           v-slot="{ classes }"
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
