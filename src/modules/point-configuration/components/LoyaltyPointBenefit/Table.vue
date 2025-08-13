@@ -23,14 +23,20 @@ const popover = ref();
 <template>
   <section id="loyalty-point-benefit-table" class="flex flex-col relative inset-0 z-0">
     <AppBaseDataTable
-      :data="loyaltyPointBenefit_list.loyaltyBenefits.items"
+      :data="loyaltyPointBenefit_list.loyaltyBenefits?.items || []"
       :columns="loyaltyPointBenefit_columns"
       header-title="Loyalty Point Benefit"
-      :rows-per-page="loyaltyPointBenefit_list.loyaltyBenefits.meta.limit"
-      :total-records="loyaltyPointBenefit_list.loyaltyBenefits.meta.total"
+      :rows-per-page="
+        !loyaltyPointBenefit_list.loyaltySettingsStatus ? 10 : loyaltyPointBenefit_list.loyaltyBenefits.meta.limit
+      "
+      :total-records="
+        !loyaltyPointBenefit_list.loyaltySettingsStatus ? 100 : loyaltyPointBenefit_list.loyaltyBenefits.meta.total
+      "
       :first="
-        (loyaltyPointBenefit_list.loyaltyBenefits.meta.page - 1) *
-        loyaltyPointBenefit_list.loyaltyBenefits.meta.limit
+        !loyaltyPointBenefit_list.loyaltySettingsStatus
+          ? 1
+          : (loyaltyPointBenefit_list.loyaltyBenefits.meta.page - 1) *
+            loyaltyPointBenefit_list.loyaltyBenefits.meta.limit
       "
       is-using-server-side-pagination
       :is-using-filter="false"
@@ -44,7 +50,12 @@ const popover = ref();
         <h1 class="font-bold text-2xl text-text-primary">Loyalty Point Benefit</h1>
       </template>
       <template #header-suffix>
-        <PrimeVueButton class="w-fit" label="Add Benefit" @click="popover.toggle($event)">
+        <PrimeVueButton
+          class="w-fit"
+          label="Add Benefit"
+          :disabled="!loyaltyPointBenefit_list.loyaltySettingsStatus"
+          @click="popover.toggle($event)"
+        >
           <template #icon>
             <AppBaseSvg name="plus-line-white" class="!w-5 !h-5" />
           </template>

@@ -85,6 +85,19 @@ onMounted(async () => {
 <template>
   <section id="loyalty-point-benefit" class="flex flex-col relative inset-0 z-0">
     <LoyaltyPointBenefitTable />
+    <!-- <section
+      class="flex flex-col items-center justify-center p-2 border border-primary bg-primary-background rounded-md"
+    >
+      <h1 class="font-semibold text-2xl">You haven't configured your point settings yet.</h1>
+      <p>
+        Please set up your point configuration before creating any loyalty point benefit programs for customers.
+      </p>
+      <PrimeVueButton class="mt-8" label="Set Up Point Configuration">
+        <template #icon>
+          <AppBaseSvg name="gear" class="!w-5 !h-5" />
+        </template>
+      </PrimeVueButton>
+    </section> -->
     <DialogDiscount />
     <DialogFreeItems />
   </section>

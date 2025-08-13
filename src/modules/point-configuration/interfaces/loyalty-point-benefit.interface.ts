@@ -114,13 +114,6 @@ export type IProductListResponse = {
   ];
 };
 
-export type IPointConfigurationStore = {
-  loyaltyPointBenefit_isLoading: boolean;
-  productList_isLoading: boolean;
-  loyaltyPointBenefit_list: IPointConfigurationListResponse;
-  loyaltyPointBenefit_productList: IProduct[];
-};
-
 export type IItems = {
   productId: string;
   quantity: number;

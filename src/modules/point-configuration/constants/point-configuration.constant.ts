@@ -13,3 +13,31 @@ export const LIST_TABS_POINT_CONFIGURATION: ITabs[] = [
     value: 'loyalty-point-setting',
   },
 ];
+
+export const LOYALTY_POINT_SETTINGS_PRODUCT_LIST_COLUMNS: IColumnDataTable[] = [
+  {
+    label: '#',
+    sortable: false,
+    value: 'index',
+  },
+  {
+    label: 'Product Name',
+    sortable: false,
+    value: 'productName',
+  },
+  {
+    label: 'Price',
+    sortable: false,
+    value: 'price',
+  },
+  {
+    label: 'Point Earned (pts)',
+    sortable: false,
+    value: 'points',
+  },
+  {
+    label: 'Minimum Purchased Product',
+    sortable: false,
+    value: 'minimumTransaction',
+  },
+];
