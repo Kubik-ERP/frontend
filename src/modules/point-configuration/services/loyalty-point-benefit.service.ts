@@ -244,7 +244,7 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
         benefitName: freeItemsBenefit_formData.name,
         pointNeeds: freeItemsBenefit_formData.pointNeeds,
         items: freeItemsBenefit_formData.freeItems.map(item => ({
-          productId: item.id,
+          productId: item.id ?? '',
           quantity: item.quantity,
         })),
       };
@@ -282,7 +282,7 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
         benefitName: freeItemsBenefit_formData.name,
         pointNeeds: freeItemsBenefit_formData.pointNeeds,
         items: freeItemsBenefit_formData.freeItems.map(item => ({
-          productId: item.id,
+          productId: item.id ?? '',
           quantity: item.quantity,
         })),
       };

@@ -9,6 +9,7 @@ import type {
   IPointConfigurationListResponse,
   IProductListRequestQuery,
   IProductListResponse,
+  IFreeItemsPayload,
 } from '../interfaces';
 
 // Plugins
@@ -167,17 +168,7 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
     },
 
     async loyaltyBenefit_addFreeItems(
-      payload: {
-        benefitType: string;
-        benefitName: string;
-        pointNeeds: number;
-        items: [
-          {
-            productId: string;
-            quantity: number;
-          },
-        ];
-      },
+      payload: IFreeItemsPayload,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
       this.loyaltyPointBenefit_isLoading = true;
@@ -202,18 +193,7 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
     },
 
     async loyaltyBenefit_updateFreeItems(
-      payload: {
-        id: string;
-        benefitType: string;
-        benefitName: string;
-        pointNeeds: number;
-        items: [
-          {
-            productId: string;
-            quantity: number;
-          },
-        ];
-      },
+      payload: IFreeItemsPayload,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
       this.loyaltyPointBenefit_isLoading = true;

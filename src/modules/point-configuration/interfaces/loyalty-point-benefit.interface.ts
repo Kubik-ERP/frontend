@@ -120,3 +120,16 @@ export type IPointConfigurationStore = {
   loyaltyPointBenefit_list: IPointConfigurationListResponse;
   loyaltyPointBenefit_productList: IProduct[];
 };
+
+export type IItems = {
+  productId: string;
+  quantity: number;
+};
+
+export type IFreeItemsPayload = {
+  id?: string | null;
+  benefitType: string;
+  benefitName: string;
+  pointNeeds: number;
+  items?: IItems[] | [];
+}
