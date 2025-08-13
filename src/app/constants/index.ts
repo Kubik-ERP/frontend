@@ -3,6 +3,7 @@ export * from './day.constant';
 export * from './file-upload.constant';
 export * from './layout.constant';
 export * from './menus.constant';
+export * from './rbac.constant';
 export * from './regex.constant';
 export * from './store.constant';
 export * from './toast.constant';
