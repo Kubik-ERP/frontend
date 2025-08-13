@@ -46,7 +46,7 @@ watch(searchValue, newValue => {
     btn-cta-create-title="Create New PO"
     :columns="purchaseOrderList_columns"
     :data="purchaseOrderList_values"
-    header-title="Purhcase Order List"
+    header-title="Purchase Order List"
     :is-using-btn-cta-create="canCreatePurchaseOrder"
     is-using-custom-body
     :is-using-filter="false"
