@@ -11,6 +11,7 @@ import type {
   IProductListResponse,
   IFreeItemsPayload,
   IQueryParams,
+  ILoyaltyPointSettingsFormData,
 } from '../interfaces';
 
 // Plugins
@@ -264,7 +265,6 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
       this.loyaltyPointBenefit_isLoading = true;
       try {
         const response = await httpClient.get(`${LOYALTY_POINT_SETTINGS_BASE_ENDPOINT}`, requestConfigurations);
-        console.log(JSON.stringify(response.data.data.data, null, 2));
         this.loyaltyPointSettings_value = response.data.data.data;
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -301,6 +301,33 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
         }
       } finally {
         this.productList_isLoading = false;
+      }
+    },
+
+    async loyaltySettings_update(
+      payload: ILoyaltyPointSettingsFormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.loyaltyPointBenefit_isLoading = true;
+      try {
+        const snakeCasePayload = Object.fromEntries(
+          Object.entries(payload).map(([key, value]) => [key.replace(/([A-Z])/g, '_$1').toLowerCase(), value]),
+        );
+        console.log(JSON.stringify(snakeCasePayload, null, 2));
+        const response = await httpClient.patch(
+          `${LOYALTY_POINT_SETTINGS_BASE_ENDPOINT}/${this.loyaltyPointSettings_value.id}`,
+          snakeCasePayload,
+          { ...requestConfigurations },
+        );
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.loyaltyPointBenefit_isLoading = false;
       }
     },
   },

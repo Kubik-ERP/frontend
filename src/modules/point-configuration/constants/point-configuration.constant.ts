@@ -40,4 +40,9 @@ export const LOYALTY_POINT_SETTINGS_PRODUCT_LIST_COLUMNS: IColumnDataTable[] = [
     sortable: false,
     value: 'minimumTransaction',
   },
+  {
+    label: '',
+    sortable: false,
+    value: 'action',
+  }
 ];

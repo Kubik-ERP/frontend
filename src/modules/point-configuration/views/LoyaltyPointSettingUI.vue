@@ -4,7 +4,7 @@ import { usePointConfigurationService } from '../services/point-configuration.se
 const {
   loyaltyPointSettingsProduct_isLoading,
   loyaltyPointSettingsProduct_value,
-  loyaltyPointSettings_isLoading,
+  // loyaltyPointSettings_isLoading,
   loyaltyPointSettings_value,
   loyaltyPointSettingsDetail,
   // table
@@ -13,16 +13,6 @@ const {
   loyaltyPointSettingsProduct_onChangePage,
 } = usePointConfigurationService();
 
-provide('loyaltyPointSetting', {
-  loyaltyPointSettingsProduct_isLoading,
-  loyaltyPointSettingsProduct_value,
-  loyaltyPointSettings_isLoading,
-  loyaltyPointSettings_value,
-  loyaltyPointSettingsDetail,
-  // table
-  loyaltyPointSettingsProduct,
-  loyaltyPointSettingsProduct_columns,
-});
 
 onMounted(async () => {
   await loyaltyPointSettingsDetail();
@@ -155,7 +145,7 @@ onMounted(async () => {
     </PrimeVueCard>
 
     <footer>
-      <router-link to="">
+      <router-link :to="{ name: 'loyalty-point-setting.edit' }">
         <PrimeVueButton
           class="font-semibold text-base text-primary border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
           label="Edit Loyalty Point Settings"

@@ -1,3 +1,5 @@
+import type { Validation } from '@vuelidate/core';
+
 export interface ILoyaltyPointSettings {
   id: string;
   spendBased: boolean;
@@ -36,9 +38,29 @@ export interface ILoyaltyPointSettingsProductItem {
 }
 
 export interface IQueryParams {
-  page?: number|null;
-  limit?: number|null;
-  search?: string|null;
+  page?: number | null;
+  limit?: number | null;
+  search?: string | null;
+}
+
+export interface IProductBasedItems {
+  productId: string;
+  pointsEarned: number;
+  minimumPurchase: number;
+}
+
+export interface ILoyaltyPointSettingsFormData {
+  spendBased: boolean;
+  spendBasedMinTransaction: number;
+  spendBasedPointEarned: number;
+  spendBasedExpiration: number;
+  spendBasedApplyMultiple: boolean;
+  spendBasedEarnWhenRedeem: boolean;
+  productBased: boolean;
+  productBasedItems: IProductBasedItems[];
+  productBasedExpiration: number;
+  productBasedApplyMultiple: boolean;
+  productBasedEarnWhenRedeem: boolean;
 }
 
 export interface ILoyaltyPointSettingsProvided {
@@ -52,4 +74,8 @@ export interface ILoyaltyPointSettingsProvided {
   loyaltyPointSettingsProduct: () => Promise<void>;
   loyaltyPointSettingsProduct_columns: IColumnDataTable[];
   loyaltyPointSettingsProduct_onChangePage: (page: number) => void;
+  // form
+  loyaltyPointSettings_formData: ILoyaltyPointSettingsFormData;
+  loyaltyPointSettings_formValidations: globalThis.Ref<Validation>;
+  loyaltyPointSettings_onSubmit: () => Promise<void>;
 }

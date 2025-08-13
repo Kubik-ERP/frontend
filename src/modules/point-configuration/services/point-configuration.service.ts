@@ -8,11 +8,70 @@ import {
 } from '../constants/point-configuration.constant';
 
 // Type
-import { ILoyaltyPointSettingsProvided, IQueryParams } from '../interfaces/point-configuration.interface';
+import {
+  ILoyaltyPointSettingsProvided,
+  IQueryParams,
+  ILoyaltyPointSettingsFormData,
+} from '../interfaces/point-configuration.interface';
 // Service
+
+// Vuelidate
+import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 
 export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided => {
   const pointConfiguration_activeTab = ref<string>('loyalty-point-setting');
+
+  const loyaltyPointSettings_formData = reactive<ILoyaltyPointSettingsFormData>({
+    spendBased: false,
+    spendBasedMinTransaction: 0,
+    spendBasedPointEarned: 0,
+    spendBasedExpiration: 0,
+    spendBasedApplyMultiple: false,
+    spendBasedEarnWhenRedeem: false,
+    productBased: false,
+    productBasedItems: [],
+    productBasedExpiration: 0,
+    productBasedApplyMultiple: false,
+    productBasedEarnWhenRedeem: false,
+  });
+
+  const loyaltyPointSettings_formRules = computed(() => ({
+    spendBasedMinTransaction: {
+      required,
+    },
+    spendBasedPointEarned: {
+      required,
+    },
+    spendBasedExpiration: {
+      required,
+    },
+    productBasedExpiration: {
+      required,
+    },
+  }));
+
+  const loyaltyPointSettings_formValidations = useVuelidate(
+    loyaltyPointSettings_formRules,
+    loyaltyPointSettings_formData,
+    {
+      $autoDirty: true,
+    },
+  );
+
+  const loyaltyPointSettings_onSubmit = async (): Promise<void> => {
+    try {
+      await store.loyaltySettings_update(loyaltyPointSettings_formData, {
+        ...httpAbort_registerAbort('LOYALTY_POINT_SETTINGS_UPDATE_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
 
   watch(
     pointConfiguration_activeTab,
@@ -56,7 +115,7 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
 
   const loyaltyPointSettingsProduct = async (): Promise<void> => {
     try {
-      await store.loyaltySettings_fetchProductList(loyaltyPointSettingsProduct_queryParams,{
+      await store.loyaltySettings_fetchProductList(loyaltyPointSettingsProduct_queryParams, {
         ...httpAbort_registerAbort('LOYALTY_POINT_SETTINGS_PRODUCT_LIST_REQUEST'),
       });
     } catch (error: unknown) {
@@ -99,5 +158,10 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     loyaltyPointSettingsProduct_isLoading,
     loyaltyPointSettingsProduct_value,
     loyaltyPointSettingsProduct_onChangePage,
+
+    // form
+    loyaltyPointSettings_formData,
+    loyaltyPointSettings_formValidations,
+    loyaltyPointSettings_onSubmit,
   };
 };
