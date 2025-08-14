@@ -3,6 +3,9 @@ import {
   PURCHASE_ORDER_CREATE_EDIT_LIST_COLUMNS,
   PURCHASE_ORDER_CREATE_EDIT_PRODUCT_ITEMS,
   PURCHASE_ORDER_CREATE_EDIT_SUPPLIERS,
+  PURCHASE_ORDER_CREATE_REQUEST,
+  PURCHASE_ORDER_DETAILS_REQUEST,
+  PURCHASE_ORDER_UPDATE_REQUEST,
 } from '../constants';
 
 // Interfaces
@@ -15,6 +18,9 @@ import type {
 // Plugins
 import eventBus from '@/plugins/mitt';
 
+// Stores
+import { usePurchaseOrderStore } from '../store';
+
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
@@ -26,7 +32,17 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
   /**
    * @description Injected variables
    */
-  // const { httpAbort_registerAbort } = useHttpAbort();
+  const router = useRouter(); // Router instance
+  const route = useRoute(); // Current route
+  const store = usePurchaseOrderStore(); // Instance of the store
+  const { purchaseOrder_detail } = storeToRefs(store);
+  const { httpAbort_registerAbort } = useHttpAbort();
+
+  /**
+   * @description Computed properties for business logic
+   */
+  const purchaseOrderCreateEdit_isEditMode = computed(() => route.params.id !== undefined);
+  const purchaseOrderCreateEdit_purchaseOrderId = computed(() => (route.params.id ? String(route.params.id) : ''));
 
   /**
    * @description Reactive variables
@@ -83,6 +99,219 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
     {
       $autoDirty: true,
     },
+  );
+
+  /**
+   * @description Handle business logic for resetting form data
+   */
+  const purchaseOrderCreateEdit_onResetForm = (): void => {
+    purchaseOrderCreateEdit_formData.value = {
+      supplierId: '',
+      orderDate: null,
+      productItems: [],
+    };
+
+    purchaseOrderCreateEdit_selectedProductItems.value = [];
+    purchaseOrderCreateEdit_selectedProductItem.value = null;
+    purchaseOrderCreateEdit_totalPrice.value = 0;
+
+    purchaseOrderCreateEdit_formValidations.value.$reset();
+  };
+
+  /**
+   * @description Handle fetch api purchase order - create
+   */
+  const purchaseOrderCreateEdit_fetchCreate = async (): Promise<unknown> => {
+    try {
+      // Transform the form data to match the API payload structure
+      const orderDate = Array.isArray(purchaseOrderCreateEdit_formData.value.orderDate)
+        ? purchaseOrderCreateEdit_formData.value.orderDate[0]
+        : purchaseOrderCreateEdit_formData.value.orderDate;
+
+      const payload = {
+        supplierId: purchaseOrderCreateEdit_formData.value.supplierId,
+        orderDate: orderDate ? new Date(orderDate).toISOString() : new Date().toISOString(),
+        productItems: purchaseOrderCreateEdit_selectedProductItems.value.map(item => ({
+          id: item.id,
+          masterItemId: item.id, // Using the same ID as masterItemId for now
+          quantity: item.quantity,
+        })),
+      };
+
+      await store.purchaseOrder_create(payload, {
+        ...httpAbort_registerAbort(PURCHASE_ORDER_CREATE_REQUEST),
+      });
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Purchase order created successfully',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      setTimeout(() => {
+        router.push({ name: 'purchase-order.list' });
+      }, 1000);
+    } catch (error: unknown) {
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Failed to create purchase order',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api purchase order - details
+   */
+  const purchaseOrderCreateEdit_fetchDetails = async (id: string): Promise<unknown> => {
+    try {
+      await store.purchaseOrder_details(id, {
+        ...httpAbort_registerAbort(PURCHASE_ORDER_DETAILS_REQUEST),
+      });
+    } catch (error: unknown) {
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Failed to fetch purchase order details',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api purchase order - update
+   */
+  const purchaseOrderCreateEdit_fetchUpdate = async (id: string): Promise<unknown> => {
+    try {
+      // Transform the form data to match the API payload structure
+      const orderDate = Array.isArray(purchaseOrderCreateEdit_formData.value.orderDate)
+        ? purchaseOrderCreateEdit_formData.value.orderDate[0]
+        : purchaseOrderCreateEdit_formData.value.orderDate;
+
+      const payload = {
+        supplierId: purchaseOrderCreateEdit_formData.value.supplierId,
+        orderDate: orderDate ? new Date(orderDate).toISOString() : new Date().toISOString(),
+        productItems: purchaseOrderCreateEdit_selectedProductItems.value.map(item => ({
+          id: item.id,
+          masterItemId: item.id, // Using the same ID as masterItemId for now
+          quantity: item.quantity,
+        })),
+      };
+
+      await store.purchaseOrder_update(id, payload, {
+        ...httpAbort_registerAbort(PURCHASE_ORDER_UPDATE_REQUEST),
+      });
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Purchase order updated successfully',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      setTimeout(() => {
+        router.push({ name: 'purchase-order.list' });
+      }, 1000);
+    } catch (error: unknown) {
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Failed to update purchase order',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle business logic for form submission
+   */
+  const purchaseOrderCreateEdit_onSubmitForm = async (): Promise<void> => {
+    // Validate form first
+    purchaseOrderCreateEdit_formValidations.value.$touch();
+
+    if (purchaseOrderCreateEdit_formValidations.value.$invalid) {
+      return;
+    }
+
+    try {
+      if (purchaseOrderCreateEdit_isEditMode.value) {
+        await purchaseOrderCreateEdit_fetchUpdate(purchaseOrderCreateEdit_purchaseOrderId.value);
+      } else {
+        await purchaseOrderCreateEdit_fetchCreate();
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
+  };
+
+  /**
+   * @description Handle business logic for loading initial data (for edit mode)
+   */
+  const purchaseOrderCreateEdit_onLoadInitialData = async (): Promise<void> => {
+    if (purchaseOrderCreateEdit_isEditMode.value && purchaseOrderCreateEdit_purchaseOrderId.value) {
+      try {
+        await purchaseOrderCreateEdit_fetchDetails(purchaseOrderCreateEdit_purchaseOrderId.value);
+      } catch (error) {
+        console.error('Error loading purchase order details:', error);
+      }
+    }
+  }; /**
+   * @description Watcher to populate form when detail is loaded (for edit mode)
+   */
+  watch(
+    () => purchaseOrder_detail.value,
+    newDetail => {
+      if (newDetail) {
+        purchaseOrderCreateEdit_formData.value = {
+          supplierId: newDetail.supplierId,
+          orderDate: new Date(newDetail.orderDate),
+          productItems: [],
+        };
+
+        // Transform product items to the create-edit format
+        purchaseOrderCreateEdit_selectedProductItems.value = newDetail.productItems.map(item => ({
+          id: item.id,
+          name: item.productName,
+          brandName: '', // Not available in detail, will need to be fetched separately
+          quantity: item.quantity,
+          sku: '', // Not available in detail
+          unit: '', // Not available in detail
+          unitPrice: item.unitPrice,
+          totalPrice: item.totalPrice,
+        }));
+      }
+    },
+    { immediate: true },
   );
 
   /**
@@ -334,10 +563,14 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
   );
 
   return {
+    purchaseOrderCreateEdit_fetchCreate,
+    purchaseOrderCreateEdit_fetchDetails,
+    purchaseOrderCreateEdit_fetchUpdate,
     purchaseOrderCreateEdit_formData,
     purchaseOrderCreateEdit_formDataOfEditQuantity,
     purchaseOrderCreateEdit_formValidations,
     purchaseOrderCreateEdit_formValidationsOfEditQuantity,
+    purchaseOrderCreateEdit_isEditMode,
     purchaseOrderCreateEdit_listColumns: PURCHASE_ORDER_CREATE_EDIT_LIST_COLUMNS,
     purchaseOrderCreateEdit_listProductItems: PURCHASE_ORDER_CREATE_EDIT_PRODUCT_ITEMS,
     purchaseOrderCreateEdit_listSuppliers: PURCHASE_ORDER_CREATE_EDIT_SUPPLIERS,
@@ -347,10 +580,13 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
     purchaseOrderCreateEdit_onDecrementQuantity,
     purchaseOrderCreateEdit_onDeleteProductItem,
     purchaseOrderCreateEdit_onIncrementQuantity,
+    purchaseOrderCreateEdit_onLoadInitialData,
+    purchaseOrderCreateEdit_onResetForm,
     purchaseOrderCreateEdit_onShowDialogAddProductItem,
     purchaseOrderCreateEdit_onShowDialogEditQuantity,
     purchaseOrderCreateEdit_onSubmitAddProductItem,
     purchaseOrderCreateEdit_onSubmitEditQuantity,
+    purchaseOrderCreateEdit_onSubmitForm,
     purchaseOrderCreateEdit_selectedProductItem,
     purchaseOrderCreateEdit_selectedProductItems,
     purchaseOrderCreateEdit_totalPrice,
