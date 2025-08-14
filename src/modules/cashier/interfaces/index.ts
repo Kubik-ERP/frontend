@@ -29,6 +29,8 @@ export interface ICashierModalAddProduct {
 
 export interface ICashierStateStore {
   cashierProduct_selectedProduct: ICashierSelected[];
+  cashierSelfOrder_isLoadingSignUp: boolean;
+  cashierSelfOrder_isLoadingSignIn: boolean;
 }
 
 export interface ICashierStateCategory {

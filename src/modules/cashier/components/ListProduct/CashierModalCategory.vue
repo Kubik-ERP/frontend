@@ -7,6 +7,10 @@ import { ICashierProductProvided } from '../../interfaces/cashier-product-servic
  */
 const { cashierProduct_modalCategory, cashierProduct_productState, cashierProduct_handleSelectCategory } =
   inject<ICashierProductProvided>('cashierProduct')!;
+
+const imageUrl = (image: string) => {
+  return APP_BASE_BUCKET_URL + image;
+};
 </script>
 <template>
   <section id="cashier-modal-category">
@@ -39,7 +43,7 @@ const { cashierProduct_modalCategory, cashierProduct_productState, cashierProduc
               "
             >
               <AppBaseImage
-                :src="category.image"
+                :src="imageUrl(category.pictureUrl)"
                 :alt="category.category"
                 class="h-9 w-9 rounded-full object-cover pointer-events-none"
               />
