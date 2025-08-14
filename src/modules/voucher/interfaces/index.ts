@@ -16,6 +16,7 @@ export type IVoucher = {
   status: 'active' |  'expired' | 'upcoming'
   voucherHasProducts? : IVoucherHasProducts[]
   isApplyAllProducts: boolean,
+  isApplied: boolean;
   createdAt: string;
   updatedAt: string;
 };

@@ -1,0 +1,33 @@
+{
+  "inventoryCategory": {
+    "title": "Gudang",
+    "createButton": "Buat ",
+    "editButton": "Ubah",
+    "deleteButton": "Hapus",
+    "searchPlaceholder": "Cari ...",
+    "noDataMessage": "Tidak ada  ditemukan.",
+    "form": {
+      "name": "Nama ",
+      "description": "Deskripsi",
+      "fields": {
+        "name": "Masukkan nama ",
+        "description": "Masukkan deskripsi "
+      },
+      "buttons": {
+        "cancel": "Batal",
+        "create": "Buat ",
+        "update": "Perbarui "
+      }
+    },
+    "popover": {
+      "edit": {
+        "title": "Ubah ",
+        "message": "Apakah Anda yakin ingin mengubah ini?"
+      },
+      "delete": {
+        "title": "Hapus ",
+        "message": "Apakah Anda yakin ingin menghapus ini?"
+      }
+    }
+  }
+}

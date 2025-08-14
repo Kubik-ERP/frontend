@@ -1,0 +1,173 @@
+<script setup lang="ts">
+import { ref, watch } from 'vue';
+import { useInventoryCategoryService } from '../services/inventory-category.service';
+import { inventoryCategoryCreateService } from '../services/inventory-category-create.service';
+import confirmationSVG from '@/app/assets/icons/confirmation.svg';
+import eventBus from '@/plugins/mitt';
+
+// State konfirmasi dialog
+const isUpdateModal = ref(false);
+
+// Ambil state dari service list
+const {
+  inventoryCategoryFormMode,
+  inventoryCategoryList_editingItem,
+  inventoryCategoryList_onDeleteCategory
+} = useInventoryCategoryService();
+
+// Ambil state & function dari service create
+const {
+  inventoryCategoryCreate_isLoading,
+  inventoryCategoryCreate_formData,
+  inventoryCategoryCreate_onSubmit,
+  inverntoryCategoryCreate_Validation,
+  inventoryCategoryCreate_onCancel,
+} = inventoryCategoryCreateService();
+
+// Isi data kalau mode edit atau reset kalau create
+watch(
+  [inventoryCategoryFormMode, inventoryCategoryList_editingItem],
+  ([mode, item]) => {
+    if (mode === 'edit' && item) {
+      inventoryCategoryCreate_formData.value = {
+        name: item.name ?? '',
+        notes: item.notes ?? '',
+      };
+    } else {
+      inventoryCategoryCreate_formData.value = {
+        name: '',
+        notes: '',
+      };
+    }
+  },
+  { immediate: true }
+);
+
+// Submit handler → kalau edit, buka modal konfirmasi
+const handleSubmit = async () => {
+  if (inventoryCategoryFormMode.value === 'edit') {
+    isUpdateModal.value = true;
+
+
+    eventBus.emit('AppBaseDialog', {
+      id: 'inventory-category-modal-form',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: false,
+      width: '600px',
+    });
+  } else {
+    await inventoryCategoryCreate_onSubmit(
+      inventoryCategoryCreate_formData.value,
+      inventoryCategoryFormMode.value,
+      inventoryCategoryList_editingItem.value?.id
+    );
+  }
+};
+
+// Konfirmasi update
+const confirmUpdate = async () => {
+  isUpdateModal.value = false;
+  await inventoryCategoryCreate_onSubmit(
+    inventoryCategoryCreate_formData.value,
+    inventoryCategoryFormMode.value,
+    inventoryCategoryList_editingItem.value?.id
+  );
+};
+
+const cancelUpdate = () => {
+  isUpdateModal.value = false;
+};
+
+// Delete handler → buka modal konfirmasi delete
+const handleDelete = async () => {
+  eventBus.emit('AppBaseDialog', {
+    id: 'inventory-category-modal-form',
+    isUsingClosableButton: false,
+    isUsingBackdrop: true,
+    isOpen: false,
+    width: '600px',
+  });
+
+  if (inventoryCategoryList_editingItem.value?.id) {
+    await inventoryCategoryList_onDeleteCategory(inventoryCategoryList_editingItem.value.id);
+  }
+};
+</script>
+
+<template>
+  <AppBaseDialog id="inventory-category-modal-form">
+    <template #header>
+      <header class="flex flex-col gap-2">
+        <h6 class="font-semibold text-black text-lg">
+          {{ inventoryCategoryFormMode === 'edit' ? 'Edit Inventory Category' : 'Create Inventory Category' }}
+        </h6>
+      </header>
+    </template>
+
+    <template #content>
+      <form class="w-full" @submit.prevent="handleSubmit">
+        <section class="flex flex-col gap-4 w-full">
+          <AppBaseFormGroup v-slot="{ classes }" class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+            is-name-as-label label-for="category-name" name="Category Name" spacing-bottom="mb-0"
+            :validators="inverntoryCategoryCreate_Validation.name">
+            <PrimeVueInputText v-model="inventoryCategoryCreate_formData.name" class="w-full" :class="{ ...classes }"
+              placeholder="Enter category name" required />
+          </AppBaseFormGroup>
+
+          <AppBaseFormGroup v-slot="{ classes }" class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+            is-name-as-label label-for="category-description" name="Description" spacing-bottom="mb-0">
+            <PrimeVueTextarea id="category-description" v-model="inventoryCategoryCreate_formData.notes"
+              placeholder="Enter inventory description" rows="2"
+              class="w-full border border-gray-300 rounded-md px-3 py-2" :class="{ ...classes }"
+              style="height: 150px" />
+          </AppBaseFormGroup>
+        </section>
+      </form>
+    </template>
+
+    <template #footer>
+      <div class="flex flex-row gap-2 w-full justify-end">
+        <!-- Cancel -->
+        <PrimeVueButton type="button" class="w-full bg-white text-primary border border-primary"
+          :disabled="inventoryCategoryCreate_isLoading" @click="inventoryCategoryCreate_onCancel">
+          Cancel
+        </PrimeVueButton>
+
+        <!-- Update / Save -->
+        <PrimeVueButton type="submit" class="w-full disabled:bg-gray-400 disabled:text-white disabled:border-none"
+          :loading="inventoryCategoryCreate_isLoading" :disabled="!inventoryCategoryCreate_formData.name"
+          @click="handleSubmit">
+          {{ inventoryCategoryFormMode === 'edit' ? 'Update' : 'Save' }}
+        </PrimeVueButton>
+
+        <!-- Delete -->
+        <PrimeVueButton v-if="inventoryCategoryFormMode === 'edit'" type="button"
+          class="w-full bg-white text-red-600 border-none" @click="handleDelete">
+          <AppBaseSvg name="delete" class="!w-4 !h-4" />
+          Delete
+        </PrimeVueButton>
+      </div>
+    </template>
+  </AppBaseDialog>
+
+  <!-- Dialog Konfirmasi Update -->
+  <PrimeVueDialog :visible="isUpdateModal" modal header="">
+    <template #container>
+      <div class="w-[35rem] p-8">
+        <div class="flex flex-col items-center gap-4 text-center">
+          <span><img :src="confirmationSVG" alt="confirmation" /></span>
+          <h1 class="text-2xl font-semibold">Are you sure want to update this category?</h1>
+          <p>The update will affect the related inventory category data</p>
+          <div class="flex items-center justify-between gap-4">
+            <PrimeVueButton variant="text" class="w-56 text-lg border-2 border-primary text-primary font-semibold"
+              @click="cancelUpdate">Cancel</PrimeVueButton>
+            <PrimeVueButton
+              class="text-xl w-56 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
+              unstyled label="Yes, I'm Sure" @click="confirmUpdate" />
+          </div>
+        </div>
+      </div>
+    </template>
+  </PrimeVueDialog>
+</template>

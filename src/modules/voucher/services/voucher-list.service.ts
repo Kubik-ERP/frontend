@@ -1,8 +1,8 @@
-import { DataTableSortEvent } from "primevue";
-import { VOUCHER_LIST_COLUMNS, VOUCHER_LIST_REQUEST } from "../constants";
-import { IVoucherListRequestQuery, IVoucherListProvided } from "../interfaces/voucher-list.interface";
-import { useVoucherStore } from "../store/index";
-import eventBus from "@/plugins/mitt";
+import { DataTableSortEvent } from 'primevue';
+import { VOUCHER_LIST_COLUMNS, VOUCHER_LIST_REQUEST } from '../constants';
+import { IVoucherListRequestQuery, IVoucherListProvided } from '../interfaces/voucher-list.interface';
+import { useVoucherStore } from '../store/index';
+import eventBus from '@/plugins/mitt';
 
 export const useVoucherListService = (): IVoucherListProvided => {
   const store = useVoucherStore();
@@ -57,10 +57,10 @@ export const useVoucherListService = (): IVoucherListProvided => {
    * Handle sort change
    */
   const voucher_handleOnSortChange = (event: DataTableSortEvent): void => {
-    const sortField = event.sortField as string
-    const final = sortField  == 'validityPeriod' ? 'validityPeriod' : 'updatedAt';
+    const sortField = event.sortField as string;
+    const final = sortField == 'validityPeriod' ? 'validityPeriod' : 'updatedAt';
     voucherList_queryParams.orderBy = final;
-    voucherList_queryParams.orderDirection = event.sortOrder === 1 ? "asc" : "desc";
+    voucherList_queryParams.orderDirection = event.sortOrder === 1 ? 'asc' : 'desc';
     voucherList_fetchListVouchers();
   };
 
@@ -95,48 +95,71 @@ export const useVoucherListService = (): IVoucherListProvided => {
   const voucherList_handleFilter = (date: string) => {
     voucherList_queryParams.startDate = date;
     voucherList_fetchListVouchers();
-  }
+  };
 
   /**
    * Dialog confirmation delete voucher
    */
   const voucherList_deleteVoucher = async (voucherId: string): Promise<void> => {
-    const argsEventEmitter: IPropsDialogConfirmation = {
-      id: 'voucher-list-dialog-confirmation',
-      description:
-        'This action cannot be undone, and the voucher you remove will be deleted permanently.',
-      iconName: 'delete-polygon',
-      isOpen: true,
-      isUsingButtonSecondary: true,
-      onClickButtonPrimary: () => {
-        // Close dialog (Cancel)
-        const argsEventEmitter: IPropsDialogConfirmation = {
-          id: 'voucher-list-dialog-confirmation',
-          isOpen: false,
-        };
-        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
-      },
-      onClickButtonSecondary: async () => {
-        // Close dialog
-        const argsEventEmitter: IPropsDialogConfirmation = {
-          id: 'voucher-list-dialog-confirmation',
-          isOpen: false,
-        };
-        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+    const voucher = voucher_lists.value.data.items.filter(voucher => voucher.id === voucherId);
+    if (voucher[0].isApplied) {
+      // Show toast error
+      const argsEventEmitter: IPropsDialogConfirmation = {
+        id: 'voucher-list-dialog-confirmation',
+        description: 'This voucher is currently applied to an order and cannot be deleted.',
+        iconName: 'info',
+        isOpen: true,
+        onClickButtonPrimary: () => {
+          // Close dialog (Cancel)
+          const argsEventEmitter: IPropsDialogConfirmation = {
+            id: 'voucher-list-dialog-confirmation',
+            isOpen: false,
+          };
+          eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+        },
 
-        // Proceed delete
-        await voucherList_fetchdeleteVoucher(voucherId);
-      },
-      textButtonPrimary: 'Cancel',
-      textButtonSecondary: 'Delete Voucher',
-      title: 'Are you sure want to delete this voucher?',
-      type: 'error',
-    };
+        textButtonPrimary: 'Cancel',
+        title: 'Cant delete voucher',
+        type: 'error',
+      };
 
-    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+      eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+      return;
+    } else {
+      const argsEventEmitter: IPropsDialogConfirmation = {
+        id: 'voucher-list-dialog-confirmation',
+        description: 'This action cannot be undone, and the voucher you remove will be deleted permanently.',
+        iconName: 'delete-polygon',
+        isOpen: true,
+        isUsingButtonSecondary: true,
+        onClickButtonPrimary: () => {
+          // Close dialog (Cancel)
+          const argsEventEmitter: IPropsDialogConfirmation = {
+            id: 'voucher-list-dialog-confirmation',
+            isOpen: false,
+          };
+          eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+        },
+        onClickButtonSecondary: async () => {
+          // Close dialog
+          const argsEventEmitter: IPropsDialogConfirmation = {
+            id: 'voucher-list-dialog-confirmation',
+            isOpen: false,
+          };
+          eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+
+          // Proceed delete
+          await voucherList_fetchdeleteVoucher(voucherId);
+        },
+        textButtonPrimary: 'Cancel',
+        textButtonSecondary: 'Delete Voucher',
+        title: 'Are you sure want to delete this voucher?',
+        type: 'error',
+      };
+
+      eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+    }
   };
-
-
 
   return {
     voucherList_columns: VOUCHER_LIST_COLUMNS,
@@ -147,6 +170,6 @@ export const useVoucherListService = (): IVoucherListProvided => {
     voucherList_fetchListVouchers,
     voucherList_deleteVoucher: voucherList_deleteVoucher,
     voucherList_values: voucher_lists,
-    voucherList_handleFilter
+    voucherList_handleFilter,
   };
 };

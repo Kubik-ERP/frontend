@@ -1,0 +1,307 @@
+<script setup lang="ts">
+// Services
+import { useSupplierCreateEditService } from '../services/supplier-create-edit.service';
+import { useSupplierListService } from '../services/supplier-list.service';
+import confirmationSVG from '@/app/assets/icons/confirmation.svg';
+/**
+ * @description Destructure all the data and methods what we need
+ */
+const {
+  supplierForm_formData,
+  supplierForm_formValidations,
+  supplierForm_isEditMode,
+  supplierForm_isLoading,
+  supplierForm_onSubmit,
+  supplierForm_onCancel,
+} = useSupplierCreateEditService();
+
+const{
+  supplierList_onDeleteSupplier,
+} = useSupplierListService()
+
+// Initialize page title
+// const pageTitle = computed(() => (supplierForm_isEditMode.value ? 'Edit Supplier' : 'Add Supplier'));
+
+// Check if all required fields are filled
+const isFormValid = computed(() => {
+  return !!(
+    supplierForm_formData.supplierName?.trim() &&
+    supplierForm_formData.contactPerson?.trim() &&
+    supplierForm_formData.phoneNumber?.trim()
+  );
+});
+
+
+/**
+ * @description Handle delete action for the supplier.
+ */
+
+ const route = useRoute();
+//  const router = useRouter();
+const handleDeleteSupplier = async () => {
+  console.log('Deleting supplier with ID:', route.params.id);
+  supplierList_onDeleteSupplier(route.params.id as string, true);
+};
+
+const isUpdateModal = ref(false);
+
+const cancelUpdate = () => {
+  isUpdateModal.value = false;
+};
+
+const confirmUpdate = () => {
+  isUpdateModal.value = false;
+  supplierForm_onSubmit();
+};
+
+
+</script>
+
+<template>
+  <section id="supplier-create-edit" class="flex flex-col gap-6 p-6">
+    <!-- Header -->
+
+
+    <form class="space-y-8" @submit.prevent="supplierForm_isEditMode ? isUpdateModal = true : supplierForm_onSubmit()">
+      <!-- Supplier Details Section -->
+      <div class="space-y-6">
+        <h2 class="text-lg font-semibold text-primary-500">Supplier Details</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Supplier Name -->
+          <div>
+            <AppBaseFormGroup
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium text-gray-700 mb-2"
+              is-name-as-label
+              label-for="supplierName"
+              name="Supplier Name"
+              :validators="supplierForm_formValidations.supplierName"
+            >
+              <PrimeVueInputText
+                id="supplierName"
+                v-model="supplierForm_formData.supplierName"
+                placeholder=""
+                class="w-full h-10 border border-gray-300 rounded-md px-3"
+                :class="{ ...classes }"
+                v-on="useListenerForm(supplierForm_formValidations, 'supplierName')"
+              />
+            </AppBaseFormGroup>
+          </div>
+
+          <!-- Contact Person -->
+          <div>
+            <AppBaseFormGroup
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium text-gray-700 mb-2"
+              is-name-as-label
+              label-for="contactPerson"
+              name="Contact Person"
+              :validators="supplierForm_formValidations.contactPerson"
+            >
+              <PrimeVueInputText
+                id="contactPerson"
+                v-model="supplierForm_formData.contactPerson"
+                placeholder=""
+                class="w-full h-10 border border-gray-300 rounded-md px-3"
+                :class="{ ...classes }"
+                v-on="useListenerForm(supplierForm_formValidations, 'contactPerson')"
+              />
+            </AppBaseFormGroup>
+          </div>
+
+          <!-- Phone Number -->
+          <div>
+            <AppBaseFormGroup
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium text-gray-700 mb-2"
+              is-name-as-label
+              label-for="phoneNumber"
+              name="Phone Number"
+              :validators="supplierForm_formValidations.phoneNumber"
+            >
+              <PrimeVueInputText
+                id="phoneNumber"
+                v-model="supplierForm_formData.phoneNumber"
+                placeholder=""
+                class="w-full h-10 border border-gray-300 rounded-md px-3"
+                :class="{ ...classes }"
+                v-on="useListenerForm(supplierForm_formValidations, 'phoneNumber')"
+              />
+            </AppBaseFormGroup>
+            <AppBaseFormGroup
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium text-gray-700 mb-2"
+              is-name-as-label
+              label-for="address"
+              name="Address"
+            >
+              <PrimeVueTextarea
+                id="address"
+                v-model="supplierForm_formData.address"
+                placeholder=""
+                rows="2"
+                class="w-full border border-gray-300 rounded-md px-3 py-2"
+                :class="{ ...classes }"
+                style="height: 150px"
+              />
+            </AppBaseFormGroup>
+          </div>
+
+          <!-- Email -->
+          <div>
+            <AppBaseFormGroup
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium text-gray-700 mb-2"
+              is-name-as-label
+              label-for="email"
+              name="Email"
+            >
+              <PrimeVueInputText
+                id="email"
+                v-model="supplierForm_formData.email"
+                type="email"
+                placeholder=""
+                class="w-full h-10 border border-gray-300 rounded-md px-3"
+                :class="{ ...classes }"
+              />
+            </AppBaseFormGroup>
+          </div>
+        </div>
+
+        <!-- Address field outside the grid, taking full width -->
+        <div>
+          <!--  -->
+        </div>
+      </div>
+
+      <!-- Payment & Banking Information Section -->
+      <div class="space-y-6">
+        <h2 class="text-lg font-semibold text-primary-500">Payment & Banking Information</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Bank Name -->
+          <div>
+            <AppBaseFormGroup
+              class-label="block text-sm font-medium text-gray-700 mb-2"
+              is-name-as-label
+              label-for="bankName"
+              name="Bank Name"
+            >
+              <PrimeVueInputText
+                id="bankName"
+                v-model="supplierForm_formData.bankName"
+                placeholder=""
+                class="w-full h-10 border border-gray-300 rounded-md px-3"
+              />
+            </AppBaseFormGroup>
+          </div>
+
+          <!-- Bank Account Number -->
+          <div>
+            <AppBaseFormGroup
+              class-label="block text-sm font-medium text-gray-700 mb-2"
+              is-name-as-label
+              label-for="bankAccountNumber"
+              name="Bank Account Number"
+            >
+              <PrimeVueInputText
+                id="bankAccountNumber"
+                v-model="supplierForm_formData.bankAccountNumber"
+                placeholder=""
+                class="w-full h-10 border border-gray-300 rounded-md px-3"
+              />
+            </AppBaseFormGroup>
+          </div>
+
+          <!-- Bank Account Name -->
+          <div>
+            <AppBaseFormGroup
+              class-label="block text-sm font-medium text-gray-700 mb-2"
+              is-name-as-label
+              label-for="bankAccountName"
+              name="Bank Account Name"
+            >
+              <PrimeVueInputText
+                id="bankAccountName"
+                v-model="supplierForm_formData.bankAccountName"
+                placeholder=""
+                class="w-full h-10 border border-gray-300 rounded-md px-3"
+              />
+            </AppBaseFormGroup>
+          </div>
+
+          <!-- Tax Identification Number -->
+          <div>
+            <AppBaseFormGroup
+              class-label="block text-sm font-medium text-gray-700 mb-2"
+              is-name-as-label
+              label-for="taxIdentificationNumber"
+              name="Tax Identification Number (NPWP)"
+            >
+              <PrimeVueInputText
+                id="taxIdentificationNumber"
+                v-model="supplierForm_formData.taxIdentificationNumber"
+                placeholder=""
+                class="w-full h-10 border border-gray-300 rounded-md px-3"
+              />
+            </AppBaseFormGroup>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex items-center gap-3">
+        <PrimeVueButton
+          type="button"
+          variant="outlined"
+          class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+          @click="supplierForm_onCancel"
+        >
+          Cancel
+        </PrimeVueButton>
+
+        <PrimeVueButton
+          type="submit"
+          :class="[
+            'px-6 py-2 rounded-md',
+            isFormValid ? 'bg-primary hover:bg-primary-600 text-white' : 'bg-gray-400 text-white cursor-not-allowed',
+          ]"
+          :loading="supplierForm_isLoading"
+          :disabled="!isFormValid"
+        >
+          {{ supplierForm_isEditMode ? 'Update Supplier' : 'Add Supplier' }}
+        </PrimeVueButton>
+          <!-- Delete Button -->
+        <PrimeVueButton
+          v-if="supplierForm_isEditMode"
+          type="button"
+          class="absolute buttom-6 right-6 px-6 py-2 bg-white border-none text-red-600 rounded-md"
+          @click="handleDeleteSupplier"
+          >
+        <AppBaseSvg name="delete" class="!w-4 !h-4" />
+          Delete
+        </PrimeVueButton>
+      </div>
+    </form>
+  </section>
+   <AppBaseDialogConfirmation id="supplier-list-dialog-confirmation" />
+    <PrimeVueDialog :visible="isUpdateModal" modal header="">
+    <template #container>
+      <div class="w-[35rem] p-8">
+        <div class="flex flex-col items-center gap-4 text-center">
+          <span><img :src="confirmationSVG" alt="" /></span>
+          <h1 class="text-2xl font-semibold">Are you sure want to update this voucher item?</h1>
+          <p>The update will affect the voucher items</p>
+          <div class="flex items-center justify-between gap-4">
+            <PrimeVueButton variant="text" class="w-56 text-lg border-2 border-primary text-primary font-semibold"
+              @click="cancelUpdate">Cancel</PrimeVueButton>
+            <PrimeVueButton
+              class="text-xl w-56 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
+              unstyled label="Yes, I'm Sure" @click="confirmUpdate" />
+          </div>
+        </div>
+      </div>
+    </template>
+  </PrimeVueDialog>
+</template>
