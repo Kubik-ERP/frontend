@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { usePointConfigurationService } from '../services/point-configuration.service';
+import DialogSelectItems from '../components/LoyaltyPointSettings/Dialog.vue';
 
 const {
   // data
   loyaltyPointSettingsProduct_value,
-  loyaltyPointSettings_value,
+  // loyaltyPointSettings_value,
   loyaltyPointSettingsDetail,
   // table
   loyaltyPointSettingsProduct_isLoading,
@@ -14,30 +15,50 @@ const {
   loyaltyPointSettings_formData,
   loyaltyPointSettings_formValidations,
   loyaltyPointSettings_onSubmit,
+  loyaltyPointSettings_isLoading,
+  // dialog
+  loyaltyPointSettings_onShowDialog,
+  loyaltyPointSettings_onCloseDialog,
+  loyaltyPointSettings_columns,
+  loyaltyPointSettings_fetchAllProduct,
+  loyaltyPointSettings_allProductList,
+  allProductList_isLoading,
+  loyaltyPointSettingAllProductQueryParams,
+  loyaltyPointSettingsAllProduct_onChangePage,
+  selectedProducts,
+  loyaltyPointSettings_onSubmitDialog,
+  loyaltyPointSettingsProduct,
+  loyaltyPointSettings_onShowDialogEditProduct
 } = usePointConfigurationService();
+
+provide('loyaltyPointSettings', {
+  // dialog
+  loyaltyPointSettings_onShowDialog,
+  loyaltyPointSettings_onCloseDialog,
+  loyaltyPointSettings_columns,
+  loyaltyPointSettings_fetchAllProduct,
+  loyaltyPointSettings_allProductList,
+  allProductList_isLoading,
+  loyaltyPointSettingAllProductQueryParams,
+  loyaltyPointSettingsAllProduct_onChangePage,
+  selectedProducts,
+  loyaltyPointSettings_onSubmitDialog,
+  loyaltyPointSettingsProduct,
+  loyaltyPointSettings_onShowDialogEditProduct
+});
 
 onMounted(async () => {
   await loyaltyPointSettingsDetail();
-
-  loyaltyPointSettings_formData.spendBased = loyaltyPointSettings_value.value?.spendBased ?? false;
-  loyaltyPointSettings_formData.spendBasedMinTransaction =
-    loyaltyPointSettings_value.value?.minimumTransaction ?? 0;
-  loyaltyPointSettings_formData.spendBasedPointEarned =
-    loyaltyPointSettings_value.value?.pointsPerTransaction ?? 0;
-  loyaltyPointSettings_formData.spendBasedExpiration =
-    loyaltyPointSettings_value.value?.spendBasedPointsExpiryDays ?? 0;
-  loyaltyPointSettings_formData.spendBasedApplyMultiple =
-    loyaltyPointSettings_value.value?.spendBasedPointsApplyMultiple ?? false;
-  loyaltyPointSettings_formData.spendBasedEarnWhenRedeem =
-    loyaltyPointSettings_value.value?.spendBasedGetPointsOnRedemption ?? false;
-  loyaltyPointSettings_formData.productBased = loyaltyPointSettings_value.value?.productBased ?? false;
-  loyaltyPointSettings_formData.productBasedItems = [];
-  loyaltyPointSettings_formData.productBasedExpiration =
-    loyaltyPointSettings_value.value?.productBasedPointsExpiryDays ?? 0;
-  loyaltyPointSettings_formData.productBasedApplyMultiple =
-    loyaltyPointSettings_value.value?.productBasedPointsApplyMultiple ?? false;
-  loyaltyPointSettings_formData.productBasedEarnWhenRedeem =
-    loyaltyPointSettings_value.value?.productBasedGetPointsOnRedemption ?? false;
+  await loyaltyPointSettingsProduct();
+  loyaltyPointSettings_formData.productBasedItems = loyaltyPointSettingsProduct_value.value.data.map(
+    ({ productId, points, minimumTransaction, products }) => ({
+      productId: productId,
+      name: products.name,
+      price: products.price,
+      pointsEarned: points,
+      minimumPurchase: minimumTransaction,
+    }),
+  );
 });
 </script>
 <template>
@@ -57,7 +78,7 @@ onMounted(async () => {
         <div
           class="flex items-center gap-4 border-2 border-primary bg-primary-background rounded-lg p-4 max-w-[30rem]"
         >
-          <AppBaseSvg name="info" class="!w-10 !h-10" />
+          <AppBaseSvg name="info" class="!w-12 !h-12" />
           <p class="text-text-disabled">
             Customers will earn points after making a purchase that meets the minimum transaction amount.
           </p>
@@ -204,7 +225,7 @@ onMounted(async () => {
         <div
           class="flex items-center gap-4 border-2 border-primary bg-primary-background rounded-lg p-4 max-w-[30rem]"
         >
-          <AppBaseSvg name="info" class="!w-10 !h-10" />
+          <AppBaseSvg name="info" class="!w-8 !h-8" />
           <p class="text-text-disabled">Customers will earn points when purchasing selected products</p>
         </div>
       </section>
@@ -214,11 +235,13 @@ onMounted(async () => {
           header-title="Product Item"
           :is-using-filter="false"
           :columns="loyaltyPointSettingsProduct_columns"
-          :data="loyaltyPointSettingsProduct_value.data"
+          :data="loyaltyPointSettings_formData.productBasedItems"
           :is-loading="loyaltyPointSettingsProduct_isLoading"
-          :rows-per-page="loyaltyPointSettingsProduct_value.meta.limit"
+          :rows-per-page="loyaltyPointSettingsProduct_value.meta.pageSize"
           :total-records="loyaltyPointSettingsProduct_value.meta.total"
-          :first="(loyaltyPointSettingsProduct_value.meta.page - 1) * loyaltyPointSettingsProduct_value.meta.limit"
+          :first="
+            (loyaltyPointSettingsProduct_value.meta.page - 1) * loyaltyPointSettingsProduct_value.meta.pageSize
+          "
           is-using-server-side-pagination
           is-using-custom-body
           is-using-custom-header-prefix
@@ -233,11 +256,7 @@ onMounted(async () => {
               class="w-fit"
               label="Select Product"
               :disabled="!loyaltyPointSettings_formData.productBased"
-              @click="
-                () => {
-                  console.log('open dialog');
-                }
-              "
+              @click="loyaltyPointSettings_onShowDialog()"
             >
               <template #icon>
                 <AppBaseSvg name="plus-line-white" class="!w-5 !h-5" />
@@ -250,9 +269,18 @@ onMounted(async () => {
                 {{ loyaltyPointSettingsProduct_value.meta.page - 1 + index + 1 }}</span
               >
             </template>
+            <template v-else-if="column.value === 'productName'">
+              {{ data.name }}
+            </template>
+            <template v-else-if="column.value === 'points'">
+              {{ data.pointsEarned }}
+            </template>
+            <template v-else-if="column.value === 'minimumTransaction'">
+              {{ data.minimumPurchase }}
+            </template>
             <template v-else-if="column.value === 'price'">
               <span class="font-normal text-sm text-text-primary">
-                {{ useCurrencyFormat({ data: data[column.value] || 0 }) }}</span
+                {{ useCurrencyFormat({ data: data.price || 0 }) }}</span
               >
             </template>
             <template v-else-if="column.value === 'action'">
@@ -261,9 +289,7 @@ onMounted(async () => {
                 :disabled="!loyaltyPointSettings_formData.productBased"
                 class="flex items-center justify-center cursor-pointer"
                 @click="
-                  () => {
-                    console.log(data);
-                  }
+                  loyaltyPointSettings_onShowDialogEditProduct(data.name)
                 "
               >
                 <template #icon>
@@ -348,20 +374,24 @@ onMounted(async () => {
       </section>
 
       <footer class="col-span-2 flex items-center w-full gap-4 pb-8">
-        <PrimeVueButton
-          class="bg-transparent border-primary w-full max-w-44"
-          label="Cancel"
-          severity="secondary"
-          variant="outlined"
-        />
+        <router-link :to="{ name: 'point-configuration.index' }">
+          <PrimeVueButton
+            class="bg-transparent border-primary w-full max-w-44"
+            label="Cancel"
+            severity="secondary"
+            variant="outlined"
+          />
+        </router-link>
 
         <PrimeVueButton
           class="bg-blue-primary border-none text-base max-w-44 w-full"
           label="Update"
           type="submit"
+          :loading="loyaltyPointSettings_isLoading"
           :disabled="loyaltyPointSettings_formValidations.$invalid"
         />
       </footer>
     </form>
   </section>
+  <DialogSelectItems />
 </template>

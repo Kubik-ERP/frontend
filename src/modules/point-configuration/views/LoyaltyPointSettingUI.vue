@@ -13,7 +13,6 @@ const {
   loyaltyPointSettingsProduct_onChangePage,
 } = usePointConfigurationService();
 
-
 onMounted(async () => {
   await loyaltyPointSettingsDetail();
   await loyaltyPointSettingsProduct();
@@ -115,10 +114,10 @@ onMounted(async () => {
             :columns="loyaltyPointSettingsProduct_columns"
             :data="loyaltyPointSettingsProduct_value.data"
             :is-loading="loyaltyPointSettingsProduct_isLoading"
-            :rows-per-page="loyaltyPointSettingsProduct_value.meta.limit"
+            :rows-per-page="loyaltyPointSettingsProduct_value.meta.pageSize"
             :total-records="loyaltyPointSettingsProduct_value.meta.total"
             :first="
-              (loyaltyPointSettingsProduct_value.meta.page - 1) * loyaltyPointSettingsProduct_value.meta.limit
+              (loyaltyPointSettingsProduct_value.meta.page - 1) * loyaltyPointSettingsProduct_value.meta.pageSize
             "
             is-using-server-side-pagination
             is-using-custom-body
@@ -130,9 +129,12 @@ onMounted(async () => {
                   {{ loyaltyPointSettingsProduct_value.meta.page - 1 + index + 1 }}</span
                 >
               </template>
+              <template v-else-if="column.value === 'productName'">
+                {{ data.products?.name || '-' }}
+              </template>
               <template v-else-if="column.value === 'price'">
                 <span class="font-normal text-sm text-text-primary">
-                  {{ useCurrencyFormat({ data: data[column.value] || 0 }) }}</span
+                  {{ useCurrencyFormat({ data: data.products?.price || 0 }) }}</span
                 >
               </template>
               <template v-else>

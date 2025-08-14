@@ -46,3 +46,25 @@ export const LOYALTY_POINT_SETTINGS_PRODUCT_LIST_COLUMNS: IColumnDataTable[] = [
     value: 'action',
   }
 ];
+export const LOYALTY_POINT_SETTINGS_SELECT_PRODUCT_LIST_COLUMNS: IColumnDataTable[] = [
+  {
+    label: 'Product Name',
+    sortable: false,
+    value: 'productName',
+  },
+  {
+    label: 'Price',
+    sortable: false,
+    value: 'price',
+  },
+  {
+    label: 'Point Earned (pts)',
+    sortable: false,
+    value: 'points',
+  },
+  {
+    label: 'Minimum Purchased Product',
+    sortable: false,
+    value: 'minimumTransaction',
+  },
+];

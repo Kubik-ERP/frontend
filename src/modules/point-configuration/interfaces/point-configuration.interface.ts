@@ -35,6 +35,7 @@ export interface ILoyaltyPointSettingsProductItem {
   minimumTransaction: number;
   createdAt: string;
   updatedAt: string;
+  products: { name: string; categories: string; price: number; discountPrice: number };
 }
 
 export interface IQueryParams {
@@ -45,6 +46,8 @@ export interface IQueryParams {
 
 export interface IProductBasedItems {
   productId: string;
+  name: string;
+  price: number;
   pointsEarned: number;
   minimumPurchase: number;
 }
@@ -63,6 +66,37 @@ export interface ILoyaltyPointSettingsFormData {
   productBasedEarnWhenRedeem: boolean;
 }
 
+export interface ILoyaltyPointSettingsAllProductList {
+  products: { name: string; price: number; discountPrice: number }[];
+  total: number;
+  page: number;
+  lastPage: number;
+}
+
+export interface ILoyaltyPointSettingsAllProductListQueryParams {
+  page: number;
+  limit: number;
+  search?: string | null;
+}
+
+export interface ISelectedProducts {
+  id?: string | null;
+  isSelected?: boolean | null;
+  productId?: string;
+  pointsEarned?: number;
+  minimumPurchase?: number;
+}
+
+export interface IProductWithSelection extends ILoyaltyPointSettingsAllProductList {
+  id?: string;
+  isSelected?: boolean;
+  points_earned?: number;
+  minimum_purchase?: number;
+  name?: string;
+  price?: number;
+  discountPrice?: number;
+}
+
 export interface ILoyaltyPointSettingsProvided {
   pointConfiguration_activeTab: globalThis.Ref<string>;
   pointConfiguration_listTabs: ITabs[];
@@ -78,4 +112,16 @@ export interface ILoyaltyPointSettingsProvided {
   loyaltyPointSettings_formData: ILoyaltyPointSettingsFormData;
   loyaltyPointSettings_formValidations: globalThis.Ref<Validation>;
   loyaltyPointSettings_onSubmit: () => Promise<void>;
+  // dialog
+  loyaltyPointSettings_onShowDialog: () => void;
+  loyaltyPointSettings_onCloseDialog: () => void;
+  loyaltyPointSettings_columns: IColumnDataTable[];
+  loyaltyPointSettings_fetchAllProduct: () => Promise<void>;
+  loyaltyPointSettings_allProductList: Ref<ILoyaltyPointSettingsAllProductList>;
+  allProductList_isLoading: Ref<boolean>;
+  loyaltyPointSettingAllProductQueryParams: ILoyaltyPointSettingsAllProductListQueryParams;
+  loyaltyPointSettingsAllProduct_onChangePage: (page: number) => void;
+  selectedProducts: Ref<ISelectedProducts[]>;
+  loyaltyPointSettings_onSubmitDialog: () => void;
+  loyaltyPointSettings_onShowDialogEditProduct: (productName: string) => void;
 }

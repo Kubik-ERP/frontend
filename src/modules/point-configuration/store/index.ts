@@ -12,6 +12,7 @@ import type {
   IFreeItemsPayload,
   IQueryParams,
   ILoyaltyPointSettingsFormData,
+  ILoyaltyPointSettingsAllProductListQueryParams,
 } from '../interfaces';
 
 // Plugins
@@ -69,6 +70,12 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
           minimumTransaction: 1,
           createdAt: '2025-08-13T17:55:24.124Z',
           updatedAt: '2025-08-13T17:55:24.124Z',
+          products: {
+            name: '',
+            categories: '',
+            price: 0,
+            discountPrice: 0,
+          },
         },
         {
           id: 'cb589852-09de-4b7d-9048-6a992ee5b650',
@@ -78,6 +85,12 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
           minimumTransaction: 2,
           createdAt: '2025-08-13T17:55:24.124Z',
           updatedAt: '2025-08-13T17:55:24.124Z',
+          products: {
+            name: '',
+            categories: '',
+            price: 0,
+            discountPrice: 0,
+          },
         },
       ],
       meta: {
@@ -87,6 +100,13 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
         totalPages: 1,
       },
     },
+    loyaltyPointSettings_allProductList: {
+      products: [],
+      page: 1,
+      total: 0,
+      lastPage: 0,
+    },
+    allProductList_isLoading: false,
   }),
   actions: {
     /**
@@ -308,15 +328,24 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
       payload: ILoyaltyPointSettingsFormData,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
-      this.loyaltyPointBenefit_isLoading = true;
+      this.loyaltyPointSettings_isLoading = true;
       try {
         const snakeCasePayload = Object.fromEntries(
           Object.entries(payload).map(([key, value]) => [key.replace(/([A-Z])/g, '_$1').toLowerCase(), value]),
         );
-        console.log(JSON.stringify(snakeCasePayload, null, 2));
+        const formattedPayload = {
+          ...snakeCasePayload,
+          product_based_items: snakeCasePayload.product_based_items.map(
+            (item: { productId: string; pointsEarned: number; minimumPurchase: number }) => ({
+              product_id: item.productId,
+              points_earned: item.pointsEarned,
+              minimum_purchase: item.minimumPurchase,
+            }),
+          ),
+        };
         const response = await httpClient.patch(
           `${LOYALTY_POINT_SETTINGS_BASE_ENDPOINT}/${this.loyaltyPointSettings_value.id}`,
-          snakeCasePayload,
+          formattedPayload,
           { ...requestConfigurations },
         );
         return Promise.resolve(response.data);
@@ -327,7 +356,27 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
           return Promise.reject(new Error(String(error)));
         }
       } finally {
-        this.loyaltyPointBenefit_isLoading = false;
+        this.loyaltyPointSettings_isLoading = false;
+      }
+    },
+
+    async loyaltySettings_fetchAllProductList(
+      params: ILoyaltyPointSettingsAllProductListQueryParams,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.allProductList_isLoading = true;
+      try {
+        const response = await httpClient.get(`/products`, { params, ...requestConfigurations });
+        this.loyaltyPointSettings_allProductList = response.data.data;
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.allProductList_isLoading = false;
       }
     },
   },

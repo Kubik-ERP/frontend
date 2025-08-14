@@ -2,7 +2,11 @@ export * from './loyalty-point-benefit.interface';
 export * from './point-configuration.interface';
 
 import { IPointConfigurationListResponse, IProduct } from './loyalty-point-benefit.interface';
-import { ILoyaltyPointSettings, ILoyaltyPointSettingsProductList } from './point-configuration.interface';
+import {
+  ILoyaltyPointSettings,
+  ILoyaltyPointSettingsProductList,
+  ILoyaltyPointSettingsAllProductList,
+} from './point-configuration.interface';
 
 export type IPointConfigurationStore = {
   loyaltyPointBenefit_isLoading: boolean;
@@ -11,8 +15,10 @@ export type IPointConfigurationStore = {
   loyaltyPointBenefit_productList: IProduct[];
 
   loyaltyPointSettings_isLoading: boolean;
-  loyaltyPointSettings_value:   ILoyaltyPointSettings ;
+  loyaltyPointSettings_value: ILoyaltyPointSettings;
 
   loyaltyPointSettingsProduct_isLoading: boolean;
   loyaltyPointSettingsProduct_value: ILoyaltyPointSettingsProductList;
+  loyaltyPointSettings_allProductList: ILoyaltyPointSettingsAllProductList;
+  allProductList_isLoading: boolean;
 };

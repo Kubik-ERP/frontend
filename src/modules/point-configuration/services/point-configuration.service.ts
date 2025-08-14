@@ -5,6 +5,7 @@ import { usePointConfigurationStore } from '../store';
 import {
   LIST_TABS_POINT_CONFIGURATION,
   LOYALTY_POINT_SETTINGS_PRODUCT_LIST_COLUMNS,
+  LOYALTY_POINT_SETTINGS_SELECT_PRODUCT_LIST_COLUMNS,
 } from '../constants/point-configuration.constant';
 
 // Type
@@ -12,14 +13,22 @@ import {
   ILoyaltyPointSettingsProvided,
   IQueryParams,
   ILoyaltyPointSettingsFormData,
+  ILoyaltyPointSettingsAllProductListQueryParams,
+  ISelectedProducts,
+  IProductWithSelection,
 } from '../interfaces/point-configuration.interface';
 // Service
+
+// Plugins
+import eventBus from '@/plugins/mitt';
 
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 
 export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided => {
+  const router = useRouter();
+
   const pointConfiguration_activeTab = ref<string>('loyalty-point-setting');
 
   const loyaltyPointSettings_formData = reactive<ILoyaltyPointSettingsFormData>({
@@ -59,11 +68,40 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     },
   );
 
+  const loyaltyPointSettings_formDataReset = (): void => {
+    Object.assign(loyaltyPointSettings_formData, {
+      spendBased: false,
+      spendBasedMinTransaction: 0,
+      spendBasedPointEarned: 0,
+      spendBasedExpiration: 0,
+      spendBasedApplyMultiple: false,
+      spendBasedEarnWhenRedeem: false,
+      productBased: false,
+      productBasedItems: [],
+      productBasedExpiration: 0,
+      productBasedApplyMultiple: false,
+      productBasedEarnWhenRedeem: false,
+    });
+
+    loyaltyPointSettings_formValidations.value.$reset();
+  };
+
   const loyaltyPointSettings_onSubmit = async (): Promise<void> => {
     try {
       await store.loyaltySettings_update(loyaltyPointSettings_formData, {
         ...httpAbort_registerAbort('LOYALTY_POINT_SETTINGS_UPDATE_REQUEST'),
       });
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Loyalty Settings has been updated successfully.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      router.push({ name: 'point-configuration.index' });
+      loyaltyPointSettings_formDataReset();
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -96,14 +134,39 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     loyaltyPointSettingsProduct_value,
     loyaltyPointSettings_isLoading,
     loyaltyPointSettings_value,
+    loyaltyPointSettings_allProductList,
+    allProductList_isLoading,
   } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
+
+  const loyaltyPointSettingsDetail_loadData = (): void => {
+    loyaltyPointSettings_formData.spendBased = loyaltyPointSettings_value.value?.spendBased ?? false;
+    loyaltyPointSettings_formData.spendBasedMinTransaction =
+      loyaltyPointSettings_value.value?.minimumTransaction ?? 0;
+    loyaltyPointSettings_formData.spendBasedPointEarned =
+      loyaltyPointSettings_value.value?.pointsPerTransaction ?? 0;
+    loyaltyPointSettings_formData.spendBasedExpiration =
+      loyaltyPointSettings_value.value?.spendBasedPointsExpiryDays ?? 0;
+    loyaltyPointSettings_formData.spendBasedApplyMultiple =
+      loyaltyPointSettings_value.value?.spendBasedPointsApplyMultiple ?? false;
+    loyaltyPointSettings_formData.spendBasedEarnWhenRedeem =
+      loyaltyPointSettings_value.value?.spendBasedGetPointsOnRedemption ?? false;
+    loyaltyPointSettings_formData.productBased = loyaltyPointSettings_value.value?.productBased ?? false;
+    loyaltyPointSettings_formData.productBasedExpiration =
+      loyaltyPointSettings_value.value?.productBasedPointsExpiryDays ?? 0;
+    loyaltyPointSettings_formData.productBasedApplyMultiple =
+      loyaltyPointSettings_value.value?.productBasedPointsApplyMultiple ?? false;
+    loyaltyPointSettings_formData.productBasedEarnWhenRedeem =
+      loyaltyPointSettings_value.value?.productBasedGetPointsOnRedemption ?? false;
+  };
 
   const loyaltyPointSettingsDetail = async (): Promise<void> => {
     try {
       await store.loyaltySettings_fetchDetails({
         ...httpAbort_registerAbort('LOYALTY_POINT_SETTINGS_LIST_REQUEST'),
       });
+
+      loyaltyPointSettingsDetail_loadData();
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -118,6 +181,15 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
       await store.loyaltySettings_fetchProductList(loyaltyPointSettingsProduct_queryParams, {
         ...httpAbort_registerAbort('LOYALTY_POINT_SETTINGS_PRODUCT_LIST_REQUEST'),
       });
+      loyaltyPointSettings_formData.productBasedItems = loyaltyPointSettingsProduct_value.value.data.map(
+        ({ productId, points, minimumTransaction, products }) => ({
+          productId: productId,
+          name: products.name,
+          price: products.price,
+          pointsEarned: points,
+          minimumPurchase: minimumTransaction,
+        }),
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -144,6 +216,148 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     { deep: true },
   );
 
+  const loyaltyPointSettings_populateDialog = (): void => {
+    selectedProducts.value = loyaltyPointSettings_formData.productBasedItems.map(
+      ({ productId, name, price, pointsEarned, minimumPurchase }) => ({
+        productId: productId,
+        pointsEarned: pointsEarned,
+        minimumPurchase: minimumPurchase,
+        name,
+        price,
+      }),
+    );
+  };
+
+  const loyaltyPointSettings_onShowDialogEditProduct = (productName: string): void => {
+    loyaltyPointSettingAllProductQueryParams.search = productName;
+    loyaltyPointSettings_onShowDialog();
+  }
+
+  const loyaltyPointSettings_onShowDialog = async (): Promise<void> => {
+    await loyaltyPointSettings_fetchAllProduct();
+    loyaltyPointSettings_populateDialog();
+    const argsEventEmitter: IPropsDialog = {
+      id: 'loyalty-point-settings-dialog-select-product',
+      isOpen: true,
+      isUsingClosableButton: false,
+      // width: '534px',
+    };
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  const loyaltyPointSettings_onCloseDialog = (): void => {
+    const argsEventEmitter: IPropsDialog = {
+      id: 'loyalty-point-settings-dialog-select-product',
+      isOpen: false,
+      isUsingClosableButton: false,
+      // width: '534px',
+    };
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  const loyaltyPointSettingAllProductQueryParams = reactive<ILoyaltyPointSettingsAllProductListQueryParams>({
+    page: 1,
+    limit: 5,
+    search: null,
+  });
+
+  const loyaltyPointSettings_fetchAllProduct = async (): Promise<void> => {
+    try {
+      await store.loyaltySettings_fetchAllProductList(loyaltyPointSettingAllProductQueryParams, {
+        ...httpAbort_registerAbort('LOYALTY_POINT_SETTINGS_PRODUCT_LIST_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  const loyaltyPointSettingsAllProduct_onChangePage = (page: number): void => {
+    loyaltyPointSettingAllProductQueryParams.page = page;
+  };
+
+  watch(
+    () => loyaltyPointSettingAllProductQueryParams,
+    debounce(async () => {
+      await loyaltyPointSettings_fetchAllProduct();
+    }, 500),
+    { deep: true },
+  );
+
+  const selectedProducts = ref<ISelectedProducts[]>([]);
+
+  // ✅ This single watcher replaces the previous two.
+  // It synchronizes the table's UI state with the selectedProducts array.
+  watch(
+    // Watch BOTH the list of all products AND the list of selected products
+    [() => loyaltyPointSettings_allProductList.value.products, selectedProducts],
+    ([productList, selectionList]) => {
+      if (!productList) return;
+
+      // 1. Create a quick lookup map of selected products for high performance
+      const selectedMap = new Map(selectionList.map(p => [p.productId, p]));
+
+      // 2. Loop through the products currently displayed in the table
+      (productList as IProductWithSelection[]).forEach(productInTable => {
+        const selectionData = selectedMap.get(productInTable.id);
+
+        if (selectionData) {
+          // If this product is in our selected list, check the box and populate its data
+          productInTable.isSelected = true;
+          productInTable.points_earned = selectionData.pointsEarned;
+          productInTable.minimum_purchase = selectionData.minimumPurchase;
+        } else {
+          // If not selected, ensure the box is unchecked and data is default
+          productInTable.isSelected = false;
+          productInTable.points_earned = 0;
+          productInTable.minimum_purchase = 0;
+        }
+      });
+    },
+    { deep: true },
+  );
+
+  // This watcher handles when the user physically clicks a checkbox
+  watch(
+    () => loyaltyPointSettings_allProductList.value.products,
+    newProductList => {
+      if (!newProductList || !Array.isArray(newProductList)) return;
+      const currentlySelected = (newProductList as IProductWithSelection[]).filter(p => p.isSelected);
+
+      selectedProducts.value = currentlySelected.map(p => ({
+        productId: p.id,
+        pointsEarned: p.points_earned,
+        minimumPurchase: p.minimum_purchase,
+        name: p.name,
+        price: p.price,
+      }));
+    },
+    { deep: true },
+  );
+
+  const loyaltyPointSettings_onSubmitDialog = (): void => {
+    const currentItems = new Map(
+      loyaltyPointSettings_formData.productBasedItems.map(item => [item.productId, item])
+    );
+
+    (selectedProducts.value as {
+      productId: string;
+      name: string;
+      price: number;
+      pointsEarned: number;
+      minimumPurchase: number;
+    }[]).forEach(product => {
+      currentItems.set(product.productId, product);
+    });
+
+    loyaltyPointSettings_formData.productBasedItems = Array.from(currentItems.values());
+    selectedProducts.value = [];
+    loyaltyPointSettings_onCloseDialog();
+  };
+
   return {
     pointConfiguration_activeTab,
     pointConfiguration_listTabs: LIST_TABS_POINT_CONFIGURATION,
@@ -163,5 +377,18 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     loyaltyPointSettings_formData,
     loyaltyPointSettings_formValidations,
     loyaltyPointSettings_onSubmit,
+
+    // dialog
+    loyaltyPointSettings_onShowDialog,
+    loyaltyPointSettings_onCloseDialog,
+    loyaltyPointSettings_columns: LOYALTY_POINT_SETTINGS_SELECT_PRODUCT_LIST_COLUMNS,
+    loyaltyPointSettings_fetchAllProduct,
+    loyaltyPointSettings_allProductList,
+    allProductList_isLoading,
+    loyaltyPointSettingAllProductQueryParams,
+    loyaltyPointSettingsAllProduct_onChangePage,
+    selectedProducts,
+    loyaltyPointSettings_onSubmitDialog,
+    loyaltyPointSettings_onShowDialogEditProduct
   };
 };
