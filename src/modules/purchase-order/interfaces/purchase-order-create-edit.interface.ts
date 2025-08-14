@@ -19,10 +19,14 @@ export interface IPurchaseOrderCreateEditFormData {
 }
 
 export interface IPurchaseOrderCreateEditProvided {
+  purchaseOrderCreateEdit_fetchCreate: () => Promise<unknown>;
+  purchaseOrderCreateEdit_fetchDetails: (id: string) => Promise<unknown>;
+  purchaseOrderCreateEdit_fetchUpdate: (id: string) => Promise<unknown>;
   purchaseOrderCreateEdit_formData: globalThis.Ref<IPurchaseOrderCreateEditFormData>;
   purchaseOrderCreateEdit_formDataOfEditQuantity: globalThis.Ref<IPurchaseOrderCreateEditProductItem>;
   purchaseOrderCreateEdit_formValidations: globalThis.Ref<Validation>;
   purchaseOrderCreateEdit_formValidationsOfEditQuantity: globalThis.Ref<Validation>;
+  purchaseOrderCreateEdit_isEditMode: globalThis.ComputedRef<boolean>;
   purchaseOrderCreateEdit_listColumns: IColumnDataTable[];
   purchaseOrderCreateEdit_listProductItems: IDropdownItem[];
   purchaseOrderCreateEdit_listSuppliers: IDropdownItem[];
@@ -32,10 +36,13 @@ export interface IPurchaseOrderCreateEditProvided {
   purchaseOrderCreateEdit_onDecrementQuantity: () => void;
   purchaseOrderCreateEdit_onDeleteProductItem: (productItem: IPurchaseOrderCreateEditProductItem | string) => void;
   purchaseOrderCreateEdit_onIncrementQuantity: () => void;
+  purchaseOrderCreateEdit_onLoadInitialData: () => Promise<void>;
+  purchaseOrderCreateEdit_onResetForm: () => void;
   purchaseOrderCreateEdit_onShowDialogAddProductItem: () => void;
   purchaseOrderCreateEdit_onShowDialogEditQuantity: (productItem: IPurchaseOrderCreateEditProductItem) => void;
   purchaseOrderCreateEdit_onSubmitAddProductItem: () => void;
   purchaseOrderCreateEdit_onSubmitEditQuantity: () => void;
+  purchaseOrderCreateEdit_onSubmitForm: () => Promise<void>;
   purchaseOrderCreateEdit_selectedProductItem: globalThis.Ref<IPurchaseOrderCreateEditProductItem | null>;
   purchaseOrderCreateEdit_selectedProductItems: globalThis.Ref<IPurchaseOrderCreateEditProductItem[]>;
   purchaseOrderCreateEdit_totalPrice: globalThis.Ref<number>;

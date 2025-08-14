@@ -24,6 +24,7 @@ const {
       @click="outletList_onSelectOutlet(outlet)"
     >
       <RouterLink
+        v-if="outlet.id"
         :to="{ name: 'outlet.edit', params: { id: outlet.id } }"
         class="absolute top-2 right-2 w-4 h-4 opacity-0"
         :class="[`${outlet.id === outletList_selectedOutlet?.id ? 'opacity-100' : 'opacity-0'}`]"

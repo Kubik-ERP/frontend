@@ -1,7 +1,21 @@
 import { IOutlet } from './index';
 
+export interface IOutletListPageMeta {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface IOutletListData {
+  items: IOutlet[];
+  meta: IOutletListPageMeta;
+}
+
 export interface IOutletListResponse {
-  data: IOutlet[];
+  statusCode: number;
+  message: string;
+  data: IOutletListData;
 }
 
 export interface IOutletListProvided {

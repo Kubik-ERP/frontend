@@ -123,3 +123,8 @@ export const PURCHASE_ORDER_CREATE_EDIT_SUPPLIERS: IDropdownItem[] = [
     value: 'CV Empat Tiga Bersaudara',
   },
 ];
+
+// Request constants for HTTP abort functionality
+export const PURCHASE_ORDER_CREATE_REQUEST = 'PURCHASE_ORDER_CREATE_REQUEST';
+export const PURCHASE_ORDER_DETAILS_REQUEST = 'PURCHASE_ORDER_DETAILS_REQUEST';
+export const PURCHASE_ORDER_UPDATE_REQUEST = 'PURCHASE_ORDER_UPDATE_REQUEST';
