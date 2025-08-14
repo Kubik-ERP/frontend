@@ -4,9 +4,11 @@ import { LIST_ADDITIONAL_MENUS, LIST_SIDEBAR_MENUS } from '@/app/constants/menus
 
 // Stores
 import { useOutletStore } from '@/modules/outlet/store';
+import { useRbacStore } from '@/app/store/rbac.store';
 
 // Injected variables
 const outletStore = useOutletStore();
+const rbacStore = useRbacStore();
 const route = useRoute();
 const { outlet_currentOutlet } = storeToRefs(outletStore);
 
@@ -19,15 +21,24 @@ interface ExpandedState {
 const expandedMenus = ref<ExpandedState>({});
 const isCollapsed = ref<boolean>(false);
 
+// Filter menus based on user permissions
+const filteredSidebarMenus = computed(() => {
+  return rbacStore.rbac_getFilteredMenus(LIST_SIDEBAR_MENUS);
+});
+
+const filteredAdditionalMenus = computed(() => {
+  return rbacStore.rbac_getFilteredMenus([{ name: 'Additional', menus: LIST_ADDITIONAL_MENUS }])[0]?.menus || [];
+});
+
 // Compute which submenus should be open based on the current route
 const autoExpandMenus = () => {
   const newExpanded: ExpandedState = {};
-  LIST_SIDEBAR_MENUS.forEach((category, categoryIndex) => {
+  filteredSidebarMenus.value.forEach((category: IMenuCategory, categoryIndex: number) => {
     newExpanded[categoryIndex] = {};
-    category.menus.forEach((menu, menuIndex) => {
+    category.menus.forEach((menu: IMenu, menuIndex: number) => {
       if (menu.subMenus?.length) {
         // Check if any submenu path matches the current route
-        const isSubMenuActive = menu.subMenus.some(subMenu => subMenu.path === route.path);
+        const isSubMenuActive = menu.subMenus.some((subMenu: ISubMenu) => subMenu.path === route.path);
         newExpanded[categoryIndex][menuIndex] = isSubMenuActive;
       }
     });
@@ -48,6 +59,15 @@ watch(
   },
 );
 
+// Watch for permission changes to update expanded state
+watch(
+  () => filteredSidebarMenus.value,
+  () => {
+    autoExpandMenus();
+  },
+  { deep: true },
+);
+
 // Toggle submenu manually
 const toggleSubMenu = (categoryIndex: number, menuIndex: number) => {
   if (!expandedMenus.value[categoryIndex]) {
@@ -59,6 +79,11 @@ const toggleSubMenu = (categoryIndex: number, menuIndex: number) => {
 // Toggle sidebar collapse
 const toggleSidebar = () => {
   isCollapsed.value = !isCollapsed.value;
+};
+
+// Helper function to check if any submenu is active
+const isAnySubMenuActive = (menu: IMenu): boolean => {
+  return menu.subMenus?.some((subMenu: ISubMenu) => subMenu.path === route.path) || false;
 };
 </script>
 
@@ -116,7 +141,7 @@ const toggleSidebar = () => {
 
       <div class="overflow-y-auto">
         <ul
-          v-for="(menuCategory, menuCategoryIndex) in LIST_SIDEBAR_MENUS"
+          v-for="(menuCategory, menuCategoryIndex) in filteredSidebarMenus"
           :key="`menu-${menuCategoryIndex}`"
           class="list-none m-0"
         >
@@ -143,23 +168,17 @@ const toggleSidebar = () => {
                   <a
                     v-ripple
                     class="flex items-center cursor-pointer px-4 py-2 rounded duration-150 transition-colors p-ripple gap-2"
-                    :class="[
-                      menu.subMenus.some(subMenu => subMenu.path === route.path)
-                        ? 'bg-primary text-white'
-                        : 'text-black',
-                    ]"
+                    :class="[isAnySubMenuActive(menu) ? 'bg-primary text-white' : 'text-black']"
                     @click="toggleSubMenu(menuCategoryIndex, menuIndex)"
                   >
                     <AppBaseSvg
                       :name="menu.iconName"
                       class="!w-5 !h-5"
-                      :class="[menu.subMenus.some(subMenu => subMenu.path === route.path) ? 'filter-white' : '']"
+                      :class="[isAnySubMenuActive(menu) ? 'filter-white' : '']"
                     />
                     <span
                       class="font-normal text-base whitespace-nowrap"
-                      :class="[
-                        menu.subMenus.some(subMenu => subMenu.path === route.path) ? 'text-white' : 'text-black',
-                      ]"
+                      :class="[isAnySubMenuActive(menu) ? 'text-white' : 'text-black']"
                     >
                       {{ menu.name }}
                     </span>
@@ -205,16 +224,14 @@ const toggleSidebar = () => {
                     v-ripple
                     class="flex items-center justify-center cursor-pointer px-2 py-2 rounded duration-150 transition-colors p-ripple mb-1"
                     :class="[
-                      menu.subMenus.some(subMenu => subMenu.path === route.path)
-                        ? 'bg-primary text-white'
-                        : 'text-black hover:bg-grayscale-10',
+                      isAnySubMenuActive(menu) ? 'bg-primary text-white' : 'text-black hover:bg-grayscale-10',
                     ]"
                     :title="menu.name"
                   >
                     <AppBaseSvg
                       :name="menu.iconName"
                       class="!w-5 !h-5"
-                      :class="[menu.subMenus.some(subMenu => subMenu.path === route.path) ? 'filter-white' : '']"
+                      :class="[isAnySubMenuActive(menu) ? 'filter-white' : '']"
                     />
                   </div>
                 </template>
@@ -258,7 +275,7 @@ const toggleSidebar = () => {
     <!-- Additional Menus -->
     <section id="additional-menus" class="flex flex-col gap-2 w-full">
       <template
-        v-for="(additionalMenu, additionalMenuIndex) in LIST_ADDITIONAL_MENUS"
+        v-for="(additionalMenu, additionalMenuIndex) in filteredAdditionalMenus"
         :key="`additionalMenu-${additionalMenuIndex}`"
       >
         <RouterLink

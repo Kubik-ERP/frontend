@@ -45,16 +45,18 @@ const selectedTableLabel = computed(() => {
           :class="[
             'flex border truncate rounded-sm p-2.5 justify-between items-center',
             props.isSelfOrder ? 'w-full' : 'w-1/2',
-            route.name === 'cashier-order-edit'
+            route.name === 'cashier-order-edit' || route.name === 'self-order'
               ? 'cursor-not-allowed opacity-50 bg-transparent border-text-disabled'
               : 'cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 border-text-disabled',
           ]"
-          :disabled="route.name === 'cashier-order-edit'"
+          :disabled="route.name === 'cashier-order-edit' || route.name === 'self-order'"
           @click="cashierOrderSummary_modalOrderType.show = true"
         >
-          <span v-if="cashierOrderSummary_modalOrderType.selectedOrderType" class="text-black">
+          <span v-if="route.name === 'self-order'" class="text-black"> Self Order </span>
+          <span v-else-if="cashierOrderSummary_modalOrderType.selectedOrderType" class="text-black">
             {{ selectedOrderTypeLabel }}
           </span>
+
           <span v-else class="text-text-disabled">Order Type</span>
 
           <AppBaseSvg name="order" class="!h-5 !w-5" />

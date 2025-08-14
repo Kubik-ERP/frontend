@@ -45,7 +45,7 @@ const {
   </header>
 
   <section
-    v-if="accountStoreDetail_storeTables?.length > 0"
+    v-if="accountStoreDetail_storeTables?.items && accountStoreDetail_storeTables.items.length > 0"
     class="flex flex-col gap-4 p-4 border border-solid border-grayscale-10"
   >
     <header class="flex items-center justify-between w-full">

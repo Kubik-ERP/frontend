@@ -12,10 +12,14 @@ import { usePurchaseOrderCreateEditService } from '../services/purchase-order-cr
  * @description Destructure all the data and methods what we need
  */
 const {
+  purchaseOrderCreateEdit_fetchCreate,
+  purchaseOrderCreateEdit_fetchDetails,
+  purchaseOrderCreateEdit_fetchUpdate,
   purchaseOrderCreateEdit_formData,
   purchaseOrderCreateEdit_formDataOfEditQuantity,
   purchaseOrderCreateEdit_formValidations,
   purchaseOrderCreateEdit_formValidationsOfEditQuantity,
+  purchaseOrderCreateEdit_isEditMode,
   purchaseOrderCreateEdit_listColumns,
   purchaseOrderCreateEdit_listProductItems,
   purchaseOrderCreateEdit_listSuppliers,
@@ -25,23 +29,37 @@ const {
   purchaseOrderCreateEdit_onDecrementQuantity,
   purchaseOrderCreateEdit_onDeleteProductItem,
   purchaseOrderCreateEdit_onIncrementQuantity,
+  purchaseOrderCreateEdit_onLoadInitialData,
+  purchaseOrderCreateEdit_onResetForm,
   purchaseOrderCreateEdit_onShowDialogAddProductItem,
   purchaseOrderCreateEdit_onShowDialogEditQuantity,
   purchaseOrderCreateEdit_onSubmitAddProductItem,
   purchaseOrderCreateEdit_onSubmitEditQuantity,
+  purchaseOrderCreateEdit_onSubmitForm,
   purchaseOrderCreateEdit_selectedProductItem,
   purchaseOrderCreateEdit_selectedProductItems,
   purchaseOrderCreateEdit_totalPrice,
 } = usePurchaseOrderCreateEditService();
 
 /**
+ * @description Load initial data on component mount
+ */
+onMounted(async () => {
+  await purchaseOrderCreateEdit_onLoadInitialData();
+});
+
+/**
  * @description Provide all the data and methods what we need
  */
 provide('purchaseOrderCreateEdit', {
+  purchaseOrderCreateEdit_fetchCreate,
+  purchaseOrderCreateEdit_fetchDetails,
+  purchaseOrderCreateEdit_fetchUpdate,
   purchaseOrderCreateEdit_formData,
   purchaseOrderCreateEdit_formDataOfEditQuantity,
   purchaseOrderCreateEdit_formValidations,
   purchaseOrderCreateEdit_formValidationsOfEditQuantity,
+  purchaseOrderCreateEdit_isEditMode,
   purchaseOrderCreateEdit_listColumns,
   purchaseOrderCreateEdit_listProductItems,
   purchaseOrderCreateEdit_listSuppliers,
@@ -51,10 +69,13 @@ provide('purchaseOrderCreateEdit', {
   purchaseOrderCreateEdit_onDecrementQuantity,
   purchaseOrderCreateEdit_onDeleteProductItem,
   purchaseOrderCreateEdit_onIncrementQuantity,
+  purchaseOrderCreateEdit_onLoadInitialData,
+  purchaseOrderCreateEdit_onResetForm,
   purchaseOrderCreateEdit_onShowDialogAddProductItem,
   purchaseOrderCreateEdit_onShowDialogEditQuantity,
   purchaseOrderCreateEdit_onSubmitAddProductItem,
   purchaseOrderCreateEdit_onSubmitEditQuantity,
+  purchaseOrderCreateEdit_onSubmitForm,
   purchaseOrderCreateEdit_selectedProductItem,
   purchaseOrderCreateEdit_selectedProductItems,
   purchaseOrderCreateEdit_totalPrice,

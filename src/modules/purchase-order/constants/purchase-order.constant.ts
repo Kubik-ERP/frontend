@@ -2,7 +2,7 @@ export const PURCHASE_ORDER_LIST_COLUMNS: IColumnDataTable[] = [
   {
     label: 'PO Number',
     sortable: true,
-    value: 'poNumber',
+    value: 'orderNumber',
   },
   {
     label: 'Supplier',
@@ -86,3 +86,11 @@ export const PURCHASE_ORDER_LIST_VALUES = [
     totalPrice: 50000,
   },
 ];
+
+// Request constants
+export const PURCHASE_ORDER_LIST_REQUEST = 'PURCHASE_ORDER_LIST_REQUEST';
+export const PURCHASE_ORDER_CANCEL_REQUEST = 'PURCHASE_ORDER_CANCEL_REQUEST';
+export const PURCHASE_ORDER_CONFIRM_REQUEST = 'PURCHASE_ORDER_CONFIRM_REQUEST';
+export const PURCHASE_ORDER_SHIP_REQUEST = 'PURCHASE_ORDER_SHIP_REQUEST';
+export const PURCHASE_ORDER_RECEIVE_REQUEST = 'PURCHASE_ORDER_RECEIVE_REQUEST';
+export const PURCHASE_ORDER_PAY_REQUEST = 'PURCHASE_ORDER_PAY_REQUEST';

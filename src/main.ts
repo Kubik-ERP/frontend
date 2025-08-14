@@ -27,6 +27,9 @@ import './style.css';
 // SVG Icons
 import 'virtual:svg-icons-register';
 
+// RBAC Directive
+import { installRbacDirective } from './app/directives/rbac.directive';
+
 const initialize = async () => {
   const app = createApp(App);
   const localization = await autoLoadLocalization();
@@ -59,6 +62,9 @@ const initialize = async () => {
 
   // Register global components
   components(app);
+
+  // Register RBAC directive
+  installRbacDirective(app);
 
   // Mount app
   app.mount('#main-content');

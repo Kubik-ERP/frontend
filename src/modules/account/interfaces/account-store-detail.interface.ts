@@ -1,4 +1,4 @@
-import type { IOutlet, IOutletOperationalHour, IOutletTable } from '@/modules/outlet/interfaces';
+import type { IOutlet, IOutletOperationalHour, IOutletTable, IOutletTableData } from '@/modules/outlet/interfaces';
 import type { IAccountStoreTable } from './account-store-table-configuration.interface';
 
 interface IHourSlot {
@@ -31,5 +31,5 @@ export interface IAccountStoreDetailProvided {
   accountStoreDetail_selectedOutlet: globalThis.Ref<IOutlet | null>;
   accountStoreDetail_selectedTable: globalThis.Ref<IAccountStoreTable | null>;
   accountStoreDetail_selectedTableLayout: globalThis.Ref<IOutletTable | undefined>;
-  accountStoreDetail_storeTables: globalThis.Ref<IOutletTable[] | []>;
+  accountStoreDetail_storeTables: globalThis.Ref<IOutletTableData | null>;
 }

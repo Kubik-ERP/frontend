@@ -34,8 +34,8 @@ const routes: RouteRecordRaw[] = [
               layout: LAYOUT_OPTIONS.NAVBAR,
               title: 'Edit Order',
             },
-          }
-        ]
+          },
+        ],
       },
     ],
   },
@@ -51,6 +51,26 @@ const routes: RouteRecordRaw[] = [
           requiresAuthorization: true,
           layout: LAYOUT_OPTIONS.NAVBAR,
           title: 'Self Order',
+        },
+      },
+      {
+        path: 'login',
+        name: 'login-self-order',
+        component: () => import('../views/self-order/SelfOrderLogin.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.EMPTY,
+          title: 'Self Order Login',
+        },
+      },
+      {
+        path: 'create',
+        name: 'create-self-order',
+        component: () => import('../views/self-order/SelfOrderCreateAccount.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.EMPTY,
+          title: 'Self Order Create',
         },
       },
     ],

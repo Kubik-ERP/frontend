@@ -23,14 +23,10 @@ const httpClient: AxiosInstance = axios.create({
 
 httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   /**
-   * @description Injected variables
+   * @description Injected variables - Get fresh store instances on each request
    */
   const authenticationStore = useAuthenticationStore();
-  const { authentication_token } = storeToRefs(authenticationStore);
-
   const outletStore = useOutletStore();
-  const { outlet_currentOutlet, outlet_selectedOutletOnAccountPage } = storeToRefs(outletStore);
-
   const loadingStore = useLoadingStore();
 
   // Start tracking this request using URL + timestamp as unique identifier
@@ -38,14 +34,16 @@ httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   // Store requestId in a way that's accessible later
   config.headers['X-Request-ID'] = requestId;
 
-  if (authentication_token.value) {
-    config.headers.Authorization = `Bearer ${authentication_token.value}`;
+  // Get fresh token value
+  if (authenticationStore.authentication_token) {
+    config.headers.Authorization = `Bearer ${authenticationStore.authentication_token}`;
   }
 
-  if (outlet_selectedOutletOnAccountPage.value) {
-    config.headers['X-STORE-ID'] = outlet_selectedOutletOnAccountPage.value.id;
-  } else if (outlet_currentOutlet?.value) {
-    config.headers['X-STORE-ID'] = outlet_currentOutlet.value.id;
+  // Get fresh outlet values directly from store state
+  if (outletStore.outlet_selectedOutletOnAccountPage) {
+    config.headers['X-STORE-ID'] = outletStore.outlet_selectedOutletOnAccountPage.id;
+  } else if (outletStore.outlet_currentOutlet) {
+    config.headers['X-STORE-ID'] = outletStore.outlet_currentOutlet.id;
   }
 
   return config;

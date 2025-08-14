@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Composables
+import { useRbac } from '@/app/composables/useRbac';
+
 // Interfaces
 import type { IPurchaseOrderListProvided } from '../interfaces';
 
@@ -10,13 +13,24 @@ const popovers = ref<Record<string, any>>({});
 const searchValue = ref('');
 
 /**
+ * @description RBAC permissions
+ */
+const rbac = useRbac();
+const canCreatePurchaseOrder = rbac.canCreate('purchaseOrder');
+const canUpdatePurchaseOrder = rbac.canUpdate('purchaseOrder');
+
+/**
  * @description Inject all the data and methods what we need
  */
 const {
   purchaseOrderList_columns,
   purchaseOrderList_getClassOfStatus,
+  purchaseOrderList_handleOnSortChange,
+  purchaseOrderList_isLoading,
+  purchaseOrderList_onChangePage,
   purchaseOrderList_onShowButtonCancelPO,
   purchaseOrderList_onShowButtonDeliveryOrderDocument,
+  purchaseOrderList_queryParams,
   purchaseOrderList_values,
 } = inject('purchaseOrderList') as IPurchaseOrderListProvided;
 
@@ -35,15 +49,34 @@ watch(searchValue, newValue => {
     v-model:search-value="searchValue"
     btn-cta-create-title="Create New PO"
     :columns="purchaseOrderList_columns"
-    :data="purchaseOrderList_values"
-    header-title="Purhcase Order List"
-    is-using-btn-cta-create
+    :data="purchaseOrderList_values?.items || []"
+    header-title="Purchase Order List"
+    :is-using-btn-cta-create="canCreatePurchaseOrder"
     is-using-custom-body
     :is-using-filter="false"
     is-using-search-on-header
     is-using-server-side-pagination
+    is-using-pagination
+    :is-loading="purchaseOrderList_isLoading"
+    :rows-per-page="purchaseOrderList_values?.meta.pageSize || 10"
+    :total-records="purchaseOrderList_values?.meta.total || 0"
+    :first="
+      purchaseOrderList_values?.meta
+        ? (purchaseOrderList_values.meta.currentPage - 1) * purchaseOrderList_values.meta.pageSize
+        : 0
+    "
     search-placeholder="Search by Member PO Number"
+    :sort-field="purchaseOrderList_queryParams.orderBy"
+    :sort-order="
+      purchaseOrderList_queryParams.orderDirection === 'asc'
+        ? 1
+        : purchaseOrderList_queryParams.orderDirection === 'desc'
+          ? -1
+          : 0
+    "
     @click-btn-cta-create="$router.push({ name: 'purchase-order.create' })"
+    @update:currentPage="purchaseOrderList_onChangePage"
+    @update:sort="purchaseOrderList_handleOnSortChange"
   >
     <template #body="{ column, data }">
       <template v-if="column.value === 'orderStatus'">
@@ -108,7 +141,9 @@ watch(searchValue, newValue => {
             </PrimeVueButton>
 
             <PrimeVueButton
-              v-show="purchaseOrderList_onShowButtonDeliveryOrderDocument(data.orderStatus)"
+              v-if="
+                canUpdatePurchaseOrder && purchaseOrderList_onShowButtonDeliveryOrderDocument(data.orderStatus)
+              "
               class="w-full px-4 py-3"
               variant="text"
             >
@@ -121,7 +156,7 @@ watch(searchValue, newValue => {
             </PrimeVueButton>
 
             <PrimeVueButton
-              v-show="purchaseOrderList_onShowButtonCancelPO(data.orderStatus)"
+              v-if="canUpdatePurchaseOrder && purchaseOrderList_onShowButtonCancelPO(data.orderStatus)"
               class="w-full px-4 py-3"
               variant="text"
             >
