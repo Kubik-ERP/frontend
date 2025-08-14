@@ -20,7 +20,7 @@ const{
 } = useSupplierListService()
 
 // Initialize page title
-const pageTitle = computed(() => (supplierForm_isEditMode.value ? 'Edit Supplier' : 'Add Supplier'));
+// const pageTitle = computed(() => (supplierForm_isEditMode.value ? 'Edit Supplier' : 'Add Supplier'));
 
 // Check if all required fields are filled
 const isFormValid = computed(() => {
@@ -60,16 +60,7 @@ const confirmUpdate = () => {
 <template>
   <section id="supplier-create-edit" class="flex flex-col gap-6 p-6">
     <!-- Header -->
-    <div class="flex items-center gap-3">
-      <PrimeVueButton variant="text" rounded class="!p-2" @click="supplierForm_onCancel">
-        <template #icon>
-          <i class="pi pi-arrow-left text-gray-600"></i>
-        </template>
-      </PrimeVueButton>
-      <h1 class="text-xl font-semibold text-gray-900">
-        {{ pageTitle }}
-      </h1>
-    </div>
+
 
     <form class="space-y-8" @submit.prevent="supplierForm_isEditMode ? isUpdateModal = true : supplierForm_onSubmit()">
       <!-- Supplier Details Section -->

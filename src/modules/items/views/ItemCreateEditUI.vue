@@ -259,8 +259,7 @@ const confirmUpdate = async () => {
             <div class="p-input-icon-right w-full">
               <!-- <i class="pi pi-calendar"></i> -->
               <PrimeVueCalendar
-                icon="pi pi-calendar"
-                :v-model="form.expiryDate as unknown as Date"
+                v-model="form.expiryDate as unknown as Date"
                 date-format="yy-mm-dd"
                 class="w-full"
                 :class="{ ...classes }"

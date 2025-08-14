@@ -50,7 +50,6 @@ const { cashierProduct_productState, cashierProduct_handleOpenModalAddProduct, i
             <div class="flex flex-col">
               <!-- Harga coret (asli) -->
               <span v-if="props.product.discountPrice != null
-                && props.product.discountPrice > 0
                 && props.product.discountPrice < props.product.price"
                 class="h-4 text-disabled line-through text-[10px] text-right">
                 Rp{{ props.product.price }}
@@ -61,7 +60,6 @@ const { cashierProduct_productState, cashierProduct_handleOpenModalAddProduct, i
               <span class="font-semibold text-right">
                 Rp{{
                   props.product.discountPrice != null
-                    && props.product.discountPrice > 0
                     && props.product.discountPrice < props.product.price ? props.product.discountPrice : props.product.price
                   }} </span>
             </div>
