@@ -8,7 +8,7 @@ const route = useRoute();
 </script>
 <template>
   <section id="self-order-login" class="flex flex-col items-center justify-between min-h-screen w-full p-4">
-    <div class="flex flex-col flex-auto justify-center items-center gap-5 h-full">
+    <div class="flex flex-col flex-auto justify-center items-center gap-5 h-full w-full px-6">
       <div class="flex flex-col items-center justify-center gap-2">
         <div class="w-16 h-16 bg-[#d9d9d9] rounded-full"></div>
 
