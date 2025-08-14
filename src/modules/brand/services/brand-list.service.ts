@@ -1,11 +1,11 @@
 import { DataTableSortEvent } from 'primevue';
 import { BRAND_LIST_COLUMNS } from '../constants';
-import { IBrandListRequestQuery, IInventoryCategoryListProvided } from '../interfaces/brand-list.interface';
+import { IBrandListProvided, IBrandListRequestQuery } from '../interfaces/brand-list.interface';
 import { IBrand } from '../interfaces';
 import eventBus from '@/plugins/mitt';
 import { useBrandStore } from '../store';
 
-export const useBrandListService = (): IInventoryCategoryListProvided => {
+export const useBrandListService = (): IBrandListProvided => {
   const store = useBrandStore();
   const { brandList_isLoading, brandList, brandFormMode, brand_editingItem } = storeToRefs(store);
 

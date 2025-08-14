@@ -26,10 +26,10 @@ const { cashierProduct_productState, cashierProduct_handleOpenModalAddProduct, i
     <PrimeVueCard v-if="!cashierProduct_productState.isLoadingProduct" :unstyled="true" :pt="{
       body: 'rounded-sm bg-white border border-grayscale-10 shadow-none drop-shadow-none p-2 cursor-pointer hover:border-grayscale-20 active:bg-grayscale-10/5',
     }" :class="{
-        'border-primary-border border rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]': isProductActive(
-          props.product,
-        ),
-      }" @click="cashierProduct_handleOpenModalAddProduct(props.product)">
+      'border-primary-border border rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]': isProductActive(
+        props.product,
+      ),
+    }" @click="cashierProduct_handleOpenModalAddProduct(props.product)">
       <template #content>
         <section id="cashier-card-content" class="flex flex-col gap-2 relative">
           <div class="flex justify-between">
@@ -45,15 +45,22 @@ const { cashierProduct_productState, cashierProduct_handleOpenModalAddProduct, i
               <span class="text-xs text-text-disabled">{{ props.category }}</span>
             </div>
             <div class="flex flex-col">
-              <span v-if="props.product.discountPrice != null && props.product.discountPrice < props.product.price"
+              <!-- Harga coret (asli) -->
+              <span v-if="props.product.discountPrice != null
+                && props.product.discountPrice > 0
+                && props.product.discountPrice < props.product.price"
                 class="h-4 text-disabled line-through text-[10px] text-right">
                 Rp{{ props.product.price }}
               </span>
               <span v-else class="h-4"></span>
 
+              <!-- Harga final -->
               <span class="font-semibold text-right">
-                Rp{{ props.product.discountPrice != null && props.product.discountPrice < props.product.price ?
-                  props.product.discountPrice : props.product.price }} </span>
+                Rp{{
+                  props.product.discountPrice != null
+                    && props.product.discountPrice > 0
+                    && props.product.discountPrice < props.product.price ? props.product.discountPrice : props.product.price
+                  }} </span>
             </div>
           </div>
         </section>

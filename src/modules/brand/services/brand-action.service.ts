@@ -39,13 +39,6 @@ export const useBrandActionService = (): IBrandActionProvided => {
   const brand_onSubmit = async (payload: IBrandFormData, mode: 'create' | 'edit', id?: string) => {
     brand_formOnLoading.value = true;
     try {
-      eventBus.emit('AppBaseDialog', {
-        id: 'brand-modal-form',
-        isUsingClosableButton: false,
-        isUsingBackdrop: true,
-        isOpen: false,
-        width: '600px',
-      });
       // Mapping payload ke data yang dikirim ke API
       brand_createUpdatePayload.value = {
         brandName: payload.brandName?.trim(),

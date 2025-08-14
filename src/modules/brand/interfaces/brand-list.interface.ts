@@ -9,7 +9,7 @@ export interface IBrandListRequestQuery {
   orderDirection: 0 | 1 | -1 | string | undefined | null;
 }
 
-export interface IInventoryCategoryListProvided {
+export interface IBrandListProvided {
   brand_columns: IColumnDataTable[];
   brand_fetchData: () => Promise<void>;
   brand_isLoading: globalThis.Ref<boolean>;

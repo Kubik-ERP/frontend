@@ -104,7 +104,7 @@ export const LIST_SIDEBAR_MENUS = [
         subMenus: [
           {
             name: 'Master Item',
-            path: '/',
+            path: '/items',
           },
           {
             name: 'Master Supplier',
@@ -117,6 +117,10 @@ export const LIST_SIDEBAR_MENUS = [
           {
             name: 'Inventory Categories',
             path: '/inventory-category',
+          },
+          {
+            name: 'Storage Location',
+            path: '/storage-location',
           },
         ],
       },
