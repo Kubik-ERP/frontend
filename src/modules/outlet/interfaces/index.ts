@@ -63,6 +63,18 @@ export interface IOutletTable {
   updatedAt: Date | string;
 }
 
+export interface IOutletTablePageMeta {
+  total: number;
+  totalPages: number;
+  currentPage: string;
+  perPage: string;
+}
+
+export interface IOutletTableData {
+  items: IOutletTable[];
+  meta: IOutletTablePageMeta;
+}
+
 export interface IOutletDetailResponse extends IDefaultResponseFetch {
   data: IOutlet;
 }
@@ -76,7 +88,7 @@ export interface IOutletProfileResponse extends IDefaultResponseFetch {
 }
 
 export interface IOutletTableResponse extends IDefaultResponseFetch {
-  data: IOutletTable[];
+  data: IOutletTableData;
 }
 
 export interface IOutletStateStore {
@@ -86,6 +98,6 @@ export interface IOutletStateStore {
   outlet_lists: IOutlet[];
   outlet_operationalHours: IOutletOperationalHour[];
   outlet_profile: IOutletProfile | null;
-  outlet_tables: IOutletTable[];
+  outlet_tables: IOutletTableData | null;
   outlet_selectedOutletOnAccountPage: IOutlet | null;
 }

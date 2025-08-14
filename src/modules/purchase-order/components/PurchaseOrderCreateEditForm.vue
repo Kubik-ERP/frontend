@@ -19,13 +19,14 @@ const {
   purchaseOrderCreateEdit_onDeleteProductItem,
   purchaseOrderCreateEdit_onShowDialogAddProductItem,
   purchaseOrderCreateEdit_onShowDialogEditQuantity,
+  purchaseOrderCreateEdit_onSubmitForm,
   purchaseOrderCreateEdit_selectedProductItems,
   purchaseOrderCreateEdit_totalPrice,
 } = inject('purchaseOrderCreateEdit') as IPurchaseOrderCreateEditProvided;
 </script>
 
 <template>
-  <form class="default-wrapper gap-6">
+  <form class="default-wrapper gap-6" @submit.prevent="purchaseOrderCreateEdit_onSubmitForm">
     <section id="oder-details" class="flex flex-col gap-2 w-full">
       <h6 class="font-semibold text-lg text-primary">Order Details</h6>
 

@@ -179,9 +179,9 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
         ...httpAbort_registerAbort(ACCOUNT_STORE_TABLE_LIST_REQUEST),
       });
 
-      if (result.data.length > 0) {
+      if (result.data.items.length > 0) {
         accountStoreTableConfiguration_isUsingPutMethod.value = true;
-        accountStoreTableConfiguration_onMappingExistingTableData(result.data);
+        accountStoreTableConfiguration_onMappingExistingTableData(result.data.items);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
