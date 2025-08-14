@@ -29,7 +29,7 @@ import { required } from '@vuelidate/validators';
 export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided => {
   const router = useRouter();
 
-  const pointConfiguration_activeTab = ref<string>('loyalty-point-setting');
+  const pointConfiguration_activeTab = ref<string>('loyalty-point-benefit');
 
   const loyaltyPointSettings_formData = reactive<ILoyaltyPointSettingsFormData>({
     spendBased: false,
@@ -358,6 +358,8 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     loyaltyPointSettings_onCloseDialog();
   };
 
+  
+
   return {
     pointConfiguration_activeTab,
     pointConfiguration_listTabs: LIST_TABS_POINT_CONFIGURATION,
@@ -389,6 +391,6 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     loyaltyPointSettingsAllProduct_onChangePage,
     selectedProducts,
     loyaltyPointSettings_onSubmitDialog,
-    loyaltyPointSettings_onShowDialogEditProduct
+    loyaltyPointSettings_onShowDialogEditProduct,
   };
 };

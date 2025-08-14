@@ -73,6 +73,7 @@ export interface ILoyaltyPointBenefitProvided {
 
   productList_isLoading: globalThis.Ref<boolean>;
   loyaltyPointBenefit_productList: globalThis.Ref<IProduct[]>;
+  loyaltyPointSettings_initiate: () => Promise<void>;
 }
 
 export type IPointConfigurationListRequestQuery = {

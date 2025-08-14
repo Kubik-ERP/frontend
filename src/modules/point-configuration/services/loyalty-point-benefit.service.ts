@@ -404,7 +404,29 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
     }, 500),
     { deep: true },
   );
-
+  const loyaltyPointSettings_initiate = async (): Promise<void> => {
+    try {
+      await store.loyaltySettings_initiate({
+        ...httpAbort_registerAbort('LOYALTY_POINT_SETTINGS_INITIATE_REQUEST'),
+      });
+      // toast
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Loyalty Point Settings has been initiated successfully.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      await loyaltyPointBenefit_fetchList();
+    }
+  };
   return {
     loyaltyPointBenefit_columns: LOYALTY_POINT_BENEFIT_LIST_COLUMNS,
     dailySalesList_onChangePage,
@@ -437,5 +459,6 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
 
     productList_isLoading,
     loyaltyPointBenefit_productList,
+    loyaltyPointSettings_initiate,
   };
 };
