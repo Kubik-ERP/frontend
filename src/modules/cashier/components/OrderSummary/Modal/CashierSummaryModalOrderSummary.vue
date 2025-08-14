@@ -25,6 +25,10 @@ const {
   cashierOrderSummary_calculateEstimation,
   cashierProduct_onScrollFetchMoreCustomers,
   cashierProduct_onSearchCustomer,
+  cashierOrderSummary_isButtonPlaceOrderDisabled,
+  cashierOrderSummary_modalPaymentMethod,
+  cashierOrderSummary_isLoadingUnpaidOrder,
+  cashierOrderSummary_modalSelectTable,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 </script>
 <template>
@@ -67,13 +71,13 @@ const {
                 useLocalization('cashier.mainSection.tableNo')
               }}</span>
 
-              <span>A1</span>
+              <span>{{ cashierOrderSummary_modalSelectTable.selectedTable.toString() }}</span>
             </div>
 
             <div class="flex flex-col gap-2 w-full">
               <label for="username" class="text-sm">{{ useLocalization('cashier.mainSection.username') }}</label>
 
-              <PrimeVueIconField class="flex w-full">
+              <PrimeVueIconField v-if="route.name !== 'self-order'" class="flex w-full">
                 <PrimeVueInputIcon class="pi pi-user" />
 
                 <PrimeVueAutoComplete
@@ -86,7 +90,7 @@ const {
                   option-label="name"
                   :min-length="1"
                   :loading="cashierProduct_customerState.isLoading"
-                  :dropdown="true"
+                  dropdown
                   class="w-full"
                   placeholder="Please select Customer Name"
                   :disabled="route.name === 'cashier-order-edit'"
@@ -124,6 +128,16 @@ const {
                     </div>
                   </template>
                 </PrimeVueAutoComplete>
+              </PrimeVueIconField>
+
+              <PrimeVueIconField v-else class="flex w-full">
+                <PrimeVueInputText
+                  :value="cashierProduct_customerState.selectedCustomer?.name"
+                  class="w-full"
+                  placeholder="Please select Customer Name"
+                  disabled
+                >
+                </PrimeVueInputText>
               </PrimeVueIconField>
             </div>
           </section>
@@ -189,6 +203,11 @@ const {
           </PrimeVueButton>
 
           <PrimeVueButton
+            :disabled="
+              cashierOrderSummary_isButtonPlaceOrderDisabled ||
+              cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod === '' ||
+              cashierOrderSummary_isLoadingUnpaidOrder
+            "
             class="py-2.5 px-14"
             type="button"
             label="Place Order"

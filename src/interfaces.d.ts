@@ -7,6 +7,25 @@ export {};
  * @description Here's a way to extend the global interfaces.
  */
 declare global {
+  // Menu interfaces for type safety
+  interface ISubMenu {
+    name: string;
+    path: string;
+  }
+
+  interface IMenu {
+    name: string;
+    iconName: string;
+    path: string;
+    isHaveSubMenus: boolean;
+    subMenus: ISubMenu[];
+  }
+
+  interface IMenuCategory {
+    name: string;
+    menus: IMenu[];
+  }
+
   export interface IAuthenticationSetUpPinFormData {
     pin: string;
   }

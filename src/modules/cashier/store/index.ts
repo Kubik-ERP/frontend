@@ -32,10 +32,13 @@ import { ICashierSelected, ICashierStateStore } from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
+import { ICustomerCreateResponse } from '@/modules/customer/interfaces/CustomersInterface';
 
 export const useCashierStore = defineStore('cashier', {
   state: (): ICashierStateStore => ({
     cashierProduct_selectedProduct: [],
+    cashierSelfOrder_isLoadingSignIn: false,
+    cashierSelfOrder_isLoadingSignUp: false,
   }),
   getters: {
     /**
@@ -270,7 +273,6 @@ export const useCashierStore = defineStore('cashier', {
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<ICashierOrderSummaryPaymentMethodResponse> {
       try {
-        console.log(isSelfOrder, 'akjsdljaslkdjlk');
         const response = await httpClient.get<ICashierOrderSummaryPaymentMethodResponse>(
           CASHIER_ENDPOINT_PAYMENT_METHOD,
           {
@@ -371,6 +373,71 @@ export const useCashierStore = defineStore('cashier', {
         } else {
           return Promise.reject(new Error(String(error)));
         }
+      }
+    },
+
+    async cashierSelfOrder_handleSignIn(
+      params: {
+        code: string;
+        number: string;
+        storeId: string | null;
+      },
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<ICustomerCreateResponse> {
+      this.cashierSelfOrder_isLoadingSignIn = true;
+
+      try {
+        const response = await httpClient.get<ICustomerCreateResponse>('/self-order/customers/signin', {
+          ...requestConfigurations,
+
+          params: {
+            ...params,
+          },
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.cashierSelfOrder_isLoadingSignIn = false;
+      }
+    },
+
+    async cashierSelfOrder_handleSignUp(
+      params: {
+        name: string;
+        code: string;
+        number: string;
+        storeId: string | null;
+      },
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<ICustomerCreateResponse> {
+      this.cashierSelfOrder_isLoadingSignIn = true;
+
+      try {
+        const response = await httpClient.post<ICustomerCreateResponse>(
+          '/self-order/customers/signup',
+          {
+            ...params,
+          },
+          {
+            ...requestConfigurations,
+          },
+        );
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.cashierSelfOrder_isLoadingSignIn = false;
       }
     },
   },
