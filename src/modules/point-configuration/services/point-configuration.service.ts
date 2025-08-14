@@ -129,7 +129,7 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
 
   const loyaltyPointSettingsProduct_queryParams = reactive<IQueryParams>({
     page: 1,
-    limit: 5,
+    pageSize: 5,
   });
 
   const loyaltyPointSettingsProduct_onChangePage = (page: number): void => {

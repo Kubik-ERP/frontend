@@ -26,7 +26,7 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
         items: [],
         meta: {
           page: 0,
-          limit: 0,
+          pageSize: 0,
           total: 0,
           totalPages: 0,
         },
@@ -38,7 +38,7 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
       {
         id: '',
         name: '',
-        category: '',
+        categories: '',
       },
     ],
     loyaltyPointSettings_isLoading: false,
@@ -83,7 +83,7 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
       meta: {
         total: 1,
         page: 1,
-        limit: 10,
+        pageSize: 10,
         totalPages: 1,
       },
     },

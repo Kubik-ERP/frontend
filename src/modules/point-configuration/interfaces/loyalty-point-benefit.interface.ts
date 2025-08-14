@@ -3,7 +3,7 @@ import type { Validation } from '@vuelidate/core';
 export type IFreeItems = {
   id?: string;
   name: string;
-  category?: string;
+  categories?: string;
   quantity: number;
 };
 
@@ -85,7 +85,7 @@ export type IPointConfigurationListResponse = {
     items: ILoyaltyPointBenefit[];
     meta: {
       page: number;
-      limit: number;
+      pageSize: number;
       total: number;
       totalPages: number;
     };
@@ -97,7 +97,7 @@ export type IPointConfigurationListResponse = {
 export type IProduct = {
   id: string;
   name: string;
-  category: string;
+  categories: string;
   freeItems?: IFreeItems[] | null;
 };
 

@@ -27,7 +27,7 @@ const popover = ref();
       :columns="loyaltyPointBenefit_columns"
       header-title="Loyalty Point Benefit"
       :rows-per-page="
-        !loyaltyPointBenefit_list.loyaltySettingsStatus ? 10 : loyaltyPointBenefit_list.loyaltyBenefits.meta.limit
+        !loyaltyPointBenefit_list.loyaltySettingsStatus ? 10 : loyaltyPointBenefit_list.loyaltyBenefits.meta.pageSize
       "
       :total-records="
         !loyaltyPointBenefit_list.loyaltySettingsStatus ? 100 : loyaltyPointBenefit_list.loyaltyBenefits.meta.total
@@ -36,7 +36,7 @@ const popover = ref();
         !loyaltyPointBenefit_list.loyaltySettingsStatus
           ? 1
           : (loyaltyPointBenefit_list.loyaltyBenefits.meta.page - 1) *
-            loyaltyPointBenefit_list.loyaltyBenefits.meta.limit
+            loyaltyPointBenefit_list.loyaltyBenefits.meta.pageSize
       "
       is-using-server-side-pagination
       :is-using-filter="false"

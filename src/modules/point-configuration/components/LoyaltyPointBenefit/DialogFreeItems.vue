@@ -47,7 +47,7 @@ const onProductSelect = (event: AutoCompleteOptionSelectEvent) => {
   const itemToAdd: IFreeItems = {
     id: selectedItem.id,
     name: selectedItem.name,
-    category: selectedItem.category,
+    categories: selectedItem.categories,
     quantity: 1, // Default to a quantity of 1
   };
 
@@ -154,8 +154,8 @@ const removeFromPool = (productToRemove: IFreeItems) => {
                 <div class="flex justify-between p-2 rounded-md border border-grayscale-10 w-full">
                   <div>
                     <h3 class="font-semibold">{{ product.name }}</h3>
-                    <PrimeVueChip class="bg-primary-background text-disabled text-xs px-1.5 py-1">
-                      {{ product.category }}
+                    <PrimeVueChip class="bg-primary-background text-text-disabled text-xs px-1.5 py-1">
+                      {{ product.categories }}
                     </PrimeVueChip>
                   </div>
                   <div class="flex flex-col gap-1">

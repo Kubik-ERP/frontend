@@ -22,7 +22,7 @@ export interface ILoyaltyPointSettingsProductList {
   meta: {
     total: number;
     page: number;
-    limit: number;
+    pageSize: number;
     totalPages: number;
   };
 }
@@ -39,7 +39,7 @@ export interface ILoyaltyPointSettingsProductItem {
 
 export interface IQueryParams {
   page?: number | null;
-  limit?: number | null;
+  pageSize?: number | null;
   search?: string | null;
 }
 
