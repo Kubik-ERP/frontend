@@ -61,9 +61,7 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
     },
     loyaltyPointSettingsProduct_isLoading: false,
     loyaltyPointSettingsProduct_value: {
-      data: [
-        
-      ],
+      data: [],
       meta: {
         total: 1,
         page: 1,
@@ -134,7 +132,6 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
             ...requestConfigurations,
           },
         );
-        console.log('🚀 ~ response:', response);
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -190,10 +187,9 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
           return {
             id: product.id,
             name: product.name,
-            category: product.categoriesHasProducts[0].categories.category,
+            categories: product.categoriesHasProducts[0].categories.category,
           };
         });
-
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

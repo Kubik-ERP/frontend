@@ -227,12 +227,12 @@ const removeFromPool = (productToRemove: IFreeItems) => {
           class="bg-primary border-none min-w-44 disabled:bg-grayscale-20"
           :disabled="freeItemsBenefit_formValidations.$invalid"
           :label="isEdit ? 'Edit' : 'Add'"
-          @click="isEdit ? loyaltyPointBenefit_onSubmitEditDialogFreeItems() : loyaltyPointBenefit_onSubmitDialogFreeItems()"
-        >
-          <template #default>
-            <span class="font-semibold text-base text-white">Add</span>
-          </template>
-        </PrimeVueButton>
+          @click="
+            isEdit
+              ? loyaltyPointBenefit_onSubmitEditDialogFreeItems()
+              : loyaltyPointBenefit_onSubmitDialogFreeItems()
+          "
+        />
       </section>
     </template>
   </AppBaseDialog>
