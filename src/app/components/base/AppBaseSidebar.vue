@@ -91,7 +91,7 @@ const isAnySubMenuActive = (menu: IMenu): boolean => {
   <aside
     id="sidebar"
     class="sticky inset-0 z-0 flex flex-col gap-4 bg-background border-r border-solid border-grayscale-10 px-4 py-2 transition-all duration-300 ease-in-out"
-    :class="[isCollapsed ? 'w-20' : 'w-64']"
+    :class="[isCollapsed ? 'w-20' : 'w-64 min-w-64']"
   >
     <!-- Hide Icon -->
     <section

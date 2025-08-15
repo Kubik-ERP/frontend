@@ -1,0 +1,166 @@
+<script setup lang="ts">
+import { ref, watch } from 'vue';
+import { useStorageLocationStore } from '../store';
+import confirmationSVG from '@/app/assets/icons/confirmation.svg';
+import eventBus from '@/plugins/mitt';
+import { useStorageLocationService } from '../services/storage-location.service';
+import { useStorageLocationActionService } from '../services/storage-location-action.service';
+
+const store = useStorageLocationStore();
+const { storageLocationFormMode, storageLocation_editingItem } = storeToRefs(store);
+
+const {
+  storageLocation_formOnLoading,
+  storageLocation_formData,
+  storageLocation_formValidation,
+  storageLocation_onSubmit,
+  storageLocation_onCancel,
+  storageLocation_formValid,
+} = useStorageLocationActionService();
+
+const {
+  storageLocation_onDelete
+} = useStorageLocationService();
+
+const isUpdateModal = ref(false);
+
+watch(
+  [storageLocationFormMode, storageLocation_editingItem],
+  ([mode, item]) => {
+    if (mode === 'edit' && item) {
+      storageLocation_formData.value.name = item.name ?? '';
+      storageLocation_formData.value.notes = item.notes ?? '';
+    } else {
+      storageLocation_formData.value.name = '';
+      storageLocation_formData.value.notes = '';
+    }
+  },
+  { immediate: true }
+);
+
+const handleSubmit = async () => {
+  if (storageLocationFormMode.value === 'edit') {
+    isUpdateModal.value = true;
+    eventBus.emit('AppBaseDialog', {
+      id: 'storage-location-modal-form',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: false,
+      width: '600px',
+    });
+  } else {
+    const id = storageLocation_editingItem.value?.id;
+    await storageLocation_onSubmit(storageLocation_formData.value, storageLocationFormMode.value, id);
+    eventBus.emit('AppBaseDialog', {
+      id: 'storage-location-modal-form',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: false,
+      width: '600px',
+    });
+  }
+};
+
+const confirmUpdate = async () => {
+  const id = storageLocation_editingItem.value?.id;
+  await storageLocation_onSubmit(storageLocation_formData.value, storageLocationFormMode.value, id);
+  isUpdateModal.value = false;
+};
+
+const cancelUpdate = () => {
+  isUpdateModal.value = false;
+};
+
+const handleDelete = async () => {
+  eventBus.emit('AppBaseDialog', {
+    id: 'storage-location-modal-form',
+    isUsingClosableButton: false,
+    isUsingBackdrop: true,
+    isOpen: false,
+    width: '600px',
+  });
+  if (storageLocation_editingItem.value?.id) {
+    await storageLocation_onDelete(storageLocation_editingItem.value.id);
+  }
+};
+</script>
+
+<template>
+  <!-- Modal Form Storage Location -->
+  <AppBaseDialog id="storage-location-modal-form">
+    <template #header>
+      <header class="flex flex-col gap-2">
+        <h6 class="font-semibold text-black text-lg">
+          {{ storageLocationFormMode === 'edit' ? 'Edit Storage Location' : 'Add New Storage Location' }}
+        </h6>
+      </header>
+    </template>
+
+    <template #content>
+      <form class="w-full" @submit.prevent="handleSubmit">
+        <section class="flex flex-col gap-4 w-full">
+          <AppBaseFormGroup v-slot="{ classes }" class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+            is-name-as-label label-for="storage-location-name" :name="useLocalization('storageLocation.form.name')"
+            spacing-bottom="mb-0" :validators="storageLocation_formValidation.name">
+            <PrimeVueInputText v-model="storageLocation_formData.name" class="w-full" :class="{ ...classes }"
+              placeholder="Enter storage location name" />
+          </AppBaseFormGroup>
+
+          <AppBaseFormGroup v-slot="{ classes }" class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+            is-name-as-label label-for="storage-location-description"
+            :name="useLocalization('storageLocation.form.notes')" spacing-bottom="mb-0">
+            <PrimeVueTextarea id="storage-location-description" v-model="storageLocation_formData.notes"
+              placeholder="Enter storage location description" rows="2"
+              class="w-full border border-gray-300 rounded-md px-3 py-2" :class="{ ...classes }"
+              style="height: 150px" />
+          </AppBaseFormGroup>
+        </section>
+      </form>
+    </template>
+
+    <template #footer>
+      <div class="flex flex-row gap-2 w-full justify-end">
+        <!-- Cancel -->
+        <PrimeVueButton type="button" class="w-full bg-white text-primary border border-primary"
+          :disabled="storageLocation_formOnLoading" @click="storageLocation_onCancel">
+          {{ useLocalization('storageLocation.form.buttons.cancel') || 'Cancel' }}
+        </PrimeVueButton>
+
+        <!-- Update / Save -->
+        <PrimeVueButton type="submit" class="w-full disabled:bg-gray-400 disabled:text-white disabled:border-none"
+          :loading="storageLocation_formOnLoading" :disabled="!storageLocation_formValid" @click="handleSubmit">
+          {{ storageLocationFormMode === 'edit'
+            ? (useLocalization('storageLocation.form.buttons.update') || 'Update')
+            : (useLocalization('storageLocation.form.buttons.create') || 'Save') }}
+        </PrimeVueButton>
+
+        <!-- Delete -->
+        <PrimeVueButton v-if="storageLocationFormMode === 'edit'" type="button"
+          class="w-full bg-white text-red-600 border-none" @click="handleDelete">
+          <AppBaseSvg name="delete" class="!w-4 !h-4" />
+          {{ useLocalization('storageLocation.deleteButton') || 'Delete' }}
+        </PrimeVueButton>
+      </div>
+    </template>
+  </AppBaseDialog>
+
+  <!-- Dialog Konfirmasi Update -->
+  <PrimeVueDialog :visible="isUpdateModal" modal header="">
+    <template #container>
+      <div class="w-[35rem] p-8">
+        <div class="flex flex-col items-center gap-4 text-center">
+          <span><img :src="confirmationSVG" alt="confirmation" /></span>
+          <h1 class="text-2xl font-semibold">Are you sure want to update this storage location?</h1>
+          <p>The update will affect the related storage location data</p>
+          <div class="flex items-center justify-between gap-4">
+            <PrimeVueButton variant="text" class="w-56 text-lg border-2 border-primary text-primary font-semibold"
+              @click="cancelUpdate">Cancel</PrimeVueButton>
+            <PrimeVueButton
+              class="text-xl w-56 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
+              unstyled label="Yes, I'm Sure" @click="confirmUpdate" />
+          </div>
+        </div>
+      </div>
+    </template>
+  </PrimeVueDialog>
+</template>
