@@ -81,6 +81,8 @@ export interface ILoyaltyPointSettingsAllProductListQueryParams {
 
 export interface ISelectedProducts {
   id?: string | null;
+  name?: string | null;
+  price?: number | null;
   isSelected?: boolean | null;
   productId?: string;
   pointsEarned?: number;
@@ -95,6 +97,13 @@ export interface IProductWithSelection extends ILoyaltyPointSettingsAllProductLi
   name?: string;
   price?: number;
   discountPrice?: number;
+}
+
+export interface IProduct {
+  id: string;
+  name: string;
+  price: number;
+  discountPrice: number;
 }
 
 export interface ILoyaltyPointSettingsProvided {
@@ -123,5 +132,15 @@ export interface ILoyaltyPointSettingsProvided {
   loyaltyPointSettingsAllProduct_onChangePage: (page: number) => void;
   selectedProducts: Ref<ISelectedProducts[]>;
   loyaltyPointSettings_onSubmitDialog: () => void;
-  loyaltyPointSettings_onShowDialogEditProduct: (productName: string) => void;
+  loyaltyPointSettings_onShowDialogEditProduct: (productId: string) => void;
+  loyaltyPointSettings_onCloseDialogEditProduct: () => void;
+  // loyaltyPointSettings_toggleSelection: (product: IProductWithSelection) => void;
+  isProductSelected: (product: IProduct) => boolean;
+  getSelectedProductData: (product: IProduct) => ISelectedProducts | undefined;
+  loyaltyPointSettings_toggleSelection: (product: IProduct) => void;
+  loyaltyPointSettings_updateProductValue: (
+    product: IProduct,
+    field: 'pointsEarned' | 'minimumPurchase',
+    newValue: number,
+  ) => void;
 }

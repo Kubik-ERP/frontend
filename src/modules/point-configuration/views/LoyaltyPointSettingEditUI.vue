@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { usePointConfigurationService } from '../services/point-configuration.service';
 import DialogSelectItems from '../components/LoyaltyPointSettings/Dialog.vue';
+import DialogEditSelectedItems from '../components/LoyaltyPointSettings/DialogEdit.vue';
 
 const {
   // data
@@ -28,7 +29,13 @@ const {
   selectedProducts,
   loyaltyPointSettings_onSubmitDialog,
   loyaltyPointSettingsProduct,
-  loyaltyPointSettings_onShowDialogEditProduct
+  loyaltyPointSettings_onShowDialogEditProduct,
+  loyaltyPointSettings_onCloseDialogEditProduct,
+
+  isProductSelected,
+  getSelectedProductData,
+  loyaltyPointSettings_toggleSelection,
+  loyaltyPointSettings_updateProductValue,
 } = usePointConfigurationService();
 
 provide('loyaltyPointSettings', {
@@ -44,7 +51,12 @@ provide('loyaltyPointSettings', {
   selectedProducts,
   loyaltyPointSettings_onSubmitDialog,
   loyaltyPointSettingsProduct,
-  loyaltyPointSettings_onShowDialogEditProduct
+  loyaltyPointSettings_onCloseDialogEditProduct,
+
+  isProductSelected,
+  getSelectedProductData,
+  loyaltyPointSettings_toggleSelection,
+  loyaltyPointSettings_updateProductValue,
 });
 
 onMounted(async () => {
@@ -158,24 +170,27 @@ onMounted(async () => {
           spacing-bottom="mb-0"
           :validators="loyaltyPointSettings_formValidations.spendBasedExpiration"
         >
-          <PrimeVueSelect
+          <PrimeVueInputNumber
             v-model="loyaltyPointSettings_formData.spendBasedExpiration"
             :disabled="!loyaltyPointSettings_formData.spendBased"
-            :options="[
-              {
-                label: 'No Expiration',
-                value: 'no_expiration',
-              },
-            ]"
-            option-label="label"
-            option-value="value"
-            placeholder="Select Expiration"
-            class="w-full"
+            class="text-sm text-center"
+            show-buttons
+            button-layout="horizontal"
+            fluid
+            :min="0"
+            :step="1"
             :class="{
               ...classes,
             }"
             v-on="useListenerForm(loyaltyPointSettings_formValidations, 'spendBasedExpiration')"
-          />
+          >
+            <template #decrementicon>
+              <span><AppBaseSvg name="minus" class="!w-5 !h-5" /></span>
+            </template>
+            <template #incrementicon>
+              <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
+            </template>
+          </PrimeVueInputNumber>
         </AppBaseFormGroup>
       </section>
 
@@ -231,6 +246,15 @@ onMounted(async () => {
       </section>
 
       <section class="col-span-2">
+        <!-- <pre>{{ loyaltyPointSettings_formData }}</pre> -->
+        <PrimeVueButton
+          unstyled
+          :disabled="!loyaltyPointSettings_formData.productBased"
+          class="flex items-center justify-center cursor-pointer"
+          @click="loyaltyPointSettings_onShowDialogEditProduct('123')"
+        >
+          <AppBaseSvg name="edit" />
+        </PrimeVueButton>
         <AppBaseDataTable
           header-title="Product Item"
           :is-using-filter="false"
@@ -288,9 +312,7 @@ onMounted(async () => {
                 unstyled
                 :disabled="!loyaltyPointSettings_formData.productBased"
                 class="flex items-center justify-center cursor-pointer"
-                @click="
-                  loyaltyPointSettings_onShowDialogEditProduct(data.name)
-                "
+                @click="loyaltyPointSettings_onShowDialogEditProduct(data.id)"
               >
                 <template #icon>
                   <AppBaseSvg name="edit" class="!w-5 !h-5" />
@@ -314,24 +336,27 @@ onMounted(async () => {
           spacing-bottom="mb-0"
           :validators="loyaltyPointSettings_formValidations.productBasedExpiration"
         >
-          <PrimeVueSelect
+          <PrimeVueInputNumber
             v-model="loyaltyPointSettings_formData.productBasedExpiration"
-            :disabled="!loyaltyPointSettings_formData.productBased"
-            :options="[
-              {
-                label: 'No Expiration',
-                value: 'no_expiration',
-              },
-            ]"
-            option-label="label"
-            option-value="value"
-            placeholder="Select Expiration"
-            class="w-full"
+            :disabled="!loyaltyPointSettings_formData.spendBased"
+            class="text-sm text-center"
+            show-buttons
+            button-layout="horizontal"
+            fluid
+            :min="0"
+            :step="1"
             :class="{
               ...classes,
             }"
             v-on="useListenerForm(loyaltyPointSettings_formValidations, 'productBasedExpiration')"
-          />
+          >
+            <template #decrementicon>
+              <span><AppBaseSvg name="minus" class="!w-5 !h-5" /></span>
+            </template>
+            <template #incrementicon>
+              <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
+            </template>
+          </PrimeVueInputNumber>
         </AppBaseFormGroup>
       </section>
 
@@ -394,4 +419,5 @@ onMounted(async () => {
     </form>
   </section>
   <DialogSelectItems />
+  <DialogEditSelectedItems />
 </template>

@@ -29,7 +29,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/LoyaltyPointSettingEditUI.vue'),
         meta: {
           requiresAuthorization: true,
-          breadcrumb: 'loyalty Point Settings',
+          breadcrumb: 'Loyalty Point Settings',
           title: 'Loyalty Point Settings',
           backArrow: true,
           backArrowPath: '/pos-setting/point-configuration',

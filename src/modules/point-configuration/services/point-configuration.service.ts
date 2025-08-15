@@ -15,7 +15,8 @@ import {
   ILoyaltyPointSettingsFormData,
   ILoyaltyPointSettingsAllProductListQueryParams,
   ISelectedProducts,
-  IProductWithSelection,
+  // IProductWithSelection,
+  IProduct,
 } from '../interfaces/point-configuration.interface';
 // Service
 
@@ -228,10 +229,31 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     );
   };
 
-  const loyaltyPointSettings_onShowDialogEditProduct = (productName: string): void => {
-    loyaltyPointSettingAllProductQueryParams.search = productName;
-    loyaltyPointSettings_onShowDialog();
-  }
+  // const loyaltyPointSettings_onShowDialogEditProduct = (productName: string): void => {
+  //   loyaltyPointSettingAllProductQueryParams.search = productName;
+  //   loyaltyPointSettings_onShowDialog();
+  // };
+
+  const loyaltyPointSettings_onShowDialogEditProduct = (productId: string): void => {
+    console.log('productId', productId);
+    const argsEventEmitter: IPropsDialog = {
+      id: 'loyalty-point-settings-dialog-edit-product',
+      isOpen: true,
+      isUsingClosableButton: false,
+      // width: '534px',
+    };
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  const loyaltyPointSettings_onCloseDialogEditProduct = (): void => {
+    const argsEventEmitter: IPropsDialog = {
+      id: 'loyalty-point-settings-dialog-edit-product',
+      isOpen: false,
+      isUsingClosableButton: false,
+      // width: '534px',
+    };
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
 
   const loyaltyPointSettings_onShowDialog = async (): Promise<void> => {
     await loyaltyPointSettings_fetchAllProduct();
@@ -287,69 +309,108 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     { deep: true },
   );
 
+  // This remains the single source of truth for what is selected.
   const selectedProducts = ref<ISelectedProducts[]>([]);
 
-  // ✅ This single watcher replaces the previous two.
-  // It synchronizes the table's UI state with the selectedProducts array.
-  watch(
-    // Watch BOTH the list of all products AND the list of selected products
-    [() => loyaltyPointSettings_allProductList.value.products, selectedProducts],
-    ([productList, selectionList]) => {
-      if (!productList) return;
+  // ✅ HELPER 1: A simple function to check if a product is in our selection pool.
+  const isProductSelected = (product: IProduct): boolean => {
+    return selectedProducts.value.some(p => p.productId === product.id);
+  };
 
-      // 1. Create a quick lookup map of selected products for high performance
-      const selectedMap = new Map(selectionList.map(p => [p.productId, p]));
+  // ✅ HELPER 2: A function to get the full data object from the selection pool.
+  // This is needed for v-model on the number inputs.
+  const getSelectedProductData = (product: IProduct): ISelectedProducts | undefined => {
+    return selectedProducts.value.find(p => p.productId === product.id);
+  };
 
-      // 2. Loop through the products currently displayed in the table
-      (productList as IProductWithSelection[]).forEach(productInTable => {
-        const selectionData = selectedMap.get(productInTable.id);
-
-        if (selectionData) {
-          // If this product is in our selected list, check the box and populate its data
-          productInTable.isSelected = true;
-          productInTable.points_earned = selectionData.pointsEarned;
-          productInTable.minimum_purchase = selectionData.minimumPurchase;
-        } else {
-          // If not selected, ensure the box is unchecked and data is default
-          productInTable.isSelected = false;
-          productInTable.points_earned = 0;
-          productInTable.minimum_purchase = 0;
-        }
+  // ✅ HELPER 3: This function now handles the checkbox click directly.
+  const loyaltyPointSettings_toggleSelection = (product: IProduct): void => {
+    if (isProductSelected(product)) {
+      // If it's already selected, remove it
+      selectedProducts.value = selectedProducts.value.filter(p => p.productId !== product.id);
+    } else {
+      // If it's not selected, add it with default values
+      selectedProducts.value.push({
+        productId: product.id,
+        pointsEarned: 0,
+        minimumPurchase: 0,
+        name: product.name,
+        price: product.price,
       });
-    },
-    { deep: true },
-  );
+    }
+  };
 
-  // This watcher handles when the user physically clicks a checkbox
-  watch(
-    () => loyaltyPointSettings_allProductList.value.products,
-    newProductList => {
-      if (!newProductList || !Array.isArray(newProductList)) return;
-      const currentlySelected = (newProductList as IProductWithSelection[]).filter(p => p.isSelected);
+  // ✅ HELPER 4: A NEW function to handle InputNumber changes
+  const loyaltyPointSettings_updateProductValue = (
+    product: IProduct,
+    field: 'pointsEarned' | 'minimumPurchase',
+    newValue: number,
+  ): void => {
+    const productToUpdate = selectedProducts.value.find(p => p.productId === product.id);
+    if (productToUpdate) {
+      productToUpdate[field] = newValue;
+    }
+  };
 
-      selectedProducts.value = currentlySelected.map(p => ({
-        productId: p.id,
-        pointsEarned: p.points_earned,
-        minimumPurchase: p.minimum_purchase,
-        name: p.name,
-        price: p.price,
-      }));
-    },
-    { deep: true },
-  );
+  // const selectedProducts = ref<ISelectedProducts[]>([]);
+
+  // watch(
+  //   [() => loyaltyPointSettings_allProductList.value.products, selectedProducts],
+  //   ([productList, selectionList]) => {
+  //     if (!productList) return;
+
+  //     const selectedMap = new Map(selectionList.map(p => [p.productId, p]));
+
+  //     // 2. Loop through the products currently displayed in the table
+  //     (productList as IProductWithSelection[]).forEach(productInTable => {
+  //       const selectionData = selectedMap.get(productInTable.id);
+
+  //       if (selectionData) {
+  //         productInTable.isSelected = true;
+  //         productInTable.points_earned = selectionData.pointsEarned;
+  //         productInTable.minimum_purchase = selectionData.minimumPurchase;
+  //       } else {
+  //         productInTable.isSelected = false;
+  //         productInTable.points_earned = 0;
+  //         productInTable.minimum_purchase = 0;
+  //       }
+  //     });
+  //   },
+  //   { deep: true },
+  // );
+
+  // // This watcher handles when the user physically clicks a checkbox
+  // watch(
+  //   () => loyaltyPointSettings_allProductList.value.products,
+  //   newProductList => {
+  //     if (!newProductList || !Array.isArray(newProductList)) return;
+  //     const currentlySelected = (newProductList as IProductWithSelection[]).filter(p => p.isSelected);
+
+  //     selectedProducts.value = currentlySelected.map(p => ({
+  //       productId: p.id,
+  //       pointsEarned: p.points_earned,
+  //       minimumPurchase: p.minimum_purchase,
+  //       name: p.name,
+  //       price: p.price,
+  //     }));
+  //   },
+  //   { deep: true },
+  // );
 
   const loyaltyPointSettings_onSubmitDialog = (): void => {
     const currentItems = new Map(
-      loyaltyPointSettings_formData.productBasedItems.map(item => [item.productId, item])
+      loyaltyPointSettings_formData.productBasedItems.map(item => [item.productId, item]),
     );
 
-    (selectedProducts.value as {
-      productId: string;
-      name: string;
-      price: number;
-      pointsEarned: number;
-      minimumPurchase: number;
-    }[]).forEach(product => {
+    (
+      selectedProducts.value as {
+        productId: string;
+        name: string;
+        price: number;
+        pointsEarned: number;
+        minimumPurchase: number;
+      }[]
+    ).forEach(product => {
       currentItems.set(product.productId, product);
     });
 
@@ -357,8 +418,6 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     selectedProducts.value = [];
     loyaltyPointSettings_onCloseDialog();
   };
-
-  
 
   return {
     pointConfiguration_activeTab,
@@ -392,5 +451,11 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     selectedProducts,
     loyaltyPointSettings_onSubmitDialog,
     loyaltyPointSettings_onShowDialogEditProduct,
+    loyaltyPointSettings_onCloseDialogEditProduct,
+
+    isProductSelected,
+    getSelectedProductData,
+    loyaltyPointSettings_toggleSelection,
+    loyaltyPointSettings_updateProductValue,
   };
 };

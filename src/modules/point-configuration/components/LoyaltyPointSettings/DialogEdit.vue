@@ -2,60 +2,28 @@
 import type { ILoyaltyPointSettingsProvided } from '@/modules/point-configuration/interfaces/point-configuration.interface';
 const {
   // dialog
-  loyaltyPointSettings_onCloseDialog,
+  loyaltyPointSettings_onCloseDialogEditProduct,
   loyaltyPointSettings_columns,
-  // loyaltyPointSettings_fetchAllProduct,
   loyaltyPointSettings_allProductList,
   allProductList_isLoading,
-  loyaltyPointSettingAllProductQueryParams,
-  loyaltyPointSettingsAllProduct_onChangePage,
-  // selectedProducts,
-  loyaltyPointSettings_onSubmitDialog,
-  // loyaltyPointSettings_onShowDialogEditProduct,
-  // loyaltyPointSettings_toggleSelection,
-  isProductSelected,
-  getSelectedProductData,
-  loyaltyPointSettings_toggleSelection,
-  loyaltyPointSettings_updateProductValue,
 } = inject<ILoyaltyPointSettingsProvided>('loyaltyPointSettings')!;
 </script>
 <template>
-  <AppBaseDialog id="loyalty-point-settings-dialog-select-product">
+  <AppBaseDialog id="loyalty-point-settings-dialog-edit-product">
     <template #header>
-      <h1 class="font-bold text-2xl text-text-primary">Select Product</h1>
+      <h1 class="font-bold text-2xl text-text-primary">Edit Product</h1>
     </template>
 
     <template #content>
-      <section id="content" class="flex flex-col gap-4">
-        <PrimeVueIconField class="w-full">
-          <PrimeVueInputIcon>
-            <template #default>
-              <AppBaseSvg name="search" />
-            </template>
-          </PrimeVueInputIcon>
-          <PrimeVueInputText
-            v-model="loyaltyPointSettingAllProductQueryParams.search"
-            placeholder="Search"
-            class="w-full"
-          />
-        </PrimeVueIconField>
-        <!-- <pre>
-          {{ selectedProducts }}
-        </pre> -->
+      <section id="content" class="flex flex-col gap-4 border-t border-grayscale-20">
         <AppBaseDataTable
-          header-title="Product Item"
+          :is-using-pagination="false"
           :is-using-filter="false"
+          :is-using-header="false"
           :columns="loyaltyPointSettings_columns"
           :data="loyaltyPointSettings_allProductList.products"
           :is-loading="allProductList_isLoading"
-          :rows-per-page="5"
-          :total-records="loyaltyPointSettings_allProductList.total"
-          :first="(loyaltyPointSettings_allProductList.page - 1) * 5"
-          is-using-server-side-pagination
           is-using-custom-body
-          is-using-custom-header-prefix
-          is-using-custom-header-suffix
-          @update:currentPage="loyaltyPointSettingsAllProduct_onChangePage"
         >
           <template #header-prefix>
             <h1 class="font-semibold text-black text-xl">Product Item</h1>
@@ -63,12 +31,6 @@ const {
           <template #body="{ column, data }">
             <template v-if="column.value === 'productName'">
               <div class="flex gap-4 items-center">
-                <!-- <PrimeVueCheckbox v-model="data.isSelected" binary /> -->
-                <PrimeVueCheckbox
-                  :model-value="isProductSelected(data)"
-                  binary
-                  @update:modelValue="loyaltyPointSettings_toggleSelection(data)"
-                />
                 <span>{{ data.name ?? '-' }}</span>
               </div>
             </template>
@@ -81,17 +43,14 @@ const {
 
             <template v-else-if="column.value === 'points'">
               <PrimeVueInputNumber
-                :model-value="getSelectedProductData(data)?.pointsEarned"
-                :disabled="!isProductSelected(data)"
+                v-model="data.points_earned"
+                :disabled="!data.isSelected"
                 class="text-sm text-center"
                 show-buttons
                 button-layout="horizontal"
                 fluid
                 :min="0"
                 :step="1"
-                @update:modelValue="
-                  newValue => loyaltyPointSettings_updateProductValue(data, 'pointsEarned', newValue)
-                "
               >
                 <template #decrementicon>
                   <span><AppBaseSvg name="minus" class="!w-5 !h-5" /></span>
@@ -103,17 +62,14 @@ const {
 
             <template v-else-if="column.value === 'minimumTransaction'">
               <PrimeVueInputNumber
-                :model-value="getSelectedProductData(data)?.minimumPurchase"
-                :disabled="!isProductSelected(data)"
+                v-model="data.minimum_purchase"
+                :disabled="!data.isSelected"
                 class="text-sm text-center"
                 show-buttons
                 button-layout="horizontal"
                 fluid
                 :min="0"
                 :step="1"
-                @update:modelValue="
-                  newValue => loyaltyPointSettings_updateProductValue(data, 'minimumPurchase', newValue)
-                "
               >
                 <template #decrementicon>
                   <AppBaseSvg name="minus" class="!w-5 !h-5" />
@@ -135,13 +91,13 @@ const {
           label="Cancel"
           severity="secondary"
           variant="outlined"
-          @click="loyaltyPointSettings_onCloseDialog()"
+          @click="loyaltyPointSettings_onCloseDialogEditProduct()"
         />
 
         <PrimeVueButton
           class="bg-blue-primary border-none text-base max-w-44 w-full"
           label="Add Product"
-          @click="loyaltyPointSettings_onSubmitDialog()"
+          @click="loyaltyPointSettings_onCloseDialogEditProduct()"
         />
       </footer>
     </template>
