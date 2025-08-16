@@ -25,6 +25,7 @@ import { required, helpers, minValue } from '@vuelidate/validators';
 import { usePointConfigurationStore } from '../store';
 
 export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided => {
+  const router = useRouter();
   const store = usePointConfigurationStore();
   const {
     loyaltyPointBenefit_isLoading,
@@ -416,7 +417,10 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
         message: 'Loyalty Point Settings has been initiated successfully.',
         position: EToastPosition.TOP_RIGHT,
       };
+
       eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      router.push({ name: 'loyalty-point-setting.edit' });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);

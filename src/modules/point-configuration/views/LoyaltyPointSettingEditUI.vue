@@ -36,6 +36,8 @@ const {
   getSelectedProductData,
   loyaltyPointSettings_toggleSelection,
   loyaltyPointSettings_updateProductValue,
+  loyaltyPointSettings_EditProduct,
+  loyaltyPointSettings_onSubmitDialogEditProduct
 } = usePointConfigurationService();
 
 provide('loyaltyPointSettings', {
@@ -57,6 +59,8 @@ provide('loyaltyPointSettings', {
   getSelectedProductData,
   loyaltyPointSettings_toggleSelection,
   loyaltyPointSettings_updateProductValue,
+  loyaltyPointSettings_EditProduct,
+  loyaltyPointSettings_onSubmitDialogEditProduct
 });
 
 onMounted(async () => {
@@ -247,14 +251,7 @@ onMounted(async () => {
 
       <section class="col-span-2">
         <!-- <pre>{{ loyaltyPointSettings_formData }}</pre> -->
-        <PrimeVueButton
-          unstyled
-          :disabled="!loyaltyPointSettings_formData.productBased"
-          class="flex items-center justify-center cursor-pointer"
-          @click="loyaltyPointSettings_onShowDialogEditProduct('123')"
-        >
-          <AppBaseSvg name="edit" />
-        </PrimeVueButton>
+
         <AppBaseDataTable
           header-title="Product Item"
           :is-using-filter="false"
@@ -312,12 +309,20 @@ onMounted(async () => {
                 unstyled
                 :disabled="!loyaltyPointSettings_formData.productBased"
                 class="flex items-center justify-center cursor-pointer"
+                @click="loyaltyPointSettings_onShowDialogEditProduct(data)"
+              >
+                <AppBaseSvg name="edit" />
+              </PrimeVueButton>
+              <!-- <PrimeVueButton
+                unstyled
+                :disabled="!loyaltyPointSettings_formData.productBased"
+                class="flex items-center justify-center cursor-pointer"
                 @click="loyaltyPointSettings_onShowDialogEditProduct(data.id)"
               >
                 <template #icon>
                   <AppBaseSvg name="edit" class="!w-5 !h-5" />
                 </template>
-              </PrimeVueButton>
+              </PrimeVueButton> -->
             </template>
             <template v-else>
               <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>

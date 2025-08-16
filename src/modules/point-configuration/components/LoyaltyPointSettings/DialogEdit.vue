@@ -4,8 +4,10 @@ const {
   // dialog
   loyaltyPointSettings_onCloseDialogEditProduct,
   loyaltyPointSettings_columns,
-  loyaltyPointSettings_allProductList,
+  // loyaltyPointSettings_allProductList,
+  loyaltyPointSettings_EditProduct,
   allProductList_isLoading,
+  loyaltyPointSettings_onSubmitDialogEditProduct
 } = inject<ILoyaltyPointSettingsProvided>('loyaltyPointSettings')!;
 </script>
 <template>
@@ -15,13 +17,16 @@ const {
     </template>
 
     <template #content>
+      <!-- <pre>
+        {{ loyaltyPointSettings_EditProduct }}
+      </pre> -->
       <section id="content" class="flex flex-col gap-4 border-t border-grayscale-20">
         <AppBaseDataTable
           :is-using-pagination="false"
           :is-using-filter="false"
           :is-using-header="false"
           :columns="loyaltyPointSettings_columns"
-          :data="loyaltyPointSettings_allProductList.products"
+          :data="loyaltyPointSettings_EditProduct"
           :is-loading="allProductList_isLoading"
           is-using-custom-body
         >
@@ -43,8 +48,7 @@ const {
 
             <template v-else-if="column.value === 'points'">
               <PrimeVueInputNumber
-                v-model="data.points_earned"
-                :disabled="!data.isSelected"
+                v-model="data.pointsEarned"
                 class="text-sm text-center"
                 show-buttons
                 button-layout="horizontal"
@@ -62,8 +66,7 @@ const {
 
             <template v-else-if="column.value === 'minimumTransaction'">
               <PrimeVueInputNumber
-                v-model="data.minimum_purchase"
-                :disabled="!data.isSelected"
+                v-model="data.minimumPurchase"
                 class="text-sm text-center"
                 show-buttons
                 button-layout="horizontal"
@@ -96,8 +99,8 @@ const {
 
         <PrimeVueButton
           class="bg-blue-primary border-none text-base max-w-44 w-full"
-          label="Add Product"
-          @click="loyaltyPointSettings_onCloseDialogEditProduct()"
+          label="Edit Product"
+          @click="loyaltyPointSettings_onSubmitDialogEditProduct()"
         />
       </footer>
     </template>

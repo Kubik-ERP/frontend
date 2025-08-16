@@ -45,14 +45,15 @@ export interface IQueryParams {
 }
 
 export interface IProductBasedItems {
-  productId: string;
-  name: string;
-  price: number;
-  pointsEarned: number;
-  minimumPurchase: number;
+  productId?: string | null;
+  name?: string| null;
+  price?: number| null;
+  pointsEarned?: number | null;
+  minimumPurchase?: number | null;
 }
 
 export interface ILoyaltyPointSettingsFormData {
+  productId?: string | null;
   spendBased: boolean;
   spendBasedMinTransaction: number;
   spendBasedPointEarned: number;
@@ -84,9 +85,9 @@ export interface ISelectedProducts {
   name?: string | null;
   price?: number | null;
   isSelected?: boolean | null;
-  productId?: string;
-  pointsEarned?: number;
-  minimumPurchase?: number;
+  productId?: string| null;
+  pointsEarned?: number| null;
+  minimumPurchase?: number| null;
 }
 
 export interface IProductWithSelection extends ILoyaltyPointSettingsAllProductList {
@@ -100,6 +101,7 @@ export interface IProductWithSelection extends ILoyaltyPointSettingsAllProductLi
 }
 
 export interface IProduct {
+  productId?: string | null;
   id: string;
   name: string;
   price: number;
@@ -132,7 +134,7 @@ export interface ILoyaltyPointSettingsProvided {
   loyaltyPointSettingsAllProduct_onChangePage: (page: number) => void;
   selectedProducts: Ref<ISelectedProducts[]>;
   loyaltyPointSettings_onSubmitDialog: () => void;
-  loyaltyPointSettings_onShowDialogEditProduct: (productId: string) => void;
+  loyaltyPointSettings_onShowDialogEditProduct: (product: IProduct) => void;
   loyaltyPointSettings_onCloseDialogEditProduct: () => void;
   // loyaltyPointSettings_toggleSelection: (product: IProductWithSelection) => void;
   isProductSelected: (product: IProduct) => boolean;
@@ -143,4 +145,6 @@ export interface ILoyaltyPointSettingsProvided {
     field: 'pointsEarned' | 'minimumPurchase',
     newValue: number,
   ) => void;
+  loyaltyPointSettings_EditProduct: Ref<IProduct[] | null>;
+  loyaltyPointSettings_onSubmitDialogEditProduct: () => void;
 }

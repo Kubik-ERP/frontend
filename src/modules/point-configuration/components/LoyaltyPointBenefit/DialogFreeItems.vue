@@ -154,9 +154,11 @@ const removeFromPool = (productToRemove: IFreeItems) => {
                 <div class="flex justify-between p-2 rounded-md border border-grayscale-10 w-full">
                   <div>
                     <h3 class="font-semibold">{{ product.name }}</h3>
-                    <PrimeVueChip class="bg-primary-background text-text-disabled text-xs px-1.5 py-1">
-                      {{ product.categories }}
-                    </PrimeVueChip>
+                    <span class="flex gap-2">
+                      <PrimeVueChip v-for="(item, index) in product.categories" :key="index" class="bg-primary-background text-text-disabled text-xs px-1.5 py-1">
+                        {{ item }}
+                      </PrimeVueChip>
+                    </span>
                   </div>
                   <div class="flex flex-col gap-1">
                     <AppBaseFormGroup

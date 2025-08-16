@@ -233,9 +233,11 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
   //   loyaltyPointSettingAllProductQueryParams.search = productName;
   //   loyaltyPointSettings_onShowDialog();
   // };
+  const loyaltyPointSettings_EditProduct = ref<IProduct[] | null>(null);
 
-  const loyaltyPointSettings_onShowDialogEditProduct = (productId: string): void => {
-    console.log('productId', productId);
+  const loyaltyPointSettings_onShowDialogEditProduct = (product: IProduct): void => {
+    loyaltyPointSettings_EditProduct.value = [{...product}];
+    console.log(loyaltyPointSettings_EditProduct.value);
     const argsEventEmitter: IPropsDialog = {
       id: 'loyalty-point-settings-dialog-edit-product',
       isOpen: true,
@@ -253,6 +255,14 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
       // width: '534px',
     };
     eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  const loyaltyPointSettings_onSubmitDialogEditProduct = (): void => {
+    const productIndex = loyaltyPointSettings_formData.productBasedItems.findIndex((product) => product.productId === loyaltyPointSettings_EditProduct.value?.[0].productId);
+    if (productIndex !== -1) {
+      loyaltyPointSettings_formData.productBasedItems[productIndex] = {...loyaltyPointSettings_EditProduct.value?.[0]};
+    }
+    loyaltyPointSettings_onCloseDialogEditProduct();
   };
 
   const loyaltyPointSettings_onShowDialog = async (): Promise<void> => {
@@ -457,5 +467,7 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     getSelectedProductData,
     loyaltyPointSettings_toggleSelection,
     loyaltyPointSettings_updateProductValue,
+    loyaltyPointSettings_EditProduct,
+    loyaltyPointSettings_onSubmitDialogEditProduct
   };
 };
