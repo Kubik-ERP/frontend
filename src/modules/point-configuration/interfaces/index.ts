@@ -1,7 +1,7 @@
 export * from './loyalty-point-benefit.interface';
 export * from './point-configuration.interface';
 
-import { IPointConfigurationListResponse, IProduct } from './loyalty-point-benefit.interface';
+import { IPointConfigurationListResponse, IProductList } from './loyalty-point-benefit.interface';
 import {
   ILoyaltyPointSettings,
   ILoyaltyPointSettingsProductList,
@@ -12,7 +12,7 @@ export type IPointConfigurationStore = {
   loyaltyPointBenefit_isLoading: boolean;
   productList_isLoading: boolean;
   loyaltyPointBenefit_list: IPointConfigurationListResponse;
-  loyaltyPointBenefit_productList: IProduct[];
+  loyaltyPointBenefit_productList: IProductList[];
 
   loyaltyPointSettings_isLoading: boolean;
   loyaltyPointSettings_value: ILoyaltyPointSettings;

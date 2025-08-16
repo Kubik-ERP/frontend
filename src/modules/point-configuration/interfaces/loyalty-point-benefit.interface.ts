@@ -72,7 +72,7 @@ export interface ILoyaltyPointBenefitProvided {
   loyaltyPointBenefit_onCloseDialogFreeItems: () => void;
 
   productList_isLoading: globalThis.Ref<boolean>;
-  loyaltyPointBenefit_productList: globalThis.Ref<IProduct[]>;
+  loyaltyPointBenefit_productList: globalThis.Ref<IProductList[]>;
   loyaltyPointSettings_initiate: () => Promise<void>;
 }
 
@@ -95,7 +95,7 @@ export type IPointConfigurationListResponse = {
   loyaltySettingsId?: string | null;
 };
 
-export type IProduct = {
+export type IProductList = {
   id: string;
   name: string;
   categories: string;
@@ -126,4 +126,4 @@ export type IFreeItemsPayload = {
   benefitName: string;
   pointNeeds: number;
   items?: IItems[] | [];
-}
+};
