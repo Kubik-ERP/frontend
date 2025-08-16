@@ -1,0 +1,33 @@
+{
+  "brand": {
+    "title": "Daftar Merek",
+    "createButton": "Buat Merek",
+    "editButton": "Ubah",
+    "deleteButton": "Hapus",
+    "searchPlaceholder": "Cari merek...",
+    "noDataMessage": "Tidak ada merek yang ditemukan.",
+    "form": {
+      "name": "Nama Merek",
+      "description": "Deskripsi",
+      "fields": {
+        "name": "Masukkan nama merek",
+        "description": "Masukkan deskripsi merek"
+      },
+      "buttons": {
+        "cancel": "Batal",
+        "create": "Buat",
+        "update": "Perbarui"
+      }
+    },
+    "popover": {
+      "edit": {
+        "title": "Ubah Merek",
+        "message": "Apakah Anda yakin ingin mengubah merek ini?"
+      },
+      "delete": {
+        "title": "Hapus Merek",
+        "message": "Apakah Anda yakin ingin menghapus merek ini?"
+      }
+    }
+  }
+}

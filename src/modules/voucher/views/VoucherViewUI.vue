@@ -139,7 +139,7 @@ const endPeriod = computed(() => {
       </div>
 
       <!-- Action Button -->
-      <div class="mt-4">
+      <div v-if="!voucherView_voucher?.data.isApplied" class="mt-4">
         <button
           class="flex items-center gap-2 px-4 py-2 border border-primary text-primary rounded-md hover:bg-blue-50 transition"
           @click="voucherView_handleEdit(voucherView_voucher?.data.id || '')">

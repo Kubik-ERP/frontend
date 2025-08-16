@@ -1,0 +1,33 @@
+{
+  "storageLocation": {
+    "title": "Daftar Lokasi Penyimpanan",
+    "createButton": "Buat Lokasi Penyimpanan",
+    "editButton": "Ubah",
+    "deleteButton": "Hapus",
+    "searchPlaceholder": "Cari lokasi penyimpanan...",
+    "noDataMessage": "Tidak ada lokasi penyimpanan yang ditemukan.",
+    "form": {
+      "name": "Nama Lokasi",
+      "notes": "Catatan",
+      "fields": {
+        "name": "Masukkan nama lokasi penyimpanan",
+        "notes": "Masukkan catatan lokasi (opsional)"
+      },
+      "buttons": {
+        "cancel": "Batal",
+        "create": "Buat",
+        "update": "Perbarui"
+      }
+    },
+    "popover": {
+      "edit": {
+        "title": "Ubah Lokasi Penyimpanan",
+        "message": "Apakah Anda yakin ingin mengubah lokasi penyimpanan ini?"
+      },
+      "delete": {
+        "title": "Hapus Lokasi Penyimpanan",
+        "message": "Apakah Anda yakin ingin menghapus lokasi penyimpanan ini?"
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "storageLocation": {
+    "title": "Storage Location List",
+    "createButton": "Create Storage Location",
+    "editButton": "Edit",
+    "deleteButton": "Delete",
+    "searchPlaceholder": "Search storage location...",
+    "noDataMessage": "No storage locations found.",
+    "form": {
+      "name": "Storage Location Name",
+      "notes": "Notes",
+      "fields": {
+        "name": "Enter storage location name",
+        "notes": "Enter notes"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "create": "Create",
+        "update": "Update"
+      }
+    },
+    "popover": {
+      "edit": {
+        "title": "Edit Storage Location",
+        "message": "Are you sure you want to edit this storage location?"
+      },
+      "delete": {
+        "title": "Delete",
+        "message": "Are you sure you want to delete this storage location?"
+      }
+    }
+  }
+}

@@ -27,27 +27,19 @@ const imageUrl = computed(() => {
 
 <template>
   <section id="cashier-product-card">
-    <PrimeVueCard
-      v-if="!cashierProduct_productState.isLoadingProduct"
-      :unstyled="true"
-      :pt="{
-        body: 'rounded-sm bg-white border border-grayscale-10 shadow-none drop-shadow-none p-2 cursor-pointer hover:border-grayscale-20 active:bg-grayscale-10/5',
-      }"
-      :class="{
-        'border-primary-border border rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]': isProductActive(
-          props.product,
-        ),
-      }"
-      @click="cashierProduct_handleOpenModalAddProduct(props.product)"
-    >
+    <PrimeVueCard v-if="!cashierProduct_productState.isLoadingProduct" :unstyled="true" :pt="{
+      body: 'rounded-sm bg-white border border-grayscale-10 shadow-none drop-shadow-none p-2 cursor-pointer hover:border-grayscale-20 active:bg-grayscale-10/5',
+    }" :class="{
+      'border-primary-border border rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]': isProductActive(
+        props.product,
+      ),
+    }" @click="cashierProduct_handleOpenModalAddProduct(props.product)">
       <template #content>
         <section id="cashier-card-content" class="flex flex-col gap-2 relative">
           <AppBaseImage :src="imageUrl" :alt="props.product.name" class="h-[98px] w-full object-cover" />
 
-          <div
-            v-if="isProductActive(props.product)"
-            class="absolute py-1 px-1.5 border border-primary-border bg-blue-primary left-0 ml-1 mt-1 rounded-full flex gap-2"
-          >
+          <div v-if="isProductActive(props.product)"
+            class="absolute py-1 px-1.5 border border-primary-border bg-blue-primary left-0 ml-1 mt-1 rounded-full flex gap-2">
             <AppBaseSvg name="check" class="h-w-2.5" />
             <span class="text-xs text-white font-semibold"> {{ useLocalization('cashier.selected') }} </span>
           </div>
@@ -61,35 +53,35 @@ const imageUrl = computed(() => {
               <span class="text-xs text-text-disabled">{{ props.category }}</span>
             </div>
             <div class="flex flex-col">
-              <span
-                v-if="props.product.discountPrice"
-                class="h-4 text-disabled line-through text-[10px] text-right"
-                >Rp{{ props.product.price }}</span
-              >
+              <!-- Harga coret (asli) -->
+              <span v-if="props.product.discountPrice != null
+                && props.product.discountPrice < props.product.price"
+                class="h-4 text-disabled line-through text-[10px] text-right">
+                Rp{{ props.product.price }}
+              </span>
               <span v-else class="h-4"></span>
 
-              <span class="font-semibold text-right"
-                >Rp{{ props.product.discountPrice ?? props.product.price }}</span
-              >
+              <!-- Harga final -->
+              <span class="font-semibold text-right">
+                Rp{{
+                  props.product.discountPrice != null
+                    && props.product.discountPrice < props.product.price ? props.product.discountPrice : props.product.price
+                  }} </span>
             </div>
+
           </div>
         </section>
       </template>
     </PrimeVueCard>
-    <PrimeVueCard
-      v-else
-      :unstyled="true"
-      :pt="{
-        body: 'rounded-sm bg-white border border-grayscale-10 shadow-none drop-shadow-none p-2',
-      }"
-    >
+    <PrimeVueCard v-else :unstyled="true" :pt="{
+      body: 'rounded-sm bg-white border border-grayscale-10 shadow-none drop-shadow-none p-2',
+    }">
       <template #content>
         <section class="flex flex-col gap-2 relative">
           <PrimeVueSkeleton height="98px" class="w-full rounded-sm" />
 
           <div
-            class="absolute py-1 px-1.5 border border-primary-border bg-blue-primary left-0 ml-1 mt-1 rounded-full flex gap-2"
-          >
+            class="absolute py-1 px-1.5 border border-primary-border bg-blue-primary left-0 ml-1 mt-1 rounded-full flex gap-2">
             <PrimeVueSkeleton shape="circle" width="12px" height="12px" />
             <PrimeVueSkeleton width="40px" height="12px" />
           </div>
