@@ -44,126 +44,90 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    * @description Reactive data binding
    */
   const staffMemberCreateEdit_commisionType = ref<'PRODUCT' | 'VOUCHER'>('PRODUCT');
-  // const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-  //   name: 'Ahmad',
-  //   email: 'ahmad@kubik.com',
-  //   phoneCode: '+62',
-  //   phoneNumber: '81234567890',
-  //   image: null,
-  //   imagePreview: null, // This will hold the preview URL of the image
-  //   startDate: new Date(),
-  //   endDate: (() => {
-  //     const d = new Date();
-  //     d.setDate(d.getDate() + 30);
-  //     return d;
-  //   })(), // Default to 30 days from now,
-  //   gender: 'male',
-  //   title: 'Admin',
-  //   permission: 'BASIC',
-  //   socialMedia: [],
-  //   shift: STAFF_INITIAL_VALUES_OF_WORKING_HOURS,
-  //   comissions: {
-  //     productComission: {
-  //       defaultComission: null,
-  //       defaultComissionType: null,
-  //       isAllItemsHaveDefaultComission: null,
-  //       productItems: [],
-  //     },
-  //     voucherCommission: {
-  //       defaultComission: null,
-  //       defaultComissionType: null,
-  //       isAllVouchersHaveDefaultComission: null,
-  //       voucherItems: [],
-  //     },
-  //   },
-  // });
+
   const staffMemberCreateEdit_formData = reactive<IStaffMemberCreateEditFormData>({
-    name: 'sutejo',
-    email: 'sutejo@kubik.com',
+    name: '',
+    email: '',
     phoneCode: '+62',
-    phoneNumber: '81234567890',
+    phoneNumber: '',
     image: null,
     imagePreview: null, // This will hold the preview URL of the image
-    startDate: new Date(),
-    endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-    gender: 'male',
+    startDate: null,
+    endDate: null,
+    gender: '',
     title: '',
-    permission: 'MANAGER',
+    permission: '',
     socialMedia: [],
     shift: [
       {
         timeSlots: [
           {
-            startTime: new Date('2025-07-31T01:30:00.000Z'),
-            endTime: new Date('2025-07-31T02:30:00.000Z'),
-          },
-          {
-            startTime: new Date('2025-07-31T03:30:00.000Z'),
-            endTime: new Date('2025-07-31T04:30:00.000Z'),
+            startTime: null,
+            endTime: null,
           },
         ],
         day: 'Sunday',
-        isActive: true,
+        isActive: false,
       },
       {
         timeSlots: [
           {
-            startTime: new Date('2025-07-31T01:30:00.000Z'),
-            endTime: new Date('2025-07-31T02:30:00.000Z'),
+            startTime: null,
+            endTime: null,
           },
         ],
         day: 'Monday',
-        isActive: true,
+        isActive: false,
       },
       {
         timeSlots: [
           {
-            startTime: new Date('2025-07-31T01:30:00.000Z'),
-            endTime: new Date('2025-07-31T02:30:00.000Z'),
+            startTime: null,
+            endTime: null,
           },
         ],
         day: 'Tuesday',
-        isActive: true,
+        isActive: false,
       },
       {
         timeSlots: [
           {
-            startTime: new Date('2025-07-31T01:30:00.000Z'),
-            endTime: new Date('2025-07-31T02:30:00.000Z'),
+            startTime: null,
+            endTime: null,
           },
         ],
         day: 'Wednesday',
-        isActive: true,
+        isActive: false,
       },
       {
         timeSlots: [
           {
-            startTime: new Date('2025-07-31T01:30:00.000Z'),
-            endTime: new Date('2025-07-31T02:30:00.000Z'),
+            startTime: null,
+            endTime: null,
           },
         ],
         day: 'Thursday',
-        isActive: true,
+        isActive: false,
       },
       {
         timeSlots: [
           {
-            startTime: new Date('2025-07-31T01:30:00.000Z'),
-            endTime: new Date('2025-07-31T02:30:00.000Z'),
+            startTime: null,
+            endTime: null,
           },
         ],
         day: 'Friday',
-        isActive: true,
+        isActive: false,
       },
       {
         timeSlots: [
           {
-            startTime: new Date('2025-07-31T01:30:00.000Z'),
-            endTime: new Date('2025-07-31T02:30:00.000Z'),
+            startTime: null,
+            endTime: null,
           },
         ],
         day: 'Saturday',
-        isActive: true,
+        isActive: false,
       },
     ],
 

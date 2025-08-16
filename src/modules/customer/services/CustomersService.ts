@@ -45,10 +45,14 @@ export const useCustomerService = () => {
 
   const customer_formRules = computed(() => ({
     name: { required },
+    code: { required },
+    number: { required },
   }));
 
   const customer_formValidatable = computed(() => ({
     name: customer_FormData.name,
+    code: customer_FormData.code,
+    number: customer_FormData.number,
   }));
 
   const customer_formValidations = useVuelidate(customer_formRules, customer_formValidatable, {

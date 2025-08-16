@@ -133,45 +133,60 @@ const removeTag = tagToRemove => {
     </div>
 
     <section class="flex flex-col">
-      <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Phone Number</label>
       <section id="phone-information" class="flex items-center gap-3">
         <section id="phone-code" class="w-fit">
-          <PrimeVueSelect
-            id="phoneCountryCode"
-            v-model="customer_FormData.code"
-            filter
-            :options="COUNTRY_INFORMATIONS"
-            :option-label="
-              value => {
-                return `${value.name} (${value.dialCodes})`;
-              }
-            "
-            option-value="dialCodes"
-            placeholder="+62"
-            class="text-sm h-full min-h-9 w-full"
+          <AppBaseFormGroup
+            class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+            is-name-as-label
+            label-for="code"
+            name="Code"
+            :validators="customer_formValidations.code"
           >
-            <template #option="{ option }">
-              <section id="phone-option" class="flex items-center gap-1">
-                <img :src="option.image" alt="country-flag" class="w-6 h-6" />
-                <span class="text-sm">{{ option.name }} ({{ option.dialCodes }})</span>
-              </section>
-            </template>
+            <PrimeVueSelect
+              id="phoneCountryCode"
+              v-model="customer_FormData.code"
+              filter
+              :options="COUNTRY_INFORMATIONS"
+              :option-label="
+                value => {
+                  return `${value.name} (${value.dialCodes})`;
+                }
+              "
+              option-value="dialCodes"
+              placeholder="+62"
+              class="text-sm h-full min-h-9 w-full"
+            >
+              <template #option="{ option }">
+                <section id="phone-option" class="flex items-center gap-1">
+                  <img :src="option.image" alt="country-flag" class="w-6 h-6" />
+                  <span class="text-sm">{{ option.name }} ({{ option.dialCodes }})</span>
+                </section>
+              </template>
 
-            <template #value="{ value }">
-              <section id="phone-value" class="flex items-center gap-1">
-                <span class="text-sm">{{ value }}</span>
-              </section>
-            </template>
-          </PrimeVueSelect>
+              <template #value="{ value }">
+                <section id="phone-value" class="flex items-center gap-1">
+                  <span class="text-sm">{{ value }}</span>
+                </section>
+              </template>
+            </PrimeVueSelect>
+          </AppBaseFormGroup>
         </section>
 
         <section id="phone-number" class="w-full">
-          <PrimeVueInputText
-            v-model="customer_FormData.number"
-            placeholder="Input your phone number"
-            class="text-sm w-full"
-            type="tel"
-          />
+          <AppBaseFormGroup
+            class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+            is-name-as-label
+            label-for="phone-number"
+            name="Phone Number"
+            :validators="customer_formValidations.number"
+          >
+            <PrimeVueInputText
+              v-model="customer_FormData.number"
+              placeholder="Input your phone number"
+              class="text-sm w-full"
+              type="tel"
+            />
+          </AppBaseFormGroup>
         </section>
       </section>
     </section>

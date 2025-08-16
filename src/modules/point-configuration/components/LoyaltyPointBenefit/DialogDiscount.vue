@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { ILoyaltyPointBenefitProvided } from '@/modules/point-configuration/interfaces/loyalty-point-benefit.interface';
-const { discountBenefit_formData, discountBenefit_formValidations, loyaltyPointBenefit_onCloseDialogDiscount, loyaltyPointBenefit_onSubmitDialogDiscount } =
-  inject<ILoyaltyPointBenefitProvided>('loyaltyPointBenefit')!;
+const {
+  discountBenefit_formData,
+  discountBenefit_formValidations,
+  loyaltyPointBenefit_onCloseDialogDiscount,
+  loyaltyPointBenefit_onSubmitDialogDiscount,
+  loyaltyPointBenefit_onSubmitEditDialogDiscount,
+  isEdit,
+} = inject<ILoyaltyPointBenefitProvided>('loyaltyPointBenefit')!;
 </script>
 <template>
   <AppBaseDialog id="loyalty-point-benefit-dialog-discount">
@@ -45,6 +51,7 @@ const { discountBenefit_formData, discountBenefit_formValidations, loyaltyPointB
             show-buttons
             button-layout="horizontal"
             fluid
+            :min="0"
             :step="1"
             :class="{
               ...classes,
@@ -134,6 +141,7 @@ const { discountBenefit_formData, discountBenefit_formValidations, loyaltyPointB
                 v-model="discountBenefit_formData.discountPrice.value"
                 class="w-full"
                 name="discount-price"
+                :min="0"
                 :class="{ ...classes }"
               />
               <div class="absolute right-0 flex items-center rounded-lg border-none ring-0">
@@ -169,11 +177,12 @@ const { discountBenefit_formData, discountBenefit_formValidations, loyaltyPointB
         <PrimeVueButton
           class="bg-primary border-none min-w-44 disabled:bg-grayscale-20"
           :disabled="discountBenefit_formValidations.$invalid"
-          @click="loyaltyPointBenefit_onSubmitDialogDiscount()"
+          :label="isEdit ? 'Edit' : 'Add'"
+          @click="isEdit ? loyaltyPointBenefit_onSubmitEditDialogDiscount() : loyaltyPointBenefit_onSubmitDialogDiscount()"
         >
-          <template #default>
+          <!-- <template #default>
             <span class="font-semibold text-base text-white">Add</span>
-          </template>
+          </template> -->
         </PrimeVueButton>
       </section>
     </template>
