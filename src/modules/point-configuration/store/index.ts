@@ -160,7 +160,6 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
         const response = await httpClient.patch(`${LOYALTY_POINT_BENEFIT_BASE_ENDPOINT}/${payload.id}`, payload, {
           ...requestConfigurations,
         });
-        console.log('🚀 ~ response:', response);
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -187,7 +186,9 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
           return {
             id: product.id,
             name: product.name,
-            categories: product.categoriesHasProducts[0].categories.category,
+            categories: (product.categoriesHasProducts as { categories: { id: string; category: string } }[]).map(
+              ({ categories }) => categories.category,
+            ),
           };
         });
         return Promise.resolve(response.data);

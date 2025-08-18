@@ -90,7 +90,7 @@ const {
                 :min="0"
                 :step="1"
                 @update:modelValue="
-                  newValue => loyaltyPointSettings_updateProductValue(data, 'pointsEarned', newValue)
+                  (newValue: number) => loyaltyPointSettings_updateProductValue(data, 'pointsEarned', newValue)
                 "
               >
                 <template #decrementicon>
@@ -112,7 +112,7 @@ const {
                 :min="0"
                 :step="1"
                 @update:modelValue="
-                  newValue => loyaltyPointSettings_updateProductValue(data, 'minimumPurchase', newValue)
+                  (newValue: number) => loyaltyPointSettings_updateProductValue(data, 'minimumPurchase', newValue)
                 "
               >
                 <template #decrementicon>
