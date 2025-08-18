@@ -29,7 +29,7 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
           >Voucher
 
 
-          <span >({{ useLocalization('cashier.orderSummary.excluded') }})</span></span
+          <span >({{ useLocalization('cashier.orderSummary.included') }})</span></span
         >
 
         <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
