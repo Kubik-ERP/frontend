@@ -49,7 +49,7 @@ export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
     sortable: true,
     value: 'unitPrice',
   },
-    {
+  {
     label: 'Expiry Date',
     sortable: true,
     value: 'expiryDate',

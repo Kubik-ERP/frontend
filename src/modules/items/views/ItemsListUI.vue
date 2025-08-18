@@ -26,7 +26,7 @@ const {
 </script>
 
 <template>
-  <section id="inventory-items-list-ui" class="flex flex-col relative inset-0 z-0">
+  <section id="inventory-items-list-ui" class="flex flex-col">
     <AppBaseDataTable
       :columns="inventoryItems_colums"
       :data="inventoryItems_values.data.items"

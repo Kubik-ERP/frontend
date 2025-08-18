@@ -25,19 +25,18 @@ onMounted(async () => {
 });
 
 </script>
-
 <template>
   <div class="w-full border border-primary rounded-lg p-6 text-base text-gray-800">
     <!-- Header -->
-    <div class="flex justify-start items-start mb-4 gap-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
       <div>
         <p class="text-lg font-semibold text-black">{{ supplier?.data.supplierName }}</p>
         <p class="text-base text-gray-600">{{ supplier?.data.id }}</p>
       </div>
       <PrimeVueButton
-        class="text-base flex items-center gap-1 bg-white text-primary border-none px-4 py-2"
+        class="text-base flex items-center gap-1 bg-white text-primary border border-primary rounded-lg px-4 py-2 w-full sm:w-auto justify-center"
         @click="supplierPreview_onEditSupplier">
-        <AppBaseSvg name="edit" class="!w-4 !h-4 text-white" />
+        <AppBaseSvg name="edit" class="!w-4 !h-4 text-primary" />
         Edit Supplier Details
       </PrimeVueButton>
     </div>
@@ -45,7 +44,7 @@ onMounted(async () => {
     <!-- Supplier Details -->
     <div class="mb-6">
       <p class="text-base font-semibold text-primary mb-3">Supplier Details</p>
-      <div class="grid grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
           <p class="text-sm text-gray-500">Contact Person</p>
           <p class="text-base font-medium text-black">{{ supplier?.data.contactPerson }}</p>
@@ -68,7 +67,7 @@ onMounted(async () => {
     <!-- Payment & Banking Information -->
     <div>
       <p class="text-base font-semibold text-primary mb-3">Payment & Banking Information</p>
-      <div class="grid grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
           <p class="text-sm text-gray-500">Bank Name</p>
           <p class="text-base text-black">{{ supplier?.data.bankName }}</p>
@@ -89,3 +88,4 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+

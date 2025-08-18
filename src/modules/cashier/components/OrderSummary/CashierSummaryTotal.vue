@@ -15,7 +15,7 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
         <span>{{ useLocalization('cashier.orderSummary.subTotal') }}</span>
         <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">{{
           useCurrencyFormat({
-            data: cashierOrderSummary_calculateEstimation?.data?.total || 0,
+            data: cashierOrderSummary_calculateEstimation?.data?.subTotal || 0,
           })
         }}</span>
         <PrimeVueSkeleton v-else width="6rem" />
@@ -29,7 +29,7 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
           >Voucher
 
 
-          <span >({{ useLocalization('cashier.orderSummary.included') }})</span></span
+          <span >({{ useLocalization('cashier.orderSummary.excluded') }})</span></span
         >
 
         <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
