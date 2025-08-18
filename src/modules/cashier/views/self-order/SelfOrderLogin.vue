@@ -1,10 +1,27 @@
 <script setup lang="ts">
 import { useCashierSelfOrderService } from '../../services/useCashierSelfOrder.service';
+import { COUNTRY_INFORMATIONS } from '@/app/constants/country.constant';
+import { useRoute } from 'vue-router';
+
+// Define the interface for country information
+interface CountryInformation {
+  name: string;
+  code: string;
+  emoji: string;
+  image: string;
+  dialCodes: string;
+  slug: string;
+}
 
 const { cashierSelfOrder_handleSignIn, cashierSelfOrder_signInForm, cashierSelfOrder_formValidationsSignIn } =
   useCashierSelfOrderService();
 
 const route = useRoute();
+
+// Helper function for country option labels
+const getCountryOptionLabel = (value: CountryInformation): string => {
+  return `${value.name} (${value.dialCodes})`;
+};
 </script>
 <template>
   <section id="self-order-login" class="flex flex-col items-center justify-between min-h-screen w-full p-4">
@@ -33,11 +50,7 @@ const route = useRoute();
                 filter
                 :class="classes"
                 :options="COUNTRY_INFORMATIONS"
-                :option-label="
-                  value => {
-                    return `${value.name} (${value.dialCodes})`;
-                  }
-                "
+                :option-label="getCountryOptionLabel"
                 option-value="dialCodes"
                 placeholder="+62"
                 class="text-sm h-full min-h-9 w-full"
@@ -66,7 +79,7 @@ const route = useRoute();
               :name="useLocalization('authentication.sign-in.form.email')"
               :validators="cashierSelfOrder_formValidationsSignIn.number"
             >
-              <prime-vue-input-text
+              <PrimeVueInputText
                 v-model="cashierSelfOrder_signInForm.number"
                 class="w-full"
                 :class="classes"
@@ -79,11 +92,11 @@ const route = useRoute();
       </div>
 
       <div class="flex flex-col items-center gap-4 w-full">
-        <prime-vue-button
+        <PrimeVueButton
           class="w-full"
           :disabled="cashierSelfOrder_formValidationsSignIn.$invalid"
           @click="cashierSelfOrder_handleSignIn()"
-          >Sign In</prime-vue-button
+          >Sign In</PrimeVueButton
         >
         <div class="border-[0.5px] flex w-[250px] border-text-disabled"></div>
         <div class="text-xs">

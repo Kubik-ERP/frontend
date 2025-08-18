@@ -1,12 +1,28 @@
 <script setup lang="ts">
 import { useCashierSelfOrderService } from '../../services/useCashierSelfOrder.service';
+import { COUNTRY_INFORMATIONS } from '@/app/constants/country.constant';
 
 import { useRoute } from 'vue-router';
+
+// Define the interface for country information
+interface CountryInformation {
+  name: string;
+  code: string;
+  emoji: string;
+  image: string;
+  dialCodes: string;
+  slug: string;
+}
 
 const route = useRoute();
 
 const { cashierSelfOrder_handleSignUp, cashierSelfOrder_signUpForm, cashierSelfOrder_formValidationsSignUp } =
   useCashierSelfOrderService();
+
+// Helper function for country option labels
+const getCountryOptionLabel = (value: CountryInformation): string => {
+  return `${value.name} (${value.dialCodes})`;
+};
 </script>
 <template>
   <section id="self-order-create-account" class="flex flex-col items-center justify-between min-h-screen w-full">
@@ -30,7 +46,7 @@ const { cashierSelfOrder_handleSignUp, cashierSelfOrder_signUpForm, cashierSelfO
 
       <div class="flex flex-col gap-4">
         <div class="flex flex-col">
-          <PrimeVuelabel for="username" class="text-xs">Username</PrimeVuelabel>
+          <label for="username" class="text-xs">Username</label>
 
           <AppBaseFormGroup
             v-slot="{ classes }"
@@ -67,11 +83,7 @@ const { cashierSelfOrder_handleSignUp, cashierSelfOrder_signUpForm, cashierSelfO
                 size="small"
                 filter
                 :options="COUNTRY_INFORMATIONS"
-                :option-label="
-                  value => {
-                    return `${value.name} (${value.dialCodes})`;
-                  }
-                "
+                :option-label="getCountryOptionLabel"
                 option-value="dialCodes"
                 placeholder="+62"
                 class="text-sm h-full min-h-9 w-full"
@@ -101,7 +113,7 @@ const { cashierSelfOrder_handleSignUp, cashierSelfOrder_signUpForm, cashierSelfO
               :name="useLocalization('authentication.sign-in.form.email')"
               :validators="cashierSelfOrder_formValidationsSignUp.number"
             >
-              <prime-vue-input-text
+              <PrimeVueInputText
                 v-model="cashierSelfOrder_signUpForm.number"
                 class="w-full"
                 :class="classes"
@@ -113,11 +125,11 @@ const { cashierSelfOrder_handleSignUp, cashierSelfOrder_signUpForm, cashierSelfO
         </div>
       </div>
 
-      <prime-vue-button
+      <PrimeVueButton
         :disabled="cashierSelfOrder_formValidationsSignUp.$invalid"
         class="w-full"
         @click="cashierSelfOrder_handleSignUp()"
-        >Create Account</prime-vue-button
+        >Create Account</PrimeVueButton
       >
     </div>
     <span class="text-text-disabled text-xs mb-6">Powered By KUBIK POS</span>
