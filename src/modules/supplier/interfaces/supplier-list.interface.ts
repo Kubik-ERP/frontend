@@ -10,6 +10,16 @@ export interface ISupplierListRequestQuery {
   orderDirection: 0 | 1 | -1 | string | undefined | null;
 }
 
+export interface ISupplierItemListRequestQuery{
+  page: number;
+  pageSize: number;
+  search?: string | null;
+  orderBy: string | null;
+  orderDirection: 0 | 1 | -1 | string | undefined | null;
+  startDate: string | null;
+  endDate: string | null;
+}
+
 export interface ISupplierListProvided {
   supplierList_columns: IColumnDataTable[];
   supplierList_fetchSuppliers: () => Promise<void>;

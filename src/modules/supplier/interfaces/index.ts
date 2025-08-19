@@ -1,6 +1,9 @@
+import { IInventoryItems } from "@/modules/items/interfaces";
+
 export interface ISupplierStateStore {
   supplier_isLoading: boolean;
   supplier_supplierLists: ISupplierListResponse;
+  supplier_itemLists: ISupplierItemListResponse;
   supplier_supplierDetail: ISupplierDetailResponse | null;
 }
 
@@ -24,6 +27,20 @@ export interface ISupplierListResponse {
   message: string;
   data: {
     items: ISupplierItem[];
+    meta: {
+      page: number;
+      pageSize: number;
+      total: number;
+      totalPages: number;
+    };
+  };
+}
+
+export interface ISupplierItemListResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    items: IInventoryItems[];
     meta: {
       page: number;
       pageSize: number;

@@ -4,8 +4,8 @@ import {
   STAFF_MEMBER_CREATE_REQUEST,
   STAFF_MEMBER_DELETE_REQUEST,
   STAFF_MEMBER_DETAIL_REQUEST,
+  STAFF_MEMBER_PERMISSION_ENDPOINT,
   STAFF_MEMBER_TYPES_OF_SOCIAL_MEDIA,
-  STAFF_MEMBER_TYPES_OF_USER_PERMISSIONS,
 } from '../constants';
 
 // Interfaces
@@ -15,6 +15,7 @@ import type {
   IStaffMemberCreateEditProvided,
   IstaffHour,
   IStaffMemberSocialMedia,
+  IStafPermission,
 } from '../interfaces';
 
 // Plugins
@@ -26,6 +27,12 @@ import { useStaffMemberStore } from '../store';
 // Vuelidate
 import { useVuelidate } from '@vuelidate/core';
 import { email, required } from '@vuelidate/validators';
+import { IProduct } from '@/modules/catalog-product/interfaces';
+import { IVoucher } from '@/modules/voucher/interfaces';
+import { useProductService } from '@/modules/catalog-product/services/catalog-product.service';
+import { useVoucherStore } from '@/modules/voucher/store';
+import { VOUCHER_LIST_REQUEST } from '@/modules/voucher/constants';
+import httpClient from '@/plugins/axios';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -146,6 +153,69 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       },
     },
   });
+
+  /**
+   * @description Watchers for data columns comission
+   */
+  const productService = useProductService();
+  const staffMemberCreateEdit_products = ref<IProduct[]>([]);
+  const staffMemberCreateEdit_vouchers = ref<IVoucher[]>([]);
+  const staffMemberCreateEdit_commissionsSearch = ref<string>('');
+  const staffMemberCreateEdit_permissionData = ref<IStafPermission[]>([]);
+
+  const fetchProductList = async (): Promise<void> => {
+    console.log('fetchProductList');
+    try {
+      const response = await productService.getAllProducts(1, 100, staffMemberCreateEdit_commissionsSearch.value);
+      staffMemberCreateEdit_products.value = response.products;
+    } catch (error) {
+      console.error('❌ Error fetching voucher product list:', error);
+    }
+  };
+  const storeVoucher = useVoucherStore();
+
+  const fetchVoucherList = async (): Promise<void> => {
+    console.log('fetchVoucherList');
+    try {
+      const response = await storeVoucher.voucherList_fetchListVouchers(
+        {
+          startDate: null,
+          page: 1,
+          pageSize: 100,
+          orderBy: null,
+          orderDirection: null,
+        },
+        {
+          ...httpAbort_registerAbort(VOUCHER_LIST_REQUEST),
+          paramsSerializer: useParamsSerializer,
+        },
+      );
+
+      if (staffMemberCreateEdit_commissionsSearch.value !== '') {
+        response.data.items = response.data.items.filter(voucher =>
+          voucher.name.toLowerCase().includes(staffMemberCreateEdit_commissionsSearch.value.toLowerCase()),
+        );
+      }
+
+      staffMemberCreateEdit_vouchers.value = response.data.items;
+    } catch (error: unknown) {
+      return Promise.reject(error instanceof Error ? error : new Error(String(error)));
+    }
+  };
+
+  watch(
+    [staffMemberCreateEdit_commisionType, staffMemberCreateEdit_commissionsSearch],
+    async ([newType]) => {
+      if (newType === 'PRODUCT') {
+        await fetchProductList();
+      } else if (newType === 'VOUCHER') {
+        await fetchVoucherList();
+      }
+      // kalau perlu gunakan newSearch juga
+      // console.log("search:", newSearch);
+    },
+    { immediate: true },
+  );
 
   const staffMemberCreateEdit_routeParamsId = ref<string | undefined>(route.params.id as string | undefined);
 
@@ -382,6 +452,90 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     eventBus.emit('AppBaseDialog', argsEventEmitter);
   };
 
+  const staffMemberCreateEdit_onSubmitDialogCommission = (formData: FormData): void => {
+    const data: Record<string, string> = {};
+    formData.forEach((value, key) => {
+      data[key] = value.toString();
+    });
+
+    if (staffMemberCreateEdit_commisionType.value === 'PRODUCT') {
+      // Set default comission
+      staffMemberCreateEdit_formData.comissions.productComission.defaultComission = Number(data.defaultComission);
+      staffMemberCreateEdit_formData.comissions.productComission.defaultComissionType = data.defaultComissionType;
+      staffMemberCreateEdit_formData.comissions.productComission.isAllItemsHaveDefaultComission =
+        data.isAllItemsHaveDefaultComission === 'true';
+
+      // Extract product items
+      const productItems: {
+        productId: string | null;
+        comission: number | null;
+        comissionType: string | null;
+      }[] = [];
+
+      // Misal field di form punya key seperti: productItems[0].productId, productItems[0].comission, ...
+      Object.keys(data).forEach(key => {
+        const match = key.match(/^productItems\[(\d+)\]\.(.+)$/);
+        if (match) {
+          const index = Number(match[1]);
+          const field = match[2];
+
+          if (!productItems[index]) {
+            productItems[index] = {
+              productId: null,
+              comission: null,
+              comissionType: null,
+            };
+          }
+
+          if (field === 'productId') productItems[index].productId = data[key];
+          if (field === 'comission') productItems[index].comission = Number(data[key]);
+          if (field === 'comissionType') productItems[index].comissionType = data[key];
+        }
+      });
+      // Assign ke formData utama
+      staffMemberCreateEdit_formData.comissions.productComission.productItems = productItems;
+    } else {
+      // Set default comission
+      staffMemberCreateEdit_formData.comissions.voucherCommission.defaultComission = Number(data.defaultComission);
+      staffMemberCreateEdit_formData.comissions.voucherCommission.defaultComissionType = data.defaultComissionType;
+      staffMemberCreateEdit_formData.comissions.voucherCommission.isAllVouchersHaveDefaultComission =
+        data.isAllItemsHaveDefaultComission === 'true';
+
+      // Extract voucher items
+      const voucherItems: {
+        voucherId: string | null;
+        comission: number | null;
+        comissionType: string | null;
+      }[] = [];
+
+      // Misal field di form punya key seperti: voucherItems[0].voucherId, voucherItems[0].comission, ...
+      Object.keys(data).forEach(key => {
+        const match = key.match(/^voucherItems\[(\d+)\]\.(.+)$/);
+        if (match) {
+          const index = Number(match[1]);
+          const field = match[2];
+
+          if (!voucherItems[index]) {
+            voucherItems[index] = {
+              voucherId: null,
+              comission: null,
+              comissionType: null,
+            };
+          }
+
+          if (field === 'voucherId') voucherItems[index].voucherId = data[key];
+          if (field === 'comission') voucherItems[index].comission = Number(data[key]);
+          if (field === 'comissionType') voucherItems[index].comissionType = data[key];
+        }
+      });
+      // Assign ke formData utama
+      staffMemberCreateEdit_formData.comissions.voucherCommission.voucherItems = voucherItems;
+    }
+
+    console.log(staffMemberCreateEdit_formData);
+    staffMemberCreateEdit_onCloseDialogCommission();
+  };
+
   /**
    * @description Handle action on delete staff member
    */
@@ -599,8 +753,26 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       : null;
   };
 
+  /**
+   * Get roles permission
+   */
+  onMounted(async () => {
+    await httpClient.get(STAFF_MEMBER_PERMISSION_ENDPOINT)
+      .then((response) => {
+        console.log(response.data.data)
+        staffMemberCreateEdit_permissionData.value = response.data.data
+      })
+      .catch((error) => {
+        console.log(error)
+        return Promise.reject(error instanceof Error ? error : new Error(String(error)));
+    })
+  })
+
   return {
     staffMemberCreateEdit_columnsOfCommissions: STAFF_MEMBER_COLUMNS_COMISSIONS,
+    staffMemberCreateEdit_dataColumnsOfProduct: staffMemberCreateEdit_products,
+    staffMemberCreateEdit_dataColumnsOfVoucher: staffMemberCreateEdit_vouchers,
+    staffMemberCreateEdit_commissionsSearch,
     staffMemberCreateEdit_commisionType,
     staffMemberCreateEdit_formData,
     staffMemberCreateEdit_formValidations,
@@ -609,12 +781,13 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     staffMemberCreateEdit_fetchDetailStaffMember,
     staffMemberCreateEdit_onCancel,
     staffMemberCreateEdit_onCloseDialogCommission,
+    staffMemberCreateEdit_onSubmitDialogCommission,
     staffMemberCreateEdit_onDelete,
     staffMemberCreateEdit_onOpenDialogCommission,
     staffMemberCreateEdit_onSubmit,
     staffMemberCreateEdit_onUploadPhotoProfile,
     staffMemberCreateEdit_routeParamsId,
     staffMemberCreateEdit_typesOfSocialMedia: STAFF_MEMBER_TYPES_OF_SOCIAL_MEDIA,
-    staffMemberCreateEdit_typesOfUserPermissions: STAFF_MEMBER_TYPES_OF_USER_PERMISSIONS,
+    staffMemberCreateEdit_typesOfUserPermissions: staffMemberCreateEdit_permissionData,
   };
 };

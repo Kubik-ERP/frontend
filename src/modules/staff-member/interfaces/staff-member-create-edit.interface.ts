@@ -2,6 +2,8 @@
 import type { Validation } from '@vuelidate/core';
 import type { FileUploadSelectEvent } from 'primevue';
 import type { IStaffMember } from './index';
+import { IVoucher } from '@/modules/voucher/interfaces';
+import { IProduct } from '@/modules/catalog-product/interfaces';
 
 export interface IStaffMemberShift {
   day: string | null;
@@ -79,8 +81,31 @@ export interface IstaffWorkingHour {
 export interface IStaffMemberDetailsResponse {
   data: IStaffMember;
 }
+
+export interface ICommissionTableData {
+  id: string;
+  name: string;
+  commissionType: string;
+  commissionValue: number;
+  // normalized field
+  price?: number;
+  discountPrice?: number;
+  amount?: number;
+  isPercent?: boolean;
+}
+
+export interface IStafPermission{
+  id: string;
+  name: string;
+}
+
+
+
 export interface IStaffMemberCreateEditProvided {
   staffMemberCreateEdit_columnsOfCommissions: IColumnDataTable[];
+  staffMemberCreateEdit_dataColumnsOfVoucher: globalThis.Ref<IVoucher[]>;
+  staffMemberCreateEdit_dataColumnsOfProduct: globalThis.Ref<IProduct[]>;
+  staffMemberCreateEdit_commissionsSearch: globalThis.Ref<string>;
   staffMemberCreateEdit_commisionType: globalThis.Ref<'PRODUCT' | 'VOUCHER'>;
   staffMemberCreateEdit_fetchDetailStaffMember: () => Promise<unknown>;
   staffMemberCreateEdit_formData: IStaffMemberCreateEditFormData;
@@ -89,11 +114,12 @@ export interface IStaffMemberCreateEditProvided {
   staffMemberCreateEdit_isLoading: globalThis.Ref<boolean>;
   staffMemberCreateEdit_onCancel: () => void;
   staffMemberCreateEdit_onCloseDialogCommission: () => void;
+  staffMemberCreateEdit_onSubmitDialogCommission: (formData: FormData) => void;
   staffMemberCreateEdit_onDelete: () => void;
   staffMemberCreateEdit_onOpenDialogCommission: (type: 'PRODUCT' | 'VOUCHER') => void;
   staffMemberCreateEdit_onSubmit: () => Promise<unknown>;
   staffMemberCreateEdit_onUploadPhotoProfile: (event: FileUploadSelectEvent) => void;
   staffMemberCreateEdit_routeParamsId: globalThis.Ref<string | undefined>;
   staffMemberCreateEdit_typesOfSocialMedia: IDropdownItem[];
-  staffMemberCreateEdit_typesOfUserPermissions: IDropdownItem[];
+  staffMemberCreateEdit_typesOfUserPermissions: globalThis.Ref<IStafPermission[]>;
 }

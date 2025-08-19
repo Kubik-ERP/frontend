@@ -1,5 +1,5 @@
 // Interfaces
-import type { IStaffMember, IStaffMeta, IStaffMemberList } from './index';
+import type { IStaffMember, IStaffMeta, IStaffMemberList, IStafPermission } from './index';
 
 export interface IStaffMemberListRequestQuery{
   search?: string | null;
@@ -20,7 +20,7 @@ export interface IStaffMemberListProvided {
   staffMemberList_columns: IColumnDataTable[];
   staffMemberList_dropdownItemStaff: globalThis.Ref<IDropdownItem[]>;
   staffMemberList_dropdownItemTitles: globalThis.Ref<IDropdownItem[]>;
-  staffMemberList_typesOfUserPermissions: IDropdownItem[];
+  staffMemberList_typesOfUserPermissions: globalThis.Ref<IStafPermission[]>;
   staffMemberList_fetchListMembers: () => Promise<unknown>;
   staffMemberList_deleteStaffMember: (staffMemberId: string) => Promise<void>;
   staffMemberList_isLoading: globalThis.Ref<boolean>;

@@ -191,6 +191,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     isLoading: false,
     data: {
       total: 0,
+      subTotal: 0,
       discountTotal: 0,
       grandTotal: 0,
       serviceCharge: 0,
@@ -593,6 +594,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       } else {
         cashierOrderSummary_calculateEstimation.value.data = {
           total: 0,
+          subTotal: 0,
           discountTotal: 0,
           grandTotal: 0,
           serviceCharge: 0,

@@ -131,8 +131,8 @@ const findSocialMediaOption = (value: string | null) => {
             v-model="staffMemberCreateEdit_formData.permission"
             filter
             :options="staffMemberCreateEdit_typesOfUserPermissions"
-            option-label="label"
-            option-value="value"
+            option-label="name"
+            option-value="id"
             placeholder="Select"
             class="text-base text-text-primary w-full"
             :class="{ ...classes }"

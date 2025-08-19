@@ -1,3 +1,5 @@
+import { IStafPermission } from './staff-member-create-edit.interface';
+
 export * from './staff-member-create-edit.interface';
 export * from './staff-member-list.interface';
 
@@ -37,6 +39,12 @@ export interface IStaffMember {
 export interface IStaffMemberList{
   employees: IStaffMember[] | [];
   meta: IStaffMeta;
+}
+
+export interface IStaffMemberPermissionResponse{
+  statusCode: number;
+  message: string;
+  data: IStafPermission[]
 }
 
 export interface IStaffMemberStore {

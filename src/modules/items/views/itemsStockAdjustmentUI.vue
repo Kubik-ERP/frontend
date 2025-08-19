@@ -25,7 +25,7 @@ function formatCurrency(value?: number) {
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
         <div>
-          <p class="text-lg font-semibold text-black">{{ item?.name }}</p>
+          <p class="text-lg font-semibold text-black">{{ item?.itemName }}</p>
           <p class="text-base text-gray-600">{{ item?.sku }}</p>
         </div>
       </div>
@@ -36,7 +36,7 @@ function formatCurrency(value?: number) {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <p class="text-sm text-gray-500">Brand</p>
-            <p class="text-base font-medium text-black">{{ item?.brandId }}</p>
+            <p class="text-base font-medium text-black">{{ item?.brand }}</p>
           </div>
           <div>
             <p class="text-sm text-gray-500">Barcode</p>
@@ -44,7 +44,7 @@ function formatCurrency(value?: number) {
           </div>
           <div>
             <p class="text-sm text-gray-500">Category</p>
-            <p class="text-base text-black">{{ item?.categoryId }}</p>
+            <p class="text-base text-black">{{ item?.category }}</p>
           </div>
           <div>
             <p class="text-sm text-gray-500">Unit</p>
