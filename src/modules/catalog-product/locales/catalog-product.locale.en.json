@@ -42,7 +42,7 @@
       },
       "discount": {
         "checkbox": "Add Discount Price",
-        "valueLabel": "Discount Value *",
+        "valueLabel": "Discount Value",
         "total": "Total Price After Discount :"
       },
       "variant": {
