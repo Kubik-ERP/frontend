@@ -29,6 +29,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/stock-opnameCreateEditUI.vue'),
         meta: {
           layout: LAYOUT_OPTIONS.SIMPLE_NAVBAR,
+          breadcrumb: 'Issue Stock Opname',
           requiresAuthorization: true,
           title: 'Issue Stock Opname',
         },
@@ -40,6 +41,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/stock-opnameDetailUI.vue'),
         meta: {
           layout: LAYOUT_OPTIONS.SIMPLE_NAVBAR,
+          breadcrumb: 'View Stock Opname',
           requiresAuthorization: true,
           title: 'View Stock Opname',
         },
