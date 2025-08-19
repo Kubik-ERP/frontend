@@ -3,7 +3,7 @@
 import CashInOutListCreateDialog from '../components/CashInOutListCreateDialog.vue';
 
 // Services
-import { useCashInOutListService } from '../services/cash-in-out.service';
+import { useCashInOutListService } from '../services/cash-in-out-list.service';
 
 /**
  * @description Reactive data binding
@@ -16,6 +16,7 @@ const popover = ref();
 const {
   cashInOutList_formData,
   cashInOutList_formValidations,
+  cashInOutList_isLoading,
   cashInOutList_listColumns,
   cashInOutList_listTypes,
   cashInOutList_listValues,
@@ -39,9 +40,12 @@ provide('cashInOutList', {
     <AppBaseDataTable
       btn-cta-create-title="Add Cash In/Out"
       :columns="cashInOutList_listColumns"
-      :data="cashInOutList_listValues"
+      :data="cashInOutList_listValues.items"
+      :rows-per-page="cashInOutList_listValues.meta.perPage"
+      :total-records="cashInOutList_listValues.meta.total"
+      :first="(cashInOutList_listValues.meta.currentPage - 1) * cashInOutList_listValues.meta.perPage"
+      :is-loading="cashInOutList_isLoading"
       header-title="Cash In/Out"
-      is-using-btn-cta-create
       is-using-custom-body
       @click-btn-cta-create="cashInOutList_onCreate"
     >
