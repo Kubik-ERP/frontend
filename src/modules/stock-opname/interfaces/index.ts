@@ -1,3 +1,5 @@
+import type { DataTableSortEvent } from 'primevue';
+
 import type { Validation } from '@vuelidate/core';
 
 export interface IStockOpnameStore {
@@ -65,6 +67,8 @@ export interface IStockOpname_detail {
 export interface IStockOpnameListRequestQuery {
   page: number;
   pageSize: number;
+  orderBy: string | null;
+  orderDirection: 0 | 1 | -1 | string | undefined | null;
 }
 
 export interface IStockOpnameFormData {
@@ -80,6 +84,7 @@ export interface IStockOpnameProvided {
   stockOpnameRecordColumns: IColumnDataTable[];
   stockOpnameCreateEditColumns: IColumnDataTable[];
   stockOpname_onChangePage: (page: number) => void;
+  stockOpname_onChangeSort: (event: DataTableSortEvent) => void;
   stockOpname_isLoading: globalThis.Ref<boolean>;
   stockOpname_detail: globalThis.Ref<IStockOpname_detail>;
   stockOpname_lists: globalThis.Ref<IStockOpname_list>;

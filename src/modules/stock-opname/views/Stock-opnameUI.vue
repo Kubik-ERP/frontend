@@ -5,6 +5,7 @@ const {
   // table
   stockOpnameRecordColumns,
   stockOpname_onChangePage,
+  stockOpname_onChangeSort,
   // store
   stockOpname_isLoading,
   // stockOpname_detail,
@@ -41,6 +42,7 @@ onMounted(async () => {
     is-using-custom-header-prefix
     is-using-custom-header-suffix
     @update:currentPage="stockOpname_onChangePage"
+    @update:sort="stockOpname_onChangeSort"
   >
     <template #header-prefix>
       <h1 class="font-bold text-2xl text-text-primary">Stock Opname Record</h1>
@@ -58,10 +60,10 @@ onMounted(async () => {
       <template v-if="column.value === 'index'">
         <span class="font-normal text-sm text-text-primary">{{ index + 1 }}</span>
       </template>
-      <template v-else-if="column.value === 'issueDate'">
+      <template v-else-if="column.value === 'createdAt'">
         <span class="font-normal text-sm text-text-primary">{{ useFormatDate(data.createdAt) }}</span>
       </template>
-      <template v-else-if="column.value === 'lastUpdate'">
+      <template v-else-if="column.value === 'updatedAt'">
         <span class="font-normal text-sm text-text-primary">{{ useFormatDate(data.updatedAt) }}</span>
       </template>
       <template v-else-if="column.value === 'performedBy'">

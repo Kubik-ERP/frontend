@@ -51,9 +51,9 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <pre>
+  <!-- <pre>
     {{ stockOpname_detail }}
-  </pre>
+  </pre> -->
   <section class="pb-8">
     <h1 class="font-bold text-2xl text-text-primary">Details</h1>
     <section class="grid grid-cols-3 gap-2 mt-2">

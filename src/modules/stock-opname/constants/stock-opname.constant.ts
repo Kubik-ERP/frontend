@@ -11,17 +11,17 @@ export const STOCK_OPNAME_RECORD_COLUMNS: IColumnDataTable[] = [
   },
   {
     label: 'Issue Date',
-    sortable: false,
-    value: 'issueDate',
+    sortable: true,
+    value: 'createdAt',
   },
   {
     label: 'Total Item Checked',
-    sortable: false,
+    sortable: true,
     value: 'totalItemChecked',
   },
   {
     label: 'Stock Mismatches',
-    sortable: false,
+    sortable: true,
     value: 'stockMismatches',
   },
   {
@@ -36,8 +36,8 @@ export const STOCK_OPNAME_RECORD_COLUMNS: IColumnDataTable[] = [
   },
   {
     label: 'Last Update',
-    sortable: false,
-    value: 'lastUpdate',
+    sortable: true,
+    value: 'updatedAt',
   },
   {
     label: '',
@@ -50,7 +50,7 @@ export const STOCK_OPNAME_CREATE_EDIT_COLUMNS: IColumnDataTable[] = [
   {
     label: 'SKU',
     value: 'sku',
-    sortable: false,
+    sortable: true,
   },
   {
     label: 'Item Name',
@@ -60,12 +60,12 @@ export const STOCK_OPNAME_CREATE_EDIT_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Expected Quantity',
     value: 'expectedQuantity',
-    sortable: false,
+    sortable: true,
   },
   {
     label: 'Actual Quantity',
     value: 'actualQuantity',
-    sortable: false,
+    sortable: true,
   },
   {
     label: 'Difference',

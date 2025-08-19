@@ -18,6 +18,7 @@ import eventBus from '@/plugins/mitt';
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
+import { DataTableSortEvent } from 'primevue';
 
 export const useStockOpnameService = (): IStockOpnameProvided => {
   const router = useRouter();
@@ -29,11 +30,26 @@ export const useStockOpnameService = (): IStockOpnameProvided => {
   const stockOpname_queryParams = reactive<IStockOpnameListRequestQuery>({
     page: 1,
     pageSize: 10,
+    orderBy: null,
+    orderDirection: null,
   });
 
   const stockOpname_onChangePage = (page: number): void => {
     stockOpname_queryParams.page = page;
   };
+  const stockOpname_onChangeSort = (event: DataTableSortEvent) => {
+    stockOpname_queryParams.orderBy = event.sortField as string | null;
+    if(event.sortOrder === -1) {
+      stockOpname_queryParams.orderDirection = `desc`
+    }
+    else if (event.sortOrder === 1) {
+      stockOpname_queryParams.orderDirection = `asc`
+    }
+    else {
+      stockOpname_queryParams.orderDirection = null
+    }
+    // stockOpname_queryParams.orderDirection = event.sortOrder;
+  }
   watch(
     () => stockOpname_queryParams,
     debounce(async () => {
@@ -337,6 +353,7 @@ export const useStockOpnameService = (): IStockOpnameProvided => {
     stockOpnameRecordColumns: STOCK_OPNAME_RECORD_COLUMNS,
     stockOpnameCreateEditColumns: STOCK_OPNAME_CREATE_EDIT_COLUMNS,
     stockOpname_onChangePage,
+    stockOpname_onChangeSort,
 
     // store
     stockOpname_isLoading,
