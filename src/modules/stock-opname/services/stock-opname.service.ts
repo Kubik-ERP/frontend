@@ -225,7 +225,7 @@ export const useStockOpnameService = (): IStockOpnameProvided => {
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,
-        message: 'Stock Opname has been deleted successfully.',
+        message: 'Stock Opname has been cancelled successfully.',
         position: EToastPosition.TOP_RIGHT,
       };
 
