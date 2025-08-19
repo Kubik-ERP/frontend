@@ -2,7 +2,7 @@
 import { AutoCompleteCompleteEvent, AutoCompleteOptionSelectEvent } from 'primevue';
 import type {
   ILoyaltyPointBenefitProvided,
-  IProduct,
+  IProductList,
   IFreeItems,
 } from '@/modules/point-configuration/interfaces/loyalty-point-benefit.interface';
 const {
@@ -17,8 +17,8 @@ const {
 } = inject<ILoyaltyPointBenefitProvided>('loyaltyPointBenefit')!;
 
 // --- State for the AutoComplete component ---
-const currentSelection = ref<IProduct | null>(null);
-const suggestions = ref<IProduct[]>([]);
+const currentSelection = ref<IProductList | null>(null);
+const suggestions = ref<IProductList[]>([]);
 const masterProducts = computed(() => loyaltyPointBenefit_productList.value);
 
 // ✅ REMOVED: const selectedProducts = ref<IProduct[]>([]);
@@ -41,7 +41,7 @@ const search = (event: AutoCompleteCompleteEvent) => {
  * Adds the selected product to the central freeItems array.
  */
 const onProductSelect = (event: AutoCompleteOptionSelectEvent) => {
-  const selectedItem: IProduct = event.value;
+  const selectedItem: IProductList = event.value;
 
   // Transform the selected product into the IFreeItems format
   const itemToAdd: IFreeItems = {
@@ -155,7 +155,11 @@ const removeFromPool = (productToRemove: IFreeItems) => {
                   <div>
                     <h3 class="font-semibold">{{ product.name }}</h3>
                     <span class="flex gap-2">
-                      <PrimeVueChip v-for="(item, index) in product.categories" :key="index" class="bg-primary-background text-text-disabled text-xs px-1.5 py-1">
+                      <PrimeVueChip
+                        v-for="(item, index) in product.categories"
+                        :key="index"
+                        class="bg-primary-background text-text-disabled text-xs px-1.5 py-1"
+                      >
                         {{ item }}
                       </PrimeVueChip>
                     </span>

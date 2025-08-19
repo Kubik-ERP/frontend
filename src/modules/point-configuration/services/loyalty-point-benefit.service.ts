@@ -328,8 +328,8 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
     freeItemsBenefit_formData.name = data.benefitName;
     freeItemsBenefit_formData.pointNeeds = data.pointNeeds;
     freeItemsBenefit_formData.freeItems = Array.isArray(data.discountFreeItems)
-    ? data.discountFreeItems.map(item => ({ ...item }))
-    : [];
+      ? data.discountFreeItems.map(item => ({ ...item }))
+      : [];
     const argsEventEmitter: IPropsDialog = {
       id: 'loyalty-point-benefit-dialog-free-items',
       isOpen: true,
