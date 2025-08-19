@@ -60,7 +60,7 @@ const loadProduct = async () => {
     product_formData.categories = response.categoriesHasProducts;
     product_formData.is_percent = response.isPercent;
     product_formData.imagePreview = response.picture_url;
-    product_formData.isDiscount = response.discountPrice !== 0;
+    product_formData.isDiscount = response.discountPrice !== response.price;
 
     if (product_formData.isDiscount) {
       if (response.isPercent) {
@@ -119,6 +119,9 @@ const handleDelete = async () => {
 const handleUpdateProduct = async () => {
   try {
     loading.value = true;
+    if(!product_formData.isDiscount) {
+      product_formData.discount_price = product_formData.price
+    }
     await updateProduct(productID.value, product_formData);
   } catch (error) {
     console.error(error);
