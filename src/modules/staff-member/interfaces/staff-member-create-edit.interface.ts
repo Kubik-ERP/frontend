@@ -14,14 +14,12 @@ export interface IStaffMemberShift {
 
 export interface IStaffMemberProductItemComission {
   productId: string | null;
-  comission: number | null;
-  comissionType: string | null;
+  commission: number | null;
+  commissionType: string | null;
 }
 
 export interface IStaffMemberProductComission {
-  defaultComission: number | null;
-  defaultComissionType: string | null;
-  isAllItemsHaveDefaultComission: boolean | null;
+  isAllItemsHaveDefaultCommission: boolean | null;
   productItems: IStaffMemberProductItemComission[];
 }
 
@@ -32,18 +30,14 @@ export interface IStaffMemberVoucherItemComission {
 }
 
 export interface IStaffMemberVoucherCommission {
-  defaultComission: number | null;
-  defaultComissionType: string | null;
   isAllVouchersHaveDefaultComission: boolean | null;
   voucherItems: IStaffMemberVoucherItemComission[];
 }
 
 export interface IStaffMemberComissions {
-  productComission: IStaffMemberProductComission;
+  productCommission: IStaffMemberProductComission;
   voucherCommission: IStaffMemberVoucherCommission;
 }
-
-
 
 export interface IStaffMemberSocialMedia {
   name: string | null;
@@ -64,7 +58,11 @@ export interface IStaffMemberCreateEditFormData {
   permission: string | null;
   socialMedia: IStaffMemberSocialMedia[];
   shift: IstaffWorkingHour[];
-  comissions: IStaffMemberComissions;
+  defaultCommissionProductType : string | null;
+  defaultCommissionVoucherType: string | null;
+  defaultCommissionVoucher: number | null;
+  defaultCommissionProduct: number | null;
+  commissions: IStaffMemberComissions;
 }
 
 export interface IstaffHour {
@@ -94,12 +92,10 @@ export interface ICommissionTableData {
   isPercent?: boolean;
 }
 
-export interface IStafPermission{
+export interface IStafPermission {
   id: string;
   name: string;
 }
-
-
 
 export interface IStaffMemberCreateEditProvided {
   staffMemberCreateEdit_columnsOfCommissions: IColumnDataTable[];

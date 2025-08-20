@@ -86,7 +86,11 @@ function formatCurrency(value?: number) {
           </div>
           <div>
             <p class="text-sm text-gray-500">Supplier</p>
-            <p class="text-base text-black">{{ item?.supplierId }}</p>
+            <p class="text-base text-black">{{ item?.supplier }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Location</p>
+            <p class="text-base text-black">{{ item?.storageLocation }}</p>
           </div>
         </div>
       </div>

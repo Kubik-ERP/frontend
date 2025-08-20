@@ -15,6 +15,7 @@ export const useVoucherListService = (): IVoucherListProvided => {
 
   const voucherList_queryParams = reactive<IVoucherListRequestQuery>({
     startDate: formattedH7,
+    endDate: null,
     page: 1,
     pageSize: 10,
     orderBy: null,
@@ -92,9 +93,9 @@ export const useVoucherListService = (): IVoucherListProvided => {
   /**
    * Filter by startPeriode
    */
-  const voucherList_handleFilter = (date: string) => {
-    voucherList_queryParams.startDate = date;
-    voucherList_fetchListVouchers();
+  const voucherList_handleFilter = (startDate: string, endDate: string) => {
+    voucherList_queryParams.startDate = startDate;
+    voucherList_queryParams.endDate = endDate;
   };
 
   /**

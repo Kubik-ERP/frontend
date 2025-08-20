@@ -12,14 +12,24 @@ const {
   staffMemberCreateEdit_dataColumnsOfVoucher,
   staffMemberCreateEdit_commissionsSearch,
   staffMemberCreateEdit_onSubmitDialogCommission,
+  // staffMemberCreateEdit_formData
 } = inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
 
 /**
  * @description Default Commission
  */
 const defaultCommissionValue = ref(0);
-const defaultCommissionType = ref<'Rp' | '%'>('Rp');
-const commissionTypes = ref(['Rp', '%']);
+const defaultCommissionType = ref<'amount' | 'percentage'>('amount');
+const commissionTypes = ref([
+  {
+    label: 'Rp',
+    value: 'amount',
+  },
+  {
+    label: '%',
+    value: 'percentage',
+  },
+]);
 const isAllCommissionSame = ref(false);
 
 const commissionTableData = ref<ICommissionTableData[]>([]);
@@ -75,49 +85,54 @@ function handleSubmit() {
   const form = new FormData();
 
   if (staffMemberCreateEdit_commisionType.value === 'PRODUCT') {
-    // Simpan default commission
-    form.append('defaultComission', String(defaultCommissionValue.value));
-    form.append('defaultComissionType', defaultCommissionType.value);
-    form.append('isAllItemsHaveDefaultComission', String(isAllCommissionSame.value));
+    form.append('defaultCommission', String(defaultCommissionValue.value));
+    form.append('defaultCommissionType', defaultCommissionType.value);
+    form.append('isAllItemsHaveDefaultCommission', String(isAllCommissionSame.value));
 
     commissionTableData.value
       .filter(item => item.commissionValue > 0)
       .forEach((item, idx) => {
         form.append(`productItems[${idx}].productId`, String(item.id));
-        form.append(`productItems[${idx}].comission`, String(item.commissionValue));
-        form.append(`productItems[${idx}].comissionType`, item.commissionType);
+        form.append(`productItems[${idx}].commission`, String(item.commissionValue));
+        form.append(`productItems[${idx}].commissionType`, item.commissionType);
       });
-  } else{
-    // Simpan default commission
-    form.append('defaultComission', String(defaultCommissionValue.value));
-    form.append('defaultComissionType', defaultCommissionType.value);
-    form.append('isAllItemsHaveDefaultComission', String(isAllCommissionSame.value));
+  } else {
+    form.append('defaultCommission', String(defaultCommissionValue.value));
+    form.append('defaultCommissionType', defaultCommissionType.value);
+    form.append('isAllItemsHaveDefaultCommission', String(isAllCommissionSame.value));
 
-    // Simpan default commission
-    commissionTableData.value.
-      filter(item => item.commissionValue > 0)
+    commissionTableData.value
+      .filter(item => item.commissionValue > 0)
       .forEach((item, idx) => {
         form.append(`voucherItems[${idx}].voucherId`, String(item.id));
-        form.append(`voucherItems[${idx}].comission`, String(item.commissionValue));
-        form.append(`voucherItems[${idx}].comissionType`, item.commissionType);
+        form.append(`voucherItems[${idx}].commission`, String(item.commissionValue));
+        form.append(`voucherItems[${idx}].commissionType`, item.commissionType);
       });
   }
   staffMemberCreateEdit_onSubmitDialogCommission?.(form);
 
   defaultCommissionValue.value = 0;
-  defaultCommissionType.value = 'Rp';
+  defaultCommissionType.value = 'amount';
   isAllCommissionSame.value = false;
 }
+
+watch([isAllCommissionSame, defaultCommissionValue, defaultCommissionType], () => {
+  if (isAllCommissionSame.value) {
+    commissionTableData.value = commissionTableData.value.map(item => ({
+      ...item,
+      commissionValue: defaultCommissionValue.value,
+      commissionType: defaultCommissionType.value,
+    }));
+  }
+});
 
 const handleClose = () => {
   staffMemberCreateEdit_onCloseDialogCommission();
   defaultCommissionValue.value = 0;
-  defaultCommissionType.value = 'Rp';
+  defaultCommissionType.value = 'amount';
   isAllCommissionSame.value = false;
-}
+};
 </script>
-
-
 
 <template>
   <AppBaseDialog id="staff-member-comission-item-dialog">
@@ -142,8 +157,8 @@ const handleClose = () => {
               placeholder="0"
               :min-fraction-digits="0"
               :max-fraction-digits="2"
-              :prefix="defaultCommissionType === 'Rp' ? 'Rp' : ''"
-              :suffix="defaultCommissionType === '%' ? '%' : ''"
+              :prefix="defaultCommissionType === 'amount' ? 'Rp' : ''"
+              :suffix="defaultCommissionType === 'percentage' ? '%' : ''"
               mode="decimal"
             />
 
@@ -151,6 +166,9 @@ const handleClose = () => {
               <PrimeVueSelect
                 v-model="defaultCommissionType"
                 :options="commissionTypes"
+                option-label="label"
+                option-value="value"
+                default-value="amount"
                 :pt="{
                   root: 'border-none bg-transparent shadow-none ring-0 focus:ring-0 p-0',
                   label: 'pr-2',
@@ -202,14 +220,17 @@ const handleClose = () => {
                     placeholder="0"
                     :min-fraction-digits="0"
                     :max-fraction-digits="2"
-                    :prefix="filteredCommissionTableData[index].commissionType === 'Rp' ? 'Rp' : ''"
-                    :suffix="filteredCommissionTableData[index].commissionType === '%' ? '%' : ''"
+                    :prefix="filteredCommissionTableData[index].commissionType === 'amount' ? 'Rp' : ''"
+                    :suffix="filteredCommissionTableData[index].commissionType === 'percentage' ? '%' : ''"
                     mode="decimal"
                   />
                   <PrimeVueInputGroupAddon class="bg-transparent pr-0 pl-2">
                     <PrimeVueSelect
                       v-model="filteredCommissionTableData[index].commissionType"
                       :options="commissionTypes"
+                      option-label="label"
+                      option-value="value"
+                      default-value="amount"
                       :pt="{
                         root: 'border-none bg-transparent shadow-none ring-0 focus:ring-0 p-0',
                         label: 'pr-2',

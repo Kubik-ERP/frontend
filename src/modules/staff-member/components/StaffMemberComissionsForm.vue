@@ -13,7 +13,7 @@ const { staffMemberCreateEdit_onOpenDialogCommission, staffMemberCreateEdit_form
     <section id="comission-types" class="grid-wrapper gap-4">
       <section
         id="product-comission"
-        :class="staffMemberCreateEdit_formData.comissions.productComission.defaultComission !== null ? 'bg-primary-50 border-primary-300' : ''"
+        :class="staffMemberCreateEdit_formData.defaultCommissionProduct !== null ? 'bg-primary-50 border-primary-300' : ''"
         class="col-span-full lg:col-span-6 flex items-center justify-between border-2 border-solid border-grayscale-10 px-4 py-2 rounded-lg"
       >
         <section id="description" class="flex flex-col gap-2">
@@ -24,14 +24,14 @@ const { staffMemberCreateEdit_onOpenDialogCommission, staffMemberCreateEdit_form
 
         <PrimeVueButton
           class="border border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
-          :class="staffMemberCreateEdit_formData.comissions.productComission.defaultComission !== null ? 'bg-white' : ''"
+          :class="staffMemberCreateEdit_formData.defaultCommissionProduct !== null ? 'bg-white' : ''"
           severity="secondary"
           variant="outlined"
           @click="staffMemberCreateEdit_onOpenDialogCommission('PRODUCT')"
         >
           <template #default>
             <section id="content">
-              <div v-if="staffMemberCreateEdit_formData.comissions.productComission.defaultComission !== null" class="flex items-center gap-2">
+              <div v-if="staffMemberCreateEdit_formData.defaultCommissionProduct !== null" class="flex items-center gap-2">
                 <AppBaseSvg name="edit" />
                 <span class="font-semibold text-sm text-primary">Change</span>
               </div>
@@ -47,7 +47,7 @@ const { staffMemberCreateEdit_onOpenDialogCommission, staffMemberCreateEdit_form
 
       <section
         id="voucher-comission"
-        :class="staffMemberCreateEdit_formData.comissions.voucherCommission.defaultComission !== null ? 'bg-primary-50 border-primary-300' : ''"
+        :class="staffMemberCreateEdit_formData.defaultCommissionVoucher !== null ? 'bg-primary-50 border-primary-300' : ''"
         class="col-span-full lg:col-span-6 flex items-center justify-between border-2 border-solid border-grayscale-10 px-4 py-2 rounded-lg"
       >
         <section id="description" class="flex flex-col gap-2">
@@ -58,14 +58,14 @@ const { staffMemberCreateEdit_onOpenDialogCommission, staffMemberCreateEdit_form
 
         <PrimeVueButton
           class="border border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
-          :class="staffMemberCreateEdit_formData.comissions.voucherCommission.defaultComission !== null ? 'bg-white' : ''"
+          :class="staffMemberCreateEdit_formData.defaultCommissionVoucher !== null ? 'bg-white' : ''"
           severity="secondary"
           variant="outlined"
           @click="staffMemberCreateEdit_onOpenDialogCommission('VOUCHER')"
         >
           <template #default>
             <section id="content">
-              <div  v-if="staffMemberCreateEdit_formData.comissions.voucherCommission.defaultComission !== null" class="flex items-center gap-2">
+              <div  v-if="staffMemberCreateEdit_formData.defaultCommissionVoucher !== null" class="flex items-center gap-2">
                 <AppBaseSvg name="edit" />
                 <span class="font-semibold text-sm text-primary">Change</span>
               </div>

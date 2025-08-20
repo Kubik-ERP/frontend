@@ -18,8 +18,8 @@ export interface IInventoryItems {
   updatedAt: string;
   brand: string;
   category: string;
-  storageLocationName: string;
-  supplierName: string;
+  storageLocation: string;
+  supplier: string;
   itemName: string;
 }
 

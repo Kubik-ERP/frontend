@@ -16,6 +16,8 @@ import type {
   IstaffHour,
   IStaffMemberSocialMedia,
   IStafPermission,
+  IstaffWorkingHour,
+  IStaffMemberComissions,
 } from '../interfaces';
 
 // Plugins
@@ -137,17 +139,18 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         isActive: false,
       },
     ],
+    defaultCommissionProduct: null,
+    defaultCommissionProductType: null,
+    defaultCommissionVoucher: null,
+    defaultCommissionVoucherType: null,
+    commissions: {
+      productCommission: {
+        isAllItemsHaveDefaultCommission: null,
+        productItems: [
 
-    comissions: {
-      productComission: {
-        defaultComission: null,
-        defaultComissionType: null,
-        isAllItemsHaveDefaultComission: null,
-        productItems: [],
+        ],
       },
       voucherCommission: {
-        defaultComission: null,
-        defaultComissionType: null,
         isAllVouchersHaveDefaultComission: null,
         voucherItems: [],
       },
@@ -180,6 +183,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       const response = await storeVoucher.voucherList_fetchListVouchers(
         {
           startDate: null,
+          endDate: null,
           page: 1,
           pageSize: 100,
           orderBy: null,
@@ -411,6 +415,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    */
   const staffMemberCreateEdit_fetchUpdateStaffMember = async (staffMemberId: string, formData: FormData) => {
     try {
+      console.log('staffMemberCreateEdit_fetchUpdateStaffMember formData', formData);
       await store.staffMember_updateStaffMember(staffMemberId, formData, {
         ...httpAbort_registerAbort(STAFF_MEMBER_CREATE_REQUEST),
       });
@@ -460,16 +465,16 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
     if (staffMemberCreateEdit_commisionType.value === 'PRODUCT') {
       // Set default comission
-      staffMemberCreateEdit_formData.comissions.productComission.defaultComission = Number(data.defaultComission);
-      staffMemberCreateEdit_formData.comissions.productComission.defaultComissionType = data.defaultComissionType;
-      staffMemberCreateEdit_formData.comissions.productComission.isAllItemsHaveDefaultComission =
+      staffMemberCreateEdit_formData.defaultCommissionProduct = Number(data.defaultCommission);
+      staffMemberCreateEdit_formData.defaultCommissionProductType = data.defaultCommissionType;
+      staffMemberCreateEdit_formData.commissions.productCommission.isAllItemsHaveDefaultCommission =
         data.isAllItemsHaveDefaultComission === 'true';
 
       // Extract product items
       const productItems: {
         productId: string | null;
-        comission: number | null;
-        comissionType: string | null;
+        commission: number | null;
+        commissionType: string | null;
       }[] = [];
 
       // Misal field di form punya key seperti: productItems[0].productId, productItems[0].comission, ...
@@ -482,23 +487,23 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
           if (!productItems[index]) {
             productItems[index] = {
               productId: null,
-              comission: null,
-              comissionType: null,
+              commission: null,
+              commissionType: null,
             };
           }
 
           if (field === 'productId') productItems[index].productId = data[key];
-          if (field === 'comission') productItems[index].comission = Number(data[key]);
-          if (field === 'comissionType') productItems[index].comissionType = data[key];
+          if (field === 'commission') productItems[index].commission = Number(data[key]);
+          if (field === 'commissionType') productItems[index].commissionType = data[key];
         }
       });
       // Assign ke formData utama
-      staffMemberCreateEdit_formData.comissions.productComission.productItems = productItems;
+      staffMemberCreateEdit_formData.commissions.productCommission.productItems = productItems;
     } else {
       // Set default comission
-      staffMemberCreateEdit_formData.comissions.voucherCommission.defaultComission = Number(data.defaultComission);
-      staffMemberCreateEdit_formData.comissions.voucherCommission.defaultComissionType = data.defaultComissionType;
-      staffMemberCreateEdit_formData.comissions.voucherCommission.isAllVouchersHaveDefaultComission =
+      staffMemberCreateEdit_formData.defaultCommissionVoucher = Number(data.defaultCommission);
+      staffMemberCreateEdit_formData.defaultCommissionVoucherType = data.defaultCommissionType;
+      staffMemberCreateEdit_formData.commissions.voucherCommission.isAllVouchersHaveDefaultComission =
         data.isAllItemsHaveDefaultComission === 'true';
 
       // Extract voucher items
@@ -529,7 +534,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         }
       });
       // Assign ke formData utama
-      staffMemberCreateEdit_formData.comissions.voucherCommission.voucherItems = voucherItems;
+      staffMemberCreateEdit_formData.commissions.voucherCommission.voucherItems = voucherItems;
     }
 
     console.log(staffMemberCreateEdit_formData);
@@ -638,20 +643,8 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       return;
     }
 
-    // remove objects from shift when shift.isActive is false
-    // staffMemberCreateEdit_formData.shift = staffMemberCreateEdit_formData.shift.map(shift => {
-    //   if (!shift.isActive) {
-    //     return {
-    //       ...shift,
-    //       start_time: null,
-    //       end_time: null,
-    //     };
-    //   }
-    //   return shift;
-    // });
-
     const formData = new FormData();
-    const keysToIgnore = ['comissions', 'imagePreview'];
+    const keysToIgnore = ['imagePreview'];
 
     for (const key in staffMemberCreateEdit_formData) {
       if (Object.prototype.hasOwnProperty.call(staffMemberCreateEdit_formData, key)) {
@@ -660,17 +653,13 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         const value = staffMemberCreateEdit_formData[key as keyof IStaffMemberCreateEditFormData];
 
         if (value !== null && value !== undefined) {
-          // ✅ START of corrected 'shift' logic
-          // ✅ START of corrected 'shift' logic
+          // === SHIFT ===
           if (key === 'shift' && Array.isArray(value)) {
-            let shiftIndex = 0; // Initialize a counter for the flattened list
+            let shiftIndex = 0;
 
-            // Loop through each day object (e.g., { day: 'Sunday', timeSlots: [...] })
-            (value as { day: string; timeSlots: IstaffHour[]; isActive: boolean }[]).forEach(dayItem => {
+            (value as IstaffWorkingHour[]).forEach(dayItem => {
               if (dayItem.isActive && dayItem.timeSlots && dayItem.timeSlots.length > 0) {
-                // If the day is active, loop through its time slots
                 dayItem.timeSlots.forEach(slot => {
-                  // For EACH time slot, create a full shift entry in FormData
                   formData.append(`shift[${shiftIndex}][day]`, String(dayItem.day));
                   formData.append(`shift[${shiftIndex}][isActive]`, 'true');
 
@@ -684,46 +673,75 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
                   formData.append(`shift[${shiftIndex}][start_time]`, startTime);
                   formData.append(`shift[${shiftIndex}][end_time]`, endTime);
 
-                  shiftIndex = shiftIndex + 1; // Increment the main counter for the next time slot
+                  shiftIndex += 1;
                 });
               } else {
-                // For inactive days, create one entry with empty times
                 formData.append(`shift[${shiftIndex}][day]`, String(dayItem.day));
                 formData.append(`shift[${shiftIndex}][isActive]`, 'false');
                 formData.append(`shift[${shiftIndex}][start_time]`, '');
                 formData.append(`shift[${shiftIndex}][end_time]`, '');
-                shiftIndex = shiftIndex + 1; // Increment the main counter
+                shiftIndex += 1;
               }
             });
-            // ✅ END of corrected 'shift' logic
-          } else if (value instanceof Date) {
+          }
+
+          // === COMMISSIONS ===
+          else if (key === 'comissions' && value && typeof value === 'object') {
+            if ('productComission' in value && 'voucherCommission' in value) {
+              const commissionValue = value as IStaffMemberComissions;
+
+              // Product Commission
+              formData.append(
+                'comissions[productComission][isAllItemsHaveDefaultComission]',
+                String(commissionValue.productCommission?.isAllItemsHaveDefaultCommission ?? false),
+              );
+
+              commissionValue.productCommission.productItems.forEach((item, index) => {
+                formData.append(`comissions[productComission][productItems][${index}]`, JSON.stringify(item));
+              });
+              formData.append(
+                'comissions[voucherCommission][isAllVouchersHaveDefaultComission]',
+                String(commissionValue.voucherCommission?.isAllVouchersHaveDefaultComission ?? false),
+              );
+
+              commissionValue.voucherCommission.voucherItems.forEach((item, index) => {
+                formData.append(`comissions[voucherCommission][voucherItems][${index}]`, JSON.stringify(item));
+              });
+            }
+          }
+
+          // === Date
+          else if (value instanceof Date) {
             formData.append(key, value.toISOString());
-          } else if (value instanceof File) {
+          }
+
+          // === File
+          else if (value instanceof File) {
             formData.append(key, value);
-          } else if (typeof value === 'object' && !Array.isArray(value)) {
-            formData.append(key, JSON.stringify(value));
-          } else if (Array.isArray(value)) {
-            if (key === 'socialMedia' && Array.isArray(value) && value.every(item => 'name' in item)) {
-              value.forEach((socialMediaItem, index) => {
+          }
+
+          // === Social Media Array
+          else if (key === 'socialMedia' && Array.isArray(value)) {
+            value.forEach((socialMediaItem, index) => {
+              if ('name' in socialMediaItem && 'account' in socialMediaItem) {
                 formData.append(`socialMedia[${index}][name]`, socialMediaItem.name ?? '');
                 formData.append(`socialMedia[${index}][account]`, socialMediaItem.account ?? '');
-              });
-            } else {
-              formData.append(key, JSON.stringify(value));
-            }
-          } else {
+              }
+            });
+          }
+
+          // === Fallback Object/Array
+          else if (typeof value === 'object') {
+            formData.append(key, JSON.stringify(value));
+          }
+
+          // === Primitive
+          else {
             formData.append(key, String(value));
           }
         }
       }
     }
-
-    // (Optional) Log the result to verify
-    // const payload: Record<string, unknown> = {};
-    // for (const [key, value] of formData.entries()) {
-    //   payload[key] = value;
-    // }
-    // console.log('FormData payload:', JSON.stringify(payload, null, 2));
 
     try {
       if (route.name === 'staff-member.create') {
@@ -757,16 +775,16 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
    * Get roles permission
    */
   onMounted(async () => {
-    await httpClient.get(STAFF_MEMBER_PERMISSION_ENDPOINT)
-      .then((response) => {
-        console.log(response.data.data)
-        staffMemberCreateEdit_permissionData.value = response.data.data
+    await httpClient
+      .get(STAFF_MEMBER_PERMISSION_ENDPOINT)
+      .then(response => {
+        staffMemberCreateEdit_permissionData.value = response.data.data;
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(error => {
+        console.log(error);
         return Promise.reject(error instanceof Error ? error : new Error(String(error)));
-    })
-  })
+      });
+  });
 
   return {
     staffMemberCreateEdit_columnsOfCommissions: STAFF_MEMBER_COLUMNS_COMISSIONS,

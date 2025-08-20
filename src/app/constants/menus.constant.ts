@@ -141,14 +141,9 @@ export const LIST_SIDEBAR_MENUS = [
       {
         name: 'Marketing',
         iconName: 'marketing',
-        path: '/marketing',
-        isHaveSubMenus: true,
-        subMenus: [
-          {
-            name: 'Master Voucher',
-            path: '/voucher',
-          },
-        ],
+        path: '/voucher',
+        isHaveSubMenus: false,
+        subMenus: [],
       },
       {
         name: 'Staff',

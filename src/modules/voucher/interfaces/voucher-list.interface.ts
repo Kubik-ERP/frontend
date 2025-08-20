@@ -3,6 +3,7 @@ import { IVoucherListResponse } from "./index";
 
 export type IVoucherListRequestQuery = {
   startDate: string | null;
+  endDate: string | null;
   page: number;
   pageSize: number;
   orderBy: string | null;
@@ -18,6 +19,6 @@ export interface IVoucherListProvided {
    voucherList_fetchListVouchers: () => Promise<unknown>;
    voucherList_deleteVoucher: (voucherId: string) => Promise<void>;
    voucherList_values: globalThis.Ref<IVoucherListResponse>;
-   voucherList_handleFilter: (date: string) => void;
+   voucherList_handleFilter: (startDate: string, endDate: string) => void;
 }
 

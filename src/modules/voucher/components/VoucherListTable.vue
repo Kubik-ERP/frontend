@@ -140,17 +140,20 @@ const formatDate = (date: Date) => {
           <span class="font-semibold inline-block text-gray-900 text-base w-48">Filter by</span>
 
           <div class="flex items-center gap-4 w-full">
-            <PrimeVueDatePicker v-model="selectedDate"
+            <PrimeVueDatePicker
+              v-model="selectedDate"
               class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
               placeholder="Last test 7 day"
+              selection-mode="range"
               show-on-focus
               show-icon
               fluid
               show-button-bar
               @update:modelValue="
                 (val: Date | Date[] | (Date | null)[] | null | undefined) => {
-                  const date = Array.isArray(val) ? val[0] : val;
-                  if (date) voucherList_handleFilter(formatDate(date));
+                  const startDate = Array.isArray(val) ? val[0] : val;
+                  const endDate = Array.isArray(val) ? val[1] : val;
+                  if (startDate && endDate) voucherList_handleFilter(formatDate(startDate || new Date()), formatDate(endDate || new Date()));
                 }
               "
             />
