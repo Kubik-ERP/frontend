@@ -18,8 +18,14 @@ const {
   accountStoreDetail_onDeleteDialogConfirmation,
 } = inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const popovers = ref<Record<string, any>>({});
+// Use unknown type to avoid any, but allow method access
+const popovers = ref<Record<string, unknown>>({});
+
+// Helper function to toggle popover
+const togglePopover = (id: string, event: Event) => {
+  const popover = popovers.value[`popover-${id}`] as { toggle?: (event: Event) => void } | null;
+  popover?.toggle?.(event);
+};
 </script>
 
 <template>
@@ -64,7 +70,7 @@ const popovers = ref<Record<string, any>>({});
           variant="text"
           rounded
           aria-label="detail"
-          @click="(event: Event) => popovers[`popover-${data.id}`]?.toggle(event)"
+          @click="(event: Event) => togglePopover(data.id, event)"
         >
           <template #icon>
             <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
@@ -73,7 +79,7 @@ const popovers = ref<Record<string, any>>({});
 
         <PrimeVuePopover
           :ref="
-            el => {
+            (el: unknown) => {
               if (el) popovers[`popover-${data.id}`] = el;
             }
           "
