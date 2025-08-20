@@ -1,3 +1,6 @@
+// Key Http Request
+export const CASH_IN_OUT_LIST_REQUEST = 'CASH_IN_OUT_LIST_REQUEST';
+
 export const CASH_IN_OUT_LIST_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Date',

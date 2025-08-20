@@ -126,6 +126,10 @@ export const LIST_SIDEBAR_MENUS = [
             path: '/inventory-category',
           },
           {
+            name: 'Stock Opname',
+            path: '/inventory/stock-opname',
+          },
+          {
             name: 'Storage Location',
             path: '/storage-location',
           },

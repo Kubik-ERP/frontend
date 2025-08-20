@@ -154,6 +154,11 @@ onBeforeRouteLeave((to, from, next) => {
   }
 });
 
+const removePhoto = () => {
+  product_formData.imagePreview = '';
+  product_formData.imageFile = null;
+};
+
 watch(product_formData, () => {
   calculateDiscount();
 });
@@ -173,16 +178,23 @@ watch(product_formData, () => {
         />
         <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
 
-        <PrimeVueButton
-          :label="useLocalization('productDetail.photo.button')"
-          class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
-          variant="outlined"
-          @click="triggerFileInput"
-        >
-          <template #icon>
-            <img :src="imageSVG" alt="" />
-          </template>
-        </PrimeVueButton>
+        <div class="flex items-center justify-center gap-2 mt-4">
+            <PrimeVueButton
+              :label="useLocalization('productDetail.photo.button')"
+              class="shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
+              variant="outlined"
+              @click="triggerFileInput"
+            >
+              <template #icon>
+                <img :src="imageSVG" alt="" />
+              </template>
+            </PrimeVueButton>
+            <PrimeVueButton v-if="product_formData.imagePreview" variant="text" severity="danger" label="Delete Image" @click="removePhoto">
+              <template #icon>
+                <AppBaseSvg name="delete" class="!w-5 !h-5" />
+              </template>
+            </PrimeVueButton>
+          </div>
 
         <div class="grid grid-cols-2 w-full gap-8 mt-8">
           <AppBaseFormGroup

@@ -2,3 +2,5 @@ export const ACCOUNT_BANK_BASE_ENDPOINT = '/bank';
 
 export const ACCOUNT_BANK_ATTACH_ENDPOINT = `${ACCOUNT_BANK_BASE_ENDPOINT}/attach`;
 export const ACCOUNT_USER_BANKS_ENDPOINT = `${ACCOUNT_BANK_BASE_ENDPOINT}/user-banks`;
+
+export const ACCOUNT_STORE_DETAIL_FACILITY_ENDPOINT = '/facilities';
