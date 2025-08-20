@@ -2,20 +2,39 @@
 // Interfaces
 import type { IAccountStoreDetailProvided } from '../../interfaces';
 
+// components
+import CreateEditDialog from '../store-detail/store-facility/CreateEditDialog.vue';
 /**
  * @description Inject all the data and methods what we need
  */
-const { accountStoreDetail_listColumnsOfStoreFacilities, accountStoreDetail_listValuesOfStoreFacilities } =
-  inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
+const {
+  accountStoreDetail_listColumnsOfStoreFacilities,
+
+  account_storeFacilities,
+
+  accountStoreDetail_onChangePage,
+  account_storeFacilities_isLoading,
+  accountStoreDetail_onShowDialogCreateEdit,
+  accountStoreDetail_onDeleteDialogConfirmation,
+} = inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const popovers = ref<Record<string, any>>({});
 </script>
 
 <template>
   <AppBaseDataTable
     :columns="accountStoreDetail_listColumnsOfStoreFacilities"
-    :data="accountStoreDetail_listValuesOfStoreFacilities"
+    :data="account_storeFacilities.data"
+    :rows-per-page="account_storeFacilities.meta.pageSize"
+    :total-records="account_storeFacilities.meta.total"
+    :first="(account_storeFacilities.meta.page - 1) * account_storeFacilities.meta.pageSize"
+    :is-loading="account_storeFacilities_isLoading"
     is-using-custom-body
     is-using-custom-header
     :is-using-border-on-header="false"
+    is-using-pagination
+    @update:change-page="accountStoreDetail_onChangePage"
   >
     <template #header>
       <header class="flex items-center justify-between py-5">
@@ -23,7 +42,11 @@ const { accountStoreDetail_listColumnsOfStoreFacilities, accountStoreDetail_list
           {{ useLocalization('account.facilities') }}
         </h6>
 
-        <PrimeVueButton class="bg-primary border-none w-fit px-5" severity="secondary">
+        <PrimeVueButton
+          class="bg-primary border-none w-fit px-5"
+          severity="secondary"
+          @click="accountStoreDetail_onShowDialogCreateEdit(null)"
+        >
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="plus-line-white" />
@@ -37,11 +60,54 @@ const { accountStoreDetail_listColumnsOfStoreFacilities, accountStoreDetail_list
 
     <template #body="{ column, data }">
       <template v-if="column.value === 'action'">
-        <PrimeVueButton variant="text" rounded aria-label="detail">
+        <PrimeVueButton
+          variant="text"
+          rounded
+          aria-label="detail"
+          @click="(event: Event) => popovers[`popover-${data.id}`]?.toggle(event)"
+        >
           <template #icon>
-            <AppBaseSvg name="eye-visible" class="!w-5 !h-5" />
+            <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
           </template>
         </PrimeVueButton>
+
+        <PrimeVuePopover
+          :ref="
+            el => {
+              if (el) popovers[`popover-${data.id}`] = el;
+            }
+          "
+          :pt="{
+            content: 'p-0',
+          }"
+        >
+          <section id="popover-content" class="flex flex-col">
+            <PrimeVueButton
+              class="w-full px-4 py-3"
+              variant="text"
+              @click="accountStoreDetail_onShowDialogCreateEdit(data)"
+            >
+              <template #default>
+                <section id="content" class="flex items-center gap-2 w-full">
+                  <AppBaseSvg name="edit" class="!w-4 !h-4" />
+                  <span class="font-normal text-sm text-text-primary">Edit</span>
+                </section>
+              </template>
+            </PrimeVueButton>
+            <PrimeVueButton
+              class="w-full px-4 py-3"
+              variant="text"
+              @click="accountStoreDetail_onDeleteDialogConfirmation(data.id)"
+            >
+              <template #default>
+                <section id="content" class="flex items-center gap-2 w-full">
+                  <AppBaseSvg name="delete" class="!w-4 !h-4" />
+                  <span class="font-normal text-sm text-text-primary">Delete</span>
+                </section>
+              </template>
+            </PrimeVueButton>
+          </section>
+        </PrimeVuePopover>
       </template>
 
       <template v-else>
@@ -49,4 +115,7 @@ const { accountStoreDetail_listColumnsOfStoreFacilities, accountStoreDetail_list
       </template>
     </template>
   </AppBaseDataTable>
+
+  <CreateEditDialog />
+  <AppBaseDialogConfirmation id="account-store-facility-delete-dialog-confirmation" />
 </template>
