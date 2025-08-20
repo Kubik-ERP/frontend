@@ -112,9 +112,7 @@ const handleAddCategory = async () => {
     console.error('Failed to create category:', error);
     console.error(error);
     alert('Something went wrong while creating the category.');
-  }
-  finally
-  {
+  } finally {
     loading.value = false;
   }
 };
@@ -211,6 +209,11 @@ const prevPage = () => {
     router.push({ query: { page: page.value.toString() } });
     loadCategories();
   }
+};
+
+const removePhoto = () => {
+  category_formData.imageFile = undefined;
+  category_formData.imagePreview = undefined;
 };
 
 onMounted(() => {
@@ -409,16 +412,23 @@ onMounted(() => {
           <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
 
           <!-- PrimeVue Button as file selector -->
-          <PrimeVueButton
-            :label="useLocalization('modal.selectImageButton')"
-            class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
-            variant="outlined"
-            @click="triggerFileInput"
-          >
-            <template #icon>
-              <img :src="imageSVG" alt="" />
-            </template>
-          </PrimeVueButton>
+          <div class="flex items-center justify-center gap-2 mt-4">
+            <PrimeVueButton
+              :label="useLocalization('modal.selectImageButton')"
+              class="shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
+              variant="outlined"
+              @click="triggerFileInput"
+            >
+              <template #icon>
+                <img :src="imageSVG" alt="" />
+              </template>
+            </PrimeVueButton>
+            <PrimeVueButton variant="text" @click="removePhoto">
+              <template #icon>
+                <AppBaseSvg name="delete" class="!w-5 !h-5" />
+              </template>
+            </PrimeVueButton>
+          </div>
         </div>
         <AppBaseFormGroup
           v-slot="{ classes }"
@@ -488,16 +498,23 @@ onMounted(() => {
           <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
 
           <!-- PrimeVue Button as file selector -->
-          <PrimeVueButton
-            :label="useLocalization('modal.selectImageButton')"
-            class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
-            variant="outlined"
-            @click="triggerFileInput"
-          >
-            <template #icon>
-              <img :src="imageSVG" alt="" />
-            </template>
-          </PrimeVueButton>
+          <div class="flex items-center justify-center gap-2 mt-4">
+            <PrimeVueButton
+              :label="useLocalization('modal.selectImageButton')"
+              class="shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
+              variant="outlined"
+              @click="triggerFileInput"
+            >
+              <template #icon>
+                <img :src="imageSVG" alt="" />
+              </template>
+            </PrimeVueButton>
+            <PrimeVueButton variant="text" @click="removePhoto">
+              <template #icon>
+                <AppBaseSvg name="delete" class="!w-5 !h-5" />
+              </template>
+            </PrimeVueButton>
+          </div>
         </div>
         <AppBaseFormGroup
           v-slot="{ classes }"
