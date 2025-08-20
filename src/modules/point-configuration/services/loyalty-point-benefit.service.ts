@@ -211,8 +211,8 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
 
   const freeItemsBenefit_formData = reactive<IFreeItemFormData>({
     id: null,
-    name: 'Free Item',
-    pointNeeds: 50,
+    name: '',
+    pointNeeds: 0,
     freeItems: [],
   });
 
@@ -323,12 +323,13 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
     eventBus.emit('AppBaseDialog', argsEventEmitter);
   };
   const loyaltyPointBenefit_onShowEditDialogFreeItems = (data: ILoyaltyPointBenefit): void => {
-    console.log(JSON.stringify(data, null, 2));
     isEdit.value = true;
     freeItemsBenefit_formData.id = data.id;
     freeItemsBenefit_formData.name = data.benefitName;
     freeItemsBenefit_formData.pointNeeds = data.pointNeeds;
-    freeItemsBenefit_formData.freeItems = Array.isArray(data.discountFreeItems) ? data.discountFreeItems : [];
+    freeItemsBenefit_formData.freeItems = Array.isArray(data.discountFreeItems)
+      ? data.discountFreeItems.map(item => ({ ...item }))
+      : [];
     const argsEventEmitter: IPropsDialog = {
       id: 'loyalty-point-benefit-dialog-free-items',
       isOpen: true,
