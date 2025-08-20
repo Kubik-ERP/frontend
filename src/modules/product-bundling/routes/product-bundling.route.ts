@@ -16,11 +16,33 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'product-bundling.index',
-        component: () => import('../views/Product-bundlingUI.vue'),
+        component: () => import('../views/ProductBundlingListUI.vue'),
         meta: {
           layout: LAYOUT_OPTIONS.DEFAULT,
           requiresAuthorization: true,
           title: 'Product Bundling',
+        },
+      },
+      {
+        path: 'add-product-bundling',
+        name: 'product-bundling.add',
+        component: () => import('../views/ProductBundlingCreateEditUI.vue'),
+        meta: {
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          requiresAuthorization: true,
+          title: 'Add Product Bundling',
+          breadcrumb: 'Add Product Bundling',
+        },
+      },
+      {
+        path: 'edit-product-bundling/:id',
+        name: 'product-bundling.edit',
+        component: () => import('../views/ProductBundlingCreateEditUI.vue'),
+        meta: {
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          requiresAuthorization: true,
+          title: 'Edit Product Bundling',
+          breadcrumb: 'Edit Product Bundling',
         },
       },
     ],
