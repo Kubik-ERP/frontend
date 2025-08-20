@@ -29,6 +29,21 @@ const {
   accountStoreDetail_selectedTable,
   accountStoreDetail_selectedTableLayout,
   accountStoreDetail_storeTables,
+
+  account_storeFacilities,
+  accountStoreDetail_formData,
+  accountStoreDetail_formValidations,
+  accountStoreDetail_onChangePage,
+  account_storeFacilities_isLoading,
+
+  accountStoreDetail_fetchAccountStoreFacilities,
+  accountStoreDetail_createAccountStoreFacilities,
+  accountStoreDetail_updateAccountStoreFacilities,
+  accountStoreDetail_deleteAccountStoreFacilities,
+  accountStoreDetail_onShowDialogCreateEdit,
+  accountStoreDetail_onCloseDialogCreateEdit,
+  accoutnStoreDetail_onSubmitDialogCreateEdit,
+  accountStoreDetail_onDeleteDialogConfirmation
 } = useAccountStoreDetailsService();
 
 /**
@@ -50,6 +65,21 @@ provide('accountStoreDetail', {
   accountStoreDetail_selectedTable,
   accountStoreDetail_selectedTableLayout,
   accountStoreDetail_storeTables,
+
+  account_storeFacilities,
+  accountStoreDetail_formData,
+  accountStoreDetail_formValidations,
+  accountStoreDetail_onChangePage,
+  account_storeFacilities_isLoading,
+
+  accountStoreDetail_fetchAccountStoreFacilities,
+  accountStoreDetail_createAccountStoreFacilities,
+  accountStoreDetail_updateAccountStoreFacilities,
+  accountStoreDetail_deleteAccountStoreFacilities,
+  accountStoreDetail_onShowDialogCreateEdit,
+  accountStoreDetail_onCloseDialogCreateEdit,
+  accoutnStoreDetail_onSubmitDialogCreateEdit,
+  accountStoreDetail_onDeleteDialogConfirmation
 });
 
 /**
@@ -57,6 +87,7 @@ provide('accountStoreDetail', {
  */
 onMounted(async () => {
   await accountStoreDetail_fetchOutletListOperationalHours();
+  await accountStoreDetail_fetchAccountStoreFacilities();
 });
 </script>
 
