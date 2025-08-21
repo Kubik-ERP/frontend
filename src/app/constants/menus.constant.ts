@@ -82,6 +82,10 @@ export const LIST_SIDEBAR_MENUS = [
             name: 'Products',
             path: '/catalog/products',
           },
+          {
+            name: 'Product Bundling',
+            path: '/catalog/product-bundling',
+          },
         ],
       },
       {
