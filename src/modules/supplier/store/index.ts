@@ -9,8 +9,9 @@ import type {
   ISupplierDetailResponse,
   ISupplierCreatePayload,
   ISupplierUpdatePayload,
+  ISupplierItemListResponse,
 } from '../interfaces';
-import type { ISupplierListRequestQuery } from '../interfaces/supplier-list.interface';
+import type { ISupplierItemListRequestQuery, ISupplierListRequestQuery } from '../interfaces/supplier-list.interface';
 
 // Plugins
 import httpClient from '@/plugins/axios';
@@ -31,6 +32,19 @@ export const useSupplierStore = defineStore('supplier', {
         },
       },
     },
+    supplier_itemLists: {
+      statusCode: 200,
+      message: '',
+      data: {
+        items: [],
+        meta: {
+          page: 1,
+          pageSize: 10,
+          total: 0,
+          totalPages: 1,
+        },
+      },
+    },
     supplier_supplierDetail: null,
   }),
   getters: {
@@ -39,6 +53,7 @@ export const useSupplierStore = defineStore('supplier', {
      */
   },
   actions: {
+
     /**
      * @description Handle fetch api suppliers - get suppliers list
      * @url /suppliers
@@ -171,5 +186,34 @@ export const useSupplierStore = defineStore('supplier', {
         this.supplier_isLoading = false;
       }
     },
+
+    /**
+     * @description Handle fetch api items - get supplier by ID
+     * @url /suppliers/:id
+     * @method GET
+     * @access private
+     */
+    async supplier_getItems(
+      supplierId: string,
+      params: ISupplierItemListRequestQuery,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<ISupplierItemListResponse> {
+      this.supplier_isLoading = true;
+
+      try {
+        const response = await httpClient.get<ISupplierItemListResponse>(`${SUPPLIER_BASE_ENDPOINT}/${supplierId}/item-supplies`, {
+          params,
+          ...requestConfigurations,
+        });
+
+       this.supplier_itemLists = response.data;
+
+        return Promise.resolve(response.data);
+      } catch (error) {
+        return Promise.reject(error);
+      } finally {
+        this.supplier_isLoading = false;
+      }
+    }
   },
 });

@@ -2,11 +2,10 @@
 import {
   STAFF_MEMBER_LIST_COLUMNS,
   STAFF_MEMBER_LIST_REQUEST,
-  STAFF_MEMBER_TYPES_OF_USER_PERMISSIONS,
 } from '../constants';
 
 // Interfaces
-import type { IStaffMemberListProvided, IStaffMemberListRequestQuery } from '../interfaces';
+import type { IStaffMemberListProvided, IStaffMemberListRequestQuery, IStafPermission } from '../interfaces';
 
 // Store
 import { useStaffMemberStore } from '../store';
@@ -136,11 +135,32 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
     eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
   };
 
+  /**
+   * @dwescription for roles permissions
+   */
+  const staffMemberCreateEdit_permissionData = ref<IStafPermission[]>([]);
+  const staffMember_listPermissions = computed( async () => {
+    try{
+      const res = await store.staffMember_getPermissions();
+      staffMemberCreateEdit_permissionData.value = res.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  });
+
+  onMounted(async () => {
+    await staffMember_listPermissions.value;
+  });
+
   return {
     staffMemberList_columns: STAFF_MEMBER_LIST_COLUMNS,
     staffMemberList_dropdownItemStaff: staffMember_listDropdownItemStaff,
     staffMemberList_dropdownItemTitles: staffMember_listDropdownItemTitles,
-    staffMemberList_typesOfUserPermissions: STAFF_MEMBER_TYPES_OF_USER_PERMISSIONS,
+    staffMemberList_typesOfUserPermissions: staffMemberCreateEdit_permissionData,
 
     staffMemberList_fetchListMembers,
     staffMemberList_deleteStaffMember,

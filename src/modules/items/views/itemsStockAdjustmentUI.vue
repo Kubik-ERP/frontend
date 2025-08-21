@@ -19,12 +19,13 @@ function formatCurrency(value?: number) {
 </script>
 
 <template>
-  <section id="item-preview" class="flex justify-center my-10">
-    <div class="w-full mx-30  border border-primary rounded-lg p-6 text-base text-gray-800">
+  <!-- Item Preview -->
+  <section id="item-preview" class="flex justify-center my-10 px-4 sm:px-6 lg:px-20">
+    <div class="w-full border border-primary rounded-lg p-6 text-base text-gray-800">
       <!-- Header -->
-      <div class="flex justify-start items-start mb-4 gap-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
         <div>
-          <p class="text-lg font-semibold text-black">{{ item?.name }}</p>
+          <p class="text-lg font-semibold text-black">{{ item?.itemName }}</p>
           <p class="text-base text-gray-600">{{ item?.sku }}</p>
         </div>
       </div>
@@ -32,10 +33,10 @@ function formatCurrency(value?: number) {
       <!-- Item Details -->
       <div class="mb-4">
         <p class="text-base font-semibold text-primary mb-3">Item Details</p>
-        <div class="grid grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <p class="text-sm text-gray-500">Brand</p>
-            <p class="text-base font-medium text-black">{{ item?.brandId }}</p>
+            <p class="text-base font-medium text-black">{{ item?.brand }}</p>
           </div>
           <div>
             <p class="text-sm text-gray-500">Barcode</p>
@@ -43,7 +44,7 @@ function formatCurrency(value?: number) {
           </div>
           <div>
             <p class="text-sm text-gray-500">Category</p>
-            <p class="text-base text-black">{{ item?.categoryId }}</p>
+            <p class="text-base text-black">{{ item?.category }}</p>
           </div>
           <div>
             <p class="text-sm text-gray-500">Unit</p>
@@ -55,7 +56,7 @@ function formatCurrency(value?: number) {
       <!-- Stock & Inventory -->
       <div class="mb-4">
         <p class="text-base font-semibold text-primary mb-3">Stock & Inventory</p>
-        <div class="grid grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <p class="text-sm text-gray-500">Current Stock Quantity</p>
             <p class="text-base text-black">{{ item?.stockQuantity }}</p>
@@ -78,25 +79,28 @@ function formatCurrency(value?: number) {
       <!-- Price & Supplier -->
       <div>
         <p class="text-base font-semibold text-primary mb-3">Price & Supplier</p>
-        <div class="grid grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <p class="text-sm text-gray-500">Price per Unit</p>
             <p class="text-base text-black">{{ formatCurrency(item?.pricePerUnit) }}</p>
           </div>
           <div>
             <p class="text-sm text-gray-500">Supplier</p>
-            <p class="text-base text-black">{{ item?.supplierId }}</p>
+            <p class="text-base text-black">{{ item?.supplier }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Location</p>
+            <p class="text-base text-black">{{ item?.storageLocation }}</p>
           </div>
         </div>
       </div>
     </div>
-
   </section>
-  <section id="stock-adjustment" class="flex justify-center my-10">
-    <div class="w-full mx-30 ">
-      <StockAdjustmentTabel />
 
+  <!-- Stock Adjustment -->
+  <section id="stock-adjustment" class="flex justify-center my-10 px-4 sm:px-6 lg:px-20">
+    <div class="w-full">
+      <StockAdjustmentTabel />
     </div>
   </section>
-
 </template>

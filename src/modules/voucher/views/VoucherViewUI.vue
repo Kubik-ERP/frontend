@@ -116,7 +116,7 @@ const endPeriod = computed(() => {
             </template>
 
             <template v-else-if="column.value === 'category'">
-              <span>{{ data.products?.category || '-' }}</span>
+              <span>{{ data.products?.categoriesHasProducts.map((item: any) => item.categories.category).join(', ') || '-' }}</span>
             </template>
 
             <template v-else-if="column.value === 'price'">

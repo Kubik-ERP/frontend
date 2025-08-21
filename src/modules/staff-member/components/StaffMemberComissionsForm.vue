@@ -2,7 +2,7 @@
 // Interfaces
 import type { IStaffMemberCreateEditProvided } from '../interfaces';
 
-const { staffMemberCreateEdit_onOpenDialogCommission } =
+const { staffMemberCreateEdit_onOpenDialogCommission, staffMemberCreateEdit_formData } =
   inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
 </script>
 
@@ -13,6 +13,7 @@ const { staffMemberCreateEdit_onOpenDialogCommission } =
     <section id="comission-types" class="grid-wrapper gap-4">
       <section
         id="product-comission"
+        :class="staffMemberCreateEdit_formData.defaultCommissionProduct !== null ? 'bg-primary-50 border-primary-300' : ''"
         class="col-span-full lg:col-span-6 flex items-center justify-between border-2 border-solid border-grayscale-10 px-4 py-2 rounded-lg"
       >
         <section id="description" class="flex flex-col gap-2">
@@ -23,14 +24,22 @@ const { staffMemberCreateEdit_onOpenDialogCommission } =
 
         <PrimeVueButton
           class="border border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
+          :class="staffMemberCreateEdit_formData.defaultCommissionProduct !== null ? 'bg-white' : ''"
           severity="secondary"
           variant="outlined"
           @click="staffMemberCreateEdit_onOpenDialogCommission('PRODUCT')"
         >
           <template #default>
-            <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="plus-line" />
-              <span class="font-semibold text-sm text-primary">Set Comission</span>
+            <section id="content">
+              <div v-if="staffMemberCreateEdit_formData.defaultCommissionProduct !== null" class="flex items-center gap-2">
+                <AppBaseSvg name="edit" />
+                <span class="font-semibold text-sm text-primary">Change</span>
+              </div>
+
+              <div v-else class="flex items-center gap-2">
+                <AppBaseSvg name="plus-line" />
+                <span class="font-semibold text-sm text-primary">Set Comission</span>
+              </div>
             </section>
           </template>
         </PrimeVueButton>
@@ -38,6 +47,7 @@ const { staffMemberCreateEdit_onOpenDialogCommission } =
 
       <section
         id="voucher-comission"
+        :class="staffMemberCreateEdit_formData.defaultCommissionVoucher !== null ? 'bg-primary-50 border-primary-300' : ''"
         class="col-span-full lg:col-span-6 flex items-center justify-between border-2 border-solid border-grayscale-10 px-4 py-2 rounded-lg"
       >
         <section id="description" class="flex flex-col gap-2">
@@ -48,14 +58,22 @@ const { staffMemberCreateEdit_onOpenDialogCommission } =
 
         <PrimeVueButton
           class="border border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
+          :class="staffMemberCreateEdit_formData.defaultCommissionVoucher !== null ? 'bg-white' : ''"
           severity="secondary"
           variant="outlined"
           @click="staffMemberCreateEdit_onOpenDialogCommission('VOUCHER')"
         >
           <template #default>
-            <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="plus-line" />
-              <span class="font-semibold text-sm text-primary">Set Comission</span>
+            <section id="content">
+              <div  v-if="staffMemberCreateEdit_formData.defaultCommissionVoucher !== null" class="flex items-center gap-2">
+                <AppBaseSvg name="edit" />
+                <span class="font-semibold text-sm text-primary">Change</span>
+              </div>
+
+              <div v-else class="flex items-center gap-2">
+                <AppBaseSvg name="plus-line" />
+                <span class="font-semibold text-sm text-primary">Set Comission</span>
+              </div>
             </section>
           </template>
         </PrimeVueButton>

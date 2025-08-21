@@ -92,9 +92,8 @@ function formatDate(date: string | Date | null) {
   if (!date) return '';
 
   const d = typeof date === 'string' ? new Date(date.replace(/\//g, '-')) : date;
-
   // Ambil hanya tanggal untuk backend
-  return d.toISOString().split('T')[0];
+  return d.toLocaleDateString("sv-SE");
 }
 
 watch(
@@ -111,9 +110,6 @@ watch(
     voucherFormData.value.startDate = val.validity?.[0] ? formatDate(val.validity[0]) : '';
     voucherFormData.value.endDate = val.validity?.[1] ? formatDate(val.validity[1]) : '';
     voucherFormData.value.maxDiscountPrice = val.maxDiscountPrice || 0;
-
-    console.log('StartDate:', voucherFormData.value.startDate);
-    console.log('EndDate:', voucherFormData.value.endDate);
   },
   { deep: true },
 );

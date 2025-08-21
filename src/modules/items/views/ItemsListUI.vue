@@ -26,7 +26,7 @@ const {
 </script>
 
 <template>
-  <section id="inventory-items-list-ui" class="flex flex-col relative inset-0 z-0">
+  <section id="inventory-items-list-ui" class="flex flex-col">
     <AppBaseDataTable
       :columns="inventoryItems_colums"
       :data="inventoryItems_values.data.items"
@@ -98,17 +98,17 @@ const {
 
           <!-- Item Name -->
           <template v-else-if="column.value === 'name'">
-            <span class="text-gray-700">{{ data.name || '-' }}</span>
+            <span class="text-gray-700">{{ data.itemName || '-' }}</span>
           </template>
 
           <!-- Category -->
           <template v-else-if="column.value === 'categoryName'">
-            <span class="text-gray-700">{{ data.categoryId || '-' }}</span>
+            <span class="text-gray-700">{{ data.category || '-' }}</span>
           </template>
 
           <!-- Brand -->
           <template v-else-if="column.value === 'brandName'">
-            <span class="text-gray-700">{{ data.brandId || '-' }}</span>
+            <span class="text-gray-700">{{ data.brand || '-' }}</span>
           </template>
 
           <!-- Unit -->

@@ -39,3 +39,41 @@ export const SUPPLIER_LIST_COLUMNS: IColumnDataTable[] = [
     value: 'action',
   },
 ];
+
+export const SUPPLIER_LIST_TABLE_ITEMS_COLUMNS: IColumnDataTable[] = [
+  {
+    label: 'SKU',
+    sortable: true,
+    value: 'sku',
+  },
+  {
+    label: 'Item Name',
+    sortable: false,
+    value: 'itemName',
+  },
+  {
+    label: 'Category',
+    sortable: false,
+    value: 'category',
+  },
+  {
+    label: 'Brand',
+    sortable: false,
+    value: 'brand',
+  },
+  {
+    label: 'Price / unit',
+    sortable: false,
+    value: 'pricePerUnit'
+  },
+  {
+    label: 'expiry date',
+    sortable: false,
+    value: 'expiryDate'
+  },
+  {
+    label: 'order Date',
+    sortable: false,
+    value: 'createdAt'
+  }
+]

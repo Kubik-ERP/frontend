@@ -1,5 +1,5 @@
 // Constants
-import { STAFF_MEMBER_BASE_ENDPOINT } from '../constants';
+import { STAFF_MEMBER_BASE_ENDPOINT, STAFF_MEMBER_PERMISSION_ENDPOINT } from '../constants';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
@@ -8,6 +8,7 @@ import type {
   IStaffMemberDetailsResponse,
   IStaffMemberStore,
   IStaffMemberListRequestQuery,
+  IStaffMemberPermissionResponse,
 } from '../interfaces';
 
 // Plugins
@@ -234,6 +235,18 @@ export const useStaffMemberStore = defineStore('staff-member', {
         }
       } finally {
         this.staffMember_isLoading = false;
+      }
+    },
+    async staffMember_getPermissions(): Promise<IStaffMemberPermissionResponse> {
+      try {
+        const response = await httpClient.get<IStaffMemberPermissionResponse>(STAFF_MEMBER_PERMISSION_ENDPOINT);
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
       }
     },
   },

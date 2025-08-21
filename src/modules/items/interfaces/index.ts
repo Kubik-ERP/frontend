@@ -16,6 +16,11 @@ export interface IInventoryItems {
   supplierId: string;
   createdAt: string;
   updatedAt: string;
+  brand: string;
+  category: string;
+  storageLocation: string;
+  supplier: string;
+  itemName: string;
 }
 
 export interface IInventoryItemsStockAdjustment {
