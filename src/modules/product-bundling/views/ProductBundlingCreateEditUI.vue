@@ -86,7 +86,7 @@ onMounted(async () => {
 <template>
   <section class="grid grid-cols-2 gap-8">
     <section class="flex flex-col gap-4">
-      <pre>{{ productBundling_formData }}</pre>
+      <!-- <pre>{{ productBundling_formData }}</pre> -->
       <AppBaseFormGroup
         v-slot="{ classes }"
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"

@@ -134,7 +134,6 @@ export const useProductBundlingStore = defineStore('product-bundling', {
     ): Promise<unknown> {
       try {
         const response = await httpClient.get(`${PRODUCT_BUNDLING_BASE_ENDPOINT}/${id}`, requestConfigurations);
-        console.log(JSON.stringify(response.data.data, null, 2));
         return Promise.resolve(response.data.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
