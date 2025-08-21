@@ -48,6 +48,35 @@ export const useListenerForm = (validations: BaseValidation, formName: string): 
 };
 
 /**
+ * @description Handle listener form for nested validations (e.g., customRecurrence.interval)
+ */
+export const useListenerFormNestedField = (
+  validations: BaseValidation,
+  parentField: string,
+  childField: string,
+): IResponseListenerForm => {
+  try {
+    const parentValidation = validations[parentField];
+    const childValidation = parentValidation?.[childField];
+
+    if (childValidation && childValidation.$touch) {
+      return {
+        input: childValidation.$touch,
+        blur: childValidation.$touch,
+      };
+    }
+  } catch (error) {
+    console.error(`Error accessing nested validation for field "${parentField}.${childField}":`, error);
+  }
+
+  // Return safe defaults if validation access fails
+  return {
+    input: () => {},
+    blur: () => {},
+  };
+};
+
+/**
  * @description Safe version of useListenerForm for nested validations
  */
 export const useListenerFormNested = (
@@ -70,6 +99,34 @@ export const useListenerFormNested = (
     }
   } catch (error) {
     console.error(`Error accessing nested validation for field "${fieldName}":`, error);
+  }
+
+  // Return safe defaults if validation access fails
+  return {
+    input: () => {},
+    blur: () => {},
+  };
+};
+
+/**
+ * @description Handle listener form for array fields using useFormValidateEach pattern
+ */
+export const useListenerFormEach = (
+  validation: BaseValidation,
+  fieldIndex: number,
+  fieldName: string,
+): IResponseListenerForm => {
+  try {
+    const fieldValidation = validation.$each?.$response?.$data?.[fieldIndex]?.[fieldName];
+
+    if (fieldValidation && fieldValidation.$touch) {
+      return {
+        input: fieldValidation.$touch,
+        blur: fieldValidation.$touch,
+      };
+    }
+  } catch (error) {
+    console.error(`Error accessing array validation for field "${fieldName}" at index ${fieldIndex}:`, error);
   }
 
   // Return safe defaults if validation access fails
@@ -109,6 +166,19 @@ export const useFormValidateEach = ({
         validation.configurations?.$each?.$response?.$data?.[floorIndex]?.tables?.$each?.$response?.$data?.[
           tableIndex
         ]?.[field];
+
+      if (fieldValidation) {
+        return {
+          $invalid: fieldValidation.$invalid ?? false,
+          $dirty: fieldValidation.$dirty ?? false,
+          $errors: fieldValidation.$errors ?? [],
+        };
+      }
+    }
+
+    // Simple array case: validation.$each.$response.$data[fieldIndex][field]
+    if (!nesting && fieldIndex !== null && fieldIndex !== undefined) {
+      const fieldValidation = validation.$each?.$response?.$data?.[fieldIndex]?.[field];
 
       if (fieldValidation) {
         return {

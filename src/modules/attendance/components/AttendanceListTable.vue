@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import type { ComponentPublicInstance } from 'vue';
-
-// Components
-import AttendanceListCreateDialog from './AttendanceListCreateDialog.vue';
-
 // Interfaces
 import type { IAttendanceListProvided } from '../interfaces';
 import type { IAttendanceShift } from '../interfaces/attendance-data.interface';
@@ -198,7 +193,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
             <th
               v-for="column in attendance_columns"
               :key="column.value"
-              class="px-4 py-3 text-left text-sm font-medium text-gray-700"
+              class="px-4 py-3 text-center text-sm font-medium text-gray-700"
             >
               {{ column.label }}
             </th>
@@ -474,8 +469,5 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
         </tbody>
       </table>
     </div>
-
-    <!-- Create Dialog -->
-    <!-- <AttendanceListCreateDialog /> -->
   </section>
 </template>
