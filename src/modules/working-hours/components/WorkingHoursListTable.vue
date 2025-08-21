@@ -6,7 +6,6 @@ import type { IWorkingHoursListProvided } from '../interfaces';
  * @description Inject all the data and methods what we need
  */
 const {
-  workingHoursList_addTimeSlot,
   workingHoursList_computedColumns,
   workingHoursList_getWeekDateRange,
   workingHoursList_listValues,
@@ -16,6 +15,7 @@ const {
   workingHoursList_onChangeSelectedMonth,
   workingHoursList_onNavigateNext,
   workingHoursList_onNavigatePrevious,
+  workingHoursList_onOpenDialog,
 } = inject('workingHoursList') as IWorkingHoursListProvided;
 
 /**
@@ -48,12 +48,13 @@ const selectedMonthAsDate = computed({
 });
 
 /**
- * @description Handle adding a new shift (demonstration of new data structure)
+ * @description Handle adding a new shift (opens dialog)
  */
 const handleAddShift = (staffId: number, columnValue: string) => {
   if (!workingHoursList_selectedMonth.value) return;
 
   const [year, month] = workingHoursList_selectedMonth.value.split('-').map(Number);
+  let targetDate: string;
 
   if (workingHoursList_selectedViewType.value === 'Week') {
     // For week view, calculate the actual date based on the column
@@ -62,19 +63,32 @@ const handleAddShift = (staffId: number, columnValue: string) => {
     const startDate = new Date(firstDayOfMonth);
     startDate.setDate(startDate.getDate() - startDate.getDay()); // Go back to Sunday
 
-    const targetDate = new Date(startDate);
-    targetDate.setDate(startDate.getDate() + dayOfWeek);
+    const actualDate = new Date(startDate);
+    actualDate.setDate(startDate.getDate() + dayOfWeek);
 
-    const targetYear = targetDate.getFullYear();
-    const targetMonth = targetDate.getMonth() + 1;
-    const targetDay = targetDate.getDate();
-
-    // Add a sample time slot
-    workingHoursList_addTimeSlot(staffId, targetYear, targetMonth, targetDay, '09:00', '17:00');
+    // Format to YYYY-MM-DD
+    const targetYear = actualDate.getFullYear();
+    const targetMonth = String(actualDate.getMonth() + 1).padStart(2, '0');
+    const targetDay = String(actualDate.getDate()).padStart(2, '0');
+    targetDate = `${targetYear}-${targetMonth}-${targetDay}`;
   } else {
     // For month view, extract day from column value
     const day = parseInt(columnValue.replace('day_', ''));
-    workingHoursList_addTimeSlot(staffId, year, month, day, '09:00', '17:00');
+    const targetDay = String(day).padStart(2, '0');
+    const targetMonth = String(month).padStart(2, '0');
+    targetDate = `${year}-${targetMonth}-${targetDay}`;
+  }
+
+  // Open dialog with pre-filled data
+  workingHoursList_onOpenDialog('create', staffId, targetDate);
+};
+
+/**
+ * @description Handle clicking on absent cell (opens dialog for month view)
+ */
+const handleAbsentClick = (staffId: number, columnValue: string) => {
+  if (workingHoursList_selectedViewType.value === 'Month') {
+    handleAddShift(staffId, columnValue);
   }
 };
 </script>
@@ -217,15 +231,22 @@ const handleAddShift = (staffId: number, columnValue: string) => {
               >
                 <AppBaseSvg name="check" class="w-4 h-4 text-white" />
               </span>
-              <span
+              <button
                 v-else-if="data[column.value] === 'Absent'"
-                class="w-6 h-6 bg-gray-200 rounded flex items-center justify-center"
+                class="w-6 h-6 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer"
+                title="Click to add working hours"
+                @click="handleAbsentClick(data.id, column.value)"
               >
                 <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
-              </span>
-              <span v-else class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center">
+              </button>
+              <button
+                v-else
+                class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center hover:bg-gray-200 transition-colors cursor-pointer"
+                title="Click to add working hours"
+                @click="handleAbsentClick(1, column.value)"
+              >
                 <span class="text-xs text-gray-400">-</span>
-              </span>
+              </button>
             </div>
           </template>
         </template>

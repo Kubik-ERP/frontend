@@ -80,6 +80,34 @@ export const useListenerFormNested = (
 };
 
 /**
+ * @description Handle listener form for array fields using useFormValidateEach pattern
+ */
+export const useListenerFormEach = (
+  validation: BaseValidation,
+  fieldIndex: number,
+  fieldName: string,
+): IResponseListenerForm => {
+  try {
+    const fieldValidation = validation.$each?.$response?.$data?.[fieldIndex]?.[fieldName];
+
+    if (fieldValidation && fieldValidation.$touch) {
+      return {
+        input: fieldValidation.$touch,
+        blur: fieldValidation.$touch,
+      };
+    }
+  } catch (error) {
+    console.error(`Error accessing array validation for field "${fieldName}" at index ${fieldIndex}:`, error);
+  }
+
+  // Return safe defaults if validation access fails
+  return {
+    input: () => {},
+    blur: () => {},
+  };
+};
+
+/**
  * @description A simpler composable to access validation states for deeply nested fields.
  * Specifically designed for the configurations[index].tables[index].field structure.
  */
@@ -109,6 +137,19 @@ export const useFormValidateEach = ({
         validation.configurations?.$each?.$response?.$data?.[floorIndex]?.tables?.$each?.$response?.$data?.[
           tableIndex
         ]?.[field];
+
+      if (fieldValidation) {
+        return {
+          $invalid: fieldValidation.$invalid ?? false,
+          $dirty: fieldValidation.$dirty ?? false,
+          $errors: fieldValidation.$errors ?? [],
+        };
+      }
+    }
+
+    // Simple array case: validation.$each.$response.$data[fieldIndex][field]
+    if (!nesting && fieldIndex !== null && fieldIndex !== undefined) {
+      const fieldValidation = validation.$each?.$response?.$data?.[fieldIndex]?.[field];
 
       if (fieldValidation) {
         return {

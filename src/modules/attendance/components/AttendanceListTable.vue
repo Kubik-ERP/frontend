@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import type { ComponentPublicInstance } from 'vue';
-
-// Components
-import AttendanceListCreateDialog from './AttendanceListCreateDialog.vue';
-
 // Interfaces
 import type { IAttendanceListProvided } from '../interfaces';
 import type { IAttendanceShift } from '../interfaces/attendance-data.interface';
@@ -474,8 +469,5 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
         </tbody>
       </table>
     </div>
-
-    <!-- Create Dialog -->
-    <!-- <AttendanceListCreateDialog /> -->
   </section>
 </template>

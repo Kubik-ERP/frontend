@@ -1,11 +1,24 @@
 // Constants
-import { WORKING_HOURS_LIST_VIEW_TYPES } from '../constants';
+import {
+  WORKING_HOURS_LIST_VIEW_TYPES,
+  WORKING_HOURS_CREATE_EDIT_REPEAT_OPTIONS,
+  WORKING_HOURS_CREATE_EDIT_INITIAL_FORM_DATA,
+  WORKING_HOURS_CREATE_EDIT_INITIAL_TIME_SLOT,
+} from '../constants';
+import { DAY_NAMES, DAY_NAMES_SHORT, MONTH_NAMES, MONTH_NAMES_SHORT } from '@/app/constants';
 
 // Interfaces
-import type { IWorkingHoursListProvided, IStaffWorkingHours } from '../interfaces';
+import type { IWorkingHoursListProvided, IStaffWorkingHours, IWorkingHoursFormData } from '../interfaces';
 
 // Helpers
 import { WorkingHoursDataHelper } from '../helpers';
+
+// Plugins
+import eventBus from '@/plugins/mitt';
+
+// Vuelidate
+import { required } from '@vuelidate/validators';
+import { useVuelidate } from '@vuelidate/core';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -267,7 +280,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
     startDate.setDate(startDate.getDate() - startDate.getDay()); // Go back to Sunday
 
     // Day names
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayNames = DAY_NAMES;
 
     // Generate 7 columns for each day of the week
     for (let i = 0; i < 7; i++) {
@@ -279,10 +292,10 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
       const year = currentDate.getFullYear().toString().slice(2);
 
       columns.push({
-        label: `${dayNames[i]}|${day} ${monthAbbr} ${year}`,
+        label: `${dayNames[i]}, ${day} ${monthAbbr} ${year}`,
         sortable: false,
         value: `week_day_${i}`,
-        width: '120px',
+        width: '200px',
       });
     }
 
@@ -293,16 +306,14 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    * @description Helper function to get month name
    */
   const workingHoursList_getMonthName = (monthNum: number): string => {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return months[monthNum - 1];
+    return MONTH_NAMES_SHORT[monthNum - 1];
   };
 
   /**
    * @description Helper function to get day name from date
    */
   const workingHoursList_getDayName = (date: Date): string => {
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    return days[date.getDay()];
+    return DAY_NAMES_SHORT[date.getDay()];
   };
 
   /**
@@ -457,10 +468,236 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
     return workingHoursList_rawData.value.find(staff => staff.id === staffId);
   };
 
+  // ===== DIALOG FUNCTIONALITY =====
+
+  /**
+   * @description Dialog reactive data binding
+   */
+  const workingHoursList_formData = reactive<IWorkingHoursFormData>({
+    ...WORKING_HOURS_CREATE_EDIT_INITIAL_FORM_DATA,
+  });
+
+  const workingHoursList_createEditFormMode = ref<'create' | 'edit'>('create');
+  const workingHoursList_createEditMinDate = ref<string>('');
+  const workingHoursList_createEditMaxDate = ref<string>('');
+
+  /**
+   * @description Staff list for dropdown
+   */
+  const workingHoursList_createEditStaffList = ref<IDropdownItem[]>([
+    { label: 'Bessie Cooper #001', value: 1 },
+    { label: 'Esther Howard #002', value: 2 },
+    { label: 'John Doe #003', value: 3 },
+    { label: 'Jane Smith #004', value: 4 },
+    { label: 'Mike Johnson #005', value: 5 },
+  ]);
+
+  /**
+   * @description Dialog form validations
+   */
+  const workingHoursList_formRules = computed(() => ({
+    staffId: { required },
+    date: { required },
+    timeSlots: {
+      required,
+      $each: {
+        openTime: { required },
+        closeTime: { required },
+      },
+    },
+    notes: {},
+    repeatType: { required },
+  }));
+
+  const workingHoursList_formValidations = useVuelidate(workingHoursList_formRules, workingHoursList_formData, {
+    $autoDirty: true,
+  });
+
+  /**
+   * @description Initialize date range (1 year back and 1 year forward)
+   */
+  const workingHoursList_initializeDateRange = () => {
+    const today = new Date();
+    const lastYear = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+    const nextYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
+
+    workingHoursList_createEditMinDate.value = lastYear.toISOString().split('T')[0];
+    workingHoursList_createEditMaxDate.value = nextYear.toISOString().split('T')[0];
+  };
+
+  /**
+   * @description Add a new time slot to dialog form
+   */
+  const workingHoursList_onAddTimeSlot = () => {
+    workingHoursList_formData.timeSlots.push({
+      ...WORKING_HOURS_CREATE_EDIT_INITIAL_TIME_SLOT,
+    });
+  };
+
+  /**
+   * @description Remove a time slot by index from dialog form
+   */
+  const workingHoursList_onRemoveTimeSlot = (index: number) => {
+    if (workingHoursList_formData.timeSlots.length > 1) {
+      workingHoursList_formData.timeSlots.splice(index, 1);
+    }
+  };
+
+  /**
+   * @description Open the dialog for create or edit mode using eventBus
+   */
+  const workingHoursList_onOpenDialog = (mode: 'create' | 'edit', staffId?: number, date?: string) => {
+    workingHoursList_createEditFormMode.value = mode;
+
+    // Reset form data
+    workingHoursList_onReset();
+
+    // Pre-fill data if provided
+    if (staffId) {
+      workingHoursList_formData.staffId = staffId;
+    }
+
+    if (date) {
+      workingHoursList_formData.date = date;
+    }
+
+    // Emit eventBus to open dialog
+    const argsEventEmitter: IPropsDialog = {
+      id: 'working-hours-create-edit-dialog',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: '600px',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Close the dialog using eventBus
+   */
+  const workingHoursList_onCloseDialog = () => {
+    const argsEventEmitter: IPropsDialog = {
+      id: 'working-hours-create-edit-dialog',
+      isOpen: false,
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+
+    workingHoursList_onReset();
+  };
+
+  /**
+   * @description Reset form data to initial state
+   */
+  const workingHoursList_onReset = () => {
+    Object.assign(workingHoursList_formData, {
+      ...WORKING_HOURS_CREATE_EDIT_INITIAL_FORM_DATA,
+      timeSlots: [{ ...WORKING_HOURS_CREATE_EDIT_INITIAL_TIME_SLOT }],
+    });
+    workingHoursList_formValidations.value.$reset();
+  };
+
+  /**
+   * @description Save the working hours data
+   */
+  const workingHoursList_onSave = async (): Promise<void> => {
+    try {
+      // Validate form
+      const isValid = await workingHoursList_formValidations.value.$validate();
+
+      if (!isValid) {
+        return;
+      }
+
+      // Here you would typically make an API call to save the data
+      console.log('Saving working hours data:', {
+        mode: workingHoursList_createEditFormMode.value,
+        data: toRaw(workingHoursList_formData),
+      });
+
+      // For demo purposes, we'll just show a success message
+      // You can integrate with your notification system here
+
+      // Close dialog
+      workingHoursList_onCloseDialog();
+    } catch (error) {
+      console.error('Error saving working hours:', error);
+      // Handle error (show toast, etc.)
+    }
+  };
+
+  // ===== DIALOG COMPUTED PROPERTIES =====
+
+  /**
+   * @description Convert date string to Date object for PrimeVue Calendar
+   */
+  const workingHoursList_calendarDate = computed({
+    get: () => {
+      if (!workingHoursList_formData.date) return null;
+      return new Date(workingHoursList_formData.date);
+    },
+    set: (value: Date | null) => {
+      if (value) {
+        // Convert Date to string format (YYYY-MM-DD)
+        const year = value.getFullYear();
+        const month = String(value.getMonth() + 1).padStart(2, '0');
+        const day = String(value.getDate()).padStart(2, '0');
+        workingHoursList_formData.date = `${year}-${month}-${day}`;
+      } else {
+        workingHoursList_formData.date = '';
+      }
+    },
+  });
+
+  /**
+   * @description Get formatted date for the header
+   */
+  const workingHoursList_formattedDate = computed(() => {
+    if (!workingHoursList_formData.date) return '';
+
+    const date = new Date(workingHoursList_formData.date);
+    const dayName = DAY_NAMES[date.getDay()];
+    const day = date.getDate();
+    const monthName = MONTH_NAMES[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${dayName}, ${day} ${monthName} ${year}`;
+  });
+
+  /**
+   * @description Get selected staff name
+   */
+  const workingHoursList_selectedStaffName = computed(() => {
+    if (!workingHoursList_formData.staffId) return '';
+
+    const staff = workingHoursList_createEditStaffList.value.find(
+      s => s.value === workingHoursList_formData.staffId,
+    );
+
+    return staff ? staff.label : '';
+  });
+
+  /**
+   * @description Check if form has valid data for header display
+   */
+  const workingHoursList_hasValidHeaderData = computed(() => {
+    return Boolean(workingHoursList_formData.staffId && workingHoursList_formData.date);
+  });
+
+  /**
+   * @description Initialize on service creation
+   */
+  onMounted(() => {
+    workingHoursList_initializeSelectedMonth();
+    workingHoursList_initializeDateRange();
+  });
+
   /**
    * @description Return all necessary data and methods
    */
   return {
+    // List functionality
     workingHoursList_addTimeSlot,
     workingHoursList_computedColumns,
     workingHoursList_getStaffData,
@@ -475,5 +712,26 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
     workingHoursList_removeTimeSlot,
     workingHoursList_selectedMonth,
     workingHoursList_selectedViewType,
+
+    // Dialog functionality
+    workingHoursList_formData,
+    workingHoursList_formValidations,
+    workingHoursList_createEditFormMode,
+    workingHoursList_createEditMinDate,
+    workingHoursList_createEditMaxDate,
+    workingHoursList_createEditStaffList,
+    workingHoursList_createEditRepeatOptions: WORKING_HOURS_CREATE_EDIT_REPEAT_OPTIONS,
+    workingHoursList_onAddTimeSlot,
+    workingHoursList_onRemoveTimeSlot,
+    workingHoursList_onOpenDialog,
+    workingHoursList_onCloseDialog,
+    workingHoursList_onSave,
+    workingHoursList_onReset,
+
+    // Dialog computed properties
+    workingHoursList_calendarDate,
+    workingHoursList_formattedDate,
+    workingHoursList_selectedStaffName,
+    workingHoursList_hasValidHeaderData,
   };
 };
