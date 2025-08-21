@@ -295,7 +295,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
       const year = currentDate.getFullYear().toString().slice(2);
 
       columns.push({
-        label: `${dayNames[i]}, ${day} ${monthAbbr} ${year}`, // Using | separator for split in template
+        label: `${dayNames[i]}, ${day} ${monthAbbr} ${year}`, // Using comma separator for split in template
         sortable: false,
         value: `week_day_${i}`,
         width: '240px',
