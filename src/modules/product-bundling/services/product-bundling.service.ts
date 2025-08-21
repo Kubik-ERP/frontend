@@ -23,7 +23,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
   const store = useProductBundlingStore();
   const { httpAbort_registerAbort } = useHttpAbort();
 
-  const { productList_isLoading, productBundling_productList, productBundling_list } = storeToRefs(store);
+  const { productList_isLoading, productBundling_productList, productBundling_list,productBundling_isLoading } = storeToRefs(store);
 
   const productBundling_grandTotal = ref<number>(0);
 
@@ -125,14 +125,17 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
 
   const productBundling_queryParams = reactive<IProductBundlingListRequestQuery>({
     page: 1,
-    limit: 100,
+    limit: 10,
   });
+
+  const productBundling_onChangePage = (page: number): void => {
+    productBundling_queryParams.page = page;
+  };
 
   const productBundling_fetchProductBundlingList = async (): Promise<void> => {
     try {
       await store.productBundling_fetchProductBundlingList(productBundling_queryParams, {
         ...httpAbort_registerAbort('LOYALTY_POINT_BENEFIT_PRODUCT_LIST'),
-        paramsSerializer: useParamsSerializer,
       });
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -142,7 +145,13 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
       }
     }
   };
-
+  watch(
+    productBundling_queryParams,
+    () => {
+      productBundling_fetchProductBundlingList();
+    },
+    { deep: true },
+  );
   const productBundling_fetchCreateProductBundlingList = async (): Promise<void> => {
     try {
       const payload = {
@@ -323,6 +332,8 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
     // constant
     productBinding_columns: PRODUCT_BUNDLING_COLUMNS,
     productBundling_list,
+    productBundling_onChangePage,
+    productBundling_isLoading,
 
     price_type_option: PRICE_TYPE_OPTION,
 

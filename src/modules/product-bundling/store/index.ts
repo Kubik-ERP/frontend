@@ -23,6 +23,7 @@ export const useProductBundlingStore = defineStore('product-bundling', {
         quantity: 0,
       },
     ],
+    productBundling_isLoading: false,
     productBundling_list: {
       data: [],
       meta: {
@@ -72,6 +73,7 @@ export const useProductBundlingStore = defineStore('product-bundling', {
       params: IProductListRequestQuery,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
+      this.productBundling_isLoading = true;
       try {
         const response = await httpClient.get(`${PRODUCT_BUNDLING_BASE_ENDPOINT}`, {
           params,
@@ -85,6 +87,8 @@ export const useProductBundlingStore = defineStore('product-bundling', {
         } else {
           return Promise.reject(new Error(String(error)));
         }
+      }finally {
+        this.productBundling_isLoading = false;
       }
     },
 

@@ -96,6 +96,7 @@ export interface IProductBundlingPayload {
 export interface IProductBundlingStore {
   productList_isLoading: boolean;
   productBundling_productList: IProductList;
+  productBundling_isLoading: boolean;
   productBundling_list: IProductBundling_list;
 }
 
@@ -122,6 +123,8 @@ export interface IProductBundlingProvided {
   // constant
   productBinding_columns: IColumnDataTable[];
   productBundling_list: globalThis.Ref<IProductBundlingList>;
+  productBundling_onChangePage: (page: number) => void;
+  productBundling_isLoading: globalThis.Ref<boolean>;
 
   price_type_option: { value: string; label: string }[];
 

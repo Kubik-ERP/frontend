@@ -4,8 +4,10 @@ import { useProductBundlingService } from '../services/product-bundling.service'
 const {
   productBinding_columns,
   productBundling_list,
+  productBundling_isLoading,
   productBundling_fetchProductBundlingList,
   productBundling_onShowDialogDelete,
+  productBundling_onChangePage,
 } = useProductBundlingService();
 
 // Use unknown type to avoid any, but allow method access
@@ -35,6 +37,8 @@ onMounted(() => {
       :rows-per-page="productBundling_list.meta.pageSize"
       :total-records="productBundling_list.meta.total"
       :first="(productBundling_list.meta.page - 1) * productBundling_list.meta.pageSize"
+      :is-loading="productBundling_isLoading"
+      @update:currentPage="productBundling_onChangePage"
     >
       <template #header-prefix>
         <div class="flex items-center">
