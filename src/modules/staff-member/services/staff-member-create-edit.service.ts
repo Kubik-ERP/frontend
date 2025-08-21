@@ -18,6 +18,8 @@ import type {
   IStafPermission,
   IstaffWorkingHour,
   IStaffMemberComissions,
+  productCommissions,
+  voucherCommissions,
 } from '../interfaces';
 
 // Plugins
@@ -146,9 +148,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
     commissions: {
       productCommission: {
         isAllItemsHaveDefaultCommission: null,
-        productItems: [
-
-        ],
+        productItems: [],
       },
       voucherCommission: {
         isAllVouchersHaveDefaultComission: null,
@@ -396,6 +396,20 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
           }
         });
 
+        staffMemberCreateEdit_formData.commissions.productCommission.productItems =
+          response.data.productCommissions.map((pc: productCommissions) => ({
+            product_id: pc.productsId ?? '',
+            amount: pc.amount ?? 0,
+            is_percent: pc.isPercent ?? false,
+          }));
+
+        staffMemberCreateEdit_formData.commissions.voucherCommission.voucherItems =
+          response.data.voucherCommissions.map((vc: voucherCommissions) => ({
+            voucher_id: vc.voucherId,
+            amount: vc.amount,
+            is_percent: vc.isPercent,
+          }));
+
         // handle the image preview
         if (response.data.profileUrl) {
           staffMemberCreateEdit_formData.imagePreview = `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${response.data.profileUrl}`;
@@ -472,9 +486,9 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
       // Extract product items
       const productItems: {
-        productId: string | null;
-        commission: number | null;
-        commissionType: string | null;
+        product_id: string | null;
+        amount: number | null;
+        is_percent: boolean | null;
       }[] = [];
 
       // Misal field di form punya key seperti: productItems[0].productId, productItems[0].comission, ...
@@ -486,15 +500,15 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
           if (!productItems[index]) {
             productItems[index] = {
-              productId: null,
-              commission: null,
-              commissionType: null,
+              product_id: null,
+              amount: null,
+              is_percent: null,
             };
           }
 
-          if (field === 'productId') productItems[index].productId = data[key];
-          if (field === 'commission') productItems[index].commission = Number(data[key]);
-          if (field === 'commissionType') productItems[index].commissionType = data[key];
+          if (field === 'product_id') productItems[index].product_id = data[key];
+          if (field === 'amount') productItems[index].amount = Number(data[key]);
+          if (field === 'is_percent') productItems[index].is_percent = data[key] === 'true' ? true : false;
         }
       });
       // Assign ke formData utama
@@ -508,9 +522,9 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
       // Extract voucher items
       const voucherItems: {
-        voucherId: string | null;
-        comission: number | null;
-        comissionType: string | null;
+        voucher_id: string | null;
+        amount: number | null;
+        is_percent: boolean | null;
       }[] = [];
 
       // Misal field di form punya key seperti: voucherItems[0].voucherId, voucherItems[0].comission, ...
@@ -522,17 +536,19 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
           if (!voucherItems[index]) {
             voucherItems[index] = {
-              voucherId: null,
-              comission: null,
-              comissionType: null,
+              voucher_id: null,
+              amount: null,
+              is_percent: null,
             };
           }
 
-          if (field === 'voucherId') voucherItems[index].voucherId = data[key];
-          if (field === 'comission') voucherItems[index].comission = Number(data[key]);
-          if (field === 'comissionType') voucherItems[index].comissionType = data[key];
+          // console.log("field: ",field);
+          if (field === 'voucher_id') voucherItems[index].voucher_id = data[key];
+          if (field === 'amount') voucherItems[index].amount = Number(data[key]);
+          if (field === 'is_percent') voucherItems[index].is_percent = data[key] === 'true' ? true : false;
         }
       });
+      console.log("voucherItems: ",voucherItems);
       // Assign ke formData utama
       staffMemberCreateEdit_formData.commissions.voucherCommission.voucherItems = voucherItems;
     }
@@ -686,26 +702,21 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
           }
 
           // === COMMISSIONS ===
-          else if (key === 'comissions' && value && typeof value === 'object') {
-            if ('productComission' in value && 'voucherCommission' in value) {
+          else if (key === 'commissions' && value && typeof value === 'object') {
+            if ('productCommission' in value && 'voucherCommission' in value) {
               const commissionValue = value as IStaffMemberComissions;
 
-              // Product Commission
-              formData.append(
-                'comissions[productComission][isAllItemsHaveDefaultComission]',
-                String(commissionValue.productCommission?.isAllItemsHaveDefaultCommission ?? false),
-              );
-
               commissionValue.productCommission.productItems.forEach((item, index) => {
-                formData.append(`comissions[productComission][productItems][${index}]`, JSON.stringify(item));
+
+                formData.append(`commissions[productCommission][${index}][product_id]`, item.product_id ?? '')
+                formData.append(`commissions[productCommission][${index}][amount]`, String(item.amount ?? ''))
+                formData.append(`commissions[productCommission][${index}][is_percent]`, item.is_percent === true ? 'true' : 'false')
               });
-              formData.append(
-                'comissions[voucherCommission][isAllVouchersHaveDefaultComission]',
-                String(commissionValue.voucherCommission?.isAllVouchersHaveDefaultComission ?? false),
-              );
 
               commissionValue.voucherCommission.voucherItems.forEach((item, index) => {
-                formData.append(`comissions[voucherCommission][voucherItems][${index}]`, JSON.stringify(item));
+                  formData.append(`commissions[voucherCommission][${index}][voucher_id]`, item.voucher_id ?? '')
+                  formData.append(`commissions[voucherCommission][${index}][amount]`, String(item.amount ?? ''))
+                  formData.append(`commissions[voucherCommission][${index}][is_percent]`, item.is_percent === true ? 'true' : 'false')
               });
             }
           }

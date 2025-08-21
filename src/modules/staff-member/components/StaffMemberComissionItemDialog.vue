@@ -12,14 +12,15 @@ const {
   staffMemberCreateEdit_dataColumnsOfVoucher,
   staffMemberCreateEdit_commissionsSearch,
   staffMemberCreateEdit_onSubmitDialogCommission,
+  staffMemberCreateEdit_formData,
   // staffMemberCreateEdit_formData
 } = inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
 
 /**
  * @description Default Commission
  */
-const defaultCommissionValue = ref(0);
-const defaultCommissionType = ref<'amount' | 'percentage'>('amount');
+const defaultCommissionValue = ref<number | null>(0);
+const defaultCommissionType = ref<string | "amount" | "percentage" | null>('amount');
 const commissionTypes = ref([
   {
     label: 'Rp',
@@ -36,23 +37,37 @@ const commissionTableData = ref<ICommissionTableData[]>([]);
 
 watchEffect(() => {
   if (staffMemberCreateEdit_commisionType.value === 'PRODUCT') {
-    commissionTableData.value = staffMemberCreateEdit_dataColumnsOfProduct.value.map((p: IProduct) => ({
-      id: p.id,
-      name: p.name,
-      price: p.price,
-      discountPrice: p.discountPrice,
-      commissionType: 'Rp',
-      commissionValue: 0,
-    }));
+    defaultCommissionValue.value = staffMemberCreateEdit_formData.defaultCommissionProduct;
+    defaultCommissionType.value = staffMemberCreateEdit_formData.defaultCommissionProductType;
+
+    commissionTableData.value = staffMemberCreateEdit_dataColumnsOfProduct.value.map((p: IProduct) => {
+      const existing = staffMemberCreateEdit_formData.commissions.productCommission.productItems?.find((c) => c.product_id === p.id);
+
+      return {
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        discountPrice: p.discountPrice,
+        commissionType: existing?.is_percent === true ? 'percentage' : 'amount',
+        commissionValue: existing?.amount ?? 0,
+      };
+    });
   } else {
-    commissionTableData.value = staffMemberCreateEdit_dataColumnsOfVoucher.value.map((v: IVoucher) => ({
-      id: v.id,
-      name: v.name,
-      amount: v.amount,
-      isPercent: v.isPercent,
-      commissionType: v.isPercent ? '%' : 'Rp',
-      commissionValue: 0,
-    }));
+    defaultCommissionValue.value = staffMemberCreateEdit_formData.defaultCommissionVoucher;
+    defaultCommissionType.value = staffMemberCreateEdit_formData.defaultCommissionVoucherType;
+
+    commissionTableData.value = staffMemberCreateEdit_dataColumnsOfVoucher.value.map((v: IVoucher) => {
+      const existing = staffMemberCreateEdit_formData.commissions.voucherCommission.voucherItems?.find((c) => c.voucher_id === v.id);
+      console.log('existing', existing);
+      return {
+        id: v.id,
+        name: v.name,
+        amount: v.amount,
+        isPercent: v.isPercent,
+        commissionType: existing?.is_percent === true ? 'percentage' : 'amount',
+        commissionValue: existing?.amount ?? 0,
+      };
+    });
   }
 });
 
@@ -86,51 +101,45 @@ function handleSubmit() {
 
   if (staffMemberCreateEdit_commisionType.value === 'PRODUCT') {
     form.append('defaultCommission', String(defaultCommissionValue.value));
-    form.append('defaultCommissionType', defaultCommissionType.value);
+    form.append('defaultCommissionType', defaultCommissionType.value ?? 'amount');
     form.append('isAllItemsHaveDefaultCommission', String(isAllCommissionSame.value));
 
     commissionTableData.value
       .filter(item => item.commissionValue > 0)
       .forEach((item, idx) => {
-        form.append(`productItems[${idx}].productId`, String(item.id));
-        form.append(`productItems[${idx}].commission`, String(item.commissionValue));
-        form.append(`productItems[${idx}].commissionType`, item.commissionType);
+        form.append(`productItems[${idx}].product_id`, String(item.id));
+        form.append(`productItems[${idx}].amount`, String(item.commissionValue));
+        form.append(`productItems[${idx}].is_percent`, item.commissionType === 'percentage' ? 'true' : 'false');
       });
   } else {
     form.append('defaultCommission', String(defaultCommissionValue.value));
-    form.append('defaultCommissionType', defaultCommissionType.value);
+    form.append('defaultCommissionType', defaultCommissionType.value ?? 'amount');
     form.append('isAllItemsHaveDefaultCommission', String(isAllCommissionSame.value));
 
     commissionTableData.value
       .filter(item => item.commissionValue > 0)
       .forEach((item, idx) => {
-        form.append(`voucherItems[${idx}].voucherId`, String(item.id));
-        form.append(`voucherItems[${idx}].commission`, String(item.commissionValue));
-        form.append(`voucherItems[${idx}].commissionType`, item.commissionType);
+        console.log(item);
+        form.append(`voucherItems[${idx}].voucher_id`, String(item.id));
+        form.append(`voucherItems[${idx}].amount`, String(item.commissionValue));
+        form.append(`voucherItems[${idx}].is_percent`, item.commissionType === 'percentage' ? 'true' : 'false');
       });
   }
   staffMemberCreateEdit_onSubmitDialogCommission?.(form);
-
-  defaultCommissionValue.value = 0;
-  defaultCommissionType.value = 'amount';
-  isAllCommissionSame.value = false;
 }
 
 watch([isAllCommissionSame, defaultCommissionValue, defaultCommissionType], () => {
   if (isAllCommissionSame.value) {
     commissionTableData.value = commissionTableData.value.map(item => ({
       ...item,
-      commissionValue: defaultCommissionValue.value,
-      commissionType: defaultCommissionType.value,
+      commissionValue: defaultCommissionValue.value ?? 0,
+      commissionType: defaultCommissionType.value ?? 'amount',
     }));
   }
 });
 
 const handleClose = () => {
   staffMemberCreateEdit_onCloseDialogCommission();
-  defaultCommissionValue.value = 0;
-  defaultCommissionType.value = 'amount';
-  isAllCommissionSame.value = false;
 };
 </script>
 
@@ -168,7 +177,7 @@ const handleClose = () => {
                 :options="commissionTypes"
                 option-label="label"
                 option-value="value"
-                default-value="amount"
+                :default-value="defaultCommissionType ?? 'amount'"
                 :pt="{
                   root: 'border-none bg-transparent shadow-none ring-0 focus:ring-0 p-0',
                   label: 'pr-2',
@@ -230,7 +239,7 @@ const handleClose = () => {
                       :options="commissionTypes"
                       option-label="label"
                       option-value="value"
-                      default-value="amount"
+                      :default-value="filteredCommissionTableData[index].commissionType === 'amount' ? 'amount' : 'percentage'"
                       :pt="{
                         root: 'border-none bg-transparent shadow-none ring-0 focus:ring-0 p-0',
                         label: 'pr-2',

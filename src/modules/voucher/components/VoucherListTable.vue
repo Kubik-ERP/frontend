@@ -143,7 +143,7 @@ const formatDate = (date: Date) => {
             <PrimeVueDatePicker
               v-model="selectedDate"
               class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
-              placeholder="Last test 7 day"
+              placeholder="Select range by validity period"
               selection-mode="range"
               show-on-focus
               show-icon

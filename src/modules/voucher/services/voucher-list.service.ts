@@ -11,10 +11,10 @@ export const useVoucherListService = (): IVoucherListProvided => {
   const h7 = new Date();
   h7.setDate(h7.getDate() - 7);
 
-  const formattedH7 = `${String(h7.getDate()).padStart(2, '0')}-${String(h7.getMonth() + 1).padStart(2, '0')}-${h7.getFullYear()}`;
+  // const formattedH7 = `${String(h7.getDate()).padStart(2, '0')}-${String(h7.getMonth() + 1).padStart(2, '0')}-${h7.getFullYear()}`;
 
   const voucherList_queryParams = reactive<IVoucherListRequestQuery>({
-    startDate: formattedH7,
+    startDate: null,
     endDate: null,
     page: 1,
     pageSize: 10,

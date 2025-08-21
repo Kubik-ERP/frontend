@@ -34,6 +34,24 @@ export interface IStaffMember {
   title?: string | null;
   employeesShift: IStaffMemberEmployeesShift[] | [];
   employeesHasSocialMedia: IStaffMemberSocialMedia[] | [];
+  productCommissions: productCommissions[];
+  voucherCommissions: voucherCommissions[]
+}
+
+export interface productCommissions{
+  id: string;
+  productsId: string;
+  employeesId: string;
+  isPercent: boolean;
+  amount: number;
+}
+
+export interface voucherCommissions{
+  id: string;
+  voucherId: string;
+  employeesId: string;
+  isPercent: boolean;
+  amount: number;
 }
 
 export interface IStaffMemberList{

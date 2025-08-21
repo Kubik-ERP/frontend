@@ -13,9 +13,9 @@ export interface IStaffMemberShift {
 }
 
 export interface IStaffMemberProductItemComission {
-  productId: string | null;
-  commission: number | null;
-  commissionType: string | null;
+  product_id: string | null;
+  amount: number | null;
+  is_percent: boolean | null;
 }
 
 export interface IStaffMemberProductComission {
@@ -24,9 +24,9 @@ export interface IStaffMemberProductComission {
 }
 
 export interface IStaffMemberVoucherItemComission {
-  voucherId: string | null;
-  comission: number | null;
-  comissionType: string | null;
+  voucher_id: string | null;
+  amount: number | null;
+  is_percent: boolean | null;
 }
 
 export interface IStaffMemberVoucherCommission {
