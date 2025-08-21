@@ -48,6 +48,35 @@ export const useListenerForm = (validations: BaseValidation, formName: string): 
 };
 
 /**
+ * @description Handle listener form for nested validations (e.g., customRecurrence.interval)
+ */
+export const useListenerFormNestedField = (
+  validations: BaseValidation,
+  parentField: string,
+  childField: string,
+): IResponseListenerForm => {
+  try {
+    const parentValidation = validations[parentField];
+    const childValidation = parentValidation?.[childField];
+
+    if (childValidation && childValidation.$touch) {
+      return {
+        input: childValidation.$touch,
+        blur: childValidation.$touch,
+      };
+    }
+  } catch (error) {
+    console.error(`Error accessing nested validation for field "${parentField}.${childField}":`, error);
+  }
+
+  // Return safe defaults if validation access fails
+  return {
+    input: () => {},
+    blur: () => {},
+  };
+};
+
+/**
  * @description Safe version of useListenerForm for nested validations
  */
 export const useListenerFormNested = (

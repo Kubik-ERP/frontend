@@ -193,7 +193,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
             <th
               v-for="column in attendance_columns"
               :key="column.value"
-              class="px-4 py-3 text-left text-sm font-medium text-gray-700"
+              class="px-4 py-3 text-center text-sm font-medium text-gray-700"
             >
               {{ column.label }}
             </th>

@@ -22,12 +22,31 @@ export const WORKING_HOURS_CREATE_EDIT_REPEAT_OPTIONS: IDropdownItem[] = [
     value: 'daily',
   },
   {
-    label: 'Weekly',
-    value: 'weekly',
+    label: 'Weekly on Monday',
+    value: 'weekly-monday',
   },
   {
-    label: 'Monthly',
-    value: 'monthly',
+    label: 'Every Weekday',
+    value: 'weekday',
+  },
+  {
+    label: 'Custom',
+    value: 'custom',
+  },
+];
+
+export const WORKING_HOURS_CUSTOM_RECURRENCE_FREQUENCY_OPTIONS: IDropdownItem[] = [
+  {
+    label: 'Day',
+    value: 'day',
+  },
+  {
+    label: 'Week',
+    value: 'week',
+  },
+  {
+    label: 'Month',
+    value: 'month',
   },
 ];
 
@@ -42,4 +61,11 @@ export const WORKING_HOURS_CREATE_EDIT_INITIAL_FORM_DATA: IWorkingHoursFormData 
   timeSlots: [WORKING_HOURS_CREATE_EDIT_INITIAL_TIME_SLOT],
   notes: '',
   repeatType: 'none',
+  customRecurrence: {
+    frequency: 'day',
+    interval: 1,
+    endType: 'never',
+    endDate: null,
+    occurrences: 1,
+  },
 };

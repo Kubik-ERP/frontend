@@ -13,6 +13,7 @@ const {
   workingHoursList_createEditMaxDate,
   workingHoursList_createEditStaffList,
   workingHoursList_createEditRepeatOptions,
+  workingHoursList_customRecurrenceFrequencyOptions,
   workingHoursList_onAddTimeSlot,
   workingHoursList_onRemoveTimeSlot,
   workingHoursList_onCloseDialog,
@@ -22,6 +23,7 @@ const {
   workingHoursList_formattedDate,
   workingHoursList_selectedStaffName,
   workingHoursList_hasValidHeaderData,
+  workingHoursList_customRecurrenceEndDate,
 } = inject('workingHoursList') as IWorkingHoursListProvided;
 </script>
 
@@ -242,6 +244,123 @@ const {
             v-on="useListenerForm(workingHoursList_formValidations, 'repeatType')"
           />
         </AppBaseFormGroup>
+
+        <!-- Custom Recurrence Section -->
+        <div
+          v-if="workingHoursList_formData.repeatType === 'custom'"
+          class="flex flex-col gap-4 p-4 border border-solid border-gray-200 rounded-lg"
+        >
+          <h6 class="font-semibold text-base text-black">Custom Recurrence</h6>
+
+          <!-- Repeat Every -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <AppBaseFormGroup
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+              is-name-as-label
+              label-for="customInterval"
+              name="Repeat every"
+              spacing-bottom="mb-0"
+              :validators="workingHoursList_formValidations.customRecurrence?.interval"
+            >
+              <PrimeVueInputNumber
+                v-model="workingHoursList_formData.customRecurrence.interval"
+                input-id="customInterval"
+                :min="1"
+                :max="100"
+                class="text-sm w-full"
+                :class="{ ...classes }"
+                @input="workingHoursList_formValidations.customRecurrence?.interval?.$touch"
+                @blur="workingHoursList_formValidations.customRecurrence?.interval?.$touch"
+              />
+            </AppBaseFormGroup>
+
+            <AppBaseFormGroup
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+              is-name-as-label
+              label-for="customFrequency"
+              name="Frequency"
+              spacing-bottom="mb-0"
+              :validators="workingHoursList_formValidations.customRecurrence?.frequency"
+            >
+              <PrimeVueSelect
+                v-model="workingHoursList_formData.customRecurrence.frequency"
+                :options="workingHoursList_customRecurrenceFrequencyOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="Select frequency"
+                input-id="customFrequency"
+                class="text-sm w-full"
+                :class="{ ...classes }"
+                @change="workingHoursList_formValidations.customRecurrence?.frequency?.$touch"
+                @blur="workingHoursList_formValidations.customRecurrence?.frequency?.$touch"
+              />
+            </AppBaseFormGroup>
+          </div>
+
+          <!-- Ends -->
+          <div class="flex flex-col gap-4">
+            <span class="text-sm font-medium text-gray-900">Ends</span>
+
+            <div class="flex flex-col gap-3">
+              <!-- Never -->
+              <div class="flex items-center gap-2">
+                <PrimeVueRadioButton
+                  v-model="workingHoursList_formData.customRecurrence.endType"
+                  value="never"
+                  input-id="endNever"
+                />
+                <label for="endNever" class="text-sm font-medium text-gray-700">Never</label>
+              </div>
+
+              <!-- On Date -->
+              <div class="flex items-center gap-2">
+                <PrimeVueRadioButton
+                  v-model="workingHoursList_formData.customRecurrence.endType"
+                  value="on"
+                  input-id="endOn"
+                />
+                <label for="endOn" class="text-sm font-medium text-gray-700">On</label>
+                <PrimeVueCalendar
+                  v-if="workingHoursList_formData.customRecurrence.endType === 'on'"
+                  v-model="workingHoursList_customRecurrenceEndDate"
+                  date-format="dd/mm/yy"
+                  placeholder="Select end date"
+                  show-icon
+                  class="text-sm"
+                  :class="workingHoursList_formValidations.customRecurrence?.endDate?.$error ? 'p-invalid' : ''"
+                />
+              </div>
+
+              <!-- After Occurrences -->
+              <div class="flex items-center gap-2">
+                <PrimeVueRadioButton
+                  v-model="workingHoursList_formData.customRecurrence.endType"
+                  value="after"
+                  input-id="endAfter"
+                />
+                <label for="endAfter" class="text-sm font-medium text-gray-700">After</label>
+                <PrimeVueInputNumber
+                  v-if="workingHoursList_formData.customRecurrence.endType === 'after'"
+                  v-model="workingHoursList_formData.customRecurrence.occurrences"
+                  :min="1"
+                  :max="1000"
+                  placeholder="Number"
+                  class="text-sm w-20"
+                  :class="
+                    workingHoursList_formValidations.customRecurrence?.occurrences?.$error ? 'p-invalid' : ''
+                  "
+                />
+                <span
+                  v-if="workingHoursList_formData.customRecurrence.endType === 'after'"
+                  class="text-sm text-gray-700"
+                  >occurrences</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Notes -->
         <AppBaseFormGroup

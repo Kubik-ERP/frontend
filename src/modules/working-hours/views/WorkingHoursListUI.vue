@@ -9,6 +9,7 @@ import { useWorkingHoursListService } from '../services/working-hours-list.servi
 const {
   workingHoursList_addTimeSlot,
   workingHoursList_computedColumns,
+  workingHoursList_getCurrentWeekDateString,
   workingHoursList_getStaffData,
   workingHoursList_getWeekDateRange,
   workingHoursList_initializeSelectedMonth,
@@ -48,6 +49,7 @@ const {
 provide('workingHoursList', {
   workingHoursList_addTimeSlot,
   workingHoursList_computedColumns,
+  workingHoursList_getCurrentWeekDateString,
   workingHoursList_getStaffData,
   workingHoursList_getWeekDateRange,
   workingHoursList_initializeSelectedMonth,

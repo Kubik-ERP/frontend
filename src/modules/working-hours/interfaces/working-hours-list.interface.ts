@@ -34,12 +34,21 @@ export interface IWorkingHoursFormDataTimeSlot {
   closeTime: Date | null;
 }
 
+export interface ICustomRecurrence {
+  frequency: string; // "day", "week", "month"
+  interval: number; // Every X days/weeks/months
+  endType: string; // "never", "on", "after"
+  endDate: Date | null; // End date (when endType is "on")
+  occurrences: number; // Number of occurrences (when endType is "after")
+}
+
 export interface IWorkingHoursFormData {
   staffId: number | null;
   date: string; // Format: "YYYY-MM-DD"
   timeSlots: IWorkingHoursFormDataTimeSlot[];
   notes: string;
-  repeatType: string; // "none", "daily", "weekly", "monthly"
+  repeatType: string; // "none", "daily", "weekly-monday", "weekday", "custom"
+  customRecurrence: ICustomRecurrence;
 }
 
 // ===== SERVICE INTERFACE =====
@@ -54,6 +63,7 @@ export interface IWorkingHoursListProvided {
     endTime: string,
   ) => void;
   workingHoursList_computedColumns: globalThis.ComputedRef<IColumnDataTable[]>;
+  workingHoursList_getCurrentWeekDateString: (dayOfWeek: number) => string;
   workingHoursList_getStaffData: (staffId: number) => IStaffWorkingHours | undefined;
   workingHoursList_getWeekDateRange: globalThis.ComputedRef<string>;
   workingHoursList_initializeSelectedMonth: () => void;
@@ -81,6 +91,7 @@ export interface IWorkingHoursListProvided {
   workingHoursList_createEditMaxDate: globalThis.Ref<string>;
   workingHoursList_createEditStaffList: globalThis.Ref<IDropdownItem[]>;
   workingHoursList_createEditRepeatOptions: IDropdownItem[];
+  workingHoursList_customRecurrenceFrequencyOptions: IDropdownItem[];
   workingHoursList_onAddTimeSlot: () => void;
   workingHoursList_onRemoveTimeSlot: (index: number) => void;
   workingHoursList_onOpenDialog: (mode: 'create' | 'edit', staffId?: number, date?: string) => void;
@@ -93,4 +104,6 @@ export interface IWorkingHoursListProvided {
   workingHoursList_formattedDate: globalThis.ComputedRef<string>;
   workingHoursList_selectedStaffName: globalThis.ComputedRef<string>;
   workingHoursList_hasValidHeaderData: globalThis.ComputedRef<boolean>;
+  workingHoursList_showCustomRecurrence: globalThis.ComputedRef<boolean>;
+  workingHoursList_customRecurrenceEndDate: globalThis.ComputedRef<Date | null>;
 }
