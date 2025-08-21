@@ -1,8 +1,5 @@
 // Constants
-import {
-  STAFF_MEMBER_LIST_COLUMNS,
-  STAFF_MEMBER_LIST_REQUEST,
-} from '../constants';
+import { STAFF_MEMBER_LIST_COLUMNS, STAFF_MEMBER_LIST_REQUEST } from '../constants';
 
 // Interfaces
 import type { IStaffMemberListProvided, IStaffMemberListRequestQuery, IStafPermission } from '../interfaces';
@@ -136,11 +133,12 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
   };
 
   /**
-   * @dwescription for roles permissions
+   * @description for roles permissions
    */
   const staffMemberCreateEdit_permissionData = ref<IStafPermission[]>([]);
-  const staffMember_listPermissions = computed( async () => {
-    try{
+
+  const staffMember_listPermissions = async () => {
+    try {
       const res = await store.staffMember_getPermissions();
       staffMemberCreateEdit_permissionData.value = res.data;
     } catch (error: unknown) {
@@ -150,10 +148,10 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
         return Promise.reject(new Error(String(error)));
       }
     }
-  });
+  };
 
   onMounted(async () => {
-    await staffMember_listPermissions.value;
+    await staffMember_listPermissions();
   });
 
   return {
