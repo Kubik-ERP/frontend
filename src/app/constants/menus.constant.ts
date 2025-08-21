@@ -161,11 +161,11 @@ export const LIST_SIDEBAR_MENUS = [
           },
           {
             name: 'Working Hours',
-            path: '/',
+            path: '/staff/working-hours',
           },
           {
             name: 'Attendance',
-            path: '/',
+            path: '/staff/attendance',
           },
           {
             name: 'Commision Report',
