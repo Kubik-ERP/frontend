@@ -767,7 +767,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
           }
 
           // Check end conditions
-          if (endType === 'on' && endDate && currentDate > endDate) {
+          if (endType === 'on' && endDate && currentDate.getTime() > endDate.getTime()) {
             break;
           }
 
