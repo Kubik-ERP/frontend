@@ -5,6 +5,7 @@ import type { AutoCompleteCompleteEvent, AutoCompleteOptionSelectEvent } from 'p
 
 // services
 import { useProductBundlingService } from '../services/product-bundling.service';
+const route = useRoute();
 const {
   price_type_option,
   productBundling_grandTotal,
@@ -12,7 +13,13 @@ const {
   productBundling_formValidations,
   productBundling_productList,
   productBundling_fetchProductList,
+  productBundling_fetchCreateProductBundlingList,
+  productBundling_fetchProductBundlingDetails,
+  productBundling_fetchUpdateProductBundlingList,
   productList_isLoading,
+  // function
+  setPricingType,
+  calculateTotalPrice,
 } = useProductBundlingService();
 
 // --- State for the AutoComplete component ---
@@ -69,14 +76,17 @@ const removeFromPool = (productToRemove: IProduct) => {
   productBundling_formData.products = productBundling_formData.products.filter(p => p.id !== productToRemove.id);
 };
 
-onMounted(() => {
-  productBundling_fetchProductList();
+onMounted(async () => {
+  if (route.name === 'product-bundling.edit') {
+    await productBundling_fetchProductBundlingDetails(route.params.id as string);
+  }
+  await productBundling_fetchProductList();
 });
 </script>
 <template>
   <section class="grid grid-cols-2 gap-8">
     <section class="flex flex-col gap-4">
-      <!-- <pre>{{ productBundling_formData }}</pre> -->
+      <pre>{{ productBundling_formData }}</pre>
       <AppBaseFormGroup
         v-slot="{ classes }"
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
@@ -127,22 +137,26 @@ onMounted(() => {
             v-model="productBundling_formData.type"
             option-label="label"
             option-value="value"
+            :disabled="productBundling_formData.products.length === 0"
             :options="price_type_option"
             :pt="{ root: 'w-full', pcToggleButton: { root: 'flex-1' } }"
             :allow-empty="false"
+            @change="setPricingType()"
           />
           <PrimeVueInputNumber
             v-model="productBundling_formData.price"
             :disabled="
-              productBundling_formData.type === 'total items' || productBundling_formData.products.length === 0
+              productBundling_formData.type === 'TOTAL_ITEMS' || productBundling_formData.products.length === 0
             "
             placeholder="Rp. 0,00"
-            prefix="Rp "
+            :prefix="productBundling_formData.type !== 'DISCOUNT' ? 'Rp ' : ''"
+            :suffix="productBundling_formData.type === 'DISCOUNT' ? '%' : ''"
             fluid
             name="price"
             :min="0"
             class="w-full"
             :class="{ ...classes }"
+            @value-change="calculateTotalPrice()"
           />
         </div>
       </AppBaseFormGroup>
@@ -185,9 +199,10 @@ onMounted(() => {
                         </span>
                       </div>
                       <span class="font-semibold">
-                        {{ useCurrencyFormat({ data: product.discountPrice }) }}
+                        @ {{ useCurrencyFormat({ data: product.discountPrice }) }}
                       </span>
                     </div>
+
                     <div class="flex flex-col gap-1">
                       <AppBaseFormGroup
                         v-slot="{ classes }"
@@ -196,7 +211,7 @@ onMounted(() => {
                         :name="'Total Free Items'"
                         spacing-bottom="mb-0"
                       >
-                        <label class="flex items-center justify-end">
+                        <label class="flex items-center">
                           <span class="block text-sm font-medium leading-6 text-gray-900">Total Items</span>
                           <span class="text-error-main">*</span>
                         </label>
@@ -219,6 +234,10 @@ onMounted(() => {
                         </PrimeVueInputNumber>
                       </AppBaseFormGroup>
                     </div>
+
+                    <span class="font-semibold text-right mt-4">
+                      Total : {{ useCurrencyFormat({ data: product.discountPrice * product.quantity }) }}
+                    </span>
                   </div>
 
                   <PrimeVueButton
@@ -235,11 +254,24 @@ onMounted(() => {
           </div>
           <PrimeVueCard class="h-fit mt-4">
             <template #content>
-              <section class="flex items-center justify-end">
+              <section class="flex flex-col gap-1 justify-end">
                 <div class="flex flex-col">
-                  <span class="text-right">Total</span>
+                  <span class="text-right">Actual Price</span>
                   <span class="text-right font-semibold">{{
-                    useCurrencyFormat({ data: productBundling_grandTotal })
+                    useCurrencyFormat({
+                      data: productBundling_formData.products.reduce(
+                        (total, item) => total + item.discountPrice * item.quantity,
+                        0,
+                      ),
+                    })
+                  }}</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-right">Bundling Price</span>
+                  <span class="text-right font-semibold">{{
+                    useCurrencyFormat({
+                      data: productBundling_grandTotal,
+                    })
                   }}</span>
                 </div>
               </section>
@@ -250,15 +282,22 @@ onMounted(() => {
     </section>
     <footer class="col-span-2">
       <section class="flex items-center justify-start gap-4">
-        <PrimeVueButton class="bg-transparent border-primary min-w-44">
-          <template #default>
-            <span class="font-semibold text-base text-primary">Cancel</span>
-          </template>
-        </PrimeVueButton>
+        <router-link :to="{ name: 'product-bundling.index' }">
+          <PrimeVueButton class="bg-transparent border-primary min-w-44">
+            <template #default>
+              <span class="font-semibold text-base text-primary">Cancel</span>
+            </template>
+          </PrimeVueButton>
+        </router-link>
         <PrimeVueButton
           class="bg-primary border-none min-w-44 disabled:bg-grayscale-20"
           :disabled="productBundling_formValidations.$invalid"
-          :label="'Add'"
+          :label="route.name === 'product-bundling.edit' ? 'Edit' : 'Add'"
+          @click="
+            route.name === 'product-bundling.edit'
+              ? productBundling_fetchUpdateProductBundlingList()
+              : productBundling_fetchCreateProductBundlingList()
+          "
         />
       </section>
     </footer>

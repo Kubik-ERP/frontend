@@ -1,9 +1,9 @@
 import type { IProductBundlingList } from '../interfaces';
 
 export const PRICE_TYPE_OPTION = [
-  { value: 'total items', label: 'Total' },
-  { value: 'custom', label: 'Custom' },
-  { value: 'discount', label: 'Discount' },
+  { value: 'TOTAL_ITEMS', label: 'Total' },
+  { value: 'CUSTOM', label: 'Custom' },
+  { value: 'DISCOUNT', label: 'Discount' },
 ];
 
 export const PRODUCT_BUNDLING_COLUMNS: IColumnDataTable[] = [
@@ -23,7 +23,7 @@ export const PRODUCT_BUNDLING_COLUMNS: IColumnDataTable[] = [
     value: 'type',
   },
   {
-    label: 'Price',
+    label: 'Bundle Price',
     sortable: true,
     value: 'price',
   },

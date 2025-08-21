@@ -1,7 +1,12 @@
 <script setup lang="ts">
 // services
 import { useProductBundlingService } from '../services/product-bundling.service';
-const { productBinding_columns, productBundling_list } = useProductBundlingService();
+const {
+  productBinding_columns,
+  productBundling_list,
+  productBundling_fetchProductBundlingList,
+  productBundling_onShowDialogDelete,
+} = useProductBundlingService();
 
 // Use unknown type to avoid any, but allow method access
 const popovers = ref<Record<string, unknown>>({});
@@ -11,6 +16,10 @@ const togglePopover = (id: string, event: Event) => {
   const popover = popovers.value[`popover-${id}`] as { toggle?: (event: Event) => void } | null;
   popover?.toggle?.(event);
 };
+
+onMounted(() => {
+  productBundling_fetchProductBundlingList();
+});
 </script>
 <template>
   <div>
@@ -74,7 +83,11 @@ const togglePopover = (id: string, event: Event) => {
             }"
           >
             <section id="popover-content" class="flex flex-col">
-              <PrimeVueButton class="w-full px-4 py-3" variant="text">
+              <PrimeVueButton
+                class="w-full px-4 py-3"
+                variant="text"
+                @click="$router.push({ name: 'product-bundling.edit', params: { id: data.id } })"
+              >
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="edit" class="!w-4 !h-4" />
@@ -82,7 +95,11 @@ const togglePopover = (id: string, event: Event) => {
                   </section>
                 </template>
               </PrimeVueButton>
-              <PrimeVueButton class="w-full px-4 py-3" variant="text">
+              <PrimeVueButton
+                class="w-full px-4 py-3"
+                variant="text"
+                @click="productBundling_onShowDialogDelete(data.id)"
+              >
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="delete" class="!w-4 !h-4" />
@@ -94,7 +111,16 @@ const togglePopover = (id: string, event: Event) => {
           </PrimeVuePopover>
         </template>
         <template v-else-if="column.value === 'price'">
-          <span class="font-normal text-sm text-text-primary">{{ useCurrencyFormat({ data: data.price }) }}</span>
+          <span class="font-normal text-sm text-text-primary">
+            {{
+              useCurrencyFormat({
+                data: data.type === 'DISCOUNT' ? data.price - data.price * data.discount : data.price,
+              })
+            }}
+          </span>
+        </template>
+        <template v-else-if="column.value === 'type'">
+          <span class="font-normal text-sm text-text-primary">{{ useTitleCaseWithSpaces(data.type) }}</span>
         </template>
         <template v-else>
           <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
@@ -102,4 +128,5 @@ const togglePopover = (id: string, event: Event) => {
       </template>
     </AppBaseDataTable>
   </div>
+  <AppBaseDialogConfirmation id="product-bundling-delete-dialog-confirmation" />
 </template>
