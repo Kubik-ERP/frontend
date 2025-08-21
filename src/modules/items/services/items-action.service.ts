@@ -94,7 +94,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     async ([mode, item]) => {
       if (mode === 'edit' && item) {
         Object.assign(inventoryItemsAction_formData.value, {
-          name: item.name,
+          name: item.itemName,
           brandId: item.brandId,
           barcode: item.barcode,
           sku: item.sku,

@@ -30,16 +30,16 @@ type IVoucherHasProducts = {
 type IProductVoucher = {
   id: string;
   name: string;
-  category: IVoucherProductCategory[];
+  categoriesHasProducts: IProductCategory[] | [];
   price: number;
   discountPrice: number;
 }
 
-type IVoucherProductCategory ={
-  id: string,
-  name: string
+interface IProductCategory {
+  categories: {
+    category: string
+  }
 }
-
 
 export type IVoucherListResponse = {
   statusCode: number;

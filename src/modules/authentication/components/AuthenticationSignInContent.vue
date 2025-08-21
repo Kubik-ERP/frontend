@@ -5,11 +5,19 @@ import authenticationSignInForm from './AuthenticationSignInForm.vue';
 
 <template>
   <section id="authentication-sign-in-content" class="grid-wrapper-fullscreen">
-    <section id="form-content" class="col-span-9 flex items-center justify-center w-full h-full">
+    <section
+      id="form-content"
+      class="col-span-12 lg:col-span-9 flex items-center justify-center w-full h-full"
+    >
       <authenticationSignInForm />
     </section>
 
-    <aside id="linear-gradient" class="col-span-3 w-full h-full">&nbsp;</aside>
+    <aside
+      id="linear-gradient"
+      class="hidden lg:block col-span-3 w-full h-full"
+    >
+      &nbsp;
+    </aside>
   </section>
 </template>
 

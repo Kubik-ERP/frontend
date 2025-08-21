@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Interfaces
-import type { IStaffMemberListProvided } from '../interfaces';
+import type { IStaffMemberListProvided, IStafPermission } from '../interfaces';
 
 /**
  * @description Reactive data binding
@@ -110,8 +110,8 @@ const {
           v-model="staffMemberList_queryParams.permission"
           display="chip"
           :options="staffMemberList_typesOfUserPermissions"
-          option-label="label"
-          option-value="value"
+          option-label="name"
+          option-value="id"
           filter
           placeholder="Permission"
           class="text-sm text-text-disabled w-full max-w-64"
@@ -176,8 +176,8 @@ const {
       <template v-else-if="column.value === 'permission'">
         <span class="font-normal text-sm text-text-primary">
           {{
-            staffMemberList_typesOfUserPermissions.find((item: IDropdownItem) => item.value === data[column.value])
-              ?.label || '-'
+            staffMemberList_typesOfUserPermissions.find((item: IStafPermission) => item.id === data[column.value])
+              ?.name || '-'
           }}
         </span>
       </template>

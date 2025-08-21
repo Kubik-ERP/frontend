@@ -49,21 +49,21 @@ export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
     sortable: true,
     value: 'unitPrice',
   },
-    {
+  {
     label: 'Expiry Date',
     sortable: true,
     value: 'expiryDate',
   },
-  {
-    label: 'Supplier',
-    sortable: false,
-    value: 'supplierId',
-  },
-  {
-    label: 'Storage Location',
-    sortable: false,
-    value: 'storageLocationId',
-  },
+  // {
+  //   label: 'Supplier',
+  //   sortable: false,
+  //   value: 'supplierId',
+  // },
+  // {
+  //   label: 'Storage Location',
+  //   sortable: false,
+  //   value: 'storageLocationId',
+  // },
   {
     label: '',
     sortable: false,

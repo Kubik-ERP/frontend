@@ -191,6 +191,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     isLoading: false,
     data: {
       total: 0,
+      subTotal: 0,
       discountTotal: 0,
       grandTotal: 0,
       serviceCharge: 0,
@@ -593,6 +594,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       } else {
         cashierOrderSummary_calculateEstimation.value.data = {
           total: 0,
+          subTotal: 0,
           discountTotal: 0,
           grandTotal: 0,
           serviceCharge: 0,
@@ -704,7 +706,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         products: cashierOrderSummary_summary.value.product,
         orderType: cashierOrderSummary_summary.value.orderType,
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
-        vouchers: cashierOrderSummary_summary.value.selectedVoucher,
+        vouchersId: cashierOrderSummary_summary.value.selectedVoucher,
         customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
         tableCode: cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',

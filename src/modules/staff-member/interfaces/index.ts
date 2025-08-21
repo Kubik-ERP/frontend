@@ -1,3 +1,5 @@
+import { IStafPermission } from './staff-member-create-edit.interface';
+
 export * from './staff-member-create-edit.interface';
 export * from './staff-member-list.interface';
 
@@ -32,11 +34,35 @@ export interface IStaffMember {
   title?: string | null;
   employeesShift: IStaffMemberEmployeesShift[] | [];
   employeesHasSocialMedia: IStaffMemberSocialMedia[] | [];
+  productCommissions: productCommissions[];
+  voucherCommissions: voucherCommissions[]
+}
+
+export interface productCommissions{
+  id: string;
+  productsId: string;
+  employeesId: string;
+  isPercent: boolean;
+  amount: number;
+}
+
+export interface voucherCommissions{
+  id: string;
+  voucherId: string;
+  employeesId: string;
+  isPercent: boolean;
+  amount: number;
 }
 
 export interface IStaffMemberList{
   employees: IStaffMember[] | [];
   meta: IStaffMeta;
+}
+
+export interface IStaffMemberPermissionResponse{
+  statusCode: number;
+  message: string;
+  data: IStafPermission[]
 }
 
 export interface IStaffMemberStore {

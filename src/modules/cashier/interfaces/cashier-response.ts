@@ -10,6 +10,7 @@ export interface ICashierResponseCalulateEstimationDetail {
 
 export interface ICashierResponseCalulateEstimationItem {
   total: number;
+  subTotal: number;
   discountTotal: number;
   grandTotal: number;
   serviceCharge: number | null;

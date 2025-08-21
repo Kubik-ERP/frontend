@@ -27,7 +27,7 @@ const {
 const newStockQuantity = computed(() => {
   const item = inventoryItemPreview_item.value;
   const form = itemStockAdjustmentAction_formData.value;
-  const preview = itemStockAdjustmentPreview_item.value; // data adjustment lama
+  // const preview = itemStockAdjustmentPreview_item.value; // data adjustment lama
 
   if (!item) return '-';
   if (!form.action) return '-';
@@ -36,13 +36,7 @@ const newStockQuantity = computed(() => {
 
   let baseStock: number;
 
-  if (itemStockAdjustmentAction_formOnMode.value === 'create') {
-    // Mode create → pakai stok saat ini
-    baseStock = item.stockQuantity;
-  } else {
-    // Mode edit → rollback ke stok sebelum adjustment lama
-    baseStock = preview?.previousQuantity ?? item.stockQuantity;
-  }
+  baseStock = item.stockQuantity || 0;
 
   if (form.action === 'STOCK_IN') {
     return baseStock + qty;
@@ -60,6 +54,17 @@ watch(
   },
   { deep: true },
 );
+function formatDate(date: string) {
+  if (!date) return '-';
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return '-';
+
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
 
 const handleSubmit = async () => {
   if (itemStockAdjustmentAction_formOnMode.value === 'create') {
@@ -84,14 +89,21 @@ const handleSubmit = async () => {
 
     <template #content>
       <div class="flex flex-col gap-4">
+        <div v-if="itemStockAdjustmentPreview_item" class="flex flex-col items-start">
+          <span class="text-md text-gray-600">Addjustment Date :</span>
+          <span class="font-semibold ml-1">
+            {{
+             formatDate(itemStockAdjustmentPreview_item?.createdAt)
+            }}
+          </span>
+        </div>
+
         <!-- Current Stock -->
         <div>
           <span class="text-sm text-gray-600">Current Stock Quantity :</span>
           <span class="font-semibold ml-1">
             {{
-              itemStockAdjustmentAction_formOnMode === 'edit'
-                ? (itemStockAdjustmentPreview_item?.previousQuantity ?? '-')
-                : (inventoryItemPreview_item?.stockQuantity ?? '-')
+              inventoryItemPreview_item?.stockQuantity
             }}
           </span>
         </div>
