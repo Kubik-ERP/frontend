@@ -476,6 +476,6 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
     </div>
 
     <!-- Create Dialog -->
-    <AttendanceListCreateDialog />
+    <!-- <AttendanceListCreateDialog /> -->
   </section>
 </template>
