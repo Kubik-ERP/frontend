@@ -31,7 +31,7 @@ import {
   ICashierVoucher,
 } from '../interfaces/cashier-order-summary';
 
-import { ICashierResponseWebsocketMessage } from '../interfaces/cashier-response';
+import { ICashierCustomer, ICashierResponseWebsocketMessage } from '../interfaces/cashier-response';
 
 import type { MenuPassThroughAttributes } from 'primevue';
 
@@ -57,6 +57,7 @@ import useVuelidate from '@vuelidate/core';
 import { minValue, numeric, required } from '@vuelidate/validators';
 import { useVoucherStore } from '@/modules/voucher/store';
 import { IVoucher } from '@/modules/voucher/interfaces';
+import eventBus from '@/plugins/mitt';
 // import CashierSummaryModalVoucher from '../components/OrderSummary/Modal/CashierSummaryModalVoucher.vue';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
@@ -292,11 +293,18 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   });
 
   watch(
-    () => [cashierProduct_selectedProduct.value, cashierOrderSummary_modalVoucher.value.show, cashierOrderSummary_modalVoucher.value.search],
+    () => [
+      cashierProduct_selectedProduct.value,
+      cashierOrderSummary_modalVoucher.value.show,
+      cashierOrderSummary_modalVoucher.value.search,
+    ],
     async () => {
       if (cashierOrderSummary_modalVoucher.value.show && cashierProduct_selectedProduct.value.length > 0) {
         debouncedCalculateEstimation();
-        getVoucherActive(cashierOrderSummary_modalVoucher.value.search ,cashierProduct_selectedProduct.value.map(p => p.productId));
+        getVoucherActive(
+          cashierOrderSummary_modalVoucher.value.search,
+          cashierProduct_selectedProduct.value.map(p => p.productId),
+        );
       }
 
       if (cashierOrderSummary_modalVoucher.value.form.voucherId) {
@@ -389,7 +397,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description Handle voucher selection
    * @returns void
    */
-  const getVoucherActive = async (search: string ,productIds: string[]) => {
+  const getVoucherActive = async (search: string, productIds: string[]) => {
     try {
       const response = await storeVoucher.voucherList_getActiveVoucher(search, productIds);
       const data = response.data;
@@ -486,6 +494,41 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       $autoDirty: true,
     },
   );
+
+  const cashierOrderSummary_storeId = ref('');
+
+  onMounted(() => {
+    if (route.name === 'self-order') {
+      cashierOrderSummary_modalOrderType.value.selectedOrderType = 'self_order';
+      cashierOrderSummary_modalSelectTable.value.selectedTable = [
+        typeof route.query.tablesName === 'string' ? route.query.tablesName : '',
+      ];
+      cashierOrderSummary_storeId.value = typeof route.query.storeId === 'string' ? route.query.storeId : '';
+      cashierProduct_customerState.value.selectedCustomer = JSON.parse(
+        localStorage.getItem('userinfo') ?? '{}',
+      ) as ICashierCustomer;
+
+      const account = localStorage.getItem('userinfo');
+
+      if (!account || account === '{}') {
+        router.push({
+          name: 'login-self-order',
+          query: {
+            redirect: route.fullPath,
+          },
+        });
+
+        eventBus.emit('AppBaseToast', {
+          isOpen: true,
+          message: 'Unauthorized',
+          position: EToastPosition.TOP_RIGHT,
+          type: EToastType.DANGER,
+        });
+
+        return;
+      }
+    }
+  });
 
   /**
    * @description Check if the "Place Order" button should be disabled
@@ -591,11 +634,11 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         orderType: cashierOrderSummary_summary.value.orderType,
         provider: provider,
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
-        vouchers: cashierOrderSummary_summary.value.selectedVoucher,
         customerId: cashierProduct_customerState.value.selectedCustomer?.id,
         tableCode: cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
         paymentAmount: cashierOrderSummary_modalPlaceOrderDetail.value.form.paymentAmount || null,
+        voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId || null,
       };
 
       const response = await store.cashierProduct_paymentInstant(params);
@@ -721,15 +764,16 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         break;
       case 'QRIS':
         await cashierOrderSummary_handlePlaceOrderDetail();
-
         cashierOrderSummary_modalPlaceOrderConfirmation.value.show = false;
-
         break;
       case 'DEBIT':
         cashierOrderSummary_modalPlaceOrderDetail.value.show = true;
         break;
       case 'CREDIT':
         cashierOrderSummary_modalPlaceOrderDetail.value.show = true;
+        break;
+      case 'PAY AT CASHIER':
+        cashierOrderSummary_handleSaveUnpaidOrder();
         break;
       default:
         console.error('Invalid payment method selected');
@@ -869,7 +913,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       } else {
         console.error('No invoice ID provided in route parameters');
       }
-    } else {
+    } else if (route.name !== 'self-order') {
       cashierProduct_selectedProduct.value = [];
       cashierOrderSummary_modalOrderType.value.selectedOrderType = 'dine_in';
       cashierOrderSummary_modalSelectTable.value.selectedTable = [];

@@ -1,0 +1,166 @@
+<script setup lang="ts">
+import { ref, watch } from 'vue';
+import { useBrandStore } from '../store';
+import { useBrandActionService } from '../services/brand-action.service';
+import confirmationSVG from '@/app/assets/icons/confirmation.svg';
+import { useBrandListService } from '../services/brand-list.service';
+import eventBus from '@/plugins/mitt';
+// import eventBus from '@/plugins/mitt';
+// ambil langsung dari store supaya sinkron
+const store = useBrandStore();
+const { brandFormMode, brand_editingItem } = storeToRefs(store);
+
+// ambil dari action service
+const {
+  brand_formOnLoading,
+  brand_formData,
+  brand_formValidation,
+  brand_onSubmit,
+  brand_onCancel,
+  brand_formValid,
+} = useBrandActionService();
+
+const {
+  brand_onDelete
+} = useBrandListService()
+
+// state untuk konfirmasi update
+const isUpdateModal = ref(false);
+
+// isi form ketika mode / editing item berubah
+watch(
+  [brandFormMode, brand_editingItem],
+  ([mode, item]) => {
+    if (mode === 'edit' && item) {
+      brand_formData.value.brandName = item.brandName ?? '';
+      brand_formData.value.notes = item.notes ?? '';
+    } else {
+      brand_formData.value.brandName = '';
+      brand_formData.value.notes = '';
+    }
+  },
+  { immediate: true }
+);
+
+// handle submit form
+const handleSubmit = async () => {
+  if (brandFormMode.value === 'edit') {
+    // buka dialog konfirmasi update
+    isUpdateModal.value = true;
+
+    eventBus.emit('AppBaseDialog', {
+      id: 'brand-modal-form',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: false,
+      width: '600px',
+    });
+  } else {
+    const id = brand_editingItem.value?.id;
+    await brand_onSubmit(brand_formData.value, brandFormMode.value, id);
+  }
+};
+
+// fungsi jika user confirm update
+const confirmUpdate = async () => {
+  const id = brand_editingItem.value?.id;
+  await brand_onSubmit(brand_formData.value, brandFormMode.value, id);
+  isUpdateModal.value = false;
+};
+
+const cancelUpdate = () => {
+  isUpdateModal.value = false;
+};
+
+const handleDelete = async () => {
+   eventBus.emit('AppBaseDialog', {
+      id: 'brand-modal-form',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: false,
+      width: '600px',
+    });
+    if (brand_editingItem.value?.id) {
+      await brand_onDelete(brand_editingItem.value.id);
+    }
+}
+</script>
+
+<template>
+  <!-- Modal Form Brand -->
+  <AppBaseDialog id="brand-modal-form">
+    <template #header>
+      <header class="flex flex-col gap-2">
+        <h6 class="font-semibold text-black text-lg">
+          {{ brandFormMode === 'edit' ? 'Edit Brand' : 'Add New Brand' }}
+        </h6>
+      </header>
+    </template>
+
+    <template #content>
+      <form class="w-full" @submit.prevent="handleSubmit">
+        <section class="flex flex-col gap-4 w-full">
+          <AppBaseFormGroup v-slot="{ classes }" class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+            is-name-as-label label-for="brand-name" :name="useLocalization('brand.form.name')" spacing-bottom="mb-0"
+            :validators="brand_formValidation.brandName">
+            <PrimeVueInputText v-model="brand_formData.brandName" class="w-full" :class="{ ...classes }"
+              placeholder="Enter brand name" :v-on="useListenerForm(brand_formValidation, 'brandName')" />
+          </AppBaseFormGroup>
+
+          <AppBaseFormGroup v-slot="{ classes }" class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+            is-name-as-label label-for="brand-description" :name="useLocalization('brand.form.description')"
+            spacing-bottom="mb-0">
+            <PrimeVueTextarea id="brand-description" v-model="brand_formData.notes"
+              placeholder="Enter brand description" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2"
+              :class="{ ...classes }" style="height: 150px" />
+          </AppBaseFormGroup>
+        </section>
+      </form>
+    </template>
+    <template #footer>
+      <div class="flex flex-row gap-2 w-full justify-end">
+        <!-- Cancel -->
+        <PrimeVueButton type="button" class="w-full bg-white text-primary border border-primary"
+          :disabled="brand_formOnLoading" @click="brand_onCancel">
+          {{ useLocalization('brand.form.buttons.cancel') || 'Cancel' }}
+        </PrimeVueButton>
+
+        <!-- Update / Save -->
+        <PrimeVueButton type="submit" class="w-full disabled:bg-gray-400 disabled:text-white disabled:border-none"
+          :loading="brand_formOnLoading" :disabled="!brand_formValid" @click="handleSubmit">
+          {{ brandFormMode === 'edit'
+            ? (useLocalization('brand.form.buttons.update') || 'Update')
+            : (useLocalization('brand.form.buttons.create') || 'Save') }}
+        </PrimeVueButton>
+
+        <!-- Delete (hanya muncul di edit mode) -->
+        <PrimeVueButton v-if="brandFormMode === 'edit'" type="button"
+          class="w-full bg-white text-red-600 border-none"
+          @click="handleDelete">
+           <AppBaseSvg name="delete" class="!w-4 !h-4" />
+          {{ useLocalization('brand.deleteButton') || 'Delete' }}
+        </PrimeVueButton>
+      </div>
+    </template>
+  </AppBaseDialog>
+
+  <!-- Dialog Konfirmasi Update -->
+  <PrimeVueDialog :visible="isUpdateModal" modal header="">
+    <template #container>
+      <div class="w-[35rem] p-8">
+        <div class="flex flex-col items-center gap-4 text-center">
+          <span><img :src="confirmationSVG" alt="confirmation" /></span>
+          <h1 class="text-2xl font-semibold">Are you sure want to update this brand?</h1>
+          <p>The update will affect the related brand data</p>
+          <div class="flex items-center justify-between gap-4">
+            <PrimeVueButton variant="text" class="w-56 text-lg border-2 border-primary text-primary font-semibold"
+              @click="cancelUpdate">Cancel</PrimeVueButton>
+            <PrimeVueButton
+              class="text-xl w-56 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
+              unstyled label="Yes, I'm Sure" @click="confirmUpdate" />
+          </div>
+        </div>
+      </div>
+    </template>
+  </PrimeVueDialog>
+</template>

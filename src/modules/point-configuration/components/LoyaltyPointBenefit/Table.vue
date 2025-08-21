@@ -8,11 +8,14 @@ import FreeItems from './DiscountFreeItems/FreeItems.vue';
 
 // services
 const {
-  loyaltyPointBenefit_values,
   loyaltyPointBenefit_columns,
   loyaltyPointBenefit_onShowDialogDiscount,
+  loyaltyPointBenefit_onShowEditDialogDiscount,
   loyaltyPointBenefit_onShowDialogFreeItems,
+  loyaltyPointBenefit_onShowEditDialogFreeItems,
   dailySalesList_onChangePage,
+  loyaltyPointBenefit_list,
+  loyaltyPointBenefit_isLoading,
 } = inject<ILoyaltyPointBenefitProvided>('loyaltyPointBenefit')!;
 
 const popover = ref();
@@ -20,14 +23,24 @@ const popover = ref();
 <template>
   <section id="loyalty-point-benefit-table" class="flex flex-col relative inset-0 z-0">
     <AppBaseDataTable
-      :data="loyaltyPointBenefit_values"
+      :data="loyaltyPointBenefit_list.loyaltyBenefits?.items || []"
       :columns="loyaltyPointBenefit_columns"
       header-title="Loyalty Point Benefit"
-      :rows-per-page="10"
-      :total-records="100"
-      :first="1"
+      :rows-per-page="
+        !loyaltyPointBenefit_list.loyaltySettingsStatus ? 10 : loyaltyPointBenefit_list.loyaltyBenefits.meta.pageSize
+      "
+      :total-records="
+        !loyaltyPointBenefit_list.loyaltySettingsStatus ? 100 : loyaltyPointBenefit_list.loyaltyBenefits.meta.total
+      "
+      :first="
+        !loyaltyPointBenefit_list.loyaltySettingsStatus
+          ? 1
+          : (loyaltyPointBenefit_list.loyaltyBenefits.meta.page - 1) *
+            loyaltyPointBenefit_list.loyaltyBenefits.meta.pageSize
+      "
       is-using-server-side-pagination
       :is-using-filter="false"
+      :is-loading="loyaltyPointBenefit_isLoading"
       is-using-custom-body
       is-using-custom-header-prefix
       is-using-custom-header-suffix
@@ -37,7 +50,12 @@ const popover = ref();
         <h1 class="font-bold text-2xl text-text-primary">Loyalty Point Benefit</h1>
       </template>
       <template #header-suffix>
-        <PrimeVueButton class="w-fit" label="Add Benefit" @click="popover.toggle($event)">
+        <PrimeVueButton
+          class="w-fit"
+          label="Add Benefit"
+          :disabled="!loyaltyPointBenefit_list.loyaltySettingsStatus"
+          @click="popover.toggle($event)"
+        >
           <template #icon>
             <AppBaseSvg name="plus-line-white" class="!w-5 !h-5" />
           </template>
@@ -80,8 +98,13 @@ const popover = ref();
         <template v-if="column.value === 'index'">
           <span class="font-normal text-sm text-text-primary"> {{ index + 1 }}</span>
         </template>
+        <template v-else-if="column.value === 'type'">
+          <span class="font-normal text-sm text-text-primary">
+            {{ data[column.value] === 'discount' ? 'Discount' : 'Free Items' }}</span
+          >
+        </template>
         <template v-else-if="column.value === 'discountFreeItems'">
-          <div v-if="data['type'] === 'Discount'" class="font-normal text-sm text-text-primary">
+          <div v-if="data['type'] === 'discount'" class="font-normal text-sm text-text-primary">
             <Discount :data="data[column.value]" />
           </div>
           <div v-else class="font-normal text-sm text-text-primary">
@@ -89,7 +112,16 @@ const popover = ref();
           </div>
         </template>
         <template v-else-if="column.value === 'action'">
-          <PrimeVueButton variant="text" rounded aria-label="detail">
+          <PrimeVueButton
+            variant="text"
+            rounded
+            aria-label="detail"
+            @click="
+              data.type === 'discount'
+                ? loyaltyPointBenefit_onShowEditDialogDiscount(data)
+                : loyaltyPointBenefit_onShowEditDialogFreeItems(data)
+            "
+          >
             <template #icon>
               <AppBaseSvg name="edit" class="!w-5 !h-5" />
             </template>

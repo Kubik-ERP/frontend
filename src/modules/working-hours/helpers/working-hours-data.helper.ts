@@ -131,6 +131,6 @@ export class WorkingHoursDataHelper {
    * @description Generate a unique ID for time slots
    */
   static generateTimeSlotId(): string {
-    return `timeslot_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `timeslot_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   }
 }

@@ -125,9 +125,9 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
                     !cashierOrderSummary_getListActiveFloor.length,
                 }"
               >
-                <template v-if="accountStoreDetail_storeTables.length">
+                <template v-if="accountStoreDetail_storeTables?.items?.length">
                   <section
-                    v-for="(storeTable, storeTableIndex) in accountStoreDetail_storeTables.filter(
+                    v-for="(storeTable, storeTableIndex) in accountStoreDetail_storeTables.items.filter(
                       (f: IOutletTable) => {
                         return f.floorName === accountStoreDetail_selectedFloor;
                       },
@@ -154,7 +154,7 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
               }}</span>
 
               <template
-                v-for="(item, key) in accountStoreDetail_storeTables.filter((f: IOutletTable) => {
+                v-for="(item, key) in accountStoreDetail_storeTables?.items?.filter((f: IOutletTable) => {
                   return f.floorName === accountStoreDetail_selectedFloor;
                 })"
                 :key="key"

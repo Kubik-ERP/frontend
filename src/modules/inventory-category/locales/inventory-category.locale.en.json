@@ -1,0 +1,33 @@
+{
+  "inventoryCategory": {
+    "title": "Inventory Inventory List",
+    "createButton": "Create Inventory",
+    "editButton": "Edit",
+    "deleteButton": "Delete",
+    "searchPlaceholder": "Search categories...",
+    "noDataMessage": "No categories found.",
+    "form": {
+      "name": "Inventory Name",
+      "description": "Description",
+      "fields": {
+        "name": "Enter Inventory name",
+        "description": "Enter Inventory description"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "create": "Create Inventory",
+        "update": "Update Inventory"
+      }
+    },
+    "popover": {
+      "edit": {
+        "title": "Edit Inventory",
+        "message": "Are you sure you want to edit this Inventory?"
+      },
+      "delete": {
+        "title": "Delete Inventory",
+        "message": "Are you sure you want to delete this Inventory?"
+      }
+    }
+  }
+}

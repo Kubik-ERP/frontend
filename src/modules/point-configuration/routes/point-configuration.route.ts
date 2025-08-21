@@ -23,6 +23,19 @@ const routes: RouteRecordRaw[] = [
           title: 'point configuration',
         },
       },
+      {
+        path: 'edit-configuration',
+        name: 'loyalty-point-setting.edit',
+        component: () => import('../views/LoyaltyPointSettingEditUI.vue'),
+        meta: {
+          requiresAuthorization: true,
+          breadcrumb: 'Loyalty Point Settings',
+          title: 'Loyalty Point Settings',
+          backArrow: true,
+          backArrowPath: '/pos-setting/point-configuration',
+          layout: LAYOUT_OPTIONS.NAVBAR,
+        },
+      },
     ],
     meta: {
       breadcrumb: 'Loyalty Point',

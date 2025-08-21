@@ -1,0 +1,33 @@
+{
+  "brand": {
+    "title": "Brand List",
+    "createButton": "Create Brand",
+    "editButton": "Edit",
+    "deleteButton": "Delete",
+    "searchPlaceholder": "Search brands...",
+    "noDataMessage": "No brands found.",
+    "form": {
+      "name": "Brand Name",
+      "description": "Description",
+      "fields": {
+        "name": "Enter brand name",
+        "description": "Enter brand description"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "create": "Create",
+        "update": "Update"
+      }
+    },
+    "popover": {
+      "edit": {
+        "title": "Edit Brand",
+        "message": "Are you sure you want to edit this brand?"
+      },
+      "delete": {
+        "title": "Delete Brand",
+        "message": "Are you sure you want to delete this brand?"
+      }
+    }
+  }
+}

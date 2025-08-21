@@ -1,11 +1,74 @@
 <script setup lang="ts">
-import { ILoyaltyPointBenefitProvided } from '@/modules/point-configuration/interfaces/loyalty-point-benefit.interface';
+import { AutoCompleteCompleteEvent, AutoCompleteOptionSelectEvent } from 'primevue';
+import type {
+  ILoyaltyPointBenefitProvided,
+  IProductList,
+  IFreeItems,
+} from '@/modules/point-configuration/interfaces/loyalty-point-benefit.interface';
 const {
   freeItemsBenefit_formData,
   freeItemsBenefit_formValidations,
   loyaltyPointBenefit_onCloseDialogFreeItems,
   loyaltyPointBenefit_onSubmitDialogFreeItems,
+  loyaltyPointBenefit_onSubmitEditDialogFreeItems,
+  productList_isLoading,
+  loyaltyPointBenefit_productList,
+  isEdit,
 } = inject<ILoyaltyPointBenefitProvided>('loyaltyPointBenefit')!;
+
+// --- State for the AutoComplete component ---
+const currentSelection = ref<IProductList | null>(null);
+const suggestions = ref<IProductList[]>([]);
+const masterProducts = computed(() => loyaltyPointBenefit_productList.value);
+
+// ✅ REMOVED: const selectedProducts = ref<IProduct[]>([]);
+
+// ✅ This now correctly checks against the central formData
+const availableProducts = computed(() => {
+  return masterProducts.value.filter(
+    masterProd => !freeItemsBenefit_formData.freeItems.some(selectedProd => selectedProd.id === masterProd.id),
+  );
+});
+
+const search = (event: AutoCompleteCompleteEvent) => {
+  const query = event.query.toLowerCase();
+  suggestions.value = availableProducts.value.filter(product => product.name.toLowerCase().includes(query));
+
+  currentSelection.value = null;
+};
+
+/**
+ * Adds the selected product to the central freeItems array.
+ */
+const onProductSelect = (event: AutoCompleteOptionSelectEvent) => {
+  const selectedItem: IProductList = event.value;
+
+  // Transform the selected product into the IFreeItems format
+  const itemToAdd: IFreeItems = {
+    id: selectedItem.id,
+    name: selectedItem.name,
+    categories: selectedItem.categories,
+    quantity: 1, // Default to a quantity of 1
+  };
+
+  // ✅ Pushes directly to the reactive formData
+  freeItemsBenefit_formData.freeItems.push(itemToAdd);
+
+  // ✅ Use nextTick to clear the input after the current update cycle
+  nextTick(() => {
+    currentSelection.value = null;
+  });
+};
+
+/**
+ * Removes an item from the central freeItems array.
+ */
+const removeFromPool = (productToRemove: IFreeItems) => {
+  // ✅ Filters the reactive formData directly
+  freeItemsBenefit_formData.freeItems = freeItemsBenefit_formData.freeItems.filter(
+    p => p.id !== productToRemove.id,
+  );
+};
 </script>
 <template>
   <AppBaseDialog id="loyalty-point-benefit-dialog-free-items">
@@ -49,6 +112,7 @@ const {
             show-buttons
             button-layout="horizontal"
             fluid
+            :min="0"
             :step="1"
             :class="{
               ...classes,
@@ -62,51 +126,95 @@ const {
               <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
             </template>
           </PrimeVueInputNumber>
-          <!-- <div class="flex items-center gap-2">
-            <PrimeVueButton class="bg-transparent">
-              <template #icon>
-                <AppBaseSvg name="minus" class="!w-5 !h-5" />
-              </template>
-            </PrimeVueButton>
-
-            <PrimeVueInputNumber
-              v-model="freeItemsBenefit_formData.pointNeeds"
-              class="text-sm text-center"
-              show-buttons
-              button-layout="horizontal"
-              fluid
-              :step="1"
-              :class="{
-                ...classes,
-              }"
-              v-on="useListenerForm(freeItemsBenefit_formValidations, 'pointNeeds')"
-            >
-              <template #decrementbutton>
-                <AppBaseSvg name="minus" class="!w-5 !h-5" />
-              </template>
-              <template #incrementbutton>
-                <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
-              </template>
-          </PrimeVueInputNumber>
-            <PrimeVueButton class="bg-transparent">
-              <template #icon>
-                <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
-              </template>
-            </PrimeVueButton>
-          </div> -->
         </AppBaseFormGroup>
 
-        <div class="flex flex-col gap-4">
-          <h1>Free Product Item</h1>
-          <PrimeVueIconField class="hidden lg:block">
-            <PrimeVueInputIcon>
-              <template #default>
-                <AppBaseSvg name="search" />
-              </template>
-            </PrimeVueInputIcon>
+        <div class="flex flex-col items-center gap-8">
+          <div class="flex flex-col gap-2 w-full">
+            <label for="product-picker" class="font-semibold">Free Product Item</label>
+            <PrimeVueAutoComplete
+              id="product-picker"
+              v-model="currentSelection"
+              :suggestions="suggestions"
+              :loading="productList_isLoading"
+              option-label="name"
+              placeholder="Search by Product Name"
+              :dropdown="true"
+              @complete="search"
+              @item-select="onProductSelect"
+            />
+          </div>
 
-            <PrimeVueInputText placeholder="Search by Product Name" class="text-sm w-full min-w-80" />
-          </PrimeVueIconField>
+          <div v-if="freeItemsBenefit_formData.freeItems.length > 0" class="w-full">
+            <ul class="flex flex-col gap-2">
+              <li
+                v-for="(product, index) in freeItemsBenefit_formData.freeItems"
+                :key="product.id"
+                class="flex items-center justify-between gap-2"
+              >
+                <div class="flex justify-between p-2 rounded-md border border-grayscale-10 w-full">
+                  <div>
+                    <h3 class="font-semibold">{{ product.name }}</h3>
+                    <span class="flex gap-2">
+                      <PrimeVueChip
+                        v-for="(item, index) in product.categories"
+                        :key="index"
+                        class="bg-primary-background text-text-disabled text-xs px-1.5 py-1"
+                      >
+                        {{ item }}
+                      </PrimeVueChip>
+                    </span>
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <AppBaseFormGroup
+                      v-slot="{ classes }"
+                      class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+                      label-for="name"
+                      :name="'Total Free Items'"
+                      spacing-bottom="mb-0"
+                      :validators="
+                        useFormValidateEach({
+                          validation: freeItemsBenefit_formValidations.freeItems,
+                          fieldIndex: index,
+                          field: 'quantity',
+                        })
+                      "
+                    >
+                      <label class="flex items-center">
+                        <span class="block text-sm font-medium leading-6 text-gray-900">Total Free Items</span>
+                        <span class="text-error-main">*</span>
+                      </label>
+                      <PrimeVueInputNumber
+                        v-model="product.quantity"
+                        class="text-center w-40"
+                        show-buttons
+                        button-layout="horizontal"
+                        fluid
+                        :min="1"
+                        :step="1"
+                        :class="{ ...classes }"
+                      >
+                        <template #decrementicon>
+                          <AppBaseSvg name="minus" class="!w-5 !h-5" />
+                        </template>
+                        <template #incrementicon>
+                          <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
+                        </template>
+                      </PrimeVueInputNumber>
+                    </AppBaseFormGroup>
+                  </div>
+                </div>
+
+                <PrimeVueButton
+                  icon="pi pi-times"
+                  severity="danger"
+                  text
+                  rounded
+                  aria-label="Remove"
+                  @click="removeFromPool(product)"
+                />
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
     </template>
@@ -124,12 +232,13 @@ const {
         <PrimeVueButton
           class="bg-primary border-none min-w-44 disabled:bg-grayscale-20"
           :disabled="freeItemsBenefit_formValidations.$invalid"
-          @click="loyaltyPointBenefit_onSubmitDialogFreeItems()"
-        >
-          <template #default>
-            <span class="font-semibold text-base text-white">Add</span>
-          </template>
-        </PrimeVueButton>
+          :label="isEdit ? 'Edit' : 'Add'"
+          @click="
+            isEdit
+              ? loyaltyPointBenefit_onSubmitEditDialogFreeItems()
+              : loyaltyPointBenefit_onSubmitDialogFreeItems()
+          "
+        />
       </section>
     </template>
   </AppBaseDialog>

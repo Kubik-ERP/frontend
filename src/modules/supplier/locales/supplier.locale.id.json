@@ -1,0 +1,56 @@
+{
+  "supplier": {
+    "title": "Master Supplier",
+    "list": {
+      "header": "Master Supplier",
+      "addNew": "Tambah Supplier Baru",
+      "search": "Cari ID atau Nama Supplier",
+      "columns": {
+        "supplierId": "ID Supplier",
+        "supplierName": "Nama Supplier",
+        "contactPerson": "Kontak Person",
+        "phoneNumber": "Nomor Telepon",
+        "email": "Email",
+        "address": "Alamat"
+      }
+    },
+    "form": {
+      "create": {
+        "title": "Tambah Supplier Baru",
+        "subtitle": "Isi detail untuk membuat supplier baru"
+      },
+      "edit": {
+        "title": "Edit Supplier",
+        "subtitle": "Perbarui informasi supplier"
+      },
+      "fields": {
+        "supplierName": "Nama Supplier",
+        "contactPerson": "Kontak Person",
+        "phoneNumber": "Nomor Telepon",
+        "email": "Email",
+        "address": "Alamat",
+        "bankInformation": "Informasi Bank (Opsional)",
+        "bankName": "Nama Bank",
+        "bankAccountName": "Nama Rekening",
+        "bankAccountNumber": "Nomor Rekening",
+        "taxIdNumber": "Nomor NPWP"
+      },
+      "placeholders": {
+        "supplierName": "Masukkan nama supplier",
+        "contactPerson": "Masukkan nama kontak person",
+        "phoneNumber": "Masukkan nomor telepon",
+        "email": "Masukkan alamat email",
+        "address": "Masukkan alamat supplier",
+        "bankName": "Masukkan nama bank",
+        "bankAccountName": "Masukkan nama rekening",
+        "bankAccountNumber": "Masukkan nomor rekening",
+        "taxIdNumber": "Masukkan nomor NPWP"
+      },
+      "buttons": {
+        "cancel": "Batal",
+        "create": "Buat Supplier",
+        "update": "Perbarui Supplier"
+      }
+    }
+  }
+}

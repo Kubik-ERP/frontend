@@ -111,19 +111,27 @@ export const LIST_SIDEBAR_MENUS = [
         subMenus: [
           {
             name: 'Master Item',
-            path: '/',
+            path: '/items',
           },
           {
             name: 'Master Supplier',
-            path: '/',
+            path: '/supplier',
           },
           {
             name: 'Master Brand',
-            path: '/',
+            path: '/brand',
           },
           {
             name: 'Inventory Categories',
-            path: '/',
+            path: '/inventory-category',
+          },
+          {
+            name: 'Stock Opname',
+            path: '/inventory/stock-opname',
+          },
+          {
+            name: 'Storage Location',
+            path: '/storage-location',
           },
         ],
       },
@@ -158,11 +166,11 @@ export const LIST_SIDEBAR_MENUS = [
           },
           {
             name: 'Working Hours',
-            path: '/',
+            path: '/staff/working-hours',
           },
           {
             name: 'Attendance',
-            path: '/',
+            path: '/staff/attendance',
           },
           {
             name: 'Commision Report',

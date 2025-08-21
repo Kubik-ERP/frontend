@@ -21,7 +21,7 @@ export interface ICashDrawerResponse {
 }
 export interface ICashDrawerData {
   items: ICashDrawerItem[];
-  meta: ICashDrawerPageMeta;
+  meta: ISecondPageMeta;
 }
 export interface ICashDrawerItem {
   id: string;
@@ -74,9 +74,3 @@ export interface ICashDrawerTransactionResponse {
   data: ICashDrawerTransactionData;
 }
 
-export interface ICashDrawerPageMeta {
-  total: number;
-  totalPages: number;
-  currentPage: string;
-  perPage: string;
-}

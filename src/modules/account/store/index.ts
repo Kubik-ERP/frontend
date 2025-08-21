@@ -1,17 +1,36 @@
 // Constants
-import { ACCOUNT_BANK_ATTACH_ENDPOINT, ACCOUNT_USER_BANKS_ENDPOINT } from '../constants';
+import {
+  ACCOUNT_BANK_ATTACH_ENDPOINT,
+  ACCOUNT_USER_BANKS_ENDPOINT,
+  ACCOUNT_STORE_DETAIL_FACILITY_ENDPOINT,
+} from '../constants';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
 
 // Plugins
 import httpClient from '@/plugins/axios';
-import { IAccountBankAccountFormData } from '../interfaces';
+import {
+  IAccountBankAccountFormData,
+  IStoreFacility_queryParams,
+  IStoreFacilityFormData,
+  IStoreFacilities,
+} from '../interfaces';
 
 export const useAccountStore = defineStore('account', {
   state: () => ({
     account_bank: null,
     account_isLoading: false,
+    account_storeFacilities: {
+      data: [],
+      meta: {
+        page: 1,
+        pageSize: 10,
+        total: 0,
+        totalPages: 1,
+      },
+    } as IStoreFacilities,
+    account_storeFacilities_isLoading: false,
   }),
   getters: {
     /**
@@ -102,6 +121,128 @@ export const useAccountStore = defineStore('account', {
         }
       } finally {
         this.account_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api account get store facilities.
+     * @url /facilities
+     * @method GET
+     * @access private
+     */
+
+    async fetchAccount_storeFacilities(
+      params: IStoreFacility_queryParams,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.account_storeFacilities_isLoading = true;
+
+      try {
+        const response = await httpClient.get(ACCOUNT_STORE_DETAIL_FACILITY_ENDPOINT, {
+          params,
+          ...requestConfigurations,
+        });
+        this.account_storeFacilities = response.data.data;
+        return response.data;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.account_storeFacilities_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api account update store facilities.
+     * @url /facilities
+     * @method PATCH
+     * @access private
+     */
+
+    async fetchAccount_updateStoreFacilities(
+      id: string,
+      payload: IStoreFacilityFormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.account_storeFacilities_isLoading = true;
+
+      try {
+        const response = await httpClient.patch(
+          `${ACCOUNT_STORE_DETAIL_FACILITY_ENDPOINT}/${id}`,
+          payload,
+          requestConfigurations,
+        );
+        return response.data;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.account_storeFacilities_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api account Delete store facilities.
+     * @url /facilities
+     * @method DELETE
+     * @access private
+     */
+
+    async fetchAccount_deleteStoreFacilities(
+      id: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.account_storeFacilities_isLoading = true;
+
+      try {
+        const response = await httpClient.delete(
+          `${ACCOUNT_STORE_DETAIL_FACILITY_ENDPOINT}/${id}`,
+          requestConfigurations,
+        );
+        return response.data;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.account_storeFacilities_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api account Create store facilities.
+     * @url /facilities
+     * @method POST
+     * @access private
+     */
+
+    async fetchAccount_createStoreFacilities(
+      payload: IStoreFacilityFormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.account_storeFacilities_isLoading = true;
+
+      try {
+        const response = await httpClient.post(ACCOUNT_STORE_DETAIL_FACILITY_ENDPOINT, payload, {
+          ...requestConfigurations,
+        });
+        return response.data;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.account_storeFacilities_isLoading = false;
       }
     },
   },
