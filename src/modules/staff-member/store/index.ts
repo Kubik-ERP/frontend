@@ -31,6 +31,8 @@ export const useStaffMemberStore = defineStore('staff-member', {
           title: null,
           employeesHasSocialMedia: [],
           employeesShift: [],
+          productCommissions: [],
+          voucherCommissions: [],
         },
       ],
       meta: {

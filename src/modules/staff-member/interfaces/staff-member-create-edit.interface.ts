@@ -58,7 +58,7 @@ export interface IStaffMemberCreateEditFormData {
   permission: string | null;
   socialMedia: IStaffMemberSocialMedia[];
   shift: IstaffWorkingHour[];
-  defaultCommissionProductType : string | null;
+  defaultCommissionProductType: string | null;
   defaultCommissionVoucherType: string | null;
   defaultCommissionVoucher: number | null;
   defaultCommissionProduct: number | null;
@@ -93,8 +93,10 @@ export interface ICommissionTableData {
 }
 
 export interface IStafPermission {
-  id: string;
-  name: string;
+  id?: string | null;
+  name?: string | null;
+  label?: string | null;
+  value?: string | null;
 }
 
 export interface IStaffMemberCreateEditProvided {

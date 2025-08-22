@@ -141,7 +141,10 @@ onMounted(async () => {
             :options="price_type_option"
             :pt="{ root: 'w-full', pcToggleButton: { root: 'flex-1' } }"
             :allow-empty="false"
-            @change="setPricingType()"
+            @change="
+              setPricingType();
+              calculateTotalPrice();
+            "
           />
           <PrimeVueInputNumber
             v-model="productBundling_formData.price"
@@ -154,6 +157,7 @@ onMounted(async () => {
             fluid
             name="price"
             :min="0"
+            :max="productBundling_formData.type === 'DISCOUNT' ? 100 : undefined"
             class="w-full"
             :class="{ ...classes }"
             @value-change="calculateTotalPrice()"
@@ -198,9 +202,7 @@ onMounted(async () => {
                           </PrimeVueChip>
                         </span>
                       </div>
-                      <span class="font-semibold">
-                        @ {{ useCurrencyFormat({ data: product.discountPrice }) }}
-                      </span>
+                      <span class="font-semibold"> @ {{ useCurrencyFormat({ data: product.price }) }} </span>
                     </div>
 
                     <div class="flex flex-col gap-1">
@@ -224,6 +226,10 @@ onMounted(async () => {
                           :min="1"
                           :step="1"
                           :class="{ ...classes }"
+                          @value-change="
+                            setPricingType();
+                            calculateTotalPrice();
+                          "
                         >
                           <template #decrementicon>
                             <AppBaseSvg name="minus" class="!w-5 !h-5" />
@@ -236,7 +242,7 @@ onMounted(async () => {
                     </div>
 
                     <span class="font-semibold text-right mt-4">
-                      Total : {{ useCurrencyFormat({ data: product.discountPrice * product.quantity }) }}
+                      Total : {{ useCurrencyFormat({ data: product.price * product.quantity }) }}
                     </span>
                   </div>
 
@@ -260,7 +266,7 @@ onMounted(async () => {
                   <span class="text-right font-semibold">{{
                     useCurrencyFormat({
                       data: productBundling_formData.products.reduce(
-                        (total, item) => total + item.discountPrice * item.quantity,
+                        (total, item) => total + item.price * item.quantity,
                         0,
                       ),
                     })
