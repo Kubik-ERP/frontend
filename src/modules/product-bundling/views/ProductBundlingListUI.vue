@@ -118,7 +118,7 @@ onMounted(() => {
           <span class="font-normal text-sm text-text-primary">
             {{
               useCurrencyFormat({
-                data: data.type === 'DISCOUNT' ? data.price - data.price * data.discount : data.price,
+                data: data.price,
               })
             }}
           </span>

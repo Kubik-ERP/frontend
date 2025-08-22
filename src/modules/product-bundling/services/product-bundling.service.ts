@@ -23,7 +23,8 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
   const store = useProductBundlingStore();
   const { httpAbort_registerAbort } = useHttpAbort();
 
-  const { productList_isLoading, productBundling_productList, productBundling_list,productBundling_isLoading } = storeToRefs(store);
+  const { productList_isLoading, productBundling_productList, productBundling_list, productBundling_isLoading } =
+    storeToRefs(store);
 
   const productBundling_grandTotal = ref<number>(0);
 
@@ -72,24 +73,12 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
     } else if (productBundling_formData.type === 'DISCOUNT') {
       productBundling_formData.price = 0;
     } else if (productBundling_formData.type === 'CUSTOM') {
-      productBundling_formData.price = 0;
+      productBundling_formData.price = productBundling_formData.products.reduce(
+        (total, item) => total + item.discountPrice * item.quantity,
+        0,
+      );
     }
   };
-
-  // watch(
-  //   () => productBundling_formData.type,
-  //   () => {
-  //     setPricingType();
-  //   },
-  //   { deep: true, immediate: true },
-  // );
-  // watch(
-  //   [() => productBundling_formData.products, () => productBundling_formData.price],
-  //   () => {
-  //     calculateTotalPrice();
-  //   },
-  //   { deep: true, immediate: true },
-  // );
 
   const resetFormData = () => {
     productBundling_formData.id = null;
@@ -152,22 +141,62 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
     },
     { deep: true },
   );
-  const productBundling_fetchCreateProductBundlingList = async (): Promise<void> => {
-    try {
-      const payload = {
+
+  // convert form data to payload
+  const convertFormDataToPayload = () => {
+    let payload;
+    if (productBundling_formData.type === 'TOTAL_ITEMS') {
+      payload = {
+        id: productBundling_formData.id || null,
         name: productBundling_formData.name,
         description: productBundling_formData.description,
         products: productBundling_formData.products.map(p => ({ productId: p.id, quantity: p.quantity })),
         type: productBundling_formData.type,
-        price:
-          productBundling_formData.type === 'DISCOUNT'
-            ? productBundling_formData.products.reduce(
-                (total, item) => total + item.discountPrice * item.quantity,
-                0,
-              )
-            : productBundling_formData.price,
-        discount: productBundling_formData.type === 'DISCOUNT' ? productBundling_formData.price / 100 : null,
+        price: null,
+        discount: null,
       };
+    } else if (productBundling_formData.type === 'DISCOUNT') {
+      payload = {
+        id: productBundling_formData.id || null,
+        name: productBundling_formData.name,
+        description: productBundling_formData.description,
+        products: productBundling_formData.products.map(p => ({ productId: p.id, quantity: p.quantity })),
+        type: productBundling_formData.type,
+        price: null,
+        discount: productBundling_formData.price,
+      };
+    } else if (productBundling_formData.type === 'CUSTOM') {
+      payload = {
+        id: productBundling_formData.id || null,
+        name: productBundling_formData.name,
+        description: productBundling_formData.description,
+        products: productBundling_formData.products.map(p => ({ productId: p.id, quantity: p.quantity })),
+        type: productBundling_formData.type,
+        price: productBundling_formData.price,
+        discount: null,
+      };
+    } else {
+      payload = {
+        id: null,
+        name: '',
+        description: '',
+        products: [],
+        type: '',
+        price: null,
+        discount: null,
+      };
+    }
+    return payload;
+  };
+
+  const productBundling_fetchCreateProductBundlingList = async (): Promise<void> => {
+    try {
+      convertFormDataToPayload();
+      const payload = convertFormDataToPayload();
+      console.log(
+        '🚀 ~ constproductBundling_fetchCreateProductBundlingList= ~ payload:',
+        JSON.stringify(payload, null, 2),
+      );
 
       await store.productBundling_fetchCreateProductBundlingList(payload, {
         ...httpAbort_registerAbort('LOYALTY_POINT_BENEFIT_PRODUCT_LIST'),
@@ -261,7 +290,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
       productBundling_formData.description = data.description;
       productBundling_formData.type = data.type;
       if (data.type === 'DISCOUNT') {
-        productBundling_formData.price = (data?.discount || 0) * 100;
+        productBundling_formData.price = (data?.discount || 0);
       } else {
         productBundling_formData.price = data.price;
       }
@@ -287,21 +316,8 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
 
   const productBundling_fetchUpdateProductBundlingList = async (): Promise<void> => {
     try {
-      const payload = {
-        id: productBundling_formData.id,
-        name: productBundling_formData.name,
-        description: productBundling_formData.description,
-        products: productBundling_formData.products.map(p => ({ productId: p.id, quantity: p.quantity })),
-        type: productBundling_formData.type,
-        price:
-          productBundling_formData.type === 'DISCOUNT'
-            ? productBundling_formData.products.reduce(
-                (total, item) => total + item.discountPrice * item.quantity,
-                0,
-              )
-            : productBundling_formData.price,
-        discount: productBundling_formData.type === 'DISCOUNT' ? productBundling_formData.price / 100 : null,
-      };
+      convertFormDataToPayload();
+      const payload = convertFormDataToPayload();
       await store.productBundling_fetchUpdateProductBundlingList(payload, {
         ...httpAbort_registerAbort('LOYALTY_POINT_BENEFIT_PRODUCT_LIST'),
         paramsSerializer: useParamsSerializer,
