@@ -4,7 +4,7 @@ import { useRouter, useRoute } from 'vue-router';
 
 import { reactive, computed } from 'vue';
 
-import { required, numeric, minLength, maxLength } from '@vuelidate/validators';
+import { required, numeric, minLength, maxLength, email } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 
 export const useCashierSelfOrderService = () => {
@@ -16,6 +16,8 @@ export const useCashierSelfOrderService = () => {
   const { cashierSelfOrder_isLoadingSignIn, cashierSelfOrder_isLoadingSignUp } = storeToRefs(store);
 
   const cashierSelfOrder_signInForm = reactive({
+    name: '',
+    email: '',
     code: '+62',
     number: '',
   });
@@ -27,6 +29,8 @@ export const useCashierSelfOrderService = () => {
   });
 
   const cashierSelfOrder_formRulesSignIn = computed(() => ({
+    name: { required },
+    email: { email },
     code: { required },
     number: { required, numeric, minLength: minLength(10), maxLength: maxLength(15) },
   }));
@@ -71,12 +75,14 @@ export const useCashierSelfOrderService = () => {
     }
 
     try {
-      const response = await store.cashierSelfOrder_handleSignIn({
+      const response = await store.cashierSelfOrder_handleSignUp({
         ...cashierSelfOrder_signInForm,
         storeId: getStoreId(),
       });
 
       localStorage.setItem('userinfo', JSON.stringify(response.data));
+
+      localStorage.setItem('shoppingCart', JSON.stringify({}));
 
       const redirectPath = (route.query.redirect as string) || '/self-order';
 
