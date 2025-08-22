@@ -242,8 +242,7 @@ export const useCashierStore = defineStore('cashier', {
     ): Promise<ICashierResponseProcessCheckout> {
       try {
         const response = await httpClient.post<ICashierResponseProcessCheckout>(
-          // (payload.route.name === 'self-order' ? '/self-order' : '') +
-          CASHIER_ENDPOINT_PAYMENT_PROCESS,
+          (payload.route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_PROCESS,
           payload,
           withStoreHeader(payload.route, requestConfigurations),
         );
@@ -280,8 +279,7 @@ export const useCashierStore = defineStore('cashier', {
     ): Promise<ICashierResponseMidtransQrisPayment> {
       try {
         const response = await httpClient.post<ICashierResponseMidtransQrisPayment>(
-          // (payload.route.name === 'self-order' ? '/self-order' : '') +
-          CASHIER_ENDPOINT_PAYMENT_INSTANT,
+          (payload.route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_INSTANT,
           payload,
 
           withStoreHeader(payload.route, requestConfigurations),
@@ -313,7 +311,6 @@ export const useCashierStore = defineStore('cashier', {
     ): Promise<ICashierResponseMidtransQrisPayment> {
       try {
         const response = await httpClient.post<ICashierResponseMidtransQrisPayment>(
-          // (payload.route.name === 'self-order' ? '/self-order' : '') +
           CASHIER_ENDPOINT_PAYMENT_UNPAID,
           payload,
 
