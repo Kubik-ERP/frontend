@@ -5,13 +5,27 @@ import {
   INVOICE_SENT_EMAIL_ENDPOINT,
 } from '../constants/invoiceApi.constant';
 import { IInvoiceResponseInvoice, IInvoiceResponseTableKitchenTicket } from '../interfaces';
+import { RouteLocationNormalizedLoadedGeneric } from 'vue-router';
 
 export const useInvoiceStore = defineStore('invoice', {
   state: () => ({}),
   actions: {
-    invoice_fetchInvoiceById: async (invoiceId: string): Promise<IInvoiceResponseInvoice> => {
+    invoice_fetchInvoiceById: async (
+      invoiceId: string,
+      route: RouteLocationNormalizedLoadedGeneric,
+    ): Promise<IInvoiceResponseInvoice> => {
       try {
-        const response = await httpClient.get<IInvoiceResponseInvoice>(INVOICE_BASE_ENDPOINT + '/' + invoiceId);
+        const response = await httpClient.get<IInvoiceResponseInvoice>(
+          (route.name === 'self-order' || route.name === 'self-order-invoice' ? '/self-order' : '') +
+            INVOICE_BASE_ENDPOINT +
+            '/' +
+            invoiceId,
+          {
+            headers: {
+              'X-Store-Id': (route.query.storeId as string) || '',
+            },
+          },
+        );
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
