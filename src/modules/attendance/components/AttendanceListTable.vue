@@ -321,7 +321,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
                   </PrimeVueButton>
 
                   <PrimeVuePopover
-                    :ref="el => setPopoverRef(record.id, el)"
+                    :ref="(el: Element | ComponentPublicInstance | null) => setPopoverRef(record.id, el)"
                     :pt="{
                       content: 'p-0',
                     }"
@@ -429,7 +429,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
                   </PrimeVueButton>
 
                   <PrimeVuePopover
-                    :ref="el => setExpansionPopoverRef(record.id, shift.id, el)"
+                    :ref="(el: Element | ComponentPublicInstance | null) => setExpansionPopoverRef(record.id, shift.id, el)"
                     :pt="{
                       content: 'p-0',
                     }"
