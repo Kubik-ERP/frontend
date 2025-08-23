@@ -43,13 +43,19 @@ eventBus.on('AppBaseDialog', (params: unknown) => {
 </script>
 
 <template>
-  <PrimeVueDialog class="p-6" :closable="dialogProps.isUsingClosableButton" :draggable="dialogProps.isDraggable"
-    :dismissable-mask="false" :modal="dialogProps.isUsingBackdrop" :visible="dialogProps.isOpen"
-    :style="`width: ${dialogProps.width}`" :pt="{
-      content: 'px-0',
-      header: 'px-0 pt-0',
-      footer: 'p-0',
-    }">
+  <PrimeVueDialog
+    :closable="dialogProps.isUsingClosableButton"
+    :draggable="dialogProps.isDraggable"
+    :dismissable-mask="false"
+    :modal="dialogProps.isUsingBackdrop"
+    :visible="dialogProps.isOpen"
+    :style="`width: ${dialogProps.width}`"
+    :pt="{
+      content: 'p-6',
+      header: 'p-6',
+      footer: 'p-6',
+    }"
+  >
     <template #header>
       <slot name="header" />
     </template>

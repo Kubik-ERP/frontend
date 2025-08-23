@@ -198,7 +198,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
             <th
               v-for="column in attendance_columns"
               :key="column.value"
-              class="px-4 py-3 text-left text-sm font-medium text-gray-700"
+              class="px-4 py-3 text-center text-sm font-medium text-gray-700"
             >
               {{ column.label }}
             </th>
@@ -326,7 +326,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
                   </PrimeVueButton>
 
                   <PrimeVuePopover
-                    :ref="el => setPopoverRef(record.id, el)"
+                    :ref="(el: Element | ComponentPublicInstance | null) => setPopoverRef(record.id, el)"
                     :pt="{
                       content: 'p-0',
                     }"
@@ -434,7 +434,10 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
                   </PrimeVueButton>
 
                   <PrimeVuePopover
-                    :ref="el => setExpansionPopoverRef(record.id, shift.id, el)"
+                    :ref="
+                      (el: Element | ComponentPublicInstance | null) =>
+                        setExpansionPopoverRef(record.id, shift.id, el)
+                    "
                     :pt="{
                       content: 'p-0',
                     }"
@@ -474,8 +477,5 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
         </tbody>
       </table>
     </div>
-
-    <!-- Create Dialog -->
-    <!-- <AttendanceListCreateDialog /> -->
   </section>
 </template>

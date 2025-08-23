@@ -1,0 +1,1 @@
+export const PRODUCT_BUNDLING_BASE_ENDPOINT = '/product-bundling'

@@ -56,11 +56,11 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
       permission: [],
       title: [],
     }),
-    staffMemberList_typesOfUserPermissions: [
+    staffMemberList_typesOfUserPermissions: ref([
       { label: 'Owner', value: 'Owner' },
       { label: 'Manager', value: 'Manager' },
       { label: 'Sales Associate', value: 'Sales Associate' },
-    ],
+    ]),
     staffMemberList_dropdownItemTitles: staffMember_listDropdownItemTitles,
     staffMemberList_deleteStaffMember: async () => {},
     staffMemberList_onChangePage: () => {},
