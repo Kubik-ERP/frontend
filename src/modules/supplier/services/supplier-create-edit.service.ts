@@ -26,6 +26,7 @@ export const useSupplierCreateEditService = () => {
    */
   const supplierForm_formData = reactive<ISupplierCreatePayload>({
     supplierName: '',
+    supplierCode: '',
     contactPerson: '',
     phoneNumber: '',
     email: '',
@@ -105,17 +106,22 @@ export const useSupplierCreateEditService = () => {
     try {
       if (supplierForm_isEditMode.value) {
         // Update existing supplier
+        supplierForm_formData.supplierCode =
+          supplierForm_formData.supplierCode === '' ? true : supplierForm_formData.supplierCode;
         await store.supplier_update(route.params.id as string, supplierForm_formData as ISupplierUpdatePayload, {
           ...httpAbort_registerAbort(`SUPPLIER_UPDATE_${route.params.id}`),
         });
       } else {
-        // Create new supplier
+          supplierForm_formData.supplierCode =
+          supplierForm_formData.supplierCode === '' ? true : supplierForm_formData.supplierCode;
         await store.supplier_create(supplierForm_formData, {
           ...httpAbort_registerAbort('SUPPLIER_CREATE'),
         });
       }
 
-      const meesage = supplierForm_isEditMode.value ? 'Supplier has been updated successfully' : 'Supplier has been created successfully';
+      const meesage = supplierForm_isEditMode.value
+        ? 'Supplier has been updated successfully'
+        : 'Supplier has been created successfully';
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,

@@ -15,11 +15,13 @@ export const useStorageLocationActionService = (): IStorageLocationActionProvide
 
   const storageLocation_formData = ref<IStorageLocationFormData>({
     name: '',
+    code: '',
     notes: '',
   });
 
   const storageLocation_createUpdatePayload = ref<IStorageLocationPayload>({
     name: '',
+    code: '',
     notes: '',
   });
 
@@ -53,6 +55,7 @@ export const useStorageLocationActionService = (): IStorageLocationActionProvide
     try {
       // Mapping payload ke data API
       storageLocation_createUpdatePayload.value = {
+        code: payload.code === '' || payload.code === null ? true : payload.code,
         name: payload.name?.trim(),
         notes: payload.notes?.trim(),
       };

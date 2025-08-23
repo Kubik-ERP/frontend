@@ -10,11 +10,13 @@ export const useBrandActionService = (): IBrandActionProvided => {
   const store = useBrandStore();
   const brand_formOnLoading = ref<boolean>(false);
   const brand_formData = ref<IBrandFormData>({
+    brandCode: '',
     brandName: '',
     notes: '',
   });
 
   const brand_createUpdatePayload = ref<IBrandCreateUpdatePayload>({
+    brandCode: '',
     brandName: '',
     notes: '',
   });
@@ -39,8 +41,9 @@ export const useBrandActionService = (): IBrandActionProvided => {
   const brand_onSubmit = async (payload: IBrandFormData, mode: 'create' | 'edit', id?: string) => {
     brand_formOnLoading.value = true;
     try {
-      // Mapping payload ke data yang dikirim ke API
+      const brandCodeAuto = payload.brandCode === '' ? true : payload.brandCode
       brand_createUpdatePayload.value = {
+        brandCode: brandCodeAuto,
         brandName: payload.brandName?.trim(),
         notes: payload.notes?.trim(),
       };

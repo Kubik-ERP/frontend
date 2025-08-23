@@ -65,6 +65,13 @@ const {
             <i class="pi pi-plus text-sm"></i>
             Create Item
           </PrimeVueButton>
+          <PrimeVueButton
+            class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"
+            @click="inventoryItems_onCreate"
+          >
+            <i class="pi pi-plus text-sm"></i>
+            Import Item
+          </PrimeVueButton>
         </div>
       </template>
 

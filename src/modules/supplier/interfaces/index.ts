@@ -56,6 +56,7 @@ export interface ISupplierDetailResponse {
 
 export interface ISupplierCreatePayload {
   supplierName: string;
+  supplierCode: string | boolean | null;
   contactPerson: string;
   phoneNumber: string;
   email: string;
@@ -68,6 +69,7 @@ export interface ISupplierCreatePayload {
 
 export interface ISupplierUpdatePayload {
   supplierName: string;
+  supplierCode: string | boolean | null;
   contactPerson: string;
   phoneNumber: string;
   email: string;

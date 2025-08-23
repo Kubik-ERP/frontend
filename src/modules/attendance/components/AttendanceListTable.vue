@@ -2,7 +2,7 @@
 import type { ComponentPublicInstance } from 'vue';
 
 // Components
-import AttendanceListCreateDialog from './AttendanceListCreateDialog.vue';
+// import AttendanceListCreateDialog from './AttendanceListCreateDialog.vue';
 
 // Interfaces
 import type { IAttendanceListProvided } from '../interfaces';
