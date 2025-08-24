@@ -86,7 +86,7 @@ export interface IProductBundlingPayload {
   description: string;
   discount?: number | null;
   type: string;
-  price: number;
+  price?: number | null;
   products: {
     productId: string;
     quantity: number;

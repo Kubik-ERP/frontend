@@ -37,8 +37,14 @@ provide('accountStoreDetail', {
   accountStoreDetail_storeTables,
 });
 
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
 onMounted(() => {
-  accountStoreDetail_fetchOutletStoreTable();
+  if (route.name !== 'self-order') {
+    accountStoreDetail_fetchOutletStoreTable();
+  }
 });
 
 /**

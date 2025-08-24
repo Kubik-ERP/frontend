@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useCashierSelfOrderService } from '../../services/useCashierSelfOrder.service';
 import { COUNTRY_INFORMATIONS } from '@/app/constants/country.constant';
-import { useRoute } from 'vue-router';
 
 // Define the interface for country information
 interface CountryInformation {
@@ -15,8 +14,6 @@ interface CountryInformation {
 
 const { cashierSelfOrder_handleSignIn, cashierSelfOrder_signInForm, cashierSelfOrder_formValidationsSignIn } =
   useCashierSelfOrderService();
-
-const route = useRoute();
 
 // Helper function for country option labels
 const getCountryOptionLabel = (value: CountryInformation): string => {
@@ -32,7 +29,49 @@ const getCountryOptionLabel = (value: CountryInformation): string => {
         <span class="text-xl font-bold">Hi! Welcome Back 👋</span>
       </div>
 
-      <div class="flex flex-col gap-2 w-full">
+      <div class="flex flex-col w-full">
+        <div class="flex flex-col gap-2">
+          <PrimeVuelabel for="username" class="text-xs">Username</PrimeVuelabel>
+
+          <AppBaseFormGroup
+            v-slot="{ classes }"
+            class-label="flex flex-col w-full text-sm font-medium leading-6 text-gray-900 w-full"
+            label-for="username"
+            name="username"
+            :validators="cashierSelfOrder_formValidationsSignIn.name"
+          >
+            <PrimeVueInputText
+              v-model="cashierSelfOrder_signInForm.name"
+              size="small"
+              aria-describedby="username-help"
+              class="w-full"
+              :class="classes"
+              v-on="useListenerForm(cashierSelfOrder_formValidationsSignIn, 'name')"
+            />
+          </AppBaseFormGroup>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <PrimeVuelabel for="username" class="text-xs">Email</PrimeVuelabel>
+
+          <AppBaseFormGroup
+            v-slot="{ classes }"
+            class-label="flex flex-col w-full text-sm font-medium leading-6 text-gray-900 w-full"
+            label-for="username"
+            name="username"
+            :validators="cashierSelfOrder_formValidationsSignIn.email"
+          >
+            <PrimeVueInputText
+              v-model="cashierSelfOrder_signInForm.email"
+              size="small"
+              aria-describedby="username-help"
+              class="w-full"
+              :class="classes"
+              v-on="useListenerForm(cashierSelfOrder_formValidationsSignIn, 'email')"
+            />
+          </AppBaseFormGroup>
+        </div>
+
         <span class="text-xs text-[#323232]">Phone Number</span>
         <div class="grid grid-cols-7 gap-2 items-end w-full">
           <div class="col-span-2 flex flex-col gap-1 h-16">
@@ -75,7 +114,7 @@ const getCountryOptionLabel = (value: CountryInformation): string => {
             <AppBaseFormGroup
               v-slot="{ classes }"
               class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-              label-for="email"
+              label-for="number"
               :name="useLocalization('authentication.sign-in.form.email')"
               :validators="cashierSelfOrder_formValidationsSignIn.number"
             >
@@ -98,18 +137,6 @@ const getCountryOptionLabel = (value: CountryInformation): string => {
           @click="cashierSelfOrder_handleSignIn()"
           >Sign In</PrimeVueButton
         >
-        <div class="border-[0.5px] flex w-[250px] border-text-disabled"></div>
-        <div class="text-xs">
-          Doesn’t have an account?
-          <router-link
-            :to="{
-              name: 'create-self-order',
-              query: { redirect: route.query.redirect },
-            }"
-            class="cursor-pointer text-primary"
-            >Create Account</router-link
-          >
-        </div>
       </div>
     </div>
 

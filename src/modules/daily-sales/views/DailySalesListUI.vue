@@ -166,9 +166,18 @@ const {
         </template>
 
         <template v-else-if="column.value === 'grandTotal'">
-          <span class="font-normal text-sm text-text-primary">{{
+          <span v-if="data[column.value]" class="font-normal text-sm text-text-primary">{{
             useCurrencyFormat({
               data: data[column.value],
+            })
+          }}</span>
+          <span v-else class="font-normal text-sm text-text-primary">{{
+            useCurrencyFormat({
+              data:
+                data['subtotal'] -
+                (data['discountAmount'] || 0) +
+                (data['serviceChargeAmount'] || 0) +
+                (data['taxAmount'] || 0),
             })
           }}</span>
         </template>

@@ -2,7 +2,7 @@
 import { IMidtransQrisPaymentData } from '@/modules/cashier/interfaces/cashier-response';
 
 // Router
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 // Props
 const props = defineProps<{
@@ -21,6 +21,8 @@ const emit = defineEmits<{
 const isDevelopmentMode = import.meta.env.VITE_APP_MODE === 'development';
 
 const router = useRouter();
+
+const route = useRoute();
 </script>
 
 <template>
@@ -44,12 +46,14 @@ const router = useRouter();
             <div class="flex flex-col gap-2">
               <div class="flex justify-between">
                 <div class="flex flex-col gap-2 items-center">
-                  <AppBaseSvg
-                    name="chevron-left"
-                    class="!h-4 !w-4 block lg:hidden cursor-pointer"
-                    @click="closeCallback"
-                  />
-                  <span class="text-2xl font-semibold">Payment</span>
+                  <div class="flex lg:flex-col gap-2 items-center">
+                    <AppBaseSvg
+                      name="chevron-left"
+                      class="!h-4 !w-4 block lg:hidden cursor-pointer"
+                      @click="closeCallback"
+                    />
+                    <span class="text-2xl font-semibold">Payment</span>
+                  </div>
 
                   <AppBaseImage
                     v-for="(item, index) in props.modalPlaceOrderDetail.data.actions"
@@ -76,7 +80,10 @@ const router = useRouter();
               label="Close"
               @click="
                 router.push({
-                  name: 'invoice',
+                  name:
+                    route.name === 'cashier' || route.name === 'cashier-order-edit'
+                      ? 'invoice'
+                      : 'self-order-invoice',
                   params: {
                     invoiceId: props.modalPlaceOrderDetail.data.orderId,
                   },

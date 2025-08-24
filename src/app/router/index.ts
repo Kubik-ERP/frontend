@@ -12,6 +12,8 @@ import { useAuthenticationStore } from '@/modules/authentication/store';
 import { useOutletStore } from '@/modules/outlet/store';
 import { useRbacStore } from '@/app/store/rbac.store';
 
+export let router: Router
+
 /**
  * Autoload route
  * Will read file with prefix .route.ts

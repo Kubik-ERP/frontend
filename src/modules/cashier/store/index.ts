@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
 
+import { RouteLocationNormalizedLoadedGeneric, useRoute } from 'vue-router';
+
 // Constants
 import {
   CASHIER_BASE_INVOICE_ENDPOINT,
@@ -34,6 +36,22 @@ import { ICashierSelected, ICashierStateStore } from '../interfaces';
 import httpClient from '@/plugins/axios';
 import { ICustomerCreateResponse } from '@/modules/customer/interfaces/CustomersInterface';
 
+function withStoreHeader(
+  route: RouteLocationNormalizedLoadedGeneric,
+  extra: AxiosRequestConfig = {},
+): AxiosRequestConfig {
+  if (route.name === 'self-order') {
+    return {
+      ...extra,
+      headers: {
+        ...(extra.headers || {}),
+        'X-STORE-ID': route.query.storeId as string,
+      },
+    };
+  }
+  return extra;
+}
+
 export const useCashierStore = defineStore('cashier', {
   state: (): ICashierStateStore => ({
     cashierProduct_selectedProduct: [],
@@ -52,10 +70,18 @@ export const useCashierStore = defineStore('cashier', {
      * @method GET
      * @access public
      */
-    async cashierProduct_fetchSearch(searchData: string): Promise<ICashierProduct[]> {
+    async cashierProduct_fetchSearch(
+      searchData: string,
+      route: RouteLocationNormalizedLoadedGeneric,
+    ): Promise<ICashierProduct[]> {
       try {
         const response = await httpClient.get<ICashierProductResponse>(
-          CASHIER_ENDPOINT_PRODUCTS + '/' + searchData,
+          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_PRODUCTS + '/' + searchData,
+          {
+            headers: {
+              'X-STORE-ID': route.query.storeId as string,
+            },
+          },
         );
 
         return Promise.resolve(response.data.data);
@@ -75,12 +101,17 @@ export const useCashierStore = defineStore('cashier', {
      * @access public
      */
     async cashierProduct_fetchCategory(
-      requestConfigurations: AxiosRequestConfig = {},
+      route: RouteLocationNormalizedLoadedGeneric,
+      params: {
+        page?: number;
+        limit?: number;
+      },
     ): Promise<ICashierCategoriesResponse> {
       try {
-        const response = await httpClient.get<ICashierCategoriesResponse>(CASHIER_ENDPOINT_CATEGORIES, {
-          ...requestConfigurations,
-        });
+        const response = await httpClient.get<ICashierCategoriesResponse>(
+          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_CATEGORIES,
+          withStoreHeader(route, { params }),
+        );
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -100,14 +131,19 @@ export const useCashierStore = defineStore('cashier', {
      */
     async cashierProduct_fetchCategoryByID(
       categoryId: string,
-      requestConfigurations: AxiosRequestConfig = {},
+      route: RouteLocationNormalizedLoadedGeneric,
+      params: {
+        page?: number;
+        limit?: number;
+      },
     ): Promise<ICashierCategoriesHasProductResponse> {
       try {
         const response = await httpClient.get<ICashierCategoriesHasProductResponse>(
-          CASHIER_ENDPOINT_CATEGORIES + '/' + categoryId,
-          {
-            ...requestConfigurations,
-          },
+          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_CATEGORIES + '/' + categoryId,
+
+          withStoreHeader(route, {
+            params,
+          }),
         );
 
         return Promise.resolve(response.data);
@@ -131,9 +167,14 @@ export const useCashierStore = defineStore('cashier', {
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<ICashierProduct[]> {
       try {
-        const response = await httpClient.get<ICashierProduct[]>(CASHIER_ENDPOINT_CATEGORIES + '/' + categoryId, {
-          ...requestConfigurations,
-        });
+        const route = useRoute();
+
+        const response = await httpClient.get<ICashierProduct[]>(
+          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_CATEGORIES + '/' + categoryId,
+          {
+            ...requestConfigurations,
+          },
+        );
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -152,16 +193,22 @@ export const useCashierStore = defineStore('cashier', {
      * @access public
      */
     async cashierProduct_calculateEstimation(
-      payload: unknown,
+      payload: {
+        voucherId?: string | null;
+        products: unknown;
+        route?: RouteLocationNormalizedLoadedGeneric;
+        orderType?: string;
+      },
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<ICashierResponseCalulateEstimation> {
       try {
         const response = await httpClient.post<ICashierResponseCalulateEstimation>(
-          CASHIER_ENDPOINT_PAYMENT_CALCULATE_ESTIMATION,
+          (payload.route?.name === 'self-order' || payload.route?.name === 'self-order-invoice'
+            ? '/self-order'
+            : '') + CASHIER_ENDPOINT_PAYMENT_CALCULATE_ESTIMATION,
           payload,
-          {
-            ...requestConfigurations,
-          },
+
+          withStoreHeader(payload.route || useRoute(), requestConfigurations),
         );
 
         return Promise.resolve(response.data);
@@ -181,16 +228,23 @@ export const useCashierStore = defineStore('cashier', {
      * @access public
      */
     async cashierProduct_paymentProcess(
-      payload: unknown,
+      payload: {
+        products: ICashierSelected[];
+        orderType: string;
+        paymentMethodId: string;
+        vouchers: string;
+        customerId: string;
+        tableCode: string;
+        storeId: string;
+        route: RouteLocationNormalizedLoadedGeneric;
+      },
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<ICashierResponseProcessCheckout> {
       try {
         const response = await httpClient.post<ICashierResponseProcessCheckout>(
-          CASHIER_ENDPOINT_PAYMENT_PROCESS,
+          (payload.route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_PROCESS,
           payload,
-          {
-            ...requestConfigurations,
-          },
+          withStoreHeader(payload.route, requestConfigurations),
         );
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -209,16 +263,26 @@ export const useCashierStore = defineStore('cashier', {
      * @access public
      */
     async cashierProduct_paymentInstant(
-      payload: unknown,
+      payload: {
+        products: ICashierSelected[];
+        orderType: string;
+        provider: string;
+        paymentMethodId: string;
+        customerId: string | undefined;
+        tableCode: string;
+        storeId: string;
+        paymentAmount: number | null;
+        voucherId: string | null;
+        route: RouteLocationNormalizedLoadedGeneric;
+      },
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<ICashierResponseMidtransQrisPayment> {
       try {
         const response = await httpClient.post<ICashierResponseMidtransQrisPayment>(
-          CASHIER_ENDPOINT_PAYMENT_INSTANT,
+          (payload.route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_INSTANT,
           payload,
-          {
-            ...requestConfigurations,
-          },
+
+          withStoreHeader(payload.route, requestConfigurations),
         );
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -241,6 +305,7 @@ export const useCashierStore = defineStore('cashier', {
         provider: string;
         invoiceId: string;
         paymentMethodId: string;
+        route: RouteLocationNormalizedLoadedGeneric;
       },
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<ICashierResponseMidtransQrisPayment> {
@@ -248,9 +313,8 @@ export const useCashierStore = defineStore('cashier', {
         const response = await httpClient.post<ICashierResponseMidtransQrisPayment>(
           CASHIER_ENDPOINT_PAYMENT_UNPAID,
           payload,
-          {
-            ...requestConfigurations,
-          },
+
+          withStoreHeader(payload.route, requestConfigurations),
         );
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -270,13 +334,15 @@ export const useCashierStore = defineStore('cashier', {
      */
     async cashierProduct_fetchPaymentMethod(
       isSelfOrder: boolean,
+      route: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<ICashierOrderSummaryPaymentMethodResponse> {
       try {
         const response = await httpClient.get<ICashierOrderSummaryPaymentMethodResponse>(
-          CASHIER_ENDPOINT_PAYMENT_METHOD,
+          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_METHOD,
           {
-            ...requestConfigurations,
+            ...withStoreHeader(route, requestConfigurations),
+
             params: {
               ...(requestConfigurations.params || {}),
               isSelfOrder,
@@ -301,13 +367,19 @@ export const useCashierStore = defineStore('cashier', {
      * @access public
      */
     async cashierProduct_simulatePayment(
-      payload: unknown,
+      payload: {
+        order_id: string;
+        route: RouteLocationNormalizedLoadedGeneric;
+      },
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<unknown> {
       try {
-        const response = await httpClient.post<unknown>(CASHIER_ENDPOINT_SIMULATE_PAYMENT, payload, {
-          ...requestConfigurations,
-        });
+        const response = await httpClient.post<unknown>(
+          CASHIER_ENDPOINT_SIMULATE_PAYMENT,
+          payload,
+
+          withStoreHeader(payload.route, requestConfigurations),
+        );
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
