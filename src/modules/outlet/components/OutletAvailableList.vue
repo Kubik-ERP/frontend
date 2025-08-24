@@ -19,7 +19,7 @@ const {
       v-for="(outlet, outletIndex) in outletList_lists"
       id="outlet"
       :key="`outlet-${outletIndex}`"
-      class="col-span-2 relative inset-0 z-0 flex flex-col items-center gap-4 p-2 rounded-lg cursor-pointer basic-smooth-animation hover:bg-primary-background hover:[&>a]:opacity-100 px-4 py-6"
+      class="col-span-5 lg:col-span-2 relative inset-0 z-0 flex flex-col items-center gap-4 p-2 rounded-lg cursor-pointer basic-smooth-animation hover:bg-primary-background hover:[&>a]:opacity-100 px-4 py-6"
       :class="outletList_dynamicClassOfSelectedOutlet(outlet)"
       @click="outletList_onSelectOutlet(outlet)"
     >
@@ -53,7 +53,7 @@ const {
 
     <RouterLink
       :to="{ name: 'outlet.create' }"
-      class="col-span-2 relative inset-0 z-0 flex flex-col items-center justify-center gap-4 cursor-pointer basic-smooth-animation hover:bg-primary-background hover:[&>#box-outlet]:!bg-white py-4"
+      class="col-span-5 lg:col-span-2 relative inset-0 z-0 flex flex-col items-center justify-center gap-4 cursor-pointer basic-smooth-animation hover:bg-primary-background hover:[&>#box-outlet]:!bg-white py-4"
     >
       <section id="box-outlet" class="basic-smooth-animation bg-primary-background p-5 rounded-full">
         <AppBaseSvg name="store" class="w-6 h-6" />

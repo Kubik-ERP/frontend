@@ -61,22 +61,24 @@ const { account_profile, account_onEditBankAccount, account_onSetUpBankAccount }
       </template>
 
       <template v-else>
-        <section id="information" class="flex flex-col gap-2">
-          <h6 class="font-bold text-primary text-lg">
-            {{ useLocalization('account.havenot-added-bank-account') }}
-          </h6>
+        <div class="flex flex-col w-full gap-4">
+          <section id="information" class="flex flex-col gap-2">
+            <h6 class="font-bold text-primary text-baes lg:text-lg">
+              {{ useLocalization('account.havenot-added-bank-account') }}
+            </h6>
 
-          <p class="font-normal text-grayscale-70 text-base">
-            {{ useLocalization('account.havenot-added-bank-account-description') }}
-          </p>
-        </section>
+            <p class="font-normal text-grayscale-70 text-sm lg:text-base">
+              {{ useLocalization('account.havenot-added-bank-account-description') }}
+            </p>
+          </section>
 
-        <PrimeVueButton
-          class="bg-blue-primary border-none text-base py-[10px] px-[18px] w-fit"
-          :label="useLocalization('account.setup-bank-information')"
-          type="button"
-          @click="account_onSetUpBankAccount"
-        />
+          <PrimeVueButton
+            class="bg-blue-primary border-none text-sm lg:text-base py-[10px] px-[18px] w-fit"
+            :label="useLocalization('account.setup-bank-information')"
+            type="button"
+            @click="account_onSetUpBankAccount"
+          />
+        </div>
       </template>
     </section>
   </section>

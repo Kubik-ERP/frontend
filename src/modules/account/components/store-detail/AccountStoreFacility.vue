@@ -57,7 +57,7 @@ const togglePopover = (id: string, event: Event) => {
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="plus-line-white" />
 
-              <span class="font-semibold text-base text-white"> Add Store Facility </span>
+              <span class="font-semibold text-sm lg:text-base text-white"> Add Store Facility </span>
             </section>
           </template>
         </PrimeVueButton>

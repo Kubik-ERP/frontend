@@ -9,7 +9,7 @@
     <section id="overview-cards" class="grid grid-rows-1 grid-cols-12 gap-4">
       <section
         id="card-total-sales"
-        class="col-span-3 flex flex-col justify-between bg-white border border-solid border-grayscale-10 p-4 rounded-sm gap-6"
+        class="col-span-6 lg:col-span-3 flex flex-col justify-between bg-white border border-solid border-grayscale-10 p-4 rounded-sm gap-6"
       >
         <section id="summary" class="flex items-center gap-1">
           <p class="font-semibold text-grayscale-70 text-xs">Total Sales</p>
@@ -32,7 +32,7 @@
 
       <section
         id="card-total-cost-of-good-sold"
-        class="col-span-3 flex flex-col justify-between bg-white border border-solid border-grayscale-10 p-4 rounded-sm gap-6"
+        class="col-span-6 lg:col-span-3 flex flex-col justify-between bg-white border border-solid border-grayscale-10 p-4 rounded-sm gap-6"
       >
         <section id="summary" class="flex items-center gap-1">
           <p class="font-semibold text-grayscale-70 text-xs">Total Cost of Good Sold</p>
@@ -56,7 +56,7 @@
 
       <section
         id="card-total-gross-profit"
-        class="col-span-3 flex flex-col justify-between bg-white border border-solid border-grayscale-10 p-4 rounded-sm gap-6"
+        class="col-span-6 lg:col-span-3 flex flex-col justify-between bg-white border border-solid border-grayscale-10 p-4 rounded-sm gap-6"
       >
         <section id="summary" class="flex items-center gap-1">
           <p class="font-semibold text-grayscale-70 text-xs">Total Gross Profit</p>
@@ -81,7 +81,7 @@
 
       <section
         id="card-total-nett-profit"
-        class="col-span-3 flex flex-col justify-between bg-white border border-solid border-grayscale-10 p-4 rounded-sm gap-6"
+        class="col-span-6 lg:col-span-3 flex flex-col justify-between bg-white border border-solid border-grayscale-10 p-4 rounded-sm gap-6"
       >
         <section id="summary" class="flex items-center gap-1">
           <p class="font-semibold text-grayscale-70 text-xs">Total Nett Profit</p>
