@@ -9,6 +9,7 @@ export const useAccessControlPermissionsListService = (): IAccessControlPermissi
   const store = useAccessControlStore();
   const roleStore = useRoleStore();
   const { accessControlPermission_isLoading } = storeToRefs(store);
+  const { roleList_items } = storeToRefs(roleStore);
   const router = useRouter();
   const accessControlPermission_listRole = ref<IRole[]>([]);
   const acceessControlPermisson_listValue = ref<IAccessControlPermissionCategory[]>([]);
@@ -55,11 +56,11 @@ export const useAccessControlPermissionsListService = (): IAccessControlPermissi
     fetchAccessControlPermissionRoleList();
   });
 
-return {
-  accessControlPermission_isLoading,
-  accessControlPermission_listValue: acceessControlPermisson_listValue,
-  accessControlPermission_listRole,
-  accessControlPermission_onEdit,
-  accessControlPermission_fetchList: fetchAccessControlPermissionList,
-};
+  return {
+    accessControlPermission_isLoading,
+    accessControlPermission_listValue: acceessControlPermisson_listValue,
+    accessControlPermission_listRole: roleList_items,
+    accessControlPermission_onEdit,
+    accessControlPermission_fetchList: fetchAccessControlPermissionList,
+  };
 };

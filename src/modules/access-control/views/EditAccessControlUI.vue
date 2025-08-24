@@ -66,7 +66,7 @@ async function onSave() {
             <tr class="bg-gray-100">
               <th class="text-left px-4 py-2 border border-gray-300 text-sm w-1/3 min-w-[200px]">Functionality</th>
               <th
-                v-for="role in accessControlPermission_listRole"
+                v-for="role in accessControlPermission_listRole.data.items"
                 :key="role.id"
                 class="px-2 py-2 text-center border-y border-gray-300 text-xs sm:text-sm font-medium min-w-[100px]"
               >
@@ -80,7 +80,7 @@ async function onSave() {
                 {{ item.name }}
               </td>
               <td
-                v-for="role in accessControlPermission_listRole"
+                v-for="role in accessControlPermission_listRole.data.items"
                 :key="role.id"
                 class="px-2 py-2 border-y border-gray-300 text-center"
               >
