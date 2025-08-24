@@ -7,10 +7,6 @@ import {
   NavigationGuardNext,
 } from 'vue-router';
 
-// Components
-import AppCommonNotFound from '../components/common/AppCommonNotFound.vue';
-import AppCommonUnauthorized from '../components/common/AppCommonUnauthorized.vue';
-
 // Stores
 import { useAuthenticationStore } from '@/modules/authentication/store';
 import { useOutletStore } from '@/modules/outlet/store';
@@ -42,17 +38,17 @@ const loadAllRoutes: () => Promise<Router> = async () => {
       // Auto register routes
       ...routes,
 
-      // 403
+      // 403 - Lazy loaded for better performance
       {
         path: '/not-authorized',
         name: 'not-authorized',
-        component: AppCommonUnauthorized,
+        component: () => import('../components/common/AppCommonUnauthorized.vue'),
       },
 
-      // 404
+      // 404 - Lazy loaded for better performance
       {
         path: '/:catchAll(.*)',
-        component: AppCommonNotFound,
+        component: () => import('../components/common/AppCommonNotFound.vue'),
       },
     ],
   });
@@ -104,6 +100,23 @@ const loadAllRoutes: () => Promise<Router> = async () => {
     } else {
       next();
     }
+  });
+
+  // Optional: Add loading state for route changes
+  router.beforeResolve((_to, from, next) => {
+    // Only show route loading for different routes, not for initial load
+    if (from.name !== undefined) {
+      // You can use the loading store here if you want to show loading during route changes
+      // const loadingStore = useLoadingStore();
+      // loadingStore.setLoading(true);
+    }
+    next();
+  });
+
+  router.afterEach(() => {
+    // Clear any route loading state
+    // const loadingStore = useLoadingStore();
+    // loadingStore.setLoading(false);
   });
 
   return router;

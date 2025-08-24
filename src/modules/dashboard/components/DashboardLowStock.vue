@@ -4,18 +4,20 @@
     class="col-span-full md:col-span-6 flex flex-col gap-2 border-r border-solid border-grayscale-10 pr-4"
   >
     <header class="flex items-center justify-between">
-      <h6 class="font-semibold text-base text-grayscale-70">Low Stock</h6>
+      <h6 class="font-semibold text-sm lg:text-base text-grayscale-70">Low Stock</h6>
 
       <section id="detail-informations" class="flex items-center gap-2">
-        <PrimeVueChip class="bg-warning-background">
-          <span class="font-semibold text-warning-main text-xs w-fit min-w-[60px]"> 10+ Items </span>
+        <PrimeVueChip class="bg-warning-background p-2">
+          <span class="font-semibold text-warning-main text-xs w-fit lg:min-w-[60px]"> 10+ Items </span>
         </PrimeVueChip>
 
-        <PrimeVueButton class="w-full bg-transparent border-none basic-smooth-animation hover:bg-grayscale-10">
+        <PrimeVueButton
+          class="w-full bg-transparent border-none basic-smooth-animation hover:bg-grayscale-10 p-0 lg:p-4"
+        >
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <span class="font-semibold text-text-primary text-sm">Show More</span>
-              <AppBaseSvg name="chevron-right" />
+              <AppBaseSvg name="chevron-right" class="!w-3 !h-3" />
             </section>
           </template>
         </PrimeVueButton>

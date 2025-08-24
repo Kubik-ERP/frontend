@@ -65,7 +65,7 @@ const {
 
       <section id="phone-information" class="col-span-full md:col-span-6">
         <div class="grid grid-rows-1 grid-cols-12 gap-4">
-          <section id="phone-code" class="col-span-2">
+          <section id="phone-code" class="col-span-6 lg:col-span-2">
             <AppBaseFormGroup
               v-slot="{ classes }"
               class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
@@ -102,7 +102,7 @@ const {
             </AppBaseFormGroup>
           </section>
 
-          <section id="phone-number" class="col-span-10">
+          <section id="phone-number" class="col-span-6 lg:col-span-10">
             <AppBaseFormGroup
               v-slot="{ classes }"
               class-label="block text-sm font-medium leading-6 text-gray-900 w-full"

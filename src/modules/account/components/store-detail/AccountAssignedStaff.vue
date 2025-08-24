@@ -35,7 +35,9 @@ const {
       :is-using-search-on-header="true"
     >
       <template #header>
-        <header class="flex items-center justify-between border border-solid border-grayscale-20 px-6 py-7">
+        <header
+          class="flex flex-col lg:flex-row items-start lg:items-center justify-between border border-solid border-grayscale-20 px-6 py-7"
+        >
           <PrimeVueChip
             class="text-xs font-normal bg-secondary-background text-green-primary"
             :label="`${accountDetail_listAssignedStaff.length} Staffs`"
@@ -59,7 +61,7 @@ const {
                 <section id="content" class="flex items-center gap-2">
                   <AppBaseSvg name="plus-line-white" />
 
-                  <span class="font-semibold text-base text-white"> Add Assign Staff </span>
+                  <span class="font-semibold text-sm lg:text-base text-white"> Add Assign Staff </span>
                 </section>
               </template>
             </PrimeVueButton>

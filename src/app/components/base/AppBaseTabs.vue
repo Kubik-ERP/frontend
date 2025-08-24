@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Stores
+import { useMobileStore } from '@/app/store/mobile.store';
+
 /**
  * @description Define the props interface
  */
@@ -15,6 +18,10 @@ const props = withDefaults(defineProps<IProps>(), {
   items: () => [],
   value: '',
 });
+
+// Mobile store
+const mobileStore = useMobileStore();
+const { isCurrentlyMobile } = storeToRefs(mobileStore);
 
 /**
  * @description Handle two-way data binding with v-model using toRefs
@@ -36,6 +43,30 @@ const dynamicWidth = computed(() => {
   return `w-1/${props.items.length} flex-1`;
 });
 
+// Responsive tab classes
+const tabClasses = computed(() => {
+  const baseClasses = 'border-none rounded-lg max-h-10 py-2';
+  let sizeClasses = 'px-4';
+
+  if (props.size === 'small') {
+    sizeClasses = 'px-3';
+  } else if (isCurrentlyMobile.value) {
+    sizeClasses = 'px-2';
+  }
+
+  const textClasses = isCurrentlyMobile.value ? 'text-xs' : 'text-sm';
+
+  return `${baseClasses} ${dynamicWidth.value} ${sizeClasses} ${textClasses}`;
+});
+
+// Tab list responsive classes
+const tabListClasses = computed(() => {
+  const baseClasses = 'bg-secondary-background border-none rounded-lg';
+  const paddingClasses = isCurrentlyMobile.value ? 'p-1' : 'p-2';
+
+  return `${baseClasses} ${paddingClasses}`;
+});
+
 /**
  * @description Watch for changes in the value prop and update localValue accordingly
  */
@@ -49,7 +80,7 @@ const onChange = (value: string | number) => {
     <PrimeVueTabList
       :pt="{
         activeBar: 'hidden',
-        tabList: 'bg-secondary-background border-none rounded-lg p-2',
+        tabList: tabListClasses,
       }"
     >
       <PrimeVueTab
@@ -57,13 +88,11 @@ const onChange = (value: string | number) => {
         :key="`tab-${tabIndex}`"
         :value="tab.value"
         :pt="{
-          root: `border-none text-sm rounded-lg max-h-10 py-2 ${dynamicWidth} ${
+          root: `${tabClasses} ${
             localValue === tab.value
               ? 'bg-green-primary text-white font-semibold'
               : 'bg-transparent font-normal text-secondary-hover'
-          }
-          ${props.size === 'small' ? 'px-3' : ''}
-          `,
+          }`,
         }"
       >
         {{ tab.label }}

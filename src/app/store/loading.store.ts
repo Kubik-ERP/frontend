@@ -4,6 +4,8 @@ interface ILoadingState {
   isLoading: boolean;
   activeRequests: Set<string>;
   requestCounter: number;
+  isInitializing: boolean;
+  initializationProgress: number;
 }
 
 export const useLoadingStore = defineStore('loading', {
@@ -11,6 +13,8 @@ export const useLoadingStore = defineStore('loading', {
     isLoading: false,
     activeRequests: new Set(),
     requestCounter: 0,
+    isInitializing: true,
+    initializationProgress: 0,
   }),
 
   getters: {
@@ -61,6 +65,34 @@ export const useLoadingStore = defineStore('loading', {
       if (!loading) {
         this.activeRequests.clear();
       }
+    },
+
+    /**
+     * @description Set initialization state
+     */
+    setInitializing(initializing: boolean): void {
+      this.isInitializing = initializing;
+      if (!initializing) {
+        this.initializationProgress = 100;
+      }
+    },
+
+    /**
+     * @description Update initialization progress
+     */
+    setInitializationProgress(progress: number): void {
+      this.initializationProgress = Math.min(100, Math.max(0, progress));
+    },
+
+    /**
+     * @description Complete initialization
+     */
+    completeInitialization(): void {
+      this.initializationProgress = 100;
+      // Add a small delay to show completion before hiding
+      setTimeout(() => {
+        this.isInitializing = false;
+      }, 500);
     },
   },
 });

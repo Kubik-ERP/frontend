@@ -88,7 +88,7 @@ export interface IOutletProfileResponse extends IDefaultResponseFetch {
 }
 
 export interface IOutletTableResponse extends IDefaultResponseFetch {
-  data: IOutletTableData;
+  data: IOutletTable[];
 }
 
 export interface IOutletStateStore {
@@ -98,6 +98,6 @@ export interface IOutletStateStore {
   outlet_lists: IOutlet[];
   outlet_operationalHours: IOutletOperationalHour[];
   outlet_profile: IOutletProfile | null;
-  outlet_tables: IOutletTableData | null;
+  outlet_tables: IOutletTable[] | null;
   outlet_selectedOutletOnAccountPage: IOutlet | null;
 }
