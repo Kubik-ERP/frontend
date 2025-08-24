@@ -106,7 +106,7 @@ const {
           <template #default>
             <section id="content" class="flex items-center justify-center gap-2 w-full">
               <AppBaseSvg name="edit-white" />
-              <span class="font-semibold text-base text-center text-white">Edit Table</span>
+              <span class="font-semibold text-sm lg:text-base text-center text-white">Edit Table</span>
             </section>
           </template>
         </PrimeVueButton>

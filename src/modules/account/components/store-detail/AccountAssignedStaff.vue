@@ -27,29 +27,34 @@ const { accountStoreDetail_listColumnsOfAssignedStaff, accountStoreDetail_listVa
       :is-using-search-on-header="false"
     >
       <template #header>
-        <header class="flex items-center justify-between border border-solid border-grayscale-20 px-6 py-7">
+        <header
+          class="flex flex-col lg:flex-row items-start lg:items-center justify-between border border-solid border-grayscale-20 px-6 py-7"
+        >
           <PrimeVueChip
             class="text-xs font-normal bg-secondary-background text-green-primary"
             label="50 Assigned Staffs"
           />
 
-          <section id="right-content" class="flex items-center gap-4">
-            <PrimeVueIconField>
+          <section
+            id="right-content"
+            class="flex flex-col lg:flex-row items-start lg:items-center gap-4 mt-4 lg:mt-0 w-full"
+          >
+            <PrimeVueIconField class="w-full lg:w-fit">
               <PrimeVueInputIcon>
                 <template #default>
                   <AppBaseSvg name="search" />
                 </template>
               </PrimeVueInputIcon>
 
-              <PrimeVueInputText placeholder="Search Staff Name or Position" class="text-sm w-full min-w-80" />
+              <PrimeVueInputText placeholder="Search Staff Name or Position" class="text-sm w-full lg:min-w-80" />
             </PrimeVueIconField>
 
-            <PrimeVueButton class="bg-primary border-none w-fit px-5" severity="secondary">
+            <PrimeVueButton class="bg-primary border-none w-full lg:w-fit px-5" severity="secondary">
               <template #default>
                 <section id="content" class="flex items-center gap-2">
                   <AppBaseSvg name="plus-line-white" />
 
-                  <span class="font-semibold text-base text-white"> Add Assign Staff </span>
+                  <span class="font-semibold text-sm lg:text-base text-white"> Add Assign Staff </span>
                 </section>
               </template>
             </PrimeVueButton>

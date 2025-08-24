@@ -72,72 +72,79 @@ const {
 
       <template #filter>
         <div class="flex flex-col gap-1 w-full">
-          <span class="font-semibold inline-block text-gray-900 text-base w-48">Filter by</span>
+          <span class="hidden lg:inline-block font-semibold text-gray-900 text-base w-48">Filter by</span>
 
-          <div class="flex items-center gap-4 w-full">
-            <PrimeVueDatePicker
-              v-model="dailySalesList_queryParams.createdAtFrom"
-              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
-              placeholder="Purchase Date From"
-              show-on-focus
-              show-icon
-              fluid
-              show-time
-              show-button-bar
-              hour-format="24"
-              @clear-click="dailySalesList_queryParams.createdAtFrom = null"
-            />
+          <section id="filter" class="grid grid-rows-1 grid-cols-12 gap-4">
+            <section id="createdAt" class="col-span-6 lg:col-span-auto">
+              <PrimeVueDatePicker
+                v-model="dailySalesList_queryParams.createdAtFrom"
+                class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-full lg:max-w-80"
+                placeholder="Purchase Date From"
+                show-on-focus
+                show-icon
+                fluid
+                show-time
+                show-button-bar
+                hour-format="24"
+                @clear-click="dailySalesList_queryParams.createdAtFrom = null"
+              />
+            </section>
 
-            <PrimeVueDatePicker
-              v-model="dailySalesList_queryParams.createdAtTo"
-              :manual-input="false"
-              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
-              placeholder="Purchase Date To"
-              show-on-focus
-              show-icon
-              fluid
-              show-time
-              show-button-bar
-              show-clear
-              hour-format="24"
-              :disabled="!dailySalesList_queryParams.createdAtFrom"
-              @clear-click="dailySalesList_queryParams.createdAtTo = null"
-            />
+            <section id="createdTo" class="col-span-6 lg:col-span-auto">
+              <PrimeVueDatePicker
+                v-model="dailySalesList_queryParams.createdAtTo"
+                class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-full lg:max-w-80"
+                placeholder="Purchase Date To"
+                show-on-focus
+                show-icon
+                fluid
+                show-time
+                show-button-bar
+                hour-format="24"
+                @clear-click="dailySalesList_queryParams.createdAtTo = null"
+              />
+            </section>
 
-            <PrimeVueMultiSelect
-              v-model="dailySalesList_queryParams.orderType"
-              display="chip"
-              :options="dailySalesList_typesOfOrderType"
-              option-label="label"
-              option-value="value"
-              filter
-              placeholder="Order Type"
-              class="text-sm text-text-disabled w-full"
-            />
+            <section id="order-type" class="col-span-6 lg:col-span-auto">
+              <PrimeVueMultiSelect
+                v-model="dailySalesList_queryParams.orderType"
+                display="chip"
+                :options="dailySalesList_typesOfOrderType"
+                option-label="label"
+                option-value="value"
+                filter
+                placeholder="Order Type"
+                class="text-sm text-text-disabled w-full"
+              />
+            </section>
 
-            <PrimeVueMultiSelect
-              v-model="dailySalesList_queryParams.paymentStatus"
-              display="chip"
-              :options="dailySalesList_typesOfPaymentStatus"
-              option-label="label"
-              option-value="value"
-              filter
-              show-clear
-              placeholder="Payment Status"
-              class="text-sm text-text-disabled w-full"
-            />
+            <section id="payment-status" class="col-span-6 lg:col-span-auto">
+              <PrimeVueMultiSelect
+                v-model="dailySalesList_queryParams.paymentStatus"
+                display="chip"
+                :options="dailySalesList_typesOfPaymentStatus"
+                option-label="label"
+                option-value="value"
+                filter
+                show-clear
+                placeholder="Payment Status"
+                class="text-sm text-text-disabled w-full"
+              />
+            </section>
 
-            <PrimeVueMultiSelect
-              v-model="dailySalesList_queryParams.orderStatus"
-              display="chip"
-              :options="dailySalesList_typesOfOrderStatus"
-              option-label="label"
-              option-value="value"
-              filter
-              placeholder="Order Status"
-              class="text-sm text-text-disabled w-full"
-            />
-          </div>
+            <section id="payment-status" class="col-span-6 lg:col-span-auto">
+              <PrimeVueMultiSelect
+                v-model="dailySalesList_queryParams.orderStatus"
+                display="chip"
+                :options="dailySalesList_typesOfOrderStatus"
+                option-label="label"
+                option-value="value"
+                filter
+                placeholder="Order Status"
+                class="text-sm text-text-disabled w-full"
+              />
+            </section>
+          </section>
         </div>
       </template>
 

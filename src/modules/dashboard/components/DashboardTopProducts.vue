@@ -1,7 +1,7 @@
 <template>
   <section
     id="dashboard-top-products"
-    class="col-span-4 flex flex-col bg-white border border-solid border-grayscale-10 p-4 gap-4 rounded-sm"
+    class="col-span-full lg:col-span-4 flex flex-col bg-white border border-solid border-grayscale-10 p-4 gap-4 rounded-sm"
   >
     <h5 class="font-semibold text-lg text-grayscale-70">Top Products</h5>
 
