@@ -56,7 +56,6 @@ const handleView = (row: IVoucher | null) => {
   goToView(row.id, row.name);
 };
 
-
 const handleEdit = (row: IVoucher | null) => {
   if (!row) return;
   if (row.isApplied) {
@@ -82,7 +81,6 @@ const handleEdit = (row: IVoucher | null) => {
   } else {
     goToEdit(row.id, row.name);
   }
-
 };
 
 const handleDelete = async (row: IVoucher | null) => {
@@ -106,8 +104,12 @@ const formatDate = (date: Date) => {
 
 <template>
   <section id="voucher-list" class="flex flex-col relative inset-0 z-0">
-    <AppBaseDataTable :columns="voucherList_columns" :data="voucherList_values.data.items" header-title="Vouchers"
-      :rows-per-page="voucherList_values.data.meta.pageSize" :total-records="voucherList_values.data.meta.total"
+    <AppBaseDataTable
+      :columns="voucherList_columns"
+      :data="voucherList_values.data.items"
+      header-title="Vouchers"
+      :rows-per-page="voucherList_values.data.meta.pageSize"
+      :total-records="voucherList_values.data.meta.total"
       :first="(voucherList_values.data.meta.page - 1) * voucherList_values.data.meta.pageSize"
       :is-loading="voucherList_isLoading"
       :sort-field="voucherList_queryParams.orderBy"
@@ -123,16 +125,27 @@ const formatDate = (date: Date) => {
     >
       <!-- Header Prefix -->
       <template #header-prefix>
-        <div class="flex items-center gap-2">
-          <h6 class="font-semibold text-gray-900 text-xl">Voucher</h6>
-          <PrimeVueChip class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-0.5"
-            :label="`${activeVoucherCount} Active Vouchers`" />
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
+          <!-- Title + Chip -->
+          <div class="flex items-center gap-2">
+            <h6 class="font-semibold text-gray-900 text-lg sm:text-xl">Voucher</h6>
+            <PrimeVueChip
+              class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-0.5"
+              :label="`${activeVoucherCount} Active Vouchers`"
+            />
+          </div>
+
+          <!-- Button -->
+          <PrimeVueButton
+            class="w-full sm:w-fit"
+            :label="useLocalization('voucher.main.popover.add')"
+            @click="goToCreate"
+          >
+            <template #icon>
+              <AppBaseSvg name="plus-line-white" class="!w-5 !h-5" />
+            </template>
+          </PrimeVueButton>
         </div>
-        <PrimeVueButton class="w-fit" :label="useLocalization('voucher.main.popover.add')" @click="goToCreate">
-          <template #icon>
-            <AppBaseSvg name="plus-line-white" class="!w-5 !h-5" />
-          </template>
-        </PrimeVueButton>
       </template>
 
       <template #filter>
@@ -153,7 +166,11 @@ const formatDate = (date: Date) => {
                 (val: Date | Date[] | (Date | null)[] | null | undefined) => {
                   const startDate = Array.isArray(val) ? val[0] : val;
                   const endDate = Array.isArray(val) ? val[1] : val;
-                  if (startDate && endDate) voucherList_handleFilter(formatDate(startDate || new Date()), formatDate(endDate || new Date()));
+                  if (startDate && endDate)
+                    voucherList_handleFilter(
+                      formatDate(startDate || new Date()),
+                      formatDate(endDate || new Date()),
+                    );
                 }
               "
             />
@@ -170,10 +187,13 @@ const formatDate = (date: Date) => {
             </template>
           </PrimeVueButton>
 
-          <PrimeVuePopover ref="popover" :pt="{
-            root: { class: 'z-[9999]' },
-            content: 'p-0',
-          }">
+          <PrimeVuePopover
+            ref="popover"
+            :pt="{
+              root: { class: 'z-[9999]' },
+              content: 'p-0',
+            }"
+          >
             <section v-if="selectedData" class="flex flex-col">
               <!-- View -->
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleView(selectedData)">
@@ -225,16 +245,22 @@ const formatDate = (date: Date) => {
         </template>
 
         <template v-else-if="column.value === 'status'">
-          <span v-if="data[column.value] === 'active'"
-            class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+          <span
+            v-if="data[column.value] === 'active'"
+            class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700"
+          >
             Active
           </span>
-          <span v-else-if="data[column.value] === 'expired'"
-            class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+          <span
+            v-else-if="data[column.value] === 'expired'"
+            class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700"
+          >
             Expired
           </span>
-          <span v-else-if="data[column.value] === 'upcoming'"
-            class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+          <span
+            v-else-if="data[column.value] === 'upcoming'"
+            class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700"
+          >
             Upcoming
           </span>
           <span v-else class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">

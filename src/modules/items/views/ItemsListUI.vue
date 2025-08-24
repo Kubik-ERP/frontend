@@ -47,31 +47,39 @@ const {
     >
       <!-- Header Suffix -->
       <template #header-suffix>
-        <div class="flex items-center space-x-2">
-          <PrimeVueIconField>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2 gap-2 w-full">
+          <!-- Search -->
+          <PrimeVueIconField class="w-full sm:w-auto">
             <PrimeVueInputIcon>
               <i class="pi pi-search text-gray-400"></i>
             </PrimeVueInputIcon>
             <PrimeVueInputText
               v-model="inventoryItems_queryParams.search"
               placeholder="Search items..."
-              class="w-80 h-10 pl-10 pr-4 border border-gray-300 rounded-md"
+              class="w-full sm:w-64 md:w-80 h-10 pl-10 pr-4 border border-gray-300 rounded-md"
             />
           </PrimeVueIconField>
-          <PrimeVueButton
-            class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"
-            @click="inventoryItems_onCreate"
-          >
-            <i class="pi pi-plus text-sm"></i>
-            Create Item
-          </PrimeVueButton>
-          <PrimeVueButton
-            class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"
-            @click="inventoryItems_onCreate"
-          >
-            <i class="pi pi-plus text-sm"></i>
-            Import Item
-          </PrimeVueButton>
+
+          <!-- Action Buttons -->
+          <div class="flex justify-between w-full sm:w-auto gap-2">
+            <!-- Create -->
+            <PrimeVueButton
+              class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2 w-[48%] sm:w-auto"
+              @click="inventoryItems_onCreate"
+            >
+              <i class="pi pi-plus text-sm"></i>
+              Create Item
+            </PrimeVueButton>
+
+            <!-- Import -->
+            <PrimeVueButton
+              class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2 w-[48%] sm:w-auto"
+              @click="inventoryItems_onCreate"
+            >
+              <i class="pi pi-upload text-sm"></i>
+              Import Item
+            </PrimeVueButton>
+          </div>
         </div>
       </template>
 

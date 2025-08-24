@@ -22,17 +22,21 @@ const {
   roleList_onEdit,
   roleList_onDelete,
   roleList_response,
-  roleList_fetchData
+  roleList_fetchData,
 } = useRoleListService();
 
 provide('role', {
   roleList_fetchData,
-})
+});
 
 // onMounted(async () => {
 //   await roleList_fetchData();
 // })
+const totalRoleSystem = computed(() => roleList_response.value.data.items.filter(role => role.isSystem).length);
 
+const totalRoleNonSystem = computed(
+  () => roleList_response.value.data.items.filter(role => !role.isSystem).length,
+);
 </script>
 
 <template>
@@ -48,7 +52,7 @@ provide('role', {
       :sort-field="roleList_queryParams.orderBy"
       :sort-order="roleList_queryParams.orderDirection === 'asc' ? 1 : -1"
       is-using-server-side-pagination
-      is-using-custom-header-suffix
+      is-using-custom-header-prefix
       is-using-header
       is-using-custom-body
       :is-using-custom-filter="true"
@@ -56,14 +60,29 @@ provide('role', {
       @update:sort="roleList_handleOnSortChange"
     >
       <!-- Header Suffix -->
-      <template #header-suffix>
-        <div class="flex items-center space-x-2">
+      <template #header-prefix>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-3">
+          <!-- Title + Chip -->
+          <div class="flex items-center gap-2">
+            <h6 class="font-semibold text-gray-900 text-lg sm:text-xl">Role</h6>
+            <PrimeVueChip
+              class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-0.5"
+              :label="`${totalRoleSystem} Role System`"
+            />
+
+            <PrimeVueChip
+              class="text-xs font-normal bg-secondary-background text-blue-500 px-1.5 py-0.5"
+              :label="`${totalRoleNonSystem} Role Non-System`"
+            />
+          </div>
+
+          <!-- Button selalu ada teks -->
           <PrimeVueButton
-            class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"
+            class="bg-primary hover:bg-primary-600 text-white px-3 sm:px-4 py-2 h-10 rounded-md flex items-center justify-center gap-2 w-full sm:w-auto"
             @click="roleList_onCreate"
           >
             <i class="pi pi-plus text-sm"></i>
-            {{ $t('role.createButton') }}
+            <span>{{ $t('role.createButton') }}</span>
           </PrimeVueButton>
         </div>
       </template>

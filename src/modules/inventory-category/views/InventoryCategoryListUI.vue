@@ -38,7 +38,7 @@ const {
       @update:currentPage="inventoryCategoryList_onChangePage" @update:sort="inventoryCategoryList_handleOnSortChange">
       <!-- Header Prefix -->
       <template #header-suffix>
-        <div class="flex items-center gap-3">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full">
           <div class="relative">
             <PrimeVueIconField>
               <PrimeVueInputIcon>
@@ -46,7 +46,7 @@ const {
               </PrimeVueInputIcon>
               <PrimeVueInputText v-model="inventoryCategoryList_queryParams.search"
                 :placeholder="useLocalization('inventoryCategory.searchPlaceholder')"
-                class="w-80 h-10 pl-10 pr-4 border border-gray-300 rounded-md" />
+                class="w-full h-10 pl-10 pr-4 border border-gray-300 rounded-md" />
             </PrimeVueIconField>
           </div>
           <PrimeVueButton
@@ -58,10 +58,6 @@ const {
         </div>
       </template>
 
-      <!-- Filter -->
-      <template #filter>
-
-      </template>
 
       <!-- Body Table -->
       <template #body="{ column, data }">

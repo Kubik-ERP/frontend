@@ -40,5 +40,5 @@ export interface IRoleListProvided {
   roleList_onCreate: () => void;
   roleList_onEdit: (roleListId: string) => void;
   roleList_onDelete: (roleListId: string) => void;
-  roleList_response: IRoleListResponse;
+  roleList_response: globalThis.Ref<IRoleListResponse>;
 }

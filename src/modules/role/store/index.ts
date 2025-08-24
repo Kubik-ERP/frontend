@@ -62,12 +62,15 @@ export const useRoleStore = defineStore('role', {
         return Promise.reject(error);
       } finally {
         this.roleList_isLoading = false;
-         await this.roleList_fetchListData({
-          page: 1,
-          pageSize: 10,
-          orderBy: null,
-          orderDirection: null,
-        }, {});
+        await this.roleList_fetchListData(
+          {
+            page: 1,
+            pageSize: 10,
+            orderBy: null,
+            orderDirection: null,
+          },
+          {},
+        );
       }
     },
 
@@ -75,8 +78,7 @@ export const useRoleStore = defineStore('role', {
       this.roleList_isLoading = true;
       try {
         const response = await httpClient.post<IRoleActionResponse>(ROLE_API_BASE_ENDPOINT, payload);
-
-        this.roleList_items.data.items.push(response.data.data);
+        await this.roleList_fetchListData({ page: 1, pageSize: 10, orderBy: null, orderDirection: null }, {});
         return Promise.resolve(response.data);
       } catch (error) {
         return Promise.reject(error);
@@ -89,6 +91,7 @@ export const useRoleStore = defineStore('role', {
       this.roleList_isLoading = true;
       try {
         const response = await httpClient.patch<IRoleActionResponse>(`${ROLE_API_BASE_ENDPOINT}/${id}`, payload);
+        await this.roleList_fetchListData({ page: 1, pageSize: 10, orderBy: null, orderDirection: null }, {});
         return Promise.resolve(response.data);
       } catch (error) {
         return Promise.reject(error);

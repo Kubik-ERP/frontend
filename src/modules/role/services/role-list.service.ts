@@ -155,6 +155,6 @@ export const useRoleListService = (): IRoleListProvided => {
     roleList_onEdit: handleRole_onEdit,
     roleList_onDelete: roleList_onDelete,
     roleList_queryParams: roleList_queryParams,
-    roleList_response: roleList_items.value,
+    roleList_response: roleList_items,
   };
 };

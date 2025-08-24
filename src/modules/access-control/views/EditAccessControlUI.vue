@@ -98,7 +98,7 @@ async function onSave() {
     </div>
 
     <!-- Action Buttons -->
-    <div class="flex flex-col sm:flex-row justify-start gap-3 mt-10 mb-6 w-full sm:w-auto">
+    <div class="flex flex-row justify-start gap-3 mt-10 pb-5 w-full sm:w-auto">
       <!-- Cancel -->
       <PrimeVueButton
         type="button"
