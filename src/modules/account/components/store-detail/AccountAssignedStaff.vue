@@ -10,8 +10,15 @@ const popover = ref();
 /**
  * @description Inject all the data and methods what we need
  */
-const { accountStoreDetail_listColumnsOfAssignedStaff, accountStoreDetail_listValuesOfAssignedStaff } =
-  inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
+const {
+  accountStoreDetail_listColumnsOfAssignedStaff,
+  accountStoreDetail_listValuesOfAssignedStaff,
+  accountStoreDetail_onAddStaff,
+  accountDetail_listAssignedQueryParams,
+  accountDetail_listAssignedStaff,
+} = inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
+
+// console.log('🚀 ~ accountStoreDetail_listValuesOfAssignedStaff:', accountStoreDetail_listValuesOfAssignedStaff);
 </script>
 
 <template>
@@ -21,30 +28,33 @@ const { accountStoreDetail_listColumnsOfAssignedStaff, accountStoreDetail_listVa
     <AppBaseDataTable
       btn-cta-create-title="Assign Staff"
       :columns="accountStoreDetail_listColumnsOfAssignedStaff"
-      :data="accountStoreDetail_listValuesOfAssignedStaff"
+      :data="accountStoreDetail_listValuesOfAssignedStaff.data.employees"
       is-using-custom-body
       is-using-custom-header
-      :is-using-search-on-header="false"
+      is-using-server-side-pagination
+      :is-using-search-on-header="true"
     >
       <template #header>
         <header class="flex items-center justify-between border border-solid border-grayscale-20 px-6 py-7">
           <PrimeVueChip
             class="text-xs font-normal bg-secondary-background text-green-primary"
-            label="50 Assigned Staffs"
+            :label="`${accountDetail_listAssignedStaff.length} Staffs`"
           />
 
           <section id="right-content" class="flex items-center gap-4">
-            <PrimeVueIconField>
-              <PrimeVueInputIcon>
-                <template #default>
-                  <AppBaseSvg name="search" />
-                </template>
-              </PrimeVueInputIcon>
+          <PrimeVueIconField>
+            <PrimeVueInputIcon>
+              <i class="pi pi-search text-gray-400"></i>
+            </PrimeVueInputIcon>
+            <PrimeVueInputText v-model="accountDetail_listAssignedQueryParams.search" :placeholder="$t('brand.searchPlaceholder')"
+              class="w-80 h-10 pl-10 pr-4 border border-gray-300 rounded-md" />
+          </PrimeVueIconField>
 
-              <PrimeVueInputText placeholder="Search Staff Name or Position" class="text-sm w-full min-w-80" />
-            </PrimeVueIconField>
-
-            <PrimeVueButton class="bg-primary border-none w-fit px-5" severity="secondary">
+            <PrimeVueButton
+              class="bg-primary border-none w-fit px-5"
+              severity="secondary"
+              @click="accountStoreDetail_onAddStaff"
+            >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
                   <AppBaseSvg name="plus-line-white" />
@@ -58,6 +68,17 @@ const { accountStoreDetail_listColumnsOfAssignedStaff, accountStoreDetail_listVa
       </template>
 
       <template #body="{ column, data }">
+        <template v-if="column.value === 'name'">
+          <span class="font-base text-sm text-text-primary">{{ data.name ?? '-' }}</span>
+        </template>
+
+        <template v-else-if="column.value === 'title'">
+          <span class="font-base text-sm text-text-primary">{{ data.title ?? '-' }}</span>
+        </template>
+
+        <template v-else-if="column.value === 'phone'">
+          <span class="font-base text-sm text-text-primary">{{ data.phoneNumber ?? '-' }}</span>
+        </template>
         <template v-if="column.value === 'action'">
           <PrimeVueButton variant="text" rounded aria-label="detail" @click="popover.toggle($event)">
             <template #icon>
@@ -82,10 +103,6 @@ const { accountStoreDetail_listColumnsOfAssignedStaff, accountStoreDetail_listVa
               </PrimeVueButton>
             </section>
           </PrimeVuePopover>
-        </template>
-
-        <template v-else>
-          <span class="font-normal text-sm text-text-primary">{{ data[column.value] ?? '-' }}</span>
         </template>
       </template>
     </AppBaseDataTable>

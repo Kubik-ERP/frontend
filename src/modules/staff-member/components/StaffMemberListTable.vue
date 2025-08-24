@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Interfaces
-import type { IStaffMemberListProvided, IStafPermission } from '../interfaces';
+import type { IStaffMemberListProvided } from '../interfaces';
 
 /**
  * @description Reactive data binding
@@ -176,7 +176,7 @@ const {
       <template v-else-if="column.value === 'permission'">
         <span class="font-normal text-sm text-text-primary">
           {{
-            staffMemberList_typesOfUserPermissions.find((item: IStafPermission) => item.id === data[column.value])
+            staffMemberList_typesOfUserPermissions.find((item) => item.id === data[column.value])
               ?.name || '-'
           }}
         </span>

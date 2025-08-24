@@ -2,12 +2,13 @@
 import { STAFF_MEMBER_LIST_COLUMNS, STAFF_MEMBER_LIST_REQUEST } from '../constants';
 
 // Interfaces
-import type { IStaffMemberListProvided, IStaffMemberListRequestQuery, IStafPermission } from '../interfaces';
+import type { IStaffMemberListProvided, IStaffMemberListRequestQuery } from '../interfaces';
 
 // Store
 import { useStaffMemberStore } from '../store';
 
 import eventBus from '@/plugins/mitt';
+import { IRole } from '@/modules/role/interfaces/index.interface';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -135,23 +136,32 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
   /**
    * @description for roles permissions
    */
-  const staffMemberCreateEdit_permissionData = ref<IStafPermission[]>([]);
+  const staffMemberCreateEdit_permissionData = ref<IRole[]>([]);
 
-  const staffMember_listPermissions = async () => {
+  const staffMemberCreateEdit_getRoles = async (): Promise<void> => {
     try {
-      const res = await store.staffMember_getPermissions();
-      staffMemberCreateEdit_permissionData.value = res.data;
-    } catch (error: unknown) {
+     const res = await store.staffMember_getPermissions({
+        page: 1,
+        pageSize: 100,
+        orderBy: null,
+        orderDirection: null
+      }, {})
+      
+      staffMemberCreateEdit_permissionData.value = res.data.items
+    } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
         return Promise.reject(new Error(String(error)));
       }
     }
-  };
+  }
 
+  /**
+   * Get roles permission
+   */
   onMounted(async () => {
-    await staffMember_listPermissions();
+    staffMemberCreateEdit_getRoles();
   });
 
   return {

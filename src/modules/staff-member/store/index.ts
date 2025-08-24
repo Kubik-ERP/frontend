@@ -8,11 +8,11 @@ import type {
   IStaffMemberDetailsResponse,
   IStaffMemberStore,
   IStaffMemberListRequestQuery,
-  IStaffMemberPermissionResponse,
 } from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
+import { IRoleListQueryParams, IRoleListResponse } from '@/modules/role/interfaces/role-list.interface';
 
 export const useStaffMemberStore = defineStore('staff-member', {
   state: (): IStaffMemberStore => ({
@@ -239,9 +239,15 @@ export const useStaffMemberStore = defineStore('staff-member', {
         this.staffMember_isLoading = false;
       }
     },
-    async staffMember_getPermissions(): Promise<IStaffMemberPermissionResponse> {
+    async staffMember_getPermissions(
+      params: IRoleListQueryParams,
+      requestConfigurations: AxiosRequestConfig
+    ): Promise<IRoleListResponse> {
       try {
-        const response = await httpClient.get<IStaffMemberPermissionResponse>(STAFF_MEMBER_PERMISSION_ENDPOINT);
+        const response = await httpClient.get<IRoleListResponse>(STAFF_MEMBER_PERMISSION_ENDPOINT, {
+          params,
+          ...requestConfigurations,
+        });
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

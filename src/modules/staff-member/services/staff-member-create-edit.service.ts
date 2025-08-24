@@ -4,7 +4,6 @@ import {
   STAFF_MEMBER_CREATE_REQUEST,
   STAFF_MEMBER_DELETE_REQUEST,
   STAFF_MEMBER_DETAIL_REQUEST,
-  STAFF_MEMBER_PERMISSION_ENDPOINT,
   STAFF_MEMBER_TYPES_OF_SOCIAL_MEDIA,
 } from '../constants';
 
@@ -36,7 +35,6 @@ import { IVoucher } from '@/modules/voucher/interfaces';
 import { useProductService } from '@/modules/catalog-product/services/catalog-product.service';
 import { useVoucherStore } from '@/modules/voucher/store';
 import { VOUCHER_LIST_REQUEST } from '@/modules/voucher/constants';
-import httpClient from '@/plugins/axios';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -548,7 +546,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
           if (field === 'is_percent') voucherItems[index].is_percent = data[key] === 'true' ? true : false;
         }
       });
-      console.log("voucherItems: ",voucherItems);
+      console.log('voucherItems: ', voucherItems);
       // Assign ke formData utama
       staffMemberCreateEdit_formData.commissions.voucherCommission.voucherItems = voucherItems;
     }
@@ -707,16 +705,21 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
               const commissionValue = value as IStaffMemberComissions;
 
               commissionValue.productCommission.productItems.forEach((item, index) => {
-
-                formData.append(`commissions[productCommission][${index}][product_id]`, item.product_id ?? '')
-                formData.append(`commissions[productCommission][${index}][amount]`, String(item.amount ?? ''))
-                formData.append(`commissions[productCommission][${index}][is_percent]`, item.is_percent === true ? 'true' : 'false')
+                formData.append(`commissions[productCommission][${index}][product_id]`, item.product_id ?? '');
+                formData.append(`commissions[productCommission][${index}][amount]`, String(item.amount ?? ''));
+                formData.append(
+                  `commissions[productCommission][${index}][is_percent]`,
+                  item.is_percent === true ? 'true' : 'false',
+                );
               });
 
               commissionValue.voucherCommission.voucherItems.forEach((item, index) => {
-                  formData.append(`commissions[voucherCommission][${index}][voucher_id]`, item.voucher_id ?? '')
-                  formData.append(`commissions[voucherCommission][${index}][amount]`, String(item.amount ?? ''))
-                  formData.append(`commissions[voucherCommission][${index}][is_percent]`, item.is_percent === true ? 'true' : 'false')
+                formData.append(`commissions[voucherCommission][${index}][voucher_id]`, item.voucher_id ?? '');
+                formData.append(`commissions[voucherCommission][${index}][amount]`, String(item.amount ?? ''));
+                formData.append(
+                  `commissions[voucherCommission][${index}][is_percent]`,
+                  item.is_percent === true ? 'true' : 'false',
+                );
               });
             }
           }
@@ -782,19 +785,30 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       : null;
   };
 
+  const staffMemberCreateEdit_getRoles = async (): Promise<void> => {
+    try {
+     const res = await store.staffMember_getPermissions({
+        page: 1,
+        pageSize: 100,
+        orderBy: null,
+        orderDirection: null
+      }, {})
+      
+      staffMemberCreateEdit_permissionData.value = res.data.items
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  }
+
   /**
    * Get roles permission
    */
   onMounted(async () => {
-    await httpClient
-      .get(STAFF_MEMBER_PERMISSION_ENDPOINT)
-      .then(response => {
-        staffMemberCreateEdit_permissionData.value = response.data.data;
-      })
-      .catch(error => {
-        console.log(error);
-        return Promise.reject(error instanceof Error ? error : new Error(String(error)));
-      });
+    staffMemberCreateEdit_getRoles();
   });
 
   return {

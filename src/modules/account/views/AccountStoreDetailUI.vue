@@ -43,7 +43,15 @@ const {
   accountStoreDetail_onShowDialogCreateEdit,
   accountStoreDetail_onCloseDialogCreateEdit,
   accoutnStoreDetail_onSubmitDialogCreateEdit,
-  accountStoreDetail_onDeleteDialogConfirmation
+  accountStoreDetail_onDeleteDialogConfirmation,
+
+  accountStoreDetail_onAddStaff,
+  accountStoreDetail_onCloseAddStaff,
+  accountDetail_fetchAssignedStaff,
+  accountDetail_listAssignedQueryParams,
+  accountDetail_listAssignedStaff,
+  accountDetail_AssignedStaff_formData,
+  accountDetail_AssignedStaff_isLoading,
 } = useAccountStoreDetailsService();
 
 /**
@@ -79,7 +87,15 @@ provide('accountStoreDetail', {
   accountStoreDetail_onShowDialogCreateEdit,
   accountStoreDetail_onCloseDialogCreateEdit,
   accoutnStoreDetail_onSubmitDialogCreateEdit,
-  accountStoreDetail_onDeleteDialogConfirmation
+  accountStoreDetail_onDeleteDialogConfirmation,
+
+  accountStoreDetail_onAddStaff,
+  accountStoreDetail_onCloseAddStaff,
+  accountDetail_fetchAssignedStaff,
+  accountDetail_listAssignedQueryParams,
+  accountDetail_listAssignedStaff,
+  accountDetail_AssignedStaff_formData,
+  accountDetail_AssignedStaff_isLoading,
 });
 
 /**
@@ -88,6 +104,7 @@ provide('accountStoreDetail', {
 onMounted(async () => {
   await accountStoreDetail_fetchOutletListOperationalHours();
   await accountStoreDetail_fetchAccountStoreFacilities();
+  await accountDetail_fetchAssignedStaff();
 });
 </script>
 
