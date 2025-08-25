@@ -1,17 +1,18 @@
+// Interfaces
 import type { App, DirectiveBinding } from 'vue';
-import { useRbacStore } from '../store/rbac.store';
-import type { IModulePermissions, IBasePermissions, IExtendedPermissions } from '../interfaces/rbac.interface';
+
+// Stores
+import { useAuthenticationStore } from '@/modules/authentication/store';
 
 interface RbacDirectiveValue {
-  module: keyof IModulePermissions;
-  action: keyof IBasePermissions | keyof IExtendedPermissions;
+  permission: TPermissions;
   fallback?: 'hide' | 'disable';
 }
 
 /**
  * @description RBAC directive for controlling element visibility/state based on permissions
- * Usage: v-rbac="{ module: 'purchaseOrder', action: 'isCanCreate' }"
- * Usage with fallback: v-rbac="{ module: 'purchaseOrder', action: 'isCanUpdate', fallback: 'disable' }"
+ * Usage: v-rbac="{ permission: 'set_up_cash_drawer' }"
+ * Usage with fallback: v-rbac="{ permission: 'close_cash_register', fallback: 'disable' }"
  */
 export const rbacDirective = {
   name: 'rbac',
@@ -26,11 +27,11 @@ export const rbacDirective = {
 };
 
 function updateElement(el: HTMLElement, binding: DirectiveBinding<RbacDirectiveValue>) {
-  const rbacStore = useRbacStore();
-  const { module, action, fallback = 'hide' } = binding.value;
+  const authenticationStore = useAuthenticationStore();
+  const { permission, fallback = 'hide' } = binding.value;
 
   // Check if user has the required permission
-  const hasPermission = rbacStore.rbac_hasPermission(module, action);
+  const hasPermission = authenticationStore.authentication_permissions.includes(permission);
 
   if (hasPermission) {
     // Restore element if permission is granted
