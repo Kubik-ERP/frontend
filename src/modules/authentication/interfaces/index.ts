@@ -16,8 +16,13 @@ export interface IAuthenticationProfile {
   };
 }
 
+export interface IAuthenticationPermissionResponse extends IDefaultResponseFetch {
+  data: string[];
+}
+
 export interface IAuthenticationStateStore {
   authentication_isLoading: boolean;
+  authentication_permissions: string[];
   authentication_token: string;
   authentication_userData: IAuthenticationProfile | null;
 }

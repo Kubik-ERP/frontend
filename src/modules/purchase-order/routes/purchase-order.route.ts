@@ -17,7 +17,6 @@ const routes: RouteRecordRaw[] = [
         name: 'purchase-order.index',
         component: () => import('../views/PurchaseOrderListUI.vue'),
         meta: {
-          breadcrumb: 'Purchase Order',
           layout: LAYOUT_OPTIONS.DEFAULT,
           requiresAuthorization: true,
           title: 'Purchase Order',

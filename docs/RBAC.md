@@ -2,125 +2,68 @@
 
 ## Overview
 
-This document describes the RBAC (Role-Based Access Control) implementation in the frontend application. The RBAC system provides fine-grained permission control for different user roles across all modules in the application.
+This document describes the simplified RBAC (Role-Based Access Control) implementation in the frontend application. The RBAC system now works directly with backend permissions using permission keys from the `/permissions/me` API endpoint, providing a streamlined approach to access control.
 
-**Authentication Integration**: The RBAC system is integrated with the existing authentication store (`authentication.store.ts`) to automatically read user roles from `authentication_userData.roles`. This ensures a single source of truth for user data while maintaining the flexibility to manually set roles for testing purposes.
+**Backend Integration**: The RBAC system is fully integrated with the backend authentication system. After successful sign-in, the frontend automatically calls the `/permissions/me` API to fetch user permissions, which are stored in the authentication store and used throughout the application.
 
 ## Architecture
 
 ### Core Components
 
-1. **Interfaces** (`src/app/interfaces/rbac.interface.ts`)
+1. **Permission Types** (`expected-result-permission.type.ts`)
 
-   - Defines all RBAC-related types and interfaces
-   - Base permissions: Create, Read, Update, Delete
-   - Extended permissions: Export, Import, Print, Approve, Cancel, Void
+   - Defines all available permission keys from the backend
 
-2. **Constants** (`src/app/constants/rbac.constant.ts`)
+2. **Authentication Store** (`src/modules/authentication/store/index.ts`)
 
-   - Default role configurations (Super Admin, Manager, Cashier)
-   - Route permission mappings
-   - RBAC system constants
+   - Stores user permissions in `authentication_permissions` array
+   - Automatically fetches permissions after successful authentication
 
-3. **Store** (`src/app/store/rbac.store.ts`)
+3. **Composable** (`src/app/composables/useRbac.ts`)
 
-   - Pinia store for managing RBAC state
-   - **Integrated with authentication store for user roles**
-   - Handles role assignment and permission checking
-   - Provides menu filtering based on permissions
-   - Maps authentication role IDs to RBAC role identifiers
+   - Provides reactive permission checking functions
+   - Simple API for checking individual or multiple permissions
 
-4. **Composable** (`src/app/composables/useRbac.ts`)
+4. **Directive** (`src/app/directives/rbac.directive.ts`)
 
-   - Main service for interacting with RBAC system
-   - Provides reactive permission checkers
-   - Easy-to-use API for components
-
-5. **Directive** (`src/app/directives/rbac.directive.ts`)
-   - Vue directive for declarative permission control
+   - Vue directive for declarative permission control in templates
    - Supports hide/disable fallback modes
 
-## Authentication Integration
+5. **Menu Helper** (`src/app/helpers/menu-permission.helper.ts`)
+   - Maps menu paths to required permissions
+   - Filters menus based on user permissions
 
-The RBAC system automatically reads user role information from the authentication store:
+## Backend Integration
+
+The RBAC system works seamlessly with the backend:
 
 ```typescript
-// Authentication store structure (authentication_userData.roles)
-interface UserRole {
-  id: number | string;
-  name: string;
-}
+// After successful sign-in, the system automatically:
+// 1. Calls /authentication/login or /authentication/google/redirect
+// 2. Fetches user profile from /authentication/profile
+// 3. Fetches user permissions from /permissions/me
+// 4. Stores permissions in authentication_permissions array
 
-// RBAC system maps authentication roles to internal role IDs:
-// Role ID Mapping:
-// 1: 'owner' - Business Owner
-// 2: 'super-admin' - Technical Administrator
-// 3: 'manager' - Operational Manager
-// 4: 'staff' - Regular Employee
-// 5: 'cashier' - Point of Sale Operator
-// - Maps by exact string match of role names (case-insensitive)
-// - Fallback to string representation of role ID
-// - Default fallback to 'staff' for unknown roles
+// The permissions API returns:
+interface IAuthenticationPermissionResponse {
+  data: string[]; // Array of permission keys like ['set_up_cash_drawer', 'close_cash_register', ...]
+}
 ```
 
-**Benefits of Integration**:
+**Backend Permission Keys** (from `expected-result-permission.type.ts`):
 
-- Single source of truth for user data
-- Automatic role detection on authentication
-- Seamless permission checking across the application
-- Maintains backward compatibility with manual role setting for testing
-- Intelligent role mapping with sensible defaults (unknown roles default to 'staff')
-
-## Default Roles
-
-The RBAC system includes five predefined roles with different permission levels:
-
-### Owner
-
-- Ultimate business owner access to all modules and functionalities
-- Full administrative control over all business operations
-- Can perform all CRUD operations and extended actions
-- Has complete system access including sensitive configurations
-
-### Super Admin
-
-- Technical administrator with full system access
-- Can perform all CRUD operations and extended actions
-- Has administrative privileges for system management
-- Similar to Owner but focused on technical administration
-
-### Manager
-
-- Operational manager with extensive but controlled access
-- Access to most modules with limited administrative permissions
-- Cannot delete critical data in most modules
-- Can approve and manage day-to-day operations
-- Focused on business operations rather than system administration
-
-### Staff
-
-- Regular employee with operational access
-- Can perform most day-to-day operational tasks
-- Limited administrative access
-- Cannot delete critical data or access sensitive configurations
-- Focused on routine business tasks and customer service
-
-### Cashier
-
-- Point-of-sale focused role with restricted access
-- Limited to sales, customer operations, and cash management
-- Cannot access administrative features or sensitive data
-- Optimized for front-line customer service and transaction processing
+- `access_all_store` - Full access to all store operations
+- `set_up_cash_drawer` - Permission to set up cash drawer
+- `close_cash_register` - Permission to close cash register
+- `check_out_sales` - Permission to process sales transactions
+- `customer_management` - Permission to manage customers
+- And many more...
 
 ## Usage Examples
 
-## Usage
-
-There are **three main ways** to implement RBAC in your components:
-
 ### 1. Using Composable Approach (Recommended)
 
-The `useRbac()` composable provides reactive permission checkers and is the most flexible approach.
+The `useRbac()` composable provides reactive permission checkers:
 
 ```typescript
 // In script setup
@@ -128,447 +71,189 @@ import { useRbac } from '@/app/composables/useRbac';
 
 const rbac = useRbac();
 
-// Reactive permission checkers - these are computed refs that update automatically
-const canCreatePO = rbac.canCreate('purchaseOrder');
-const canUpdatePO = rbac.canUpdate('purchaseOrder');
-const canDeletePO = rbac.canDelete('purchaseOrder');
-const canApprovePO = rbac.canApprove('purchaseOrder');
+// Individual permission checking
+const canSetupCashDrawer = rbac.canSetupCashDrawer; // Reactive computed ref
+const canCloseCashRegister = rbac.canCloseCashRegister; // Reactive computed ref
 
-// Role checkers
-const isOwner = rbac.isOwner;
-const isSuperAdmin = rbac.isSuperAdmin;
-const isManager = rbac.isManager;
-const isStaff = rbac.isStaff;
-const isCashier = rbac.isCashier;
-const currentRoleName = rbac.getCurrentRoleName;
+// Programmatic permission checking
+const hasCreatePermission = rbac.hasPermission('set_up_cash_drawer');
+const hasMultiplePermissions = rbac.hasAllPermissions(['set_up_cash_drawer', 'close_cash_register']);
+const hasAnyPermission = rbac.hasAnyPermission(['customer_management', 'supplier_management']);
 
-// Programmatic permission checking (for logic)
-const hasCreatePermission = rbac.hasPermission('purchaseOrder', 'isCanCreate');
-const hasApprovePermission = rbac.hasExtendedPermission('purchaseOrder', 'isCanApprove');
-const hasAnyPOPermission = rbac.hasAnyPermission('purchaseOrder');
-const canAccessRoute = rbac.checkRoutePermission('purchase-order.create');
+// Get all user permissions
+const allPermissions = rbac.getCurrentUserPermissions();
 ```
 
 ```vue
 <!-- In template -->
 <template>
   <div>
-    <button v-if="canCreatePO" @click="createPurchaseOrder">Create Purchase Order</button>
-    <button v-if="canUpdatePO" @click="editPurchaseOrder">Edit Purchase Order</button>
-    <button v-if="canDeletePO" @click="deletePurchaseOrder">Delete Purchase Order</button>
+    <!-- Using reactive computed refs -->
+    <button v-if="canSetupCashDrawer">Setup Cash Drawer</button>
+    <button v-if="canCloseCashRegister">Close Register</button>
 
-    <div v-if="isOwner" class="owner-panel">
-      <!-- Owner-only content -->
-    </div>
-
-    <div v-if="isSuperAdmin" class="admin-panel">
-      <!-- Admin-only content -->
-    </div>
-
-    <div v-if="isManager" class="manager-panel">
-      <!-- Manager-only content -->
-    </div>
-
-    <div v-if="isStaff" class="staff-panel">
-      <!-- Staff-only content -->
-    </div>
-
-    <p>Current Role: {{ currentRoleName }}</p>
+    <!-- Using permission checking methods -->
+    <button v-if="rbac.hasPermission('check_out_sales')">Process Sale</button>
   </div>
 </template>
 ```
 
 ### 2. Using RBAC Custom Directive (Declarative)
 
-The `v-rbac` directive provides a clean, declarative way to control element visibility and state.
+The `v-rbac` directive provides a clean, declarative way to control element visibility:
 
 ```vue
 <template>
   <!-- Hide element if no permission (default behavior) -->
-  <button v-rbac="{ module: 'purchaseOrder', action: 'isCanCreate' }">Create PO</button>
+  <button v-rbac="{ permission: 'set_up_cash_drawer' }">Setup Cash Drawer</button>
 
-  <!-- Disable element if no permission instead of hiding -->
-  <button v-rbac="{ module: 'purchaseOrder', action: 'isCanUpdate', fallback: 'disable' }">Edit PO</button>
+  <!-- Disable element instead of hiding -->
+  <button v-rbac="{ permission: 'close_cash_register', fallback: 'disable' }">Close Register</button>
 
-  <!-- Works with any element -->
-  <div v-rbac="{ module: 'inventory', action: 'isCanRead' }">
-    <h3>Inventory Section</h3>
-    <!-- This entire section will be hidden if user can't read inventory -->
-  </div>
-
-  <!-- Extended permissions -->
-  <button v-rbac="{ module: 'purchaseOrder', action: 'isCanApprove' }">Approve PO</button>
+  <!-- For sales-related buttons -->
+  <button v-rbac="{ permission: 'check_out_sales' }">Process Sale</button>
+  <button v-rbac="{ permission: 'cancel_invoice' }">Cancel Invoice</button>
+  <button v-rbac="{ permission: 'refund_invoice' }">Refund Invoice</button>
 </template>
 ```
 
-**Directive Options:**
+### 3. Menu Filtering
 
-- `module`: The module to check (e.g., 'purchaseOrder', 'inventory')
-- `action`: The permission action (e.g., 'isCanCreate', 'isCanRead', 'isCanApprove')
-- `fallback`: 'hide' (default) or 'disable'
-  - `'hide'`: Element is completely hidden (`display: none`)
-  - `'disable'`: Element is disabled and visually dimmed with a tooltip
-
-### 3. Using Template Helper Functions
-
-The `useRbacDirective()` composable provides helper functions for template conditions.
+Menus are automatically filtered based on user permissions using the menu helper:
 
 ```typescript
-// In script setup
-import { useRbacDirective } from '@/app/composables/useRbac';
+// The sidebar automatically filters menus based on permissions
+import { filterMenusByPermissions } from '@/app/helpers/menu-permission.helper';
 
-const rbacDirective = useRbacDirective();
-
-// These return boolean values for v-if usage
-const {
-  checkPermission,
-  checkExtendedPermission,
-  checkModuleAccess,
-  isOwner,
-  isSuperAdmin,
-  isManager,
-  isStaff,
-  isCashier,
-  hasRole,
-} = rbacDirective;
+// In sidebar component
+const filteredMenus = computed(() => {
+  return filterMenusByPermissions(LIST_SIDEBAR_MENUS, authentication_permissions.value);
+});
 ```
 
-```vue
-<!-- In template -->
-<template>
-  <div>
-    <!-- Basic permission checking -->
-    <button v-if="checkPermission('purchaseOrder', 'isCanCreate')">Create Purchase Order</button>
+## Available Reactive Permission Checkers
 
-    <!-- Extended permission checking -->
-    <button v-if="checkExtendedPermission('purchaseOrder', 'isCanApprove')">Approve Purchase Order</button>
+The `useRbac()` composable provides these reactive computed refs:
 
-    <!-- Module access checking -->
-    <section v-if="checkModuleAccess('inventory')">
-      <!-- Show if user has any permission for inventory module -->
-    </section>
+### Store Management
 
-    <!-- Role-based conditions -->
-    <div v-if="isOwner">Owner Dashboard</div>
-    <div v-if="isSuperAdmin">Admin Panel</div>
-    <div v-if="isManager">Manager Tools</div>
-    <div v-if="isStaff">Staff Interface</div>
-    <div v-if="isCashier">Cashier Interface</div>
-  </div>
-</template>
-```
+- `canAccessAllStore` - access_all_store
+- `canManageStore` - store_management
+- `canViewDashboard` - dashboard_view
 
-## When to Use Each Approach
+### Cash Management
 
-### Use **Composable Approach** when:
+- `canSetupCashDrawer` - set_up_cash_drawer
+- `canCloseCashRegister` - close_cash_register
+- `canManageCashInOut` - cash_in_out
 
-- You need reactive permission states
-- You have complex logic involving permissions
-- You want TypeScript autocompletion and type safety
-- You need to combine permissions with other reactive data
+### Sales Operations
 
-### Use **Custom Directive** when:
+- `canCheckOutSales` - check_out_sales
+- `canCancelInvoice` - cancel_invoice
+- `canRefundInvoice` - refund_invoice
+- `canProcessUnpaidInvoice` - process_unpaid_invoice
+- `canViewDailySales` - daily_sales
+- `canManageQueue` - queue
 
-- You want simple, declarative permission control
-- You need to quickly hide/disable elements
-- You prefer clean template syntax
-- You want automatic visual feedback (disable state)
+### Customer Management
 
-### Use **Template Helper Functions** when:
+- `canManageCustomers` - customer_management
+- `canViewCustomerProfile` - view_customer_profile
+- `canManageCustomerLoyaltyPoints` - management_customer_loyalty_point
 
-- You're migrating from other RBAC systems
-- You prefer explicit function calls in templates
-- You need simple boolean checks for v-if conditions
-- You want lighter-weight permission checking
+### Product Management
 
-## Example: Complete Component Implementation
+- `canManageProducts` - product_management
+- `canManageProductCategory` - product_category
+- `canManageCategories` - category_management
+- `canManageItems` - manage_item
+
+### Inventory Management
+
+- `canManageStockAdjustment` - stock_adjustment
+- `canManageBrand` - manage_brand
+- `canManageStockOpname` - manage_stock_opname
+- `canManageStorageLocation` - manage_storage_location
+- `canManagePurchaseOrder` - manage_purchase_order
+
+### Staff Management
+
+- `canManageStaffMember` - manage_staff_member
+- `canManageStaffAttendance` - manage_staff_attendance
+
+### Configuration
+
+- `canConfigureDevices` - connected_device_configuration
+- `canConfigurePaymentMethods` - payment_method_configuration
+- `canConfigureLoyaltyPoints` - general_loyalty_point_configuration
+- `canConfigureTaxAndService` - tax_and_service_charge_configuration
+
+## Implementation in Components
+
+### Cash Drawer Example
 
 ```vue
 <script setup lang="ts">
 import { useRbac } from '@/app/composables/useRbac';
 
 const rbac = useRbac();
-
-// Reactive permissions for the template
-const canCreate = rbac.canCreate('purchaseOrder');
-const canApprove = rbac.canApprove('purchaseOrder');
-const isOwner = rbac.isOwner;
-const isSuperAdmin = rbac.isSuperAdmin;
-
-// Methods that use programmatic checking
-const handleCreatePO = () => {
-  if (rbac.hasPermission('purchaseOrder', 'isCanCreate')) {
-    // Create logic here
-    console.log('Creating purchase order...');
-  } else {
-    console.log('No permission to create');
-  }
-};
-
-const handleBulkAction = () => {
-  // Check multiple permissions
-  const canCreate = rbac.hasPermission('purchaseOrder', 'isCanCreate');
-  const canUpdate = rbac.hasPermission('purchaseOrder', 'isCanUpdate');
-
-  if (canCreate && canUpdate) {
-    // Bulk action logic
-  }
-};
+const { canSetupCashDrawer, canCloseCashRegister } = rbac;
 </script>
 
 <template>
-  <div class="purchase-order-page">
-    <!-- Using reactive composable -->
-    <button v-if="canCreate" @click="handleCreatePO">Create Purchase Order</button>
+  <div class="cash-drawer-actions">
+    <!-- Cash In button - requires set_up_cash_drawer permission -->
+    <button v-if="canSetupCashDrawer" @click="openCashInDialog">Cash In</button>
 
-    <!-- Using directive with hide fallback -->
-    <button v-rbac="{ module: 'purchaseOrder', action: 'isCanUpdate' }">Edit Selected</button>
+    <!-- Cash Out button - requires set_up_cash_drawer permission -->
+    <button v-if="canSetupCashDrawer" @click="openCashOutDialog">Cash Out</button>
 
-    <!-- Using directive with disable fallback -->
-    <button v-rbac="{ module: 'purchaseOrder', action: 'isCanDelete', fallback: 'disable' }">
-      Delete Selected
-    </button>
-
-    <!-- Owner-only section -->
-    <div v-if="isOwner" class="owner-controls">
-      <h3>Business Owner Controls</h3>
-      <!-- Owner-specific controls -->
-    </div>
-
-    <!-- Admin-only section -->
-    <div v-if="isSuperAdmin" class="admin-controls">
-      <h3>Administrator Controls</h3>
-      <!-- More admin controls -->
-    </div>
-
-    <!-- Entire section controlled by directive -->
-    <section v-rbac="{ module: 'purchaseOrder', action: 'isCanApprove' }">
-      <h3>Approval Section</h3>
-      <button @click="approvePO">Approve</button>
-      <button @click="rejectPO">Reject</button>
-    </section>
+    <!-- Close Register button - requires close_cash_register permission -->
+    <button v-if="canCloseCashRegister" @click="closeRegister">Close Register</button>
   </div>
 </template>
 ```
 
-## Route Protection
+## Menu Permission Mapping
 
-Routes are automatically protected based on the `ROUTE_PERMISSION_MAPPING` configuration:
+The system automatically maps menu paths to required permissions:
 
 ```typescript
-// Example route mapping
-'purchase-order.create': { module: 'purchaseOrder', action: 'isCanCreate' }
+const MENU_PERMISSION_MAPPING = {
+  '/cashier': ['check_out_sales'],
+  '/cash-drawer': ['set_up_cash_drawer', 'close_cash_register'],
+  '/customer': ['customer_management'],
+  '/inventory': ['manage_item', 'stock_adjustment'],
+  '/purchase-order': ['manage_purchase_order'],
+  // ... more mappings
+};
 ```
 
-The router guard automatically checks permissions and redirects unauthorized users to the "not-authorized" page.
+## Authentication Flow
 
-## Menu Filtering
+1. User signs in via `/authentication/login` or Google OAuth
+2. System fetches user profile from `/authentication/profile`
+3. System automatically calls `/permissions/me` to get user permissions
+4. Permissions are stored in `authentication_permissions` array
+5. All RBAC checks use this permissions array
+6. Menus and UI elements are filtered/hidden based on permissions
 
-The sidebar menu is automatically filtered based on user permissions. Only accessible menu items are displayed to the user.
+## Benefits of This Approach
 
-## Available Modules
+- **Simplified**: Direct mapping of backend permissions to frontend checks
+- **Real-time**: Permissions are fetched fresh on each login
+- **Flexible**: Easy to add new permissions without complex role management
+- **Maintainable**: Single source of truth for permissions
+- **Scalable**: Works with any number of permission keys
+- **Secure**: All permissions come directly from backend validation
 
-- **Sales**: cashier, salesOrder, queue, kitchenQueue, report, catalog, customer, etc.
-- **Operations**: store, inventory, purchaseOrder, marketing, voucher, staff
-- **Settings**: account, posSettings, integrations, outlet, pointConfiguration
-- **Dashboard**: dashboard
-- **Cash Management**: cashDrawer, cashInOut
+## Migration from Complex RBAC
 
-## Available Permissions
+The previous complex role-based system has been simplified to use direct permission keys. This provides:
 
-### Base Permissions (CRUD)
-
-- `isCanCreate`: Create new records
-- `isCanRead`: View/read records
-- `isCanUpdate`: Modify existing records
-- `isCanDelete`: Delete records
-
-### Extended Permissions
-
-- `isCanExport`: Export data
-- `isCanImport`: Import data
-- `isCanPrint`: Print documents
-- `isCanApprove`: Approve operations
-
-## Integration with Authentication
-
-The RBAC system integrates with the authentication flow:
-
-1. User signs in
-2. Authentication profile is fetched
-3. User role is determined from profile data
-4. RBAC store is initialized with user's role and permissions
-5. All subsequent permission checks use the stored role
-
-## Role Hierarchy and Business Use Cases
-
-### Role Hierarchy (Highest to Lowest Access)
-
-1. **Owner** - Ultimate business control
-2. **Super Admin** - Technical system administration
-3. **Manager** - Operational management
-4. **Staff** - Regular employee operations
-5. **Cashier** - Point-of-sale operations
-
-### Typical Business Scenarios
-
-**Small Business Setup:**
-
-- Owner: Business owner manages everything
-- Staff: Part-time employees handle daily operations
-- Cashier: Dedicated POS operators during busy hours
-
-**Medium Business Setup:**
-
-- Owner: Business owner with strategic oversight
-- Manager: Store/department managers
-- Staff: Regular employees
-- Cashier: Dedicated checkout personnel
-
-**Enterprise Setup:**
-
-- Owner: C-level executives or business owners
-- Super Admin: IT administrators managing system
-- Manager: Department heads and supervisors
-- Staff: Regular employees across departments
-- Cashier: POS operators and customer service
-
-### Permission Inheritance
-
-The system follows a **restrictive permission model** where each role has specifically defined permissions rather than inheriting from higher roles. This provides:
-
-- **Clear Permission Boundaries**: Each role has explicitly defined capabilities
-- **Security by Design**: No accidental permission inheritance
-- **Flexible Configuration**: Easy to customize permissions per business needs
-- **Audit Trail**: Clear understanding of what each role can do
-
-### Role Selection Guidelines
-
-**Choose Owner when:**
-
-- User needs ultimate business control
-- User manages business finances and critical operations
-- User sets company-wide policies and configurations
-
-**Choose Super Admin when:**
-
-- User handles technical system administration
-- User manages integrations and system settings
-- User needs access to all technical features
-
-**Choose Manager when:**
-
-- User supervises departments or teams
-- User needs operational oversight capabilities
-- User handles day-to-day business management
-
-**Choose Staff when:**
-
-- User performs routine business operations
-- User serves customers and processes standard transactions
-- User needs operational access without administrative rights
-
-**Choose Cashier when:**
-
-- User primarily operates point-of-sale systems
-- User handles customer checkout and payments
-- User needs minimal system access beyond sales functions
-
-## Testing
-
-A comprehensive testing panel is available at `/rbac-demo` that allows:
-
-- Switching between different roles
-- Real-time permission visualization
-- Testing permission-based UI changes
-
-## Backend Integration
-
-When the backend is ready, you'll need to:
-
-1. **Update Authentication API Response**:
-
-```json
-{
-  "user": {
-    "id": 1,
-    "name": "John Doe",
-    "email": "john@example.com",
-    "role": {
-      "id": 3,
-      "name": "Manager",
-      "permissions": {
-        "purchaseOrder": {
-          "isCanCreate": true,
-          "isCanRead": true,
-          "isCanUpdate": true,
-          "isCanDelete": false
-        }
-      }
-    }
-  }
-}
-```
-
-**Role ID Reference for Backend:**
-
-- `1`: Owner (Business Owner)
-- `2`: Super Admin (Technical Administrator)
-- `3`: Manager (Operational Manager)
-- `4`: Staff (Regular Employee)
-- `5`: Cashier (POS Operator)
-
-2. **Create Role Management APIs**:
-
-   - `GET /roles` - List all roles
-   - `POST /roles` - Create new role
-   - `PUT /roles/:id` - Update role
-   - `DELETE /roles/:id` - Delete role
-   - `GET /roles/:id/permissions` - Get role permissions
-
-3. **Update Permission Mappings**:
-   - Replace static role configurations with dynamic data from backend
-   - Implement real-time permission updates
-
-## Best Practices
-
-1. **Always Use Reactive Checkers**: Use computed properties from the composable for reactive permission checking
-2. **Check Permissions at Multiple Levels**: Implement checks in both templates and route guards
-3. **Provide Fallback UI**: Show appropriate messages for restricted access
-4. **Keep Permissions Granular**: Use specific module and action combinations
-5. **Test Across Roles**: Always test functionality across different user roles
-
-## File Structure
-
-```
-src/
-├── app/
-│   ├── interfaces/
-│   │   └── rbac.interface.ts
-│   ├── constants/
-│   │   └── rbac.constant.ts
-│   ├── store/
-│   │   └── rbac.store.ts
-│   ├── composables/
-│   │   └── useRbac.ts
-│   ├── directives/
-│   │   └── rbac.directive.ts
-│   ├── components/
-│   │   └── common/
-│   │       └── AppRbacTestingPanel.vue
-│   ├── routes/
-│   │   └── rbac-demo.route.ts
-│   └── views/
-│       └── RbacDemoUI.vue
-```
-
-## Future Enhancements
-
-1. **Dynamic Permission Loading**: Load permissions from backend APIs
-2. **Permission Caching**: Implement caching for better performance
-3. **Audit Trail**: Track permission-based actions for security
-4. **Role Hierarchy**: Implement role inheritance and hierarchy
-5. **Context-Based Permissions**: Add support for context-specific permissions
-6. **Permission Groups**: Group related permissions for easier management
-
-This RBAC implementation provides a solid foundation for access control in your application while remaining flexible for future backend integration and enhancements.
+- Easier maintenance and debugging
+- Direct backend integration
+- Clearer permission granularity
+- Simplified testing and development
+- Better alignment with backend security model
