@@ -1,0 +1,32 @@
+// store
+
+// constant
+import {
+  FINANCIALREPORT_CASHINOUT_COLUMNS,
+  FINANCIALREPORT_PAYMENTMETHOD_COLUMNS,
+  FINANCIALREPORT_PROFITANDLOST_COLUMNS,
+  FINANCIALREPORT_TAXANDSERVICECHARGE_COLUMNS,
+  INVENTORYREPORT_STOCKMOVEMENT_COLUMNS,
+  INVENTORYREPORT_STOCK_COLUMNS,
+  LOSSREPORT_COLUMNS,
+  MARKETINGREPORT_COLUMNS,
+  SALESREPORT_SALESBYITEM_COLUMNS,
+  SALESREPORT_SALESBYORDERTYPE_COLUMNS,
+} from '../constants';
+// type
+import { IReportProvided } from '../interfaces';
+
+export const useReportService = (): IReportProvided => {
+  return {
+    financialReport_profitAndLost_columns: FINANCIALREPORT_PROFITANDLOST_COLUMNS,
+    financialReport_cashInOut_columns: FINANCIALREPORT_CASHINOUT_COLUMNS,
+    financialReport_paymentMethod_columns: FINANCIALREPORT_PAYMENTMETHOD_COLUMNS,
+    financialReport_taxAndServiceCharge_columns: FINANCIALREPORT_TAXANDSERVICECHARGE_COLUMNS,
+    lossReport_columns: LOSSREPORT_COLUMNS,
+    salesReport_salesByItem_columns: SALESREPORT_SALESBYITEM_COLUMNS,
+    salesReport_salesByOrderType_columns: SALESREPORT_SALESBYORDERTYPE_COLUMNS,
+    inventoryReport_stock_columns: INVENTORYREPORT_STOCK_COLUMNS,
+    inventoryReport_stockMovement_columns: INVENTORYREPORT_STOCKMOVEMENT_COLUMNS,
+    marketingReport_columns: MARKETINGREPORT_COLUMNS,
+  };
+};

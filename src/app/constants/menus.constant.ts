@@ -66,7 +66,40 @@ export const LIST_SIDEBAR_MENUS = [
         iconName: 'report',
         path: '/report',
         isHaveSubMenus: false,
-        subMenus: [],
+        subMenus: [
+          {
+            name: 'Financial Report',
+            path: '/report/financial-report',
+          },
+          {
+            name: 'Loss Report',
+            path: '/report/loss-report',
+          },
+          {
+            name: 'Sales Report',
+            path: '/report/sales-report',
+          },
+          {
+            name: 'Inventory Report',
+            path: '/report/inventory-report',
+          },
+          {
+            name: 'Raw Material Report',
+            path: '/report/raw-material-report',
+          },
+          {
+            name: 'Marketing Report',
+            path: '/report/marketing-report',
+          },
+          {
+            name: 'Staff Report',
+            path: '/report/staff-report',
+          },
+          {
+            name: 'Customer Report',
+            path: '/report/customer-report',
+          },
+        ],
       },
       {
         name: 'Catalog',
