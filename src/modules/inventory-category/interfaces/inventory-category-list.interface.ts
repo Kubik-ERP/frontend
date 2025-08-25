@@ -15,7 +15,7 @@ export interface IInventoryCategoryListProvided {
   inventoryCategoryList_isLoading: globalThis.Ref<boolean>;
   inventoryCategoryList_onChangePage: (page: number) => void;
   inventoryCategoryList_handleOnSortChange: (event: DataTableSortEvent) => void
-inventoryCategoryList_handleOnSearch: (searchTerm: string) => void;
+  inventoryCategoryList_handleOnSearch: (searchTerm: string) => void;
   inventoryCategoryList_queryParams: IInventoryCategoryListRequestQuery;
   inventoryCategoryList_values: globalThis.Ref<IInventoryCategoryListResponse>;
   inventoryCategoryList_onCreateCategory: () => void;

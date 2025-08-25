@@ -7,6 +7,7 @@
     "searchPlaceholder": "Search brands...",
     "noDataMessage": "No brands found.",
     "form": {
+      "code" : "Brand Code",
       "name": "Brand Name",
       "description": "Description",
       "fields": {

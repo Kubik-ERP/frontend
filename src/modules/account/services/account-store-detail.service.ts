@@ -1,7 +1,6 @@
 // Constants
 import {
   ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_COLUMNS,
-  ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_VALUES,
   ACCOUNT_STORE_DETAIL_FACILITY_COLUMNS,
   ACCOUNT_STORE_DETAIL_FACILITY_VALUES,
   ACCOUNT_STORE_DETAIL_LIST_TABS,
@@ -18,6 +17,9 @@ import type {
   IStoreFacilityFormData,
   IStoreFacility_queryParams,
   IStoreFacility,
+  IStoreAssignedStaff,
+  IAcountStaffMemberListRequestQuery,
+  IStoreAssignedStaffFormData,
 } from '../interfaces';
 
 // Plugins
@@ -47,8 +49,10 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     outlet_tables,
   } = storeToRefs(outletStore);
   const store = useAccountStore();
-  const { account_storeFacilities, account_storeFacilities_isLoading } = storeToRefs(store);
+  const { account_storeFacilities, account_storeFacilities_isLoading, account_storeStaffAssigned } =
+    storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
+  const route = useRoute();
 
   /**
    * @description Reactive data binding
@@ -149,7 +153,7 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
    * @description Handle business logic for returning selected table layout
    */
   const accountStoreDetail_selectedTableLayout = computed(() =>
-    outlet_tables.value?.items.find(floor => floor.floorName === accountStoreDetail_selectedFloor.value),
+    outlet_tables.value?.find(floor => floor.floorName === accountStoreDetail_selectedFloor.value),
   );
 
   /**
@@ -353,6 +357,88 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
   };
 
+  /**
+   * @description Handle business logic for showing dialog staff store
+   */
+  const accountDetail_AssignedStaff_isLoading = ref<boolean>(false);
+  const accountDetail_formData = ref<IStoreAssignedStaffFormData>({
+    employeeId: '',
+    type: 'ASSIGN',
+  });
+
+  const accountDetail_formRules = computed(() => ({
+    employeeId: { required: true },
+    type: { required: true },
+  }));
+
+  const accountDetail_AssignedStaff_formValidations = useVuelidate(
+    accountDetail_formRules,
+    accountDetail_formData.value,
+  );
+
+  const accountDetail_listAssignedStaff = ref<IStoreAssignedStaff[]>([]);
+  const accountDetail_modalMode = ref<boolean>(false)
+
+  const idStore = route.params.id as string;
+  const accountDetail_listAssignedQueryParams = reactive<IAcountStaffMemberListRequestQuery>({
+    search: '',
+    page: 1,
+    limit: 10,
+    'X-STORE-ID': accountDetail_modalMode.value ? idStore : '',
+  });
+
+
+
+  const accountDetail_fetchAssignedStaff = async (): Promise<void> => {
+    try {
+      const res = await store.fetchAccount_assignedStaff(accountDetail_listAssignedQueryParams, {
+        ...httpAbort_registerAbort('ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_ENDPOINT'),
+      });
+      accountDetail_listAssignedStaff.value = res.data.employees as IStoreAssignedStaff[];
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  watch(
+    accountDetail_listAssignedQueryParams,
+    () => {
+      accountDetail_fetchAssignedStaff();
+    },
+    {
+      deep: true,
+      immediate: true,
+    },
+  );
+
+  const router = useRouter();
+  const accountStoreDetail_onAddStaff = (): void => {
+    
+    router.push({ name: 'staff-member.create' });
+  };
+
+  const accountStoreDetail_onCloseAddStaff = (): void => {
+    console.log('accountStoreDetail_onCloseAddStaff');
+  };
+
+  const accountDetail_AssignedStaff_onSubmit = async (): Promise<void> => {
+    try {
+      await store.createAccount_assignedStaff(accountDetail_formData.value, {
+        ...httpAbort_registerAbort('ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_ENDPOINT'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  }
+
   return {
     accountStoreDetail_activeTab,
     accountStoreDetail_fetchOutletListOperationalHours,
@@ -363,7 +449,7 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     accountStoreDetail_listColumnsOfAssignedStaff: ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_COLUMNS,
     accountStoreDetail_listColumnsOfOperationalHours: ACCOUNT_STORE_DETAIL_OPERATIONAL_HOURS_COLUMNS,
     accountStoreDetail_listColumnsOfStoreFacilities: ACCOUNT_STORE_DETAIL_FACILITY_COLUMNS,
-    accountStoreDetail_listValuesOfAssignedStaff: ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_VALUES as never[],
+    accountStoreDetail_listValuesOfAssignedStaff: account_storeStaffAssigned,
     accountStoreDetail_listValuesOfOperationalHours: ACCOUNT_STORE_DETAIL_OPERATIONAL_HOURS_VALUES as never[],
     accountStoreDetail_listValuesOfStoreFacilities: ACCOUNT_STORE_DETAIL_FACILITY_VALUES as never[],
     accountStoreDetail_onCloseDialogDetailTable,
@@ -391,5 +477,15 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     accountStoreDetail_onCloseDialogCreateEdit,
     accoutnStoreDetail_onSubmitDialogCreateEdit,
     accountStoreDetail_onDeleteDialogConfirmation,
+
+    accountStoreDetail_onAddStaff,
+    accountStoreDetail_onCloseAddStaff,
+    accountDetail_fetchAssignedStaff,
+    accountDetail_listAssignedQueryParams,
+    accountDetail_listAssignedStaff,
+    accountDetail_AssignedStaff_formData: accountDetail_formData,
+    accountDetail_AssignedStaff_isLoading,
+    accountDetail_AssignedStaff_formValidations,
+    accountDetail_AssignedStaff_onSubmit,
   };
 };

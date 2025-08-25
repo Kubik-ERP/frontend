@@ -1,0 +1,35 @@
+{
+  "role": {
+    "title": "Manajemen Role",
+    "createButton": "Buat Role",
+    "editButton": "Edit",
+    "deleteButton": "Hapus",
+    "searchPlaceholder": "Cari role...",
+    "noDataMessage": "Tidak ada role yang ditemukan.",
+    "form": {
+      "name": "Nama Role",
+      "description": "Deskripsi",
+      "permissions": "Izin",
+      "fields": {
+        "name": "Masukkan nama role",
+        "description": "Masukkan deskripsi role",
+        "permissions": "Pilih izin"
+      },
+      "buttons": {
+        "cancel": "Batal",
+        "create": "Buat",
+        "update": "Perbarui"
+      }
+    },
+    "popover": {
+      "edit": {
+        "title": "Edit Role",
+        "message": "Apakah Anda yakin ingin mengedit role ini?"
+      },
+      "delete": {
+        "title": "Hapus Role",
+        "message": "Apakah Anda yakin ingin menghapus role ini?"
+      }
+    }
+  }
+}

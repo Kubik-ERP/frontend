@@ -175,6 +175,10 @@ export const LIST_SIDEBAR_MENUS = [
             name: 'Commision Report',
             path: '/',
           },
+          {
+            name: 'User Permission',
+            path: '/user-permission',
+          },
         ],
       },
     ],
