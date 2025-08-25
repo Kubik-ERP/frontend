@@ -1,9 +1,17 @@
+<script setup lang="ts">
+// components
+import CustomDatePicker from '@/modules/report/components/CustomDatePicker.vue';
+// type
+import type { IDashboardProvided } from '../interfaces';
+// inject
+const { dashboard_queryParams } = inject<IDashboardProvided>('dashboard')!;
+</script>
 <template>
   <section id="dashboard-overview" class="flex flex-col gap-4">
     <section id="filter" class="flex flex-col gap-1">
       <label for="" class="font-semibold text-black text-xs"> Data Period </label>
-
-      <PrimeVueDatePicker class="w-full max-w-80" placeholder="Real time: " show-on-focus show-icon fluid />
+      
+      <CustomDatePicker :start-date="dashboard_queryParams.startDate" :end-date="dashboard_queryParams.endDate" />
     </section>
 
     <section id="overview-cards" class="grid grid-rows-1 grid-cols-12 gap-4">

@@ -11,16 +11,16 @@
           <span class="font-semibold text-warning-main text-xs w-fit lg:min-w-[60px]"> 10+ Items </span>
         </PrimeVueChip>
 
-        <PrimeVueButton
-          class="w-full bg-transparent border-none basic-smooth-animation hover:bg-grayscale-10 p-0 lg:p-4"
-        >
-          <template #default>
-            <section id="content" class="flex items-center gap-2">
-              <span class="font-semibold text-text-primary text-sm">Show More</span>
-              <AppBaseSvg name="chevron-right" class="!w-3 !h-3" />
-            </section>
-          </template>
-        </PrimeVueButton>
+        <router-link :to="{ name: 'items.list' }">
+          <PrimeVueButton class="w-full bg-transparent border-none basic-smooth-animation hover:bg-grayscale-10">
+            <template #default>
+              <section id="content" class="flex items-center gap-2">
+                <span class="font-semibold text-text-primary text-sm">Show More</span>
+                <AppBaseSvg name="chevron-right" class="!w-3 !h-3" />
+              </section>
+            </template>
+          </PrimeVueButton>
+        </router-link>
       </section>
     </header>
 
@@ -51,13 +51,17 @@
           </td>
 
           <td class="ps-4 w-14 py-2">
-            <PrimeVueButton class="w-full bg-transparent border-none basic-smooth-animation hover:bg-grayscale-10">
-              <template #default>
-                <section id="content" class="flex items-center gap-2">
-                  <span class="font-semibold text-primary text-sm">Order</span>
-                </section>
-              </template>
-            </PrimeVueButton>
+            <router-link :to="{ name: 'purchase-order.create' }">
+              <PrimeVueButton
+                class="w-full bg-transparent border-none basic-smooth-animation hover:bg-grayscale-10"
+              >
+                <template #default>
+                  <section id="content" class="flex items-center gap-2">
+                    <span class="font-semibold text-primary text-sm">Order</span>
+                  </section>
+                </template>
+              </PrimeVueButton>
+            </router-link>
           </td>
         </tr>
       </tbody>
