@@ -134,7 +134,6 @@ const onClickShortcut = (label: string) => {
                 date-format="dd/mm/yy"
                 fluid
                 placeholder="dd/mm/yyyy"
-                class="p-inputtext-sm"
                 :show-on-focus="false"
               />
             </div>
@@ -145,7 +144,6 @@ const onClickShortcut = (label: string) => {
                 date-format="dd/mm/yy"
                 fluid
                 placeholder="dd/mm/yyyy"
-                class="p-inputtext-sm"
                 :show-on-focus="false"
               />
             </div>
