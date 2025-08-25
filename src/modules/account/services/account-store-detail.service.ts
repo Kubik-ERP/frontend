@@ -32,6 +32,7 @@ import { required } from '@vuelidate/validators';
 // Stores
 import { useOutletStore } from '@/modules/outlet/store';
 import { useAccountStore } from '../store';
+import { router } from '@/app/router';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -415,9 +416,10 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     },
   );
 
+  const router = useRouter();
   const accountStoreDetail_onAddStaff = (): void => {
-    accountDetail_modalMode.value = true
-    console.log('accountStoreDetail_onAddStaff');
+    
+    router.push({ name: 'staff-member.create' });
   };
 
   const accountStoreDetail_onCloseAddStaff = (): void => {
