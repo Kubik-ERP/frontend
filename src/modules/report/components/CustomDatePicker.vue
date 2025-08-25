@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// 1. Define individual props for start and end dates
 const props = defineProps({
   startDate: {
     type: Date,
@@ -11,47 +10,50 @@ const props = defineProps({
   },
 });
 
-// 2. Define separate update events for each prop
 const emit = defineEmits(['update:startDate', 'update:endDate']);
 
-// Internal state for the dialog remains the same
 const dialogVisible = ref<boolean>(false);
-const localStartDate = ref<Date>(new Date());
-const localEndDate = ref<Date>(new Date());
 
-// 3. Watch both props and update the local state
+// ✅ 1. Use a single ref for the date range array
+const localDateRange = ref<[Date, Date] | null>([props.startDate, props.endDate]);
+
+// Watch props to update the local state
 watch(
   () => [props.startDate, props.endDate],
   ([newStart, newEnd]) => {
-    localStartDate.value = newStart;
-    localEndDate.value = newEnd;
+    localDateRange.value = [newStart, newEnd];
   },
   { immediate: true },
 );
 
-// 4. The "Apply" button now emits two separate events
+// The "Apply" button now emits the changes from the range array
 const applyDateChange = () => {
-  emit('update:startDate', localStartDate.value);
-  emit('update:endDate', localEndDate.value);
+  if (localDateRange.value && localDateRange.value[0]) {
+    const start = localDateRange.value[0];
+    // If only one date is selected, make the end date the same as the start date
+    const end = localDateRange.value[1] || start;
+
+    emit('update:startDate', start);
+    emit('update:endDate', end);
+  }
   dialogVisible.value = false;
 };
 
 const onClickShortcut = (label: string) => {
   const today = new Date();
+  let start = new Date();
+  let end = new Date();
 
   switch (label) {
     case 'Today': {
-      localStartDate.value = new Date(today.setHours(0, 0, 0, 0));
-      localEndDate.value = new Date();
+      start = new Date(new Date().setHours(0, 0, 0, 0));
       break;
     }
 
     case 'Yesterday': {
-      const yesterday = new Date();
-      yesterday.setDate(today.getDate() - 1);
-      yesterday.setHours(0, 0, 0, 0);
-      localStartDate.value = yesterday;
-      localEndDate.value = new Date(today.setHours(0, 0, 0, 0) - 1); // End of yesterday
+      start = new Date(new Date().setDate(today.getDate() - 1));
+      start.setHours(0, 0, 0, 0);
+      end = new Date(new Date().setHours(0, 0, 0, 0) - 1);
       break;
     }
 
@@ -60,14 +62,14 @@ const onClickShortcut = (label: string) => {
       // Assuming Sunday is the first day of the week (day 0)
       firstDayOfWeek.setDate(today.getDate() - today.getDay());
       firstDayOfWeek.setHours(0, 0, 0, 0);
-      localStartDate.value = firstDayOfWeek;
-      localEndDate.value = new Date();
+      start = firstDayOfWeek;
+      end = new Date();
       break;
     }
 
     case 'This Month': {
-      localStartDate.value = new Date(today.getFullYear(), today.getMonth(), 1);
-      localEndDate.value = new Date();
+      start = new Date(today.getFullYear(), today.getMonth(), 1);
+      end = new Date();
       break;
     }
 
@@ -75,8 +77,8 @@ const onClickShortcut = (label: string) => {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(today.getDate() - 30);
       thirtyDaysAgo.setHours(0, 0, 0, 0);
-      localStartDate.value = thirtyDaysAgo;
-      localEndDate.value = new Date();
+      start = thirtyDaysAgo;
+      end = new Date();
       break;
     }
 
@@ -84,21 +86,12 @@ const onClickShortcut = (label: string) => {
       const firstDayOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
       const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
       lastDayOfLastMonth.setHours(23, 59, 59, 999);
-      localStartDate.value = firstDayOfLastMonth;
-      localEndDate.value = lastDayOfLastMonth;
+      start = firstDayOfLastMonth;
+      end = lastDayOfLastMonth;
       break;
     }
   }
-};
-
-const isEditStartDate = ref<boolean>(true);
-
-const onEditStartDate = () => {
-  isEditStartDate.value = true;
-};
-
-const onEditEndDate = () => {
-  isEditStartDate.value = false;
+  localDateRange.value = [start, end];
 };
 </script>
 <template>
@@ -117,7 +110,12 @@ const onEditEndDate = () => {
       </template>
     </PrimeVueButton>
 
-    <PrimeVueDialog v-model:visible="dialogVisible" :draggable="false" :close-button-props="{ class: 'hidden' }" class="w-1/2">
+    <PrimeVueDialog
+      v-model:visible="dialogVisible"
+      :draggable="false"
+      :close-button-props="{ class: 'hidden' }"
+      class="w-1/2"
+    >
       <template #header>
         <h5 class="font-semibold text-black text-xl">Date Filter</h5>
       </template>
@@ -126,62 +124,29 @@ const onEditEndDate = () => {
           <section id="date-range" class="flex gap-8">
             <div class="flex flex-col w-full">
               <label class="text-sm" for="start-date">Start Date</label>
-              <!-- <PrimeVueDatePicker v-model="localStartDate" show-on-focus show-icon fluid /> -->
-              <PrimeVueButton
-                unstyled
-                class="w-full px-3 py-1 rounded-md bg-grayscale-10 text-text-primary text-left hover:cursor-pointer"
-                @click="onEditStartDate"
-                >{{ useFormatDate(localStartDate, 'dd/mm/yyyy') }}</PrimeVueButton
-              >
+              <PrimeVueDatePicker
+                v-model="localDateRange![0]"
+                date-format="dd/mm/yy"
+                fluid
+                placeholder="dd/mm/yyyy"
+                class="p-inputtext-sm"
+                :show-on-focus="false"
+              />
             </div>
             <div class="flex flex-col w-full">
               <label class="text-sm" for="end-date">End Date</label>
-              <!-- <PrimeVueDatePicker v-model="localEndDate" show-on-focus show-icon fluid /> -->
-              <PrimeVueButton
-                unstyled
-                class="w-full px-3 py-1 rounded-md bg-grayscale-10 text-text-primary text-left hover:cursor-pointer"
-                @click="onEditEndDate"
-                >{{ useFormatDate(localEndDate, 'dd/mm/yyyy') }}</PrimeVueButton
-              >
+              <PrimeVueDatePicker
+                v-model="localDateRange![1]"
+                date-format="dd/mm/yy"
+                fluid
+                placeholder="dd/mm/yyyy"
+                class="p-inputtext-sm"
+                :show-on-focus="false"
+              />
             </div>
           </section>
           <section id="calendar-board">
-            <label for="calendar" class="font-semibold text-lg">{{
-              isEditStartDate ? 'Start Date : ' : 'End Date : '
-            }}</label>
-            <PrimeVueDatePicker v-if="isEditStartDate" v-model="localStartDate" inline class="w-full" />
-            <PrimeVueDatePicker v-else v-model="localEndDate" inline class="w-full" />
-
-            <!-- <PrimeVueCard class="p-4">
-              <template #header>
-                <section class="flex items-center justify-between w-full">
-                  <h5 class="font-semibold text-black text-xl">August 2025</h5>
-                  <div class="flex items-center">
-                    <PrimeVueButton
-                      class="rounded-none border-grayscale-20"
-                      variant="outlined"
-                      size="small"
-                      label="Previous Month"
-                    />
-                    <PrimeVueButton
-                      class="rounded-none border-grayscale-20"
-                      variant="outlined"
-                      size="small"
-                      label="Today"
-                    />
-                    <PrimeVueButton
-                      class="rounded-none border-grayscale-20"
-                      variant="outlined"
-                      size="small"
-                      label="Next Month"
-                    />
-                  </div>
-                </section>
-              </template>
-              <template #content>
-                <PrimeVueDatePicker v-model="localStartDate" inline show-week class="w-full" />
-              </template>
-            </PrimeVueCard> -->
+            <PrimeVueDatePicker v-model="localDateRange" selection-mode="range" inline class="w-full" />
           </section>
           <section id="shortcut-button">
             <div id="shortcut-button" class="grid grid-cols-2 gap-2">
