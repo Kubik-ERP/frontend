@@ -84,12 +84,12 @@ export const LOSSREPORT_COLUMNS: IColumnDataTable[] = [
   {
     label: 'SKU',
     sortable: false,
-    value: 'SKU',
+    value: 'sku',
   },
   {
     label: 'Item Name',
     sortable: false,
-    value: 'item_name',
+    value: 'itemName',
   },
   {
     label: 'Notes',
@@ -99,22 +99,22 @@ export const LOSSREPORT_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Qty Loss',
     sortable: true,
-    value: 'qty_loss',
+    value: 'qtyLoss',
   },
   {
     label: 'Unit Cost',
     sortable: true,
-    value: 'unit_cost',
+    value: 'unitCost',
   },
   {
     label: 'Total Loss',
     sortable: true,
-    value: 'total_loss',
+    value: 'totalLoss',
   },
   {
     label: 'Reported By',
     sortable: false,
-    value: 'reported_by',
+    value: 'reportedBy',
   },
 ];
 

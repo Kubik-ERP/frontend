@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // components
 import CustomDatePicker from '../components/CustomDatePicker.vue';
+import reportPdfTemplate from '../components/reportPdfTemplate.vue';
 // service
 import { useReportService } from '../services/report.service';
 const { lossReport_columns } = useReportService();
@@ -12,15 +13,594 @@ const TEMPORARY_FORMDATA = reactive({
   start_date: new Date(),
   end_date: new Date(),
 });
+
+const TEMPORARY_DATA = reactive([
+  {
+    date: '01/08/2024',
+    sku: 'FNB-001',
+    itemName: 'Susu UHT Full Cream',
+    notes: 'Expired',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '01/08/2024',
+    sku: 'FNB-002',
+    itemName: 'Roti Tawar',
+    notes: 'Damaged',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '01/08/2024',
+    sku: 'FNB-003',
+    itemName: 'Kecap Manis',
+    notes: 'Loss',
+    qtyLoss: -10,
+    unitCost: 7000,
+    totalLoss: 70000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '01/08/2024',
+    sku: 'FNB-004',
+    itemName: 'Saus Sambal',
+    notes: 'Loss',
+    qtyLoss: -10,
+    unitCost: 10000,
+    totalLoss: 100000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-005',
+    itemName: 'Kecap Asin',
+    notes: 'Damaged',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-006',
+    itemName: 'Beras',
+    notes: 'Expired',
+    qtyLoss: -20,
+    unitCost: 15000,
+    totalLoss: 300000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-007',
+    itemName: 'Gula Pasir',
+    notes: 'Damaged',
+    qtyLoss: -10,
+    unitCost: 12000,
+    totalLoss: 120000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-008',
+    itemName: 'Tepung Terigu',
+    notes: 'Loss',
+    qtyLoss: -15,
+    unitCost: 10000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-009',
+    itemName: 'Minyak Goreng',
+    notes: 'Expired',
+    qtyLoss: -20,
+    unitCost: 18000,
+    totalLoss: 360000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-010',
+    itemName: 'Mie Instant',
+    notes: 'Damaged',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-011',
+    itemName: 'Saus Tomat',
+    notes: 'Loss',
+    qtyLoss: -15,
+    unitCost: 12000,
+    totalLoss: 180000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-012',
+    itemName: 'Saus Sambal',
+    notes: 'Expired',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-013',
+    itemName: 'Kecap Asin',
+    notes: 'Damaged',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-014',
+    itemName: 'Kecap Manis',
+    notes: 'Loss',
+    qtyLoss: -10,
+    unitCost: 7000,
+    totalLoss: 70000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-015',
+    itemName: 'Roti Tawar',
+    notes: 'Expired',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-016',
+    itemName: 'Susu UHT Full Cream',
+    notes: 'Damaged',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-017',
+    itemName: 'Kecap Asin',
+    notes: 'Loss',
+    qtyLoss: -15,
+    unitCost: 12000,
+    totalLoss: 180000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-018',
+    itemName: 'Saus Tomat',
+    notes: 'Expired',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-019',
+    itemName: 'Saus Sambal',
+    notes: 'Damaged',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-020',
+    itemName: 'Kecap Manis',
+    notes: 'Loss',
+    qtyLoss: -10,
+    unitCost: 7000,
+    totalLoss: 70000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-021',
+    itemName: 'Roti Tawar',
+    notes: 'Expired',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-022',
+    itemName: 'Susu UHT Full Cream',
+    notes: 'Damaged',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-023',
+    itemName: 'Kecap Asin',
+    notes: 'Loss',
+    qtyLoss: -15,
+    unitCost: 12000,
+    totalLoss: 180000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-025',
+    itemName: 'Saus Sambal',
+    notes: 'Damaged',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-026',
+    itemName: 'Kecap Manis',
+    notes: 'Loss',
+    qtyLoss: -10,
+    unitCost: 7000,
+    totalLoss: 70000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-027',
+    itemName: 'Roti Tawar',
+    notes: 'Expired',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-028',
+    itemName: 'Susu UHT Full Cream',
+    notes: 'Damaged',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-029',
+    itemName: 'Kecap Asin',
+    notes: 'Loss',
+    qtyLoss: -15,
+    unitCost: 12000,
+    totalLoss: 180000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-030',
+    itemName: 'Saus Tomat',
+    notes: 'Expired',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-031',
+    itemName: 'Saus Sambal',
+    notes: 'Damaged',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-032',
+    itemName: 'Kecap Manis',
+    notes: 'Loss',
+    qtyLoss: -10,
+    unitCost: 7000,
+    totalLoss: 70000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-033',
+    itemName: 'Roti Tawar',
+    notes: 'Expired',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-035',
+    itemName: 'Susu UHT Full Cream',
+    notes: 'Damaged',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-036',
+    itemName: 'Kecap Asin',
+    notes: 'Loss',
+    qtyLoss: -15,
+    unitCost: 12000,
+    totalLoss: 180000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-037',
+    itemName: 'Saus Tomat',
+    notes: 'Expired',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-038',
+    itemName: 'Saus Sambal',
+    notes: 'Damaged',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-039',
+    itemName: 'Kecap Manis',
+    notes: 'Loss',
+    qtyLoss: -10,
+    unitCost: 7000,
+    totalLoss: 70000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-040',
+    itemName: 'Roti Tawar',
+    notes: 'Expired',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-041',
+    itemName: 'Susu UHT Full Cream',
+    notes: 'Damaged',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-042',
+    itemName: 'Kecap Asin',
+    notes: 'Loss',
+    qtyLoss: -15,
+    unitCost: 12000,
+    totalLoss: 180000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-043',
+    itemName: 'Saus Tomat',
+    notes: 'Expired',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-044',
+    itemName: 'Saus Sambal',
+    notes: 'Damaged',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-045',
+    itemName: 'Kecap Manis',
+    notes: 'Loss',
+    qtyLoss: -10,
+    unitCost: 7000,
+    totalLoss: 70000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-046',
+    itemName: 'Roti Tawar',
+    notes: 'Expired',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-047',
+    itemName: 'Susu UHT Full Cream',
+    notes: 'Damaged',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-048',
+    itemName: 'Kecap Asin',
+    notes: 'Loss',
+    qtyLoss: -15,
+    unitCost: 12000,
+    totalLoss: 180000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-049',
+    itemName: 'Saus Tomat',
+    notes: 'Expired',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-050',
+    itemName: 'Saus Sambal',
+    notes: 'Damaged',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-051',
+    itemName: 'Kecap Manis',
+    notes: 'Loss',
+    qtyLoss: -10,
+    unitCost: 7000,
+    totalLoss: 70000,
+    reportedBy: 'Samantha',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-052',
+    itemName: 'Roti Tawar',
+    notes: 'Expired',
+    qtyLoss: -5,
+    unitCost: 8000,
+    totalLoss: 40000,
+    reportedBy: 'Roger',
+  },
+  {
+    date: '02/08/2024',
+    sku: 'FNB-053',
+    itemName: 'Susu UHT Full Cream',
+    notes: 'Damaged',
+    qtyLoss: -10,
+    unitCost: 15000,
+    totalLoss: 150000,
+    reportedBy: 'Samantha',
+  },
+]);
+
+/**
+ * @function handleExport
+ * @description Handles the export functionality when the export button is clicked. This function checks if the PDF template
+ * reference (`pdfTemplateRef`) is available and calls the `lossReport_onExportToPdf` function to generate a PDF.
+ * Logs an error if the PDF template element is not found.
+ *
+ * @throws {Error} Logs an error to the console if the PDF template element is not available.
+ */
+
+const pdfTemplateRef = ref<InstanceType<typeof reportPdfTemplate> | null>(null);
+const dummySummaryData = computed(() => {
+  // Format yang benar untuk tanggal dan waktu
+  // Format date like this, 24 July, 2025
+  const dateFormat = 'dd MMMM, yyyy';
+  const timeFormat = 'hh:MM:ss';
+
+  return {
+    storeName: 'STORE NAME',
+    staffName: 'STAFF NAME',
+    reportName: 'Loss Report',
+    printDate: useFormatDate(new Date(), dateFormat),
+    printTime: useFormatDate(new Date(), timeFormat),
+  };
+});
+
+// Html2Pdf
+import html2pdf from 'html2pdf.js';
+const lossReport_onExportToPdf = (element: HTMLElement): void => {
+  // Opsi untuk html2pdf
+  const options = {
+    margin: 0,
+    filename: `[Backoffice]_Loss_Report_${useFormatDate(new Date(), 'dd_mm_yyyy_hh_MM_ss_am/pm')}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+    enableLinks: true,
+
+    // ✅ ADD THIS CRITICAL OPTION
+    pagebreak: { mode: 'css', before: '.page-break-before' },
+  };
+
+  console.log('Exporting to PDF...');
+
+  // Panggil html2pdf untuk membuat dan mengunduh PDF
+  html2pdf()
+    .from(element)
+    .set(options)
+    .save()
+    .then(() => {
+      console.log('PDF exported successfully.');
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .catch((error: any) => {
+      console.error('Error exporting PDF:', error);
+    });
+};
+function handleExport() {
+  console.log('fired');
+
+  if (pdfTemplateRef.value?.$el) {
+    lossReport_onExportToPdf(pdfTemplateRef.value.$el);
+  } else {
+    console.error('PDF template element not found.');
+  }
+}
 </script>
 <template>
   <section>
     <AppBaseDataTable
+      :data="TEMPORARY_DATA"
       :columns="lossReport_columns"
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-custom-filter
-      is-using-server-side-pagination
     >
       <template #header-prefix>
         <h1 class="font-bold text-2xl text-text-primary">Loss Report</h1>
@@ -42,6 +622,7 @@ const TEMPORARY_FORMDATA = reactive({
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .pdf"
+              @click="handleExport"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
@@ -59,5 +640,14 @@ const TEMPORARY_FORMDATA = reactive({
         />
       </template>
     </AppBaseDataTable>
+
+    <div class="absolute -top-[9999px] -left-[9999px]">
+      <reportPdfTemplate
+        ref="pdfTemplateRef"
+        :report-data="dummySummaryData"
+        :columns="lossReport_columns"
+        :table-data="TEMPORARY_DATA as never[]"
+      />
+    </div>
   </section>
 </template>
