@@ -30,6 +30,7 @@ This document describes the simplified RBAC (Role-Based Access Control) implemen
    - Supports hide/disable fallback modes
 
 5. **Menu Helper** (`src/app/helpers/menu-permission.helper.ts`)
+
    - Maps menu paths to required permissions
    - Filters menus based on user permissions
 
@@ -232,8 +233,8 @@ const MENU_PERMISSION_MAPPING = {
 
 ## Authentication Flow
 
-1. User signs in via `/authentication/login` or Google OAuth
-2. System fetches user profile from `/authentication/profile`
+1. User select the outlet
+2. System will set value of selected outlet into the state
 3. System automatically calls `/permissions/me` to get user permissions
 4. Permissions are stored in `authentication_permissions` array
 5. All RBAC checks use this permissions array
