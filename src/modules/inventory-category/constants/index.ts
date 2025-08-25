@@ -1,4 +1,4 @@
-import { IInventoryCategory } from "../interfaces";
+import { IInventoryCategory } from '../interfaces';
 
 export const VOUCHER_LIST_REQUEST = 'INVENTORY_CATEGORY_LIST_REQUEST';
 
@@ -25,7 +25,7 @@ export const INVERNTORY_CATEGORY_LIST_COLUMNS = [
     sortable: false,
     value: 'action',
   },
-]
+];
 
 export const INVENTORY_CATEGORY_LIST_DEFAULT_QUERY = {
   page: 1,
@@ -38,6 +38,7 @@ export const INVENTORY_CATEGORY_LIST_DEFAULT_QUERY = {
 export const INVENTORY_CATEGORY_FAKE_DATA: IInventoryCategory[] = [
   {
     id: '1',
+    code: 'ELEC',
     name: 'Electronics',
     notes: 'Devices and gadgets',
     isHaveItems: true,
@@ -46,6 +47,7 @@ export const INVENTORY_CATEGORY_FAKE_DATA: IInventoryCategory[] = [
   },
   {
     id: '2',
+    code: 'FURN',
     name: 'Furniture',
     notes: 'Home and office furniture',
     isHaveItems: false,
@@ -54,6 +56,7 @@ export const INVENTORY_CATEGORY_FAKE_DATA: IInventoryCategory[] = [
   },
   {
     id: '3',
+    code: 'CLOTH',
     name: 'Clothing',
     notes: 'Apparel and accessories',
     isHaveItems: true,
