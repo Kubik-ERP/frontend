@@ -24,6 +24,18 @@ export const LIST_ADDITIONAL_MENUS = [
 
 export const LIST_SIDEBAR_MENUS = [
   {
+    name: '',
+    menus: [
+      {
+        name: 'Dashboard',
+        iconName: 'dashboard',
+        path: '/dashboard',
+        isHaveSubMenus: false,
+        subMenus: [],
+      },
+    ],
+  },
+  {
     name: 'Cashier',
     menus: [
       {
