@@ -37,7 +37,7 @@ const { account_isLoadingOfOutlet, account_listColumns, account_onDirectToDetail
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="plus-line-white" />
 
-              <span class="font-semibold text-base text-white">
+              <span class="font-semibold text-sm lg:text-base text-white">
                 {{ useLocalization('app.create-store') }}
               </span>
             </section>

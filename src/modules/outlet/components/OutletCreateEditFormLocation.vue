@@ -13,7 +13,7 @@ const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
   <section id="outlet-create-edit-form-location" class="flex flex-col gap-2">
     <h5 class="font-semibold text-black text-lg">Location</h5>
 
-    <section id="form-inputs" class="grid grid-rows-1 grid-cols-12 gap-4">
+    <section id="form-inputs" class="grid grid-rows-1 grid-cols-12 gap-0 lg:gap-4">
       <section id="outlet-address" class="col-span-full md:col-span-6">
         <AppBaseFormGroup
           v-slot="{ classes }"
@@ -36,7 +36,7 @@ const { outletCreateEdit_formData, outletCreateEdit_formValidations } =
         </AppBaseFormGroup>
       </section>
 
-      <section id="outlet-name" class="col-span-full md:col-span-6">&nbsp;</section>
+      <section id="outlet-name" class="hidden lg:block col-span-full md:col-span-6">&nbsp;</section>
 
       <section id="outlet-city" class="col-span-full md:col-span-6">
         <AppBaseFormGroup

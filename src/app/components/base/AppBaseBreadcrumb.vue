@@ -90,11 +90,15 @@ onMounted(() => {
     >
       <template #item="{ item }">
         <template v-if="item.routeName === route.name || item.url === route.path">
-          <span class="font-normal text-sm text-primary">{{ item.label }}</span>
+          <span class="font-normal text-sm text-primary truncate">{{ item.label }}</span>
         </template>
 
         <template v-else>
-          <RouterLink :to="item.to" class="font-normal text-sm text-text-disabled">
+          <RouterLink
+            :to="item.to"
+            class="font-normal text-sm text-text-disabled"
+            :class="[item.icon ? 'inline-block w-6 h-6' : 'truncate']"
+          >
             {{ item.label }}
           </RouterLink>
         </template>
