@@ -218,6 +218,7 @@ function handleExport() {
             <div class="flex flex-col items-center w-full px-6 py-5 gap-2">
               <section class="cash-register-actions flex items-end gap-6">
                 <PrimeVueButton
+                  v-rbac="{ permission: 'set_up_cash_drawer' }"
                   class="border border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
                   severity="secondary"
                   variant="outlined"
@@ -250,6 +251,7 @@ function handleExport() {
                 </section>
 
                 <PrimeVueButton
+                  v-rbac="{ permission: 'set_up_cash_drawer' }"
                   class="border border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
                   severity="secondary"
                   variant="outlined"
@@ -265,6 +267,7 @@ function handleExport() {
               </section>
 
               <PrimeVueButton
+                v-rbac="{ permission: 'close_cash_register' }"
                 class="bg-error-main border-none w-fit px-4 py-2 rounded-lg basic-smooth-animation"
                 severity="secondary"
                 variant="outlined"

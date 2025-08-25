@@ -1,5 +1,6 @@
 // Constants
 import {
+  AUTHENTICATION_BASE_PERMISSIONS_ENDPOINT,
   AUTHENTICATION_ENDPOINT_GOOGLE_REDIRECT,
   AUTHENTICATION_ENDPOINT_PIN,
   AUTHENTICATION_ENDPOINT_PROFILE,
@@ -23,6 +24,7 @@ import type {
   IAuthenticationSendOtpFormData,
   IAuthenticationSignInResponse,
   IAuthenticationProfile,
+  IAuthenticationPermissionResponse,
 } from '../interfaces';
 
 // Plugins
@@ -31,6 +33,7 @@ import httpClient from '@/plugins/axios';
 export const useAuthenticationStore = defineStore('authentication', {
   state: (): IAuthenticationStateStore => ({
     authentication_isLoading: false,
+    authentication_permissions: [],
     authentication_token: '',
     authentication_userData: null,
   }),
@@ -91,6 +94,39 @@ export const useAuthenticationStore = defineStore('authentication', {
         );
 
         this.authentication_token = response.data.data.accessToken;
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.authentication_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api authentication permissions.
+     * @url /permissions/me
+     * @method GET
+     * @access public
+     */
+    async fetchAuthentication_permissions(
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IAuthenticationPermissionResponse> {
+      this.authentication_isLoading = true;
+
+      try {
+        const response = await httpClient.get<IAuthenticationPermissionResponse>(
+          AUTHENTICATION_BASE_PERMISSIONS_ENDPOINT,
+          {
+            ...requestConfigurations,
+          },
+        );
+
+        this.authentication_permissions = response.data.data;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -324,7 +360,7 @@ export const useAuthenticationStore = defineStore('authentication', {
   },
   persist: {
     key: 'authentication',
-    pick: ['authentication_token', 'authentication_userData'],
+    pick: ['authentication_permissions', 'authentication_token', 'authentication_userData'],
     storage: localStorage,
   },
 });

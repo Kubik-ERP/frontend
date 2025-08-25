@@ -1,158 +1,49 @@
-import { computed, type ComputedRef } from 'vue';
+// Stores
 import { storeToRefs } from 'pinia';
-import { useRbacStore } from '../store/rbac.store';
-import type {
-  IRbacService,
-  IModulePermissions,
-  IBasePermissions,
-  IExtendedPermissions,
-  IRole,
-} from '../interfaces/rbac.interface';
+import { useAuthenticationStore } from '@/modules/authentication/store';
 
 /**
  * @description RBAC composable service for permission management
+ * Now uses backend permissions array from authentication store
  */
-export const useRbac = (): IRbacService => {
-  const rbacStore = useRbacStore();
-  const { rbac_currentUserRole, rbac_permissions } = storeToRefs(rbacStore);
+export const useRbac = () => {
+  const authenticationStore = useAuthenticationStore();
+  const { authentication_permissions } = storeToRefs(authenticationStore);
 
   /**
-   * @description Check if user has specific permission for a module
+   * @description Check if user has specific permission based on backend permission key
    */
-  const hasPermission = (module: keyof IModulePermissions, action: keyof IBasePermissions): boolean => {
-    return rbacStore.rbac_hasPermission(module, action);
-  };
-
-  /**
-   * @description Check if user has specific extended permission for a module
-   */
-  const hasExtendedPermission = (
-    module: keyof IModulePermissions,
-    action: keyof IExtendedPermissions,
-  ): boolean => {
-    return rbacStore.rbac_hasPermission(module, action);
+  const hasPermission = (permissionKey: TPermissions): boolean => {
+    return authentication_permissions.value.includes(permissionKey);
   };
 
   /**
-   * @description Check if user has any permission for a module
+   * @description Check if user has any of the specified permissions
    */
-  const hasAnyPermission = (module: keyof IModulePermissions): boolean => {
-    return rbacStore.rbac_hasAnyPermissionForModule(module);
+  const hasAnyPermission = (permissionKeys: TPermissions[]): boolean => {
+    return permissionKeys.some(key => hasPermission(key));
   };
 
   /**
-   * @description Check if user has module access (any permission)
+   * @description Check if user has all of the specified permissions
    */
-  const hasModuleAccess = (module: keyof IModulePermissions): boolean => {
-    return hasAnyPermission(module);
+  const hasAllPermissions = (permissionKeys: TPermissions[]): boolean => {
+    return permissionKeys.every(key => hasPermission(key));
   };
 
   /**
-   * @description Get current user role
+   * @description Get all current user permissions
    */
-  const getCurrentUserRole = (): IRole | null => {
-    return rbac_currentUserRole.value;
+  const getCurrentUserPermissions = (): string[] => {
+    return authentication_permissions.value;
   };
-
-  /**
-   * @description Get current user permissions
-   */
-  const getCurrentUserPermissions = (): IModulePermissions => {
-    return rbac_permissions.value || {};
-  };
-
-  /**
-   * @description Check route permission
-   */
-  const checkRoutePermission = (routeName: string): boolean => {
-    return rbacStore.rbac_checkRoutePermission(routeName);
-  };
-
-  /**
-   * @description Reactive permission checkers
-   */
-  const canCreate = (module: keyof IModulePermissions): ComputedRef<boolean> => {
-    return computed(() => hasPermission(module, 'isCanCreate'));
-  };
-
-  const canRead = (module: keyof IModulePermissions): ComputedRef<boolean> => {
-    return computed(() => hasPermission(module, 'isCanRead'));
-  };
-
-  const canUpdate = (module: keyof IModulePermissions): ComputedRef<boolean> => {
-    return computed(() => hasPermission(module, 'isCanUpdate'));
-  };
-
-  const canDelete = (module: keyof IModulePermissions): ComputedRef<boolean> => {
-    return computed(() => hasPermission(module, 'isCanDelete'));
-  };
-
-  /**
-   * @description Extended permission checkers
-   */
-  const canExport = (module: keyof IModulePermissions): ComputedRef<boolean> => {
-    return computed(() => hasExtendedPermission(module, 'isCanExport'));
-  };
-
-  const canImport = (module: keyof IModulePermissions): ComputedRef<boolean> => {
-    return computed(() => hasExtendedPermission(module, 'isCanImport'));
-  };
-
-  const canPrint = (module: keyof IModulePermissions): ComputedRef<boolean> => {
-    return computed(() => hasExtendedPermission(module, 'isCanPrint'));
-  };
-
-  const canApprove = (module: keyof IModulePermissions): ComputedRef<boolean> => {
-    return computed(() => hasExtendedPermission(module, 'isCanApprove'));
-  };
-
-  /**
-   * @description Role checkers
-   */
-  const isOwner = computed(() => rbacStore.rbac_isOwner);
-  const isSuperAdmin = computed(() => rbacStore.rbac_isSuperAdmin);
-  const isManager = computed(() => rbacStore.rbac_isManager);
-  const isStaff = computed(() => rbacStore.rbac_isStaff);
-  const isCashier = computed(() => rbacStore.rbac_isCashier);
-  const hasRole = computed(() => rbacStore.rbac_hasRole);
-
-  /**
-   * @description Get role name
-   */
-  const getCurrentRoleName = computed(() => rbacStore.rbac_getCurrentRoleName);
 
   return {
-    // Permission checking methods
+    // Core permission checking methods
     hasPermission,
-    hasExtendedPermission,
     hasAnyPermission,
-    hasModuleAccess,
-
-    // Role management methods
-    getCurrentUserRole,
+    hasAllPermissions,
     getCurrentUserPermissions,
-    checkRoutePermission,
-
-    // Reactive CRUD permissions
-    canCreate,
-    canRead,
-    canUpdate,
-    canDelete,
-
-    // Reactive extended permissions
-    canExport,
-    canImport,
-    canPrint,
-    canApprove,
-
-    // Role state
-    isOwner,
-    isSuperAdmin,
-    isManager,
-    isStaff,
-    isCashier,
-    hasRole,
-    getCurrentRoleName,
   };
 };
 
@@ -165,34 +56,26 @@ export const useRbacDirective = () => {
   return {
     /**
      * @description Check permission directive
-     * Usage: v-if="checkPermission('purchaseOrder', 'isCanCreate')"
+     * Usage: v-if="checkPermission('set_up_cash_drawer')"
      */
-    checkPermission: (module: keyof IModulePermissions, action: keyof IBasePermissions): boolean => {
-      return rbac.hasPermission(module, action);
+    checkPermission: (permissionKey: TPermissions): boolean => {
+      return rbac.hasPermission(permissionKey);
     },
 
     /**
-     * @description Check extended permission directive
-     * Usage: v-if="checkExtendedPermission('purchaseOrder', 'isCanApprove')"
+     * @description Check if has any of the specified permissions
+     * Usage: v-if="checkAnyPermission(['set_up_cash_drawer', 'close_cash_register'])"
      */
-    checkExtendedPermission: (module: keyof IModulePermissions, action: keyof IExtendedPermissions): boolean => {
-      return rbac.hasExtendedPermission(module, action);
+    checkAnyPermission: (permissionKeys: TPermissions[]): boolean => {
+      return rbac.hasAnyPermission(permissionKeys);
     },
 
     /**
-     * @description Check module access directive
-     * Usage: v-if="checkModuleAccess('purchaseOrder')"
+     * @description Check if has all of the specified permissions
+     * Usage: v-if="checkAllPermissions(['set_up_cash_drawer', 'close_cash_register'])"
      */
-    checkModuleAccess: (module: keyof IModulePermissions): boolean => {
-      return rbac.hasModuleAccess(module);
+    checkAllPermissions: (permissionKeys: TPermissions[]): boolean => {
+      return rbac.hasAllPermissions(permissionKeys);
     },
-
-    /**
-     * @description Role checkers for templates
-     */
-    isSuperAdmin: rbac.isSuperAdmin,
-    isManager: rbac.isManager,
-    isCashier: rbac.isCashier,
-    hasRole: rbac.hasRole,
   };
 };
