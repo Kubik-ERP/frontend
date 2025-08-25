@@ -15,7 +15,11 @@ import {
   IStoreFacility_queryParams,
   IStoreFacilityFormData,
   IStoreFacilities,
+  IStoreAssignedStaffActionResponse,
+  IStoreAssignedStaffFormData,
 } from '../interfaces';
+import { IStaffMemberListResponse } from '@/modules/staff-member/interfaces';
+import { STAFF_MEMBER_BASE_ENDPOINT } from '@/modules/staff-member/constants';
 
 export const useAccountStore = defineStore('account', {
   state: () => ({
@@ -31,6 +35,33 @@ export const useAccountStore = defineStore('account', {
       },
     } as IStoreFacilities,
     account_storeFacilities_isLoading: false,
+    account_storeStaffAssigned: {
+     data:{
+       employees: [
+        {
+          id: 'example-staff-member-id',
+          name: 'example staff member',
+          email: 'example@kubik.com',
+          phoneNumber: '+1234567890',
+          profileUrl: null,
+          startDate: null,
+          endDate: null,
+          gender: null,
+          title: null,
+          employeesHasSocialMedia: [],
+          employeesShift: [],
+          productCommissions: [],
+          voucherCommissions: [],
+        },
+      ],
+      meta: {
+        limit: 10,
+        page: 1,
+        total: 0,
+        totalPages: 0,
+      },
+     }
+    } as IStaffMemberListResponse
   }),
   getters: {
     /**
@@ -245,5 +276,40 @@ export const useAccountStore = defineStore('account', {
         this.account_storeFacilities_isLoading = false;
       }
     },
+
+    async fetchAccount_assignedStaff(
+      params: IStoreFacility_queryParams,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IStaffMemberListResponse> {
+      try {
+        const response = await httpClient.get(STAFF_MEMBER_BASE_ENDPOINT, {
+          params,
+          ...requestConfigurations,
+        });
+        this.account_storeStaffAssigned = response.data;
+        return response.data;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
+
+    async createAccount_assignedStaff(
+      payload: IStoreAssignedStaffFormData,
+      requestConfigurations: AxiosRequestConfig): Promise<IStoreAssignedStaffActionResponse> {
+      try {
+        const response = await httpClient.post<IStoreAssignedStaffActionResponse>(STAFF_MEMBER_BASE_ENDPOINT, payload, requestConfigurations);
+        return response.data;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    }
   },
 });

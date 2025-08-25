@@ -7,6 +7,7 @@
     "searchPlaceholder": "Cari merek...",
     "noDataMessage": "Tidak ada merek yang ditemukan.",
     "form": {
+      "code": "Kode Merek",
       "name": "Nama Merek",
       "description": "Deskripsi",
       "fields": {

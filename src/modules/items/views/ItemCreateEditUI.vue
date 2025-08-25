@@ -326,7 +326,7 @@ const confirmUpdate = async () => {
             class-label="block text-sm font-medium text-gray-700 mb-1"
             is-name-as-label
             name="Supplier"
-            :validators="itemFormValidation.supplier"
+            :validators="itemFormValidation.supplierId"
           >
             <PrimeVueDropdown
               v-model="form.supplierId"

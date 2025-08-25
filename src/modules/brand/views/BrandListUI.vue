@@ -38,13 +38,13 @@ const {
 
       <!-- Header Suffix -->
       <template #header-suffix>
-        <div class="flex items-center space-x-2">
+         <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full">
           <PrimeVueIconField>
             <PrimeVueInputIcon>
               <i class="pi pi-search text-gray-400"></i>
             </PrimeVueInputIcon>
             <PrimeVueInputText v-model="brand_queryParams.search" :placeholder="$t('brand.searchPlaceholder')"
-              class="w-80 h-10 pl-10 pr-4 border border-gray-300 rounded-md" />
+              class="w-full h-10 pl-10 pr-4 border border-gray-300 rounded-md" />
           </PrimeVueIconField>
           <PrimeVueButton
             class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"

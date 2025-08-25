@@ -49,7 +49,7 @@ const {
     >
       <!-- Header Suffix -->
       <template #header-suffix>
-        <div class="flex items-center space-x-2">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full">
           <PrimeVueIconField>
             <PrimeVueInputIcon>
               <i class="pi pi-search text-gray-400"></i>
@@ -57,7 +57,7 @@ const {
             <PrimeVueInputText
               v-model="storageLocation_queryParams.search"
               :placeholder="$t('storageLocation.searchPlaceholder')"
-              class="w-80 h-10 pl-10 pr-4 border border-gray-300 rounded-md"
+              class="w-full h-10 pl-10 pr-4 border border-gray-300 rounded-md"
             />
           </PrimeVueIconField>
           <PrimeVueButton
