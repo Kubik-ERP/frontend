@@ -39,6 +39,11 @@ const applyDateChange = () => {
   dialogVisible.value = false;
 };
 
+const cancelDateChange = () => {
+  localDateRange.value = [props.startDate, props.endDate];
+  dialogVisible.value = false;
+};
+
 const onClickShortcut = (label: string) => {
   const today = new Date();
   let start = new Date();
@@ -163,7 +168,7 @@ const onClickShortcut = (label: string) => {
         </section>
       </template>
       <template #footer>
-        <PrimeVueButton label="Cancel" severity="secondary" variant="outlined" @click="dialogVisible = false" />
+        <PrimeVueButton label="Cancel" severity="secondary" variant="outlined" @click="cancelDateChange" />
         <PrimeVueButton label="Apply" @click="applyDateChange" />
       </template>
     </PrimeVueDialog>
