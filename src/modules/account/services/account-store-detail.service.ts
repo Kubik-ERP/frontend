@@ -32,7 +32,6 @@ import { required } from '@vuelidate/validators';
 // Stores
 import { useOutletStore } from '@/modules/outlet/store';
 import { useAccountStore } from '../store';
-import { router } from '@/app/router';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -154,7 +153,7 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
    * @description Handle business logic for returning selected table layout
    */
   const accountStoreDetail_selectedTableLayout = computed(() =>
-    outlet_tables.value?.items.find(floor => floor.floorName === accountStoreDetail_selectedFloor.value),
+    outlet_tables.value?.find(floor => floor.floorName === accountStoreDetail_selectedFloor.value),
   );
 
   /**
