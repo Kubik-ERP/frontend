@@ -20,6 +20,7 @@ export interface IAuthenticationSignInResponse {
 export interface IAuthenticationSignInProvided {
   authenticationSignIn_detectLocationAndBrowser: () => Promise<void>;
   authenticationSignIn_fetchAuthenticationGoogleRedirect: () => Promise<unknown>;
+  authenticationSignIn_fetchAuthenticationPermissions: () => Promise<unknown>;
   authenticationSignIn_formData: IAuthenticationSignInFormData;
   authenticationSignIn_formValidations: globalThis.Ref<Validation>;
   authenticationSignIn_isLoading: globalThis.Ref<boolean>;

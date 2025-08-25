@@ -2,19 +2,20 @@
 // Constants
 import { LIST_ADDITIONAL_MENUS, LIST_SIDEBAR_MENUS } from '@/app/constants/menus.constant';
 
+// Helpers
+import { filterMenusByPermissions } from '@/app/helpers/menu-permission.helper';
+
 // Stores
 import { useAuthenticationStore } from '@/modules/authentication/store';
 import { useOutletStore } from '@/modules/outlet/store';
-import { useRbacStore } from '@/app/store/rbac.store';
 import { useMobileStore } from '@/app/store/mobile.store';
 
 // Injected variables
 const authenticationStore = useAuthenticationStore();
 const outletStore = useOutletStore();
-const rbacStore = useRbacStore();
 const mobileStore = useMobileStore();
 const route = useRoute();
-const { authentication_userData } = storeToRefs(authenticationStore);
+const { authentication_userData, authentication_permissions } = storeToRefs(authenticationStore);
 const { outlet_currentOutlet, outlet_profile } = storeToRefs(outletStore);
 const { isCurrentlyMobile, isSidebarOpen } = storeToRefs(mobileStore);
 
@@ -29,11 +30,15 @@ const isCollapsed = ref<boolean>(false);
 
 // Filter menus based on user permissions
 const filteredSidebarMenus = computed(() => {
-  return rbacStore.rbac_getFilteredMenus(LIST_SIDEBAR_MENUS);
+  return filterMenusByPermissions(LIST_SIDEBAR_MENUS, authentication_permissions.value);
 });
 
 const filteredAdditionalMenus = computed(() => {
-  return rbacStore.rbac_getFilteredMenus([{ name: 'Additional', menus: LIST_ADDITIONAL_MENUS }])[0]?.menus || [];
+  const filtered = filterMenusByPermissions(
+    [{ name: 'Additional', menus: LIST_ADDITIONAL_MENUS }],
+    authentication_permissions.value,
+  );
+  return filtered[0]?.menus || [];
 });
 
 // Compute which submenus should be open based on the current route
@@ -142,6 +147,14 @@ const sidebarClasses = computed(() => {
 
     <!-- Header -->
     <header class="flex items-center gap-2 overflow-hidden">
+      <PrimeVueAvatar
+        :image="APP_BASE_BUCKET_URL + outlet_profile?.user.image"
+        size="small"
+        shape="circle"
+        label="P"
+        class="hidden lg:inline-flex w-14 h-14"
+      />
+
       <h1
         v-show="!isCollapsed || isCurrentlyMobile"
         class="font-bold text-base leading-8 whitespace-nowrap transition-opacity duration-300"
