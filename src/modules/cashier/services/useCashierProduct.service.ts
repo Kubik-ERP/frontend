@@ -13,6 +13,8 @@ import { useCashierStore } from '../store';
 import { ref } from 'vue';
 import { ICashierCategory, ICashierProduct } from '../interfaces/cashier-response';
 
+import { useRoute } from 'vue-router';
+
 /**
  * @description Closure function that returns everything what we need into an object
  */
@@ -21,6 +23,8 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @description Injected variables
    */
   const store = useCashierStore();
+
+  const route = useRoute();
 
   const { cashierProduct_selectedProduct } = storeToRefs(store);
 
@@ -64,7 +68,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
   const cashierProduct_onSearchData = async (searchData: string) => {
     cashierProduct_productState.value.isLoadingProduct = true;
     try {
-      const response = await store.cashierProduct_fetchSearch(searchData);
+      const response = await store.cashierProduct_fetchSearch(searchData, route);
 
       cashierProduct_productState.value.listProductSearch = response;
     } catch (error) {
@@ -98,12 +102,12 @@ export const useCashierProductService = (): ICashierProductProvided => {
   const cashierProduct_handleFetchCategory = async () => {
     cashierProduct_productState.value.isLoadingProduct = true;
     try {
-      const response = await store.cashierProduct_fetchCategory({
-        params: {
-          page: 1,
-          limit: 1000,
-        },
-      });
+      const params = {
+        page: 1,
+        limit: 1000,
+      };
+
+      const response = await store.cashierProduct_fetchCategory(route, params);
 
       cashierProduct_productState.value.listCategory = response.data.categories;
     } catch (error) {
@@ -133,7 +137,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
       const selectedCategoryId = cashierProduct_productState.value.selectedCategory;
 
       if (selectedCategoryId) {
-        const response = await store.cashierProduct_fetchCategoryByID(selectedCategoryId, { params });
+        const response = await store.cashierProduct_fetchCategoryByID(selectedCategoryId, route, params);
 
         const normalizedCategory: ICashierCategory = {
           id: response.data.id,
@@ -146,7 +150,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
 
         cashierProduct_productState.value.listProductCategory = [normalizedCategory];
       } else {
-        const response = await store.cashierProduct_fetchCategory({ params });
+        const response = await store.cashierProduct_fetchCategory(route, params);
 
         cashierProduct_productState.value.listProductCategory = response.data.categories;
       }

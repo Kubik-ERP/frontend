@@ -36,11 +36,11 @@ export const useOutletStore = defineStore('outlet', {
      * @description Usually, we define getters if the getter name is different from the state name.
      */
     outlet_listAvailableFloor: (state): IDropdownItem[] => {
-      if (!state.outlet_tables || state.outlet_tables.items.length === 0) {
+      if (!state.outlet_tables || state.outlet_tables.length === 0) {
         return [];
       }
 
-      const sortedTables = [...state.outlet_tables.items].sort((a, b) => a.floorName.localeCompare(b.floorName));
+      const sortedTables = [...state.outlet_tables].sort((a, b) => a.floorName.localeCompare(b.floorName));
       const uniqueFloors = Array.from(new Set(sortedTables.map(table => table.floorName)));
 
       return uniqueFloors.map(floor => ({

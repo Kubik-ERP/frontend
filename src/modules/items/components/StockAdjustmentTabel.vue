@@ -46,7 +46,7 @@ function formatDate(date: string) {
   >
     <!-- Header Suffix -->
     <template #header-suffix>
-      <div class="flex items-center space-x-2 absolute right-4 top-3">
+      <div class="flex items-center space-x-2 sm:absolute sm:right-4 sm:top-3">
         <PrimeVueButton
           class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"
           @click="stockadjustment_onCreate"

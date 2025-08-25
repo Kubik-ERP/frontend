@@ -18,6 +18,7 @@ export const inventoryCategoryCreateService = (): IInventoryCategoryCreateProvid
 
   const inventoryCategoryCreate_formData = ref<IInventoryCategoryCreateUpdatePayload>({
     name: '',
+    code: '',
     notes: '',
   });
 
@@ -25,6 +26,7 @@ export const inventoryCategoryCreateService = (): IInventoryCategoryCreateProvid
   if (inventoryCategoryFormMode.value === 'edit' && inventoryCategoryList_editingItem.value) {
     inventoryCategoryCreate_formData.value = {
       name: inventoryCategoryList_editingItem.value.name,
+      code: inventoryCategoryList_editingItem.value.code,
       notes: inventoryCategoryList_editingItem.value.notes,
     };
   }
@@ -58,13 +60,17 @@ export const inventoryCategoryCreateService = (): IInventoryCategoryCreateProvid
     id?: string,
   ): Promise<void> => {
     inventoryCategoryCreate_isLoading.value = true;
-
+    const data = {
+      name: payload.name?.trim(),
+      code: payload.code === '' ? true : payload.code,
+      notes: payload.notes?.trim(),
+    }
     try {
       let result;
       if (mode === 'create') {
-        result = await store.inventoryCategoryList_createCategory(payload);
+        result = await store.inventoryCategoryList_createCategory(data);
       } else if (mode === 'edit' && id) {
-        result = await store.inventoryCategoryList_editCategory(id, payload);
+        result = await store.inventoryCategoryList_editCategory(id, data);
       } else {
         throw new Error('Edit mode requires a valid category ID');
       }
@@ -106,6 +112,7 @@ export const inventoryCategoryCreateService = (): IInventoryCategoryCreateProvid
   const inventoryCategoryCreate_onCancel = (): void => {
     inventoryCategoryCreate_formData.value = {
       name: '',
+      code: '',
       notes: '',
     };
     inventoryCategoryList_editingItem.value = null;

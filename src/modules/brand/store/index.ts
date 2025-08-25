@@ -92,12 +92,6 @@ export const useBrandStore = defineStore('brand', {
         return Promise.reject(error);
       } finally {
         this.brandList_isLoading = false;
-        await this.brandList_fetchList({
-          page: 1,
-          pageSize: 10,
-          orderBy: null,
-          orderDirection: 'desc',
-        }, {});
       }
     }
   }

@@ -1,6 +1,7 @@
 export interface IInventoryCategory {
   id: string;
   name: string;
+  code: string;
   notes: string;
   isHaveItems: boolean;
   createdAt: Date;
@@ -34,6 +35,7 @@ export interface IInventoryCategoryListResponse  {
 
 export interface IInventoryCategoryCreateUpdatePayload {
   name: string;
+  code: string | boolean | null;
   notes: string;
 };
 

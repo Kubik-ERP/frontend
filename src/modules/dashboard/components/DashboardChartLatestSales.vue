@@ -65,7 +65,7 @@ onMounted(() => {
 <template>
   <section
     id="dashboard-chart-latest-sales"
-    class="col-span-8 flex flex-col bg-white border border-solid border-grayscale-10 p-4 gap-4 rounded-sm"
+    class="col-span-full lg:col-span-8 flex flex-col bg-white border border-solid border-grayscale-10 p-4 gap-4 rounded-sm"
   >
     <h5 class="font-semibold text-lg text-grayscale-70">Latest Sales</h5>
 
@@ -89,6 +89,6 @@ onMounted(() => {
       </section>
     </section>
 
-    <PrimeVueChart type="line" :data="chartData" :options="chartOptions" class="h-[30rem]" />
+    <PrimeVueChart type="line" :data="chartData" :options="chartOptions" class="h-[20rem] lg:h-[30rem]" />
   </section>
 </template>

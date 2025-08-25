@@ -21,7 +21,7 @@ const {
   <section id="outlet-create-edit-form-detail" class="flex flex-col gap-2">
     <h5 class="font-semibold text-black text-lg">Details</h5>
 
-    <section id="form-inputs" class="grid grid-rows-1 grid-cols-12 gap-4">
+    <section id="form-inputs" class="grid grid-rows-1 grid-cols-12 gap-0 lg:gap-4">
       <section id="outlet-name" class="col-span-full md:col-span-6">
         <AppBaseFormGroup
           v-slot="{ classes }"
@@ -66,7 +66,7 @@ const {
 
       <section id="phone-information" class="col-span-full md:col-span-6">
         <div class="grid grid-rows-1 grid-cols-12 gap-4">
-          <section id="phone-code" class="col-span-2">
+          <section id="phone-code" class="col-span-4 lg:col-span-2">
             <AppBaseFormGroup
               v-slot="{ classes }"
               class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
@@ -103,7 +103,7 @@ const {
             </AppBaseFormGroup>
           </section>
 
-          <section id="phone-number" class="col-span-10">
+          <section id="phone-number" class="col-span-8 lg:col-span-10">
             <AppBaseFormGroup
               v-slot="{ classes }"
               class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
@@ -126,7 +126,7 @@ const {
         </div>
       </section>
 
-      <section id="business-type" class="col-span-full md:col-span-6">
+      <section id="business-type" class="col-span-full md:col-span-6 mt-4 lg:mt-0">
         <AppBaseFormGroup
           v-slot="{ classes }"
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"

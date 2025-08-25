@@ -15,7 +15,7 @@ const value = ref([
     id="dashboard-stock-availability"
     class="flex flex-col bg-white border border-solid border-grayscale-10 p-4 gap-4 rounded-sm"
   >
-    <h5 class="font-semibold text-lg text-grayscale-70">Stock Availability</h5>
+    <h5 class="font-semibold text-base lg:text-lg text-grayscale-70">Stock Availability</h5>
 
     <PrimeVueMeterGroup
       :value="value"

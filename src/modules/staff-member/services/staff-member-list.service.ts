@@ -5,12 +5,13 @@ import {
 } from '../constants';
 
 // Interfaces
-import type { IStaffMemberListProvided, IStaffMemberListRequestQuery, IStafPermission } from '../interfaces';
+import type { IStaffMemberListProvided, IStaffMemberListRequestQuery } from '../interfaces';
 
 // Store
 import { useStaffMemberStore } from '../store';
 
 import eventBus from '@/plugins/mitt';
+import { IRole } from '@/modules/role/interfaces/index.interface';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -136,32 +137,38 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
   };
 
   /**
-   * @dwescription for roles permissions
+   * @description for roles permissions
    */
-  const staffMemberCreateEdit_permissionData = ref<IStafPermission[]>([]);
-  const staffMember_listPermissions = computed( async () => {
-    try{
-      const res = await store.staffMember_getPermissions();
-      staffMemberCreateEdit_permissionData.value = res.data;
-    } catch (error: unknown) {
+  const staffMemberCreateEdit_permissionData = ref<IRole[]>([]);
+
+  const staffMemberCreateEdit_getRoles = async (): Promise<void> => {
+    try {
+     const res = await store.staffMember_getPermissions({
+        page: 1,
+        pageSize: 100,
+        orderBy: null,
+        orderDirection: null
+      }, {})
+      
+      staffMemberCreateEdit_permissionData.value = res.data.items
+    } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
         return Promise.reject(new Error(String(error)));
       }
     }
-  });
+  }
 
-  onMounted(async () => {
-    await staffMember_listPermissions.value;
-  });
+  onMounted(() => {
+    staffMemberCreateEdit_getRoles()
+  })
 
   return {
     staffMemberList_columns: STAFF_MEMBER_LIST_COLUMNS,
     staffMemberList_dropdownItemStaff: staffMember_listDropdownItemStaff,
     staffMemberList_dropdownItemTitles: staffMember_listDropdownItemTitles,
     staffMemberList_typesOfUserPermissions: staffMemberCreateEdit_permissionData,
-
     staffMemberList_fetchListMembers,
     staffMemberList_deleteStaffMember,
 

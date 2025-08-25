@@ -11,13 +11,6 @@ import InvoiceProduct from './InvoiceProduct.vue';
 
     <div class="flex flex-col gap-2 w-full">
       <InvoiceProduct />
-      <InvoiceProduct />
-      <InvoiceProduct />
-    </div>
-
-    <div class="flex w-full justify-center items-center gap-2">
-      <span class="text-sm text-primary font-semibold">Show Less</span>
-      <AppBaseSvg name="chevron-up" />
     </div>
   </section>
 </template>
