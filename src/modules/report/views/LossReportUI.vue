@@ -1,6 +1,23 @@
 <script setup lang="ts">
-// composables
+// composables for export pdf
 import { useReportExporter } from '../composables/useReportExporter';
+const { exportToPdf, exportToCsv } = useReportExporter();
+const handleExportToPdf = () => {
+  exportToPdf({
+    reportName: 'Loss Report',
+    period: `${useFormatDate(TEMPORARY_FORMDATA.start_date, 'dd/MMM/yyyy')} - ${useFormatDate(TEMPORARY_FORMDATA.end_date, 'dd/MMM/yyyy')}`,
+    columns: lossReport_columns,
+    tableData: TEMPORARY_DATA,
+  });
+};
+const handleExportToCsv = () => {
+  exportToCsv({
+    reportName: 'Loss Report',
+    period: `${useFormatDate(TEMPORARY_FORMDATA.start_date, 'dd/MMM/yyyy')} - ${useFormatDate(TEMPORARY_FORMDATA.end_date, 'dd/MMM/yyyy')}`,
+    columns: lossReport_columns,
+    tableData: TEMPORARY_DATA,
+  });
+};
 // components
 import CustomDatePicker from '../components/CustomDatePicker.vue';
 // service
@@ -527,16 +544,6 @@ const TEMPORARY_DATA = reactive([
     reportedBy: 'Samantha',
   },
 ]);
-
-const { exportReport } = useReportExporter();
-const handleExport = () => {
-  exportReport({
-    reportName: 'Loss Report',
-    period: `${(useFormatDate(TEMPORARY_FORMDATA.start_date, 'dd/MMM/yyyy'))} - ${useFormatDate(TEMPORARY_FORMDATA.end_date, 'dd/MMM/yyyy')}`,
-    columns: lossReport_columns,
-    tableData: TEMPORARY_DATA,
-  });
-};
 </script>
 <template>
   <section>
@@ -567,12 +574,13 @@ const handleExport = () => {
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .pdf"
-              @click="handleExport"
+              @click="handleExportToPdf"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .csv"
+              @click="handleExportToCsv"
             />
           </section>
         </PrimeVuePopover>
@@ -585,14 +593,5 @@ const handleExport = () => {
         />
       </template>
     </AppBaseDataTable>
-
-    <!-- <div class="absolute -top-[9999px] -left-[9999px]">
-      <reportPdfTemplate
-        ref="pdfTemplateRef"
-        :report-data="dummySummaryData"
-        :columns="lossReport_columns"
-        :table-data="TEMPORARY_DATA as never[]"
-      />
-    </div> -->
   </section>
 </template>
