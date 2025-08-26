@@ -1,12 +1,5 @@
 export const LIST_ADDITIONAL_MENUS = [
   {
-    name: 'RBAC Demo',
-    iconName: 'gear',
-    path: '/rbac-demo',
-    isHaveSubMenus: false,
-    subMenus: [],
-  },
-  {
     name: 'Report',
     iconName: 'report-secondary',
     path: '/',
@@ -100,13 +93,6 @@ export const LIST_SIDEBAR_MENUS = [
   {
     name: 'Operations',
     menus: [
-      {
-        name: 'Store',
-        iconName: 'store',
-        path: '/store',
-        isHaveSubMenus: false,
-        subMenus: [],
-      },
       {
         name: 'Inventory',
         iconName: 'inventory',

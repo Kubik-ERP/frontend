@@ -4,6 +4,9 @@ import { OUTLET_LIST_REQUEST } from '../constants';
 // Interfaces
 import type { IOutlet, IOutletListProvided, IOutletListResponse } from '../interfaces';
 
+// Services
+import { useAuthenticationSignInService } from '@/modules/authentication/services/authentication-sign-in.service';
+
 // Store
 import { useOutletStore } from '../store';
 
@@ -16,6 +19,7 @@ export const useOutletListService = (): IOutletListProvided => {
    */
   const router = useRouter();
   const store = useOutletStore(); // Instance of the store
+  const { authenticationSignIn_fetchAuthenticationPermissions } = useAuthenticationSignInService();
   const { outlet_isLoading, outlet_lists, outlet_currentOutlet } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
@@ -57,7 +61,8 @@ export const useOutletListService = (): IOutletListProvided => {
   /**
    * @description Handle business logic for event click button continue
    */
-  const outletList_onContinue = (): void => {
+  const outletList_onContinue = async (): Promise<void> => {
+    await authenticationSignIn_fetchAuthenticationPermissions();
     router.push({ name: 'dashboard' });
   };
 
