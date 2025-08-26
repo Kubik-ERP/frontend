@@ -1,7 +1,4 @@
 <script setup lang="ts">
-// Composables
-import { useRbac } from '@/app/composables/useRbac';
-
 // Interfaces
 import type { IPurchaseOrderListProvided } from '../interfaces';
 
@@ -17,13 +14,6 @@ const togglePopover = (id: string, event: Event) => {
   popover?.toggle?.(event);
 };
 const searchValue = ref('');
-
-/**
- * @description RBAC permissions
- */
-const rbac = useRbac();
-const canCreatePurchaseOrder = rbac.canCreate('purchaseOrder');
-const canUpdatePurchaseOrder = rbac.canUpdate('purchaseOrder');
 
 /**
  * @description Inject all the data and methods what we need
@@ -57,7 +47,7 @@ watch(searchValue, newValue => {
     :columns="purchaseOrderList_columns"
     :data="purchaseOrderList_values?.items || []"
     header-title="Purchase Order List"
-    :is-using-btn-cta-create="canCreatePurchaseOrder"
+    :is-using-btn-cta-create="true"
     is-using-custom-body
     :is-using-filter="false"
     is-using-search-on-header
@@ -147,9 +137,7 @@ watch(searchValue, newValue => {
             </PrimeVueButton>
 
             <PrimeVueButton
-              v-if="
-                canUpdatePurchaseOrder && purchaseOrderList_onShowButtonDeliveryOrderDocument(data.orderStatus)
-              "
+              v-if="purchaseOrderList_onShowButtonDeliveryOrderDocument(data.orderStatus)"
               class="w-full px-4 py-3"
               variant="text"
             >
@@ -162,7 +150,7 @@ watch(searchValue, newValue => {
             </PrimeVueButton>
 
             <PrimeVueButton
-              v-if="canUpdatePurchaseOrder && purchaseOrderList_onShowButtonCancelPO(data.orderStatus)"
+              v-if="purchaseOrderList_onShowButtonCancelPO(data.orderStatus)"
               class="w-full px-4 py-3"
               variant="text"
             >
