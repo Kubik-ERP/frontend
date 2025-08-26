@@ -1,7 +1,8 @@
 <script setup lang="ts">
+// composables
+import { useReportExporter } from '../composables/useReportExporter';
 // components
 import CustomDatePicker from '../components/CustomDatePicker.vue';
-import reportPdfTemplate from '../components/reportPdfTemplate.vue';
 // service
 import { useReportService } from '../services/report.service';
 const { lossReport_columns } = useReportService();
@@ -527,71 +528,15 @@ const TEMPORARY_DATA = reactive([
   },
 ]);
 
-/**
- * @function handleExport
- * @description Handles the export functionality when the export button is clicked. This function checks if the PDF template
- * reference (`pdfTemplateRef`) is available and calls the `lossReport_onExportToPdf` function to generate a PDF.
- * Logs an error if the PDF template element is not found.
- *
- * @throws {Error} Logs an error to the console if the PDF template element is not available.
- */
-
-const pdfTemplateRef = ref<InstanceType<typeof reportPdfTemplate> | null>(null);
-const dummySummaryData = computed(() => {
-  // Format yang benar untuk tanggal dan waktu
-  // Format date like this, 24 July, 2025
-  const dateFormat = 'dd MMMM, yyyy';
-  const timeFormat = 'hh:MM:ss';
-
-  return {
-    storeName: 'STORE NAME',
-    staffName: 'STAFF NAME',
+const { exportReport } = useReportExporter();
+const handleExport = () => {
+  exportReport({
     reportName: 'Loss Report',
-    printDate: useFormatDate(new Date(), dateFormat),
-    printTime: useFormatDate(new Date(), timeFormat),
-  };
-});
-
-// Html2Pdf
-import html2pdf from 'html2pdf.js';
-const lossReport_onExportToPdf = (element: HTMLElement): void => {
-  // Opsi untuk html2pdf
-  const options = {
-    margin: 0,
-    filename: `[Backoffice]_Loss_Report_${useFormatDate(new Date(), 'dd_mm_yyyy_hh_MM_ss_am/pm')}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
-    enableLinks: true,
-
-    // ✅ ADD THIS CRITICAL OPTION
-    pagebreak: { mode: 'css', before: '.page-break-before' },
-  };
-
-  console.log('Exporting to PDF...');
-
-  // Panggil html2pdf untuk membuat dan mengunduh PDF
-  html2pdf()
-    .from(element)
-    .set(options)
-    .save()
-    .then(() => {
-      console.log('PDF exported successfully.');
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .catch((error: any) => {
-      console.error('Error exporting PDF:', error);
-    });
+    period: `${(useFormatDate(TEMPORARY_FORMDATA.start_date, 'dd/MMM/yyyy'))} - ${useFormatDate(TEMPORARY_FORMDATA.end_date, 'dd/MMM/yyyy')}`,
+    columns: lossReport_columns,
+    tableData: TEMPORARY_DATA,
+  });
 };
-function handleExport() {
-  console.log('fired');
-
-  if (pdfTemplateRef.value?.$el) {
-    lossReport_onExportToPdf(pdfTemplateRef.value.$el);
-  } else {
-    console.error('PDF template element not found.');
-  }
-}
 </script>
 <template>
   <section>
@@ -641,13 +586,13 @@ function handleExport() {
       </template>
     </AppBaseDataTable>
 
-    <div class="absolute -top-[9999px] -left-[9999px]">
+    <!-- <div class="absolute -top-[9999px] -left-[9999px]">
       <reportPdfTemplate
         ref="pdfTemplateRef"
         :report-data="dummySummaryData"
         :columns="lossReport_columns"
         :table-data="TEMPORARY_DATA as never[]"
       />
-    </div>
+    </div> -->
   </section>
 </template>

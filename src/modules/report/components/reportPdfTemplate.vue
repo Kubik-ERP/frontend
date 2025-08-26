@@ -11,9 +11,10 @@ interface IColumn {
 }
 
 interface ISummaryData {
-  staffName: string;
-  storeName: string;
   reportName: string;
+  storeName: string;
+  storeAddress: string;
+  period: string;
   printDate: string;
   printTime: string;
 }
@@ -26,9 +27,10 @@ interface IProps {
 
 const props = withDefaults(defineProps<IProps>(), {
   reportData: () => ({
-    staffName: '',
-    storeName: '',
     reportName: '',
+    storeName: '',
+    storeAddress: '',
+    period: '',
     printDate: '',
     printTime: '',
   }),
@@ -110,6 +112,10 @@ const chunkedData = computed(() => {
             <h2 style="font-size: 16px; font-weight: bold; color: #333333">
               {{ reportData.storeName }}
             </h2>
+            <h2 style="font-size: 16px; font-weight: bold; color: #333333">
+              {{ reportData.storeAddress }}
+            </h2>
+            <h2 style="font-size: 16px; color: #333333">Period : {{ reportData.period }}</h2>
             <div style="font-size: 14px; color: #333333">
               Printed on {{ reportData.printDate }}, {{ reportData.printTime }}
             </div>
@@ -136,7 +142,11 @@ const chunkedData = computed(() => {
           </thead>
           <tbody>
             <tr v-for="(item, itemIndex) in chunk" :key="itemIndex">
-              <td v-for="column in columns" :key="column.value" style="padding: 8px; border: 1px solid #ddd">
+              <td
+                v-for="column in columns"
+                :key="column.value"
+                style="padding: 8px; text-align: center; border: 1px solid #ddd"
+              >
                 {{ item[column.value] }}
               </td>
             </tr>

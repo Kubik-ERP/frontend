@@ -122,12 +122,12 @@ export const SALESREPORT_SALESBYITEM_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Product ID',
     sortable: true,
-    value: 'product_id',
+    value: 'productId',
   },
   {
     label: 'Item Name',
     sortable: false,
-    value: 'item_name',
+    value: 'itemName',
   },
   {
     label: 'Category',
@@ -137,17 +137,17 @@ export const SALESREPORT_SALESBYITEM_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Qty Sold',
     sortable: true,
-    value: 'qty_sold',
+    value: 'qtySold',
   },
   {
     label: 'Unit Price',
     sortable: false,
-    value: 'unit_price',
+    value: 'unitPrice',
   },
   {
     label: 'Gross Sales',
     sortable: true,
-    value: 'gross_sales',
+    value: 'grossSales',
   },
   {
     label: 'Discount',
@@ -157,7 +157,7 @@ export const SALESREPORT_SALESBYITEM_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Net Sales',
     sortable: true,
-    value: 'net_sales',
+    value: 'netSales',
   },
   {
     label: 'Tax',
@@ -167,7 +167,7 @@ export const SALESREPORT_SALESBYITEM_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Total Sales',
     sortable: true,
-    value: 'total_sales',
+    value: 'totalSales',
   },
 ];
 
