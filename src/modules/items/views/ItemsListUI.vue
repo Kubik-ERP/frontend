@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useInventoryItemsListService } from '../services/items-list.service';
 import { IInventoryItems } from '../interfaces';
+import InventoryItemImportModal from '../components/InventoryItemImportModal.vue';
 
 const popover = ref();
 const selectedData = ref<IInventoryItems | null>(null);
@@ -22,6 +23,7 @@ const {
   inventoryItems_onEdit,
   inventoryItems_onDelete,
   inventoryItem_onAdjustment,
+  inventoryItem_onImport
 } = useInventoryItemsListService();
 </script>
 
@@ -64,11 +66,12 @@ const {
           <div class="flex justify-between w-full sm:w-auto gap-2">
             <!-- Create -->
             <PrimeVueButton
-              class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2 w-[48%] sm:w-auto"
-              @click="inventoryItems_onCreate"
+              class="bg-white hover:bg-gray-100 text-primary px-4 py-2 h-10 rounded-md flex items-center gap-2 w-[48%] sm:w-auto"
+              @click="inventoryItem_onImport"
             >
-              <i class="pi pi-plus text-sm"></i>
-              Create Item
+              <i class="pi pi-upload text-sm"></i>
+
+              Import Item
             </PrimeVueButton>
 
             <!-- Import -->
@@ -76,8 +79,8 @@ const {
               class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2 w-[48%] sm:w-auto"
               @click="inventoryItems_onCreate"
             >
-              <i class="pi pi-upload text-sm"></i>
-              Import Item
+              <i class="pi pi-plus text-sm"></i>
+              Create Item
             </PrimeVueButton>
           </div>
         </div>
@@ -225,5 +228,6 @@ const {
       </template>
     </AppBaseDataTable>
   </section>
+  <InventoryItemImportModal />
   <AppBaseDialogConfirmation id="inventory-items-dialog-confirmation" />
 </template>

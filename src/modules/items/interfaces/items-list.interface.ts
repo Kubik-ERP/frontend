@@ -39,4 +39,5 @@ export interface IInventoryItemsListProvided{
   inventoryItemsFormMode: globalThis.Ref<'create' | 'edit'>;
   inventoryItems_editingItem: globalThis.Ref<IInventoryItems | null>;
   inventoryItem_onAdjustment: (inventoryItemsId: string) => void;
+  inventoryItem_onImport: () => void;
 }

@@ -23,4 +23,5 @@ export interface IBrandListProvided {
   brand_onDelete: (brandId: string) => void;
   brandFormMode: globalThis.Ref<'create' | 'edit'>;
   brand_editingItem: globalThis.Ref<IBrand | null>;
+  brand_onImport: () => void;
 }

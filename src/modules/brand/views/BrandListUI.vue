@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BrandFormModal from '../components/BrandFormModal.vue';
+import BrandImportModal from '../components/BrandImportModal.vue';
 import { IBrand } from '../interfaces';
 import { useBrandListService } from '../services/brand-list.service';
 import { ref } from 'vue';
@@ -22,33 +23,54 @@ const {
   brand_queryParams,
   brand_onEdit,
   brand_onDelete,
+  brand_onImport,
 } = useBrandListService();
-
-
 </script>
 
 <template>
   <section id="brand-list-ui" class="flex flex-col relative inset-0 z-0">
-    <AppBaseDataTable :columns="brand_columns" :data="brand_values.data.items" header-title="Brands"
-      :rows-per-page="brand_values.data.meta.pageSize" :total-records="brand_values.data.meta.total"
-      :first="(brand_values.data.meta.page - 1) * brand_values.data.meta.pageSize" :is-loading="brand_isLoading"
-      :sort-field="brand_queryParams.orderBy" :sort-order="brand_queryParams.orderDirection === 'asc' ? 1 : -1"
-      is-using-server-side-pagination is-using-custom-header-suffix is-using-header is-using-custom-body
-      :is-using-custom-filter="true" @update:currentPage="brand_onChangePage" @update:sort="brand_handleOnSortChange">
-
+    <AppBaseDataTable
+      :columns="brand_columns"
+      :data="brand_values.data.items"
+      header-title="Brands"
+      :rows-per-page="brand_values.data.meta.pageSize"
+      :total-records="brand_values.data.meta.total"
+      :first="(brand_values.data.meta.page - 1) * brand_values.data.meta.pageSize"
+      :is-loading="brand_isLoading"
+      :sort-field="brand_queryParams.orderBy"
+      :sort-order="brand_queryParams.orderDirection === 'asc' ? 1 : -1"
+      is-using-server-side-pagination
+      is-using-custom-header-suffix
+      is-using-header
+      is-using-custom-body
+      :is-using-custom-filter="true"
+      @update:currentPage="brand_onChangePage"
+      @update:sort="brand_handleOnSortChange"
+    >
       <!-- Header Suffix -->
       <template #header-suffix>
-         <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full">
           <PrimeVueIconField>
             <PrimeVueInputIcon>
               <i class="pi pi-search text-gray-400"></i>
             </PrimeVueInputIcon>
-            <PrimeVueInputText v-model="brand_queryParams.search" :placeholder="$t('brand.searchPlaceholder')"
-              class="w-full h-10 pl-10 pr-4 border border-gray-300 rounded-md" />
+            <PrimeVueInputText
+              v-model="brand_queryParams.search"
+              :placeholder="$t('brand.searchPlaceholder')"
+              class="w-full h-10 pl-10 pr-4 border border-gray-300 rounded-md"
+            />
           </PrimeVueIconField>
           <PrimeVueButton
+            class="bg-white hover:bg-gray-100 border border-primary text-primary px-4 py-2 h-10 rounded-md flex items-center gap-2"
+            @click="brand_onImport"
+          >
+            <i class="pi pi-upload text-sm"></i>
+            Import File
+          </PrimeVueButton>
+          <PrimeVueButton
             class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"
-            @click="brand_onCreate">
+            @click="brand_onCreate"
+          >
             <i class="pi pi-plus text-sm"></i>
             {{ $t('brand.createButton') }}
           </PrimeVueButton>
@@ -70,12 +92,15 @@ const {
         </template>
         <template v-else-if="column.value === 'created_at'">
           <span class="text-gray-700">
-            {{ new Date(data.createdAt).toLocaleDateString('id-ID', {
-              day: '2-digit', month: '2-digit', year: 'numeric'
-            }) }}
+            {{
+              new Date(data.createdAt).toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })
+            }}
           </span>
         </template>
-
 
         <template v-if="column.value === 'action'">
           <PrimeVueButton variant="text" rounded aria-label="Actions" @click="openActionsMenu($event, data)">
@@ -84,16 +109,20 @@ const {
             </template>
           </PrimeVueButton>
 
-          <PrimeVuePopover ref="popover" :pt="{
-            root: { class: 'z-[9999]' },
-            content: 'p-0',
-          }">
+          <PrimeVuePopover
+            ref="popover"
+            :pt="{
+              root: { class: 'z-[9999]' },
+              content: 'p-0',
+            }"
+          >
             <section v-if="selectedData" class="flex flex-col">
               <!-- Edit -->
               <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="brand_onEdit(selectedData.id)">
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">{{ useLocalization('inventoryCategory.editButton')
+                  <span class="font-normal text-sm text-text-primary">{{
+                    useLocalization('inventoryCategory.editButton')
                   }}</span>
                 </section>
               </PrimeVueButton>
@@ -114,5 +143,6 @@ const {
     </AppBaseDataTable>
   </section>
   <BrandFormModal />
+  <BrandImportModal />
   <AppBaseDialogConfirmation id="brand-dialog-confirmation" />
 </template>

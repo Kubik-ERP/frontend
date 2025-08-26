@@ -23,4 +23,5 @@ export interface IStorageLocationListProvided {
   storageLocation_onDelete: (storageLocationId: string) => void;
   storageLocationFormMode: globalThis.Ref<'create' | 'edit'>;
   storageLocation_editingItem: globalThis.Ref<IStorageLocation | null>;
+  storageLocation_onImport: () => void;
 }

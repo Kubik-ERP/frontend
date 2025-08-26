@@ -118,6 +118,21 @@ export const useInventoryItemsListService = (): IInventoryItemsListProvided => {
     router.push({name: 'items.stock.adjustment', params: {id: inventoryItemsId}});
   }
 
+
+  /**
+   * @description on import for items
+   */
+  const inventoryItem_onImport = () => {
+     eventBus.emit('AppBaseDialog', {
+      id: 'item-import-file-modal',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: '600px',
+    });
+    
+  }
+
   return {
     inventoryItems_colums: ITEMS_LIST_COLUMS,
     inventoryItems_queryParams,
@@ -133,6 +148,7 @@ export const useInventoryItemsListService = (): IInventoryItemsListProvided => {
     inventoryItems_onDelete,
     inventoryItemsFormMode,
     inventoryItems_editingItem,
-    inventoryItem_onAdjustment
+    inventoryItem_onAdjustment,
+    inventoryItem_onImport
   };
 };

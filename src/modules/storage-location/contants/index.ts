@@ -24,3 +24,25 @@ export const STORAGE_LOCATION_LIST_COLUMNS: IColumnDataTable[] = [
     width: '100px',
   },
 ];
+export const STORAGE_LOCATION_LIST_COLUMNS_IMPORT: IColumnDataTable[] = [
+  {
+    label: 'Code',
+    sortable: false,
+    value: 'code',
+  },
+  {
+    label: 'Name',
+    sortable: false,
+    value: 'name',
+  },
+  {
+    label: 'Description',
+    sortable: false,
+    value: 'notes',
+  },
+  {
+    label: '',
+    sortable: false,
+    value: 'status',
+  },
+];
