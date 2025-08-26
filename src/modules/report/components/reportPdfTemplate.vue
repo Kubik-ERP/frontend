@@ -21,8 +21,7 @@ interface ISummaryData {
 interface IProps {
   reportData: ISummaryData;
   columns: IColumn[];
-
-  tableData: any[]; // The component accepts the full, flat array
+  tableData: any[];
 }
 
 const props = withDefaults(defineProps<IProps>(), {
@@ -37,45 +36,42 @@ const props = withDefaults(defineProps<IProps>(), {
   tableData: () => [],
 });
 
-// --- Automatic Page Calculation Logic ---
 const chunkedData = computed(() => {
   // --- Configuration Constants (Adjust these to fine-tune your layout) ---
-  const PAGE_HEIGHT_LIMIT = 750; // Approx. height in pixels for the content area of one page.
-  const HEADER_HEIGHT = 150; // Approx. height of your main report header (on the first page).
-  const ROW_BASE_HEIGHT = 30; // The height of a single-line row.
-  const CHARS_PER_LINE = 40; // Approx. characters per line in a cell before text wraps.
-  const LINE_WRAP_HEIGHT = 15; // Extra height to add for each wrapped line.
+  const PAGE_HEIGHT_LIMIT = 800; // You may need to adjust this limit
+  const NAVBAR_HEIGHT = 80; // ✅ Approx. height of your blue navbar
+  const HEADER_HEIGHT = 150; // Approx. height of your main report header
+  const ROW_BASE_HEIGHT = 30; // The height of a single-line row
+  const CHARS_PER_LINE = 40; // Approx. characters per line in a cell
+  const LINE_WRAP_HEIGHT = 15; // Extra height for wrapped lines
 
   const chunks = [];
   if (!props.tableData || props.tableData.length === 0) return [];
 
   let currentPageRows: any[] = [];
-  // Start with the main header height for the first page
-  let currentPageHeight = HEADER_HEIGHT;
+  // ✅ Start with the height of the navbar AND the main header for page 1
+  let currentPageHeight = NAVBAR_HEIGHT + HEADER_HEIGHT;
 
   props.tableData.forEach(item => {
-    // Estimate the height of the current row
     let rowHeight = ROW_BASE_HEIGHT;
     props.columns.forEach(column => {
       const cellContent = String(item[column.value] || '');
-      // If cell content is long, add extra height for wrapped lines
       if (cellContent.length > CHARS_PER_LINE) {
         rowHeight += Math.floor(cellContent.length / CHARS_PER_LINE) * LINE_WRAP_HEIGHT;
       }
     });
 
-    // If adding this row would exceed the page limit, start a new page
     if (currentPageHeight + rowHeight > PAGE_HEIGHT_LIMIT && currentPageRows.length > 0) {
-      chunks.push(currentPageRows); // Finish the current page
-      currentPageRows = []; // Start a new page
-      currentPageHeight = 0; // Subsequent pages don't have the main header
+      chunks.push(currentPageRows);
+      currentPageRows = [];
+      // ✅ Subsequent pages start with only the navbar's height
+      currentPageHeight = NAVBAR_HEIGHT;
     }
 
     currentPageRows.push(item);
     currentPageHeight += rowHeight;
   });
 
-  // Add the last remaining page
   if (currentPageRows.length > 0) {
     chunks.push(currentPageRows);
   }
@@ -85,37 +81,13 @@ const chunkedData = computed(() => {
 </script>
 
 <template>
-  <div
-    id="pdf-template"
-    style="
-      font-family: 'Inter', Helvetica, sans-serif;
-      font-size: 12px;
-      line-height: 1.4;
-      color: #333333;
-      background-color: #ffffff;
-      width: 100%;
-      margin: 0 auto;
-      padding: 0;
-      box-sizing: border-box;
-    "
-  >
-    <div id="navbar" style="background-color: #18618b; padding: 24px 32px">
-      <img :src="APP_LOGO_BASE64" alt="KUBIXPOS Logo" style="width: 200px" />
-    </div>
+  <div id="pdf-template">
+    <div v-for="(chunk, index) in chunkedData" :key="index">
+      <div id="navbar" style="background-color: #18618b; padding: 24px 32px">
+        <img :src="APP_LOGO_BASE64" alt="KUBIXPOS Logo" style="width: 200px" />
+      </div>
 
-    <div
-      id="content"
-      style="
-        color: #333333;
-        background-color: #ffffff;
-        width: 100%;
-        margin: 0 auto;
-        padding: 0px 32px;
-        box-sizing: border-box;
-        color: #333333;
-      "
-    >
-      <div v-for="(chunk, index) in chunkedData" :key="index">
+      <div id="content" style="padding: 0px 32px; /* ... other content styles ... */">
         <div
           v-if="index === 0"
           class="main-header-container"
@@ -170,9 +142,9 @@ const chunkedData = computed(() => {
             </tr>
           </tbody>
         </table>
-
-        <div v-if="index < chunkedData.length - 1" style="page-break-after: always"></div>
       </div>
+
+      <div v-if="index < chunkedData.length - 1" style="page-break-after: always"></div>
     </div>
   </div>
 </template>
