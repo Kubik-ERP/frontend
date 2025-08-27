@@ -256,8 +256,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
       const response = await storeCashier.cashierProduct_calculateEstimation({
         products: mappedProducts || [],
         orderType: invoice_invoiceData.value.data?.orderType,
-        route: route,
-      });
+      }, route);
 
       invoice_invoiceData.value.calculate = response.data;
     } catch (error: unknown) {
@@ -362,10 +361,9 @@ export const useInvoiceService = (): IInvoiceProvided => {
         paymentMethodId: invoice_modalPay.value.data.selectedPaymentMethod,
         invoiceId: route.params.invoiceId as string,
         paymentAmount: invoice_invoiceData.value.form.paymentAmount,
-        route,
       };
 
-      const response = await storeCashier.cashierProduct_paymentUnpaid(params);
+      const response = await storeCashier.cashierProduct_paymentUnpaid(params, route);
 
       invoice_modalPay.value.dataPayment = response.data;
 
@@ -397,10 +395,9 @@ export const useInvoiceService = (): IInvoiceProvided => {
       const params = {
         ...CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT,
         order_id: invoiceId,
-        route: route,
       };
 
-      await storeCashier.cashierProduct_simulatePayment(params);
+      await storeCashier.cashierProduct_simulatePayment(params, route);
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);

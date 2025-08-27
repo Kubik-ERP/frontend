@@ -580,12 +580,14 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_calculateEstimation.value.isLoading = true;
 
     try {
-      const response = await store.cashierProduct_calculateEstimation({
-        voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId,
-        products: cashierOrderSummary_summary.value.product,
-        orderType: cashierOrderSummary_summary.value.orderType,
-        route: route,
-      });
+      const response = await store.cashierProduct_calculateEstimation(
+        {
+          voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId,
+          products: cashierOrderSummary_summary.value.product,
+          orderType: cashierOrderSummary_summary.value.orderType,
+        },
+        route,
+      );
 
       cashierOrderSummary_calculateEstimation.value.data = response.data;
     } catch (error: unknown) {
@@ -665,10 +667,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
         paymentAmount: cashierOrderSummary_modalPlaceOrderDetail.value.form.paymentAmount || null,
         voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId || null,
-        route: route,
       };
 
-      const response = await store.cashierProduct_paymentInstant(params);
+      const response = await store.cashierProduct_paymentInstant(params, route);
 
       cashierOrderSummary_modalPlaceOrderDetail.value.data = response.data;
 
@@ -708,10 +709,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       const params = {
         ...CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT,
         order_id: invoiceId,
-        route,
       };
 
-      await store.cashierProduct_simulatePayment(params);
+      await store.cashierProduct_simulatePayment(params, route);
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -741,10 +741,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
         tableCode: cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
-        route: route,
       };
 
-      const response = await store.cashierProduct_paymentProcess(params);
+      const response = await store.cashierProduct_paymentProcess(params, route);
 
       store.cashierProduct_selectedProduct = [];
 
