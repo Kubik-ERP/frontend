@@ -23,6 +23,11 @@ const {
 onMounted(async () => {
   await stockOpname_fetchList();
 });
+
+import { useRbac } from '@/app/composables/useRbac';
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('manage_stock_opname');
+// v-if="hasPermission"
 </script>
 <template>
   <!-- <pre>
@@ -48,7 +53,7 @@ onMounted(async () => {
       <h1 class="font-bold text-2xl text-text-primary">Stock Opname Record</h1>
     </template>
     <template #header-suffix>
-      <router-link :to="{ name: 'stock-opname.create', params: { id: 'new' } }">
+      <router-link v-if="hasPermission" :to="{ name: 'stock-opname.create', params: { id: 'new' } }">
         <PrimeVueButton class="w-fit" label="Issue Stock Opname">
           <template #icon>
             <AppBaseSvg name="plus-line-white" class="!w-5 !h-5" />

@@ -24,6 +24,11 @@ const {
   settingInvoice_onUploadCompanylogo,
   settingInvoice_toggleEditableInvoiceConfiguration,
 } = inject<ISettingInvoiceProvided>('settingInvoice')!;
+
+import { useRbac } from '@/app/composables/useRbac';
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('invoice_templates');
+// v-if="hasPermission"
 </script>
 
 <template>
@@ -32,6 +37,7 @@ const {
       <h5 class="font-semibold text-black text-lg">Invoice Configuration</h5>
 
       <div
+        v-if="hasPermission"
         class="flex items-center gap-2 cursor-pointer"
         @click="settingInvoice_toggleEditableInvoiceConfiguration"
       >

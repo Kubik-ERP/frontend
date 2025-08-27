@@ -36,6 +36,12 @@ const formatDate = (dateInput: string | number | Date, format: string = 'dd/mm/y
 
   return format.replace(/yyyy|mm|dd|hh|MM|ss|am\/pm/g, matched => map[matched].toString());
 };
+
+import { useRbac } from '@/app/composables/useRbac';
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('customer_management');
+// v-if="hasPermission"
+
 </script>
 <template>
   <div class="border border-solid border-primary rounded-md p-4 mb-8">
@@ -49,7 +55,7 @@ const formatDate = (dateInput: string | number | Date, format: string = 'dd/mm/y
             {{ customerDetails.name }}
           </template>
         </h1>
-        <router-link :to="{ name: 'edit-customer', params: { id: customerDetails.id } }">
+        <router-link v-if="hasPermission" :to="{ name: 'edit-customer', params: { id: customerDetails.id } }">
           <PrimeVueButton
             label="Edit Customer Data"
             variant="text"

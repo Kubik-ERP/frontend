@@ -228,6 +228,10 @@ onMounted(() => {
     router.push({ query: { page: '1' } });
   }
 });
+
+import { useRbac } from '@/app/composables/useRbac';
+
+const rbac = useRbac();
 </script>
 
 <template>
@@ -258,6 +262,7 @@ onMounted(() => {
               </PrimeVueIconField>
             </form>
             <PrimeVueButton
+              v-if="rbac.hasPermission('product_category')"
               type="button"
               severity="info"
               :label="useLocalization('table.addButton')"
@@ -305,6 +310,7 @@ onMounted(() => {
       <PrimeVueColumn>
         <template #body="slotProps">
           <PrimeVueButton
+            v-if="rbac.hasPermission('product_category')"
             class="bg-transparent text-gray-500 border-none float-end"
             @click="displayPopover($event, slotProps.data)"
           >

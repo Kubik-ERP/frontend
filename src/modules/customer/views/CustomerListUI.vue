@@ -110,6 +110,11 @@ onMounted(() => {
     router.push({ query: { page: '1' } });
   }
 });
+
+import { useRbac } from '@/app/composables/useRbac';
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('customer_management');
+// v-if="hasPermission"
 </script>
 
 <template>
@@ -140,7 +145,7 @@ onMounted(() => {
                 </PrimeVueIconField>
               </form>
 
-              <router-link to="customer/add-customer">
+              <router-link v-if="hasPermission" to="customer/add-customer">
                 <PrimeVueButton
                   type="button"
                   severity="info"
@@ -237,7 +242,7 @@ onMounted(() => {
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn>
+        <PrimeVueColumn v-if="hasPermission">
           <template #body="slotProps">
             <PrimeVueButton
               type="text"
@@ -296,17 +301,17 @@ onMounted(() => {
 
       <PrimeVuePopover ref="op">
         <div class="flex flex-col items-start">
-          <PrimeVueButton variant="text" label="Preview" class="text-black" @click="handlePreview()">
+          <PrimeVueButton v-if="rbac.hasPermission('view_customer_profile')" variant="text" label="Preview" class="text-black" @click="handlePreview()">
             <template #icon>
               <img :src="eyeVisibleSVG" alt="" />
             </template>
           </PrimeVueButton>
-          <PrimeVueButton variant="text" label="Edit" class="text-black" @click="handleEdit()">
+          <PrimeVueButton v-if="rbac.hasPermission('customer_management')" variant="text" label="Edit" class="text-black" @click="handleEdit()">
             <template #icon>
               <img :src="editSVG" alt="" />
             </template>
           </PrimeVueButton>
-          <PrimeVueButton variant="text" label="Delete" class="text-red-500" @click="isDeleteOpen = true">
+          <PrimeVueButton v-if="rbac.hasPermission('customer_management')" variant="text" label="Delete" class="text-red-500" @click="isDeleteOpen = true">
             <template #icon>
               <img :src="deleteSVG" alt="" />
             </template>
