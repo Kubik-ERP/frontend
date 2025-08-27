@@ -215,14 +215,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="p-1 border border-gray-200 rounded-lg shadow-2xl">
+  <div>
     <div>
+      
       <PrimeVueDataTable
         v-model:selection="selectedProducts"
         :value="products"
         :rows="limit"
         data-key="ID"
         paginator
+        :pt="{
+          root: 'rounded-sm border border-solid border-grayscale-20',
+        }"
         @page="onPageChange"
       >
         <template #header>

@@ -113,9 +113,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="m-4 p-1 border border-gray-200 rounded-lg shadow-2xl">
+  <div >
     <div>
-      <PrimeVueDataTable :value="customers" :rows="limit" data-key="ID" paginator>
+      <PrimeVueDataTable
+        :value="customers"
+        :rows="limit"
+        data-key="ID"
+        paginator
+        :pt="{
+          root: 'rounded-sm border border-solid border-grayscale-20',
+        }"
+      >
         <template #header>
           <div class="flex justify-between">
             <div class="flex items-center justify-center gap-2">

@@ -231,17 +231,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="m-4 p-1 border border-gray-200 rounded-lg shadow-2xl">
-    <!-- <AppBaseDataTable
-    header-title="Categories"
-    :columns="category_columns"
-    :data="categories"
-    :is-loading="loading"
-    is-using-custom-filter
-    
-    >
-  </AppBaseDataTable> -->
-
+  <div>
     <PrimeVueDataTable
       :selection="selectedCategories"
       :value="categories"
@@ -249,6 +239,9 @@ onMounted(() => {
       :rows="limit"
       table-style="min-width: 50rem"
       data-key="id"
+      :pt="{
+        root: 'rounded-sm border border-solid border-grayscale-20',
+      }"
     >
       <template #header>
         <div class="flex justify-between">
