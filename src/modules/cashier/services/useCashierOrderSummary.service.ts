@@ -644,6 +644,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       f => f.id === cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
     )?.name;
 
+    console.log(
+      getSelectedPaymentMethod?.toUpperCase(),
+      cashierOrderSummary_paymentAmountFormValidation.value.$invalid,
+      cashierOrderSummary_paymentAmountFormValidation.value,
+    );
+
     if (getSelectedPaymentMethod?.toUpperCase() === 'CASH') {
       cashierOrderSummary_paymentAmountFormValidation.value.$touch();
 
@@ -669,6 +675,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId || null,
       };
 
+      console.log('Params Place Order: ', params);
+
       const response = await store.cashierProduct_paymentInstant(params, route);
 
       cashierOrderSummary_modalPlaceOrderDetail.value.data = response.data;
@@ -689,6 +697,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         cashierOrderSummary_modalPlaceOrderDetail.value.showModalPayment = true;
       }
     } catch (error) {
+      console.log('Eerror', error);
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {

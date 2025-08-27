@@ -92,6 +92,7 @@ export interface IInvoiceData {
   customerId: string;
   discountAmount: number;
   tableCode: string;
+  queue: number;
   paymentStatus: 'unpaid' | 'paid' | 'refund' | 'cancelled';
   orderStatus: 'in_progress' | 'waiting' | 'served' | 'cancelled' | 'refunded' | 'completed' | 'placed';
   createdAt: string;
