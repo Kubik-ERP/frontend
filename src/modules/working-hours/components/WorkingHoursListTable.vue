@@ -118,7 +118,7 @@ const handleAbsentClick = (staffId: number, columnValue: string) => {
                     class="bg-white border-none shadow-xs hover:bg-grayscale-10/50 basic-smooth-animation rounded-lg p-2"
                     @click="workingHoursList_onNavigatePrevious"
                   >
-                    <AppBaseSvg name="chevron-left" class="!w-3 !h-3" />
+                    <AppBaseSvg name="chevron-left" class="w-3 h-3" />
                   </PrimeVueButton>
 
                   <svg width="16" height="16" fill="currentColor" class="text-gray-400 flex-shrink-0">
@@ -134,7 +134,7 @@ const handleAbsentClick = (staffId: number, columnValue: string) => {
                     class="bg-white border-none shadow-xs hover:bg-grayscale-10/50 basic-smooth-animation rounded-lg p-2"
                     @click="workingHoursList_onNavigateNext"
                   >
-                    <AppBaseSvg name="chevron-right" class="!w-3 !h-3" />
+                    <AppBaseSvg name="chevron-right" class="w-3 h-3" />
                   </PrimeVueButton>
                 </div>
               </div>
@@ -187,7 +187,7 @@ const handleAbsentClick = (staffId: number, columnValue: string) => {
 
               <PrimeVueButton variant="text" rounded aria-label="detail">
                 <template #icon>
-                  <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
+                  <AppBaseSvg name="three-dots" class="w-5 h-5" />
                 </template>
               </PrimeVueButton>
             </div>
@@ -215,7 +215,7 @@ const handleAbsentClick = (staffId: number, columnValue: string) => {
                 >
                   <template #default>
                     <section id="content" class="flex items-center gap-2">
-                      <AppBaseSvg name="plus-line" />
+                      <AppBaseSvg name="plus-line" class="w-4 h-4" />
                       <span class="font-semibold text-xs text-primary">Add Shift</span>
                     </section>
                   </template>
@@ -229,21 +229,21 @@ const handleAbsentClick = (staffId: number, columnValue: string) => {
             <div class="flex justify-center">
               <span
                 v-if="data[column.value] === 'Present'"
-                class="w-6 h-6 bg-blue-500 rounded flex items-center justify-center"
+                class="w-10 h-10 bg-blue-500 rounded flex items-center justify-center"
               >
-                <AppBaseSvg name="check" class="w-4 h-4 text-white" />
+                <AppBaseSvg name="check" class="w-6 h-6 text-white" />
               </span>
               <button
                 v-else-if="data[column.value] === 'Absent'"
-                class="w-6 h-6 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer"
+                class="w-10 h-10 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer"
                 title="Click to add working hours"
                 @click="handleAbsentClick(data.id, column.value)"
               >
-                <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+                <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
               </button>
               <button
                 v-else
-                class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center hover:bg-gray-200 transition-colors cursor-pointer"
+                class="w-10 h-10 bg-gray-100 rounded flex items-center justify-center hover:bg-gray-200 transition-colors cursor-pointer"
                 title="Click to add working hours"
                 @click="handleAbsentClick(1, column.value)"
               >

@@ -9,7 +9,7 @@ export interface IOutletListPageMeta {
 
 export interface IOutletListData {
   items: IOutlet[];
-  meta: IOutletListPageMeta;
+  meta: IPageMeta;
 }
 
 export interface IOutletListResponse {
@@ -23,7 +23,7 @@ export interface IOutletListProvided {
   outletList_dynamicClassOfSelectedOutlet: (outlet: IOutlet) => string;
   outletList_fetchOutletLists: () => Promise<IOutletListResponse>;
   outletList_isLoading: globalThis.Ref<boolean>;
-  outletList_lists: Ref<IOutlet[]>;
+  outletList_lists: Ref<IOutletListData>;
   outletList_onSelectOutlet: (outlet: IOutlet) => void;
   outletList_selectedOutlet: Ref<IOutlet | null>;
 }
