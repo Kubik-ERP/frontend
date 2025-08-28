@@ -1,5 +1,8 @@
 // Constants
-import { STAFF_MEMBER_LIST_COLUMNS, STAFF_MEMBER_LIST_REQUEST } from '../constants';
+import {
+  STAFF_MEMBER_LIST_COLUMNS,
+  STAFF_MEMBER_LIST_REQUEST,
+} from '../constants';
 
 // Interfaces
 import type { IStaffMemberListProvided, IStaffMemberListRequestQuery } from '../interfaces';
@@ -157,19 +160,15 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
     }
   }
 
-  /**
-   * Get roles permission
-   */
-  onMounted(async () => {
-    staffMemberCreateEdit_getRoles();
-  });
+  onMounted(() => {
+    staffMemberCreateEdit_getRoles()
+  })
 
   return {
     staffMemberList_columns: STAFF_MEMBER_LIST_COLUMNS,
     staffMemberList_dropdownItemStaff: staffMember_listDropdownItemStaff,
     staffMemberList_dropdownItemTitles: staffMember_listDropdownItemTitles,
     staffMemberList_typesOfUserPermissions: staffMemberCreateEdit_permissionData,
-
     staffMemberList_fetchListMembers,
     staffMemberList_deleteStaffMember,
 

@@ -87,28 +87,6 @@ export const useBrandListService = (): IBrandListProvided => {
       return;
     }
 
-    // Jika brand punya items di dalamnya (kalau ada field seperti isHaveItems)
-    if (brand.isHaveItems) {
-      const argsEventEmitter: IPropsDialogConfirmation = {
-        id: 'brand-dialog-confirmation',
-        description: 'This brand has items associated with it and cannot be deleted.',
-        iconName: 'info',
-        isOpen: true,
-        onClickButtonPrimary: () => {
-          // Tutup dialog
-          eventBus.emit('AppBaseDialogConfirmation', {
-            id: 'brand-dialog-confirmation',
-            isOpen: false,
-          } as IPropsDialogConfirmation);
-        },
-        textButtonPrimary: 'Cancel',
-        title: 'Cannot delete brand',
-        type: 'error',
-      };
-      eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
-      return;
-    }
-
     const handle_delete = async (brandId: string) => {
       try {
         const res = await store.brandList_deleteBrand(brandId);
@@ -131,6 +109,8 @@ export const useBrandListService = (): IBrandListProvided => {
 
           eventBus.emit('AppBaseDialogNotification', argsEventEmitter);
         }
+
+         await brand_fetchData();
       } catch (error: unknown) {
         return Promise.reject(error instanceof Error ? error : new Error(String(error)));
       }
@@ -168,6 +148,16 @@ export const useBrandListService = (): IBrandListProvided => {
     eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
   };
 
+  const brand_onImport = () => {
+    eventBus.emit('AppBaseDialog', {
+      id: 'brand-import-modal',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: '600px',
+    });
+  };
+
   return {
     brand_columns: BRAND_LIST_COLUMNS,
     brand_fetchData,
@@ -182,5 +172,6 @@ export const useBrandListService = (): IBrandListProvided => {
     brand_onDelete: brandList_deleteBrand,
     brandFormMode,
     brand_editingItem,
+    brand_onImport
   };
 };

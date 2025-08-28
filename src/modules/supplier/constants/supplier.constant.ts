@@ -3,9 +3,9 @@ export const SUPPLIER_LIST_REQUEST = 'SUPPLIER_LIST_REQUEST';
 
 export const SUPPLIER_LIST_COLUMNS: IColumnDataTable[] = [
   {
-    label: 'Supplier ID',
+    label: 'Supplier Code',
     sortable: true,
-    value: 'id',
+    value: 'code',
   },
   {
     label: 'Supplier Name',

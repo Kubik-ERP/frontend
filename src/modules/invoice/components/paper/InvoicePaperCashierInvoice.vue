@@ -200,7 +200,7 @@ const orderTypeLabel = computed(() => {
                 useCurrencyFormat({
                   data:
                     invoice_invoiceData.data.paymentStatus === 'unpaid'
-                      ? invoice_invoiceData.calculate?.total || 0
+                      ? invoice_invoiceData.calculate?.subTotal || 0
                       : invoice_invoiceData.data.subtotal,
                 })
               }}
@@ -208,12 +208,15 @@ const orderTypeLabel = computed(() => {
           </tr>
 
           <tr>
-            <td class="font-normal text-black text-sm py-2">Promo</td>
+            <td class="font-normal text-black text-sm py-2">Promo Voucher</td>
             <td colspan="3" class="font-normal text-black text-sm text-right py-2">
               -
               {{
                 useCurrencyFormat({
-                  data: invoice_invoiceData.data.paymentStatus === 'unpaid' ? 0 : 0,
+                  data:
+                    invoice_invoiceData.data.paymentStatus === 'unpaid'
+                      ? invoice_invoiceData.calculate?.voucherAmount || 0
+                      : invoice_invoiceData.data.voucherAmount || 0,
                 })
               }}
             </td>

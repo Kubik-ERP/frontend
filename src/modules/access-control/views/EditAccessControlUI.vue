@@ -85,7 +85,7 @@ async function onSave() {
                 class="px-2 py-2 border-y border-gray-300 text-center"
               >
                 <PrimeVueCheckbox
-                  class="text-primary"
+                  class="text-primary bg-white"
                   :binary="true"
                   :model-value="item.storeRolePermissions.some(r => r.roleId === role.id)"
                   @update:model-value="toggleRole(item, role)"

@@ -9,6 +9,7 @@ export interface ISupplierStateStore {
 
 export interface ISupplierItem {
   id: string;
+  code: string;
   supplierName: string;
   contactPerson: string;
   phoneNumber: string;
@@ -56,7 +57,7 @@ export interface ISupplierDetailResponse {
 
 export interface ISupplierCreatePayload {
   supplierName: string;
-  supplierCode: string | boolean | null;
+  code: string;
   contactPerson: string;
   phoneNumber: string;
   email: string;
@@ -69,7 +70,7 @@ export interface ISupplierCreatePayload {
 
 export interface ISupplierUpdatePayload {
   supplierName: string;
-  supplierCode: string | boolean | null;
+  code: string;
   contactPerson: string;
   phoneNumber: string;
   email: string;

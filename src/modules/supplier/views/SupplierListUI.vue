@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // Services
+import SupplierImportModal from '../components/SupplierImportModal.vue';
 import { ISupplierItem } from '../interfaces';
 import { useSupplierListService } from '../services/supplier-list.service';
 
@@ -18,6 +19,7 @@ const {
   supplierList_onEditSupplier,
   supplierList_onDeleteSupplier,
   supplierList_onPreviewSupplier,
+  supplierList_onImport,
 } = useSupplierListService();
 
 // Initialize data fetch
@@ -58,6 +60,9 @@ const handleDelete = (supplierId: string) => {
 onMounted(() => {
   document.addEventListener('click', () => {});
 });
+
+const rbac = useRbac();
+console.log('rbac', rbac.getCurrentUserPermissions());
 </script>
 
 <template>
@@ -104,7 +109,13 @@ onMounted(() => {
               />
             </PrimeVueIconField>
           </div>
-
+          <PrimeVueButton
+            class="bg-white hover:bg-gray-100 border border-primary text-primary px-4 py-2 h-10 rounded-md flex items-center gap-2"
+            @click="supplierList_onImport"
+          >
+            <i class="pi pi-upload text-sm"></i>
+            Import Supplier
+          </PrimeVueButton>
           <!-- Button -->
           <PrimeVueButton
             class="w-full sm:w-auto bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center justify-center gap-2"
@@ -117,7 +128,7 @@ onMounted(() => {
       </template>
 
       <template #body="{ column, data }">
-        <template v-if="column.value === 'id'">
+        <template v-if="column.value === 'code'">
           <span class="font-normal text-sm text-gray-900">{{ data[column.value] }}</span>
         </template>
 
@@ -158,7 +169,12 @@ onMounted(() => {
           >
             <section v-if="selectedData" class="flex flex-col">
               <!-- View -->
-              <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handlePreview(selectedData.id)">
+              <PrimeVueButton
+                v-if="rbac.hasPermission('view_supplier_details')"
+                class="w-full px-4 py-3"
+                variant="text"
+                @click="handlePreview(selectedData.id)"
+              >
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="eye-visible" class="!w-4 !h-4" />
                   <span class="font-normal text-sm text-text-primary">
@@ -196,5 +212,6 @@ onMounted(() => {
       </template>
     </AppBaseDataTable>
   </section>
+  <SupplierImportModal />
   <AppBaseDialogConfirmation id="supplier-list-dialog-confirmation" />
 </template>
