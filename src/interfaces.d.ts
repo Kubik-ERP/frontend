@@ -179,6 +179,7 @@ declare global {
     title?: string;
     type?: 'error' | 'info';
     width?: string;
+    secondaryIcon?: string;
   }
 
   interface IPropsDialogPinVerification {

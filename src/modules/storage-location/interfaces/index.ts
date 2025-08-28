@@ -10,7 +10,7 @@ export interface IStorageLocation {
 
 export interface IStorageLocationPayload {
   name: string;
-  code: string | boolean | null;
+  code: string ;
   notes: string;
 }
 

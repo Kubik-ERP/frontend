@@ -256,6 +256,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
       const response = await storeCashier.cashierProduct_calculateEstimation({
         products: mappedProducts || [],
         orderType: invoice_invoiceData.value.data?.orderType,
+        voucherId: invoice_invoiceData.value.data?.voucherId,
       }, route);
 
       invoice_invoiceData.value.calculate = response.data;

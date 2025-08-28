@@ -5,6 +5,7 @@ import { IStorageLocation } from '../interfaces';
 import { useStorageLocationService } from '../services/storage-location.service';
 // import StorageModalForm from '../components/StorageLocationModalForm.vue';
 import StorageLocationModalForm from '../components/StorageLocationModalForm.vue';
+import StorageLocationImportModal from '../components/StorageLocationImportModal.vue';
 
 const popover = ref();
 const selectedData = ref<IStorageLocation | null>(null);
@@ -24,6 +25,7 @@ const {
   storageLocation_queryParams,
   storageLocation_onEdit,
   storageLocation_onDelete,
+  storageLocation_onImport,
 } = useStorageLocationService();
 </script>
 
@@ -61,6 +63,13 @@ const {
             />
           </PrimeVueIconField>
           <PrimeVueButton
+            class="bg-white hover:bg-gray-100 border border-primary text-primary px-4 py-2 h-10 rounded-md flex items-center gap-2"
+            @click="storageLocation_onImport"
+          >
+            <i class="pi pi-upload text-sm"></i>
+            Import Storage
+          </PrimeVueButton>
+          <PrimeVueButton
             class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"
             @click="storageLocation_onCreate"
           >
@@ -77,6 +86,9 @@ const {
 
       <!-- Body Table -->
       <template #body="{ column, data }">
+        <template v-if="column.value === 'code'">
+          <span class="text-gray-700">{{ data.code }}</span>
+        </template>
         <template v-if="column.value === 'name'">
           <span class="text-gray-700">{{ data.name }}</span>
         </template>
@@ -137,5 +149,6 @@ const {
   </section>
 
   <StorageLocationModalForm />
+  <StorageLocationImportModal />
   <AppBaseDialogConfirmation id="storage-location-dialog-confirmation" />
 </template>
