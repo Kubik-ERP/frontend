@@ -17,6 +17,11 @@ onMounted(async () => {
   await loyaltyPointSettingsDetail();
   await loyaltyPointSettingsProduct();
 });
+
+import { useRbac } from '@/app/composables/useRbac';
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('general_loyalty_point_configuration');
+// v-if="hasPermission"
 </script>
 
 <template>
@@ -147,7 +152,7 @@ onMounted(async () => {
     </PrimeVueCard>
 
     <footer>
-      <router-link :to="{ name: 'loyalty-point-setting.edit' }">
+      <router-link v-if="hasPermission" :to="{ name: 'loyalty-point-setting.edit' }">
         <PrimeVueButton
           class="font-semibold text-base text-primary border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
           label="Edit Loyalty Point Settings"

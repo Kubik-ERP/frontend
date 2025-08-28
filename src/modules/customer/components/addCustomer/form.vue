@@ -23,22 +23,8 @@ const emit = defineEmits(['close']);
 let { leavePage } = inject('confirmLeave');
 
 const handleOnClose = response => {
-  // Always emit the close event after successful creation
-  // The parent will decide whether to close a modal or navigate.
   emit('close', response);
 };
-
-// function clearForm() {
-//   customer_formValidations.value.$reset();
-//   customer_FormData.name = '';
-//   customer_FormData.gender = '';
-//   customer_FormData.dob = '';
-//   customer_FormData.code = '';
-//   customer_FormData.number = '';
-//   customer_FormData.email = '';
-//   customer_FormData.tags = [];
-//   customer_FormData.address = '';
-// }
 
 const handleCreateCustomer = async () => {
   customer_formValidations.value.$touch();
@@ -217,7 +203,7 @@ const removeTag = tagToRemove => {
             />
             <PrimeVueInputIcon>
               <template #default>
-                <AppBaseSvg name="search" />
+                <AppBaseSvg name="search" class="!w-4 !h-4" />
               </template>
             </PrimeVueInputIcon>
           </PrimeVueIconField>

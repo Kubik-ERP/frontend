@@ -32,6 +32,11 @@ const {
   staffMemberList_deleteStaffMember,
   staffMemberList_onChangePage,
 } = inject('staffMemberList') as IStaffMemberListProvided;
+
+import { useRbac } from '@/app/composables/useRbac';
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('manage_staff_member');
+// v-if="hasPermission"
 </script>
 
 <template>
@@ -68,7 +73,7 @@ const {
         <PrimeVueIconField>
           <PrimeVueInputIcon>
             <template #default>
-              <AppBaseSvg name="search" />
+              <AppBaseSvg name="search" class="!w-4 !h-4" />
             </template>
           </PrimeVueInputIcon>
 
@@ -80,6 +85,7 @@ const {
         </PrimeVueIconField>
 
         <PrimeVueButton
+          v-if="hasPermission"
           class="w-fit"
           label="Add Staff Member"
           @click="$router.push({ name: 'staff-member.create' })"
@@ -94,17 +100,6 @@ const {
     <template #filter>
       <div class="flex items-center gap-4 w-full">
         <span class="font-semibold inline-block text-gray-900 text-base w-fit whitespace-nowrap">Filter by</span>
-
-        <!-- <PrimeVueMultiSelect
-          v-model="staffMemberList_queryParams.title"
-          display="chip"
-          :options="staffMemberList_dropdownItemTitles"
-          option-label="label"
-          option-value="value"
-          filter
-          placeholder="Title"
-          class="text-sm text-text-disabled w-full"
-        /> -->
 
         <PrimeVueMultiSelect
           v-model="staffMemberList_queryParams.permission"
@@ -128,6 +123,7 @@ const {
         </PrimeVueButton>
 
         <PrimeVuePopover
+          v-if="hasPermission"
           ref="popover"
           :pt="{
             root: { class: 'z-[9999]' }, // ✅ This forces the popover to the top layer
@@ -136,6 +132,7 @@ const {
         >
           <section v-if="selectedData" id="popover-content" class="flex flex-col">
             <PrimeVueButton
+              v-if="hasPermission"
               class="w-full px-4 py-3"
               variant="text"
               @click="$router.push({ name: 'staff-member.edit', params: { id: selectedData.id } })"
@@ -149,6 +146,7 @@ const {
             </PrimeVueButton>
 
             <PrimeVueButton
+              v-if="hasPermission"
               class="w-full px-4 py-3"
               variant="text"
               @click="staffMemberList_deleteStaffMember(selectedData.id || '')"
@@ -175,10 +173,7 @@ const {
       </template>
       <template v-else-if="column.value === 'permission'">
         <span class="font-normal text-sm text-text-primary">
-          {{
-            staffMemberList_typesOfUserPermissions.find((item) => item.id === data[column.value])
-              ?.name || '-'
-          }}
+          {{ staffMemberList_typesOfUserPermissions.find(item => item.id === data[column.value])?.name || '-' }}
         </span>
       </template>
       <template v-else>
