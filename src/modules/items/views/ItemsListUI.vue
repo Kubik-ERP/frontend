@@ -25,7 +25,10 @@ const {
   inventoryItem_onAdjustment,
   inventoryItem_onImport
 } = useInventoryItemsListService();
+
+const rbac = useRbac();
 </script>
+
 
 <template>
   <section id="inventory-items-list-ui" class="flex flex-col">
@@ -200,6 +203,7 @@ const {
                 </PrimeVueButton>
 
                 <PrimeVueButton
+                  v-if="rbac.hasPermission('stock_adjustment')"
                   class="w-full px-4 py-3"
                   variant="text"
                   @click="inventoryItem_onAdjustment(selectedData.id)"

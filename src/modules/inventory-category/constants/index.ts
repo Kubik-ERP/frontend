@@ -4,6 +4,11 @@ export const INVENTORY_CATEGORY_BASE_ENDPOINT = '/inventory-categories';
 
 export const INVERNTORY_CATEGORY_LIST_COLUMNS = [
   {
+    label: 'Category code',
+    sortable: false,
+    value: 'code',
+  },
+  {
     label: 'Category Name',
     sortable: false,
     value: 'name',

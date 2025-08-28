@@ -54,7 +54,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
 
   // Supplier management
   supplier_management: ['/supplier'],
-  view_supplier_details: ['/supplier'],
+  view_supplier_details: ['/supplier/view/:id'],
 
   // Account management
   accounts: ['/account'],

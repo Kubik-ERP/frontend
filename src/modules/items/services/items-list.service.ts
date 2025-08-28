@@ -124,7 +124,7 @@ export const useInventoryItemsListService = (): IInventoryItemsListProvided => {
    */
   const inventoryItem_onImport = () => {
      eventBus.emit('AppBaseDialog', {
-      id: 'item-import-file-modal',
+      id: 'inventory-item-import-modal',
       isUsingClosableButton: false,
       isUsingBackdrop: true,
       isOpen: true,

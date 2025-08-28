@@ -24,6 +24,8 @@ const orderTypeLabel = computed(() => {
   const type = CASHIER_ORDER_TYPE.find(f => f.code === invoice_invoiceData.value.data?.orderType);
   return type?.label ?? '';
 });
+
+console.log('🚀 ~ invoice_invoiceData:', invoice_invoiceData.value);
 </script>
 <template>
   <section
@@ -214,7 +216,7 @@ const orderTypeLabel = computed(() => {
               -
               {{
                 useCurrencyFormat({
-                  data: invoice_invoiceData.data.paymentStatus === 'unpaid' ? 0 : 0,
+                  data: invoice_invoiceData.data.discountAmount
                 })
               }}
             </td>

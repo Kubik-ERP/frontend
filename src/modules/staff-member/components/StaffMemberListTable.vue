@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Interfaces
-import type { IStaffMemberListProvided, IStafPermission } from '../interfaces';
+import type { IStaffMemberListProvided } from '../interfaces';
 
 /**
  * @description Reactive data binding

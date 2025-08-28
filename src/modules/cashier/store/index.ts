@@ -232,7 +232,7 @@ export const useCashierStore = defineStore('cashier', {
         products: ICashierSelected[];
         orderType: string;
         paymentMethodId: string;
-        vouchers: string;
+        voucherId: string;
         customerId: string;
         tableCode: string;
         storeId: string;

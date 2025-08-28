@@ -41,6 +41,7 @@ const props = withDefaults(defineProps<IProps>(), {
   title: '',
   type: 'info',
   width: '',
+  secondaryIcon: 'delete',
 });
 
 /**
@@ -131,7 +132,7 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
-                  <AppBaseSvg name="delete" />
+                  <AppBaseSvg :name="dialogConfirmation.iconName === 'exclude' ? 'exclude' : 'delete'" />
                   <span class="font-semibold text-base text-error-main">
                     {{ dialogConfirmation.textButtonSecondary }}
                   </span>

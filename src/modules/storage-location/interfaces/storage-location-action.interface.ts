@@ -3,7 +3,7 @@ import { IStorageLocationPayload } from ".";
 
 export interface IStorageLocationFormData{
   name: string
-  code: string | boolean | null
+  code: string 
   notes: string
 }
 

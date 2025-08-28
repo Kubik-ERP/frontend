@@ -8,7 +8,6 @@ import type {
   IStaffMemberDetailsResponse,
   IStaffMemberStore,
   IStaffMemberListRequestQuery,
-  IStaffMemberPermissionResponse,
 } from '../interfaces';
 
 // Plugins

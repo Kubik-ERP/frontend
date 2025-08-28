@@ -3,6 +3,11 @@ export const STORAGE_LOCATION_LIST_REQUEST = 'STORAGE_LOCATION_LIST_REQUEST';
 
 export const STORAGE_LOCATION_LIST_COLUMNS: IColumnDataTable[] = [
   {
+    label: 'Storage Code',
+    sortable: false,
+    value: 'code',
+  },
+  {
     label: 'Name',
     sortable: false,
     value: 'name',

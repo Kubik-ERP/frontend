@@ -55,10 +55,12 @@ export const useStorageLocationActionService = (): IStorageLocationActionProvide
     try {
       // Mapping payload ke data API
       storageLocation_createUpdatePayload.value = {
-        code: payload.code === '' || payload.code === null ? true : payload.code,
+        code: payload.code,
         name: payload.name?.trim(),
         notes: payload.notes?.trim(),
       };
+
+      console.log('storageLocation_createUpdatePayload.value', storageLocation_createUpdatePayload.value);
 
       let result;
       if (mode === 'create') {

@@ -67,7 +67,7 @@ const {
             @click="storageLocation_onImport"
           >
             <i class="pi pi-upload text-sm"></i>
-            Import File
+            Import Storage
           </PrimeVueButton>
           <PrimeVueButton
             class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"
@@ -86,6 +86,9 @@ const {
 
       <!-- Body Table -->
       <template #body="{ column, data }">
+        <template v-if="column.value === 'code'">
+          <span class="text-gray-700">{{ data.code }}</span>
+        </template>
         <template v-if="column.value === 'name'">
           <span class="text-gray-700">{{ data.name }}</span>
         </template>

@@ -15,7 +15,7 @@ provide('accessControlPermission', {
 </script>
 
 <template>
-  <div class="container mx-auto px-4 mt-6">
+  <div class="mx-auto px-4 mt-6">
     <!-- Header -->
     <div class="flex flex-wrap justify-between items-center gap-3">
       <h2 class="font-semibold text-lg">Permission</h2>
@@ -35,11 +35,16 @@ provide('accessControlPermission', {
         {{ group.name }}
       </div>
 
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto max-w-full sm:max-w-[1100px]">
         <table class="w-full border-collapse border border-gray-300">
           <thead>
             <tr class="bg-gray-100">
-              <th class="text-left px-4 py-2 border border-gray-300 text-sm w-1/3 min-w-[200px]">Functionality</th>
+              <!-- Sticky functionality header -->
+              <th
+                class="sticky left-[-1px] bg-gray-100 text-left px-4 py-2 border border-gray-300 text-sm w-1/4 min-w-[150px] sm:min-w-[200px] z-10"
+              >
+                Functionality
+              </th>
               <th
                 v-for="role in accessControlPermission_listRole.data.items"
                 :key="role.id"
@@ -51,7 +56,8 @@ provide('accessControlPermission', {
           </thead>
           <tbody class="border-b border-solid border-gray-300">
             <tr v-for="(item, idx) in group.permissions" :key="idx" class="hover:bg-gray-50">
-              <td class="px-4 py-2 border border-gray-300 text-sm min-w-[200px]">
+              <!-- Sticky functionality column -->
+              <td class="sticky left-[-1px] bg-white px-4 py-2 border border-gray-300 text-sm max-w-[200px] z-10">
                 {{ item.name }}
               </td>
               <td

@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import { useInventoryItemImportService } from '../services/item-import.service';
+import { useSupplierImportService } from '../services/supplier-import.service';
+
 
 const {
-  inventoryItem_step,
-  inventoryItem_isLoading,
-  inventoryItem_values,
-  inventoryItem_onSubmit,
-  inventoryItem_onClose,
-  inventoryItem_handleDownloadTemplate,
-  inventoryItem_handleDropFile,
-  // inventoryItem_handleUpload,
-  inventoryItem_triggerUpload,
-  inventoryItem_columns,
-} = useInventoryItemImportService();
+  supplierImport_step,
+  supplierImport_isLoading,
+  supplierImport_values,
+  supplierImport_onSubmit,
+  supplierImport_onClose,
+  supplierImport_handleDownloadTemplate,
+  supplierImport_handleDropFile,
+  // supplierImport_handleUpload,
+  supplierImport_triggerUpload,
+  supplierImport_columns,
+} = useSupplierImportService();
 </script>
 
 <template>
   <AppBaseDialog
-    id="inventory-item-import-modal"
+    id="supplier-import-modal"
     :style="{
       width: '90vw',
       maxWidth: '100%',
@@ -33,17 +34,15 @@ const {
       <div class="h-full sm:h-[400px] flex items-center justify-center border border-grayscale-10">
         <!-- Step 1: Upload -->
         <section
-          v-if="inventoryItem_step === 1"
+          v-if="supplierImport_step === 1"
           class="flex flex-col items-center justify-center w-full h-full relative"
         >
           <div
             class="relative rounded-lg w-full h-full flex flex-col items-center justify-center cursor-pointer border-gray-300 p-4 z-9"
-            @click="inventoryItem_triggerUpload"
+            @click="supplierImport_triggerUpload"
             @dragover.prevent
             @drop.prevent="
-              inventoryItem_handleDropFile(
-                $event.dataTransfer?.files ? Array.from($event.dataTransfer.files) : [],
-              )
+              supplierImport_handleDropFile($event.dataTransfer?.files ? Array.from($event.dataTransfer.files) : [])
             "
           >
             <i class="pi pi-paperclip text-4xl text-gray-400 mb-3"></i>
@@ -51,7 +50,7 @@ const {
             <p class="text-gray-500 text-sm text-center mb-3">
               Drop your CSV/XLSX file here <br />
               or
-              <span class="text-primary cursor-pointer" @click.stop="inventoryItem_triggerUpload">click</span>
+              <span class="text-primary cursor-pointer" @click.stop="supplierImport_triggerUpload">click</span>
               to browse from your device.
             </p>
 
@@ -62,7 +61,7 @@ const {
                 icon="pi pi-download"
                 label="Download Template"
                 class="bg-white border border-primary text-primary px-4 py-2 mt-1"
-                @click.stop="inventoryItem_handleDownloadTemplate"
+                @click.stop="supplierImport_handleDownloadTemplate"
               />
             </div>
           </div>
@@ -70,7 +69,7 @@ const {
 
         <!-- Step 2: Loading -->
         <section
-          v-else-if="inventoryItem_isLoading"
+          v-else-if="supplierImport_isLoading"
           class="flex flex-col items-center justify-center w-full h-full z-10"
         >
           <ProgressSpinner
@@ -86,16 +85,16 @@ const {
         <section v-else class="flex flex-col w-full h-full relative">
           <div class="flex flex-col w-full">
             <AppBaseDataTable
-              :columns="inventoryItem_columns"
-              :data="inventoryItem_values?.data.items"
-              :rows-per-page="inventoryItem_values?.data.meta.pageSize"
-              :total-records="inventoryItem_values?.data.meta.total"
+              :columns="supplierImport_columns"
+              :data="supplierImport_values?.data.items"
+              :rows-per-page="supplierImport_values?.data.meta.pageSize"
+              :total-records="supplierImport_values?.data.meta.total"
               :first="
-                inventoryItem_values?.data?.meta && inventoryItem_values.data.meta.page
-                  ? (inventoryItem_values.data.meta.page - 1) * inventoryItem_values.data.meta.pageSize
+                supplierImport_values?.data?.meta && supplierImport_values.data.meta.page
+                  ? (supplierImport_values.data.meta.page - 1) * supplierImport_values.data.meta.pageSize
                   : 0
               "
-              :is-loading="inventoryItem_isLoading"
+              :is-loading="supplierImport_isLoading"
               is-using-custom-header-suffix
               is-using-header
               is-using-custom-body
@@ -133,7 +132,7 @@ const {
 
             <!-- Alert ditempel di bawah table -->
             <div
-              v-if="inventoryItem_values?.data?.items?.some(item => item.status === 'failed')"
+              v-if="supplierImport_values?.data?.items?.some(item => item.status === 'failed')"
               class="absolute top-0 left-1/2 -translate-x-1/2 mt-2 p-3 border border-red-300 bg-red-50 text-red-700 rounded-md text-sm flex items-start gap-2 shadow-md"
             >
               <i class="pi pi-exclamation-triangle mt-0.5"></i>
@@ -152,16 +151,15 @@ const {
         <PrimeVueButton
           label="Cancel"
           class="px-4 py-2 bg-white border border-primary text-primary"
-          @click="inventoryItem_onClose"
+          @click="supplierImport_onClose"
         />
         <PrimeVueButton
           label="Import"
           class="px-4 py-2 bg-primary text-white disabled:bg-gray-400 disabled:text-white disabled:border-none"
           :disabled="
-            inventoryItem_step === 1 ||
-            inventoryItem_values?.data?.items?.some(item => item.status === 'failed')
+            supplierImport_step === 1 || supplierImport_values?.data?.items?.some(item => item.status === 'failed')
           "
-          @click="inventoryItem_onSubmit"
+          @click="supplierImport_onSubmit"
         />
       </div>
     </template>

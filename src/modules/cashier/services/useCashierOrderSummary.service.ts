@@ -737,12 +737,14 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         products: cashierOrderSummary_summary.value.product,
         orderType: cashierOrderSummary_summary.value.orderType,
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
-        vouchersId: cashierOrderSummary_summary.value.selectedVoucher,
+        voucherId: cashierOrderSummary_summary.value.selectedVoucher,
         customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
         tableCode: cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
         route: route,
       };
+
+      console.log('params', params);
 
       const response = await store.cashierProduct_paymentProcess(params);
 
