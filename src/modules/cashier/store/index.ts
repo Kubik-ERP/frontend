@@ -196,19 +196,18 @@ export const useCashierStore = defineStore('cashier', {
       payload: {
         voucherId?: string | null;
         products: unknown;
-        route?: RouteLocationNormalizedLoadedGeneric;
         orderType?: string;
       },
+      route?: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<ICashierResponseCalulateEstimation> {
       try {
         const response = await httpClient.post<ICashierResponseCalulateEstimation>(
-          (payload.route?.name === 'self-order' || payload.route?.name === 'self-order-invoice'
-            ? '/self-order'
-            : '') + CASHIER_ENDPOINT_PAYMENT_CALCULATE_ESTIMATION,
+          (route?.name === 'self-order' || route?.name === 'self-order-invoice' ? '/self-order' : '') +
+            CASHIER_ENDPOINT_PAYMENT_CALCULATE_ESTIMATION,
           payload,
 
-          withStoreHeader(payload.route || useRoute(), requestConfigurations),
+          withStoreHeader(route || useRoute(), requestConfigurations),
         );
 
         return Promise.resolve(response.data);
@@ -232,19 +231,19 @@ export const useCashierStore = defineStore('cashier', {
         products: ICashierSelected[];
         orderType: string;
         paymentMethodId: string;
-        vouchers: string;
+        voucherId: string;
         customerId: string;
         tableCode: string;
         storeId: string;
-        route: RouteLocationNormalizedLoadedGeneric;
       },
+      route: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<ICashierResponseProcessCheckout> {
       try {
         const response = await httpClient.post<ICashierResponseProcessCheckout>(
-          (payload.route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_PROCESS,
+          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_PROCESS,
           payload,
-          withStoreHeader(payload.route, requestConfigurations),
+          withStoreHeader(route, requestConfigurations),
         );
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -273,16 +272,16 @@ export const useCashierStore = defineStore('cashier', {
         storeId: string;
         paymentAmount: number | null;
         voucherId: string | null;
-        route: RouteLocationNormalizedLoadedGeneric;
       },
+      route: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<ICashierResponseMidtransQrisPayment> {
       try {
         const response = await httpClient.post<ICashierResponseMidtransQrisPayment>(
-          (payload.route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_INSTANT,
+          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_INSTANT,
           payload,
 
-          withStoreHeader(payload.route, requestConfigurations),
+          withStoreHeader(route, requestConfigurations),
         );
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -305,8 +304,8 @@ export const useCashierStore = defineStore('cashier', {
         provider: string;
         invoiceId: string;
         paymentMethodId: string;
-        route: RouteLocationNormalizedLoadedGeneric;
       },
+      route: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<ICashierResponseMidtransQrisPayment> {
       try {
@@ -314,7 +313,7 @@ export const useCashierStore = defineStore('cashier', {
           CASHIER_ENDPOINT_PAYMENT_UNPAID,
           payload,
 
-          withStoreHeader(payload.route, requestConfigurations),
+          withStoreHeader(route, requestConfigurations),
         );
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -369,8 +368,8 @@ export const useCashierStore = defineStore('cashier', {
     async cashierProduct_simulatePayment(
       payload: {
         order_id: string;
-        route: RouteLocationNormalizedLoadedGeneric;
       },
+      route: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},
     ): Promise<unknown> {
       try {
@@ -378,7 +377,7 @@ export const useCashierStore = defineStore('cashier', {
           CASHIER_ENDPOINT_SIMULATE_PAYMENT,
           payload,
 
-          withStoreHeader(payload.route, requestConfigurations),
+          withStoreHeader(route, requestConfigurations),
         );
         return Promise.resolve(response.data);
       } catch (error: unknown) {

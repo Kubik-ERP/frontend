@@ -377,7 +377,7 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
   );
 
   const accountDetail_listAssignedStaff = ref<IStoreAssignedStaff[]>([]);
-  const accountDetail_modalMode = ref<boolean>(false)
+  const accountDetail_modalMode = ref<boolean>(false);
 
   const idStore = route.params.id as string;
   const accountDetail_listAssignedQueryParams = reactive<IAcountStaffMemberListRequestQuery>({
@@ -386,8 +386,6 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     limit: 10,
     'X-STORE-ID': accountDetail_modalMode.value ? idStore : '',
   });
-
-
 
   const accountDetail_fetchAssignedStaff = async (): Promise<void> => {
     try {
@@ -417,7 +415,6 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
 
   const router = useRouter();
   const accountStoreDetail_onAddStaff = (): void => {
-    
     router.push({ name: 'staff-member.create' });
   };
 
@@ -437,7 +434,7 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
         return Promise.reject(new Error(String(error)));
       }
     }
-  }
+  };
 
   return {
     accountStoreDetail_activeTab,

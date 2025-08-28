@@ -92,6 +92,7 @@ export interface IInvoiceData {
   customerId: string;
   discountAmount: number;
   tableCode: string;
+  queue: number;
   paymentStatus: 'unpaid' | 'paid' | 'refund' | 'cancelled';
   orderStatus: 'in_progress' | 'waiting' | 'served' | 'cancelled' | 'refunded' | 'completed' | 'placed';
   createdAt: string;
@@ -108,7 +109,8 @@ export interface IInvoiceData {
   grandTotal: number | null;
   paymentAmount: number | null;
   changeAmount: number | null;
-
+  voucherId: string | null;
+  voucherAmount: number | null;
   customer: IInvoiceCustomer;
   invoiceDetails: IInvoiceDetail[];
   invoiceCharges: [];

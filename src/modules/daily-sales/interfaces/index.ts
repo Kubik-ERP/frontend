@@ -19,6 +19,7 @@ export interface IDailySales {
   taxAmount: number | null;
   taxId: string | null;
   updatedAt: string;
+  voucherAmount: number | null;
 }
 
 export interface IDailySalesListResponse {

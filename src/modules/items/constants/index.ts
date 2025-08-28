@@ -71,6 +71,74 @@ export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
     width: '100px',
   },
 ];
+export const ITEMS_LIST_COLUMS_IMPORT: IColumnDataTable[] = [
+  {
+    label: 'SKU',
+    sortable: false,
+    value: 'sku',
+  },
+  {
+    label: 'Item Name',
+    sortable: false,
+    value: 'name',
+  },
+  {
+    label: 'Category',
+    sortable: false,
+    value: 'categoryName',
+  },
+  {
+    label: 'Brand',
+    sortable: false,
+    value: 'brandName',
+  },
+  {
+    label: 'Unit',
+    sortable: false,
+    value: 'unit',
+  },
+  {
+    label: 'Stock Quantity',
+    sortable: true,
+    value: 'stockQuantity',
+  },
+  {
+    label: 'Reorder Level',
+    sortable: true,
+    value: 'reorderLevel',
+  },
+  {
+    label: 'Minimum Stock',
+    sortable: true,
+    value: 'minimumStockQuantity',
+
+  },
+  {
+    label: 'Price Per Unit',
+    sortable: true,
+    value: 'unitPrice',
+  },
+  {
+    label: 'Expiry Date',
+    sortable: true,
+    value: 'expiryDate',
+  },
+  {
+    label: 'Supplier',
+    sortable: false,
+    value: 'supplierId',
+  },
+  {
+    label: 'Storage Location',
+    sortable: false,
+    value: 'storageLocationId',
+  },
+  {
+    label: '',
+    sortable: false,
+    value: 'status',
+  },
+];
 
 export const ITEM_STOCK_ADJUSTMENT_LIST_COLUMNS: IColumnDataTable[] = [
   {

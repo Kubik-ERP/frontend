@@ -13,7 +13,7 @@ const { supplierPreview_supplier: supplier, supplierPreview_onEditSupplier } = u
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
       <div>
         <p class="text-lg font-semibold text-black">{{ supplier?.data.supplierName }}</p>
-        <p class="text-base text-gray-600">{{ supplier?.data.id }}</p>
+        <p class="text-base text-gray-600">{{ supplier?.data.code }}</p>
       </div>
       <PrimeVueButton
         class="text-base flex items-center gap-1 bg-white text-primary border border-primary rounded-lg px-4 py-2 w-full sm:w-auto justify-center"

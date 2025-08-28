@@ -1,0 +1,34 @@
+{
+  "device": {
+    "title": "Device List",
+    "createButton": "Create Device",
+    "editButton": "Edit",
+    "deleteButton": "Delete",
+    "searchPlaceholder": "Search devices...",
+    "noDataMessage": "No devices found.",
+    "form": {
+      "code": "Device Code",
+      "name": "Device Name",
+      "description": "Description",
+      "fields": {
+        "name": "Enter device name",
+        "description": "Enter device description"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "create": "Create",
+        "update": "Update"
+      }
+    },
+    "popover": {
+      "edit": {
+        "title": "Edit Device",
+        "message": "Are you sure you want to edit this device?"
+      },
+      "delete": {
+        "title": "Delete Device",
+        "message": "Are you sure you want to delete this device?"
+      }
+    }
+  }
+}
