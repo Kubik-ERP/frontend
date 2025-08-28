@@ -19,6 +19,11 @@ const {
 } = inject<ILoyaltyPointBenefitProvided>('loyaltyPointBenefit')!;
 
 const popover = ref();
+
+import { useRbac } from '@/app/composables/useRbac';
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('general_loyalty_point_configuration');
+// v-if="hasPermission"
 </script>
 <template>
   <section id="loyalty-point-benefit-table" class="flex flex-col relative inset-0 z-0">
@@ -27,7 +32,9 @@ const popover = ref();
       :columns="loyaltyPointBenefit_columns"
       header-title="Loyalty Point Benefit"
       :rows-per-page="
-        !loyaltyPointBenefit_list.loyaltySettingsStatus ? 10 : loyaltyPointBenefit_list.loyaltyBenefits.meta.pageSize
+        !loyaltyPointBenefit_list.loyaltySettingsStatus
+          ? 10
+          : loyaltyPointBenefit_list.loyaltyBenefits.meta.pageSize
       "
       :total-records="
         !loyaltyPointBenefit_list.loyaltySettingsStatus ? 100 : loyaltyPointBenefit_list.loyaltyBenefits.meta.total
@@ -51,6 +58,7 @@ const popover = ref();
       </template>
       <template #header-suffix>
         <PrimeVueButton
+          v-if="hasPermission"
           class="w-fit"
           label="Add Benefit"
           :disabled="!loyaltyPointBenefit_list.loyaltySettingsStatus"
@@ -113,6 +121,7 @@ const popover = ref();
         </template>
         <template v-else-if="column.value === 'action'">
           <PrimeVueButton
+            v-if="hasPermission"
             variant="text"
             rounded
             aria-label="detail"

@@ -24,6 +24,11 @@ const {
   settingInvoice_onUploadCompanylogo,
   settingInvoice_toggleEditableInvoiceConfiguration,
 } = inject<ISettingInvoiceProvided>('settingInvoice')!;
+
+import { useRbac } from '@/app/composables/useRbac';
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('invoice_templates');
+// v-if="hasPermission"
 </script>
 
 <template>
@@ -32,10 +37,11 @@ const {
       <h5 class="font-semibold text-black text-lg">Invoice Configuration</h5>
 
       <div
+        v-if="hasPermission"
         class="flex items-center gap-2 cursor-pointer"
         @click="settingInvoice_toggleEditableInvoiceConfiguration"
       >
-        <AppBaseSvg name="edit" />
+        <AppBaseSvg name="edit" class="!w-5 !h-5" />
         <span class="font-semibold text-primary text-sm"> Edit Invoice Config </span>
       </div>
     </header>
@@ -127,7 +133,7 @@ const {
                         >
                           <template #default>
                             <section id="content" class="flex items-center gap-2">
-                              <AppBaseSvg name="image" />
+                              <AppBaseSvg name="image" class="!w-5 !h-5" />
                               <span class="font-normal text-sm">Change Image</span>
                             </section>
                           </template>
@@ -136,7 +142,7 @@ const {
                     </PrimeVueFileUpload>
 
                     <section id="description" class="flex gap-3">
-                      <AppBaseSvg name="info" />
+                      <AppBaseSvg name="info" class="!w-5 !h-5"/>
                       <span class="font-normal text-black-secondary text-xs">
                         Only square images (1:1 ratio) are supported. <br />
                         Please adjust your image before uploading.
@@ -150,7 +156,7 @@ const {
                     class="flex items-center gap-2 cursor-pointer"
                     @click="settingInvoice_onShowEditFooterContentDialog"
                   >
-                    <AppBaseSvg name="edit" />
+                    <AppBaseSvg name="edit" class="!w-5 !h-5"/>
                     <span class="font-semibold text-primary text-sm"> Edit footer content </span>
                   </div>
                 </template>
@@ -176,7 +182,7 @@ const {
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
-                  <AppBaseSvg name="settings" />
+                  <AppBaseSvg name="settings" class="!w-5 !h-5"/>
                   <span class="font-normal text-sm">Invoice Number Configuration</span>
                 </section>
               </template>
