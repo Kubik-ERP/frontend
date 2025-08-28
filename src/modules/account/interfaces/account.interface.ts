@@ -1,5 +1,5 @@
 // Interfaces
-import type { IOutlet, IOutletProfile } from '@/modules/outlet/interfaces';
+import type { IOutlet, IOutletListData, IOutletProfile } from '@/modules/outlet/interfaces';
 import type { Validation } from '@vuelidate/core';
 
 export interface IAccountBankAccountFormData {
@@ -16,6 +16,7 @@ export interface IAccountProvided {
   account_fetchUserBanks: () => Promise<void>;
   account_isLoadingOfOutlet: globalThis.Ref<boolean>;
   account_listColumns: IColumnDataTable[];
+  account_listStores: Ref<IOutletListData>;
   account_onCloseDialogSetUpBank: () => void;
   account_onDirectToDetailOutlet: (outlet: IOutlet) => void;
   account_onEditBankAccount: () => void;

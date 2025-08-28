@@ -11,7 +11,10 @@ import type {
   ISupplierUpdatePayload,
   ISupplierItemListResponse,
 } from '../interfaces';
-import type { ISupplierItemListRequestQuery, ISupplierListRequestQuery } from '../interfaces/supplier-list.interface';
+import type {
+  ISupplierItemListRequestQuery,
+  ISupplierListRequestQuery,
+} from '../interfaces/supplier-list.interface';
 
 // Plugins
 import httpClient from '@/plugins/axios';
@@ -51,9 +54,14 @@ export const useSupplierStore = defineStore('supplier', {
     /**
      * @description Usually, we define getters if the getter name is different from the state name.
      */
+    supplier_listItemsOnDropdown: (state): IDropdownItem[] => {
+      return state.supplier_supplierLists.data.items.map(item => ({
+        value: item.id,
+        label: item.supplierName,
+      }));
+    },
   },
   actions: {
-
     /**
      * @description Handle fetch api suppliers - get suppliers list
      * @url /suppliers
@@ -201,12 +209,15 @@ export const useSupplierStore = defineStore('supplier', {
       this.supplier_isLoading = true;
 
       try {
-        const response = await httpClient.get<ISupplierItemListResponse>(`${SUPPLIER_BASE_ENDPOINT}/${supplierId}/item-supplies`, {
-          params,
-          ...requestConfigurations,
-        });
+        const response = await httpClient.get<ISupplierItemListResponse>(
+          `${SUPPLIER_BASE_ENDPOINT}/${supplierId}/item-supplies`,
+          {
+            params,
+            ...requestConfigurations,
+          },
+        );
 
-       this.supplier_itemLists = response.data;
+        this.supplier_itemLists = response.data;
 
         return Promise.resolve(response.data);
       } catch (error) {
@@ -214,6 +225,6 @@ export const useSupplierStore = defineStore('supplier', {
       } finally {
         this.supplier_isLoading = false;
       }
-    }
+    },
   },
 });
