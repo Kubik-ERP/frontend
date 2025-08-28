@@ -6,12 +6,14 @@ import type { IAuthenticationSignInProvided } from '../interfaces/authentication
  * @description Inject all the data and methods what we need
  */
 const {
+  authenticationSignIn_activeStep,
   authenticationSignIn_formData,
   authenticationSignIn_formValidations,
   authenticationSignIn_isLoading,
   authenticationSignIn_isNotAuthenticated,
   authenticationSignIn_onSsoWithGoogle,
   authenticationSignIn_onSubmit,
+  authenticationSignIn_selectedRole,
 } = inject<IAuthenticationSignInProvided>('authenticationSignIn')!;
 </script>
 
@@ -21,16 +23,33 @@ const {
     @submit.prevent="authenticationSignIn_onSubmit"
   >
     <!-- Greeting Text -->
-    <section id="greeting-text" class="flex flex-col gap-2 items-center sm:items-start">
+    <section id="greeting-text" class="flex flex-col gap-4 items-center sm:items-start">
       <img
         src="@/app/assets/images/app-logo.png"
         alt="app-logo"
         class="h-10 sm:h-12 md:h-14 lg:h-16 w-auto object-contain"
       />
 
-      <h1
-        class="font-bold text-xl sm:text-2xl md:text-3xl leading-snug text-center sm:text-left"
-      >
+      <div class="flex items-center gap-4 mt-2">
+        <PrimeVueButton
+          class="bg-transparent border border-solid border-blue-primary p-2 basic-smooth-animation hover:bg-grayscale-10"
+          @click="
+            () => {
+              authenticationSignIn_activeStep = 0;
+            }
+          "
+        >
+          <template #default>
+            <AppBaseSvg name="arrow-left" class="w-4 h-4" />
+          </template>
+        </PrimeVueButton>
+
+        <h1 class="font-bold text-2xl text-primary leading-8">
+          Login as {{ authenticationSignIn_selectedRole === 'OWNER' ? 'Owner' : 'Staff' }}
+        </h1>
+      </div>
+
+      <h1 class="font-bold text-xl sm:text-2xl md:text-3xl leading-snug text-center sm:text-left">
         {{ useLocalization('app.hi') }} {{ useLocalization('app.welcome-back') }}
       </h1>
     </section>
@@ -49,7 +68,7 @@ const {
         <PrimeVueIconField>
           <PrimeVueInputIcon>
             <template #default>
-              <AppBaseSvg name="mail" />
+              <AppBaseSvg name="mail" class="w-4 h-4" />
             </template>
           </PrimeVueInputIcon>
 
@@ -66,6 +85,7 @@ const {
 
       <!-- Password -->
       <AppBaseFormGroup
+        v-if="authenticationSignIn_selectedRole === 'OWNER'"
         v-slot="{ classes }"
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
@@ -76,7 +96,7 @@ const {
         <PrimeVueIconField>
           <PrimeVueInputIcon>
             <template #default>
-              <AppBaseSvg name="key" />
+              <AppBaseSvg name="key" class="w-4 h-4" />
             </template>
           </PrimeVueInputIcon>
 
@@ -95,17 +115,11 @@ const {
       </AppBaseFormGroup>
 
       <!-- Forgot Password -->
-      <RouterLink
-        :to="{ name: 'reset-password' }"
-        class="font-semibold text-blue-primary text-sm text-end mt-2"
-      >
+      <RouterLink :to="{ name: 'reset-password' }" class="font-semibold text-blue-primary text-sm text-end mt-2">
         {{ useLocalization('authentication.sign-in.reset-password') }}
       </RouterLink>
 
-      <span
-        v-if="authenticationSignIn_isNotAuthenticated"
-        class="font-normal text-error-main text-sm mt-4"
-      >
+      <span v-if="authenticationSignIn_isNotAuthenticated" class="font-normal text-error-main text-sm mt-4">
         {{ useLocalization('authentication.sign-in.error-messages.not-authenticated') }}
       </span>
     </section>
@@ -129,7 +143,7 @@ const {
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="google" />
+              <AppBaseSvg name="google" class="w-4 h-4" />
               <span class="font-normal text-sm">
                 {{ useLocalization('authentication.sign-in.continue-with-google') }}
               </span>
@@ -138,15 +152,14 @@ const {
         </PrimeVueButton>
       </section>
 
-      <PrimeVueDivider class="bg-grayscale-20" />
+      <!-- <PrimeVueDivider class="bg-grayscale-20" />
 
       <span class="font-normal text-sm text-center sm:text-left">
         {{ useLocalization('authentication.sign-in.doesnt-have-account') }}
         <RouterLink :to="{ name: 'sign-up' }" class="font-semibold text-blue-primary">
           {{ useLocalization('authentication.sign-in.create-account') }}
         </RouterLink>
-      </span>
+      </span> -->
     </section>
   </form>
 </template>
-
