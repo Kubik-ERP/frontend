@@ -6,7 +6,6 @@ import { useProductService } from '../services/catalog-product.service';
 import CategoryPill from '@/modules/catalog/components/Category/CategoryPill.vue';
 import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
 import deleteSVG from '@/app/assets/icons/delete.svg';
-import editSVG from '@/app/assets/icons/edit.svg';
 import plusLineWhiteSVG from '@/app/assets/icons/plus-line-white.svg';
 import threeDotsSVG from '@/app/assets/icons/three-dots.svg';
 import searchSVG from '@/app/assets/icons/search.svg';
@@ -395,26 +394,38 @@ const hasPermission = rbac.hasPermission('product_management');
         </template>
       </PrimeVueDataTable>
 
-      <PrimeVuePopover ref="op">
+      <PrimeVuePopover
+        ref="op"
+        :pt="{
+          root: { class: 'z-[9999]' }, // ✅ This forces the popover to the top layer
+          content: 'p-0',
+        }"
+      >
         <div class="flex flex-col items-start">
           <PrimeVueButton
             variant="text"
             :label="useLocalization('main.popover.edit')"
-            class="text-black"
+            class="text-black w-full px-4 py-3"
             @click="EditProducts"
           >
-            <template #icon>
-              <img :src="editSVG" alt="" />
+            <template #default>
+              <section class="flex items-center gap-2 w-full">
+                <AppBaseSvg name="edit" class="!w-4 !h-4" />
+                <span class="font-normal text-text-primary">{{ useLocalization('main.popover.edit') }}</span>
+              </section>
             </template>
           </PrimeVueButton>
           <PrimeVueButton
             variant="text"
             :label="useLocalization('main.popover.delete')"
-            class="text-black"
+            class="text-red-500 w-full px-4 py-3"
             @click="isDeleteOpen = true"
           >
-            <template #icon>
-              <img :src="deleteSVG" alt="" />
+            <template #default>
+              <section class="flex items-center gap-2 w-full">
+                <AppBaseSvg name="delete" class="!w-4 !h-4" />
+                <span class="font-normal text-red-500">{{ useLocalization('main.popover.delete') }}</span>
+              </section>
             </template>
           </PrimeVueButton>
         </div>

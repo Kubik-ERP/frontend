@@ -3,45 +3,10 @@ import { useCustomerDetailService } from '../../services/customer-detail.service
 
 const { customerDetails_isLoading, customerDetails } = useCustomerDetailService();
 
-const formatDate = (dateInput: string | number | Date, format: string = 'dd/mm/yyyy hh:MM am/pm'): string => {
-  let date: Date;
-
-  if (typeof dateInput === 'number') {
-    // Unix timestamp in seconds
-    date = new Date(dateInput * 1000); // Convert seconds to milliseconds
-  } else if (typeof dateInput === 'string') {
-    // String date
-    date = new Date(dateInput);
-  } else if (dateInput instanceof Date) {
-    // Date object
-    date = dateInput;
-  } else {
-    throw new Error('Invalid date input');
-  }
-
-  const hours = date.getHours();
-  const is12HourFormat = format.includes('am/pm');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  const hours12 = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
-
-  const map: Record<string, string | number> = {
-    yyyy: date.getFullYear(),
-    mm: String(date.getMonth() + 1).padStart(2, '0'),
-    dd: String(date.getDate()).padStart(2, '0'),
-    hh: is12HourFormat ? String(hours12).padStart(2, '0') : String(hours).padStart(2, '0'),
-    MM: String(date.getMinutes()).padStart(2, '0'),
-    ss: String(date.getSeconds()).padStart(2, '0'),
-    'am/pm': ampm,
-  };
-
-  return format.replace(/yyyy|mm|dd|hh|MM|ss|am\/pm/g, matched => map[matched].toString());
-};
-
 import { useRbac } from '@/app/composables/useRbac';
 const rbac = useRbac();
 const hasPermission = rbac.hasPermission('customer_management');
 // v-if="hasPermission"
-
 </script>
 <template>
   <div class="border border-solid border-primary rounded-md p-4 mb-8">
@@ -67,14 +32,6 @@ const hasPermission = rbac.hasPermission('customer_management');
           </PrimeVueButton>
         </router-link>
       </div>
-      <!-- <p>
-        <template v-if="customerDetails_isLoading">
-          <PrimeVueSkeleton width="20rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
-        </template>
-        <template v-else>
-          {{ customerDetails.id }}
-        </template>
-      </p> -->
     </section>
 
     <section>
@@ -133,7 +90,7 @@ const hasPermission = rbac.hasPermission('customer_management');
               <PrimeVueSkeleton width="16rem" height="1rem" class="rounded-md"></PrimeVueSkeleton>
             </template>
             <template v-else>
-              {{ formatDate(customerDetails.dob ?? '', 'dd/mm/yyyy') }}
+              {{ customerDetails.dob ? useFormatDate(customerDetails.dob!, 'dd/mm/yyyy') : '-' }}
             </template>
           </p>
         </div>

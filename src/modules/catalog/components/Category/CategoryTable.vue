@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { useCategoryService } from '../../services/Category/CategoryService';
 import { ICategory } from '../../interfaces/Category/CategoryInterface';
-//import { ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
 import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
-import deleteSVG from '@/app/assets/icons/delete.svg';
-import editSVG from '@/app/assets/icons/edit.svg';
 import plusLineWhiteSVG from '@/app/assets/icons/plus-line-white.svg';
 import threeDotsSVG from '@/app/assets/icons/three-dots.svg';
 import searchSVG from '@/app/assets/icons/search.svg';
@@ -365,26 +362,38 @@ const rbac = useRbac();
     </PrimeVueDataTable>
 
     <!-- Popover -->
-    <PrimeVuePopover ref="op">
-      <div class="flex flex-col items-start">
+    <PrimeVuePopover
+      ref="op"
+      :pt="{
+        root: { class: 'z-[9999]' }, // ✅ This forces the popover to the top layer
+        content: 'p-0',
+      }"
+    >
+      <div class="flex flex-col items-center justify-start">
         <PrimeVueButton
           variant="text"
           :label="useLocalization('popover.edit')"
-          class="text-black"
+          class="text-black w-full px-4 py-3"
           @click="selected && displayEdit(selected.id)"
         >
-          <template #icon>
-            <img :src="editSVG" alt="" />
+          <template #default>
+            <section class="flex items-center gap-2 w-full">
+              <AppBaseSvg name="edit" class="!w-4 !h-4" />
+              <span class="font-normal text-text-primary">{{ useLocalization('popover.edit') }}</span>
+            </section>
           </template>
         </PrimeVueButton>
         <PrimeVueButton
           variant="text"
           :label="useLocalization('popover.delete')"
-          class="text-red-500"
+          class="text-red-500 w-full px-4 py-3"
           @click="isDeleteOpen = true"
         >
-          <template #icon>
-            <img :src="deleteSVG" alt="" />
+          <template #default>
+            <section class="flex items-center gap-2 w-full">
+              <AppBaseSvg name="delete" class="!w-4 !h-4" />
+              <span class="font-normal text-text-red">{{ useLocalization('popover.delete') }}</span>
+            </section>
           </template>
         </PrimeVueButton>
       </div>
@@ -401,11 +410,12 @@ const rbac = useRbac();
       <form @submit.prevent="handleAddCategory">
         <div class="flex items-center flex-col">
           <p>{{ useLocalization('modal.photoLabel') }}</p>
-          <img
+          <AppBaseImage :src="category_formData.imagePreview" alt="Photo" class="w-64 h-64 object-cover" />
+          <!-- <img
             class="rounded-lg mt-2 w-64 h-64 object-cover"
             :src="category_formData.imagePreview || 'https://placehold.co/250'"
             alt="Photo"
-          />
+          /> -->
 
           <!-- Hidden File Input -->
           <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
@@ -487,11 +497,7 @@ const rbac = useRbac();
       <form @submit.prevent="handleEditCategory">
         <div class="flex items-center flex-col">
           <p>{{ useLocalization('modal.photoLabel') }}</p>
-          <img
-            class="rounded-lg mt-2 w-64 h-64 object-cover"
-            :src="category_formData.imagePreview || 'https://placehold.co/250'"
-            alt="Photo"
-          />
+          <AppBaseImage :src="category_formData.imagePreview" alt="Photo" class="w-64 h-64 object-cover" />
 
           <!-- Hidden File Input -->
           <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />

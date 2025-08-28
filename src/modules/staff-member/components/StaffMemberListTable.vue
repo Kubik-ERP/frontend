@@ -73,7 +73,7 @@ const hasPermission = rbac.hasPermission('manage_staff_member');
         <PrimeVueIconField>
           <PrimeVueInputIcon>
             <template #default>
-              <AppBaseSvg name="search" />
+              <AppBaseSvg name="search" class="!w-4 !h-4" />
             </template>
           </PrimeVueInputIcon>
 

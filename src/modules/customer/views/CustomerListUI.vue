@@ -1,13 +1,11 @@
 <script setup>
 import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
 import deleteSVG from '@/app/assets/icons/delete.svg';
-import editSVG from '@/app/assets/icons/edit.svg';
 import plusLineWhiteSVG from '@/app/assets/icons/plus-line-white.svg';
 import threeDotsSVG from '@/app/assets/icons/three-dots.svg';
 import searchSVG from '@/app/assets/icons/search.svg';
 import chevronLeftSVG from '@/app/assets/icons/chevron-left.svg';
 import chevronRightSVG from '@/app/assets/icons/chevron-right.svg';
-import eyeVisibleSVG from '@/app/assets/icons/eye-visible.svg';
 
 import { useCustomerService } from '../services/CustomersService';
 
@@ -118,7 +116,7 @@ const hasPermission = rbac.hasPermission('customer_management');
 </script>
 
 <template>
-  <div >
+  <div>
     <div>
       <PrimeVueDataTable
         :value="customers"
@@ -299,21 +297,54 @@ const hasPermission = rbac.hasPermission('customer_management');
         </template>
       </PrimeVueDataTable>
 
-      <PrimeVuePopover ref="op">
+      <PrimeVuePopover
+        ref="op"
+        :pt="{
+          root: { class: 'z-[9999]' }, // ✅ This forces the popover to the top layer
+          content: 'p-0',
+        }"
+      >
         <div class="flex flex-col items-start">
-          <PrimeVueButton v-if="rbac.hasPermission('view_customer_profile')" variant="text" label="Preview" class="text-black" @click="handlePreview()">
-            <template #icon>
-              <img :src="eyeVisibleSVG" alt="" />
+          <PrimeVueButton
+            v-if="rbac.hasPermission('view_customer_profile')"
+            variant="text"
+            label="Preview"
+            class="text-black w-full"
+            @click="handlePreview()"
+          >
+            <template #default>
+              <section class="flex items-center gap-2 w-full">
+                <AppBaseSvg name="eye-visible" class="!w-4 !h-4" />
+                <span class="font-normal text-text-primary">Preview</span>
+              </section>
             </template>
           </PrimeVueButton>
-          <PrimeVueButton v-if="rbac.hasPermission('customer_management')" variant="text" label="Edit" class="text-black" @click="handleEdit()">
-            <template #icon>
-              <img :src="editSVG" alt="" />
+          <PrimeVueButton
+            v-if="rbac.hasPermission('customer_management')"
+            variant="text"
+            label="Edit"
+            class="text-black w-full"
+            @click="handleEdit()"
+          >
+            <template #default>
+              <section class="flex items-center gap-2 w-full">
+                <AppBaseSvg name="edit" class="!w-4 !h-4" />
+                <span class="font-normal text-text-primary">Edit</span>
+              </section>
             </template>
           </PrimeVueButton>
-          <PrimeVueButton v-if="rbac.hasPermission('customer_management')" variant="text" label="Delete" class="text-red-500" @click="isDeleteOpen = true">
-            <template #icon>
-              <img :src="deleteSVG" alt="" />
+          <PrimeVueButton
+            v-if="rbac.hasPermission('customer_management')"
+            variant="text"
+            label="Delete"
+            class="text-red-500 w-full"
+            @click="isDeleteOpen = true"
+          >
+            <template #default>
+              <section class="flex items-center gap-2 w-full">
+                <AppBaseSvg name="delete" class="!w-4 !h-4" />
+                <span class="font-normal text-text-primary">Delete</span>
+              </section>
             </template>
           </PrimeVueButton>
         </div>
