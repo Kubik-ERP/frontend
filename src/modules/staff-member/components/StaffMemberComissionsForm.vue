@@ -13,7 +13,11 @@ const { staffMemberCreateEdit_onOpenDialogCommission, staffMemberCreateEdit_form
     <section id="comission-types" class="grid-wrapper gap-4">
       <section
         id="product-comission"
-        :class="staffMemberCreateEdit_formData.defaultCommissionProduct !== null ? 'bg-primary-50 border-primary-300' : ''"
+        :class="
+          staffMemberCreateEdit_formData.defaultCommissionProduct !== null
+            ? 'bg-primary-50 border-primary-300'
+            : ''
+        "
         class="col-span-full lg:col-span-6 flex items-center justify-between border-2 border-solid border-grayscale-10 px-4 py-2 rounded-lg"
       >
         <section id="description" class="flex flex-col gap-2">
@@ -31,13 +35,16 @@ const { staffMemberCreateEdit_onOpenDialogCommission, staffMemberCreateEdit_form
         >
           <template #default>
             <section id="content">
-              <div v-if="staffMemberCreateEdit_formData.defaultCommissionProduct !== null" class="flex items-center gap-2">
-                <AppBaseSvg name="edit" />
+              <div
+                v-if="staffMemberCreateEdit_formData.defaultCommissionProduct !== null"
+                class="flex items-center gap-2"
+              >
+                <AppBaseSvg name="edit" class="!w-5 !h-5" />
                 <span class="font-semibold text-sm text-primary">Change</span>
               </div>
 
               <div v-else class="flex items-center gap-2">
-                <AppBaseSvg name="plus-line" />
+                <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
                 <span class="font-semibold text-sm text-primary">Set Comission</span>
               </div>
             </section>
@@ -47,7 +54,11 @@ const { staffMemberCreateEdit_onOpenDialogCommission, staffMemberCreateEdit_form
 
       <section
         id="voucher-comission"
-        :class="staffMemberCreateEdit_formData.defaultCommissionVoucher !== null ? 'bg-primary-50 border-primary-300' : ''"
+        :class="
+          staffMemberCreateEdit_formData.defaultCommissionVoucher !== null
+            ? 'bg-primary-50 border-primary-300'
+            : ''
+        "
         class="col-span-full lg:col-span-6 flex items-center justify-between border-2 border-solid border-grayscale-10 px-4 py-2 rounded-lg"
       >
         <section id="description" class="flex flex-col gap-2">
@@ -65,13 +76,16 @@ const { staffMemberCreateEdit_onOpenDialogCommission, staffMemberCreateEdit_form
         >
           <template #default>
             <section id="content">
-              <div  v-if="staffMemberCreateEdit_formData.defaultCommissionVoucher !== null" class="flex items-center gap-2">
-                <AppBaseSvg name="edit" />
+              <div
+                v-if="staffMemberCreateEdit_formData.defaultCommissionVoucher !== null"
+                class="flex items-center gap-2"
+              >
+                <AppBaseSvg name="edit" class="!w-5 !h-5" />
                 <span class="font-semibold text-sm text-primary">Change</span>
               </div>
 
               <div v-else class="flex items-center gap-2">
-                <AppBaseSvg name="plus-line" />
+                <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
                 <span class="font-semibold text-sm text-primary">Set Comission</span>
               </div>
             </section>

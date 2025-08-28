@@ -32,4 +32,5 @@ export interface ISupplierListProvided {
   supplierList_onEditSupplier: (supplierId: string) => void;
   supplierList_onDeleteSupplier: (supplierId: string, editMode? : boolean) => void;
   supplierList_onPreviewSupplier: (supplierId: string) => void;
+  supplierList_onImport: () => void;
 }

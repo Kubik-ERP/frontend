@@ -175,6 +175,16 @@ export const useStorageLocationService = (): IStorageLocationListProvided => {
     eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
   };
 
+  const storageLocation_onImport = () => {
+    eventBus.emit('AppBaseDialog', {
+      id: 'storage-location-import-modal',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: '600px',
+    });
+  };
+
   return {
     storageLocation_columns: STORAGE_LOCATION_LIST_COLUMNS,
     storageLocation_fetchData,
@@ -189,5 +199,6 @@ export const useStorageLocationService = (): IStorageLocationListProvided => {
     storageLocation_values: storageLocation_lists,
     storageLocationFormMode,
     storageLocation_editingItem,
+    storageLocation_onImport,
   };
 };

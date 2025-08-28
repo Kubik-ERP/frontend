@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type { IDashboardProvided } from '../interfaces';
+// inject
+const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('dashboard')!;
+
 const chartData = ref();
 const chartOptions = ref();
 
@@ -10,7 +14,7 @@ const setChartData = () => {
     datasets: [
       {
         label: 'Sales',
-        data: [500, 550, 500, 530, 540, 550, 560, 570, 580, 590, 600, 610],
+        data: dashboard_values.value.monthlySalesData.map(item => item.sales),
         fill: false,
         borderColor: documentStyle.getPropertyValue('--p-cyan-500'),
         tension: 0.4,
@@ -74,18 +78,35 @@ onMounted(() => {
         <span class="font-normal text-grayscale-70 text-xs">Total Sales</span>
 
         <section id="amount" class="flex items-center gap-1">
-          <span class="font-semibold text-black text-base"> Rp. 100.000 </span>
+          <span class="font-semibold text-black text-base">
+            {{ useCurrencyFormat({ data: dashboard_values.latestSales.value }) }}
+          </span>
 
-          <PrimeVueChip class="bg-secondary-background p-1">
-            <AppBaseSvg name="arrow-up-success-circle" class="w-3 h-3" />
+          <PrimeVueChip
+            class="py-1 px-2"
+            :class="[
+              dashboard_values.latestSales.percentageChange < 0
+                ? 'bg-error-background'
+                : 'bg-secondary-background',
+            ]"
+          >
+            <AppBaseSvg
+              :name="dashboard_values.latestSales.percentageChange < 0 ? 'arrow-down-danger' : 'arrow-up-success'"
+              class="w-3 h-3"
+            />
 
-            <span class="font-semibold text-secondary-hover text-xs"> 10% </span>
+            <span class="font-semibold text-secondary-hover text-xs">
+              {{ dashboard_values.latestSales.percentageChange }}%
+            </span>
           </PrimeVueChip>
         </section>
       </section>
 
       <section id="period">
-        <span class="font-normal text-grayscale-70 text-xs"> January 2024 - December 2024 </span>
+        <span class="font-normal text-grayscale-70 text-xs">
+          January {{ dashboard_queryParams.startDate.getFullYear() }} - December
+          {{ dashboard_queryParams.endDate.getFullYear() }}
+        </span>
       </section>
     </section>
 

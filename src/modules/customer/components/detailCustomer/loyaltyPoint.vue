@@ -36,7 +36,10 @@ const {
   isEdit,
 } = useCustomerDetailService();
 
-
+import { useRbac } from '@/app/composables/useRbac';
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('management_customer_loyalty_point');
+// v-if="hasPermission"
 </script>
 <template>
   <section id="customer-loyalty-point" class="flex flex-col relative inset-0 z-0">
@@ -58,6 +61,7 @@ const {
           <span class="font-semibold text-xl">Loyalty Point</span>
           <div class="flex items-center gap-8">
             <PrimeVueButton
+              v-if="hasPermission"
               type="button"
               label="Decrease"
               severity="info"
@@ -79,6 +83,7 @@ const {
               <sub class="text-xs text-grayscale-30">pts</sub></span
             >
             <PrimeVueButton
+              v-if="hasPermission"
               type="button"
               label="Increase"
               severity="info"
@@ -157,7 +162,13 @@ const {
         </template>
 
         <template v-else-if="column.value === 'action'">
-          <PrimeVueButton variant="text" rounded aria-label="Edit" @click="() => handle_editLoyaltyPoints(data)">
+          <PrimeVueButton
+            v-if="hasPermission"
+            variant="text"
+            rounded
+            aria-label="Edit"
+            @click="() => handle_editLoyaltyPoints(data)"
+          >
             <template #icon>
               <AppBaseSvg name="edit" class="!w-5 !h-5" />
             </template>

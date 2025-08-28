@@ -26,7 +26,7 @@ export const useSupplierCreateEditService = () => {
    */
   const supplierForm_formData = reactive<ISupplierCreatePayload>({
     supplierName: '',
-    supplierCode: '',
+    code: '',
     contactPerson: '',
     phoneNumber: '',
     email: '',
@@ -106,14 +106,11 @@ export const useSupplierCreateEditService = () => {
     try {
       if (supplierForm_isEditMode.value) {
         // Update existing supplier
-        supplierForm_formData.supplierCode =
-          supplierForm_formData.supplierCode === '' ? true : supplierForm_formData.supplierCode;
         await store.supplier_update(route.params.id as string, supplierForm_formData as ISupplierUpdatePayload, {
           ...httpAbort_registerAbort(`SUPPLIER_UPDATE_${route.params.id}`),
         });
       } else {
-          supplierForm_formData.supplierCode =
-          supplierForm_formData.supplierCode === '' ? true : supplierForm_formData.supplierCode;
+
         await store.supplier_create(supplierForm_formData, {
           ...httpAbort_registerAbort('SUPPLIER_CREATE'),
         });

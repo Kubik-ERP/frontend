@@ -26,7 +26,7 @@ function convertCategoriesToFormData(payload: CategoryPayload): FormData {
   formData.append('category', payload.category);
   formData.append('description', payload.description ?? '');
 
-  if (payload.imageFile) formData.append('image', payload.imageFile);
+  formData.append('image', payload.imageFile!);
 
   return formData;
 }
@@ -179,7 +179,7 @@ export const useCategoryService = () => {
     const data: ICategory = response.data.data;
     const pictureUrl = data.pictureUrl
       ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${data.pictureUrl}`
-      : 'https://placehold.co/250';
+      : '';
 
     return {
       id: data.id,

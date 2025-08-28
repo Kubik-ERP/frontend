@@ -181,6 +181,16 @@ export const useSupplierListService = (): ISupplierListProvided => {
     router.push({ name: 'supplier.preview', params: { id: supplierId } });
   };
 
+  const supplierList_onImport = () => {
+    eventBus.emit('AppBaseDialog', {
+      id: 'supplier-import-modal',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: '600px',
+    });
+  };
+
   return {
     supplierList_columns: SUPPLIER_LIST_COLUMNS,
     supplierList_fetchSuppliers,
@@ -192,6 +202,7 @@ export const useSupplierListService = (): ISupplierListProvided => {
     supplierList_onCreateSupplier,
     supplierList_onEditSupplier,
     supplierList_onDeleteSupplier: supplierList_onDeleteSupplierDialog,
-    supplierList_onPreviewSupplier
+    supplierList_onPreviewSupplier,
+    supplierList_onImport,
   };
 };

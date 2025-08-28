@@ -29,9 +29,8 @@ function convertProductToFormData(payload: CreateProductPayload): FormData {
   formData.append('is_percent', String(payload.is_percent));
 
   // Optional image
-  if (payload.imageFile) {
-    formData.append('image', payload.imageFile); // Make sure it's a File or Blob
-  }
+
+  formData.append('image', payload.imageFile!); // Make sure it's a File or Blob
 
   // Categories
   payload.categories?.forEach((cat, i) => {

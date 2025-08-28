@@ -1,0 +1,1 @@
+export const DASHBOARD_BASE_ENDPOINT = '/dashboard/summary';

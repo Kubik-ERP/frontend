@@ -6,9 +6,15 @@ import {
   IPayloadPermission,
 } from '../interfaces/access-control-action.interface';
 import { useAccessControlStore } from '../store';
+import { useAuthenticationStore } from '@/modules/authentication/store';
+import { AUTHENTICATION_PERMISSIONS_REQUEST } from '@/modules/authentication/constants';
 
 export const useAccessControlPermissionsActionService = (): IAccesscControlPermissionProvided => {
   const store = useAccessControlStore();
+  const authenticationStore = useAuthenticationStore();
+  const router = useRouter();
+
+  const { httpAbort_registerAbort } = useHttpAbort();
 
   const accessControlPermission_formData = reactive<IAccessControlPermissionPayload>({
     permissions: [],
@@ -26,7 +32,6 @@ export const useAccessControlPermissionsActionService = (): IAccesscControlPermi
 
       // simpan data ke API
       const res = await store.assignAccessControlPermission_roles(payload);
-      console.log('res:', res);
       if (res) {
         const argsEventEmitter: IPropsToast = {
           isOpen: true,
@@ -35,6 +40,10 @@ export const useAccessControlPermissionsActionService = (): IAccesscControlPermi
           position: EToastPosition.TOP_RIGHT,
         };
         eventBus.emit('AppBaseToast', argsEventEmitter);
+
+        authenticationStore.fetchAuthentication_permissions({
+           ...httpAbort_registerAbort(AUTHENTICATION_PERMISSIONS_REQUEST),
+        });
       }
     } catch (err) {
       console.error('Submit failed:', err);
@@ -46,6 +55,8 @@ export const useAccessControlPermissionsActionService = (): IAccesscControlPermi
   const accessControlPermission_onCancel = () => {
     // reset form data
     accessControlPermission_formData.permissions = [];
+    
+    router.push({ name: 'user-permission' });
   };
 
   // helper buat set data hasil fetch API

@@ -187,6 +187,17 @@ export const useInventoryCategoryService = (): IInventoryCategoryListProvided =>
     inventoryCategoryList_fetchData();
   };
 
+  const inventoryCategoryList_onImport = (): void => {
+    const argsEventEmitter: IPropsDialog = {
+      id: 'inventory-category-import-modal',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: '600px',
+    };
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  }
+
   return {
     inventoryCategoryList_columns: INVERNTORY_CATEGORY_LIST_COLUMNS,
     inventoryCategoryList_fetchData,
@@ -201,5 +212,6 @@ export const useInventoryCategoryService = (): IInventoryCategoryListProvided =>
     inventoryCategoryList_onDeleteCategory: inventoryCategoryList_deleteCategory,
     inventoryCategoryFormMode,
     inventoryCategoryList_editingItem: inventoryCategory_editingItem,
+    inventoryCategoryList_onImport
   };
 };

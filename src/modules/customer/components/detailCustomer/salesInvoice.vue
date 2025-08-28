@@ -2,8 +2,6 @@
 // Services
 import { useCustomerDetailService } from '../../services/customer-detail.service';
 
-// import type { ICustomerDetails,Iinvoice, IPageMeta } from '../../interfaces/CustomerDetailInterface';
-
 const {
   customerDetail_columns,
   salesInvoice_paymentStatus,
@@ -16,18 +14,6 @@ const {
   customerDetails_onChangePage,
   customerDetails,
 } = useCustomerDetailService();
-
-// const invoice = ref<Iinvoice[]>([]);
-// const meta = ref<IPageMeta>();
-// const detail = ref<ICustomerDetails>({});
-
-// onMounted(async () => {
-//   console.log("🚀 ~ customerDetails:", customerDetails.value.invoices?.data);
-//   // const response = await customerDetails_fetchSalesInvoice();
-//   detail.value = customerDetails.value;
-//   invoice.value = customerDetails.value.invoices?.data || [];
-//   meta.value = customerDetails.value.invoices?.meta || {};
-// });
 </script>
 
 <template>
@@ -48,7 +34,6 @@ const {
       @update:currentPage="customerDetails_onChangePage"
     >
       <template #header>
-        
         <section class="border border-solid border-grayscale-20 rounded-t-md">
           <section class="p-4 flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -62,10 +47,10 @@ const {
               <PrimeVueIconField>
                 <PrimeVueInputIcon>
                   <template #default>
-                    <AppBaseSvg name="search" />
+                    <AppBaseSvg name="search" class="!w-4 !h-4" />
                   </template>
                 </PrimeVueInputIcon>
-  
+
                 <PrimeVueInputText
                   v-model="customerDetails_queryParams.search"
                   placeholder="Search Invoice ID"
@@ -132,7 +117,7 @@ const {
                   hour-format="24"
                   @clear-click="customerDetails_queryParams.start_date = null"
                 />
-  
+
                 <PrimeVueDatePicker
                   v-model="customerDetails_queryParams.end_date"
                   :manual-input="false"
@@ -158,7 +143,7 @@ const {
                   placeholder="Payment Status"
                   class="text-sm text-text-disabled w-full"
                 />
-  
+
                 <PrimeVueMultiSelect
                   v-model="customerDetails_queryParams.payment_status"
                   display="chip"
@@ -174,7 +159,6 @@ const {
           </section>
         </section>
       </template>
-
 
       <template #body="{ column, data }">
         <template v-if="column.value === 'invoiceID'">

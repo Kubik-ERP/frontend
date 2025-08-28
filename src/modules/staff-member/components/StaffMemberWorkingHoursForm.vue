@@ -35,7 +35,7 @@ const { staffMemberCreateEdit_formData } = inject<IStaffMemberCreateEditProvided
           >
             <template #default>
               <section id="content" class="flex items-center gap-2">
-                <AppBaseSvg name="plus-line" />
+                <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
               </section>
             </template>
           </PrimeVueButton>
@@ -55,7 +55,7 @@ const { staffMemberCreateEdit_formData } = inject<IStaffMemberCreateEditProvided
                   :disabled="!day.isActive"
                 />
                 <PrimeVueInputGroupAddon>
-                  <AppBaseSvg name="clock" class="!w-5 !h-6" />
+                  <AppBaseSvg name="clock" class="!w-5 !h-5" />
                 </PrimeVueInputGroupAddon>
               </PrimeVueInputGroup>
             </section>
@@ -71,7 +71,7 @@ const { staffMemberCreateEdit_formData } = inject<IStaffMemberCreateEditProvided
                   :disabled="!day.isActive"
                 />
                 <PrimeVueInputGroupAddon>
-                  <AppBaseSvg name="clock" class="!w-5 !h-6" />
+                  <AppBaseSvg name="clock" class="!w-5 !h-5" />
                 </PrimeVueInputGroupAddon>
               </PrimeVueInputGroup>
             </section>
