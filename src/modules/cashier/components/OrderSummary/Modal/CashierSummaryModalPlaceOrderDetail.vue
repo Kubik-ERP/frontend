@@ -2,6 +2,8 @@
 // Interface
 import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
 
+import { minValue, numeric, required } from '@vuelidate/validators';
+
 /**
  * @description Inject all the data and methods what we need
  */
@@ -9,11 +11,31 @@ const {
   cashierOrderSummary_handlePlaceOrderDetail,
   cashierOrderSummary_modalPlaceOrderDetail,
   cashierOrderSummary_calculateEstimation,
-  cashierOrderSummary_paymentAmountFormValidation,
+  cashierOrderSummary_paymentForm,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 
 // Composables
 import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
+import useVuelidate from '@vuelidate/core';
+
+const rules = computed(() => ({
+  paymentAmount: {
+    required,
+    numeric,
+    minValue: minValue(computed(() => cashierOrderSummary_calculateEstimation.value.data.grandTotal)),
+  },
+}));
+
+const v$ = useVuelidate(rules, cashierOrderSummary_paymentForm, {
+  $autoDirty: true,
+});
+
+const handleSubmit = () => {
+  v$.value.$touch();
+  if (v$.value.$invalid) return;
+
+  cashierOrderSummary_handlePlaceOrderDetail();
+};
 </script>
 <template>
   <section id="cashier-summary-modal-place-order-detail">
@@ -56,7 +78,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               class="flex flex-col gap-1"
               label-for="payment-amount"
               name="Payment Amount"
-              :validators="cashierOrderSummary_paymentAmountFormValidation.paymentAmount"
+              :validators="v$.paymentAmount"
             >
               <label for="payment-amount" class="text-xs lg:text-sm">
                 {{ useLocalization('cashier.orderSummary.placeOrderDetail.paymentAmount') }}
@@ -70,9 +92,9 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                 </PrimeVueInputIcon>
                 <PrimeVueInputNumber
                   id="payment-amount"
-                  v-model="cashierOrderSummary_modalPlaceOrderDetail.form.paymentAmount"
+                  v-model="cashierOrderSummary_paymentForm.paymentAmount"
                   :class="[classes, 'w-full']"
-                  :placeholder="useLocalization('cashier.orderSummary.palceOrderDetail.paymentAmountPlaceholder')"
+                  :placeholder="useLocalization('cashier.orderSummary.placeOrderDetail.paymentAmountPlaceholder')"
                 />
               </PrimeVueIconField>
             </AppBaseFormGroup>
@@ -82,7 +104,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                 <span>{{ useLocalization('cashier.orderSummary.placeOrderDetail.moneyReceived') }}</span>
                 <span class="text-sm lg:text-base font-semibold">{{
                   useCurrencyFormat({
-                    data: cashierOrderSummary_modalPlaceOrderDetail.form.paymentAmount,
+                    data: cashierOrderSummary_paymentForm.paymentAmount,
                   })
                 }}</span>
               </div>
@@ -106,7 +128,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                     useCurrencyFormat({
                       data:
                         (cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0) -
-                        cashierOrderSummary_modalPlaceOrderDetail.form.paymentAmount,
+                        cashierOrderSummary_paymentForm.paymentAmount,
                     })
                   }}
                 </span>
@@ -131,7 +153,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               :label="useLocalization('cashier.orderSummary.placeOrderDetail.placeOrder')"
               :disabled="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
               :loading="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
-              @click="cashierOrderSummary_handlePlaceOrderDetail()"
+              @click="handleSubmit()"
             ></PrimeVueButton>
           </div>
         </section>
