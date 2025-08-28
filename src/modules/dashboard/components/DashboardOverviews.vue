@@ -4,14 +4,16 @@ import CustomDatePicker from '@/modules/report/components/CustomDatePicker.vue';
 // type
 import type { IDashboardProvided } from '../interfaces';
 // inject
-const { dashboard_queryParams } = inject<IDashboardProvided>('dashboard')!;
+const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('dashboard')!;
 </script>
 <template>
   <section id="dashboard-overview" class="flex flex-col gap-4">
-    <section id="filter" class="flex flex-col gap-1">
+    <section id="filter" class="flex flex-col">
       <label for="" class="font-semibold text-black text-xs"> Data Period </label>
-      
-      <CustomDatePicker :start-date="dashboard_queryParams.startDate" :end-date="dashboard_queryParams.endDate" />
+      <CustomDatePicker
+        v-model:start-date="dashboard_queryParams.startDate"
+        v-model:end-date="dashboard_queryParams.endDate"
+      />
     </section>
 
     <section id="overview-cards" class="grid grid-rows-1 grid-cols-12 gap-4">
@@ -22,10 +24,27 @@ const { dashboard_queryParams } = inject<IDashboardProvided>('dashboard')!;
         <section id="summary" class="flex items-center gap-1">
           <p class="font-semibold text-grayscale-70 text-xs">Total Sales</p>
 
-          <PrimeVueChip class="bg-secondary-background py-1 px-2">
-            <AppBaseSvg name="arrow-up-success" class="w-3 h-3" />
+          <PrimeVueChip
+            class="py-1 px-2"
+            :class="[
+              {
+                'bg-error-background': dashboard_values.summary.totalSales.percentageChange < 0,
+                'bg-disabled': dashboard_values.summary.totalSales.percentageChange === 0,
+                'bg-success-background': dashboard_values.summary.totalSales.percentageChange > 0,
+              },
+            ]"
+          >
+            <AppBaseSvg
+              v-if="dashboard_values.summary.totalSales.percentageChange !== 0"
+              :name="
+                dashboard_values.summary.totalSales.percentageChange < 0 ? 'arrow-down-danger' : 'arrow-up-success'
+              "
+              class="w-3 h-3"
+            />
 
-            <span class="font-semibold text-secondary-hover text-xs"> 10% </span>
+            <span class="font-semibold text-secondary-hover text-xs">
+              {{ dashboard_values.summary.totalSales.percentageChange }}%
+            </span>
           </PrimeVueChip>
         </section>
 
@@ -33,7 +52,7 @@ const { dashboard_queryParams } = inject<IDashboardProvided>('dashboard')!;
           <span class="font-semibold text-text-disabled text-sm"> Rp </span>
 
           <span class="font-semibold text-primary text-2xl">
-            884 <span class="font-semibold text-text-disabled text-sm">jt</span>
+            {{ useCurrencyFormat({ data: dashboard_values.summary.totalSales.value, hidePrefix: true }) }}
           </span>
         </section>
       </section>
@@ -45,11 +64,30 @@ const { dashboard_queryParams } = inject<IDashboardProvided>('dashboard')!;
         <section id="summary" class="flex items-center gap-1">
           <p class="font-semibold text-grayscale-70 text-xs">Total Cost of Good Sold</p>
 
-          <AppBaseSvg name="info" class="w-3 h-3" />
-          <PrimeVueChip class="bg-error-background py-1 px-2">
-            <AppBaseSvg name="arrow-down-danger" class="w-3 h-3" />
+          <!-- <AppBaseSvg name="info" class="w-3 h-3" /> -->
+          <PrimeVueChip
+            class="py-1 px-2"
+            :class="[
+              {
+                'bg-error-background': dashboard_values.summary.totalCostOfGoodSold.percentageChange < 0,
+                'bg-disabled': dashboard_values.summary.totalCostOfGoodSold.percentageChange === 0,
+                'bg-success-background': dashboard_values.summary.totalCostOfGoodSold.percentageChange > 0,
+              },
+            ]"
+          >
+            <AppBaseSvg
+              v-if="dashboard_values.summary.totalCostOfGoodSold.percentageChange !== 0"
+              :name="
+                dashboard_values.summary.totalCostOfGoodSold.percentageChange < 0
+                  ? 'arrow-down-danger'
+                  : 'arrow-up-success'
+              "
+              class="w-3 h-3"
+            />
 
-            <span class="font-semibold text-error-hover text-xs"> 5% </span>
+            <span class="font-semibold text-secondary-hover text-xs">
+              {{ dashboard_values.summary.totalCostOfGoodSold.percentageChange }}%
+            </span>
           </PrimeVueChip>
         </section>
 
@@ -57,7 +95,7 @@ const { dashboard_queryParams } = inject<IDashboardProvided>('dashboard')!;
           <span class="font-semibold text-text-disabled text-sm"> Rp </span>
 
           <span class="font-semibold text-primary text-2xl">
-            450 <span class="font-semibold text-text-disabled text-sm">jt</span>
+            {{ useCurrencyFormat({ data: dashboard_values.summary.totalCostOfGoodSold.value, hidePrefix: true }) }}
           </span>
         </section>
       </section>
@@ -69,12 +107,31 @@ const { dashboard_queryParams } = inject<IDashboardProvided>('dashboard')!;
         <section id="summary" class="flex items-center gap-1">
           <p class="font-semibold text-grayscale-70 text-xs">Total Gross Profit</p>
 
-          <AppBaseSvg name="info" class="w-3 h-3" />
+          <!-- <AppBaseSvg name="info" class="w-3 h-3" /> -->
 
-          <PrimeVueChip class="bg-secondary-background py-1 px-2">
-            <AppBaseSvg name="arrow-up-success" class="w-3 h-3" />
+          <PrimeVueChip
+            class="py-1 px-2"
+            :class="[
+              {
+                'bg-error-background': dashboard_values.summary.totalGrossProfit.percentageChange < 0,
+                'bg-disabled': dashboard_values.summary.totalGrossProfit.percentageChange === 0,
+                'bg-success-background': dashboard_values.summary.totalGrossProfit.percentageChange > 0,
+              },
+            ]"
+          >
+            <AppBaseSvg
+              v-if="dashboard_values.summary.totalGrossProfit.percentageChange !== 0"
+              :name="
+                dashboard_values.summary.totalGrossProfit.percentageChange < 0
+                  ? 'arrow-down-danger'
+                  : 'arrow-up-success'
+              "
+              class="w-3 h-3"
+            />
 
-            <span class="font-semibold text-secondary-hover text-xs"> 10% </span>
+            <span class="font-semibold text-secondary-hover text-xs">
+              {{ dashboard_values.summary.totalGrossProfit.percentageChange }}%
+            </span>
           </PrimeVueChip>
         </section>
 
@@ -82,7 +139,7 @@ const { dashboard_queryParams } = inject<IDashboardProvided>('dashboard')!;
           <span class="font-semibold text-text-disabled text-sm"> Rp </span>
 
           <span class="font-semibold text-primary text-2xl">
-            450 <span class="font-semibold text-text-disabled text-sm">jt</span>
+            {{ useCurrencyFormat({ data: dashboard_values.summary.totalGrossProfit.value, hidePrefix: true }) }}
           </span>
         </section>
       </section>
@@ -94,12 +151,31 @@ const { dashboard_queryParams } = inject<IDashboardProvided>('dashboard')!;
         <section id="summary" class="flex items-center gap-1">
           <p class="font-semibold text-grayscale-70 text-xs">Total Nett Profit</p>
 
-          <AppBaseSvg name="info" class="w-3 h-3" />
+          <!-- <AppBaseSvg name="info" class="w-3 h-3" /> -->
 
-          <PrimeVueChip class="bg-secondary-background py-1 px-2">
-            <AppBaseSvg name="arrow-up-success" class="w-3 h-3" />
+          <PrimeVueChip
+            class="py-1 px-2"
+            :class="[
+              {
+                'bg-error-background': dashboard_values.summary.totalNettProfit.percentageChange < 0,
+                'bg-disabled': dashboard_values.summary.totalNettProfit.percentageChange === 0,
+                'bg-success-background': dashboard_values.summary.totalNettProfit.percentageChange > 0,
+              },
+            ]"
+          >
+            <AppBaseSvg
+              v-if="dashboard_values.summary.totalNettProfit.percentageChange !== 0"
+              :name="
+                dashboard_values.summary.totalNettProfit.percentageChange < 0
+                  ? 'arrow-down-danger'
+                  : 'arrow-up-success'
+              "
+              class="w-3 h-3"
+            />
 
-            <span class="font-semibold text-secondary-hover text-xs"> 10% </span>
+            <span class="font-semibold text-secondary-hover text-xs">
+              {{ dashboard_values.summary.totalNettProfit.percentageChange }}%
+            </span>
           </PrimeVueChip>
         </section>
 
@@ -107,7 +183,7 @@ const { dashboard_queryParams } = inject<IDashboardProvided>('dashboard')!;
           <span class="font-semibold text-text-disabled text-sm"> Rp </span>
 
           <span class="font-semibold text-primary text-2xl">
-            450 <span class="font-semibold text-text-disabled text-sm">jt</span>
+            {{ useCurrencyFormat({ data: dashboard_values.summary.totalNettProfit.value, hidePrefix: true }) }}
           </span>
         </section>
       </section>

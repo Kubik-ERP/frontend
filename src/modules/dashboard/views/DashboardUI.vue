@@ -11,11 +11,24 @@ import type { IDashboardProvided } from '../interfaces';
 // services
 import { useDashboardService } from '../services/useDashboard.service';
 
-const { authentication_userData, dashboard_queryParams } = useDashboardService();
+const {
+  authentication_userData,
+  dashboard_queryParams,
+  dashboard_isLoading,
+  dashboard_values,
+  dashboard_getSummary,
+} = useDashboardService();
 
 provide<IDashboardProvided>('dashboard', {
   authentication_userData,
   dashboard_queryParams,
+  dashboard_isLoading,
+  dashboard_values,
+  dashboard_getSummary,
+});
+
+onMounted(() => {
+  dashboard_getSummary();
 });
 </script>
 
