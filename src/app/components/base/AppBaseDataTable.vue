@@ -240,7 +240,7 @@ const isScrollable = computed(() => {
                       <PrimeVueIconField>
                         <PrimeVueInputIcon>
                           <template #default>
-                            <AppBaseSvg name="search" />
+                            <AppBaseSvg name="search" class="w-4 h-4" />
                           </template>
                         </PrimeVueInputIcon>
 
@@ -262,7 +262,7 @@ const isScrollable = computed(() => {
                       >
                         <template #default>
                           <section id="content" class="flex items-center justify-center gap-2">
-                            <AppBaseSvg name="plus-line-white" />
+                            <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
                             <span class="font-semibold text-sm lg:text-base text-white">
                               {{ props.btnCtaCreateTitle }}
                             </span>

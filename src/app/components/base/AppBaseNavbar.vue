@@ -109,7 +109,7 @@ const onChangeLanguage = (selectedLanguage: string) => {
     <PrimeVueIconField class="hidden lg:block">
       <PrimeVueInputIcon>
         <template #default>
-          <AppBaseSvg name="search" />
+          <AppBaseSvg class="w-4 h-4" name="search" />
         </template>
       </PrimeVueInputIcon>
 

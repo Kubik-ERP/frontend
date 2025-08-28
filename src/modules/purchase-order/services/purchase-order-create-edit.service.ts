@@ -1,12 +1,11 @@
 // Constants
 import {
   PURCHASE_ORDER_CREATE_EDIT_LIST_COLUMNS,
-  PURCHASE_ORDER_CREATE_EDIT_PRODUCT_ITEMS,
-  PURCHASE_ORDER_CREATE_EDIT_SUPPLIERS,
   PURCHASE_ORDER_CREATE_REQUEST,
   PURCHASE_ORDER_DETAILS_REQUEST,
   PURCHASE_ORDER_UPDATE_REQUEST,
 } from '../constants';
+import { SUPPLIER_LIST_REQUEST } from '@/modules/supplier/constants';
 
 // Interfaces
 import type {
@@ -14,16 +13,20 @@ import type {
   IPurchaseOrderCreateEditProductItem,
   IPurchaseOrderCreateEditProvided,
 } from '../interfaces';
+import type { ISupplierListRequestQuery } from '@/modules/supplier/interfaces/supplier-list.interface';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
 
 // Stores
 import { usePurchaseOrderStore } from '../store';
+import { useInventoryItemsStore } from '@/modules/items/store';
+import { useSupplierStore } from '@/modules/supplier/store';
 
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
+import { IInventoryCategoryListRequestQuery } from '@/modules/inventory-category/interfaces/inventory-category-list.interface';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -35,7 +38,11 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
   const router = useRouter(); // Router instance
   const route = useRoute(); // Current route
   const store = usePurchaseOrderStore(); // Instance of the store
+  const inventoryItemStore = useInventoryItemsStore(); // Instance of the inventory store
+  const supplierStore = useSupplierStore(); // Instance of the supplier store
+  const { inventoryItem_listInventoryItemsOnDropdown } = storeToRefs(inventoryItemStore);
   const { purchaseOrder_detail } = storeToRefs(store);
+  const { supplier_listItemsOnDropdown } = storeToRefs(supplierStore);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
@@ -61,6 +68,20 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
     unit: '',
     unitPrice: 0,
     totalPrice: 0,
+  });
+  const purchaseOrderCreateEdit_queryParamsOfSuppliers = reactive<ISupplierListRequestQuery>({
+    page: 1,
+    pageSize: 10,
+    search: null,
+    orderBy: null,
+    orderDirection: null,
+  });
+  const purchaseOrderCreateEdit_queryParamsOfInventoryItems = reactive<IInventoryCategoryListRequestQuery>({
+    page: 1,
+    pageSize: 10,
+    search: null,
+    orderBy: null,
+    orderDirection: null,
   });
   const purchaseOrderCreateEdit_selectedProductItem = ref<IPurchaseOrderCreateEditProductItem | null>(null);
   const purchaseOrderCreateEdit_selectedProductItems = ref<IPurchaseOrderCreateEditProductItem[]>([]);
@@ -155,15 +176,6 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
         router.push({ name: 'purchase-order.list' });
       }, 1000);
     } catch (error: unknown) {
-      const argsEventEmitter: IPropsToast = {
-        isOpen: true,
-        type: EToastType.DANGER,
-        message: 'Failed to create purchase order',
-        position: EToastPosition.TOP_RIGHT,
-      };
-
-      eventBus.emit('AppBaseToast', argsEventEmitter);
-
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -181,15 +193,40 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
         ...httpAbort_registerAbort(PURCHASE_ORDER_DETAILS_REQUEST),
       });
     } catch (error: unknown) {
-      const argsEventEmitter: IPropsToast = {
-        isOpen: true,
-        type: EToastType.DANGER,
-        message: 'Failed to fetch purchase order details',
-        position: EToastPosition.TOP_RIGHT,
-      };
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
 
-      eventBus.emit('AppBaseToast', argsEventEmitter);
+  /**
+   * @description Handle fetch api inventory items - list
+   */
+  const purchaseOrderCreateEdit_fetchInventoryItemsList = async (): Promise<unknown> => {
+    try {
+      await inventoryItemStore.InventoryItems_fetchData(purchaseOrderCreateEdit_queryParamsOfInventoryItems, {
+        paramsSerializer: useParamsSerializer,
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
 
+  /**
+   * @description Handle fetch api supplier - list
+   */
+  const purchaseOrderCreateEdit_fetchSupplierList = async (): Promise<unknown> => {
+    try {
+      await supplierStore.supplier_list(purchaseOrderCreateEdit_queryParamsOfSuppliers, {
+        ...httpAbort_registerAbort(SUPPLIER_LIST_REQUEST),
+      });
+    } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -235,15 +272,6 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
         router.push({ name: 'purchase-order.list' });
       }, 1000);
     } catch (error: unknown) {
-      const argsEventEmitter: IPropsToast = {
-        isOpen: true,
-        type: EToastType.DANGER,
-        message: 'Failed to update purchase order',
-        position: EToastPosition.TOP_RIGHT,
-      };
-
-      eventBus.emit('AppBaseToast', argsEventEmitter);
-
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -278,6 +306,11 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
    * @description Handle business logic for loading initial data (for edit mode)
    */
   const purchaseOrderCreateEdit_onLoadInitialData = async (): Promise<void> => {
+    await Promise.all([
+      purchaseOrderCreateEdit_fetchInventoryItemsList(),
+      purchaseOrderCreateEdit_fetchSupplierList(),
+    ]);
+
     if (purchaseOrderCreateEdit_isEditMode.value && purchaseOrderCreateEdit_purchaseOrderId.value) {
       try {
         await purchaseOrderCreateEdit_fetchDetails(purchaseOrderCreateEdit_purchaseOrderId.value);
@@ -565,6 +598,7 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
   return {
     purchaseOrderCreateEdit_fetchCreate,
     purchaseOrderCreateEdit_fetchDetails,
+    purchaseOrderCreateEdit_fetchSupplierList,
     purchaseOrderCreateEdit_fetchUpdate,
     purchaseOrderCreateEdit_formData,
     purchaseOrderCreateEdit_formDataOfEditQuantity,
@@ -572,8 +606,8 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
     purchaseOrderCreateEdit_formValidationsOfEditQuantity,
     purchaseOrderCreateEdit_isEditMode,
     purchaseOrderCreateEdit_listColumns: PURCHASE_ORDER_CREATE_EDIT_LIST_COLUMNS,
-    purchaseOrderCreateEdit_listProductItems: PURCHASE_ORDER_CREATE_EDIT_PRODUCT_ITEMS,
-    purchaseOrderCreateEdit_listSuppliers: PURCHASE_ORDER_CREATE_EDIT_SUPPLIERS,
+    purchaseOrderCreateEdit_listProductItems: inventoryItem_listInventoryItemsOnDropdown,
+    purchaseOrderCreateEdit_listSuppliers: supplier_listItemsOnDropdown,
     purchaseOrderCreateEdit_onAddProductItem,
     purchaseOrderCreateEdit_onCloseDialogAddProductItem,
     purchaseOrderCreateEdit_onCloseDialogEditQuantity,

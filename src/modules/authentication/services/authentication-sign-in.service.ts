@@ -4,13 +4,15 @@ import {
   AUTHENTICATION_PERMISSIONS_REQUEST,
   AUTHENTICATION_PROFILE_REQUEST,
   AUTHENTICATION_SIGN_IN_REQUEST,
+  AUTHENTICATION_SIGN_IN_STEPPER,
 } from '../constants';
 
 // Interfaces
 import type {
   IAuthenticationSignInFormData,
   IAuthenticationSignInProvided,
-} from '../interfaces/authentication-sign-in.interface';
+  IAuthenticationStepper,
+} from '../interfaces';
 
 // Stores
 import { useAuthenticationStore } from '../store';
@@ -29,12 +31,13 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
   const store = useAuthenticationStore(); // Instance of the store
   const route = useRoute(); // Instance of the route
   const router = useRouter(); // Instance of the router
-  const { authentication_isLoading, authentication_token, authentication_userData } = storeToRefs(store);
+  const { authentication_isLoading, authentication_userData } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
    * @description Reactive data binding
    */
+  const authenticationSignIn_activeStep = ref<number>(0);
   const authenticationSignIn_formData = reactive<IAuthenticationSignInFormData>({
     email: '',
     password: '',
@@ -44,6 +47,8 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     country: '',
   });
   const authenticationSignIn_isNotAuthenticated = ref<boolean>(false);
+  const authenticationSignIn_selectedRole = ref<'OWNER' | 'EMPLOYEE'>('OWNER');
+  const authenticationSignIn_stepper = shallowRef<IAuthenticationStepper[]>(AUTHENTICATION_SIGN_IN_STEPPER);
 
   /**
    * @description Form validations
@@ -141,14 +146,17 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
       }
 
       if (validationType) {
-        router.push({
-          name: 'sign-up',
-          query: {
-            email: authentication_userData.value?.email ?? authenticationSignIn_formData.email,
-            type: validationType,
-            token: authentication_token.value,
-          },
-        });
+        // ? UNCOMMENT THIS CODE IF WE'LL ENABLE SIGN UP PAGE
+        // router.push({
+        //   name: 'sign-up',
+        //   query: {
+        //     email: authentication_userData.value?.email ?? authenticationSignIn_formData.email,
+        //     type: validationType,
+        //     token: authentication_token.value,
+        //   },
+        // });
+
+        router.push({ name: 'outlet.list' });
       } else {
         router.push({ name: 'outlet.list' });
       }
@@ -184,6 +192,14 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
         return Promise.reject(new Error(String(error)));
       }
     }
+  };
+
+  /**
+   * @description Handle user role selection.
+   */
+  const authenticationSignIn_onSelectRole = (role: 'OWNER' | 'EMPLOYEE'): void => {
+    authenticationSignIn_selectedRole.value = role;
+    authenticationSignIn_activeStep.value = 1;
   };
 
   /**
@@ -230,6 +246,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
   );
 
   return {
+    authenticationSignIn_activeStep,
     authenticationSignIn_detectLocationAndBrowser,
     authenticationSignIn_fetchAuthenticationGoogleRedirect,
     authenticationSignIn_fetchAuthenticationPermissions,
@@ -237,7 +254,10 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     authenticationSignIn_formValidations,
     authenticationSignIn_isLoading: authentication_isLoading,
     authenticationSignIn_isNotAuthenticated,
+    authenticationSignIn_onSelectRole,
     authenticationSignIn_onSsoWithGoogle,
     authenticationSignIn_onSubmit,
+    authenticationSignIn_selectedRole,
+    authenticationSignIn_stepper,
   };
 };
