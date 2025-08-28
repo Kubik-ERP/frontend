@@ -184,7 +184,7 @@ const rbac = useRbac();
           <template v-else-if="column.value === 'action'">
             <PrimeVueButton variant="text" rounded aria-label="Actions" @click="openActionsMenu($event, data)">
               <template #icon>
-                <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
+                <AppBaseSvg name="three-dots" class="!w-5 !h-5"  />
               </template>
             </PrimeVueButton>
 

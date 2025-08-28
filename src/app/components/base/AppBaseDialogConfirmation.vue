@@ -132,7 +132,7 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
-                  <AppBaseSvg :name="dialogConfirmation.iconName === 'exclude' ? 'exclude' : 'delete'" />
+                  <AppBaseSvg :name="dialogConfirmation.iconName === 'exclude' ? 'exclude' : 'delete'" class="!w-5 !h-5"/>
                   <span class="font-semibold text-base text-error-main">
                     {{ dialogConfirmation.textButtonSecondary }}
                   </span>
