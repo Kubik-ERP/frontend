@@ -15,7 +15,7 @@
           <template #default>
             <section id="content" class="flex items-center gap-2">
               <span class="font-semibold text-text-primary text-sm">Show More</span>
-              <AppBaseSvg name="chevron-right" />
+              <AppBaseSvg name="chevron-right" class="w-3 h-3" />
             </section>
           </template>
         </PrimeVueButton>

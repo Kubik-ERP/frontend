@@ -34,7 +34,8 @@ export const useAccountService = (): IAccountProvided => {
   const accountStore = useAccountStore();
   const outletStore = useOutletStore();
   const router = useRouter();
-  const { outlet_isLoading, outlet_profile, outlet_selectedOutletOnAccountPage } = storeToRefs(outletStore);
+  const { outlet_lists, outlet_isLoading, outlet_profile, outlet_selectedOutletOnAccountPage } =
+    storeToRefs(outletStore);
   const { httpAbort_registerAbort } = useHttpAbort();
   const { withLoading } = useGlobalLoading();
 
@@ -235,6 +236,7 @@ export const useAccountService = (): IAccountProvided => {
     account_fetchUserBanks,
     account_isLoadingOfOutlet: outlet_isLoading,
     account_listColumns: ACCOUNT_LIST_COLUMNS_STORE,
+    account_listStores: outlet_lists,
     account_onCloseDialogSetUpBank,
     account_onDirectToDetailOutlet,
     account_onEditBankAccount,
