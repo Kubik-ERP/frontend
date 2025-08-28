@@ -71,11 +71,11 @@ const {
       </template>
 
       <template #filter>
-        <div class="flex flex-col gap-1 w-full">
+        <div class="flex flex-col gap-1 w-full mt-1">
           <span class="hidden lg:inline-block font-semibold text-gray-900 text-base w-48">Filter by</span>
 
-          <section id="filter" class="grid grid-rows-1 grid-cols-12 gap-4">
-            <section id="createdAt" class="col-span-6 lg:col-span-auto">
+          <section id="filter" class="grid grid-rows-1 grid-cols-10 gap-4">
+            <section id="createdAt" class="col-span-2 lg:col-span-auto">
               <PrimeVueDatePicker
                 v-model="dailySalesList_queryParams.createdAtFrom"
                 class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-full lg:max-w-80"
@@ -90,7 +90,7 @@ const {
               />
             </section>
 
-            <section id="createdTo" class="col-span-6 lg:col-span-auto">
+            <section id="createdTo" class="col-span-2 lg:col-span-auto">
               <PrimeVueDatePicker
                 v-model="dailySalesList_queryParams.createdAtTo"
                 class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-full lg:max-w-80"
@@ -105,7 +105,7 @@ const {
               />
             </section>
 
-            <section id="order-type" class="col-span-6 lg:col-span-auto">
+            <section id="order-type" class="col-span-2 lg:col-span-auto">
               <PrimeVueMultiSelect
                 v-model="dailySalesList_queryParams.orderType"
                 display="chip"
@@ -118,7 +118,7 @@ const {
               />
             </section>
 
-            <section id="payment-status" class="col-span-6 lg:col-span-auto">
+            <section id="payment-status" class="col-span-2 lg:col-span-auto">
               <PrimeVueMultiSelect
                 v-model="dailySalesList_queryParams.paymentStatus"
                 display="chip"
@@ -132,7 +132,7 @@ const {
               />
             </section>
 
-            <section id="payment-status" class="col-span-6 lg:col-span-auto">
+            <section id="payment-status" class="col-span-2 lg:col-span-auto">
               <PrimeVueMultiSelect
                 v-model="dailySalesList_queryParams.orderStatus"
                 display="chip"
