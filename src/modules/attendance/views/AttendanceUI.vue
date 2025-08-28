@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Components
 import AttendanceListCreateDialog from '../components/AttendanceListCreateDialog.vue';
-import AttendanceListTable from '../components/AttendanceListTable.vue';
+import AttendanceTable from '../components/AttendanceTable.vue';
 
 // Services
 import { useAttendanceService } from '../services/attendance.service';
@@ -66,7 +66,7 @@ provide('attendance', {
 
 <template>
   <section id="attendance" class="default-wrapper">
-    <AttendanceListTable />
+    <AttendanceTable />
     <AttendanceListCreateDialog />
     <AppBaseDialogConfirmation id="attendance-delete-dialog-confirmation" />
   </section>

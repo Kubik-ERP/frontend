@@ -39,6 +39,11 @@ interface IProps {
   searchPlaceholder?: string;
   maxVisibleRows?: number;
   scrollHeight?: string;
+  // Expandable rows props
+  isUsingExpandableRows?: boolean;
+  expandableRowsField?: string;
+  expandableRowsIdField?: string;
+  isUsingCustomTable?: boolean;
 }
 
 /**
@@ -75,6 +80,11 @@ const props = withDefaults(defineProps<IProps>(), {
   searchPlaceholder: 'Search...',
   maxVisibleRows: 0,
   scrollHeight: 'auto',
+  // Expandable rows defaults
+  isUsingExpandableRows: false,
+  expandableRowsField: 'shifts',
+  expandableRowsIdField: 'id',
+  isUsingCustomTable: false,
 });
 
 // Mobile store
@@ -167,253 +177,575 @@ const computedScrollHeight = computed(() => {
 const isScrollable = computed(() => {
   return props.maxVisibleRows > 0 || props.scrollHeight !== 'auto';
 });
+
+// Expandable rows functionality
+/**
+ * @description Expanded rows tracking
+ */
+const expandedRows = ref<Set<string | number>>(new Set());
+
+/**
+ * @description Toggle row expansion
+ */
+const toggleRowExpansion = (rowId: string | number) => {
+  if (expandedRows.value.has(rowId)) {
+    expandedRows.value.delete(rowId);
+  } else {
+    expandedRows.value.add(rowId);
+  }
+};
+
+/**
+ * @description Check if row is expanded
+ */
+const isRowExpanded = (rowId: string | number) => {
+  return expandedRows.value.has(rowId);
+};
+
+/**
+ * @description Get primary item (first item) for main row display
+ */
+const getPrimaryItem = (items: unknown[]) => {
+  return items.length > 0 ? items[0] : null;
+};
+
+/**
+ * @description Get additional items (excluding first) for expanded rows
+ */
+const getAdditionalItems = (items: unknown[]) => {
+  return items.slice(1);
+};
 </script>
 
 <template>
   <!-- Mobile Scrollable Wrapper -->
   <div class="w-full overflow-x-auto lg:overflow-x-visible">
-    <PrimeVueDataTable
-      :paginator="props.isUsingPagination && !props.isUsingCustomFooter"
-      :value="props.data"
-      :rows="props.rowsPerPage"
-      :first="props.first"
-      :lazy="props.isUsingServerSidePagination"
-      :total-records="props.totalRecords"
-      :removable-sort="props.removableSort"
-      :sort-field="props.sortField"
-      :sort-order="props.sortOrder ?? 0"
-      :scroll-height="isScrollable ? computedScrollHeight : undefined"
-      :scrollable="isScrollable"
-      table-style="min-width: 50rem"
-      :pt="{
-        root: 'rounded-sm',
-        header: 'border-none p-0',
-        tableContainer: `border border-solid border-grayscale-20 ${!props.isUsingBorderOnHeader ? 'rounded-tl-lg rounded-tr-lg' : '!border-t-0'} ${props.isUsingCustomFooter ? '!border-b-0 !rounded-bl-none !rounded-br-none' : ''}`,
-        pcPaginator: {
-          root: `border-l border-r border-b border-t-0 border-solid border-grayscale-20 rounded-tl-none rounded-tr-none ${props.isUsingCustomFooter ? 'hidden' : ''}`,
-        },
-      }"
-      @page="handlePageChange"
-      @sort="handleSort"
-    >
-      <template #empty>
-        <section class="flex items-center justify-center w-full">
-          <span class="font-semibold text-sm text-text-primary">No data available</span>
-        </section>
-      </template>
+    <!-- Custom Table for Expandable Rows -->
+    <template v-if="props.isUsingCustomTable">
+      <!-- Header Section -->
+      <template v-if="props.isUsingHeader">
+        <template v-if="props.isUsingCustomHeader">
+          <slot name="header" />
+        </template>
 
-      <template #header>
-        <template v-if="props.isUsingHeader">
-          <template v-if="props.isUsingCustomHeader">
-            <slot name="header" />
-          </template>
+        <template v-else>
+          <header class="flex flex-col border border-solid border-grayscale-20 rounded-t-lg">
+            <!-- Title and CTA Section -->
+            <section
+              id="title-and-cta"
+              class="flex flex-col lg:flex-row lg:items-center justify-between w-full border-b border-solid border-grayscale-20 px-4 lg:px-6 py-4 lg:py-5 gap-4 lg:gap-0"
+            >
+              <!-- Header Prefix/Title Section -->
+              <div class="flex-1 min-w-0">
+                <template v-if="props.isUsingCustomHeaderPrefix">
+                  <slot name="header-prefix" />
+                </template>
 
-          <template v-else>
-            <header class="flex flex-col border border-solid border-grayscale-20">
-              <!-- Title and CTA Section -->
-              <section
-                id="title-and-cta"
-                class="flex flex-col lg:flex-row lg:items-center justify-between w-full border-b border-solid border-grayscale-20 px-4 lg:px-6 py-4 lg:py-5 gap-4 lg:gap-0"
-              >
-                <!-- Header Prefix/Title Section -->
-                <div class="flex-1 min-w-0">
-                  <template v-if="props.isUsingCustomHeaderPrefix">
-                    <slot name="header-prefix" />
-                  </template>
+                <template v-else>
+                  <h6 class="font-semibold text-gray-900 text-lg lg:text-xl">
+                    {{ props.headerTitle }}
+                  </h6>
+                </template>
+              </div>
 
-                  <template v-else>
-                    <h6 class="font-semibold text-gray-900 text-lg lg:text-xl">
-                      {{ props.headerTitle }}
-                    </h6>
-                  </template>
-                </div>
+              <!-- Header Suffix/Search Section -->
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:gap-4">
+                <template v-if="props.isUsingCustomHeaderSuffix">
+                  <slot name="header-suffix" />
+                </template>
 
-                <!-- Header Suffix/Search Section -->
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:gap-4">
-                  <template v-if="props.isUsingCustomHeaderSuffix">
-                    <slot name="header-suffix" />
-                  </template>
-
-                  <template v-else>
-                    <!-- Search Field -->
-                    <div v-if="props.isUsingSearchOnHeader" class="flex-1 lg:flex-initial">
-                      <PrimeVueIconField>
-                        <PrimeVueInputIcon>
-                          <template #default>
-                            <AppBaseSvg name="search" />
-                          </template>
-                        </PrimeVueInputIcon>
-
-                        <PrimeVueInputText
-                          v-model="searchModel"
-                          :placeholder="props.searchPlaceholder"
-                          class="text-sm w-full"
-                          :class="isCurrentlyMobile ? 'min-w-0' : 'min-w-80'"
-                        />
-                      </PrimeVueIconField>
-                    </div>
-
-                    <!-- CTA Button -->
-                    <template v-if="props.isUsingBtnCtaCreate">
-                      <PrimeVueButton
-                        class="bg-primary border-none w-full sm:w-fit px-5"
-                        severity="secondary"
-                        @click="emits('clickBtnCtaCreate')"
-                      >
+                <template v-else>
+                  <!-- Search Field -->
+                  <div v-if="props.isUsingSearchOnHeader" class="flex-1 lg:flex-initial">
+                    <PrimeVueIconField>
+                      <PrimeVueInputIcon>
                         <template #default>
-                          <section id="content" class="flex items-center justify-center gap-2">
-                            <AppBaseSvg name="plus-line-white" />
-                            <span class="font-semibold text-sm lg:text-base text-white">
-                              {{ props.btnCtaCreateTitle }}
-                            </span>
-                          </section>
+                          <AppBaseSvg name="search" class="w-4 h-4" />
                         </template>
-                      </PrimeVueButton>
-                    </template>
-                  </template>
-                </div>
-              </section>
+                      </PrimeVueInputIcon>
 
-              <!-- Filter Section -->
-              <section
-                v-if="props.isUsingFilter"
-                id="filter"
-                class="px-4 lg:px-6 border-b border-solid border-grayscale-20"
-              >
-                <!-- Mobile Filter Toggle -->
-                <div v-if="isCurrentlyMobile" class="flex items-center justify-between py-4">
-                  <span class="font-semibold text-gray-900 text-sm lg:text-base">Filters</span>
-                  <PrimeVueButton
-                    :icon="showMobileFilters ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
-                    variant="text"
-                    size="small"
-                    @click="toggleMobileFilters"
-                  />
-                </div>
-
-                <!-- Filter Content -->
-                <div
-                  v-if="!isCurrentlyMobile || showMobileFilters"
-                  :class="['pb-4', isCurrentlyMobile ? 'transition-all duration-300 ease-in-out' : '']"
-                >
-                  <template v-if="props.isUsingCustomFilter">
-                    <slot name="filter" />
-                  </template>
-
-                  <template v-else>
-                    <div class="flex flex-col gap-4 lg:pt-4">
-                      <span v-if="!isCurrentlyMobile" class="font-semibold text-gray-900 text-sm lg:text-base"
-                        >Filter by</span
-                      >
-                      <PrimeVueDatePicker
-                        class="w-full max-w-80"
-                        placeholder="Last 7 days"
-                        show-on-focus
-                        show-icon
-                        fluid
+                      <PrimeVueInputText
+                        v-model="searchModel"
+                        :placeholder="props.searchPlaceholder"
+                        class="text-sm w-full"
+                        :class="isCurrentlyMobile ? 'min-w-0' : 'min-w-80'"
                       />
-                    </div>
+                    </PrimeVueIconField>
+                  </div>
+
+                  <!-- CTA Button -->
+                  <template v-if="props.isUsingBtnCtaCreate">
+                    <PrimeVueButton
+                      class="bg-primary border-none w-full sm:w-fit px-5"
+                      severity="secondary"
+                      @click="emits('clickBtnCtaCreate')"
+                    >
+                      <template #default>
+                        <section id="content" class="flex items-center justify-center gap-2">
+                          <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
+                          <span class="font-semibold text-sm lg:text-base text-white">
+                            {{ props.btnCtaCreateTitle }}
+                          </span>
+                        </section>
+                      </template>
+                    </PrimeVueButton>
                   </template>
-                </div>
-              </section>
-            </header>
-          </template>
+                </template>
+              </div>
+            </section>
+
+            <!-- Filter Section -->
+            <section
+              v-if="props.isUsingFilter"
+              id="filter"
+              class="px-4 lg:px-6 border-b border-solid border-grayscale-20"
+            >
+              <!-- Mobile Filter Toggle -->
+              <div v-if="isCurrentlyMobile" class="flex items-center justify-between py-4">
+                <span class="font-semibold text-gray-900 text-sm lg:text-base">Filters</span>
+                <PrimeVueButton
+                  :icon="showMobileFilters ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+                  variant="text"
+                  size="small"
+                  @click="toggleMobileFilters"
+                />
+              </div>
+
+              <!-- Filter Content -->
+              <div
+                v-if="!isCurrentlyMobile || showMobileFilters"
+                :class="['pb-4', isCurrentlyMobile ? 'transition-all duration-300 ease-in-out' : '']"
+              >
+                <template v-if="props.isUsingCustomFilter">
+                  <slot name="filter" />
+                </template>
+
+                <template v-else>
+                  <div class="flex flex-col gap-4 lg:pt-4">
+                    <span v-if="!isCurrentlyMobile" class="font-semibold text-gray-900 text-sm lg:text-base"
+                      >Filter by</span
+                    >
+                    <PrimeVueDatePicker
+                      class="w-full max-w-80"
+                      placeholder="Last 7 days"
+                      show-on-focus
+                      show-icon
+                      fluid
+                    />
+                  </div>
+                </template>
+              </div>
+            </section>
+          </header>
         </template>
       </template>
 
-      <template #paginatorcontainer="{ page, pageCount, prevPageCallback, nextPageCallback }">
-        <div class="flex flex-col sm:flex-row items-center gap-2 justify-between w-full py-2 px-2">
-          <!-- Mobile: Page Info -->
-          <div v-if="isCurrentlyMobile" class="text-sm text-gray-600 order-1 sm:order-none">
-            Page {{ page + 1 }} of {{ pageCount }}
-          </div>
+      <!-- Custom Table -->
+      <div class="border-l border-r border-b border-solid border-grayscale-20 rounded-b-lg overflow-hidden">
+        <table class="w-full">
+          <!-- Table Header -->
+          <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th
+                v-for="column in props.columns"
+                :key="column.value"
+                class="px-4 py-3 text-center text-sm font-medium text-gray-700"
+                :style="column.width ? `width: ${column.width}` : undefined"
+              >
+                {{ column.label }}
+              </th>
+            </tr>
+          </thead>
 
-          <!-- Previous Page Button -->
-          <PrimeVueButton
-            :disabled="page === 0 || pageCount === 0"
-            class="border-primary w-fit px-3 lg:px-4 order-2 sm:order-none"
-            variant="outlined"
-            :size="isCurrentlyMobile ? 'small' : 'normal'"
-            @click="prevPageCallback"
-          >
-            <template #default>
-              <section id="content" class="flex items-center gap-1 lg:gap-2">
-                <AppBaseSvg name="arrow-left" class="!w-4 !h-4" />
-                <span v-if="!isCurrentlyMobile" class="font-normal text-sm text-primary">Previous</span>
-              </section>
+          <!-- Table Body -->
+          <tbody class="divide-y divide-gray-200">
+            <template v-if="props.isLoading">
+              <tr v-for="n in props.rowsPerPage" :key="n" class="hover:bg-gray-50">
+                <td v-for="column in props.columns" :key="column.value" class="px-4 py-3">
+                  <PrimeVueSkeleton />
+                </td>
+              </tr>
             </template>
-          </PrimeVueButton>
 
-          <!-- Page Numbers - Hidden on mobile, shown on desktop -->
-          <div v-if="!isCurrentlyMobile" class="flex items-center gap-1">
-            <template v-for="(p, idx) in displayedPages" :key="idx">
-              <template v-if="p === '...'">
-                <span class="px-2 text-gray-400">...</span>
-              </template>
-              <template v-else>
-                <PrimeVueButton
-                  :label="(Number(p) + 1).toString()"
-                  class="border-none aspect-square p-2 lg:p-4"
-                  :class="
-                    currentPage === Number(p)
-                      ? 'bg-blue-secondary-background text-primary'
-                      : 'bg-transparent text-grayscale-20'
-                  "
-                  @click="emits('update:currentPage', Number(p) + 1)"
-                />
-              </template>
-            </template>
-          </div>
-
-          <!-- Next Page Button -->
-          <PrimeVueButton
-            :disabled="page === (pageCount || 1) - 1 || pageCount === 0"
-            class="border-primary w-fit px-3 lg:px-4 order-3 sm:order-none"
-            variant="outlined"
-            :size="isCurrentlyMobile ? 'small' : 'normal'"
-            @click="nextPageCallback"
-          >
-            <template #default>
-              <section id="content" class="flex items-center gap-1 lg:gap-2">
-                <span v-if="!isCurrentlyMobile" class="font-normal text-sm text-primary">Next</span>
-                <AppBaseSvg name="arrow-right" class="!w-4 !h-4" />
-              </section>
-            </template>
-          </PrimeVueButton>
-        </div>
-      </template>
-
-      <PrimeVueColumn
-        v-for="(column, columnIndex) in props.columns"
-        :key="`column-${columnIndex}`"
-        :field="column.value"
-        :header="column.label"
-        :sortable="column.sortable"
-        :pt="{
-          columnTitle: 'text-sm font-normal text-grayscale-70',
-          headerCell: 'bg-background border-b-grayscale-20',
-        }"
-        :style="`
-        width: ${column.width ? column.width : 'auto'};
-      `"
-      >
-        <template #body="{ data, index }">
-          <template v-if="props.isLoading">
-            <PrimeVueSkeleton />
-          </template>
-
-          <template v-else>
-            <template v-if="props.isUsingCustomBody">
-              <slot name="body" :column="column" :data="data" :index="index" />
+            <template v-else-if="props.data.length === 0">
+              <tr>
+                <td :colspan="props.columns.length" class="px-4 py-8 text-center">
+                  <span class="font-semibold text-sm text-text-primary">No data available</span>
+                </td>
+              </tr>
             </template>
 
             <template v-else>
-              <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
+              <template v-for="record in props.data" :key="(record as any)[props.expandableRowsIdField]">
+                <!-- Main Row -->
+                <tr class="hover:bg-gray-50">
+                  <template v-for="(column, columnIndex) in props.columns" :key="column.value">
+                    <td class="px-4 py-3" :class="column.value === 'action' ? 'text-center' : ''">
+                      <template v-if="props.isUsingCustomBody">
+                        <slot
+                          name="body"
+                          :column="column"
+                          :data="record"
+                          :index="columnIndex"
+                          :is-expandable="props.isUsingExpandableRows && ((record as any)[props.expandableRowsField] || []).length > 1"
+                          :is-expanded="isRowExpanded((record as any)[props.expandableRowsIdField])"
+                          :toggle-expansion="() => toggleRowExpansion((record as any)[props.expandableRowsIdField])"
+                          :primary-item="props.isUsingExpandableRows ? getPrimaryItem((record as any)[props.expandableRowsField] || []) : null"
+                        />
+                      </template>
+
+                      <template v-else>
+                        <span class="font-normal text-sm text-text-primary">{{ (record as any)[column.value] }}</span>
+                      </template>
+                    </td>
+                  </template>
+                </tr>
+
+                <!-- Expanded Rows for Additional Items -->
+                <template
+                  v-if="props.isUsingExpandableRows && isRowExpanded((record as any)[props.expandableRowsIdField]) && getAdditionalItems((record as any)[props.expandableRowsField] || []).length > 0"
+                >
+                  <tr
+                    v-for="item in getAdditionalItems((record as any)[props.expandableRowsField] || [])"
+                    :key="`${(record as any)[props.expandableRowsIdField]}-${(item as any).id}`"
+                    class="bg-gray-50 border-l-4 border-blue-200"
+                  >
+                    <template v-for="(column, columnIndex) in props.columns" :key="column.value">
+                      <td class="px-4 py-2" :class="column.value === 'action' ? 'text-center' : ''">
+                        <template v-if="props.isUsingCustomBody">
+                          <slot
+                            name="expanded-body"
+                            :column="column"
+                            :data="record"
+                            :item="item"
+                            :index="columnIndex"
+                          />
+                        </template>
+
+                        <template v-else>
+                          <span class="font-normal text-sm text-text-primary">{{ (item as any)[column.value] }}</span>
+                        </template>
+                      </td>
+                    </template>
+                  </tr>
+                </template>
+              </template>
+            </template>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Custom Pagination -->
+      <template v-if="props.isUsingPagination && !props.isUsingCustomFooter">
+        <div class="border-l border-r border-b border-solid border-grayscale-20 bg-background rounded-b-lg px-4 py-3">
+          <div class="flex flex-col sm:flex-row items-center gap-2 justify-between w-full">
+            <!-- Mobile: Page Info -->
+            <div v-if="isCurrentlyMobile" class="text-sm text-gray-600 order-1 sm:order-none">
+              Page {{ currentPage + 1 }} of {{ totalPages }}
+            </div>
+
+            <!-- Previous Page Button -->
+            <PrimeVueButton
+              :disabled="currentPage === 0 || totalPages === 0"
+              class="border-primary w-fit px-3 lg:px-4 order-2 sm:order-none"
+              variant="outlined"
+              :size="isCurrentlyMobile ? 'small' : 'normal'"
+              @click="emits('update:currentPage', currentPage)"
+            >
+              <template #default>
+                <section id="content" class="flex items-center gap-1 lg:gap-2">
+                  <AppBaseSvg name="arrow-left" class="!w-4 !h-4" />
+                  <span v-if="!isCurrentlyMobile" class="font-normal text-sm text-primary">Previous</span>
+                </section>
+              </template>
+            </PrimeVueButton>
+
+            <!-- Page Numbers - Hidden on mobile, shown on desktop -->
+            <div v-if="!isCurrentlyMobile" class="flex items-center gap-1">
+              <template v-for="(p, idx) in displayedPages" :key="idx">
+                <template v-if="p === '...'">
+                  <span class="px-2 text-gray-400">...</span>
+                </template>
+                <template v-else>
+                  <PrimeVueButton
+                    :label="(Number(p) + 1).toString()"
+                    class="border-none aspect-square p-2 lg:p-4"
+                    :class="
+                      currentPage === Number(p)
+                        ? 'bg-blue-secondary-background text-primary'
+                        : 'bg-transparent text-grayscale-20'
+                    "
+                    @click="emits('update:currentPage', Number(p) + 1)"
+                  />
+                </template>
+              </template>
+            </div>
+
+            <!-- Next Page Button -->
+            <PrimeVueButton
+              :disabled="currentPage === (totalPages || 1) - 1 || totalPages === 0"
+              class="border-primary w-fit px-3 lg:px-4 order-3 sm:order-none"
+              variant="outlined"
+              :size="isCurrentlyMobile ? 'small' : 'normal'"
+              @click="emits('update:currentPage', currentPage + 2)"
+            >
+              <template #default>
+                <section id="content" class="flex items-center gap-1 lg:gap-2">
+                  <span v-if="!isCurrentlyMobile" class="font-normal text-sm text-primary">Next</span>
+                  <AppBaseSvg name="arrow-right" class="!w-4 !h-4" />
+                </section>
+              </template>
+            </PrimeVueButton>
+          </div>
+        </div>
+      </template>
+    </template>
+
+    <!-- Standard PrimeVue DataTable -->
+    <template v-else>
+      <PrimeVueDataTable
+        :paginator="props.isUsingPagination && !props.isUsingCustomFooter"
+        :value="props.data"
+        :rows="props.rowsPerPage"
+        :first="props.first"
+        :lazy="props.isUsingServerSidePagination"
+        :total-records="props.totalRecords"
+        :removable-sort="props.removableSort"
+        :sort-field="props.sortField"
+        :sort-order="props.sortOrder ?? 0"
+        :scroll-height="isScrollable ? computedScrollHeight : undefined"
+        :scrollable="isScrollable"
+        table-style="min-width: 50rem"
+        :pt="{
+          root: 'rounded-sm',
+          header: 'border-none p-0',
+          tableContainer: `border border-solid border-grayscale-20 ${!props.isUsingBorderOnHeader ? 'rounded-tl-lg rounded-tr-lg' : '!border-t-0'} ${props.isUsingCustomFooter ? '!border-b-0 !rounded-bl-none !rounded-br-none' : ''}`,
+          pcPaginator: {
+            root: `border-l border-r border-b border-t-0 border-solid border-grayscale-20 rounded-tl-none rounded-tr-none ${props.isUsingCustomFooter ? 'hidden' : ''}`,
+          },
+        }"
+        @page="handlePageChange"
+        @sort="handleSort"
+      >
+        <template #empty>
+          <section class="flex items-center justify-center w-full">
+            <span class="font-semibold text-sm text-text-primary">No data available</span>
+          </section>
+        </template>
+
+        <template #header>
+          <template v-if="props.isUsingHeader">
+            <template v-if="props.isUsingCustomHeader">
+              <slot name="header" />
+            </template>
+
+            <template v-else>
+              <header class="flex flex-col border border-solid border-grayscale-20">
+                <!-- Title and CTA Section -->
+                <section
+                  id="title-and-cta"
+                  class="flex flex-col lg:flex-row lg:items-center justify-between w-full border-b border-solid border-grayscale-20 px-4 lg:px-6 py-4 lg:py-5 gap-4 lg:gap-0"
+                >
+                  <!-- Header Prefix/Title Section -->
+                  <div class="flex-1 min-w-0">
+                    <template v-if="props.isUsingCustomHeaderPrefix">
+                      <slot name="header-prefix" />
+                    </template>
+
+                    <template v-else>
+                      <h6 class="font-semibold text-gray-900 text-lg lg:text-xl">
+                        {{ props.headerTitle }}
+                      </h6>
+                    </template>
+                  </div>
+
+                  <!-- Header Suffix/Search Section -->
+                  <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:gap-4">
+                    <template v-if="props.isUsingCustomHeaderSuffix">
+                      <slot name="header-suffix" />
+                    </template>
+
+                    <template v-else>
+                      <!-- Search Field -->
+                      <div v-if="props.isUsingSearchOnHeader" class="flex-1 lg:flex-initial">
+                        <PrimeVueIconField>
+                          <PrimeVueInputIcon>
+                            <template #default>
+                              <AppBaseSvg name="search" class="w-4 h-4" />
+                            </template>
+                          </PrimeVueInputIcon>
+
+                          <PrimeVueInputText
+                            v-model="searchModel"
+                            :placeholder="props.searchPlaceholder"
+                            class="text-sm w-full"
+                            :class="isCurrentlyMobile ? 'min-w-0' : 'min-w-80'"
+                          />
+                        </PrimeVueIconField>
+                      </div>
+
+                      <!-- CTA Button -->
+                      <template v-if="props.isUsingBtnCtaCreate">
+                        <PrimeVueButton
+                          class="bg-primary border-none w-full sm:w-fit px-5"
+                          severity="secondary"
+                          @click="emits('clickBtnCtaCreate')"
+                        >
+                          <template #default>
+                            <section id="content" class="flex items-center justify-center gap-2">
+                              <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
+                              <span class="font-semibold text-sm lg:text-base text-white">
+                                {{ props.btnCtaCreateTitle }}
+                              </span>
+                            </section>
+                          </template>
+                        </PrimeVueButton>
+                      </template>
+                    </template>
+                  </div>
+                </section>
+
+                <!-- Filter Section -->
+                <section
+                  v-if="props.isUsingFilter"
+                  id="filter"
+                  class="px-4 lg:px-6 border-b border-solid border-grayscale-20"
+                >
+                  <!-- Mobile Filter Toggle -->
+                  <div v-if="isCurrentlyMobile" class="flex items-center justify-between py-4">
+                    <span class="font-semibold text-gray-900 text-sm lg:text-base">Filters</span>
+                    <PrimeVueButton
+                      :icon="showMobileFilters ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+                      variant="text"
+                      size="small"
+                      @click="toggleMobileFilters"
+                    />
+                  </div>
+
+                  <!-- Filter Content -->
+                  <div
+                    v-if="!isCurrentlyMobile || showMobileFilters"
+                    :class="['pb-4', isCurrentlyMobile ? 'transition-all duration-300 ease-in-out' : '']"
+                  >
+                    <template v-if="props.isUsingCustomFilter">
+                      <slot name="filter" />
+                    </template>
+
+                    <template v-else>
+                      <div class="flex flex-col gap-4 lg:pt-4">
+                        <span v-if="!isCurrentlyMobile" class="font-semibold text-gray-900 text-sm lg:text-base"
+                          >Filter by</span
+                        >
+                        <PrimeVueDatePicker
+                          class="w-full max-w-80"
+                          placeholder="Last 7 days"
+                          show-on-focus
+                          show-icon
+                          fluid
+                        />
+                      </div>
+                    </template>
+                  </div>
+                </section>
+              </header>
             </template>
           </template>
         </template>
-      </PrimeVueColumn>
-    </PrimeVueDataTable>
+
+        <template #paginatorcontainer="{ page, pageCount, prevPageCallback, nextPageCallback }">
+          <div class="flex flex-col sm:flex-row items-center gap-2 justify-between w-full py-2 px-2">
+            <!-- Mobile: Page Info -->
+            <div v-if="isCurrentlyMobile" class="text-sm text-gray-600 order-1 sm:order-none">
+              Page {{ page + 1 }} of {{ pageCount }}
+            </div>
+
+            <!-- Previous Page Button -->
+            <PrimeVueButton
+              :disabled="page === 0 || pageCount === 0"
+              class="border-primary w-fit px-3 lg:px-4 order-2 sm:order-none"
+              variant="outlined"
+              :size="isCurrentlyMobile ? 'small' : 'normal'"
+              @click="prevPageCallback"
+            >
+              <template #default>
+                <section id="content" class="flex items-center gap-1 lg:gap-2">
+                  <AppBaseSvg name="arrow-left" class="!w-4 !h-4" />
+                  <span v-if="!isCurrentlyMobile" class="font-normal text-sm text-primary">Previous</span>
+                </section>
+              </template>
+            </PrimeVueButton>
+
+            <!-- Page Numbers - Hidden on mobile, shown on desktop -->
+            <div v-if="!isCurrentlyMobile" class="flex items-center gap-1">
+              <template v-for="(p, idx) in displayedPages" :key="idx">
+                <template v-if="p === '...'">
+                  <span class="px-2 text-gray-400">...</span>
+                </template>
+                <template v-else>
+                  <PrimeVueButton
+                    :label="(Number(p) + 1).toString()"
+                    class="border-none aspect-square p-2 lg:p-4"
+                    :class="
+                      currentPage === Number(p)
+                        ? 'bg-blue-secondary-background text-primary'
+                        : 'bg-transparent text-grayscale-20'
+                    "
+                    @click="emits('update:currentPage', Number(p) + 1)"
+                  />
+                </template>
+              </template>
+            </div>
+
+            <!-- Next Page Button -->
+            <PrimeVueButton
+              :disabled="page === (pageCount || 1) - 1 || pageCount === 0"
+              class="border-primary w-fit px-3 lg:px-4 order-3 sm:order-none"
+              variant="outlined"
+              :size="isCurrentlyMobile ? 'small' : 'normal'"
+              @click="nextPageCallback"
+            >
+              <template #default>
+                <section id="content" class="flex items-center gap-1 lg:gap-2">
+                  <span v-if="!isCurrentlyMobile" class="font-normal text-sm text-primary">Next</span>
+                  <AppBaseSvg name="arrow-right" class="!w-4 !h-4" />
+                </section>
+              </template>
+            </PrimeVueButton>
+          </div>
+        </template>
+
+        <PrimeVueColumn
+          v-for="(column, columnIndex) in props.columns"
+          :key="`column-${columnIndex}`"
+          :field="column.value"
+          :header="column.label"
+          :sortable="column.sortable"
+          :pt="{
+            columnTitle: 'text-sm font-normal text-grayscale-70',
+            headerCell: 'bg-background border-b-grayscale-20',
+          }"
+          :style="`
+          width: ${column.width ? column.width : 'auto'};
+        `"
+        >
+          <template #body="{ data, index }">
+            <template v-if="props.isLoading">
+              <PrimeVueSkeleton />
+            </template>
+
+            <template v-else>
+              <template v-if="props.isUsingCustomBody">
+                <slot name="body" :column="column" :data="data" :index="index" />
+              </template>
+
+              <template v-else>
+                <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
+              </template>
+            </template>
+          </template>
+        </PrimeVueColumn>
+      </PrimeVueDataTable>
+    </template>
   </div>
 
   <!-- Custom Footer Section -->

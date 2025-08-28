@@ -25,7 +25,15 @@ export const useOutletStore = defineStore('outlet', {
     outlet_currentOutlet: null,
     outlet_detail: null,
     outlet_isLoading: false,
-    outlet_lists: [],
+    outlet_lists: {
+      items: [],
+      meta: {
+        page: 1,
+        pageSize: 10,
+        total: 0,
+        totalPages: 0,
+      },
+    },
     outlet_operationalHours: [],
     outlet_profile: null,
     outlet_tables: null,
@@ -217,10 +225,7 @@ export const useOutletStore = defineStore('outlet', {
           ...requestConfigurations,
         });
 
-        console.log('Full Response:', response.data);
-        console.log('Data Items:', response.data.data.items);
-
-        this.outlet_lists = response.data.data.items;
+        this.outlet_lists = response.data.data;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {

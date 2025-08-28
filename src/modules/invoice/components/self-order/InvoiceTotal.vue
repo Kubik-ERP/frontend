@@ -125,7 +125,7 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
         <AppBaseSvg name="order-primary" class="!w-6 !h-6" />
         <span class="text-sm">Your queue number is</span>
       </div>
-      <span class="text-sm font-semibold">59</span>
+      <span class="text-sm font-semibold">{{ invoice_invoiceData.data.queue }}</span>
     </div>
   </section>
 </template>

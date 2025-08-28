@@ -55,7 +55,7 @@ onMounted(() => {
           >
             <template #default>
               <section id="content" class="flex items-center gap-2">
-                <AppBaseSvg name="plus-line-white" />
+                <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
                 <span class="font-semibold text-base text-white">Add Product Bundling</span>
               </section>
             </template>

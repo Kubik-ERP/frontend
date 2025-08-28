@@ -9,25 +9,34 @@ import { useAuthenticationSignInService } from '../services/authentication-sign-
  * @description Destructure all the data and methods what we need
  */
 const {
+  authenticationSignIn_activeStep,
   authenticationSignIn_detectLocationAndBrowser,
   authenticationSignIn_formData,
   authenticationSignIn_formValidations,
   authenticationSignIn_isLoading,
   authenticationSignIn_isNotAuthenticated,
+  authenticationSignIn_onSelectRole,
   authenticationSignIn_onSsoWithGoogle,
   authenticationSignIn_onSubmit,
+  authenticationSignIn_selectedRole,
+  authenticationSignIn_stepper,
 } = useAuthenticationSignInService();
 
 /**
  * @description Provide all the data and methods what we need
  */
 provide('authenticationSignIn', {
+  authenticationSignIn_activeStep,
+  authenticationSignIn_detectLocationAndBrowser,
   authenticationSignIn_formData,
   authenticationSignIn_formValidations,
   authenticationSignIn_isLoading,
   authenticationSignIn_isNotAuthenticated,
   authenticationSignIn_onSsoWithGoogle,
+  authenticationSignIn_onSelectRole,
   authenticationSignIn_onSubmit,
+  authenticationSignIn_selectedRole,
+  authenticationSignIn_stepper,
 });
 
 /**

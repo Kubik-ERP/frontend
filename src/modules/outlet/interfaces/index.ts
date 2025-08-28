@@ -1,4 +1,5 @@
-import { IAccountStoreTable } from '@/modules/account/interfaces';
+import type { IAccountStoreTable } from '@/modules/account/interfaces';
+import type { IOutletListData } from './outlet-list.interface';
 
 export * from './outlet-create-edit.interface';
 export * from './outlet-list.interface';
@@ -95,7 +96,7 @@ export interface IOutletStateStore {
   outlet_currentOutlet: IOutlet | null;
   outlet_detail: IOutlet | null;
   outlet_isLoading: boolean;
-  outlet_lists: IOutlet[];
+  outlet_lists: IOutletListData;
   outlet_operationalHours: IOutletOperationalHour[];
   outlet_profile: IOutletProfile | null;
   outlet_tables: IOutletTable[] | null;
