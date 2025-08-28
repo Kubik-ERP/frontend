@@ -96,8 +96,7 @@ const orderTypeLabel = computed(() => {
       class="flex items-center justify-between w-full"
     >
       <p id="label-queue" class="font-normal text-black text-sm">Queue</p>
-      <!-- TODO: Add queue -->
-      <p id="queue-value" class="font-normal text-black text-sm">38</p>
+      <p id="queue-value" class="font-normal text-black text-sm">{{ invoice_invoiceData.data.queue }}</p>
     </section>
 
     <section

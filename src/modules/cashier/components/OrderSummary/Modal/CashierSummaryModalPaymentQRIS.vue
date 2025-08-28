@@ -55,13 +55,15 @@ const route = useRoute();
                     <span class="text-2xl font-semibold">Payment</span>
                   </div>
 
-                  <AppBaseImage
-                    v-for="(item, index) in props.modalPlaceOrderDetail.data.actions"
-                    :key="index"
-                    :src="item.url"
-                    :alt="item.name"
-                    class="h-92 w-92 object-contain"
-                  />
+                  <template v-for="(item, index) in props.modalPlaceOrderDetail.data.actions">
+                    <AppBaseImage
+                      v-if="index === 0"
+                      :key="index"
+                      :src="item.url"
+                      :alt="item.name"
+                      class="h-92 w-92 object-contain"
+                    />
+                  </template>
                 </div>
               </div>
             </div>
