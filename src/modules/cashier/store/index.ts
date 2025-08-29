@@ -511,5 +511,27 @@ export const useCashierStore = defineStore('cashier', {
         this.cashierSelfOrder_isLoadingSignIn = false;
       }
     },
+
+    async cashierSelfOrder_handleVerify(
+      params: {
+        storeId: string;
+        tablesName: string;
+      },
+      requestConfigurations: AxiosRequestConfig = {},
+    ): Promise<unknown> {
+      try {
+        const response = await httpClient.post<{ valid: boolean; message: string }>('/self-order', params, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
   },
 });
