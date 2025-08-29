@@ -62,7 +62,7 @@ export const inventoryCategoryCreateService = (): IInventoryCategoryCreateProvid
     inventoryCategoryCreate_isLoading.value = true;
     const data = {
       name: payload.name?.trim(),
-      code: payload.code === '' ? true : payload.code,
+      code: payload.code,
       notes: payload.notes?.trim(),
     }
     try {

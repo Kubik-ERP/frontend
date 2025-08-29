@@ -241,11 +241,8 @@ const cancelUpdate = () => {
 
       <form class="flex flex-col items-center justify-center" @submit.prevent="isUpdateModal = true">
         <p>{{ useLocalization('productDetail.photo.label') }}</p>
-        <img
-          class="rounded-lg mt-2 w-64 h-64 object-cover"
-          :src="product_formData.imagePreview || 'https://placehold.co/250'"
-          alt="Photo"
-        />
+        <AppBaseImage :src="product_formData.imagePreview" alt="Photo" class="w-64 h-64 object-cover" />
+
         <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
 
         <div class="flex items-center justify-center gap-2 mt-4">
@@ -478,7 +475,7 @@ const cancelUpdate = () => {
               </template>
             </PrimeVueButton>
           </div>
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between pb-8">
             <div class="flex items-center gap-4">
               <router-link to="/catalog/products">
                 <PrimeVueButton

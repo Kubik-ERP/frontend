@@ -35,7 +35,7 @@ export interface IInventoryCategoryListResponse  {
 
 export interface IInventoryCategoryCreateUpdatePayload {
   name: string;
-  code: string | boolean | null;
+  code: string ;
   notes: string;
 };
 

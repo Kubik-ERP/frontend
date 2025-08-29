@@ -10,13 +10,13 @@ export const useBrandActionService = (): IBrandActionProvided => {
   const store = useBrandStore();
   const brand_formOnLoading = ref<boolean>(false);
   const brand_formData = ref<IBrandFormData>({
-    brandCode: '',
+    code: '',
     brandName: '',
     notes: '',
   });
 
   const brand_createUpdatePayload = ref<IBrandCreateUpdatePayload>({
-    brandCode: '',
+    code: '',
     brandName: '',
     notes: '',
   });
@@ -41,9 +41,8 @@ export const useBrandActionService = (): IBrandActionProvided => {
   const brand_onSubmit = async (payload: IBrandFormData, mode: 'create' | 'edit', id?: string) => {
     brand_formOnLoading.value = true;
     try {
-      const brandCodeAuto = payload.brandCode === '' ? true : payload.brandCode
       brand_createUpdatePayload.value = {
-        brandCode: brandCodeAuto,
+        code: payload.code?.trim(),
         brandName: payload.brandName?.trim(),
         notes: payload.notes?.trim(),
       };

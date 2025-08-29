@@ -55,7 +55,7 @@ const togglePopover = (id: string, event: Event) => {
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="plus-line-white" />
+              <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
 
               <span class="font-semibold text-sm lg:text-base text-white"> Add Store Facility </span>
             </section>

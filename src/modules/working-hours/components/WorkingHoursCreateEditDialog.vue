@@ -81,6 +81,7 @@ const {
                 <span v-if="value">
                   {{ workingHoursList_createEditStaffList.find(s => s.value === value)?.label }}
                 </span>
+
                 <span v-else class="text-gray-400">Select staff member</span>
               </template>
             </PrimeVueSelect>
@@ -124,7 +125,7 @@ const {
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
-                  <AppBaseSvg name="plus-line" />
+                  <AppBaseSvg name="plus-line" class="w-4 h-4" />
                   <span class="font-medium text-sm">Add another shift</span>
                 </section>
               </template>

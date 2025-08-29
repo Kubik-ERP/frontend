@@ -109,7 +109,8 @@ export interface IInvoiceData {
   grandTotal: number | null;
   paymentAmount: number | null;
   changeAmount: number | null;
-
+  voucherId: string | null;
+  voucherAmount: number | null;
   customer: IInvoiceCustomer;
   invoiceDetails: IInvoiceDetail[];
   invoiceCharges: [];

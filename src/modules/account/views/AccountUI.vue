@@ -18,6 +18,7 @@ const {
   account_fetchOutletProfile,
   account_isLoadingOfOutlet,
   account_listColumns,
+  account_listStores,
   account_onCloseDialogSetUpBank,
   account_onDirectToDetailOutlet,
   account_onEditBankAccount,
@@ -25,7 +26,7 @@ const {
   account_onSubmitBankAccount,
   account_profile,
 } = useAccountService();
-const { outletList_fetchOutletLists, outletList_isLoading, outletList_lists } = useOutletListService();
+const { outletList_fetchOutletLists } = useOutletListService();
 
 /**
  * @description Provide all the data and methods what we need
@@ -35,16 +36,13 @@ provide('account', {
   account_bankAccountFormValidations,
   account_isLoadingOfOutlet,
   account_listColumns,
+  account_listStores,
   account_onCloseDialogSetUpBank,
   account_onEditBankAccount,
   account_onDirectToDetailOutlet,
   account_onSetUpBankAccount,
   account_onSubmitBankAccount,
   account_profile,
-});
-provide('outletList', {
-  outletList_isLoading,
-  outletList_lists,
 });
 
 /**

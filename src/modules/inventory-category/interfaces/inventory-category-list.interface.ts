@@ -23,4 +23,5 @@ export interface IInventoryCategoryListProvided {
   inventoryCategoryList_onDeleteCategory: (categoryId: string) => void;
   inventoryCategoryFormMode: globalThis.Ref<'create' | 'edit'>;
   inventoryCategoryList_editingItem: globalThis.Ref<IInventoryCategory | null>;
+  inventoryCategoryList_onImport: () => void
 }
