@@ -37,7 +37,7 @@ const {
   loyaltyPointSettings_toggleSelection,
   loyaltyPointSettings_updateProductValue,
   loyaltyPointSettings_EditProduct,
-  loyaltyPointSettings_onSubmitDialogEditProduct
+  loyaltyPointSettings_onSubmitDialogEditProduct,
 } = usePointConfigurationService();
 
 provide('loyaltyPointSettings', {
@@ -60,7 +60,7 @@ provide('loyaltyPointSettings', {
   loyaltyPointSettings_toggleSelection,
   loyaltyPointSettings_updateProductValue,
   loyaltyPointSettings_EditProduct,
-  loyaltyPointSettings_onSubmitDialogEditProduct
+  loyaltyPointSettings_onSubmitDialogEditProduct,
 });
 
 onMounted(async () => {
@@ -159,7 +159,7 @@ onMounted(async () => {
                 <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
               </template>
             </PrimeVueInputNumber>
-            <p class="text-sm text-text-disabled">Points</p>
+            <!-- <p class="text-sm text-text-disabled">Points</p> -->
           </div>
         </AppBaseFormGroup>
       </section>
@@ -311,7 +311,7 @@ onMounted(async () => {
                 class="flex items-center justify-center cursor-pointer"
                 @click="loyaltyPointSettings_onShowDialogEditProduct(data)"
               >
-                <AppBaseSvg name="edit" />
+                <AppBaseSvg name="edit" class="!w-5 !h-5" />
               </PrimeVueButton>
               <!-- <PrimeVueButton
                 unstyled
