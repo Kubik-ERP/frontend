@@ -48,7 +48,7 @@ const imageUrl = computed(() => {
             v-if="isProductActive(props.product)"
             class="absolute py-1 px-1.5 border border-primary-border bg-blue-primary left-0 ml-1 mt-1 rounded-full flex gap-2"
           >
-            <AppBaseSvg name="check" class="h-w-2.5" />
+            <AppBaseSvg name="check" class="h-w-2.5 h-4 w-4" />
             <span class="text-xs text-white font-semibold"> {{ useLocalization('cashier.selected') }} </span>
           </div>
 

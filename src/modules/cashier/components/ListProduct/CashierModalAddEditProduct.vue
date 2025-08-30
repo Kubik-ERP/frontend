@@ -117,7 +117,7 @@ const imageUrl = computed(() => {
           class="w-fit hidden lg:flex"
           @click="cashierProduct_modalAddEditItem.isAddNotesActive = true"
         >
-          <AppBaseSvg name="add-notes" />
+          <AppBaseSvg name="add-notes" class="h-4 w-4" />
 
           <span class="font-semibold text-primary">{{ useLocalization('cashier.mainSection.addNotes') }}</span>
         </PrimeVueButton>
@@ -142,7 +142,7 @@ const imageUrl = computed(() => {
             >
               <template #default>
                 <div class="flex gap-2 items-center">
-                  <AppBaseSvg name="trash" />
+                  <AppBaseSvg name="trash" class="h-4 w-4" />
 
                   <span> {{ useLocalization('cashier.mainSection.deleteNotes') }} </span>
                 </div>

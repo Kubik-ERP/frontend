@@ -60,7 +60,7 @@ const orderStatusLabel = computed(() => {
       id="box-icon"
       class="absolute top-5 right-5 bg-transparent basic-smooth-animation flex items-center gap-1 hover:bg-grayscale-10 p-2 rounded-md cursor-pointer"
     >
-      <AppBaseSvg name="more" />
+      <AppBaseSvg name="more" class="h-4 w-4" />
       <span class="font-normal text-text-disabled text-xs">More</span>
     </section>
 
@@ -178,7 +178,7 @@ const orderStatusLabel = computed(() => {
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
-                  <AppBaseSvg name="edit" />
+                  <AppBaseSvg name="edit" class="h-4 w-4" />
                   <span class="font-semibold text-primary text-sm">Edit Order</span>
                 </section>
               </template>
