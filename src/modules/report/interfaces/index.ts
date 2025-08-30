@@ -1,3 +1,9 @@
+export interface IReportQueryParams {
+  startDate: Date;
+  endDate: Date;
+  type?: string | null;
+}
+
 export interface IReportProvided {
   financialReport_profitAndLost_columns: IColumnDataTable[];
   financialReport_cashInOut_columns: IColumnDataTable[];
@@ -9,4 +15,6 @@ export interface IReportProvided {
   inventoryReport_stock_columns: IColumnDataTable[];
   inventoryReport_stockMovement_columns: IColumnDataTable[];
   marketingReport_columns: IColumnDataTable[];
+
+  report_queryParams: IReportQueryParams;
 }

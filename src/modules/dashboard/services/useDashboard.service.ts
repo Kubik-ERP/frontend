@@ -3,7 +3,7 @@ import { useAuthenticationStore } from '@/modules/authentication/store';
 import { useDashboardStore } from '../store';
 
 // interface
-import type { IDashboardProvided } from '../interfaces';
+import type { IDashboardProvided, IDashboardQueryParams } from '../interfaces';
 export const useDashboardService = (): IDashboardProvided => {
   const authenticationStore = useAuthenticationStore();
   const { authentication_userData } = storeToRefs(authenticationStore);
@@ -13,9 +13,10 @@ export const useDashboardService = (): IDashboardProvided => {
 
   const { httpAbort_registerAbort } = useHttpAbort();
 
-  const dashboard_queryParams = reactive({
+  const dashboard_queryParams = reactive<IDashboardQueryParams>({
     startDate: new Date(),
     endDate: new Date(),
+    type: 'day',
   });
 
   watch(

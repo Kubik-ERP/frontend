@@ -3,6 +3,7 @@ import type { IAuthenticationProfile } from '@/modules/authentication/interfaces
 export interface IDashboardQueryParams {
   startDate: Date;
   endDate: Date;
+  type?: string | null;
 }
 
 export interface IDashboardProvided {

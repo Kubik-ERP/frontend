@@ -8,14 +8,20 @@ const props = defineProps({
     type: Date,
     required: true,
   },
+  type: {
+    type: [String, null],
+    required: true,
+    default: 'day',
+  },
 });
 
-const emit = defineEmits(['update:startDate', 'update:endDate']);
+const emit = defineEmits(['update:startDate', 'update:endDate', 'update:type']);
 
 const dialogVisible = ref<boolean>(false);
 
 // ✅ 1. Use a single ref for the date range array
 const localDateRange = ref<[Date, Date] | null>([props.startDate, props.endDate]);
+const type = ref<string | null>(props.type);
 
 // Watch props to update the local state
 watch(
@@ -35,6 +41,9 @@ const applyDateChange = () => {
 
     emit('update:startDate', start);
     emit('update:endDate', end);
+
+    type.value = null;
+    emit('update:type', type.value);
   }
   dialogVisible.value = false;
 };
@@ -48,10 +57,12 @@ const onClickShortcut = (label: string) => {
   const today = new Date();
   let start = new Date();
   let end = new Date();
+  let newType = '';
 
   switch (label) {
     case 'Today': {
       start = new Date(new Date().setHours(0, 0, 0, 0));
+      newType = 'day';
       break;
     }
 
@@ -59,6 +70,7 @@ const onClickShortcut = (label: string) => {
       start = new Date(new Date().setDate(today.getDate() - 1));
       start.setHours(0, 0, 0, 0);
       end = new Date(new Date().setHours(0, 0, 0, 0) - 1);
+      newType = 'day';
       break;
     }
 
@@ -69,12 +81,14 @@ const onClickShortcut = (label: string) => {
       firstDayOfWeek.setHours(0, 0, 0, 0);
       start = firstDayOfWeek;
       end = new Date();
+      newType = 'week';
       break;
     }
 
     case 'This Month': {
       start = new Date(today.getFullYear(), today.getMonth(), 1);
       end = new Date();
+      newType = 'month';
       break;
     }
 
@@ -84,6 +98,7 @@ const onClickShortcut = (label: string) => {
       thirtyDaysAgo.setHours(0, 0, 0, 0);
       start = thirtyDaysAgo;
       end = new Date();
+      newType = 'day';
       break;
     }
 
@@ -93,10 +108,18 @@ const onClickShortcut = (label: string) => {
       lastDayOfLastMonth.setHours(23, 59, 59, 999);
       start = firstDayOfLastMonth;
       end = lastDayOfLastMonth;
+      newType = 'day';
       break;
     }
   }
   localDateRange.value = [start, end];
+  type.value = newType;
+
+  emit('update:startDate', start);
+  emit('update:endDate', end);
+  emit('update:type', newType);
+
+  dialogVisible.value = false;
 };
 </script>
 <template>

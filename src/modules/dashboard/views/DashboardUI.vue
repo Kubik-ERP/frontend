@@ -34,6 +34,9 @@ onMounted(() => {
 
 <template>
   <section id="dashboard" class="flex flex-col gap-4">
+    <!-- <pre>
+      {{ dashboard_queryParams }}
+    </pre> -->
     <DashboardGreetingText />
     <DashboardOverviews />
     <DashboardSalesAndProducts />

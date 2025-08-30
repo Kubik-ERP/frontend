@@ -5,7 +5,7 @@ const { exportToPdf, exportToCsv } = useReportExporter();
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Loss Report',
-    period: `${useFormatDate(TEMPORARY_FORMDATA.start_date, 'dd/MMM/yyyy')} - ${useFormatDate(TEMPORARY_FORMDATA.end_date, 'dd/MMM/yyyy')}`,
+    period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: lossReport_columns,
     tableData: TEMPORARY_DATA,
   });
@@ -13,7 +13,7 @@ const handleExportToPdf = () => {
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Loss Report',
-    period: `${useFormatDate(TEMPORARY_FORMDATA.start_date, 'dd/MMM/yyyy')} - ${useFormatDate(TEMPORARY_FORMDATA.end_date, 'dd/MMM/yyyy')}`,
+    period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: lossReport_columns,
     tableData: TEMPORARY_DATA,
   });
@@ -22,15 +22,10 @@ const handleExportToCsv = () => {
 import CustomDatePicker from '../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../services/report.service';
-const { lossReport_columns } = useReportService();
+const { lossReport_columns, report_queryParams } = useReportService();
 
 const popover = ref();
 
-const TEMPORARY_FORMDATA = reactive({
-  // ... other properties
-  start_date: new Date(),
-  end_date: new Date(),
-});
 
 const TEMPORARY_DATA = reactive([
   {
@@ -544,15 +539,26 @@ const TEMPORARY_DATA = reactive([
     reportedBy: 'Samantha',
   },
 ]);
+
+const page = ref<number>(1);
+const limit = ref<number>(10);
+const totalRecords = ref<number>(TEMPORARY_DATA.length);
+const onChangePage = (newPage: number) => {
+  page.value = newPage;
+};
 </script>
 <template>
   <section>
     <AppBaseDataTable
       :data="TEMPORARY_DATA"
       :columns="lossReport_columns"
+      :first="(page - 1) * limit"
+      :rows-per-page="limit"
+      :total-records="totalRecords"
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-custom-filter
+      @update:currentPage="onChangePage"
     >
       <template #header-prefix>
         <h1 class="font-bold text-2xl text-text-primary">Loss Report</h1>
@@ -588,8 +594,9 @@ const TEMPORARY_DATA = reactive([
 
       <template #filter>
         <CustomDatePicker
-          v-model:start-date="TEMPORARY_FORMDATA.start_date"
-          v-model:end-date="TEMPORARY_FORMDATA.end_date"
+          v-model:start-date="report_queryParams.startDate"
+          v-model:end-date="report_queryParams.endDate"
+          v-model:type="report_queryParams.type"
         />
       </template>
     </AppBaseDataTable>

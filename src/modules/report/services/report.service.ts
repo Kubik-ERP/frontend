@@ -14,10 +14,25 @@ import {
   SALESREPORT_SALESBYORDERTYPE_COLUMNS,
 } from '../constants';
 // type
-import { IReportProvided } from '../interfaces';
+import { IReportProvided, IReportQueryParams } from '../interfaces';
 
 export const useReportService = (): IReportProvided => {
+  const report_queryParams = reactive<IReportQueryParams>({
+    startDate: new Date(),
+    endDate: new Date(),
+    type: 'day',
+  });
+
+  watch(
+    () => report_queryParams,
+    debounce(async () => {
+      // report_getSummary();
+    }, 500),
+    { deep: true },
+  );
+
   return {
+    // constants
     financialReport_profitAndLost_columns: FINANCIALREPORT_PROFITANDLOST_COLUMNS,
     financialReport_cashInOut_columns: FINANCIALREPORT_CASHINOUT_COLUMNS,
     financialReport_paymentMethod_columns: FINANCIALREPORT_PAYMENTMETHOD_COLUMNS,
@@ -28,5 +43,7 @@ export const useReportService = (): IReportProvided => {
     inventoryReport_stock_columns: INVENTORYREPORT_STOCK_COLUMNS,
     inventoryReport_stockMovement_columns: INVENTORYREPORT_STOCKMOVEMENT_COLUMNS,
     marketingReport_columns: MARKETINGREPORT_COLUMNS,
+    // params
+    report_queryParams,
   };
 };
