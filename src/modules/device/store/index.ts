@@ -6,7 +6,7 @@ import {
   IDeviceListResponse,
   IDevicePayload,
 } from '../interfaces';
-import { DEVICE_API_BASE_ENDPOINT, DEVICE_FAKE_DATA } from '../constans/index.constant';
+import { DEVICE_API_BASE_ENDPOINT } from '../constans/index.constant';
 import { AxiosRequestConfig } from 'axios';
 
 export const useDeviceStore = defineStore('device', {
@@ -16,7 +16,7 @@ export const useDeviceStore = defineStore('device', {
       statusCode: 200,
       message: '',
       data: {
-        items: DEVICE_FAKE_DATA || ([] as IDevice[]),
+        items: [] as IDevice[],
         meta: {
           page: 1,
           pageSize: 10,
@@ -77,22 +77,10 @@ export const useDeviceStore = defineStore('device', {
       requestConfigurations: AxiosRequestConfig,
     ): Promise<IDeviceActionResponse> {
       try {
-        console.log('payload', requestConfigurations);
-        return this.deviceList_actionResponse = {
-          statusCode: 200,
-          message: 'created data susccessfully',
-          data: {
-            id: '1',
-            name: payload!.name,
-            code: 'YASBSA',
-            status: 'pending',
-            lastConnectedAt: '2023-01-01T00:00:00Z',
-          },
-        };
-        // const response = await httpClient.post<IDeviceActionResponse>(DEVICE_API_BASE_ENDPOINT, payload, {
-        //   ...requestConfigurations,
-        // });
-        // return Promise.resolve(response.data);
+        const response = await httpClient.post<IDeviceActionResponse>(DEVICE_API_BASE_ENDPOINT, payload, {
+          ...requestConfigurations,
+        });
+        return Promise.resolve(response.data);
       } catch (error) {
         console.log(error);
         return Promise.reject(error); // Add this line to return a rejected promise
@@ -131,6 +119,24 @@ export const useDeviceStore = defineStore('device', {
     ): Promise<IDeviceActionResponse> {
       try {
         const response = await httpClient.delete<IDeviceActionResponse>(`${DEVICE_API_BASE_ENDPOINT}/${id}`, {
+          ...requestConfigurations,
+        });
+        return Promise.resolve(response.data);
+      } catch (error) {
+        console.log(error);
+        return Promise.reject(error);
+      }
+    },
+
+    /**
+     * @description : disconect device
+     */
+    async deviceList_disconnectData(
+      id: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IDeviceActionResponse> {
+      try {
+        const response = await httpClient.post<IDeviceActionResponse>(`${DEVICE_API_BASE_ENDPOINT}/${id}/disconnect`, {
           ...requestConfigurations,
         });
         return Promise.resolve(response.data);

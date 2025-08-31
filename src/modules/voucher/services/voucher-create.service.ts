@@ -92,6 +92,8 @@ export const useVoucherCreateService = (): IVoucherCreateProvided => {
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
       voucherFormReset();
+
+      // router.push({name: "voucher.index"});
     } catch (error) {
       console.error(error);
     } finally {

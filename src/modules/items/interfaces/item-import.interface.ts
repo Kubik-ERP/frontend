@@ -1,31 +1,42 @@
 export interface IInventoryItemImport{
-  sku: string;
+  batchId: string;
+  failedData: inventoryItems_importFailedSuccessData[];
+  successData: inventoryItems_importFailedSuccessData[];
+  invalidRows: number;
+  totalRows: number;
+  validRows: number;
+  mergedData: inventoryItems_importFailedSuccessData[];
+}
+
+export interface inventoryItems_importFailedSuccessData{
+  id: string;
   name: string;
-  category: string;
-  brand:string;
+  barcode?: string;
+  sku: string;
   unit: string;
+  notes: string;
   stockQuantity: number;
   reorderLevel: number;
   minimumStockQuantity: number;
   expiryDate: string;
+  storageLocationId: string;
   pricePerUnit: number;
-  supplier: string;
+  createdAt: string;
+  updatedAt: string;
+  brand: string;
+  category: string;
   storageLocation: string;
+  supplier: string;
+  itemName: string;
+  rowNumber: number;
   status: string;
+  errorMessages?: string
 }
 
 export interface IInventoryItemImportResponse{
   statusCode: number;
   message: string;
-  data: {
-    items: IInventoryItemImport[];
-    meta: {
-      page: number;
-      pageSize: number;
-      total: number;
-      totalPages: number;
-    };
-  }
+  data: IInventoryItemImport;
 }
 
 export interface IInventoryItemImportProvided{

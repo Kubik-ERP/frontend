@@ -31,7 +31,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/ItemCreateEditUI.vue'),
         meta: {
           requiresAuthorization: true,
-          layout: LAYOUT_OPTIONS.NAVBAR,
+          layout: LAYOUT_OPTIONS.DEFAULT,
           breadcrumb: 'Add Items',
           title: 'Add New Items',
         },
@@ -42,7 +42,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/ItemCreateEditUI.vue'),
         meta: {
           requiresAuthorization: true,
-          layout: LAYOUT_OPTIONS.NAVBAR,
+          layout: LAYOUT_OPTIONS.DEFAULT,
           breadcrumb: 'Edit Items',
           title: 'Edit Items',
         },

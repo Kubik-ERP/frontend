@@ -61,7 +61,7 @@ const confirmUpdate = async () => {
 <template>
   <section
     id="items-create-edit"
-    class="flex justify-center items-center min-h-screen p-4 sm:p-6 bg-gray-50"
+    class="flex justify-center items-center min-h-screen p-4 sm:p-6"
   >
     <div class="flex flex-col gap-6 w-full max-w-6xl mx-auto">
       <!-- Item Details -->

@@ -192,7 +192,7 @@ function removeSelectedProduct(id: string) {
         <AppBaseFormGroup v-slot="{ classes }" class-label="font-normal text-sm text-text-secondary w-full"
           is-name-as-label label-for="validity" :name="useLocalization('voucher.createEditVoucher.field.validity')"
           :validators="voucherFormDataValidations.startDate">
-          <PrimeVueDatePicker v-model="form.validity" name="validity" selection-mode="range" date-format="dd/mm/yy"
+          <PrimeVueDatePicker v-model="form.validity" :hide-on-range-selection="true" name="validity" selection-mode="range" date-format="dd/mm/yy"
             show-icon :class="{ ...classes }" class="text-sm w-full" />
         </AppBaseFormGroup>
       </div>
