@@ -17,6 +17,12 @@ const {
   dashboard_isLoading,
   dashboard_values,
   dashboard_getSummary,
+  
+  // chart
+  setChartData,
+  setChartOptions,
+  chartData,
+  chartOptions,
 } = useDashboardService();
 
 provide<IDashboardProvided>('dashboard', {
@@ -25,6 +31,12 @@ provide<IDashboardProvided>('dashboard', {
   dashboard_isLoading,
   dashboard_values,
   dashboard_getSummary,
+
+  // chart
+  setChartData,
+  setChartOptions,
+  chartData,
+  chartOptions,
 });
 
 onMounted(() => {
@@ -34,9 +46,6 @@ onMounted(() => {
 
 <template>
   <section id="dashboard" class="flex flex-col gap-4">
-    <!-- <pre>
-      {{ dashboard_queryParams }}
-    </pre> -->
     <DashboardGreetingText />
     <DashboardOverviews />
     <DashboardSalesAndProducts />

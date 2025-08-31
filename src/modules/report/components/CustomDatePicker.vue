@@ -11,7 +11,7 @@ const props = defineProps({
   type: {
     type: [String, null],
     required: true,
-    default: 'day',
+    default: 'time',
   },
 });
 
@@ -35,9 +35,18 @@ watch(
 // The "Apply" button now emits the changes from the range array
 const applyDateChange = () => {
   if (localDateRange.value && localDateRange.value[0]) {
-    const start = localDateRange.value[0];
-    // If only one date is selected, make the end date the same as the start date
-    const end = localDateRange.value[1] || start;
+    // Create a new Date object for 'start' to work with
+    const start = new Date(localDateRange.value[0]);
+    start.setHours(0, 0, 0, 0);
+
+    // If an end date exists, create a new object from it.
+    // If not, create a new object by COPYING the start date.
+    const end = localDateRange.value[1]
+      ? new Date(localDateRange.value[1])
+      : new Date(start); // This creates a copy, not a reference
+
+    // Now, this only modifies the 'end' object
+    end.setHours(23, 59, 59, 999);
 
     emit('update:startDate', start);
     emit('update:endDate', end);
@@ -61,8 +70,15 @@ const onClickShortcut = (label: string) => {
 
   switch (label) {
     case 'Today': {
-      start = new Date(new Date().setHours(0, 0, 0, 0));
-      newType = 'day';
+      start = new Date();
+      start.setHours(0, 0, 0, 0);
+      end = new Date();
+      end.setHours(23, 59, 59, 999);
+      newType = 'time';
+      console.log(`standart: ${start} ${end}`);
+      console.log(`: ${start.toString()} ${end.toString()}`);
+      console.log(`ISO: ${start.toISOString()} ${end.toISOString()}`);
+
       break;
     }
 
@@ -70,7 +86,7 @@ const onClickShortcut = (label: string) => {
       start = new Date(new Date().setDate(today.getDate() - 1));
       start.setHours(0, 0, 0, 0);
       end = new Date(new Date().setHours(0, 0, 0, 0) - 1);
-      newType = 'day';
+      newType = 'time';
       break;
     }
 
@@ -81,14 +97,16 @@ const onClickShortcut = (label: string) => {
       firstDayOfWeek.setHours(0, 0, 0, 0);
       start = firstDayOfWeek;
       end = new Date();
-      newType = 'week';
+      end.setHours(23, 59, 59, 999);
+      newType = 'days';
       break;
     }
 
     case 'This Month': {
       start = new Date(today.getFullYear(), today.getMonth(), 1);
       end = new Date();
-      newType = 'month';
+      end.setHours(23, 59, 59, 999);
+      newType = 'days';
       break;
     }
 
@@ -98,7 +116,8 @@ const onClickShortcut = (label: string) => {
       thirtyDaysAgo.setHours(0, 0, 0, 0);
       start = thirtyDaysAgo;
       end = new Date();
-      newType = 'day';
+      end.setHours(23, 59, 59, 999);
+      newType = 'days';
       break;
     }
 
@@ -108,7 +127,7 @@ const onClickShortcut = (label: string) => {
       lastDayOfLastMonth.setHours(23, 59, 59, 999);
       start = firstDayOfLastMonth;
       end = lastDayOfLastMonth;
-      newType = 'day';
+      newType = 'days';
       break;
     }
   }
