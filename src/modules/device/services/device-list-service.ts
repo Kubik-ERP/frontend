@@ -37,7 +37,7 @@ export const useDeviceListService = (): IDeviceListProvided => {
     () => {
       device_fetchData();
     },
-    { deep: true },
+    { deep: true, immediate: true },
   );
 
   /**
