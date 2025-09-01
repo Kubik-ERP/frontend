@@ -1,5 +1,5 @@
 // store
-
+import { useReportStore } from '../store';
 // constant
 import {
   FINANCIALREPORT_CASHINOUT_COLUMNS,
@@ -17,19 +17,51 @@ import {
 import { IReportProvided, IReportQueryParams } from '../interfaces';
 
 export const useReportService = (): IReportProvided => {
+  const store = useReportStore();
+  const {
+    report_isLoading,
+    report_profitAndLost_values,
+    report_cashInOut_values,
+    report_paymentMethod_values,
+    report_taxAndServiceCharge_values,
+  } = storeToRefs(store);
+
+  const { httpAbort_registerAbort } = useHttpAbort();
+
   const report_queryParams = reactive<IReportQueryParams>({
     startDate: new Date(),
     endDate: new Date(),
-    type: 'day',
   });
 
-  watch(
-    () => report_queryParams,
-    debounce(async () => {
-      // report_getSummary();
-    }, 500),
-    { deep: true },
-  );
+  // watch(
+  //   () => report_queryParams,
+  //   debounce(async () => {
+  //     report_getFinancialReport();
+  //   }, 500),
+  //   { deep: true },
+  // );
+
+  const formatQueryParamsDate = (params: IReportQueryParams, type?: string): IReportQueryParams => {
+    return {
+      startDate: (new Date(params.startDate).toISOString().split('T')[0] + 'T00:00:00.000Z') as unknown as Date,
+      endDate: (new Date(params.endDate).toISOString().split('T')[0] + 'T23:59:59.999Z') as unknown as Date,
+      type,
+    };
+  };
+
+  const report_getFinancialReport = async (type?: string) => {
+    try {
+      await store.getFinancialReport_profitAndLost(formatQueryParamsDate(report_queryParams, type), {
+        ...httpAbort_registerAbort('FINANCIALREPORT_PROFITANDLOST_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
 
   return {
     // constants
@@ -45,5 +77,13 @@ export const useReportService = (): IReportProvided => {
     marketingReport_columns: MARKETINGREPORT_COLUMNS,
     // params
     report_queryParams,
+    // methods
+    report_getFinancialReport,
+    // store
+    report_isLoading,
+    report_profitAndLost_values,
+    report_cashInOut_values,
+    report_paymentMethod_values,
+    report_taxAndServiceCharge_values,
   };
 };

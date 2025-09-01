@@ -3,18 +3,20 @@
 import CustomDatePicker from '../../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../../services/report.service';
-const { financialReport_paymentMethod_columns } = useReportService();
+const {
+  financialReport_paymentMethod_columns,
+  report_queryParams,
+  report_getFinancialReport,
+  report_paymentMethod_values,
+} = useReportService();
 
 const popover = ref();
-
-const TEMPORARY_FORMDATA = reactive({
-  // ... other properties
-  start_date: new Date(),
-  end_date: new Date(),
-});
 </script>
 <template>
   <section>
+    <pre class="p-4 my-4 bg-gray-100 rounded-lg break-all" style="white-space: pre-wrap; word-wrap: break-word">
+      {{ report_paymentMethod_values }}
+    </pre>
     <AppBaseDataTable
       :columns="financialReport_paymentMethod_columns"
       is-using-custom-header-prefix
@@ -54,8 +56,10 @@ const TEMPORARY_FORMDATA = reactive({
 
       <template #filter>
         <CustomDatePicker
-          v-model:start-date="TEMPORARY_FORMDATA.start_date"
-          v-model:end-date="TEMPORARY_FORMDATA.end_date"
+          v-model:start-date="report_queryParams.startDate"
+          v-model:end-date="report_queryParams.endDate"
+          :should-update-type="false"
+          @update:start-date="report_getFinancialReport('payment-method')"
         />
       </template>
     </AppBaseDataTable>

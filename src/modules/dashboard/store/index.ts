@@ -124,7 +124,7 @@ export const useDashboardStore = defineStore('dashboard', {
           params,
           ...requestConfigurations,
         });
-        console.log(response.data.data);
+        // console.log(response.data.data);
         this.dashboard_values = response.data.data;
       } catch (error: unknown) {
         if (error instanceof Error) {

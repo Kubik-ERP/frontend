@@ -10,8 +10,13 @@ const props = defineProps({
   },
   type: {
     type: [String, null],
-    required: true,
+    required: false,
     default: 'time',
+  },
+  shouldUpdateType: {
+    // ✅ ADD THIS PROP
+    type: Boolean,
+    default: true, // Defaults to 'true' to avoid breaking other pages
   },
 });
 
@@ -41,9 +46,7 @@ const applyDateChange = () => {
 
     // If an end date exists, create a new object from it.
     // If not, create a new object by COPYING the start date.
-    const end = localDateRange.value[1]
-      ? new Date(localDateRange.value[1])
-      : new Date(start); // This creates a copy, not a reference
+    const end = localDateRange.value[1] ? new Date(localDateRange.value[1]) : new Date(start); // This creates a copy, not a reference
 
     // Now, this only modifies the 'end' object
     end.setHours(23, 59, 59, 999);
@@ -52,7 +55,9 @@ const applyDateChange = () => {
     emit('update:endDate', end);
 
     type.value = null;
-    emit('update:type', type.value);
+    if (props.shouldUpdateType) {
+      emit('update:type', type.value);
+    }
   }
   dialogVisible.value = false;
 };
@@ -136,7 +141,9 @@ const onClickShortcut = (label: string) => {
 
   emit('update:startDate', start);
   emit('update:endDate', end);
-  emit('update:type', newType);
+  if (props.shouldUpdateType) {
+    emit('update:type', newType);
+  }
 
   dialogVisible.value = false;
 };
