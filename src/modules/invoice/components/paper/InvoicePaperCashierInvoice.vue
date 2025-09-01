@@ -208,6 +208,21 @@ const orderTypeLabel = computed(() => {
           </tr>
 
           <tr>
+            <td class="font-normal text-black text-sm py-2">Discount Product</td>
+            <td colspan="3" class="font-normal text-black text-sm text-right py-2">
+              -
+              {{
+                useCurrencyFormat({
+                  data:
+                    invoice_invoiceData.data.paymentStatus === 'unpaid'
+                      ? invoice_invoiceData.calculate?.discountTotal || 0
+                      : invoice_invoiceData.data.totalProductDiscount || 0,
+                })
+              }}
+            </td>
+          </tr>
+
+          <tr>
             <td class="font-normal text-black text-sm py-2">Promo Voucher</td>
             <td colspan="3" class="font-normal text-black text-sm text-right py-2">
               -

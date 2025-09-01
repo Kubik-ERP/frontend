@@ -4,7 +4,6 @@ import {
   CASHIER_ORDER_TYPE,
   CASHIER_DUMMY_LIST_FLOOR,
   CASHIER_DUMMY_LIST_TABLE,
-  // CASHIER_DUMMY_VOUCHER,
   CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT,
 } from '../constants';
 
@@ -199,6 +198,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       tax: 0,
       taxInclude: false,
       items: [],
+      totalProductDiscount: 0,
       voucherAmount: 0,
     },
   });
@@ -645,6 +645,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           tax: 0,
           taxInclude: false,
           items: [],
+          totalProductDiscount: 0,
           voucherAmount: 0,
         };
       }

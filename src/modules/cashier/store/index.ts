@@ -6,13 +6,13 @@ import { RouteLocationNormalizedLoadedGeneric, useRoute } from 'vue-router';
 import {
   CASHIER_BASE_INVOICE_ENDPOINT,
   CASHIER_ENDPOINT_CATEGORIES,
+  CASHIER_ENDPOINT_CATEGORIES_PRODUCT,
   CASHIER_ENDPOINT_COSTUMERS,
   CASHIER_ENDPOINT_PAYMENT_CALCULATE_ESTIMATION,
   CASHIER_ENDPOINT_PAYMENT_INSTANT,
   CASHIER_ENDPOINT_PAYMENT_METHOD,
   CASHIER_ENDPOINT_PAYMENT_PROCESS,
   CASHIER_ENDPOINT_PAYMENT_UNPAID,
-  CASHIER_ENDPOINT_PRODUCTS,
   CASHIER_ENDPOINT_SIMULATE_PAYMENT,
 } from '../constants/cashierApi.constant';
 
@@ -20,11 +20,9 @@ import {
 import type { AxiosRequestConfig } from 'axios';
 import { ICashierOrderSummaryPaymentMethodResponse } from '../interfaces/cashier-order-summary';
 import {
-  ICashierCategoriesHasProductResponse,
+  ICashierCategoriesHasProductResponseData,
   ICashierCategoriesResponse,
   ICashierCustomerResponse,
-  ICashierProduct,
-  ICashierProductResponse,
   ICashierResponseCalulateEstimation,
   ICashierResponseMidtransQrisPayment,
   ICashierResponseProcessCheckout,
@@ -65,36 +63,6 @@ export const useCashierStore = defineStore('cashier', {
   },
   actions: {
     /**
-     * @description Handle fetch api cashier search.
-     * @url /api/products
-     * @method GET
-     * @access public
-     */
-    async cashierProduct_fetchSearch(
-      searchData: string,
-      route: RouteLocationNormalizedLoadedGeneric,
-    ): Promise<ICashierProduct[]> {
-      try {
-        const response = await httpClient.get<ICashierProductResponse>(
-          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_PRODUCTS + '/' + searchData,
-          {
-            headers: {
-              'X-STORE-ID': route.query.storeId as string,
-            },
-          },
-        );
-
-        return Promise.resolve(response.data.data);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          return Promise.reject(error);
-        } else {
-          return Promise.reject(new Error(String(error)));
-        }
-      }
-    },
-
-    /**
      * @description Handle fetch api cashier product category
      * @url /api/categories
      * @method GET
@@ -102,15 +70,11 @@ export const useCashierStore = defineStore('cashier', {
      */
     async cashierProduct_fetchCategory(
       route: RouteLocationNormalizedLoadedGeneric,
-      params: {
-        page?: number;
-        limit?: number;
-      },
     ): Promise<ICashierCategoriesResponse> {
       try {
         const response = await httpClient.get<ICashierCategoriesResponse>(
           (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_CATEGORIES,
-          withStoreHeader(route, { params }),
+          withStoreHeader(route),
         );
 
         return Promise.resolve(response.data);
@@ -129,50 +93,20 @@ export const useCashierStore = defineStore('cashier', {
      * @method GET
      * @access public
      */
-    async cashierProduct_fetchCategoryByID(
+    async cashierProduct_fetchCategoryProducts(
       categoryId: string,
+      search: string,
       route: RouteLocationNormalizedLoadedGeneric,
-      params: {
-        page?: number;
-        limit?: number;
-      },
-    ): Promise<ICashierCategoriesHasProductResponse> {
+    ): Promise<ICashierCategoriesHasProductResponseData> {
       try {
-        const response = await httpClient.get<ICashierCategoriesHasProductResponse>(
-          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_CATEGORIES + '/' + categoryId,
-
-          withStoreHeader(route, {
-            params,
-          }),
-        );
-
-        return Promise.resolve(response.data);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          return Promise.reject(error);
-        } else {
-          return Promise.reject(new Error(String(error)));
-        }
-      }
-    },
-
-    /**
-     * @description Handle fetch api product per category
-     * @url /api/categories/:categoryId
-     * @method GET
-     * @access public
-     */
-    async cashierProduct_fetchCategoryById(
-      categoryId: string,
-      requestConfigurations: AxiosRequestConfig = {},
-    ): Promise<ICashierProduct[]> {
-      try {
-        const route = useRoute();
-
-        const response = await httpClient.get<ICashierProduct[]>(
-          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_CATEGORIES + '/' + categoryId,
+        const response = await httpClient.get<ICashierCategoriesHasProductResponseData>(
+          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_CATEGORIES_PRODUCT,
           {
-            ...requestConfigurations,
+            ...withStoreHeader(route),
+            params: {
+              categoryId: categoryId,
+              search: search,
+            },
           },
         );
 

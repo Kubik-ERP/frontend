@@ -1,4 +1,4 @@
-import { ICashierCategory, ICashierProduct } from './cashier-response';
+import { ICashierCategoriesData, ICashierCategoriesHasProductResponse, IProductItem } from './cashier-response';
 
 import { ICashierSelected, ICashierModalAddProductItem, ICashierModalAddProduct } from './index';
 
@@ -7,9 +7,9 @@ export interface ICashierProductState {
   isLoadingCategory: boolean;
   selectedCategory: string;
   searchProduct: string;
-  listCategory: ICashierCategory[];
-  listProductSearch: ICashierProduct[];
-  listProductCategory: ICashierCategory[];
+  listCategory: ICashierCategoriesData[];
+  listProductSearch: IProductItem[];
+  listProductCategory: ICashierCategoriesHasProductResponse[];
 }
 
 export interface ICashierProductProvided {
@@ -24,11 +24,11 @@ export interface ICashierProductProvided {
   cashierProduct_selectedProductQty: WritableComputedRef<number, number>;
 
   cashierProduct_handleSelectCategory: (category: string) => void;
-  cashierProduct_handleSelectProduct: (product: ICashierProduct, item: ICashierModalAddProductItem) => void;
+  cashierProduct_handleSelectProduct: (product: IProductItem, item: ICashierModalAddProductItem) => void;
 
   cashierProduct_onSearchData: (searchData: string) => Promise<void>;
 
-  isProductActive: (product: ICashierProduct) => boolean;
+  isProductActive: (product: IProductItem) => boolean;
   cashierProduct_handleQuantity: (type: 'increase' | 'decrease') => void;
-  cashierProduct_handleOpenModalAddProduct: (product: ICashierProduct) => void;
+  cashierProduct_handleOpenModalAddProduct: (product: IProductItem) => void;
 }

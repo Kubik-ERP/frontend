@@ -33,6 +33,21 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
     </div>
 
     <div class="flex justify-between">
+      <span class="font-semibold">Discount Product</span>
+
+      <div class="flex flex-col items-end">
+        <span class="text-xs font-semibold">{{
+          useCurrencyFormat({
+            data:
+              invoice_invoiceData.data.paymentStatus === 'unpaid'
+                ? invoice_invoiceData.calculate?.discountTotal || 0
+                : invoice_invoiceData.data.totalProductDiscount || 0,
+          })
+        }}</span>
+      </div>
+    </div>
+
+    <div class="flex justify-between">
       <span class="text-text-disabled text-xs">Tax</span>
 
       <div class="flex flex-col items-end">
