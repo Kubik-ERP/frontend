@@ -1,11 +1,9 @@
 export interface IFinancialReport_profitAndLost {
-  data: {
-    totalPenjualan: number;
-    costOfGoodsSold: number;
-    grossProfit: number;
-    operatingExpense: number;
-    netProfit: number;
-  };
+  totalPenjualan: number;
+  costOfGoodsSold: number;
+  grossProfit: number;
+  operatingExpense: number;
+  netProfit: number;
 }
 export interface IFinancialReport_cashInOut {
   id: string;

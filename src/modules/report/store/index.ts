@@ -34,7 +34,7 @@ export const useReportStore = defineStore('report', {
         console.log('response', response.data);
         switch (params.type) {
           case 'profit-loss': {
-            this.report_profitAndLost_values = response.data;
+            this.report_profitAndLost_values = response.data.data;
             break;
           }
           case 'cashin-out': {
@@ -46,7 +46,7 @@ export const useReportStore = defineStore('report', {
             break;
           }
           case 'tax-service': {
-            this.report_taxAndServiceCharge_values = response.data;
+            this.report_taxAndServiceCharge_values = response.data.data;
             break;
           }
           default: {
