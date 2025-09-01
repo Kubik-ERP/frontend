@@ -80,9 +80,6 @@ const onClickShortcut = (label: string) => {
       end = new Date();
       end.setHours(23, 59, 59, 999);
       newType = 'time';
-      console.log(`standart: ${start} ${end}`);
-      console.log(`: ${start.toString()} ${end.toString()}`);
-      console.log(`ISO: ${start.toISOString()} ${end.toISOString()}`);
 
       break;
     }

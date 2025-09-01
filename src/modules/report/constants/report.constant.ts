@@ -66,7 +66,7 @@ export const FINANCIALREPORT_TAXANDSERVICECHARGE_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Subtotal Applied',
     sortable: false,
-    value: 'subtotal_applied',
+    value: 'subtotalApplied',
   },
   {
     label: 'Nominal',

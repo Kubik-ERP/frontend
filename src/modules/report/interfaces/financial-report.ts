@@ -24,10 +24,8 @@ export interface IFinancialReport_paymentMethod {
   };
 }
 export interface IFinancialReport_taxServiceCharge {
-  data: {
-    type: string;
-    rate: number;
-    subtotalApplied: number;
-    nominal: number;
-  }[];
+  type: string;
+  rate: number;
+  subtotalApplied: number;
+  nominal: number;
 }

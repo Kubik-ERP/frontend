@@ -33,14 +33,6 @@ export const useReportService = (): IReportProvided => {
     endDate: new Date(),
   });
 
-  // watch(
-  //   () => report_queryParams,
-  //   debounce(async () => {
-  //     report_getFinancialReport();
-  //   }, 500),
-  //   { deep: true },
-  // );
-
   const formatQueryParamsDate = (params: IReportQueryParams, type?: string): IReportQueryParams => {
     return {
       startDate: (new Date(params.startDate).toISOString().split('T')[0] + 'T00:00:00.000Z') as unknown as Date,

@@ -17,7 +17,7 @@ export interface IReportStore {
   report_profitAndLost_values: IFinancialReport_profitAndLost;
   report_cashInOut_values: IFinancialReport_cashInOut[];
   report_paymentMethod_values: IFinancialReport_paymentMethod;
-  report_taxAndServiceCharge_values: IFinancialReport_taxServiceCharge;
+  report_taxAndServiceCharge_values: IFinancialReport_taxServiceCharge[];
 }
 
 export interface IReportProvided {
@@ -40,5 +40,5 @@ export interface IReportProvided {
   report_profitAndLost_values: globalThis.Ref<IFinancialReport_profitAndLost>;
   report_cashInOut_values: globalThis.Ref<IFinancialReport_cashInOut[]>;
   report_paymentMethod_values: globalThis.Ref<IFinancialReport_paymentMethod>;
-  report_taxAndServiceCharge_values: globalThis.Ref<IFinancialReport_taxServiceCharge>;
+  report_taxAndServiceCharge_values: globalThis.Ref<IFinancialReport_taxServiceCharge[]>;
 }

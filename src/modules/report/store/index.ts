@@ -21,7 +21,7 @@ export const useReportStore = defineStore('report', {
       reportData: [] as IFinancialReport_paymentMethod['reportData'],
       totals: {} as IFinancialReport_paymentMethod['totals'],
     } as IFinancialReport_paymentMethod,
-    report_taxAndServiceCharge_values: {} as IFinancialReport_taxServiceCharge,
+    report_taxAndServiceCharge_values: [] as IFinancialReport_taxServiceCharge[],
   }),
   actions: {
     async getFinancialReport_profitAndLost(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {

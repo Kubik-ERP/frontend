@@ -9,20 +9,54 @@ const {
   report_getFinancialReport,
   report_taxAndServiceCharge_values,
 } = useReportService();
+// composables for export pdf
+import { useReportExporter } from '../../composables/useReportExporter';
+const { exportToPdf, exportToCsv } = useReportExporter();
+const handleExportToPdf = () => {
+  exportToPdf({
+    reportName: 'Financial Report - Tax & Service Charge Report',
+    period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
+    columns: financialReport_taxAndServiceCharge_columns,
+    tableData: formattedDataTable(),
+  });
+};
+const handleExportToCsv = () => {
+  exportToCsv({
+    reportName: 'Financial Report - Tax & Service Charge Report',
+    period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
+    columns: financialReport_taxAndServiceCharge_columns,
+    tableData: formattedDataTable(),
+  });
+};
+
+const formattedDataTable = () => {
+  const newData = report_taxAndServiceCharge_values.value.map(item => {
+    return {
+      type: item.type,
+      rate: item.rate + '%',
+      subtotalApplied: useCurrencyFormat({ data: item.subtotalApplied }),
+      nominal: useCurrencyFormat({ data: item.nominal }),
+    };
+  });
+  return newData || [];
+};
 
 const popover = ref();
 </script>
 <template>
   <section>
-    <pre class="p-4 my-4 bg-gray-100 rounded-lg break-all" style="white-space: pre-wrap; word-wrap: break-word">
+    <!-- <pre class="p-4 my-4 bg-gray-100 rounded-lg break-all" style="white-space: pre-wrap; word-wrap: break-word">
       {{ report_taxAndServiceCharge_values }}
-    </pre>
+      {{ formattedDataTable() }}
+    </pre> -->
     <AppBaseDataTable
+      :data="formattedDataTable()"
       :columns="financialReport_taxAndServiceCharge_columns"
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-custom-filter
-      is-using-server-side-pagination
+      is-using-custom-body
+      is-using-custom-footer
     >
       <template #header-prefix>
         <h1 class="font-bold text-2xl text-text-primary">Tax & Service Charge Report</h1>
@@ -44,11 +78,13 @@ const popover = ref();
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .pdf"
+              @click="handleExportToPdf"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .csv"
+              @click="handleExportToCsv"
             />
           </section>
         </PrimeVuePopover>
@@ -61,6 +97,15 @@ const popover = ref();
           :should-update-type="false"
           @update:start-date="report_getFinancialReport('tax-service')"
         />
+      </template>
+
+      <template #body="{ data, column }">
+        <template v-if="column.value === 'rate'">
+          <span class="text-sm text-text-primary">{{ data[column.value] }}</span>
+        </template>
+        <template v-else>
+          <span class="text-sm text-text-primary">{{ data[column.value] }}</span>
+        </template>
       </template>
     </AppBaseDataTable>
   </section>
