@@ -35,19 +35,19 @@ const formatDataTable = () => {
   return [
     {
       description: 'Total Penjualan',
-      nominal: report_profitAndLost_values.value.totalPenjualan,
+      nominal: useCurrencyFormat({ data: report_profitAndLost_values.value.totalPenjualan }),
     },
     {
       description: 'Cost of Goods Sold',
-      nominal: report_profitAndLost_values.value.costOfGoodsSold,
+      nominal: useCurrencyFormat({ data: report_profitAndLost_values.value.costOfGoodsSold }),
     },
     {
       description: 'Gross Profit',
-      nominal: report_profitAndLost_values.value.grossProfit,
+      nominal: useCurrencyFormat({ data: report_profitAndLost_values.value.grossProfit }),
     },
     {
       description: 'Nett Profit',
-      nominal: report_profitAndLost_values.value.netProfit,
+      nominal: useCurrencyFormat({ data: report_profitAndLost_values.value.netProfit }),
     },
   ];
 };
@@ -107,11 +107,11 @@ const formatDataTable = () => {
         />
       </template>
       <template #body="{ data, column }">
-        <template v-if="column.value === 'nominal'">
-          <span class="text-sm text-text-primary">{{ useCurrencyFormat({ data: data[column.value] }) }}</span>
-        </template>
-        <template v-else-if="column.value === 'description'">
+        <template v-if="column.value === 'description'">
           <span class="font-semibold text-sm text-text-primary">{{ data[column.value] }}</span>
+        </template>
+        <template v-else>
+          <span class="text-sm text-text-primary">{{ data[column.value] }}</span>
         </template>
       </template>
     </AppBaseDataTable>

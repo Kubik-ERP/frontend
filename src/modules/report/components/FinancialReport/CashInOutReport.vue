@@ -16,9 +16,21 @@ const { exportToPdf, exportToCsv } = useReportExporter();
 
 const popover = ref();
 
+const formattedDataTable = () => {
+  const newData = report_cashInOut_values.value.map(item => {
+    return {
+      date: useFormatDate(item.date, 'dd/mm/yyyy'),
+      type: item.type,
+      notes: item.notes,
+      nominal: useCurrencyFormat({ data: item.nominal }),
+    };
+  });
+  return newData;
+};
+
 const page = ref<number>(1);
 const limit = ref<number>(10);
-const totalRecords = ref<number>(report_cashInOut_values.value.length);
+const totalRecords = ref<number>(formattedDataTable.length);
 const onChangePage = (newPage: number) => {
   page.value = newPage;
 };
@@ -28,7 +40,7 @@ const handleExportToPdf = () => {
     reportName: 'Financial Report - Cash In/Out Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_cashInOut_columns,
-    tableData: report_cashInOut_values.value,
+    tableData: formattedDataTable(),
   });
 };
 const handleExportToCsv = () => {
@@ -36,7 +48,7 @@ const handleExportToCsv = () => {
     reportName: 'Financial Report - Cash In/Out Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_cashInOut_columns,
-    tableData: report_cashInOut_values.value,
+    tableData: formattedDataTable(),
   });
 };
 </script>
@@ -46,7 +58,7 @@ const handleExportToCsv = () => {
       {{ report_cashInOut_values }}
     </pre> -->
     <AppBaseDataTable
-      :data="report_cashInOut_values"
+      :data="formattedDataTable()"
       :columns="financialReport_cashInOut_columns"
       :first="(page - 1) * limit"
       :rows-per-page="limit"
@@ -64,7 +76,7 @@ const handleExportToCsv = () => {
         <PrimeVueButton
           variant="outlined"
           label="Export"
-          :disabled="report_cashInOut_values.length === 0"
+          :disabled="formattedDataTable.length === 0"
           @click="popover.toggle($event)"
         >
           <template #icon>
@@ -104,13 +116,7 @@ const handleExportToCsv = () => {
       </template>
 
       <template #body="{ data, column }">
-        <template v-if="column.value === 'date'">
-          <span class="text-sm text-text-primary">
-            {{ useFormatDate(data[column.value], 'dd/mm/yyyy') }}
-            {{ useFormatDateLocal(data[column.value]) }}
-          </span>
-        </template>
-        <template v-else-if="column.value === 'notes'">
+        <template v-if="column.value === 'notes'">
           <span v-if="data.type === 'Cash In'" class="flex flex-col text-sm text-text-primary">
             {{ data[column.value].split(' ')[0] }}
             <router-link :to="`/invoice/${data[column.value].split(' ')[1]}`">
@@ -120,9 +126,6 @@ const handleExportToCsv = () => {
             </router-link>
           </span>
           <span v-else class="text-sm text-text-primary">{{ data[column.value] }}</span>
-        </template>
-        <template v-else-if="column.value === 'nominal'">
-          <span class="text-sm text-text-primary">{{ useCurrencyFormat({ data: data[column.value] }) }}</span>
         </template>
         <template v-else>
           <span class="text-sm text-text-primary">{{ data[column.value] }}</span>
