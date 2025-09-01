@@ -20,7 +20,7 @@ const handleExportToPdf = () => {
     reportName: 'Financial Report - Payment Method Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_paymentMethod_columns,
-    tableData: report_paymentMethod_values.value.reportData,
+    tableData: formattedDataTable(),
   });
 };
 const handleExportToCsv = () => {
@@ -28,17 +28,35 @@ const handleExportToCsv = () => {
     reportName: 'Financial Report - Payment Method Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_paymentMethod_columns,
-    tableData: report_paymentMethod_values.value.reportData,
+    tableData: formattedDataTable(),
   });
+};
+
+const formattedDataTable = () => {
+  const newData = report_paymentMethod_values.value.reportData.map(item => {
+    return {
+      paymentMethod: item.paymentMethod,
+      transaction: item.transaction,
+      nominal: useCurrencyFormat({ data: item.nominal }),
+    };
+  });
+  newData.push({
+    paymentMethod: 'Total',
+    transaction: report_paymentMethod_values.value.totals.transaction,
+    nominal: useCurrencyFormat({ data: report_paymentMethod_values.value.totals.nominal }),
+  });
+
+  return newData || [];
 };
 </script>
 <template>
   <section>
     <!-- <pre class="p-4 my-4 bg-gray-100 rounded-lg break-all" style="white-space: pre-wrap; word-wrap: break-word">
       {{ report_paymentMethod_values }}
+      {{ formattedDataTable() }}
     </pre> -->
     <AppBaseDataTable
-      :data="report_paymentMethod_values.reportData"
+      :data="formattedDataTable()"
       :columns="financialReport_paymentMethod_columns"
       is-using-custom-body
       is-using-custom-header-prefix
@@ -53,7 +71,7 @@ const handleExportToCsv = () => {
         <PrimeVueButton
           variant="outlined"
           label="Export"
-          :disabled="report_paymentMethod_values.reportData.length === 0"
+
           @click="popover.toggle($event)"
         >
           <template #icon>
@@ -92,15 +110,22 @@ const handleExportToCsv = () => {
         />
       </template>
       <template #body="{ data, column }">
-        <template v-if="column.value === 'nominal'">
-          <span class="text-sm text-text-primary">{{ useCurrencyFormat({ data: data[column.value] }) }}</span>
+        <template v-if="data.paymentMethod === 'Total'">
+          <span v-if="column.value === 'paymentMethod'" class="text-sm font-bold text-text-primary">
+            {{ data[column.value] }}
+          </span>
+          <span v-else-if="column.value === 'transaction'" class="text-sm font-bold text-primary">
+            {{ data[column.value] }}
+          </span>
+          <span v-else-if="column.value === 'nominal'" class="text-sm font-bold text-primary">
+            {{ data[column.value] }}
+          </span>
         </template>
         <template v-else>
-          <span class="text-sm text-text-primary">{{ data[column.value] }}</span>
+          <span class="text-sm text-text-primary">
+            {{ data[column.value] }}
+          </span>
         </template>
-      </template>
-      <template #footer>
-        <span>{{ report_paymentMethod_values.totals }}</span>
       </template>
     </AppBaseDataTable>
   </section>

@@ -19,7 +19,7 @@ const handleExportToPdf = () => {
     reportName: 'Financial Report - Cash In/Out Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_profitAndLost_columns,
-    tableData: formatDataTable(),
+    tableData: formattedDataTable(),
   });
 };
 const handleExportToCsv = () => {
@@ -27,11 +27,11 @@ const handleExportToCsv = () => {
     reportName: 'Financial Report - Cash In/Out Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_profitAndLost_columns,
-    tableData: formatDataTable(),
+    tableData: formattedDataTable(),
   });
 };
 
-const formatDataTable = () => {
+const formattedDataTable = () => {
   return [
     {
       description: 'Total Penjualan',
@@ -58,7 +58,7 @@ const formatDataTable = () => {
       {{ report_profitAndLost_values }}
     </pre> -->
     <AppBaseDataTable
-      :data="formatDataTable()"
+      :data="formattedDataTable()"
       :columns="financialReport_profitAndLost_columns"
       is-using-custom-header-prefix
       is-using-custom-header-suffix
