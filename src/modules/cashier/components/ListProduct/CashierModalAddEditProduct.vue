@@ -81,31 +81,28 @@ const imageUrl = computed(() => {
           </div>
         </div>
 
-        <section
-          v-if="(cashierProduct_modalAddEditItem?.product?.variantHasProducts?.length || 0) > 0"
-          id="list-variant"
-        >
+        <section v-if="(cashierProduct_modalAddEditItem?.product?.variant?.length || 0) > 0" id="list-variant">
           <span class="font-semibold">{{ useLocalization('cashier.mainSection.variant') }}</span>
 
           <div class="border rounded-md border-grayscale-10 overflow-auto flex flex-col max-h-48 flex-grow">
             <div
-              v-for="variant in cashierProduct_modalAddEditItem.product.variantHasProducts"
-              :key="variant.variant.id"
+              v-for="variant in cashierProduct_modalAddEditItem.product.variant"
+              :key="variant.id"
               class="flex justify-between w-full p-2"
             >
               <div class="flex items-center gap-2">
                 <PrimeVueRadioButton
                   v-model="cashierProduct_modalAddEditItem.item.variant"
-                  :input-id="variant.variant.id"
-                  :name="variant.variant.name"
-                  :value="variant.variant"
+                  :input-id="variant.id"
+                  :name="variant.name"
+                  :value="variant"
                 />
 
-                <label :for="variant.variant.id">{{ variant.variant.name }}</label>
+                <label :for="variant.id">{{ variant.name }}</label>
               </div>
 
               <span class="text-sm text-text-disabled">{{
-                variant.variant.price == 0 ? 'Free' : `+ Rp ${variant.variant.price}`
+                variant.price == 0 ? 'Free' : `+ Rp ${variant.price}`
               }}</span>
             </div>
           </div>

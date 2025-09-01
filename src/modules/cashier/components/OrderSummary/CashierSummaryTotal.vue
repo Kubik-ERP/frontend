@@ -21,7 +21,10 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
         <PrimeVueSkeleton v-else width="6rem" />
       </div>
 
-      <div class="flex justify-between text-sm font-semibold">
+      <div
+        v-if="cashierOrderSummary_calculateEstimation?.data?.discountTotal > 0"
+        class="flex justify-between text-sm font-semibold"
+      >
         <span>Discount Product</span>
         <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
           {{

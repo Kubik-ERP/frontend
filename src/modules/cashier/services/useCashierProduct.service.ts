@@ -172,6 +172,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
       const existingProduct = cashierProduct_selectedProduct.value.find(
         val => val.product?.id === product?.id && item?.variant.id === val.variant?.id,
       );
+      
 
       if (existingProduct) {
         existingProduct.quantity = item.quantity;
@@ -220,7 +221,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
     get: () => cashierProduct_modalAddEditItem.value.item?.quantity,
     set: (value: string) => {
       const qty = parseInt(value);
-      const productQty = cashierProduct_modalAddEditItem.value.product?.quantity || 1;
+      const productQty = cashierProduct_modalAddEditItem.value.product?.price || 1;
 
       if (qty > productQty) {
         cashierProduct_modalAddEditItem.value.item.quantity = productQty;
