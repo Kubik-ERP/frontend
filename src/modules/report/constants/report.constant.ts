@@ -38,7 +38,7 @@ export const FINANCIALREPORT_PAYMENTMETHOD_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Payment Method',
     sortable: false,
-    value: 'payment_method',
+    value: 'paymentMethod',
   },
   {
     label: 'Transaction',

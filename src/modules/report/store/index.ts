@@ -17,7 +17,10 @@ export const useReportStore = defineStore('report', {
     report_isLoading: false,
     report_profitAndLost_values: {} as IFinancialReport_profitAndLost,
     report_cashInOut_values: [] as IFinancialReport_cashInOut[],
-    report_paymentMethod_values: {} as IFinancialReport_paymentMethod,
+    report_paymentMethod_values: {
+      reportData: [] as IFinancialReport_paymentMethod['reportData'],
+      totals: {} as IFinancialReport_paymentMethod['totals'],
+    } as IFinancialReport_paymentMethod,
     report_taxAndServiceCharge_values: {} as IFinancialReport_taxServiceCharge,
   }),
   actions: {
@@ -39,7 +42,7 @@ export const useReportStore = defineStore('report', {
             break;
           }
           case 'payment-method': {
-            this.report_paymentMethod_values = response.data;
+            this.report_paymentMethod_values = response.data.data;
             break;
           }
           case 'tax-service': {

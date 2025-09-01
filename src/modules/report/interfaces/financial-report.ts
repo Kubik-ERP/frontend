@@ -15,16 +15,14 @@ export interface IFinancialReport_cashInOut {
   nominal: number;
 }
 export interface IFinancialReport_paymentMethod {
-  data: {
-    reportData: {
-      paymentMethod: string;
-      transaction: number;
-      nominal: number;
-    }[];
-    totals: {
-      transaction: number;
-      nominal: number;
-    };
+  reportData: {
+    paymentMethod: string;
+    transaction: number;
+    nominal: number;
+  }[];
+  totals: {
+    transaction: number;
+    nominal: number;
   };
 }
 export interface IFinancialReport_taxServiceCharge {
