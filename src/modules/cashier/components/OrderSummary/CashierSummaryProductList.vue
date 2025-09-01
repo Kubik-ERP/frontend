@@ -58,7 +58,7 @@ const showImageUrl = (picture: string | null) => {
                   })
                 }}</span>
                 <span
-                  v-if="item.product.discountPrice"
+                  v-if="item.product.discountPrice && item.product.discountPrice < item.product.price"
                   class="text-text-disabled text-[10px] line-through text-right"
                   >{{
                     useCurrencyFormat({
