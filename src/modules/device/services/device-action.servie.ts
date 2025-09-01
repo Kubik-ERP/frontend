@@ -51,6 +51,8 @@ export const useDeviceActionService = (): IDeviceActionProvided => {
       deviceList_actionResponse.value = await store.deviceList_createData(payload as IDevicePayload, {
         ...httpAbort_registerAbort(DEVICE_LIST_REQUEST + '_CREATE'),
       });
+
+      await device_fetchData();
     } else if (deviceList_formMode.value === 'edit') {
       console.log('edit', id, payload);
       deviceList_actionResponse.value = await store.deviceList_updateData(
@@ -60,6 +62,8 @@ export const useDeviceActionService = (): IDeviceActionProvided => {
           ...httpAbort_registerAbort(DEVICE_LIST_REQUEST + '_UPDATE'),
         },
       );
+
+      await device_fetchData();
     }
   };
 
@@ -111,7 +115,7 @@ export const useDeviceActionService = (): IDeviceActionProvided => {
         } as IPropsDialogConfirmation);
 
         try {
-          const res = await store.deviceList_deleteData(id, {
+          const res = await store.deviceList_disconnectData(id, {
             ...httpAbort_registerAbort(DEVICE_LIST_REQUEST),
           });
 

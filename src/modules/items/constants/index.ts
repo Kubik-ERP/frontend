@@ -73,6 +73,11 @@ export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
 ];
 export const ITEMS_LIST_COLUMS_IMPORT: IColumnDataTable[] = [
   {
+    label: 'Row Number',
+    sortable: false,
+    value: 'rowNumber',
+  },
+  {
     label: 'SKU',
     sortable: false,
     value: 'sku',
@@ -85,12 +90,12 @@ export const ITEMS_LIST_COLUMS_IMPORT: IColumnDataTable[] = [
   {
     label: 'Category',
     sortable: false,
-    value: 'categoryName',
+    value: 'category',
   },
   {
     label: 'Brand',
     sortable: false,
-    value: 'brandName',
+    value: 'brand',
   },
   {
     label: 'Unit',
@@ -126,12 +131,12 @@ export const ITEMS_LIST_COLUMS_IMPORT: IColumnDataTable[] = [
   {
     label: 'Supplier',
     sortable: false,
-    value: 'supplierId',
+    value: 'supplier',
   },
   {
     label: 'Storage Location',
     sortable: false,
-    value: 'storageLocationId',
+    value: 'storageLocation',
   },
   {
     label: '',

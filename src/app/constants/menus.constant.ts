@@ -244,7 +244,7 @@ export const LIST_SIDEBAR_MENUS = [
           },
           {
             name: 'Rounding',
-            path: '/',
+            path: '/pos-setting/rounding',
           },
           {
             name: 'Tax & Service Charge',

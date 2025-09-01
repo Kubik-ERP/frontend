@@ -26,6 +26,10 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
  */
 const { cashierOrderSummary_modalPlaceOrderDetail, cashierOrderSummary_handleSimulatePayment } =
   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 </script>
 
 <template>
@@ -44,7 +48,7 @@ const { cashierOrderSummary_modalPlaceOrderDetail, cashierOrderSummary_handleSim
       <CashierSummaryModalInvoiceDetail />
 
       <CashierSummaryModalOrderType />
-      <CashierSummaryModalSelectTable />
+      <CashierSummaryModalSelectTable v-if="route.name !== 'self-order'" />
 
       <CashierSummaryModalMoreOptionsMobile />
 

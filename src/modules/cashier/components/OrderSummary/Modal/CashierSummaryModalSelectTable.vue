@@ -210,7 +210,7 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
                 id="alert-table-will-merge"
                 class="flex gap-2 bg-secondary p-2 rounded-xl drop-shadow-lg drop-shadow-secondary/60"
               >
-                <AppBaseSvg name="info-secondary" class="mt-1" />
+                <AppBaseSvg name="info-secondary" class="mt-1 h-4 w-4" />
                 <div class="flex flex-col">
                   <span class="font-semibold text-secondary-hover">Table will be merged</span>
                   <span class="text-secondary-hover text-xs">Selected tables will be merged as one order</span>

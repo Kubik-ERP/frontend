@@ -45,50 +45,33 @@ const wrapperClass = computed(() => {
 
 <template>
   <template v-if="!cashierProduct_productState.isLoadingProduct">
-    <template v-if="cashierProduct_productState.searchProduct">
-      <section id="cashier-list-product-wrapper-class" :class="wrapperClass">
-        <component
-          :is="selectedComponent"
-          v-for="product in cashierProduct_productState.listProductSearch"
-          :key="product.id"
-          :product="product"
-          :category="product?.categoriesHasProducts?.[0]?.categories.category || ''"
-        />
+    <template v-if="cashierProduct_productState.listProductCategory.length > 0">
+      <section
+        v-for="(item, index) in cashierProduct_productState.listProductCategory"
+        id="cashier-list-featured-product"
+        :key="index"
+        class="flex flex-col gap-2"
+      >
+        <template v-if="item.items.length > 0">
+          <h2 class="text-xs text-text-disabled">{{ item.category }}</h2>
+
+          <section id="cashier-list-wrapper-class" :class="wrapperClass">
+            <component
+              :is="selectedComponent"
+              v-for="product in item.items"
+              :key="product.id"
+              :product="product"
+              :category="item.category"
+            />
+          </section>
+        </template>
+        <template v-else-if="item.items.length === 0 && cashierProduct_productState.selectedCategory === item.id">
+          <CashierCategoryNotFound />
+        </template>
       </section>
     </template>
     <template v-else>
-      <template v-if="cashierProduct_productState.listProductCategory.length > 0">
-        <section
-          v-for="(item, index) in cashierProduct_productState.listProductCategory"
-          id="cashier-list-featured-product"
-          :key="index"
-          class="flex flex-col gap-2"
-        >
-          <template v-if="item.categoriesHasProducts.length > 0">
-            <h2 class="text-xs text-text-disabled">{{ item.category }}</h2>
-
-            <section id="cashier-list-wrapper-class" :class="wrapperClass">
-              <component
-                :is="selectedComponent"
-                v-for="product in item.categoriesHasProducts"
-                :key="product.productsId"
-                :product="product.products"
-                :category="item.category"
-              />
-            </section>
-          </template>
-          <template
-            v-else-if="
-              item.categoriesHasProducts.length === 0 && cashierProduct_productState.selectedCategory === item.id
-            "
-          >
-            <CashierCategoryNotFound />
-          </template>
-        </section>
-      </template>
-      <template v-else>
-        <CashierListProductNotFound />
-      </template>
+      <CashierListProductNotFound />
     </template>
   </template>
   <template v-else>
