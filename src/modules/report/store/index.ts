@@ -13,6 +13,8 @@ import type {
   IFinancialReport_taxServiceCharge,
   ISalesReport_salesByItem,
   ISalesReport_salesByOrderType,
+  IInventoryReport_stock,
+  IInventoryReport_stockMovement,
 } from '../interfaces';
 export const useReportStore = defineStore('report', {
   state: (): IReportStore => ({
@@ -26,6 +28,8 @@ export const useReportStore = defineStore('report', {
     report_taxAndServiceCharge_values: [] as IFinancialReport_taxServiceCharge[],
     salesReport_salesByItem_values: [] as ISalesReport_salesByItem[],
     salesReport_salesByOrderType_values: [] as ISalesReport_salesByOrderType[],
+    inventoryReport_stock_values: [] as IInventoryReport_stock[],
+    inventoryReport_stockMovement_values: [] as IInventoryReport_stockMovement[],
   }),
   actions: {
     async getFinancialReport_profitAndLost(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
@@ -76,7 +80,7 @@ export const useReportStore = defineStore('report', {
           params,
           ...requestConfigurations,
         });
-        console.log('response', response.data);
+        // console.log('response', response.data);
         switch (params.type) {
           case 'item': {
             this.salesReport_salesByItem_values = response.data.data;
@@ -84,6 +88,39 @@ export const useReportStore = defineStore('report', {
           }
           case 'order': {
             this.salesReport_salesByOrderType_values = response.data.data;
+            break;
+          }
+          default: {
+            console.warn(`Unknown type: ${params.type}`);
+          }
+        }
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.report_isLoading = false;
+      }
+    },
+
+    async getInventoryReport(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
+      this.report_isLoading = true;
+      try {
+        const response = await httpClient.get(`dashboard/stock-report`, {
+          params,
+          ...requestConfigurations,
+        });
+        console.log('response', response.data);
+        switch (params.type) {
+          case 'stock': {
+            this.inventoryReport_stock_values = response.data.data;
+            break;
+          }
+          case 'movement': {
+            this.inventoryReport_stockMovement_values = response.data.data;
             break;
           }
           default: {

@@ -28,6 +28,9 @@ export const useReportService = (): IReportProvided => {
     // sales
     salesReport_salesByItem_values,
     salesReport_salesByOrderType_values,
+    // inventory
+    inventoryReport_stock_values,
+    inventoryReport_stockMovement_values,
   } = storeToRefs(store);
 
   const { httpAbort_registerAbort } = useHttpAbort();
@@ -73,6 +76,20 @@ export const useReportService = (): IReportProvided => {
     }
   };
 
+  const report_getInventoryReport = async (type?: string) => {
+    try {
+      await store.getInventoryReport(formatQueryParamsDate(report_queryParams, type), {
+        ...httpAbort_registerAbort('INVENTORYREPORT_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
+
   return {
     // constants
     financialReport_profitAndLost_columns: FINANCIALREPORT_PROFITANDLOST_COLUMNS,
@@ -90,6 +107,7 @@ export const useReportService = (): IReportProvided => {
     // methods
     report_getFinancialReport,
     report_getSalesReport,
+    report_getInventoryReport,
     // store
     report_isLoading,
     // financial
@@ -100,5 +118,8 @@ export const useReportService = (): IReportProvided => {
     // sales
     salesReport_salesByItem_values,
     salesReport_salesByOrderType_values,
+    // inventory
+    inventoryReport_stock_values,
+    inventoryReport_stockMovement_values,
   };
 };

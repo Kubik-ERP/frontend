@@ -213,7 +213,7 @@ export const INVENTORYREPORT_STOCK_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Item Name',
     sortable: false,
-    value: 'item_name',
+    value: 'itemName',
   },
   {
     label: 'Category',
@@ -223,17 +223,17 @@ export const INVENTORYREPORT_STOCK_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Stock on Hand',
     sortable: true,
-    value: 'stock_on_hand',
+    value: 'stock',
   },
   {
     label: 'Reorder Level',
     sortable: true,
-    value: 'reorder_level',
+    value: 'reorderLevel',
   },
   {
     label: 'Minimum Stock',
     sortable: true,
-    value: 'minimum_stock',
+    value: 'minimumStock',
   },
   {
     label: 'Unit',
@@ -243,7 +243,7 @@ export const INVENTORYREPORT_STOCK_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Storage Location',
     sortable: false,
-    value: 'storage_location',
+    value: 'storageLocation',
   },
 ];
 export const INVENTORYREPORT_STOCKMOVEMENT_COLUMNS: IColumnDataTable[] = [
@@ -255,12 +255,12 @@ export const INVENTORYREPORT_STOCKMOVEMENT_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Item Name',
     sortable: false,
-    value: 'item_name',
+    value: 'itemName',
   },
   {
     label: 'Movement Type',
     sortable: false,
-    value: 'movement_type',
+    value: 'movementType',
   },
   {
     label: 'Qty',
@@ -270,12 +270,12 @@ export const INVENTORYREPORT_STOCKMOVEMENT_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Stock Before',
     sortable: true,
-    value: 'stock_before',
+    value: 'stockBefore',
   },
   {
     label: 'Stock After',
     sortable: true,
-    value: 'stock_after',
+    value: 'stockAfter',
   },
   {
     label: 'Notes',
@@ -285,7 +285,7 @@ export const INVENTORYREPORT_STOCKMOVEMENT_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Storage Location',
     sortable: false,
-    value: 'storage_location',
+    value: 'storageLocation',
   },
 ];
 

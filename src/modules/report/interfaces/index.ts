@@ -9,6 +9,8 @@ export * from './financial-report';
 import type { ISalesReport_salesByItem, ISalesReport_salesByOrderType } from './sales-report';
 export * from './sales-report';
 
+import type { IInventoryReport_stock, IInventoryReport_stockMovement } from './inventory-report';
+export * from './inventory-report';
 export interface IReportQueryParams {
   startDate: Date;
   endDate: Date;
@@ -25,6 +27,9 @@ export interface IReportStore {
   // sales report
   salesReport_salesByItem_values: ISalesReport_salesByItem[];
   salesReport_salesByOrderType_values: ISalesReport_salesByOrderType[];
+  // inventory report
+  inventoryReport_stock_values: IInventoryReport_stock[];
+  inventoryReport_stockMovement_values: IInventoryReport_stockMovement[];
 }
 
 export interface IReportProvided {
@@ -41,6 +46,7 @@ export interface IReportProvided {
   // methods
   report_getFinancialReport: (type: string) => Promise<void>;
   report_getSalesReport: (type: string) => Promise<void>;
+  report_getInventoryReport: (type: string) => Promise<void>;
   // params
   report_queryParams: IReportQueryParams;
   // store
@@ -53,4 +59,7 @@ export interface IReportProvided {
   // sales report
   salesReport_salesByItem_values: globalThis.Ref<ISalesReport_salesByItem[]>;
   salesReport_salesByOrderType_values: globalThis.Ref<ISalesReport_salesByOrderType[]>;
+  // inventory report
+  inventoryReport_stock_values: globalThis.Ref<IInventoryReport_stock[]>;
+  inventoryReport_stockMovement_values: globalThis.Ref<IInventoryReport_stockMovement[]>;
 }
