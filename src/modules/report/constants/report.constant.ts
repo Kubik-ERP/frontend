@@ -293,12 +293,12 @@ export const MARKETINGREPORT_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Voucher Name',
     sortable: false,
-    value: 'voucher_name',
+    value: 'voucherName',
   },
   {
     label: 'Validity Period',
     sortable: true,
-    value: 'validity_period',
+    value: 'validityPeriod',
   },
   {
     label: 'Usage',

@@ -31,6 +31,8 @@ export const useReportService = (): IReportProvided => {
     // inventory
     inventoryReport_stock_values,
     inventoryReport_stockMovement_values,
+    // voucher
+    voucherReport_values,
   } = storeToRefs(store);
 
   const { httpAbort_registerAbort } = useHttpAbort();
@@ -90,6 +92,20 @@ export const useReportService = (): IReportProvided => {
     }
   };
 
+  const report_getVoucherReport = async () => {
+    try {
+      await store.getVoucherReport(report_queryParams, {
+        ...httpAbort_registerAbort('VOUCHERREPORT_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
+
   return {
     // constants
     financialReport_profitAndLost_columns: FINANCIALREPORT_PROFITANDLOST_COLUMNS,
@@ -101,13 +117,14 @@ export const useReportService = (): IReportProvided => {
     salesReport_salesByOrderType_columns: SALESREPORT_SALESBYORDERTYPE_COLUMNS,
     inventoryReport_stock_columns: INVENTORYREPORT_STOCK_COLUMNS,
     inventoryReport_stockMovement_columns: INVENTORYREPORT_STOCKMOVEMENT_COLUMNS,
-    marketingReport_columns: MARKETINGREPORT_COLUMNS,
+    voucherReport_columns: MARKETINGREPORT_COLUMNS,
     // params
     report_queryParams,
     // methods
     report_getFinancialReport,
     report_getSalesReport,
     report_getInventoryReport,
+    report_getVoucherReport,
     // store
     report_isLoading,
     // financial
@@ -121,5 +138,7 @@ export const useReportService = (): IReportProvided => {
     // inventory
     inventoryReport_stock_values,
     inventoryReport_stockMovement_values,
+    // voucher
+    voucherReport_values,
   };
 };

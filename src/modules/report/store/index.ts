@@ -15,6 +15,7 @@ import type {
   ISalesReport_salesByOrderType,
   IInventoryReport_stock,
   IInventoryReport_stockMovement,
+  IVoucherReport,
 } from '../interfaces';
 export const useReportStore = defineStore('report', {
   state: (): IReportStore => ({
@@ -30,6 +31,7 @@ export const useReportStore = defineStore('report', {
     salesReport_salesByOrderType_values: [] as ISalesReport_salesByOrderType[],
     inventoryReport_stock_values: [] as IInventoryReport_stock[],
     inventoryReport_stockMovement_values: [] as IInventoryReport_stockMovement[],
+    voucherReport_values: [] as IVoucherReport[],
   }),
   actions: {
     async getFinancialReport_profitAndLost(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
@@ -113,7 +115,7 @@ export const useReportStore = defineStore('report', {
           params,
           ...requestConfigurations,
         });
-        console.log('response', response.data);
+        // console.log('response', response.data);
         switch (params.type) {
           case 'stock': {
             this.inventoryReport_stock_values = response.data.data;
@@ -127,6 +129,27 @@ export const useReportStore = defineStore('report', {
             console.warn(`Unknown type: ${params.type}`);
           }
         }
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.report_isLoading = false;
+      }
+    },
+
+    async getVoucherReport(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
+      this.report_isLoading = true;
+      try {
+        const response = await httpClient.get(`dashboard/voucher-report`, {
+          params,
+          ...requestConfigurations,
+        });
+        // console.log('response', response.data);
+        this.voucherReport_values = response.data.data;
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

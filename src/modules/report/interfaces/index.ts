@@ -17,6 +17,9 @@ export interface IReportQueryParams {
   type?: string | null;
 }
 
+import type { IVoucherReport } from './voucher-report';
+export * from './voucher-report';
+
 export interface IReportStore {
   report_isLoading: boolean;
   // financial report
@@ -30,6 +33,8 @@ export interface IReportStore {
   // inventory report
   inventoryReport_stock_values: IInventoryReport_stock[];
   inventoryReport_stockMovement_values: IInventoryReport_stockMovement[];
+  // voucher report
+  voucherReport_values: IVoucherReport[];
 }
 
 export interface IReportProvided {
@@ -42,11 +47,12 @@ export interface IReportProvided {
   salesReport_salesByOrderType_columns: IColumnDataTable[];
   inventoryReport_stock_columns: IColumnDataTable[];
   inventoryReport_stockMovement_columns: IColumnDataTable[];
-  marketingReport_columns: IColumnDataTable[];
+  voucherReport_columns: IColumnDataTable[];
   // methods
   report_getFinancialReport: (type: string) => Promise<void>;
   report_getSalesReport: (type: string) => Promise<void>;
   report_getInventoryReport: (type: string) => Promise<void>;
+  report_getVoucherReport: () => Promise<void>;
   // params
   report_queryParams: IReportQueryParams;
   // store
@@ -62,4 +68,6 @@ export interface IReportProvided {
   // inventory report
   inventoryReport_stock_values: globalThis.Ref<IInventoryReport_stock[]>;
   inventoryReport_stockMovement_values: globalThis.Ref<IInventoryReport_stockMovement[]>;
+  // voucher report
+  voucherReport_values: globalThis.Ref<IVoucherReport[]>;
 }
