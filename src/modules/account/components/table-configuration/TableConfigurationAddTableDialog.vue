@@ -115,7 +115,7 @@ const {
 
             <div class="flex items-center gap-2">
               <Qrcode
-                :value="`http://103.191.63.109:8090/authentication/sign-in?floorName=${accountStoreTableConfiguration_formDataOfAddTable.floorName}&tablesName=${accountStoreTableConfiguration_formDataOfAddTable.name}`"
+                :value="`${APP_BASE_URL}/authentication/sign-in?floorName=${accountStoreTableConfiguration_formDataOfAddTable.floorName}&tablesName=${accountStoreTableConfiguration_formDataOfAddTable.name}`"
               />
 
               <PrimeVueButton

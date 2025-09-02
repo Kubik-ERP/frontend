@@ -56,7 +56,7 @@ export const useInventoryItemsStore = defineStore('items', {
     inventoryItem_listInventoryItemsOnDropdown: (state): IDropdownItem[] => {
       return state.inventoryItems_lists.data.items.map(item => ({
         value: item.id,
-        label: item.name,
+        label: `${item.sku} - ${item.itemName}`,
       }));
     },
   },

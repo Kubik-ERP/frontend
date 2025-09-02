@@ -42,7 +42,7 @@ const { accountStoreEdit_formData } = inject<IAccountStoreEditProvided>('account
           >
             <template #default>
               <section id="content" class="flex items-center gap-2">
-                <AppBaseSvg name="plus-line" />
+                <AppBaseSvg name="plus-line" class="w-4 h-4" />
               </section>
             </template>
           </PrimeVueButton>

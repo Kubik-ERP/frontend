@@ -152,7 +152,7 @@ function zoomOut() {
         >
           <template #default>
             <section id="content" class="flex items-center gap-2 w-full">
-              <AppBaseSvg name="edit" />
+              <AppBaseSvg name="edit" class="w-4 h4" />
               <span class="font-semibold text-sm text-primary">Edit Floor Name</span>
             </section>
           </template>
