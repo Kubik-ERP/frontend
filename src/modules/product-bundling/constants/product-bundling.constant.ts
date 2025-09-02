@@ -2,7 +2,6 @@ import type { IProductBundlingList } from '../interfaces';
 
 export const PRICE_TYPE_OPTION = [
   { value: 'TOTAL_ITEMS', label: 'Total' },
-  { value: 'CUSTOM', label: 'Custom' },
   { value: 'DISCOUNT', label: 'Discount' },
 ];
 
