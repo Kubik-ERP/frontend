@@ -29,7 +29,7 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
         :to="{ name: 'account.store.edit', params: { id: accountStoreDetail_selectedOutlet?.id } }"
         class="flex items-center gap-2"
       >
-        <AppBaseSvg name="edit" />
+        <AppBaseSvg name="edit" class="w-4 h4" />
 
         <span class="font-semibold text-primary text-sm">
           {{ useLocalization('account.edit-store-details') }}

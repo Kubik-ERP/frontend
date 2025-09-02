@@ -53,10 +53,18 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
   /**
    * @description Form validations
    */
-  const authenticationSignIn_formRules = computed(() => ({
-    email: { email, required },
-    password: { required },
-  }));
+  const authenticationSignIn_formRules = computed(() => {
+    const rules: Record<string, Record<string, unknown>> = {
+      email: { email, required },
+    };
+
+    // Only require password for OWNER role
+    if (authenticationSignIn_selectedRole.value === 'OWNER') {
+      rules.password = { required };
+    }
+
+    return rules;
+  });
   const authenticationSignIn_formValidations = useVuelidate(
     authenticationSignIn_formRules,
     authenticationSignIn_formData,
@@ -217,8 +225,17 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     if (authenticationSignIn_formValidations.value.$invalid) return;
 
     try {
-      await authenticationSignIn_fetchAuthenticationSignIn();
-      await authenticationSignIn_fetchAuthenticationProfile();
+      if (authenticationSignIn_selectedRole.value === 'EMPLOYEE') {
+        // For employee, redirect to connect device page with email
+        await router.push({
+          name: 'connect-device',
+          query: { email: authenticationSignIn_formData.email }
+        });
+      } else {
+        // For owner, proceed with normal login
+        await authenticationSignIn_fetchAuthenticationSignIn();
+        await authenticationSignIn_fetchAuthenticationProfile();
+      }
     } catch (error: unknown) {
       authenticationSignIn_isNotAuthenticated.value = true;
 

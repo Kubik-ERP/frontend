@@ -387,15 +387,26 @@ const getAdditionalItems = (items: unknown[]) => {
                           :column="column"
                           :data="record"
                           :index="columnIndex"
-                          :is-expandable="props.isUsingExpandableRows && ((record as any)[props.expandableRowsField] || []).length > 1"
+                          :is-expandable="
+                            props.isUsingExpandableRows &&
+                            ((record as any)[props.expandableRowsField] || []).length > 1
+                          "
                           :is-expanded="isRowExpanded((record as any)[props.expandableRowsIdField])"
-                          :toggle-expansion="() => toggleRowExpansion((record as any)[props.expandableRowsIdField])"
-                          :primary-item="props.isUsingExpandableRows ? getPrimaryItem((record as any)[props.expandableRowsField] || []) : null"
+                          :toggle-expansion="
+                            () => toggleRowExpansion((record as any)[props.expandableRowsIdField])
+                          "
+                          :primary-item="
+                            props.isUsingExpandableRows
+                              ? getPrimaryItem((record as any)[props.expandableRowsField] || [])
+                              : null
+                          "
                         />
                       </template>
 
                       <template v-else>
-                        <span class="font-normal text-sm text-text-primary">{{ (record as any)[column.value] }}</span>
+                        <span class="font-normal text-sm text-text-primary">{{
+                          (record as any)[column.value]
+                        }}</span>
                       </template>
                     </td>
                   </template>
@@ -403,7 +414,11 @@ const getAdditionalItems = (items: unknown[]) => {
 
                 <!-- Expanded Rows for Additional Items -->
                 <template
-                  v-if="props.isUsingExpandableRows && isRowExpanded((record as any)[props.expandableRowsIdField]) && getAdditionalItems((record as any)[props.expandableRowsField] || []).length > 0"
+                  v-if="
+                    props.isUsingExpandableRows &&
+                    isRowExpanded((record as any)[props.expandableRowsIdField]) &&
+                    getAdditionalItems((record as any)[props.expandableRowsField] || []).length > 0
+                  "
                 >
                   <tr
                     v-for="item in getAdditionalItems((record as any)[props.expandableRowsField] || [])"
@@ -423,7 +438,9 @@ const getAdditionalItems = (items: unknown[]) => {
                         </template>
 
                         <template v-else>
-                          <span class="font-normal text-sm text-text-primary">{{ (item as any)[column.value] }}</span>
+                          <span class="font-normal text-sm text-text-primary">{{
+                            (item as any)[column.value]
+                          }}</span>
                         </template>
                       </td>
                     </template>
@@ -437,7 +454,9 @@ const getAdditionalItems = (items: unknown[]) => {
 
       <!-- Custom Pagination -->
       <template v-if="props.isUsingPagination && !props.isUsingCustomFooter">
-        <div class="border-l border-r border-b border-solid border-grayscale-20 bg-background rounded-b-lg px-4 py-3">
+        <div
+          class="border-l border-r border-b border-solid border-grayscale-20 bg-background rounded-b-lg px-4 py-3"
+        >
           <div class="flex flex-col sm:flex-row items-center gap-2 justify-between w-full">
             <!-- Mobile: Page Info -->
             <div v-if="isCurrentlyMobile" class="text-sm text-gray-600 order-1 sm:order-none">
@@ -751,7 +770,7 @@ const getAdditionalItems = (items: unknown[]) => {
   <!-- Custom Footer Section -->
   <section
     v-if="props.isUsingCustomFooter"
-    class="border-l border-r border-b border-solid border-grayscale-20 bg-background rounded-bl-lg rounded-br-lg px-4 py-3 -mt-8"
+    class="border-l border-r border-b border-solid border-grayscale-20 bg-background rounded-bl-lg rounded-br-lg px-4 py-3 -mt-10"
   >
     <slot name="footer" />
   </section>

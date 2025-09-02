@@ -16,9 +16,9 @@ const httpClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API_URL
     ? `${import.meta.env.VITE_APP_BASE_API_URL}${import.meta.env.VITE_APP_BASE_API_PREFIX}`
     : '/api',
-    // headers: {
-    //     'ngrok-skip-browser-warning': 'true'
-    //   }
+  // headers: {
+  //     'ngrok-skip-browser-warning': 'true'
+  //   }
 });
 
 httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
@@ -40,10 +40,10 @@ httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   }
 
   // Get fresh outlet values directly from store state
-  if (outletStore.outlet_selectedOutletOnAccountPage) {
-    config.headers['X-STORE-ID'] = outletStore.outlet_selectedOutletOnAccountPage.id;
-  } else if (outletStore.outlet_currentOutlet) {
-    config.headers['X-STORE-ID'] = outletStore.outlet_currentOutlet.id;
+  if (outletStore?.$state?.outlet_selectedOutletOnAccountPage?.id) {
+    config.headers['X-STORE-ID'] = outletStore?.$state?.outlet_selectedOutletOnAccountPage?.id;
+  } else if (outletStore?.$state?.outlet_currentOutlet?.id) {
+    config.headers['X-STORE-ID'] = outletStore?.$state?.outlet_currentOutlet?.id;
   }
 
   return config;
