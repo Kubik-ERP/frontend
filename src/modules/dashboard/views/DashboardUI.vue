@@ -39,9 +39,9 @@ provide<IDashboardProvided>('dashboard', {
   chartOptions,
 });
 
-onMounted(() => {
-  dashboard_getSummary();
-});
+// onMounted(() => {
+//   dashboard_getSummary();
+// });
 </script>
 
 <template>
