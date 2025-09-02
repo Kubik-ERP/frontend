@@ -3,8 +3,8 @@ import { useRoundingService } from '../services/setting-rounding.service';
 
 const {
   settingRounding_isEnabled,
-  settingRounding_roundingMode,
-  settingRounding_roundingAmount,
+  settingRounding_roundingType,
+  settingRounding_roundingValue,
   settingRounding_handleIncrement,
   settingRounding_handleDecrement,
 } = useRoundingService();
@@ -25,10 +25,10 @@ const {
               <PrimeVueButton
                 class="flex-1 py-2 px-4 rounded-md flex items-center justify-center gap-2"
                 :class="{
-                  'bg-primary text-white': settingRounding_roundingMode === 'up',
-                  'bg-white hover:bg-primary hover:text-white text-black': settingRounding_roundingMode !== 'up',
+                  'bg-primary text-white': settingRounding_roundingType === 'up',
+                  'bg-white hover:bg-primary hover:text-white text-black': settingRounding_roundingType !== 'up',
                 }"
-                @click="settingRounding_roundingMode = 'up'"
+                @click="settingRounding_roundingType = 'up'"
               >
                 <div class="flex gap-2 items-center">
                   <span>Pembulatan ke Atas</span>
@@ -39,10 +39,10 @@ const {
               <PrimeVueButton
                 class="flex-1 py-2 px-4 rounded-md flex items-center justify-center gap-2"
                 :class="{
-                  'bg-primary text-white': settingRounding_roundingMode === 'down',
-                  'bg-white hover:bg-primary hover:text-white text-black': settingRounding_roundingMode !== 'down',
+                  'bg-primary text-white': settingRounding_roundingType === 'down',
+                  'bg-white hover:bg-primary hover:text-white text-black': settingRounding_roundingType !== 'down',
                 }"
-                @click="settingRounding_roundingMode = 'down'"
+                @click="settingRounding_roundingType = 'down'"
               >
                 <div class="flex gap-2 items-center">
                   <span>Pembulatan ke Bawah</span>
@@ -60,7 +60,7 @@ const {
                 <PrimeVueButton icon="pi pi-minus" class="border px-6" @click="settingRounding_handleDecrement" />
                 <PrimeVueInputNumber
                   id="rounding-amount"
-                  v-model="settingRounding_roundingAmount"
+                  v-model="settingRounding_roundingValue"
                   class="mt-1 rounded-md w-full"
                   placeholder="Masukkan kelipatan (contoh: 10, 100, 1000)"
                   button-layout="horizontal"

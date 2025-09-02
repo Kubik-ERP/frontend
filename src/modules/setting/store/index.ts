@@ -292,7 +292,7 @@ export const useSettingStore = defineStore('pos-setting', {
       this.setting_isLoading = true;
 
       try {
-        const response = await httpClient.put<unknown>(SETTING_ROUNDING_BASE_ENDPOINT, payload, {
+        const response = await httpClient.post<unknown>(SETTING_ROUNDING_BASE_ENDPOINT, payload, {
           ...requestConfigurations,
         });
 
