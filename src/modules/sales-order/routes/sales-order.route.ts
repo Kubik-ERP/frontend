@@ -8,7 +8,6 @@ import { LAYOUT_OPTIONS } from '@/app/constants';
 
 // Routes
 import cashDrawerRouter from '@/modules/cash-drawer/routes/cash-drawer.router';
-import voucherRoutes from '@/modules/voucher/routes/voucher.router';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -26,7 +25,6 @@ const routes: RouteRecordRaw[] = [
         },
       },
       cashDrawerRouter,
-      voucherRoutes,
     ],
     meta: {
       breadcrumb: 'Sales Order',

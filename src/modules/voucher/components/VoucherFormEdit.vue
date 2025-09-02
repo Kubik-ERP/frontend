@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { IProduct } from "@/modules/catalog-product/interfaces";
-import { useVoucherEditService } from "../services/voucher-edit.service";
+import { ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { IProduct } from '@/modules/catalog-product/interfaces';
+import { useVoucherEditService } from '../services/voucher-edit.service';
 import confirmationSVG from '@/app/assets/icons/confirmation.svg';
-import { useVoucherCreateService } from "../services/voucher-create.service";
-import { IVoucherEditRequest } from "../interfaces/voucher-edit.interface";
+import { useVoucherCreateService } from '../services/voucher-create.service';
+import { IVoucherEditRequest } from '../interfaces/voucher-edit.interface';
 
 // --- API Service (Edit)
 const {
@@ -16,14 +16,14 @@ const {
   voucherEdit_isLoading,
 } = useVoucherEditService();
 
-const { voucherProductList } = useVoucherCreateService()
+const { voucherProductList } = useVoucherCreateService();
 
 // --- State untuk UI sama seperti Create
 const form = ref({
-  title: "",
+  title: '',
   validity: null as [Date, Date] | null,
   enableQuota: false,
-  quota: 0,
+  quota: 1,
   promoCode: '',
   enableMinTransaction: false,
   minTransaction: 0,
@@ -31,7 +31,7 @@ const form = ref({
   discountPercent: 0,
   maxDiscountPrice: 0,
   discountNominal: 0,
-  productScope: "all",
+  productScope: 'all',
   selectedProducts: [] as string[],
 });
 
@@ -45,13 +45,10 @@ onMounted(async () => {
 
   // Mapping dari data API ke form UI
   const v = voucherEdit_formData.value;
-  console.log(v.hasProducts.products)
+  console.log(v.hasProducts.products);
   form.value.title = v.name;
   form.value.promoCode = v.promoCode;
-  form.value.validity = v.startPeriod && v.endPeriod ? [
-    new Date(v.startPeriod),
-    new Date(v.endPeriod),
-  ] : null;
+  form.value.validity = v.startPeriod && v.endPeriod ? [new Date(v.startPeriod), new Date(v.endPeriod)] : null;
   form.value.enableQuota = v.quota > 0;
   form.value.quota = v.quota || 0;
   form.value.enableMinTransaction = v.minPrice > 0;
@@ -59,22 +56,23 @@ onMounted(async () => {
   form.value.isPercentage = v.isPercent;
   form.value.discountPercent = v.isPercent ? v.amount : 0;
   form.value.discountNominal = v.isPercent ? 0 : v.amount;
-  form.value.maxDiscountPrice = v.hasProducts?.type === "specific" ? v.maxPrice || 0 : 0;
-  form.value.productScope = v.hasProducts?.type || "all";
+  form.value.maxDiscountPrice = v.hasProducts?.type === 'specific' ? v.maxPrice || 0 : 0;
+  form.value.productScope = v.hasProducts?.type || 'all';
   form.value.selectedProducts = v.hasProducts?.products || [];
 });
 
 // Format currency helper
 const formatCurrency = (val: number) =>
-  new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(val);
+  new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(val);
 
-const isFormValid = computed(() =>
-  !!form.value.title &&
-  !!form.value.validity &&
-  (form.value.isPercentage ? form.value.discountPercent > 0 : form.value.discountNominal > 0) &&
-  (!form.value.enableMinTransaction || form.value.minTransaction >= 0) &&
-  (!form.value.enableQuota || form.value.quota > 0) &&
-  (form.value.productScope === "all" || form.value.selectedProducts.length > 0)
+const isFormValid = computed(
+  () =>
+    !!form.value.title &&
+    !!form.value.validity &&
+    (form.value.isPercentage ? form.value.discountPercent > 0 : form.value.discountNominal > 0) &&
+    (!form.value.enableMinTransaction || form.value.minTransaction >= 0) &&
+    form.value.quota > 1 &&
+    (form.value.productScope === 'all' || form.value.selectedProducts.length > 0),
 );
 
 const buildVoucherPayload = (): IVoucherEditRequest => {
@@ -86,16 +84,14 @@ const buildVoucherPayload = (): IVoucherEditRequest => {
     amount: form.value.isPercentage ? form.value.discountPercent : form.value.discountNominal,
     minPrice: form.value.enableMinTransaction ? form.value.minTransaction : 0,
     maxPrice: form.value.isPercentage ? form.value.maxDiscountPrice : form.value.discountNominal,
-     startPeriod: start ? start.toLocaleDateString("sv-SE") : "",
-    endPeriod: end ? end.toLocaleDateString("sv-SE") : "",
-    status: voucherEdit_formData.value.status || "active",
-    quota: form.value.enableQuota ? form.value.quota : 0,
+    startPeriod: start ? start.toLocaleDateString('sv-SE') : '',
+    endPeriod: end ? end.toLocaleDateString('sv-SE') : '',
+    status: voucherEdit_formData.value.status || 'active',
+    quota: form.value.quota,
     isPercent: form.value.isPercentage,
     hasProducts: {
-      type: form.value.productScope === "all" ? "all" : "specific",
-      products: form.value.productScope === "specific"
-        ? form.value.selectedProducts.filter(Boolean)
-        : [],
+      type: form.value.productScope === 'all' ? 'all' : 'specific',
+      products: form.value.productScope === 'specific' ? form.value.selectedProducts.filter(Boolean) : [],
     },
   };
 };
@@ -103,9 +99,9 @@ const buildVoucherPayload = (): IVoucherEditRequest => {
 // Submit form
 const handleUpdateProduct = async () => {
   const payload = buildVoucherPayload();
-  console.log("payload : ", payload)
+  console.log('payload : ', payload);
   await voucherEdit_submit(voucherId, payload);
-  router.push({ name: "voucher-view", params: { id: voucherId } });
+  router.push({ name: 'voucher-view', params: { id: voucherId } });
 };
 
 // Modal state
@@ -131,30 +127,28 @@ const cancelUpdate = () => {
 };
 
 // helpers
-const searchProduct = ref("");
+const searchProduct = ref('');
 const filteredProducts = computed(() =>
   voucherProductList.value.filter((p: IProduct) =>
-    p.name.toLowerCase().includes(searchProduct.value.toLowerCase())
-  )
+    p.name.toLowerCase().includes(searchProduct.value.toLowerCase()),
+  ),
 );
 
 // --- Helper
-const getProductName = (id: string) =>
-  voucherProductList.value.find((p) => p.id === id)?.name || "";
-
+const getProductName = (id: string) => voucherProductList.value.find(p => p.id === id)?.name || '';
 
 const getProductPrice = (id: string) => {
-  const product = voucherProductList.value.find((p) => p.id === id);
+  const product = voucherProductList.value.find(p => p.id === id);
   return product?.price ?? 0;
 };
 
 const getProductCategory = (id: string) => {
-  const product = voucherProductList.value.find((p) => p.id === id);
-  return product?.categoriesHasProducts?.join(", ") || "-";
+  const product = voucherProductList.value.find(p => p.id === id);
+  return product?.categoriesHasProducts?.join(', ') || '-';
 };
 
 const getProductOldPrice = (id: string) => {
-  const product = voucherProductList.value.find((p) => p.id === id);
+  const product = voucherProductList.value.find(p => p.id === id);
   return product?.discountPrice ?? null;
 };
 
@@ -173,8 +167,6 @@ function removeSelectedProduct(id: string) {
     form.value.selectedProducts.splice(idx, 1);
   }
 }
-
-
 </script>
 
 <template>
@@ -182,42 +174,68 @@ function removeSelectedProduct(id: string) {
     <form @submit.prevent="isUpdateModal = true">
       <!-- Title & Validity -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <AppBaseFormGroup v-slot="{ classes }" class="flex flex-col gap-1" :class="{ '!mb-0': form.validity }"
-          label-for="title" is-name-as-label :name="useLocalization('voucher.createEditVoucher.field.title')"
-          :validators="voucherFormDataValidations.name">
-          <PrimeVueInputText v-model="form.title" name="title" placeholder="PROMO RAMADHAN" :class="{ ...classes }"
-            class="text-sm w-full" />
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class="flex flex-col gap-1"
+          :class="{ '!mb-0': form.validity }"
+          label-for="title"
+          is-name-as-label
+          :name="useLocalization('voucher.createEditVoucher.field.title')"
+          :validators="voucherFormDataValidations.name"
+        >
+          <PrimeVueInputText
+            v-model="form.title"
+            name="title"
+            placeholder="PROMO RAMADHAN"
+            :class="{ ...classes }"
+            class="text-sm w-full"
+          />
         </AppBaseFormGroup>
 
-        <AppBaseFormGroup v-slot="{ classes }" class-label="font-normal text-sm text-text-secondary w-full"
-          is-name-as-label label-for="validity" :name="useLocalization('voucher.createEditVoucher.field.validity')"
-          :validators="voucherFormDataValidations.startDate">
-          <PrimeVueDatePicker v-model="form.validity" :hide-on-range-selection="true" name="validity" selection-mode="range" date-format="dd/mm/yy"
-            show-icon :class="{ ...classes }" class="text-sm w-full" />
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class-label="font-normal text-sm text-text-secondary w-full"
+          is-name-as-label
+          label-for="validity"
+          :name="useLocalization('voucher.createEditVoucher.field.validity')"
+          :validators="voucherFormDataValidations.startDate"
+        >
+          <PrimeVueDatePicker
+            v-model="form.validity"
+            :hide-on-range-selection="true"
+            name="validity"
+            selection-mode="range"
+            date-format="dd/mm/yy"
+            show-icon
+            :class="{ ...classes }"
+            class="text-sm w-full"
+          />
         </AppBaseFormGroup>
       </div>
 
       <!-- Quota & Promo Code -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
         <!-- Quota Input -->
-        <div class="flex flex-col gap-1">
-          <div class="flex flex-row gap-2">
-            <PrimeVueCheckbox v-model="form.enableQuota" binary />
-            <label class="font-normal text-sm text-text-secondary">
-              Quota <span class="text-text-disabled">(Optional)</span>
-            </label>
-          </div>
+        <div class="flex flex-col gap-1 border-none">
+          <label class="font-normal text-sm text-text-secondary">
+            Quota <span class="text-red-600">*</span>
+          </label>
           <div class="flex items-start gap-2">
-            <div class="flex items-center border rounded-lg overflow-hidden w-fit">
-              <button type="button"
+            <div class="flex items-center border-gray-100 rounded-lg overflow-hidden w-fit">
+              <button
+                type="button"
                 class="px-3 py-1 text-lg font-bold hover:bg-primary-300 disabled:text-gray-300 disabled:bg-gray-100 bg-primary-50 text-primary"
-                :disabled="!form.enableQuota || form.quota <= 0" @click="form.quota = Math.max(0, form.quota - 1)">
+                :disabled="form.quota <= 1"
+                @click="form.quota = Math.max(1, form.quota - 1)"
+              >
                 -
               </button>
-              <div class="px-4 py-1 text-sm w-12 text-center">{{ form.quota }}</div>
-              <button type="button"
-                class="px-3 py-1 text-lg font-bold hover:bg-primary-300 disabled:text-gray-300 disabled:bg-gray-100 bg-primary-50 text-primary"
-                :disabled="!form.enableQuota" @click="form.quota++">
+              <div class="px-4 py-1 text-sm w-12 text-center border-none">{{ form.quota }}</div>
+              <button
+                type="button"
+                class="px-3 py-1 text-lg font-bold hover:bg-primary-300 bg-primary-50 text-primary"
+                @click="form.quota++"
+              >
                 +
               </button>
             </div>
@@ -225,27 +243,52 @@ function removeSelectedProduct(id: string) {
         </div>
 
         <!-- Promo Code Input -->
-        <AppBaseFormGroup v-slot="{ classes }" class="flex flex-col gap-1" is-name-as-label
-          :name="useLocalization('voucher.createEditVoucher.field.code')" :validators="voucherFormDataValidations.code">
-          <PrimeVueInputText v-model="form.promoCode" name="code" placeholder="PROMO2025" :class="{ ...classes }"
-            class="text-sm w-full" />
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class="flex flex-col gap-1"
+          is-name-as-label
+          :name="useLocalization('voucher.createEditVoucher.field.code')"
+          :validators="voucherFormDataValidations.code"
+        >
+          <PrimeVueInputText
+            v-model="form.promoCode"
+            name="code"
+            placeholder="PROMO2025"
+            :class="{ ...classes }"
+            class="text-sm w-full"
+          />
         </AppBaseFormGroup>
       </div>
 
       <!-- Discount -->
       <div class="flex flex-row gap-6 mt-4 w-full">
         <!-- Discount -->
-        <AppBaseFormGroup v-slot="{ classes }" class="flex flex-col gap-1 w-full" is-name-as-label
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class="flex flex-col gap-1 w-full"
+          is-name-as-label
           :name="useLocalization('voucher.createEditVoucher.field.discount')"
-          :validators="voucherFormDataValidations.amount">
-          <PrimeVueInputNumber v-model="form.discountNominal" :disabled="form.isPercentage" mode="currency"
-            currency="IDR" locale="id-ID" :class="{ ...classes }" class="text-sm w-full" />
+          :validators="voucherFormDataValidations.amount"
+        >
+          <PrimeVueInputNumber
+            v-model="form.discountNominal"
+            :disabled="form.isPercentage"
+            mode="currency"
+            currency="IDR"
+            locale="id-ID"
+            :class="{ ...classes }"
+            class="text-sm w-full"
+          />
         </AppBaseFormGroup>
 
         <!-- Minimum Transaction -->
-        <AppBaseFormGroup v-slot="{ classes }" class="flex flex-col gap-1 w-full" name="minTransaction"
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class="flex flex-col gap-1 w-full"
+          name="minTransaction"
           :label="useLocalization('voucher.createEditVoucher.field.minTransaction')"
-          :validators="voucherFormDataValidations.minTransaction">
+          :validators="voucherFormDataValidations.minTransaction"
+        >
           <div class="flex flex-row gap-2 items-start mb-1">
             <PrimeVueCheckbox v-model="form.enableMinTransaction" binary />
             <span class="font-normal text-sm text-text-secondary">
@@ -254,8 +297,15 @@ function removeSelectedProduct(id: string) {
             </span>
           </div>
 
-          <PrimeVueInputNumber v-model="form.minTransaction" :disabled="!form.enableMinTransaction" mode="currency"
-            currency="IDR" locale="id-ID" :class="{ ...classes }" class="text-sm w-full" />
+          <PrimeVueInputNumber
+            v-model="form.minTransaction"
+            :disabled="!form.enableMinTransaction"
+            mode="currency"
+            currency="IDR"
+            locale="id-ID"
+            :class="{ ...classes }"
+            class="text-sm w-full"
+          />
         </AppBaseFormGroup>
       </div>
 
@@ -266,19 +316,39 @@ function removeSelectedProduct(id: string) {
       </div>
 
       <div v-if="form.isPercentage" class="flex flex-row gap-3 mt-2 w-1/2">
-        <AppBaseFormGroup v-slot="{ classes }" class="flex flex-col gap-1 w-full" is-name-as-label
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class="flex flex-col gap-1 w-full"
+          is-name-as-label
           :name="useLocalization('voucher.createEditVoucher.field.discountPercentage')"
-          :validators="voucherFormDataValidations.amount">
-          <PrimeVueInputNumber v-model="form.discountPercent" :disabled="!form.isPercentage" mode="decimal"
-            :class="{ ...classes }" class="text-sm w-full" />
+          :validators="voucherFormDataValidations.amount"
+        >
+          <PrimeVueInputNumber
+            v-model="form.discountPercent"
+            :disabled="!form.isPercentage"
+            mode="decimal"
+            :class="{ ...classes }"
+            class="text-sm w-full"
+          />
         </AppBaseFormGroup>
 
         <!-- Max Discount Price -->
-        <AppBaseFormGroup v-slot="{ classes }" class="flex flex-col gap-1 w-full" is-name-as-label
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class="flex flex-col gap-1 w-full"
+          is-name-as-label
           :name="useLocalization('voucher.createEditVoucher.field.maxDiscountPrice')"
-          :validators="voucherFormDataValidations.maxDiscountPrice">
-          <PrimeVueInputNumber v-model="form.maxDiscountPrice" :disabled="!form.isPercentage" mode="currency"
-            currency="IDR" locale="id-ID" :class="{ ...classes }" class="text-sm w-full" />
+          :validators="voucherFormDataValidations.maxDiscountPrice"
+        >
+          <PrimeVueInputNumber
+            v-model="form.maxDiscountPrice"
+            :disabled="!form.isPercentage"
+            mode="currency"
+            currency="IDR"
+            locale="id-ID"
+            :class="{ ...classes }"
+            class="text-sm w-full"
+          />
         </AppBaseFormGroup>
       </div>
 
@@ -308,14 +378,24 @@ function removeSelectedProduct(id: string) {
             </div>
 
             <div class="overflow-y-auto flex-1 p-2">
-              <div v-for="product in filteredProducts" :key="product.id"
+              <div
+                v-for="product in filteredProducts"
+                :key="product.id"
                 class="flex justify-between items-center p-3 cursor-pointer transition rounded-md mb-2 border hover:shadow-sm"
-                :class="form.selectedProducts.includes(product.id)
-                  ? 'border-blue-400 bg-blue-50'
-                  : 'border-gray-200 bg-white'" @click="toggleSelectProduct(product.id)">
+                :class="
+                  form.selectedProducts.includes(product.id)
+                    ? 'border-blue-400 bg-blue-50'
+                    : 'border-gray-200 bg-white'
+                "
+                @click="toggleSelectProduct(product.id)"
+              >
                 <div class="flex items-start gap-2">
-                  <PrimeVueCheckbox :binary="true" :model-value="form.selectedProducts.includes(product.id)" @click.stop
-                    @update:model-value="toggleSelectProduct(product.id)" />
+                  <PrimeVueCheckbox
+                    :binary="true"
+                    :model-value="form.selectedProducts.includes(product.id)"
+                    @click.stop
+                    @update:model-value="toggleSelectProduct(product.id)"
+                  />
                   <div class="flex flex-col">
                     <span class="text-sm font-medium">{{ product.name }}</span>
                     <span class="text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded w-fit mt-1">
@@ -327,9 +407,11 @@ function removeSelectedProduct(id: string) {
                 <div class="flex flex-col text-right">
                   <!-- Harga aktif -->
                   <span class="text-sm font-semibold text-black">
-                    {{ product.discountPrice !== product.price
-                      ? formatCurrency(product.price ?? 0)
-                      : formatCurrency(product.price) }}
+                    {{
+                      product.discountPrice !== product.price
+                        ? formatCurrency(product.price ?? 0)
+                        : formatCurrency(product.price)
+                    }}
                   </span>
 
                   <!-- Coret harga lama jika ada diskon -->
@@ -344,13 +426,18 @@ function removeSelectedProduct(id: string) {
           <!-- Right: Selected Product -->
           <div class="flex flex-col border border-gray-200 rounded-lg overflow-hidden max-h-80">
             <div class="overflow-y-auto flex-1 p-2 flex flex-col gap-2">
-              <div v-if="form.selectedProducts.length === 0"
-                class="flex justify-center items-center text-gray-400 text-sm h-full py-4">
+              <div
+                v-if="form.selectedProducts.length === 0"
+                class="flex justify-center items-center text-gray-400 text-sm h-full py-4"
+              >
                 No Item Selected
               </div>
 
-              <div v-for="id in form.selectedProducts" :key="id"
-                class="flex justify-between items-center border border-gray-200 rounded-md p-3 hover:shadow-sm transition bg-white">
+              <div
+                v-for="id in form.selectedProducts"
+                :key="id"
+                class="flex justify-between items-center border border-gray-200 rounded-md p-3 hover:shadow-sm transition bg-white"
+              >
                 <div class="flex flex-col">
                   <span class="text-sm font-medium">{{ getProductName(id) }}</span>
                   <span class="text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded w-fit mt-1">
@@ -365,8 +452,11 @@ function removeSelectedProduct(id: string) {
                       {{ formatCurrency(getProductOldPrice(id)!) }}
                     </span>
                   </div>
-                  <PrimeVueButton icon="pi pi-trash" class="p-button-text p-button-danger p-button-rounded !w-8 !h-8"
-                    @click.stop="removeSelectedProduct(id)" />
+                  <PrimeVueButton
+                    icon="pi pi-trash"
+                    class="p-button-text p-button-danger p-button-rounded !w-8 !h-8"
+                    @click.stop="removeSelectedProduct(id)"
+                  />
                 </div>
               </div>
             </div>
@@ -377,8 +467,12 @@ function removeSelectedProduct(id: string) {
       <!-- Action Buttons -->
       <div class="flex justify-start gap-4 mt-6">
         <PrimeVueButton label="Cancel" class="p-button-outlined p-button-secondary px-6" @click="router.back()" />
-        <PrimeVueButton label="Update Voucher" :disabled="!isFormValid || voucherEdit_isLoading"
-          class="p-button-primary px-6" type="submit" />
+        <PrimeVueButton
+          label="Update Voucher"
+          :disabled="!isFormValid || voucherEdit_isLoading"
+          class="p-button-primary px-6"
+          type="submit"
+        />
       </div>
     </form>
   </section>
@@ -391,11 +485,18 @@ function removeSelectedProduct(id: string) {
           <h1 class="text-2xl font-semibold">Are you sure want to update this voucher item?</h1>
           <p>The update will affect the voucher items</p>
           <div class="flex items-center justify-between gap-4">
-            <PrimeVueButton variant="text" class="w-56 text-lg border-2 border-primary text-primary font-semibold"
-              @click="cancelUpdate">Cancel</PrimeVueButton>
+            <PrimeVueButton
+              variant="text"
+              class="w-56 text-lg border-2 border-primary text-primary font-semibold"
+              @click="cancelUpdate"
+              >Cancel</PrimeVueButton
+            >
             <PrimeVueButton
               class="text-xl w-56 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
-              unstyled label="Yes, I'm Sure" @click="confirmUpdate" />
+              unstyled
+              label="Yes, I'm Sure"
+              @click="confirmUpdate"
+            />
           </div>
         </div>
       </div>

@@ -20,7 +20,7 @@ const form = ref({
   code: '',
   validity: null as [Date, Date] | null,
   enableQuota: false,
-  quota: 0,
+  quota: 1,
   enableMinTransaction: false,
   minTransaction: 0,
   isPercentage: false,
@@ -83,7 +83,7 @@ const isFormValid = computed(
     !!form.value.validity &&
     (form.value.isPercentage ? form.value.discountPercent > 0 : form.value.discountNominal > 0) &&
     (!form.value.enableMinTransaction || form.value.minTransaction >= 0) &&
-    (!form.value.enableQuota || form.value.quota > 0) &&
+    form.value.quota >= 1 && // pastikan minimal 1
     (form.value.productScope === 'all' || form.value.selectedProducts.length > 0),
 );
 
@@ -103,7 +103,7 @@ watch(
     voucherFormData.value.is_percentage = val.isPercentage;
     voucherFormData.value.amount = val.isPercentage ? val.discountPercent : val.discountNominal;
     voucherFormData.value.minPrice = val.enableMinTransaction ? val.minTransaction : 0;
-    voucherFormData.value.quota = val.enableQuota ? val.quota : 0;
+    voucherFormData.value.quota = form.value.quota;
     voucherFormData.value.type = val.productScope === 'all' ? 'all' : 'specific';
     voucherFormData.value.products = val.productScope === 'all' ? [] : val.selectedProducts;
     voucherFormData.value.startDate = val.validity?.[0] ? formatDate(val.validity[0]) : '';
@@ -178,12 +178,10 @@ const openPreview = () => {
 const confirmPreview = async () => {
   try {
     await handleSubmit();
-    router.push({ name: 'voucher.index' }); // langsung ke route voucher.index
   } catch (err) {
     console.error(err);
   }
 };
-
 
 const onDateSelect = (val: [Date, Date] | null) => {
   form.value.validity = val;
@@ -237,27 +235,23 @@ const onDateSelect = (val: [Date, Date] | null) => {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
         <!-- Quota Input -->
         <div class="flex flex-col gap-1 border-none">
-          <div class="flex flex-row gap-2">
-            <PrimeVueCheckbox v-model="form.enableQuota" binary />
-            <label class="font-normal text-sm text-text-secondary">
-              Quota <span class="text-text-disabled">(Optional)</span>
-            </label>
-          </div>
+          <label class="font-normal text-sm text-text-secondary">
+            Quota <span class="text-red-600">*</span>
+          </label>
           <div class="flex items-start gap-2">
             <div class="flex items-center border-gray-100 rounded-lg overflow-hidden w-fit">
               <button
                 type="button"
                 class="px-3 py-1 text-lg font-bold hover:bg-primary-300 disabled:text-gray-300 disabled:bg-gray-100 bg-primary-50 text-primary"
-                :disabled="!form.enableQuota || form.quota <= 0"
-                @click="form.quota = Math.max(0, form.quota - 1)"
+                :disabled="form.quota <= 1"
+                @click="form.quota = Math.max(1, form.quota - 1)"
               >
                 -
               </button>
               <div class="px-4 py-1 text-sm w-12 text-center border-none">{{ form.quota }}</div>
               <button
                 type="button"
-                class="px-3 py-1 text-lg font-bold hover:bg-primary-300 disabled:text-gray-300 disabled:bg-gray-100 bg-primary-50 text-primary"
-                :disabled="!form.enableQuota"
+                class="px-3 py-1 text-lg font-bold hover:bg-primary-300 bg-primary-50 text-primary"
                 @click="form.quota++"
               >
                 +

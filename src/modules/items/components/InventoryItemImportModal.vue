@@ -85,7 +85,7 @@ const {
           <div class="flex flex-col w-full">
             <AppBaseDataTable
               :columns="inventoryItem_columns"
-              :data="inventoryItem_values?.data.mergedData"
+              :data="inventoryItem_values?.data.mergedData.sort((a, b) => a.rowNumber - b.rowNumber)"
               :rows-per-page="inventoryItem_values?.data.totalRows"
               :total-records="inventoryItem_values?.data.totalRows"
               :first="0"
