@@ -85,7 +85,7 @@ const {
           <div class="flex flex-col w-full">
             <AppBaseDataTable
               :columns="inventoryItem_columns"
-              :data="inventoryItem_values?.data.mergedData"
+              :data="inventoryItem_values?.data.mergedData.sort((a, b) => a.rowNumber - b.rowNumber)"
               :rows-per-page="inventoryItem_values?.data.totalRows"
               :total-records="inventoryItem_values?.data.totalRows"
               :first="0"
@@ -96,6 +96,12 @@ const {
               :is-using-custom-filter="true"
             >
               <template #body="{ column, data }">
+                <template v-if="column.value === 'name'">
+                  <span class="text-gray-700">{{ data.itemName }}</span>
+                </template>
+                <template v-else-if="column.value === 'rowNumber'">
+                  <span class="text-gray-700">{{ data.rowNumber }}</span>
+                </template>
                 <template v-if="column.value === 'name'">
                   <span class="text-gray-700">{{ data.itemName }}</span>
                 </template>
@@ -139,6 +145,7 @@ const {
                   <span class="text-gray-500">{{ data.storageLocation }}</span>
                 </template>
 
+             
                 <template v-else-if="column.value === 'status'">
                   <span
                     v-if="data.status === 'success'"

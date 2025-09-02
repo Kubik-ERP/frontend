@@ -139,7 +139,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
 
   const inventoryItems_formValidation = computed(() => ({
     name: { required: true },
-    brandId: { required: true },
+    brandId: { required: false },
     barcode: {},
     sku: { required: true },
     categoryId: { required: true },

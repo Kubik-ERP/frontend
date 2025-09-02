@@ -38,10 +38,6 @@ export const useSalesOrderService = (): ISalesOrderProvided => {
           await dailySalesList_fetchListInvoices();
           break;
         }
-        case 'SALES-ORDER': {
-          // Handle logic for sales order tab
-          break;
-        }
         case 'CASH-DRAWER': {
           // Handle logic for cash drawer tab
           await Promise.all([staffMemberList_fetchListMembers(), cashDrawerList_fetchListTransactions()]);
