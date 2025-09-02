@@ -119,6 +119,7 @@ const handleSubmit = async () => {
     await voucherFormOnSubmit();
   } catch (err) {
     voucherFormReset();
+    voucherFormReset();
     console.error(err);
   }
 };
@@ -210,7 +211,43 @@ const onDateSelect = (val: [Date, Date] | null) => {
             class="text-sm w-full"
           />
         </AppBaseFormGroup>
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class="flex flex-col gap-1"
+          :class="{ '!mb-0': form.title }"
+          label-for="title"
+          is-name-as-label
+          :name="useLocalization('voucher.createEditVoucher.field.title')"
+          :validators="voucherFormDataValidations.name"
+        >
+          <PrimeVueInputText
+            v-model="form.title"
+            name="title"
+            placeholder="PROMO RAMADHAN"
+            :class="{ ...classes }"
+            class="text-sm w-full"
+          />
+        </AppBaseFormGroup>
 
+        <AppBaseFormGroup
+          class="flex flex-col gap-1 font-normal text-sm text-text-secondary w-full"
+          :class="{ '!mb-0': form.validity }"
+          is-name-as-label
+          label-for="validity"
+          name="Validity"
+        >
+          <PrimeVueDatePicker
+            v-model="form.validity"
+            selection-mode="range"
+            date-format="dd/mm/yy"
+            class="text-sm w-full"
+            show-icon
+            show-popover
+            :hide-on-range-selection="true"
+            :manual-input="false"
+            @update:value="onDateSelect"
+          />
+        </AppBaseFormGroup>
         <AppBaseFormGroup
           class="flex flex-col gap-1 font-normal text-sm text-text-secondary w-full"
           :class="{ '!mb-0': form.validity }"
@@ -275,6 +312,15 @@ const onDateSelect = (val: [Date, Date] | null) => {
             :class="{ ...classes }"
             class="text-sm w-full"
           />
+          :validators="voucherFormDataValidations.code"
+        >
+          <PrimeVueInputText
+            v-model="form.code"
+            name="code"
+            placeholder="PROMO2025"
+            :class="{ ...classes }"
+            class="text-sm w-full"
+          />
         </AppBaseFormGroup>
       </div>
 
@@ -297,6 +343,17 @@ const onDateSelect = (val: [Date, Date] | null) => {
             :class="{ ...classes }"
             class="text-sm w-full"
           />
+          :validators="voucherFormDataValidations.amount"
+        >
+          <PrimeVueInputNumber
+            v-model="form.discountNominal"
+            :disabled="form.isPercentage"
+            mode="currency"
+            currency="IDR"
+            locale="id-ID"
+            :class="{ ...classes }"
+            class="text-sm w-full"
+          />
         </AppBaseFormGroup>
 
         <!-- Minimum Transaction -->
@@ -307,6 +364,8 @@ const onDateSelect = (val: [Date, Date] | null) => {
           :label="useLocalization('voucher.createEditVoucher.field.minTransaction')"
           :validators="voucherFormDataValidations.minTransaction"
         >
+          :validators="voucherFormDataValidations.minTransaction"
+        >
           <div class="flex flex-row gap-2 items-start mb-1">
             <PrimeVueCheckbox v-model="form.enableMinTransaction" binary />
             <span class="font-normal text-sm text-text-secondary">
@@ -315,6 +374,15 @@ const onDateSelect = (val: [Date, Date] | null) => {
             </span>
           </div>
 
+          <PrimeVueInputNumber
+            v-model="form.minTransaction"
+            :disabled="!form.enableMinTransaction"
+            mode="currency"
+            currency="IDR"
+            locale="id-ID"
+            :class="{ ...classes }"
+            class="text-sm w-full"
+          />
           <PrimeVueInputNumber
             v-model="form.minTransaction"
             :disabled="!form.enableMinTransaction"
@@ -407,7 +475,20 @@ const onDateSelect = (val: [Date, Date] | null) => {
                 "
                 @click="toggleSelectProduct(product.id)"
               >
+                :class="
+                  form.selectedProducts.includes(product.id)
+                    ? 'border-blue-400 bg-blue-50'
+                    : 'border-gray-200 bg-white'
+                "
+                @click="toggleSelectProduct(product.id)"
+              >
                 <div class="flex items-start gap-2">
+                  <PrimeVueCheckbox
+                    :binary="true"
+                    :model-value="form.selectedProducts.includes(product.id)"
+                    @click.stop
+                    @update:model-value="toggleSelectProduct(product.id)"
+                  />
                   <PrimeVueCheckbox
                     :binary="true"
                     :model-value="form.selectedProducts.includes(product.id)"
@@ -448,9 +529,18 @@ const onDateSelect = (val: [Date, Date] | null) => {
                 v-if="form.selectedProducts.length === 0"
                 class="flex justify-center items-center text-gray-400 text-sm h-full py-4"
               >
+              <div
+                v-if="form.selectedProducts.length === 0"
+                class="flex justify-center items-center text-gray-400 text-sm h-full py-4"
+              >
                 No Item Selected
               </div>
 
+              <div
+                v-for="id in form.selectedProducts"
+                :key="id"
+                class="flex justify-between items-center border border-gray-200 rounded-md p-3 hover:shadow-sm transition bg-white"
+              >
               <div
                 v-for="id in form.selectedProducts"
                 :key="id"
@@ -475,9 +565,16 @@ const onDateSelect = (val: [Date, Date] | null) => {
                     class="p-button-text p-button-danger p-button-rounded !w-8 !h-8"
                     @click.stop="removeSelectedProduct(id)"
                   />
+                  <PrimeVueButton
+                    icon="pi pi-trash"
+                    class="p-button-text p-button-danger p-button-rounded !w-8 !h-8"
+                    @click.stop="removeSelectedProduct(id)"
+                  />
                 </div>
               </div>
             </div>
+          </div>
+        </div>
           </div>
         </div>
       </div>
@@ -485,6 +582,12 @@ const onDateSelect = (val: [Date, Date] | null) => {
       <!-- Action Buttons -->
       <div class="flex justify-start gap-4 mt-6">
         <PrimeVueButton label="Cancel" class="p-button-outlined p-button-secondary px-6" @click="handleCancel" />
+        <PrimeVueButton
+          label="Add Voucher"
+          :disabled="!isFormValid || voucherFormIsLoading"
+          class="p-button-primary px-6"
+          type="submit"
+        />
         <PrimeVueButton
           label="Add Voucher"
           :disabled="!isFormValid || voucherFormIsLoading"
@@ -573,6 +676,7 @@ const onDateSelect = (val: [Date, Date] | null) => {
             class="p-button-outlined p-button-secondary w-32 h-11 text-base font-medium"
             @click="isPreviewModal = false"
           />
+          
           <PrimeVueButton
             label="Confirm"
             class="p-button-primary w-32 h-11 text-base font-medium shadow-sm hover:shadow-md transition-shadow"

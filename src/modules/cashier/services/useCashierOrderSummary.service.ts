@@ -4,7 +4,6 @@ import {
   CASHIER_ORDER_TYPE,
   CASHIER_DUMMY_LIST_FLOOR,
   CASHIER_DUMMY_LIST_TABLE,
-  // CASHIER_DUMMY_VOUCHER,
   CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT,
 } from '../constants';
 
@@ -84,7 +83,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_modalOrderType = ref<ICashierOrderSummaryModalOrderType>({
     show: false,
     selectedOrderType: 'dine_in',
-    data: CASHIER_ORDER_TYPE,
+    data: CASHIER_ORDER_TYPE.filter(item => (route.name === 'self-order' ? true : item.code !== 'self_order')),
   });
 
   const cashierProduct_customerState = ref<ICashierCustomerState>({
@@ -199,6 +198,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       tax: 0,
       taxInclude: false,
       items: [],
+      totalProductDiscount: 0,
       voucherAmount: 0,
     },
   });
@@ -509,7 +509,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_storeId = ref('');
 
-  onMounted(() => {
+  onMounted(async () => {
     if (route.name === 'self-order') {
       cashierOrderSummary_modalOrderType.value.selectedOrderType = 'self_order';
       cashierOrderSummary_modalSelectTable.value.selectedTable = [
@@ -537,6 +537,20 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           type: EToastType.DANGER,
         });
 
+        return;
+      }
+
+      try {
+        await store.cashierSelfOrder_handleVerify({
+          storeId: route.query.storeId as string,
+          tablesName: route.query.tablesName as string,
+        });
+      } catch (error) {
+        router.push({
+          name: 'self-order.not-valid',
+        });
+
+        console.error(error);
         return;
       }
 
@@ -631,6 +645,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           tax: 0,
           taxInclude: false,
           items: [],
+          totalProductDiscount: 0,
           voucherAmount: 0,
         };
       }

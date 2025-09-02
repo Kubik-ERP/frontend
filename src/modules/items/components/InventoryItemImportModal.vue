@@ -102,6 +102,12 @@ const {
                 <template v-else-if="column.value === 'rowNumber'">
                   <span class="text-gray-700">{{ data.rowNumber }}</span>
                 </template>
+                <template v-if="column.value === 'name'">
+                  <span class="text-gray-700">{{ data.itemName }}</span>
+                </template>
+                <template v-else-if="column.value === 'rowNumber'">
+                  <span class="text-gray-700">{{ data.rowNumber }}</span>
+                </template>
                 <template v-else-if="column.value === 'sku'">
                   <span class="text-gray-700">{{ data.sku }}</span>
                 </template>
@@ -139,6 +145,7 @@ const {
                   <span class="text-gray-500">{{ data.storageLocation }}</span>
                 </template>
 
+             
                 <template v-else-if="column.value === 'status'">
                   <span
                     v-if="data.status === 'success'"
