@@ -159,7 +159,7 @@ const handleClose = () => {
             Default {{ staffMemberCreateEdit_commisionType === 'PRODUCT' ? 'Product' : 'Voucher' }} Commissions
           </label>
 
-          <PrimeVueInputGroup class="w-full sm:w-64 rounded-lg border border-gray-300 overflow-hidden">
+          <PrimeVueInputGroup class="w-full sm:w-64 h-11 rounded-lg border border-gray-300 overflow-hidden">
             <PrimeVueInputNumber
               id="commission-input"
               v-model="defaultCommissionValue"
@@ -225,7 +225,7 @@ const handleClose = () => {
               <template #body="{ data, index }">
                 <!-- Commission input -->
                 <template v-if="column.value === 'commissions'">
-                  <PrimeVueInputGroup class="w-full sm:w-64 rounded-lg border border-gray-300 overflow-hidden">
+                  <PrimeVueInputGroup class="w-full sm:w-64 h-11 rounded-lg border border-gray-300 overflow-hidden">
                     <PrimeVueInputNumber
                       v-model="filteredCommissionTableData[index].commissionValue"
                       placeholder="0"

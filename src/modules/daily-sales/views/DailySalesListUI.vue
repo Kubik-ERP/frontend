@@ -177,7 +177,8 @@ const {
                 data['subtotal'] -
                 (data['discountAmount'] || 0) +
                 (data['serviceChargeAmount'] || 0) +
-                (data['taxAmount'] || 0),
+                (data['taxAmount'] || 0) -
+                (data['voucherAmount'] || 0),
             })
           }}</span>
         </template>

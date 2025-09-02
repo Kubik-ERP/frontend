@@ -1,6 +1,6 @@
 import { IDevice } from "../interfaces";
 
-export const DEVICE_API_BASE_ENDPOINT = '/devices';
+export const DEVICE_API_BASE_ENDPOINT = '/device-codes';
 export const DEVICE_LIST_REQUEST = 'DEVICE_LIST_REQUEST';
 export const DEVICE_LIST_COLUMS = [
   {

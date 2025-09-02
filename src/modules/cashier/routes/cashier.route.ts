@@ -54,6 +54,16 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'not-valid',
+        name: 'self-order.not-valid',
+        component: () => import('../views/self-order/SelfOrderNotValid.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.EMPTY,
+          title: 'Self Order Not Valid',
+        },
+      },
+      {
         path: 'login',
         name: 'login-self-order',
         component: () => import('../views/self-order/SelfOrderLogin.vue'),

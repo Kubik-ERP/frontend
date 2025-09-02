@@ -16,9 +16,9 @@ const httpClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API_URL
     ? `${import.meta.env.VITE_APP_BASE_API_URL}${import.meta.env.VITE_APP_BASE_API_PREFIX}`
     : '/api',
-  headers: {
-    'ngrok-skip-browser-warning': 'true',
-  },
+  // headers: {
+  //     'ngrok-skip-browser-warning': 'true'
+  //   }
 });
 
 httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
