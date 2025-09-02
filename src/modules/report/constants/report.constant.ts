@@ -175,17 +175,17 @@ export const SALESREPORT_SALESBYORDERTYPE_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Invoice ID',
     sortable: true,
-    value: 'invoice_id',
+    value: 'invoiceId',
   },
   {
     label: 'Order Type',
     sortable: false,
-    value: 'order_type',
+    value: 'orderType',
   },
   {
     label: 'Gross Sales',
     sortable: true,
-    value: 'gross_sales',
+    value: 'grossSales',
   },
   {
     label: 'Tax',
@@ -200,7 +200,7 @@ export const SALESREPORT_SALESBYORDERTYPE_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Net Sales',
     sortable: true,
-    value: 'net_sales',
+    value: 'netSales',
   },
 ];
 
