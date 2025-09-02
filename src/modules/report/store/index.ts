@@ -11,6 +11,8 @@ import type {
   IFinancialReport_paymentMethod,
   IFinancialReport_profitAndLost,
   IFinancialReport_taxServiceCharge,
+  ISalesReport_salesByItem,
+  ISalesReport_salesByOrderType,
 } from '../interfaces';
 export const useReportStore = defineStore('report', {
   state: (): IReportStore => ({
@@ -22,6 +24,8 @@ export const useReportStore = defineStore('report', {
       totals: {} as IFinancialReport_paymentMethod['totals'],
     } as IFinancialReport_paymentMethod,
     report_taxAndServiceCharge_values: [] as IFinancialReport_taxServiceCharge[],
+    salesReport_salesByItem_values: [] as ISalesReport_salesByItem[],
+    salesReport_salesByOrderType_values: [] as ISalesReport_salesByOrderType[],
   }),
   actions: {
     async getFinancialReport_profitAndLost(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
@@ -31,7 +35,7 @@ export const useReportStore = defineStore('report', {
           params,
           ...requestConfigurations,
         });
-        console.log('response', response.data);
+        // console.log('response', response.data);
         switch (params.type) {
           case 'profit-loss': {
             this.report_profitAndLost_values = response.data.data;
@@ -47,6 +51,39 @@ export const useReportStore = defineStore('report', {
           }
           case 'tax-service': {
             this.report_taxAndServiceCharge_values = response.data.data;
+            break;
+          }
+          default: {
+            console.warn(`Unknown type: ${params.type}`);
+          }
+        }
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.report_isLoading = false;
+      }
+    },
+
+    async getSalesReport(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
+      this.report_isLoading = true;
+      try {
+        const response = await httpClient.get(`dashboard/sales-report`, {
+          params,
+          ...requestConfigurations,
+        });
+        console.log('response', response.data);
+        switch (params.type) {
+          case 'item': {
+            this.salesReport_salesByItem_values = response.data.data;
+            break;
+          }
+          case 'order': {
+            this.salesReport_salesByOrderType_values = response.data.data;
             break;
           }
           default: {

@@ -119,11 +119,11 @@ export const LOSSREPORT_COLUMNS: IColumnDataTable[] = [
 ];
 
 export const SALESREPORT_SALESBYITEM_COLUMNS: IColumnDataTable[] = [
-  {
-    label: 'Product ID',
-    sortable: true,
-    value: 'productId',
-  },
+  // {
+  //   label: 'Product ID',
+  //   sortable: true,
+  //   value: 'productId',
+  // },
   {
     label: 'Item Name',
     sortable: false,

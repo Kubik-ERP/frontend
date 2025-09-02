@@ -20,10 +20,14 @@ export const useReportService = (): IReportProvided => {
   const store = useReportStore();
   const {
     report_isLoading,
+    // financial
     report_profitAndLost_values,
     report_cashInOut_values,
     report_paymentMethod_values,
     report_taxAndServiceCharge_values,
+    // sales
+    salesReport_salesByItem_values,
+    salesReport_salesByOrderType_values,
   } = storeToRefs(store);
 
   const { httpAbort_registerAbort } = useHttpAbort();
@@ -44,7 +48,21 @@ export const useReportService = (): IReportProvided => {
   const report_getFinancialReport = async (type?: string) => {
     try {
       await store.getFinancialReport_profitAndLost(formatQueryParamsDate(report_queryParams, type), {
-        ...httpAbort_registerAbort('FINANCIALREPORT_PROFITANDLOST_REQUEST'),
+        ...httpAbort_registerAbort('FINANCIALREPORT_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
+
+  const report_getSalesReport = async (type?: string) => {
+    try {
+      await store.getSalesReport(formatQueryParamsDate(report_queryParams, type), {
+        ...httpAbort_registerAbort('SALESREPORT_REQUEST'),
       });
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -71,11 +89,16 @@ export const useReportService = (): IReportProvided => {
     report_queryParams,
     // methods
     report_getFinancialReport,
+    report_getSalesReport,
     // store
     report_isLoading,
+    // financial
     report_profitAndLost_values,
     report_cashInOut_values,
     report_paymentMethod_values,
     report_taxAndServiceCharge_values,
+    // sales
+    salesReport_salesByItem_values,
+    salesReport_salesByOrderType_values,
   };
 };

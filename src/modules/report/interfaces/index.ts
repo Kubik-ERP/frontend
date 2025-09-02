@@ -6,6 +6,9 @@ import type {
 } from './financial-report';
 export * from './financial-report';
 
+import type { ISalesReport_salesByItem, ISalesReport_salesByOrderType } from './sales-report';
+export * from './sales-report';
+
 export interface IReportQueryParams {
   startDate: Date;
   endDate: Date;
@@ -14,10 +17,14 @@ export interface IReportQueryParams {
 
 export interface IReportStore {
   report_isLoading: boolean;
+  // financial report
   report_profitAndLost_values: IFinancialReport_profitAndLost;
   report_cashInOut_values: IFinancialReport_cashInOut[];
   report_paymentMethod_values: IFinancialReport_paymentMethod;
   report_taxAndServiceCharge_values: IFinancialReport_taxServiceCharge[];
+  // sales report
+  salesReport_salesByItem_values: ISalesReport_salesByItem[];
+  salesReport_salesByOrderType_values: ISalesReport_salesByOrderType[];
 }
 
 export interface IReportProvided {
@@ -33,12 +40,17 @@ export interface IReportProvided {
   marketingReport_columns: IColumnDataTable[];
   // methods
   report_getFinancialReport: (type: string) => Promise<void>;
+  report_getSalesReport: (type: string) => Promise<void>;
   // params
   report_queryParams: IReportQueryParams;
   // store
   report_isLoading: globalThis.Ref<boolean>;
+  // financial
   report_profitAndLost_values: globalThis.Ref<IFinancialReport_profitAndLost>;
   report_cashInOut_values: globalThis.Ref<IFinancialReport_cashInOut[]>;
   report_paymentMethod_values: globalThis.Ref<IFinancialReport_paymentMethod>;
   report_taxAndServiceCharge_values: globalThis.Ref<IFinancialReport_taxServiceCharge[]>;
+  // sales report
+  salesReport_salesByItem_values: globalThis.Ref<ISalesReport_salesByItem[]>;
+  salesReport_salesByOrderType_values: globalThis.Ref<ISalesReport_salesByOrderType[]>;
 }
