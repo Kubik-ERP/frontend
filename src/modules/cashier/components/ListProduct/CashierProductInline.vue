@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // Interfaces
 import type { ICashierProductProvided } from '../../interfaces/cashier-product-service';
-import { ICashierProduct } from '../../interfaces/cashier-response';
+import { IProductItem } from '../../interfaces/cashier-response';
 
 const props = defineProps({
   product: {
-    type: Object as PropType<ICashierProduct>,
+    type: Object as PropType<IProductItem>,
     required: true,
   },
   category: {
