@@ -14,7 +14,6 @@ export interface IPurchaseOrderListProvided {
   purchaseOrderList_fetchList: () => Promise<unknown>;
   purchaseOrderList_formDataOfCancel: globalThis.Ref<IPurchaseOrderCancelPayload>;
   purchaseOrderList_formDataOfConfirm: globalThis.Ref<IPurchaseOrderConfirmPayload>;
-  purchaseOrderList_formValidationsOfCancel: globalThis.Ref<Validation>;
   purchaseOrderList_formValidationsOfConfirm: globalThis.Ref<Validation>;
   purchaseOrderList_getClassOfStatus: (status: string) => string;
   purchaseOrderList_handleOnSortChange: (event: DataTableSortEvent) => void;

@@ -180,6 +180,23 @@ declare global {
     type?: 'error' | 'info';
     width?: string;
     secondaryIcon?: string;
+    // Enhanced form support
+    isUsingForm?: boolean;
+    formData?: Record<string, unknown>;
+    formFields?: IDialogFormField[];
+    formValidations?: Record<string, unknown>;
+  }
+
+  interface IDialogFormField {
+    key: string;
+    label: string;
+    type: 'text' | 'textarea' | 'select' | 'number' | 'email' | 'password' | 'date';
+    placeholder?: string;
+    required?: boolean;
+    options?: IDropdownItem[]; // For select type
+    rows?: number; // For textarea type
+    disabled?: boolean;
+    validator?: unknown; // Vuelidate validator
   }
 
   interface IPropsDialogPinVerification {

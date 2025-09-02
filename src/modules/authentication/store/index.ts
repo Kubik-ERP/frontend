@@ -8,6 +8,7 @@ import {
   AUTHENTICATION_ENDPOINT_SEND_OTP,
   AUTHENTICATION_ENDPOINT_SIGN_IN,
   AUTHENTICATION_ENDPOINT_SIGN_UP,
+  AUTHENTICATION_ENDPOINT_STAFF_LOGIN,
   AUTHENTICATION_ENDPOINT_VERIFY_OTP,
 } from '../constants';
 
@@ -15,6 +16,8 @@ import {
 import type { AxiosRequestConfig } from 'axios';
 import type { LocationQuery } from 'vue-router';
 import type {
+  IAuthenticationConnectDeviceFormData,
+  IAuthenticationConnectDeviceResponse,
   IAuthenticationCreateNewPasswordFormData,
   IAuthenticationResetPasswordFormData,
   IAuthenticationVerifyOtpFormData,
@@ -316,6 +319,44 @@ export const useAuthenticationStore = defineStore('authentication', {
         );
 
         this.authentication_token = response.data.data.accessToken;
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.authentication_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api authentication staff login.
+     * @url /authentication/staff/login
+     * @method POST
+     * @access public
+     */
+    async fetchAuthentication_staffLogin(
+      payload: IAuthenticationConnectDeviceFormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IAuthenticationConnectDeviceResponse> {
+      this.authentication_isLoading = true;
+
+      try {
+        const response = await httpClient.post<IAuthenticationConnectDeviceResponse>(
+          AUTHENTICATION_ENDPOINT_STAFF_LOGIN,
+          payload,
+          {
+            ...requestConfigurations,
+          },
+        );
+
+        // Store the token and user data if successful
+        if (response.data.data?.accessToken) {
+          this.authentication_token = response.data.data.accessToken;
+        }
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {

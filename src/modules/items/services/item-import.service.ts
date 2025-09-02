@@ -6,6 +6,7 @@ import {
 } from '../interfaces/item-import.interface';
 import { ITEMS_LIST_COLUMS_IMPORT, ITEMS_LIST_REQUEST } from '../constants';
 import { useInventoryItemsStore } from '../store';
+import { useInventoryItemsListService } from './items-list.service';
 
 export const useInventoryItemImportService = (): IInventoryItemImportProvided => {
   const store = useInventoryItemsStore();
@@ -14,6 +15,9 @@ export const useInventoryItemImportService = (): IInventoryItemImportProvided =>
   const inventoryItem_step = ref<number>(1);
   const inventoryItem_isLoading = ref<boolean>(false);
   const inventoryItem_values = ref<IInventoryItemImportResponse>();
+  const{
+    inventoryItems_queryParams
+  } = useInventoryItemsListService();
 
   // Simpan file sementara
   const uploadedFile = ref<File | null>(null);
@@ -36,7 +40,11 @@ export const useInventoryItemImportService = (): IInventoryItemImportProvided =>
           };
           eventBus.emit('AppBaseToast', argsEventEmitter);
         }
+        localStorage.removeItem('inventory_batch_id');
 
+        await store.InventoryItems_fetchData( inventoryItems_queryParams ,{
+          ...httpAbort_registerAbort(ITEMS_LIST_REQUEST),
+        })
         inventoryItem_onClose();
       }
     } catch (error) {
@@ -46,10 +54,10 @@ export const useInventoryItemImportService = (): IInventoryItemImportProvided =>
 
   const inventoryItem_onClose = async () => {
     const batchId = localStorage.getItem('inventory_batch_id');
+    console.log('batchId', batchId);
 
     if (batchId) {
       await store.inventoryItemImport_reset(batchId);
-      localStorage.removeItem('inventory_batch_id');
       eventBus.emit('AppBaseDialog', {
         id: 'inventory-item-import-modal',
         isUsingClosableButton: false,
@@ -61,6 +69,7 @@ export const useInventoryItemImportService = (): IInventoryItemImportProvided =>
       inventoryItem_isLoading.value = false;
       inventoryItem_values.value = undefined;
       uploadedFile.value = null;
+      localStorage.removeItem('inventory_batch_id');
     } else {
        eventBus.emit('AppBaseDialog', {
         id: 'inventory-item-import-modal',

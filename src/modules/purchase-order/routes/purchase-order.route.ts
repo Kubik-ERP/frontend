@@ -34,6 +34,28 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        path: ':id/detail',
+        name: 'purchase-order.detail',
+        component: () => import('../views/PurchaseOrderDetailUI.vue'),
+        meta: {
+          breadcrumb: 'Purchase Order Detail',
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          requiresAuthorization: true,
+          title: 'Purchase Order Detail',
+        },
+      },
+      {
+        path: ':id/delivery-order-document',
+        name: 'purchase-order.delivery-order-document',
+        component: () => import('../views/PurchaseOrderDeliveryOrderDocumentUI.vue'),
+        meta: {
+          breadcrumb: 'Delivery Order Document',
+          layout: LAYOUT_OPTIONS.EMPTY,
+          requiresAuthorization: true,
+          title: 'Delivery Order Document',
+        },
+      },
+      {
         path: ':id/edit',
         name: 'purchase-order.edit',
         component: () => import('../views/PurchaseOrderCreateEditUI.vue'),

@@ -1,3 +1,4 @@
+export * from './authentication-connect-device.interface';
 export * from './authentication-create-new-password.interface';
 export * from './authentication-reset-password.interface';
 export * from './authentication-sign-in.interface';
@@ -41,4 +42,12 @@ export interface IAuthenticationVerifyOtpFormData {
   email: string;
   otp: string;
   type: string;
+}
+
+export interface ISetUnsetPin {
+  pin: string;
+}
+
+export interface ISetUnsetPin {
+  pin: string;
 }

@@ -18,17 +18,44 @@ export interface IPurchaseOrderItem {
 }
 
 // Purchase order detail
-export interface IPurchaseOrderDetail extends IPurchaseOrderItem {
-  supplierId: string;
-  description?: string;
-  notes?: string;
-  productItems: Array<{
+export interface IPurchaseOrderDetail {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  orderNumber: string;
+  totalPrice: number;
+  masterSupplierId: string;
+  cancelReason?: string;
+  cancelledAt?: string;
+  orderDate: string;
+  orderStatus: string;
+  storeId: string;
+  supplierInfo: {
+    address: string;
+    phoneNumber: string;
+    supplierName: string;
+    contactPerson: string;
+  };
+  deliveryDate?: string;
+  deliveryNumber?: string;
+  shippedAt?: string;
+  receivedAt?: string;
+  paidAt?: string;
+  purchaseOrderItems: Array<{
     id: string;
-    productId: string;
-    productName: string;
+    createdAt: string;
+    updatedAt?: string;
+    purchaseOrderId: string;
+    masterInventoryItemId: string;
     quantity: number;
     unitPrice: number;
     totalPrice: number;
+    itemInfo: {
+      sku: string;
+      name: string;
+      unit: string;
+      brandName: string;
+    };
   }>;
 }
 
@@ -88,7 +115,7 @@ export interface IPurchaseOrderCancelPayload {
 }
 
 export interface IPurchaseOrderConfirmPayload {
-  delivery_date: string;
+  delivery_date: Date | Date[] | (Date | null)[] | null | undefined;
 }
 
 // Store state interface
