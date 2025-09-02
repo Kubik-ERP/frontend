@@ -428,7 +428,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           validFrom: new Date(voucher.startPeriod).toISOString().split('T')[0],
           validUntil: new Date(voucher.endPeriod).toISOString().split('T')[0],
           type: voucher.isPercent ? 'percentage' : 'nominal',
-          stock: voucher.remainingQuota || 0,
+          stock: voucher.quota || 0,
         };
       });
     } catch (error: unknown) {

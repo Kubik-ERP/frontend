@@ -40,7 +40,7 @@ const {
                 if (event.value) {
                   // Add to staging area (formData) only, not to selectedProductItems yet
                   const existingIndex = purchaseOrderCreateEdit_formData.productItems.findIndex(
-                    item => item.id === event.value.id,
+                    item => item.masterItemId === event.value.masterItemId,
                   );
                   if (existingIndex === -1) {
                     purchaseOrderCreateEdit_formData.productItems.push(event.value);
@@ -127,7 +127,9 @@ const {
                 severity="secondary"
                 @click="
                   purchaseOrderCreateEdit_formData.productItems =
-                    purchaseOrderCreateEdit_formData.productItems.filter(item => item.id !== data.id)
+                    purchaseOrderCreateEdit_formData.productItems.filter(
+                      item => item.masterItemId !== data.masterItemId,
+                    )
                 "
               >
                 <template #default>

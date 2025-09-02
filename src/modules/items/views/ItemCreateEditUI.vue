@@ -14,7 +14,7 @@ const {
   inventoryItemAction_supplierList: suppliers,
   inventoryItemsAction_formOnMode,
   inventoryItems_editingItem,
-  inventoryItems_handleBarcodeScanner
+  inventoryItems_handleBarcodeScanner,
 } = useInvetoryItemsActionService();
 
 const { inventoryItems_onDelete } = useInventoryItemsListService();
@@ -59,10 +59,7 @@ const confirmUpdate = async () => {
 </script>
 
 <template>
-  <section
-    id="items-create-edit"
-    class="flex justify-center items-center min-h-screen p-4 sm:p-6"
-  >
+  <section id="items-create-edit" class="flex justify-center items-center min-h-screen p-4 sm:p-6">
     <div class="flex flex-col gap-6 w-full max-w-6xl mx-auto">
       <!-- Item Details -->
       <section>
@@ -212,13 +209,7 @@ const confirmUpdate = async () => {
             spacing-bottom="mb-0"
             class="col-span-1 md:col-span-2"
           >
-            <PrimeVueTextarea
-              id="notes"
-              v-model="form.notes"
-              rows="3"
-              class="w-full"
-              :class="{ ...classes }"
-            />
+            <PrimeVueTextarea id="notes" v-model="form.notes" rows="3" class="w-full" :class="{ ...classes }" />
           </AppBaseFormGroup>
         </div>
       </section>
@@ -316,6 +307,7 @@ const confirmUpdate = async () => {
               v-model="form.pricePerUnit"
               mode="currency"
               currency="IDR"
+              locale="id-ID"
               class="w-full"
               :class="{ ...classes }"
             />
