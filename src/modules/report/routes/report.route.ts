@@ -75,14 +75,14 @@ const routes: RouteRecordRaw[] = [
       },
       // marketing-report
       {
-        path: '/report/marketing-report',
-        name: 'report.marketing-report',
-        component: () => import('../views/MarketingReportUI.vue'),
+        path: '/report/voucher-report',
+        name: 'report.voucher-report',
+        component: () => import('../views/VoucherReportUI.vue'),
         meta: {
           layout: LAYOUT_OPTIONS.DEFAULT,
           requiresAuthorization: true,
-          title: 'Marketing Report',
-          breadcrumb: 'Marketing Report',
+          title: 'Voucher Report',
+          breadcrumb: 'Voucher Report',
         },
       },
       // staff-report

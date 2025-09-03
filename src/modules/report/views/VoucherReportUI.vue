@@ -1,65 +1,72 @@
 <script setup lang="ts">
 // components
-import CustomDatePicker from '../../components/CustomDatePicker.vue';
+import CustomDatePicker from '../components/CustomDatePicker.vue';
 // service
-import { useReportService } from '../../services/report.service';
-const {
-  financialReport_taxAndServiceCharge_columns,
-  report_queryParams,
-  report_getFinancialReport,
-  report_taxAndServiceCharge_values,
-} = useReportService();
+import { useReportService } from '../services/report.service';
+const { voucherReport_columns, report_queryParams, report_getVoucherReport, voucherReport_values } =
+  useReportService();
 // composables for export pdf
-import { useReportExporter } from '../../composables/useReportExporter';
+import { useReportExporter } from '../composables/useReportExporter';
 const { exportToPdf, exportToCsv } = useReportExporter();
+const popover = ref();
 const handleExportToPdf = () => {
   exportToPdf({
-    reportName: 'Financial Report - Tax & Service Charge Report',
+    reportName: 'Voucher Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: financialReport_taxAndServiceCharge_columns,
+    columns: voucherReport_columns,
     tableData: formattedDataTable(),
   });
 };
 const handleExportToCsv = () => {
   exportToCsv({
-    reportName: 'Financial Report - Tax & Service Charge Report',
+    reportName: 'Voucher Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: financialReport_taxAndServiceCharge_columns,
+    columns: voucherReport_columns,
     tableData: formattedDataTable(),
   });
 };
 
 const formattedDataTable = () => {
-  const newData = report_taxAndServiceCharge_values.value.map(item => {
+  const newData = voucherReport_values.value.map(item => {
     return {
-      type: item.type,
-      rate: item.rate + '%',
-      subtotalApplied: useCurrencyFormat({ data: item.subtotalApplied }),
-      nominal: useCurrencyFormat({ data: item.nominal }),
+      voucherName: item.voucherName,
+      validityPeriod:
+        useFormatDate(item.validityPeriod.split(' - ')[0], 'dd/MMM/yyyy') +
+        ' - ' +
+        useFormatDate(item.validityPeriod.split(' - ')[1], 'dd/MMM/yyyy'),
+      usage: item.usage,
+      quota: item.quota,
     };
   });
+
   return newData || [];
 };
 
-const popover = ref();
+const page = ref<number>(1);
+const limit = ref<number>(10);
+const onChangePage = (newPage: number) => {
+  page.value = newPage;
+};
+
+onMounted(async () => {
+  await report_getVoucherReport();
+});
 </script>
 <template>
   <section>
-    <!-- <pre class="p-4 my-4 bg-gray-100 rounded-lg break-all" style="white-space: pre-wrap; word-wrap: break-word">
-      {{ report_taxAndServiceCharge_values }}
-      {{ formattedDataTable() }}
-    </pre> -->
     <AppBaseDataTable
       :data="formattedDataTable()"
-      :columns="financialReport_taxAndServiceCharge_columns"
+      :columns="voucherReport_columns"
+      :first="(page - 1) * limit"
+      :rows-per-page="limit"
+      :total-records="formattedDataTable().length"
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-custom-filter
-      is-using-custom-body
-      is-using-custom-footer
+      @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Tax & Service Charge Report</h1>
+        <h1 class="font-bold text-2xl text-text-primary">Voucher Report</h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton variant="outlined" label="Export" @click="popover.toggle($event)">
@@ -95,17 +102,8 @@ const popover = ref();
           v-model:start-date="report_queryParams.startDate"
           v-model:end-date="report_queryParams.endDate"
           :should-update-type="false"
-          @update:start-date="report_getFinancialReport('tax-service')"
+          @update:start-date="report_getVoucherReport()"
         />
-      </template>
-
-      <template #body="{ data, column }">
-        <template v-if="column.value === 'rate'">
-          <span class="text-sm text-text-primary">{{ data[column.value] }}</span>
-        </template>
-        <template v-else>
-          <span class="text-sm text-text-primary">{{ data[column.value] }}</span>
-        </template>
       </template>
     </AppBaseDataTable>
   </section>

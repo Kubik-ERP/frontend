@@ -8,14 +8,25 @@ const props = defineProps({
     type: Date,
     required: true,
   },
+  type: {
+    type: [String, null],
+    required: false,
+    default: 'time',
+  },
+  shouldUpdateType: {
+    // ✅ ADD THIS PROP
+    type: Boolean,
+    default: true, // Defaults to 'true' to avoid breaking other pages
+  },
 });
 
-const emit = defineEmits(['update:startDate', 'update:endDate']);
+const emit = defineEmits(['update:startDate', 'update:endDate', 'update:type']);
 
 const dialogVisible = ref<boolean>(false);
 
 // ✅ 1. Use a single ref for the date range array
 const localDateRange = ref<[Date, Date] | null>([props.startDate, props.endDate]);
+const type = ref<string | null>(props.type);
 
 // Watch props to update the local state
 watch(
@@ -29,12 +40,24 @@ watch(
 // The "Apply" button now emits the changes from the range array
 const applyDateChange = () => {
   if (localDateRange.value && localDateRange.value[0]) {
-    const start = localDateRange.value[0];
-    // If only one date is selected, make the end date the same as the start date
-    const end = localDateRange.value[1] || start;
+    // Create a new Date object for 'start' to work with
+    const start = new Date(localDateRange.value[0]);
+    start.setHours(0, 0, 0, 0);
+
+    // If an end date exists, create a new object from it.
+    // If not, create a new object by COPYING the start date.
+    const end = localDateRange.value[1] ? new Date(localDateRange.value[1]) : new Date(start); // This creates a copy, not a reference
+
+    // Now, this only modifies the 'end' object
+    end.setHours(23, 59, 59, 999);
 
     emit('update:startDate', start);
     emit('update:endDate', end);
+
+    type.value = null;
+    if (props.shouldUpdateType) {
+      emit('update:type', type.value);
+    }
   }
   dialogVisible.value = false;
 };
@@ -48,10 +71,16 @@ const onClickShortcut = (label: string) => {
   const today = new Date();
   let start = new Date();
   let end = new Date();
+  let newType = '';
 
   switch (label) {
     case 'Today': {
-      start = new Date(new Date().setHours(0, 0, 0, 0));
+      start = new Date();
+      start.setHours(0, 0, 0, 0);
+      end = new Date();
+      end.setHours(23, 59, 59, 999);
+      newType = 'time';
+
       break;
     }
 
@@ -59,6 +88,7 @@ const onClickShortcut = (label: string) => {
       start = new Date(new Date().setDate(today.getDate() - 1));
       start.setHours(0, 0, 0, 0);
       end = new Date(new Date().setHours(0, 0, 0, 0) - 1);
+      newType = 'time';
       break;
     }
 
@@ -69,12 +99,16 @@ const onClickShortcut = (label: string) => {
       firstDayOfWeek.setHours(0, 0, 0, 0);
       start = firstDayOfWeek;
       end = new Date();
+      end.setHours(23, 59, 59, 999);
+      newType = 'days';
       break;
     }
 
     case 'This Month': {
       start = new Date(today.getFullYear(), today.getMonth(), 1);
       end = new Date();
+      end.setHours(23, 59, 59, 999);
+      newType = 'days';
       break;
     }
 
@@ -84,6 +118,8 @@ const onClickShortcut = (label: string) => {
       thirtyDaysAgo.setHours(0, 0, 0, 0);
       start = thirtyDaysAgo;
       end = new Date();
+      end.setHours(23, 59, 59, 999);
+      newType = 'days';
       break;
     }
 
@@ -93,10 +129,20 @@ const onClickShortcut = (label: string) => {
       lastDayOfLastMonth.setHours(23, 59, 59, 999);
       start = firstDayOfLastMonth;
       end = lastDayOfLastMonth;
+      newType = 'days';
       break;
     }
   }
   localDateRange.value = [start, end];
+  type.value = newType;
+
+  emit('update:startDate', start);
+  emit('update:endDate', end);
+  if (props.shouldUpdateType) {
+    emit('update:type', newType);
+  }
+
+  dialogVisible.value = false;
 };
 </script>
 <template>

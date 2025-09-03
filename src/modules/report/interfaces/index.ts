@@ -1,3 +1,42 @@
+import type {
+  IFinancialReport_cashInOut,
+  IFinancialReport_paymentMethod,
+  IFinancialReport_profitAndLost,
+  IFinancialReport_taxServiceCharge,
+} from './financial-report';
+export * from './financial-report';
+
+import type { ISalesReport_salesByItem, ISalesReport_salesByOrderType } from './sales-report';
+export * from './sales-report';
+
+import type { IInventoryReport_stock, IInventoryReport_stockMovement } from './inventory-report';
+export * from './inventory-report';
+export interface IReportQueryParams {
+  startDate: Date;
+  endDate: Date;
+  type?: string | null;
+}
+
+import type { IVoucherReport } from './voucher-report';
+export * from './voucher-report';
+
+export interface IReportStore {
+  report_isLoading: boolean;
+  // financial report
+  report_profitAndLost_values: IFinancialReport_profitAndLost;
+  report_cashInOut_values: IFinancialReport_cashInOut[];
+  report_paymentMethod_values: IFinancialReport_paymentMethod;
+  report_taxAndServiceCharge_values: IFinancialReport_taxServiceCharge[];
+  // sales report
+  salesReport_salesByItem_values: ISalesReport_salesByItem[];
+  salesReport_salesByOrderType_values: ISalesReport_salesByOrderType[];
+  // inventory report
+  inventoryReport_stock_values: IInventoryReport_stock[];
+  inventoryReport_stockMovement_values: IInventoryReport_stockMovement[];
+  // voucher report
+  voucherReport_values: IVoucherReport[];
+}
+
 export interface IReportProvided {
   financialReport_profitAndLost_columns: IColumnDataTable[];
   financialReport_cashInOut_columns: IColumnDataTable[];
@@ -8,5 +47,27 @@ export interface IReportProvided {
   salesReport_salesByOrderType_columns: IColumnDataTable[];
   inventoryReport_stock_columns: IColumnDataTable[];
   inventoryReport_stockMovement_columns: IColumnDataTable[];
-  marketingReport_columns: IColumnDataTable[];
+  voucherReport_columns: IColumnDataTable[];
+  // methods
+  report_getFinancialReport: (type: string) => Promise<void>;
+  report_getSalesReport: (type: string) => Promise<void>;
+  report_getInventoryReport: (type: string) => Promise<void>;
+  report_getVoucherReport: () => Promise<void>;
+  // params
+  report_queryParams: IReportQueryParams;
+  // store
+  report_isLoading: globalThis.Ref<boolean>;
+  // financial
+  report_profitAndLost_values: globalThis.Ref<IFinancialReport_profitAndLost>;
+  report_cashInOut_values: globalThis.Ref<IFinancialReport_cashInOut[]>;
+  report_paymentMethod_values: globalThis.Ref<IFinancialReport_paymentMethod>;
+  report_taxAndServiceCharge_values: globalThis.Ref<IFinancialReport_taxServiceCharge[]>;
+  // sales report
+  salesReport_salesByItem_values: globalThis.Ref<ISalesReport_salesByItem[]>;
+  salesReport_salesByOrderType_values: globalThis.Ref<ISalesReport_salesByOrderType[]>;
+  // inventory report
+  inventoryReport_stock_values: globalThis.Ref<IInventoryReport_stock[]>;
+  inventoryReport_stockMovement_values: globalThis.Ref<IInventoryReport_stockMovement[]>;
+  // voucher report
+  voucherReport_values: globalThis.Ref<IVoucherReport[]>;
 }
