@@ -142,6 +142,8 @@ const {
                 class="w-full"
                 name="discount-price"
                 :min="0"
+                :prefix="discountBenefit_formData.discountPrice.unit === 'Rp' ? 'Rp ' : ''"
+                :suffix="discountBenefit_formData.discountPrice.unit === '%' ? ' %' : ''"
                 :class="{ ...classes }"
               />
               <div class="absolute right-0 flex items-center rounded-lg border-none ring-0">
@@ -178,7 +180,11 @@ const {
           class="bg-primary border-none min-w-44 disabled:bg-grayscale-20"
           :disabled="discountBenefit_formValidations.$invalid"
           :label="isEdit ? 'Edit' : 'Add'"
-          @click="isEdit ? loyaltyPointBenefit_onSubmitEditDialogDiscount() : loyaltyPointBenefit_onSubmitDialogDiscount()"
+          @click="
+            isEdit
+              ? loyaltyPointBenefit_onSubmitEditDialogDiscount()
+              : loyaltyPointBenefit_onSubmitDialogDiscount()
+          "
         >
           <!-- <template #default>
             <span class="font-semibold text-base text-white">Add</span>

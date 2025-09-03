@@ -10,8 +10,8 @@ export const useRoundingService = (): ISettingRoundingServiceProvided => {
   const store = useSettingStore();
 
   const settingRounding_isEnabled = ref(false);
-  const settingRounding_roundingMode = ref('up');
-  const settingRounding_roundingAmount = ref(100);
+  const settingRounding_roundingType = ref('up');
+  const settingRounding_roundingValue = ref(100);
 
   const fetchRoundingSettings = async () => {
     const response = await store.fetchSetting_getRoundingSetting({
@@ -19,17 +19,17 @@ export const useRoundingService = (): ISettingRoundingServiceProvided => {
     });
     const data = response as { isEnabled: boolean; roundingMode: string; roundingAmount: number };
 
-    settingRounding_isEnabled.value = data.isEnabled;
-    settingRounding_roundingMode.value = data.roundingMode;
-    settingRounding_roundingAmount.value = data.roundingAmount;
+    settingRounding_isEnabled.value = data.isEnabled || false;
+    settingRounding_roundingType.value = data.roundingMode || 'up';
+    settingRounding_roundingValue.value = data.roundingAmount || 100;
   };
 
   const updateRoundingSettings = debounce(async () => {
     await store.fetchSetting_updateRoundingSetting(
       {
         isEnabled: settingRounding_isEnabled.value,
-        roundingMode: settingRounding_roundingMode.value,
-        roundingAmount: settingRounding_roundingAmount.value,
+        roundingType: settingRounding_roundingType.value,
+        roundingValue: settingRounding_roundingValue.value,
       },
       {
         ...httpAbort_registerAbort(SETTING_ROUNDING_BASE_ENDPOINT),
@@ -38,12 +38,12 @@ export const useRoundingService = (): ISettingRoundingServiceProvided => {
   }, 500);
 
   const settingRounding_handleIncrement = () => {
-    settingRounding_roundingAmount.value = settingRounding_roundingAmount.value * 10;
+    settingRounding_roundingValue.value = settingRounding_roundingValue.value * 10;
   };
 
   const settingRounding_handleDecrement = () => {
-    if (settingRounding_roundingAmount.value > 10) {
-      settingRounding_roundingAmount.value = settingRounding_roundingAmount.value / 10;
+    if (settingRounding_roundingValue.value > 10) {
+      settingRounding_roundingValue.value = settingRounding_roundingValue.value / 10;
     }
   };
 
@@ -51,14 +51,14 @@ export const useRoundingService = (): ISettingRoundingServiceProvided => {
     fetchRoundingSettings();
   });
 
-  watch([settingRounding_isEnabled, settingRounding_roundingMode, settingRounding_roundingAmount], () => {
+  watch([settingRounding_isEnabled, settingRounding_roundingType, settingRounding_roundingValue], () => {
     updateRoundingSettings();
   });
 
   return {
     settingRounding_isEnabled,
-    settingRounding_roundingMode,
-    settingRounding_roundingAmount,
+    settingRounding_roundingType,
+    settingRounding_roundingValue,
     settingRounding_handleIncrement,
     settingRounding_handleDecrement,
   };

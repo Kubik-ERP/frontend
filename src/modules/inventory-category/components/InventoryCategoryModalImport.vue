@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useInventoryCategoryImportService } from '../services/inventory-category-import.service';
+import type { IInventoryCategoryImport } from '../interfaces/inventory-category-import.interface';
 
 const {
   inventoryCategoryImport_step,
@@ -41,7 +42,9 @@ const {
             @click="inventoryCategoryImport_triggerUpload"
             @dragover.prevent
             @drop.prevent="
-              inventoryCategoryImport_handleDropFile($event.dataTransfer?.files ? Array.from($event.dataTransfer.files) : [])
+              inventoryCategoryImport_handleDropFile(
+                $event.dataTransfer?.files ? Array.from($event.dataTransfer.files) : [],
+              )
             "
           >
             <i class="pi pi-paperclip text-4xl text-gray-400 mb-3"></i>
@@ -49,7 +52,9 @@ const {
             <p class="text-gray-500 text-sm text-center mb-3">
               Drop your CSV/XLSX file here <br />
               or
-              <span class="text-primary cursor-pointer" @click.stop="inventoryCategoryImport_triggerUpload">click</span>
+              <span class="text-primary cursor-pointer" @click.stop="inventoryCategoryImport_triggerUpload"
+                >click</span
+              >
               to browse from your device.
             </p>
 
@@ -85,14 +90,10 @@ const {
           <div class="flex flex-col w-full">
             <AppBaseDataTable
               :columns="inventoryCategoryImport_columns"
-              :data="inventoryCategoryImport_values?.data.items"
-              :rows-per-page="inventoryCategoryImport_values?.data.meta.pageSize"
-              :total-records="inventoryCategoryImport_values?.data.meta.total"
-              :first="
-                inventoryCategoryImport_values?.data?.meta && inventoryCategoryImport_values.data.meta.page
-                  ? (inventoryCategoryImport_values.data.meta.page - 1) * inventoryCategoryImport_values.data.meta.pageSize
-                  : 0
-              "
+              :data="inventoryCategoryImport_values?.data.mergedData || []"
+              :rows-per-page="10"
+              :total-records="inventoryCategoryImport_values?.data.totalRows || 0"
+              :first="0"
               :is-loading="inventoryCategoryImport_isLoading"
               is-using-custom-header-suffix
               is-using-header
@@ -131,7 +132,11 @@ const {
 
             <!-- Alert ditempel di bawah table -->
             <div
-              v-if="inventoryCategoryImport_values?.data?.items?.some(item => item.status === 'failed')"
+              v-if="
+                inventoryCategoryImport_values?.data?.mergedData?.some(
+                  (item: IInventoryCategoryImport) => item.status === 'failed',
+                )
+              "
               class="absolute top-0 left-1/2 -translate-x-1/2 mt-2 p-3 border border-red-300 bg-red-50 text-red-700 rounded-md text-sm flex items-start gap-2 shadow-md"
             >
               <i class="pi pi-exclamation-triangle mt-0.5"></i>
@@ -156,7 +161,10 @@ const {
           label="Import"
           class="px-4 py-2 bg-primary text-white disabled:bg-gray-400 disabled:text-white disabled:border-none"
           :disabled="
-            inventoryCategoryImport_step === 1 || inventoryCategoryImport_values?.data?.items?.some(item => item.status === 'failed')
+            inventoryCategoryImport_step === 1 ||
+            inventoryCategoryImport_values?.data?.mergedData?.some(
+              (item: IInventoryCategoryImport) => item.status === 'failed',
+            )
           "
           @click="inventoryCategoryImport_onSubmit"
         />

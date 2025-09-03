@@ -93,8 +93,8 @@ export const LIST_SIDEBAR_MENUS = [
             path: '/report/raw-material-report',
           },
           {
-            name: 'Marketing Report',
-            path: '/report/marketing-report',
+            name: 'Voucher Report',
+            path: '/report/voucher-report',
           },
           {
             name: 'Staff Report',

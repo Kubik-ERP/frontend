@@ -5,9 +5,11 @@ import type { IPurchaseOrderCreateEditProvided } from '../interfaces';
 /**
  * @description Inject all the data and methods what we need
  */
-const { purchaseOrderCreateEdit_isEditMode, purchaseOrderCreateEdit_onResetForm } = inject(
-  'purchaseOrderCreateEdit',
-) as IPurchaseOrderCreateEditProvided;
+const {
+  purchaseOrderCreateEdit_isEditMode,
+  purchaseOrderCreateEdit_onResetForm,
+  purchaseOrderCreateEdit_onSubmitForm,
+} = inject('purchaseOrderCreateEdit') as IPurchaseOrderCreateEditProvided;
 
 /**
  * @description Handle cancel button click
@@ -31,6 +33,7 @@ const onCancel = () => {
       class="bg-blue-primary border-none text-sm py-[10px] w-36"
       :label="purchaseOrderCreateEdit_isEditMode ? 'Update' : 'Create'"
       type="submit"
+      @click="purchaseOrderCreateEdit_onSubmitForm"
     />
   </section>
 </template>

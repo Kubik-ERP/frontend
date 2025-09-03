@@ -1,9 +1,4 @@
-import {
-  ICashierCategoriesResponse,
-  ICashierCustomer,
-  ICashierProduct,
-  ICashierVariant,
-} from './cashier-response';
+import { ICashierCategoriesResponse, ICashierCustomer, ICashierVariant, IProductItem } from './cashier-response';
 
 export interface ICashierModalAddProductItem {
   quantity: number;
@@ -12,7 +7,7 @@ export interface ICashierModalAddProductItem {
 }
 
 export interface ICashierSelected {
-  product: ICashierProduct;
+  product: IProductItem;
   variant: ICashierVariant;
   productId: string;
   variantId: string;
@@ -23,7 +18,7 @@ export interface ICashierSelected {
 export interface ICashierModalAddProduct {
   show: boolean;
   isAddNotesActive: boolean;
-  product: ICashierProduct | null;
+  product: IProductItem | null;
   item: ICashierModalAddProductItem;
 }
 

@@ -26,6 +26,7 @@ const {
   purchaseOrderList_onChangePage,
   purchaseOrderList_onShowButtonCancelPO,
   purchaseOrderList_onShowButtonDeliveryOrderDocument,
+  purchaseOrderList_onShowDialogCancel,
   purchaseOrderList_queryParams,
   purchaseOrderList_values,
 } = inject('purchaseOrderList') as IPurchaseOrderListProvided;
@@ -75,7 +76,13 @@ watch(searchValue, newValue => {
     @update:sort="purchaseOrderList_handleOnSortChange"
   >
     <template #body="{ column, data }">
-      <template v-if="column.value === 'orderStatus'">
+      <template v-if="column.value === 'supplierName'">
+        <span class="font-normal text-sm text-text-primary">
+          {{ data.supplierInfo[column.value] }}
+        </span>
+      </template>
+
+      <template v-else-if="column.value === 'orderStatus'">
         <PrimeVueChip
           :class="[purchaseOrderList_getClassOfStatus(data[column.value]), 'text-xs font-normal']"
           :label="
@@ -94,10 +101,16 @@ watch(searchValue, newValue => {
         </span>
       </template>
 
-      <template v-else-if="column.value === 'staffName'">
-        <span class="font-normal text-sm text-text-primary">
-          {{ data.employees.name }}
-        </span>
+      <template v-else-if="column.value === 'orderDate' || column.value === 'deliveryDate'">
+        <template v-if="data[column.value]">
+          <span class="font-normal text-sm text-text-primary">
+            {{ useFormatDate(data[column.value], 'dd/mm/yyyy') }}
+          </span>
+        </template>
+
+        <template v-else>
+          <span class="font-normal text-sm text-grayscale-70">-</span>
+        </template>
       </template>
 
       <template v-else-if="column.value === 'action'">
@@ -105,7 +118,7 @@ watch(searchValue, newValue => {
           variant="text"
           rounded
           aria-label="detail"
-          @click="(event: Event) => togglePopover(data.poNumber, event)"
+          @click="(event: Event) => togglePopover(data.orderNumber, event)"
         >
           <template #icon>
             <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
@@ -115,7 +128,7 @@ watch(searchValue, newValue => {
         <PrimeVuePopover
           :ref="
             (el: unknown) => {
-              if (el) popovers[`popover-${data.poNumber}`] = el;
+              if (el) popovers[`popover-${data.orderNumber}`] = el;
             }
           "
           :pt="{
@@ -126,7 +139,7 @@ watch(searchValue, newValue => {
             <PrimeVueButton
               class="w-full px-4 py-3"
               variant="text"
-              @click="$router.push({ name: 'purchase-order.detail', params: { id: data.poNumber } })"
+              @click="$router.push({ name: 'purchase-order.detail', params: { id: data.id } })"
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2 w-full">
@@ -153,6 +166,7 @@ watch(searchValue, newValue => {
               v-if="purchaseOrderList_onShowButtonCancelPO(data.orderStatus)"
               class="w-full px-4 py-3"
               variant="text"
+              @click="purchaseOrderList_onShowDialogCancel(data.id)"
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2 w-full">

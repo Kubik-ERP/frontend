@@ -936,6 +936,16 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
               quantity: null,
               variantHasProducts: null,
               categoriesHasProducts: null,
+              variant: item.variant
+                ? [
+                    {
+                      id: item.variant.id,
+                      name: item.variant.name,
+                      price: item.variant.price,
+                      productsId: item.productId,
+                    },
+                  ]
+                : [],
             }),
             variant: item.variant
               ? reactive({
@@ -949,7 +959,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
                   price: 0,
                 }),
             productId: item.productId,
-            variantId: item.variantId || '',
+            variantId: item.variant?.id || '',
             quantity: item.qty,
             notes: item.notes,
           };

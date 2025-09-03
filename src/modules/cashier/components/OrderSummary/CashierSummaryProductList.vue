@@ -134,7 +134,7 @@ const showImageUrl = (picture: string | null) => {
               variant="outlined"
               label="+"
               :disabled="cashierOrderSummary_calculateEstimation.isLoading"
-              @click="item.quantity == item.product.quantity ? item.quantity : (item.quantity += 1)"
+              @click="item.quantity += 1"
             />
           </div>
         </div>

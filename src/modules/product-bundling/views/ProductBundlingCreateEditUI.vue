@@ -8,7 +8,7 @@ import { useProductBundlingService } from '../services/product-bundling.service'
 const route = useRoute();
 const {
   price_type_option,
-  productBundling_grandTotal,
+  // productBundling_grandTotal,
   productBundling_formData,
   productBundling_formValidations,
   productBundling_productList,
@@ -62,6 +62,11 @@ const onProductSelect = (event: AutoCompleteOptionSelectEvent) => {
   // ✅ Pushes directly to the reactive formData
   productBundling_formData.products.push(itemToAdd);
 
+  productBundling_formData.price = productBundling_formData.products.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
+
   // ✅ Use nextTick to clear the input after the current update cycle
   nextTick(() => {
     currentSelection.value = null;
@@ -74,6 +79,17 @@ const onProductSelect = (event: AutoCompleteOptionSelectEvent) => {
 const removeFromPool = (productToRemove: IProduct) => {
   // ✅ Filters the reactive formData directly
   productBundling_formData.products = productBundling_formData.products.filter(p => p.id !== productToRemove.id);
+  productBundling_formData.price = productBundling_formData.products.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
+};
+
+const onResetButtonClick = () => {
+  productBundling_formData.price = productBundling_formData.products.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
 };
 
 onMounted(async () => {
@@ -148,10 +164,8 @@ onMounted(async () => {
           />
           <PrimeVueInputNumber
             v-model="productBundling_formData.price"
-            :disabled="
-              productBundling_formData.type === 'TOTAL_ITEMS' || productBundling_formData.products.length === 0
-            "
             placeholder="Rp. 0,00"
+            :disabled="productBundling_formData.products.length === 0"
             :prefix="productBundling_formData.type !== 'DISCOUNT' ? 'Rp ' : ''"
             :suffix="productBundling_formData.type === 'DISCOUNT' ? '%' : ''"
             fluid
@@ -160,10 +174,20 @@ onMounted(async () => {
             :max="productBundling_formData.type === 'DISCOUNT' ? 100 : undefined"
             class="w-full"
             :class="{ ...classes }"
-            @value-change="calculateTotalPrice()"
           />
         </div>
       </AppBaseFormGroup>
+      <PrimeVueButton
+        v-show="
+          productBundling_formData.type === 'TOTAL_ITEMS' &&
+          productBundling_formData.products.reduce((total, item) => total + item.price * item.quantity, 0) !==
+            productBundling_formData.price
+        "
+        class="w-fit px-3 py-2"
+        variant="text"
+        label="Reset"
+        @click="onResetButtonClick"
+      />
     </section>
     <section id="card" class="">
       <PrimeVueCard class="h-fit">
@@ -227,8 +251,10 @@ onMounted(async () => {
                           :step="1"
                           :class="{ ...classes }"
                           @value-change="
-                            setPricingType();
-                            calculateTotalPrice();
+                            productBundling_formData.price = productBundling_formData.products.reduce(
+                              (total, item) => total + item.price * item.quantity,
+                              0,
+                            )
                           "
                         >
                           <template #decrementicon>
@@ -276,7 +302,7 @@ onMounted(async () => {
                   <span class="text-right">Bundling Price</span>
                   <span class="text-right font-semibold">{{
                     useCurrencyFormat({
-                      data: productBundling_grandTotal,
+                      data: productBundling_formData.price,
                     })
                   }}</span>
                 </div>

@@ -152,7 +152,7 @@ function zoomOut() {
         >
           <template #default>
             <section id="content" class="flex items-center gap-2 w-full">
-              <AppBaseSvg name="edit" />
+              <AppBaseSvg name="edit" class="w-4 h-4" />
               <span class="font-semibold text-sm text-primary">Edit Floor Name</span>
             </section>
           </template>
@@ -189,11 +189,11 @@ function zoomOut() {
           <span class="font-medium text-sm text-grayscale-70"> Zoom </span>
 
           <div class="flex items-center gap-3">
-            <AppBaseSvg name="zoom-in" class="cursor-pointer" @click="zoomIn" />
+            <AppBaseSvg name="zoom-in" class="cursor-pointer w-4 h-4" @click="zoomIn" />
 
             <div id="divider" class="w-[0.5px] h-[18px] bg-grayscale-30">&nbsp;</div>
 
-            <AppBaseSvg name="zoom-out" class="cursor-pointer" @click="zoomOut" />
+            <AppBaseSvg name="zoom-out" class="cursor-pointer w-4 h-4" @click="zoomOut" />
           </div>
         </section>
 
