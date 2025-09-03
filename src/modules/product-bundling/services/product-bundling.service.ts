@@ -33,7 +33,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
     name: '',
     description: '',
     products: [],
-    type: '',
+    type: 'TOTAL_ITEMS',
     price: 0,
   });
 
@@ -49,10 +49,12 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
 
   const calculateTotalPrice = () => {
     if (productBundling_formData.type === 'TOTAL_ITEMS') {
-      productBundling_formData.price = productBundling_formData.products.reduce(
-        (total, item) => total + item.discountPrice * item.quantity,
-        0,
-      );
+      productBundling_grandTotal.value = productBundling_formData.price;
+
+      // productBundling_formData.price = productBundling_formData.products.reduce(
+      //   (total, item) => total + item.discountPrice * item.quantity,
+      //   0,
+      // );
       productBundling_grandTotal.value = productBundling_formData.price;
     } else if (productBundling_formData.type === 'DISCOUNT') {
       productBundling_grandTotal.value = productBundling_formData.products.reduce(
@@ -62,22 +64,27 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
           (item.discountPrice * item.quantity * productBundling_formData.price) / 100,
         0,
       );
-    } else if (productBundling_formData.type === 'CUSTOM') {
-      productBundling_grandTotal.value = productBundling_formData.price;
     }
+    // else if (productBundling_formData.type === 'CUSTOM') {
+    //   productBundling_grandTotal.value = productBundling_formData.price;
+    // }
   };
 
   const setPricingType = () => {
     if (productBundling_formData.type === 'TOTAL_ITEMS') {
-      calculateTotalPrice();
-    } else if (productBundling_formData.type === 'DISCOUNT') {
-      productBundling_formData.price = 0;
-    } else if (productBundling_formData.type === 'CUSTOM') {
       productBundling_formData.price = productBundling_formData.products.reduce(
         (total, item) => total + item.discountPrice * item.quantity,
         0,
       );
+    } else if (productBundling_formData.type === 'DISCOUNT') {
+      productBundling_formData.price = 0;
     }
+    // else if (productBundling_formData.type === 'CUSTOM') {
+    //   productBundling_formData.price = productBundling_formData.products.reduce(
+    //     (total, item) => total + item.discountPrice * item.quantity,
+    //     0,
+    //   );
+    // }
   };
 
   const resetFormData = () => {
@@ -146,15 +153,30 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
   const convertFormDataToPayload = () => {
     let payload;
     if (productBundling_formData.type === 'TOTAL_ITEMS') {
-      payload = {
-        id: productBundling_formData.id || null,
-        name: productBundling_formData.name,
-        description: productBundling_formData.description,
-        products: productBundling_formData.products.map(p => ({ productId: p.id, quantity: p.quantity })),
-        type: productBundling_formData.type,
-        price: null,
-        discount: null,
-      };
+      if (
+        productBundling_formData.price ===
+        productBundling_formData.products.reduce((total, item) => total + item.discountPrice * item.quantity, 0)
+      ) {
+        payload = {
+          id: productBundling_formData.id || null,
+          name: productBundling_formData.name,
+          description: productBundling_formData.description,
+          products: productBundling_formData.products.map(p => ({ productId: p.id, quantity: p.quantity })),
+          type: productBundling_formData.type,
+          price: null,
+          discount: null,
+        };
+      } else {
+        payload = {
+          id: productBundling_formData.id || null,
+          name: productBundling_formData.name,
+          description: productBundling_formData.description,
+          products: productBundling_formData.products.map(p => ({ productId: p.id, quantity: p.quantity })),
+          type: 'CUSTOM',
+          price: productBundling_formData.price,
+          discount: null,
+        };
+      }
     } else if (productBundling_formData.type === 'DISCOUNT') {
       payload = {
         id: productBundling_formData.id || null,
@@ -165,17 +187,19 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
         price: null,
         discount: productBundling_formData.price,
       };
-    } else if (productBundling_formData.type === 'CUSTOM') {
-      payload = {
-        id: productBundling_formData.id || null,
-        name: productBundling_formData.name,
-        description: productBundling_formData.description,
-        products: productBundling_formData.products.map(p => ({ productId: p.id, quantity: p.quantity })),
-        type: productBundling_formData.type,
-        price: productBundling_formData.price,
-        discount: null,
-      };
-    } else {
+    }
+    // else if (productBundling_formData.type === 'CUSTOM') {
+    //   payload = {
+    //     id: productBundling_formData.id || null,
+    //     name: productBundling_formData.name,
+    //     description: productBundling_formData.description,
+    //     products: productBundling_formData.products.map(p => ({ productId: p.id, quantity: p.quantity })),
+    //     type: productBundling_formData.type,
+    //     price: productBundling_formData.price,
+    //     discount: null,
+    //   };
+    // }
+    else {
       payload = {
         id: null,
         name: '',
@@ -288,9 +312,13 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
       productBundling_formData.id = data.id;
       productBundling_formData.name = data.name;
       productBundling_formData.description = data.description;
-      productBundling_formData.type = data.type;
+      if (data.type === 'CUSTOM') {
+        productBundling_formData.type = 'TOTAL_ITEMS';
+      } else {
+        productBundling_formData.type = data.type;
+      }
       if (data.type === 'DISCOUNT') {
-        productBundling_formData.price = (data?.discount || 0);
+        productBundling_formData.price = data?.discount || 0;
       } else {
         productBundling_formData.price = data.price;
       }
@@ -304,7 +332,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
           discountPrice: p.product_discount_price,
         })) || [];
 
-      calculateTotalPrice();
+      // calculateTotalPrice();
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error);

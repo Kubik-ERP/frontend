@@ -17,6 +17,12 @@ const {
   dashboard_isLoading,
   dashboard_values,
   dashboard_getSummary,
+  
+  // chart
+  setChartData,
+  setChartOptions,
+  chartData,
+  chartOptions,
 } = useDashboardService();
 
 provide<IDashboardProvided>('dashboard', {
@@ -25,11 +31,17 @@ provide<IDashboardProvided>('dashboard', {
   dashboard_isLoading,
   dashboard_values,
   dashboard_getSummary,
+
+  // chart
+  setChartData,
+  setChartOptions,
+  chartData,
+  chartOptions,
 });
 
-onMounted(() => {
-  dashboard_getSummary();
-});
+// onMounted(() => {
+//   dashboard_getSummary();
+// });
 </script>
 
 <template>
