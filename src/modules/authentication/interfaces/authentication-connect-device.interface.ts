@@ -13,6 +13,7 @@ export interface IAuthenticationConnectDeviceFormData {
 export interface IAuthenticationConnectDeviceResponse {
   data: {
     accessToken: string;
+    storeId: string;
   };
 }
 

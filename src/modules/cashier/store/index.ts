@@ -169,6 +169,7 @@ export const useCashierStore = defineStore('cashier', {
         customerId: string;
         tableCode: string;
         storeId: string;
+        rounding_amount: number;
       },
       route: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},
@@ -206,6 +207,7 @@ export const useCashierStore = defineStore('cashier', {
         storeId: string;
         paymentAmount: number | null;
         voucherId: string | null;
+        rounding_amount: number;
       },
       route: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},

@@ -194,6 +194,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       discountTotal: 0,
       grandTotal: 0,
       serviceCharge: 0,
+      roundingAdjustment: 0,
       serviceChargeInclude: false,
       tax: 0,
       taxInclude: false,
@@ -641,6 +642,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           discountTotal: 0,
           grandTotal: 0,
           serviceCharge: 0,
+          roundingAdjustment: 0,
           serviceChargeInclude: false,
           tax: 0,
           taxInclude: false,
@@ -679,6 +681,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
         paymentAmount: cashierOrderSummary_paymentForm.paymentAmount || null,
         voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId || null,
+        rounding_amount: cashierOrderSummary_calculateEstimation.value.data.roundingAdjustment || 0,
       };
 
       const response = await store.cashierProduct_paymentInstant(params, route);
@@ -753,6 +756,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
         tableCode: cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
+        rounding_amount: cashierOrderSummary_calculateEstimation.value.data.roundingAdjustment || 0,
       };
 
       const response = await store.cashierProduct_paymentProcess(params, route);
