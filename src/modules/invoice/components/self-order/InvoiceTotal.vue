@@ -90,6 +90,20 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
     </div>
 
     <div class="flex justify-between">
+      <span class="text-text-disabled text-xs">Rounding</span>
+
+      <div class="flex flex-col items-end">
+        <span class="text-xs text-text-disabled">
+          <span>{{
+            useCurrencyFormat({
+              data: invoice_invoiceData.data.roundingAmount || 0,
+            })
+          }}</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="flex justify-between">
       <span class="text-text-disabled text-xs">Promo</span>
 
       <div class="flex flex-col items-end">

@@ -107,6 +107,7 @@ export interface IInvoiceData {
   taxAmount: number | null;
   serviceChargeAmount: number | null;
   grandTotal: number | null;
+  roundingAmount: number | null;
   paymentAmount: number | null;
   changeAmount: number | null;
   voucherId: string | null;
