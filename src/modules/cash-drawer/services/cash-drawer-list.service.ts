@@ -95,6 +95,8 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
         },
       );
 
+      cashDrawerList_onCloseOpenRegisterDialog();
+
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,
@@ -111,7 +113,7 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
             id: result.data.id,
           },
         });
-      }, 1000);
+      }, 500);
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);

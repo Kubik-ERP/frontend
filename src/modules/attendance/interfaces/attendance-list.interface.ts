@@ -1,6 +1,6 @@
 // Interfaces
 import type { Validation } from '@vuelidate/core';
-import { IAttendanceListData } from './attendance-data.interface';
+import type { IAttendanceListData } from './attendance-data.interface';
 
 export interface IAttendanceListRequestQuery {
   page: number;
