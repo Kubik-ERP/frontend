@@ -4,7 +4,10 @@ import CustomDatePicker from '@/modules/report/components/CustomDatePicker.vue';
 // type
 import type { IDashboardProvided } from '../interfaces';
 // inject
-const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('dashboard')!;
+const {
+  dashboard_queryParams,
+  // dashboard_values //uncomment this for using overview cards
+} = inject<IDashboardProvided>('dashboard')!;
 </script>
 <template>
   <section id="dashboard-overview" class="flex flex-col gap-4">
@@ -17,7 +20,7 @@ const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('
       />
     </section>
 
-    <section id="overview-cards" class="grid grid-rows-1 grid-cols-12 gap-4">
+    <!-- <section id="overview-cards" class="grid grid-rows-1 grid-cols-12 gap-4">
       <section
         id="card-total-sales"
         class="col-span-6 lg:col-span-3 flex flex-col justify-between bg-white border border-solid border-grayscale-10 p-4 rounded-sm gap-6"
@@ -65,7 +68,6 @@ const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('
         <section id="summary" class="flex items-center gap-1">
           <p class="font-semibold text-grayscale-70 text-xs">Total Cost of Good Sold</p>
 
-          <!-- <AppBaseSvg name="info" class="w-3 h-3" /> -->
           <PrimeVueChip
             class="py-1 px-2"
             :class="[
@@ -108,7 +110,6 @@ const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('
         <section id="summary" class="flex items-center gap-1">
           <p class="font-semibold text-grayscale-70 text-xs">Total Gross Profit</p>
 
-          <!-- <AppBaseSvg name="info" class="w-3 h-3" /> -->
 
           <PrimeVueChip
             class="py-1 px-2"
@@ -152,7 +153,6 @@ const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('
         <section id="summary" class="flex items-center gap-1">
           <p class="font-semibold text-grayscale-70 text-xs">Total Nett Profit</p>
 
-          <!-- <AppBaseSvg name="info" class="w-3 h-3" /> -->
 
           <PrimeVueChip
             class="py-1 px-2"
@@ -188,6 +188,6 @@ const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('
           </span>
         </section>
       </section>
-    </section>
+    </section> -->
   </section>
 </template>

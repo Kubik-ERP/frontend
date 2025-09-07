@@ -58,11 +58,11 @@ export const FINANCIALREPORT_TAXANDSERVICECHARGE_COLUMNS: IColumnDataTable[] = [
     sortable: false,
     value: 'type',
   },
-  {
-    label: 'Rate (%)',
-    sortable: false,
-    value: 'rate',
-  },
+  // {
+  //   label: 'Rate (%)',
+  //   sortable: false,
+  //   value: 'rate',
+  // },
   {
     label: 'Subtotal Applied',
     sortable: false,
