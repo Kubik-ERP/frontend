@@ -208,6 +208,17 @@ const prevPage = () => {
   }
 };
 
+const categoryImport_onOpen = () => {
+  const argsEventEmitter: IPropsDialog = {
+    id: 'category-import-modal',
+    isUsingClosableButton: false,
+    isUsingBackdrop: true,
+    isOpen: true,
+    width: '600px',
+  };
+  eventBus.emit('AppBaseDialog', argsEventEmitter);
+};
+
 const removePhoto = () => {
   category_formData.imageFile = undefined;
   category_formData.imagePreview = undefined;
@@ -227,10 +238,11 @@ onMounted(() => {
 });
 
 import { useRbac } from '@/app/composables/useRbac';
+import CategoryImportModal from './CategoryImportModal.vue';
+import eventBus from '@/plugins/mitt';
 
 const rbac = useRbac();
 </script>
-
 <template>
   <div>
     <PrimeVueDataTable
@@ -258,6 +270,15 @@ const rbac = useRbac();
                 />
               </PrimeVueIconField>
             </form>
+
+            <PrimeVueButton
+              class="bg-white hover:bg-gray-100 border border-primary text-primary px-4 py-2 h-10 rounded-md flex items-center gap-2"
+              @click="categoryImport_onOpen"
+            >
+              <i class="pi pi-upload text-sm"></i>
+              Import Category
+            </PrimeVueButton>
+
             <PrimeVueButton
               v-if="rbac.hasPermission('product_category')"
               type="button"
@@ -591,4 +612,5 @@ const rbac = useRbac();
       </template>
     </PrimeVueDialog>
   </div>
+  <CategoryImportModal />
 </template>

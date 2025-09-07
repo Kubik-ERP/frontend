@@ -1,25 +1,30 @@
-export interface IStorageLocationImport{
+export interface IStorageLocationImportFailedSuccessData {
+  id: string;
+  rowNumber: number;
   code: string;
   name: string;
   notes: string;
   status: string;
+  errorMessages?: string;
 }
 
-export interface IStorageLocationImportResponse{
+export interface IStorageLocationImportResponse {
   statusCode: number;
   message: string;
-  data: {
-    items: IStorageLocationImport[];
-    meta: {
-      page: number;
-      pageSize: number;
-      total: number;
-      totalPages: number;
-    };
-  };
+  data: IStorageLocationImportData;
 }
 
-export interface IStorageLocationImportProvided{
+export interface IStorageLocationImportData {
+  batchId: string;
+  failedData: IStorageLocationImportFailedSuccessData[];
+  successData: IStorageLocationImportFailedSuccessData[];
+  invalidRows: number;
+  totalRows: number;
+  validRows: number;
+  mergedData: IStorageLocationImportFailedSuccessData[];
+}
+
+export interface IStorageLocationImportProvided {
   storageLocationImport_onSubmit: () => void;
   storageLocationImport_onClose: () => void;
   storageLocationImport_step: globalThis.Ref<number>;
@@ -29,5 +34,5 @@ export interface IStorageLocationImportProvided{
   storageLocationImport_handleDropFile: (acceptedFiles: File[]) => void;
   storageLocationImport_handleUpload: () => void;
   storageLocationImport_triggerUpload: () => void;
-  storageLocationImport_columns: IColumnDataTable[]
+  storageLocationImport_columns: IColumnDataTable[];
 }
