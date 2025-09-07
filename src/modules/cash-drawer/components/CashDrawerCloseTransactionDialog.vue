@@ -95,7 +95,7 @@ const {
 
         <section class="col-span-full flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <AppBaseSvg name="order-primary" />
+            <AppBaseSvg name="order-primary" class="w-4 h-4" />
             <span class="font-semibold text-primary text-sm"> Details </span>
           </div>
 

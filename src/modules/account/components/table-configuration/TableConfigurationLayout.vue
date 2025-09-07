@@ -215,7 +215,12 @@ function zoomOut() {
           <AppBaseSvg
             name="edit"
             class="!w-4 !h-4 cursor-pointer"
-            @click="accountStoreTableConfiguration_onShowDialogEditTable(table)"
+            @click="
+              accountStoreTableConfiguration_onShowDialogEditTable({
+                ...table,
+                floorName: configuration.floorName,
+              })
+            "
           />
           <div class="font-bold text-sm text-secondary-hover">{{ table.name }}</div>
           <div class="text-sm text-secondary-hover pb-2">{{ table.seats }} seats</div>

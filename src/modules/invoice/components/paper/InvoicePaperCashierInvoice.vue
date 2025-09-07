@@ -223,6 +223,17 @@ const orderTypeLabel = computed(() => {
           </tr>
 
           <tr>
+            <td class="font-normal text-black text-sm py-2">Rounding</td>
+            <td colspan="3" class="font-normal text-black text-sm text-right py-2">
+              {{
+                useCurrencyFormat({
+                  data: invoice_invoiceData.data.roundingAmount || 0,
+                })
+              }}
+            </td>
+          </tr>
+
+          <tr>
             <td class="font-normal text-black text-sm py-2">Promo Voucher</td>
             <td colspan="3" class="font-normal text-black text-sm text-right py-2">
               -

@@ -17,6 +17,7 @@ export interface ICashierResponseCalulateEstimationItem {
   serviceChargeInclude: boolean;
   tax: number | null;
   taxInclude: boolean;
+  roundingAdjustment: number | null;
   totalProductDiscount: number | null;
   items: ICashierResponseCalulateEstimationItem[];
   voucherAmount: number;

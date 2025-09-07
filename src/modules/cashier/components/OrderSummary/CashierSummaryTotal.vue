@@ -101,6 +101,21 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
         >
         <PrimeVueSkeleton v-else width="6rem" />
       </div>
+      <div
+        v-if="cashierOrderSummary_calculateEstimation.data.roundingAdjustment"
+        class="flex justify-between text-sm text-text-disabled"
+      >
+        <span> Rounding </span>
+
+        <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
+          {{
+            useCurrencyFormat({
+              data: cashierOrderSummary_calculateEstimation.data.roundingAdjustment,
+            })
+          }}</span
+        >
+        <PrimeVueSkeleton v-else width="6rem" />
+      </div>
     </div>
 
     <div class="flex justify-between font-semibold pt-2">

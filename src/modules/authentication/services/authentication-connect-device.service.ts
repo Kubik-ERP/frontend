@@ -2,13 +2,11 @@
 import { AUTHENTICATION_CONNECT_DEVICE_REQUEST } from '../constants';
 
 // Interfaces
-import type {
-  IAuthenticationConnectDeviceFormData,
-  IAuthenticationConnectDeviceProvided,
-} from '../interfaces';
+import type { IAuthenticationConnectDeviceFormData, IAuthenticationConnectDeviceProvided } from '../interfaces';
 
 // Stores
 import { useAuthenticationStore } from '../store';
+import { useOutletStore } from '@/modules/outlet/store';
 
 // Vuelidate
 import { useVuelidate } from '@vuelidate/core';
@@ -22,10 +20,12 @@ export const useAuthenticationConnectDeviceService = (): IAuthenticationConnectD
    * @description Injected variables
    */
   const store = useAuthenticationStore(); // Instance of the store
+  const outletStore = useOutletStore(); // Instance of the outlet store
   const route = useRoute(); // Instance of the route
   const router = useRouter(); // Instance of the router
   const { authentication_isLoading } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
+  const { outlet_currentOutlet } = storeToRefs(outletStore);
 
   /**
    * @description Reactive data binding
@@ -89,6 +89,7 @@ export const useAuthenticationConnectDeviceService = (): IAuthenticationConnectD
 
       if (response.data?.accessToken) {
         await authenticationConnectDevice_fetchAuthenticationProfile();
+        await authenticationConnectDevice_fetchOutletDetail(response.data.storeId);
         await authenticationConnectDevice_fetchAuthenticationPermissions();
 
         // Navigate to dashboard or appropriate page
@@ -135,6 +136,25 @@ export const useAuthenticationConnectDeviceService = (): IAuthenticationConnectD
         console.error('Failed to fetch profile:', error.message);
       } else {
         console.error('Failed to fetch profile:', String(error));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api outlet. We call the fetchOutlet_detail function from the store to handle the request.
+   */
+  const authenticationConnectDevice_fetchOutletDetail = async (storeId: string) => {
+    try {
+      const result = await outletStore.fetchOutlet_detail(storeId, {
+        ...httpAbort_registerAbort(AUTHENTICATION_CONNECT_DEVICE_REQUEST),
+      });
+
+      outlet_currentOutlet.value = result.data || null;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Failed to fetch outlet detail:', error.message);
+      } else {
+        console.error('Failed to fetch outlet detail:', String(error));
       }
     }
   };

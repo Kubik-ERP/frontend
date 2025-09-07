@@ -17,11 +17,13 @@ export const useRoundingService = (): ISettingRoundingServiceProvided => {
     const response = await store.fetchSetting_getRoundingSetting({
       ...httpAbort_registerAbort(SETTING_ROUNDING_BASE_ENDPOINT),
     });
-    const data = response as { isEnabled: boolean; roundingMode: string; roundingAmount: number };
+    const mappedResponse = response as {
+      data: { isEnabled: boolean; roundingType: string; roundingValue: number };
+    };
 
-    settingRounding_isEnabled.value = data.isEnabled || false;
-    settingRounding_roundingType.value = data.roundingMode || 'up';
-    settingRounding_roundingValue.value = data.roundingAmount || 100;
+    settingRounding_isEnabled.value = mappedResponse.data.isEnabled || false;
+    settingRounding_roundingType.value = mappedResponse.data.roundingType || 'up';
+    settingRounding_roundingValue.value = mappedResponse.data.roundingValue || 100;
   };
 
   const updateRoundingSettings = debounce(async () => {
