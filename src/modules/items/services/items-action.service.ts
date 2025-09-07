@@ -149,7 +149,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     reorderLevel: { required: true },
     minimumStockQuantity: { required: true },
     expiryDate: {},
-    storageLocationId: { required: true },
+    storageLocationId: { required: false },
     supplierId: { required: true },
     pricePerUnit: { required: true },
   }));

@@ -3,6 +3,7 @@
 import { useAuthenticationStore } from '@/modules/authentication/store';
 import { useOutletStore } from '@/modules/outlet/store';
 import { useMobileStore } from '@/app/store/mobile.store';
+import httpClient from '@/plugins/axios';
 
 /**
  * @description Injected variables
@@ -41,10 +42,19 @@ const toggleMobileSearch = () => {
  * @description Handle business logic for clicking the logout button
  */
 const handleLogout = () => {
-  // Implement logout logic here, e.g., clear tokens, redirect to login page
-  console.log('Logging out...');
+  const userDataRaw = localStorage.getItem('authentication');
+  let isStaff = false;
 
-  // Remove all the data on the local storage
+  if (userDataRaw) {
+    const userData = JSON.parse(userDataRaw);
+    isStaff = userData?.authentication_userData?.isStaff;
+  }
+
+  if (isStaff) {
+    const res = httpClient.post(`authentication/staff/logout`);
+    console.log(res);
+  }
+  // // Remove all the data on the local storage
   localStorage.removeItem('authentication');
   localStorage.removeItem('outlet');
 
