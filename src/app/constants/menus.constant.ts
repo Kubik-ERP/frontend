@@ -1,18 +1,18 @@
 export const LIST_ADDITIONAL_MENUS = [
-  {
-    name: 'Report',
-    iconName: 'report-secondary',
-    path: '/',
-    isHaveSubMenus: false,
-    subMenus: [],
-  },
-  {
-    name: 'Help Desk',
-    iconName: 'help-desk',
-    path: '/',
-    isHaveSubMenus: false,
-    subMenus: [],
-  },
+  // {
+  //   name: 'Report',
+  //   iconName: 'report-secondary',
+  //   path: '/',
+  //   isHaveSubMenus: false,
+  //   subMenus: [],
+  // },
+  // {
+  //   name: 'Help Desk',
+  //   iconName: 'help-desk',
+  //   path: '/',
+  //   isHaveSubMenus: false,
+  //   subMenus: [],
+  // },
 ];
 
 export const LIST_SIDEBAR_MENUS = [
@@ -76,10 +76,10 @@ export const LIST_SIDEBAR_MENUS = [
             name: 'Financial Report',
             path: '/report/financial-report',
           },
-          {
-            name: 'Loss Report',
-            path: '/report/loss-report',
-          },
+          // {
+          //   name: 'Loss Report',
+          //   path: '/report/loss-report',
+          // },
           {
             name: 'Sales Report',
             path: '/report/sales-report',
@@ -88,22 +88,26 @@ export const LIST_SIDEBAR_MENUS = [
             name: 'Inventory Report',
             path: '/report/inventory-report',
           },
-          {
-            name: 'Raw Material Report',
-            path: '/report/raw-material-report',
-          },
+          // {
+          //   name: 'Raw Material Report',
+          //   path: '/report/raw-material-report',
+          // },
           {
             name: 'Voucher Report',
             path: '/report/voucher-report',
           },
-          {
-            name: 'Staff Report',
-            path: '/report/staff-report',
-          },
-          {
-            name: 'Customer Report',
-            path: '/report/customer-report',
-          },
+          // {
+          //   name: 'Staff Report',
+          //   path: '/report/staff-report',
+          // },
+          // {
+          //   name: 'Customer Report',
+          //   path: '/report/customer-report',
+          // },
+          // {
+          //   name: 'Commision Report',
+          //   path: '/report/commision-report',
+          // },
         ],
       },
       {
@@ -203,10 +207,6 @@ export const LIST_SIDEBAR_MENUS = [
             path: '/staff/attendance',
           },
           {
-            name: 'Commision Report',
-            path: '/',
-          },
-          {
             name: 'User Permission',
             path: '/user-permission',
           },
@@ -250,23 +250,23 @@ export const LIST_SIDEBAR_MENUS = [
             name: 'Tax & Service Charge',
             path: '/pos-setting/tax-service',
           },
-          {
-            name: 'Notification',
-            path: '/',
-          },
+          // {
+          //   name: 'Notification',
+          //   path: '/',
+          // },
           {
             name: 'Invoice',
             path: '/pos-setting/invoice',
           },
         ],
       },
-      {
-        name: 'Integrations',
-        iconName: 'integrations',
-        path: '/integrations',
-        isHaveSubMenus: false,
-        subMenus: [],
-      },
+      // {
+      //   name: 'Integrations',
+      //   iconName: 'integrations',
+      //   path: '/integrations',
+      //   isHaveSubMenus: false,
+      //   subMenus: [],
+      // },
     ],
   },
 ];
