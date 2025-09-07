@@ -104,6 +104,10 @@ export const LIST_SIDEBAR_MENUS = [
             name: 'Customer Report',
             path: '/report/customer-report',
           },
+          {
+            name: 'Commision Report',
+            path: '/',
+          },
         ],
       },
       {
@@ -142,7 +146,7 @@ export const LIST_SIDEBAR_MENUS = [
         name: 'Inventory',
         iconName: 'inventory',
         path: '/inventory',
-        isHaveSubMenus: false,
+        isHaveSubMenus: true,
         subMenus: [
           {
             name: 'Master Item',
@@ -162,12 +166,12 @@ export const LIST_SIDEBAR_MENUS = [
           },
           {
             name: 'Stock Opname',
-            path: '/inventory/stock-opname',
+            path: '/stock-opname',
           },
-          {
-            name: 'Storage Location',
-            path: '/storage-location',
-          },
+          // {
+          //   name: 'Storage Location',
+          //   path: '/storage-location',
+          // },
         ],
       },
       {
@@ -202,10 +206,7 @@ export const LIST_SIDEBAR_MENUS = [
             name: 'Attendance',
             path: '/staff/attendance',
           },
-          {
-            name: 'Commision Report',
-            path: '/',
-          },
+
           {
             name: 'User Permission',
             path: '/user-permission',
@@ -232,7 +233,7 @@ export const LIST_SIDEBAR_MENUS = [
         subMenus: [
           {
             name: 'Device',
-            path: '/pos-setting/device',
+            path: '/pos-setting/connected-device',
           },
           {
             name: 'Payment Method',
@@ -250,10 +251,10 @@ export const LIST_SIDEBAR_MENUS = [
             name: 'Tax & Service Charge',
             path: '/pos-setting/tax-service',
           },
-          {
-            name: 'Notification',
-            path: '/',
-          },
+          // {
+          //   name: 'Notification',
+          //   path: '/',
+          // },
           {
             name: 'Invoice',
             path: '/pos-setting/invoice',

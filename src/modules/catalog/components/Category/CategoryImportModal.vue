@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { useSupplierImportService } from '../services/supplier-import.service';
-
+import { ICategoryImportFailedSuccessData } from '../../interfaces/Category/category-import.interface';
+import { usecategoryImportService } from '../../services/Category/category-import.service';
 
 const {
-  supplierImport_step,
-  supplierImport_isLoading,
-  supplierImport_values,
-  supplierImport_onSubmit,
-  supplierImport_onClose,
-  supplierImport_handleDownloadTemplate,
-  supplierImport_handleDropFile,
-  // supplierImport_handleUpload,
-  supplierImport_triggerUpload,
-  supplierImport_columns,
-} = useSupplierImportService();
+  categoryImport_step,
+  categoryImport_isLoading,
+  categoryImport_values,
+  categoryImport_onSubmit,
+  categoryImport_onClose,
+  categoryImport_handleDownloadTemplate,
+  categoryImport_handleDropFile,
+  // categoryImport_handleUpload,
+  categoryImport_triggerUpload,
+  categoryImport_columns,
+} = usecategoryImportService();
 </script>
 
 <template>
   <AppBaseDialog
-    id="supplier-import-modal"
+    id="category-import-modal"
     :style="{
       width: '90vw',
       maxWidth: '100%',
@@ -34,15 +34,17 @@ const {
       <div class="h-full sm:h-[400px] flex items-center justify-center border border-grayscale-10">
         <!-- Step 1: Upload -->
         <section
-          v-if="supplierImport_step === 1"
+          v-if="categoryImport_step === 1"
           class="flex flex-col items-center justify-center w-full h-full relative"
         >
           <div
             class="relative rounded-lg w-full h-full flex flex-col items-center justify-center cursor-pointer border-gray-300 p-4 z-9"
-            @click="supplierImport_triggerUpload"
+            @click="categoryImport_triggerUpload"
             @dragover.prevent
             @drop.prevent="
-              supplierImport_handleDropFile($event.dataTransfer?.files ? Array.from($event.dataTransfer.files) : [])
+              categoryImport_handleDropFile(
+                $event.dataTransfer?.files ? Array.from($event.dataTransfer.files) : [],
+              )
             "
           >
             <i class="pi pi-paperclip text-4xl text-gray-400 mb-3"></i>
@@ -50,7 +52,9 @@ const {
             <p class="text-gray-500 text-sm text-center mb-3">
               Drop your CSV/XLSX file here <br />
               or
-              <span class="text-primary cursor-pointer" @click.stop="supplierImport_triggerUpload">click</span>
+              <span class="text-primary cursor-pointer" @click.stop="categoryImport_triggerUpload"
+                >click</span
+              >
               to browse from your device.
             </p>
 
@@ -61,7 +65,7 @@ const {
                 icon="pi pi-download"
                 label="Download Template"
                 class="bg-white border border-primary text-primary px-4 py-2 mt-1"
-                @click.stop="supplierImport_handleDownloadTemplate"
+                @click.stop="categoryImport_handleDownloadTemplate"
               />
             </div>
           </div>
@@ -69,7 +73,7 @@ const {
 
         <!-- Step 2: Loading -->
         <section
-          v-else-if="supplierImport_isLoading"
+          v-else-if="categoryImport_isLoading"
           class="flex flex-col items-center justify-center w-full h-full z-10"
         >
           <ProgressSpinner
@@ -85,12 +89,12 @@ const {
         <section v-else class="flex flex-col w-full h-full relative">
           <div class="flex flex-col w-full">
             <AppBaseDataTable
-              :columns="supplierImport_columns"
-              :data="supplierImport_values?.data.mergedData"
+              :columns="categoryImport_columns"
+              :data="categoryImport_values?.data.mergedData || []"
               :rows-per-page="10"
-              :total-records="supplierImport_values?.data.mergedData.length"
+              :total-records="categoryImport_values?.data.totalRows || 0"
               :first="0"
-              :is-loading="supplierImport_isLoading"
+              :is-loading="categoryImport_isLoading"
               is-using-custom-header-suffix
               is-using-header
               is-using-custom-body
@@ -100,8 +104,8 @@ const {
                 <template v-if="column.value === 'code'">
                   <span class="text-gray-700">{{ data.code }}</span>
                 </template>
-                <template v-else-if="column.value === 'supplierName'">
-                  <span class="text-gray-700">{{ data.supplierName }}</span>
+                <template v-else-if="column.value === 'name'">
+                  <span class="text-gray-700">{{ data.name }}</span>
                 </template>
                 <template v-else-if="column.value === 'notes'">
                   <span class="text-gray-500">{{ data.notes }}</span>
@@ -129,6 +133,22 @@ const {
                 </template>
               </template>
             </AppBaseDataTable>
+
+            <!-- Alert ditempel di bawah table -->
+            <div
+              v-if="
+                categoryImport_values?.data?.mergedData?.some(
+                  (item: ICategoryImportFailedSuccessData) => item.status === 'failed',
+                )
+              "
+              class="absolute top-0 left-1/2 -translate-x-1/2 mt-2 p-3 border border-red-300 bg-red-50 text-red-700 rounded-md text-sm flex items-start gap-2 shadow-md"
+            >
+              <i class="pi pi-exclamation-triangle mt-0.5"></i>
+              <span>
+                Import Validation Failed — Some records didn’t meet required fields or format rules. Correct the
+                errors in your CSV/XLSX and re-upload.
+              </span>
+            </div>
           </div>
         </section>
       </div>
@@ -139,15 +159,18 @@ const {
         <PrimeVueButton
           label="Cancel"
           class="px-4 py-2 bg-white border border-primary text-primary"
-          @click="supplierImport_onClose"
+          @click="categoryImport_onClose"
         />
         <PrimeVueButton
           label="Import"
           class="px-4 py-2 bg-primary text-white disabled:bg-gray-400 disabled:text-white disabled:border-none"
           :disabled="
-            supplierImport_step === 1 || supplierImport_values?.data?.mergedData?.some(item => item.status === 'failed')
+            categoryImport_step === 1 ||
+            categoryImport_values?.data?.mergedData?.some(
+              (item: ICategoryImportFailedSuccessData) => item.status === 'failed',
+            )
           "
-          @click="supplierImport_onSubmit"
+          @click="categoryImport_onSubmit"
         />
       </div>
     </template>

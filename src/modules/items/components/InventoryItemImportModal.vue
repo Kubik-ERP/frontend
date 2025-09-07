@@ -145,7 +145,6 @@ const {
                   <span class="text-gray-500">{{ data.storageLocation }}</span>
                 </template>
 
-             
                 <template v-else-if="column.value === 'status'">
                   <span
                     v-if="data.status === 'success'"
@@ -153,16 +152,16 @@ const {
                   >
                     Success
                   </span>
-               <span
-                  v-else-if="data.status === 'failed'"
-                  v-tooltip.bottom="{
-                    value: data.errorMessages,
-                    class: ' text-white text-sm rounded-lg px-3 py-2 shadow-lg max-w-xs break-words'
-                  }"
-                  class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 cursor-help transition duration-200 hover:bg-red-200"
-                >
-                  Failed
-                </span>
+                  <span
+                    v-else-if="data.status === 'failed'"
+                    v-tooltip.bottom="{
+                      value: data.errorMessages,
+                      class: ' text-white text-sm rounded-lg px-3 py-2 shadow-lg max-w-xs break-words',
+                    }"
+                    class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 cursor-help transition duration-200 hover:bg-red-200"
+                  >
+                    Failed
+                  </span>
                   <span v-else class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
                     {{ data.status }}
                   </span>

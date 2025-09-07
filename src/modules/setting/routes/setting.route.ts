@@ -59,6 +59,17 @@ const routes: RouteRecordRaw[] = [
           title: 'Rounding',
         },
       },
+      {
+        path: 'connected-device',
+        name: 'setting.device',
+        component: () => import('@/modules/device/views/DeviceListUI.vue'),
+        meta: {
+          breadcrumb: 'Device',
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          requiresAuthorization: true,
+          title: 'Device',
+        },
+      },
     ],
   },
 ];

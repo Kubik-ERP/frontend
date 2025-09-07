@@ -1,4 +1,5 @@
 export interface ISupplierImport {
+  id: string;
   code: string;
   supplierName: string;
   contactPerson: string;
@@ -10,20 +11,30 @@ export interface ISupplierImport {
   bankAccountName?: string;
   taxIdentificationNumber?: string;
   status: string;
+  errorMessages?: string;
+  rowNumber: number;
+}
+
+export interface ISupplierActionResponse {
+  statusCode: number;
+  message: string;
+  data: ISupplierImport;
 }
 
 export interface ISupplierImportResponse {
   statusCode: number;
   message: string;
-  data: {
-    items: ISupplierImport[];
-    meta: {
-      page: number;
-      pageSize: number;
-      total: number;
-      totalPages: number;
-    };
-  };
+  data: ISupplierImportResponseData;
+}
+
+export interface ISupplierImportResponseData {
+  batchId: string;
+  failedData: ISupplierImport[];
+  successData: ISupplierImport[];
+  invalidRows: number;
+  totalRows: number;
+  validRows: number;
+  mergedData: ISupplierImport[];
 }
 
 export interface ISupplierImportProvided {

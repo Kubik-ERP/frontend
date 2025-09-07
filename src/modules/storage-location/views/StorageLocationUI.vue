@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { ref } from 'vue';
 import { IStorageLocation } from '../interfaces';
 import { useStorageLocationService } from '../services/storage-location.service';
@@ -27,10 +26,13 @@ const {
   storageLocation_onDelete,
   storageLocation_onImport,
 } = useStorageLocationService();
+
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('manage_storage_location');
 </script>
 
 <template>
-  <section id="storage-location-list-ui" class="flex flex-col relative inset-0 z-0">
+  <section v-if="hasPermission" id="storage-location-list-ui" class="flex flex-col relative inset-0 z-0">
     <AppBaseDataTable
       :columns="storageLocation_columns"
       :data="storageLocation_values.data.items"
@@ -97,7 +99,13 @@ const {
         </template>
         <template v-else-if="column.value === 'created_at'">
           <span class="text-gray-700">
-            {{ new Date(data.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) }}
+            {{
+              new Date(data.createdAt).toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })
+            }}
           </span>
         </template>
 
@@ -109,10 +117,7 @@ const {
             </template>
           </PrimeVueButton>
 
-          <PrimeVuePopover
-            ref="popover"
-            :pt="{ root: { class: 'z-[9999]' }, content: 'p-0' }"
-          >
+          <PrimeVuePopover ref="popover" :pt="{ root: { class: 'z-[9999]' }, content: 'p-0' }">
             <section v-if="selectedData" class="flex flex-col">
               <!-- Edit -->
               <PrimeVueButton
@@ -146,6 +151,13 @@ const {
         </template>
       </template>
     </AppBaseDataTable>
+  </section>
+  <section v-else class="flex flex-col items-center justify-center min-h-[60vh]">
+    <div class="flex flex-col items-center text-center rounded-xl p-10 max-w-lg">
+      <h1 class="text-7xl font-bold text-primary-500">403</h1>
+      <h2 class="text-2xl font-semibold text-gray-800 mt-4">Access Forbidden</h2>
+      <p class="text-gray-500 mt-2">Kamu tidak memiliki izin untuk mengakses halaman ini.</p>
+    </div>
   </section>
 
   <StorageLocationModalForm />

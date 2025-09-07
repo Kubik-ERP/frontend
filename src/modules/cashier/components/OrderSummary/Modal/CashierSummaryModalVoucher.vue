@@ -11,9 +11,23 @@ const { cashierOrderSummary_modalVoucher, cashierOrderSummary_handleVoucher } =
 const localSearch = ref('');
 // const localId = ref('');
 
-watch(localSearch, (newVal) => {
-  cashierOrderSummary_modalVoucher.value.search = newVal
-});
+watch(
+  () => cashierOrderSummary_modalVoucher.value.data,
+  (newVal) => {
+    if (newVal && newVal.length > 0) {
+      const first = newVal.find((f) => f.available === true);
+      if (first) {
+        cashierOrderSummary_modalVoucher.value.form.voucher_code = first.code;
+        cashierOrderSummary_modalVoucher.value.form.voucherId = first.id;
+      } else {
+        // kalau tidak ada voucher yang available, reset
+        cashierOrderSummary_modalVoucher.value.form.voucher_code = '';
+        cashierOrderSummary_modalVoucher.value.form.voucherId = '';
+      }
+    }
+  },
+  { immediate: true }
+);
 
 // Composables
 import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';

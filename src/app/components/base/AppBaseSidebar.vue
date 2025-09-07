@@ -33,6 +33,7 @@ const filteredSidebarMenus = computed(() => {
   return filterMenusByPermissions(LIST_SIDEBAR_MENUS, authentication_permissions.value);
 });
 
+console.log('filteredSidebarMenus', filteredSidebarMenus.value);
 const filteredAdditionalMenus = computed(() => {
   const filtered = filterMenusByPermissions(
     [{ name: 'Additional', menus: LIST_ADDITIONAL_MENUS }],

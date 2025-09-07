@@ -55,7 +55,7 @@ const routes: RouteRecordRaw[] = [
       },
     ],
     meta: {
-      breadcrumb: 'Vouchers',
+      breadcrumb: 'Marketing Voucher',
       requiresAuthorization: false,
     },
   },

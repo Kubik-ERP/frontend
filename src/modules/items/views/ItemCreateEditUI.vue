@@ -25,11 +25,9 @@ const isFormInvalid = computed(() => {
   return (
     !form.value.name ||
     !form.value.sku ||
-    !form.value.brandId ||
     !form.value.categoryId ||
     !form.value.unit ||
     !form.value.pricePerUnit ||
-    !form.value.storageLocationId ||
     !form.value.supplierId ||
     !form.value.stockQuantity ||
     !form.value.reorderLevel ||
@@ -93,7 +91,7 @@ const confirmUpdate = async () => {
             label-for="brand"
             name="Brand"
             spacing-bottom="mb-0"
-            :validators="itemFormValidation.brandId"
+            :validators="itemFormValidation.brand"
           >
             <PrimeVueDropdown
               id="brand"
@@ -269,14 +267,16 @@ const confirmUpdate = async () => {
 
           <AppBaseFormGroup
             v-slot="{ classes }"
-            class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+            class-label="block text-sm font-medium leading-6 text-gray-900 w-full hidden"
             is-name-as-label
             label-for="storage-location"
             name="Storage Location"
             spacing-bottom="mb-0"
             :validators="itemFormValidation.storageLocationId"
+            :default-value="storageLocations[0] ?? ''"
           >
             <PrimeVueDropdown
+
               id="storage-location"
               v-model="form.storageLocationId"
               :options="storageLocations"
@@ -285,7 +285,7 @@ const confirmUpdate = async () => {
               filter
               show-clear
               placeholder="Select or search storage location"
-              class="w-full"
+              class="w-full hidden"
               :class="{ ...classes }"
             />
           </AppBaseFormGroup>
