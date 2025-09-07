@@ -25,11 +25,9 @@ const isFormInvalid = computed(() => {
   return (
     !form.value.name ||
     !form.value.sku ||
-    !form.value.brandId ||
     !form.value.categoryId ||
     !form.value.unit ||
     !form.value.pricePerUnit ||
-    !form.value.storageLocationId ||
     !form.value.supplierId ||
     !form.value.stockQuantity ||
     !form.value.reorderLevel ||
