@@ -20,11 +20,9 @@ const { kitchenQueue_invoices, kitchenQueue_listTabs } = inject<IKitchenQueuePro
         <h2 class="font-semibold text-black text-lg">Kubik POS</h2>
       </router-link>
 
-      <router-link :to="'/'">
-        <PrimeVueButton class="bg-white border-none basic-smooth-animation rounded-lg p-2">
-          <AppBaseSvg name="chevron-left" class="!w-4 !h-4" />
-        </PrimeVueButton>
-      </router-link>
+      <PrimeVueButton class="bg-white border-none basic-smooth-animation rounded-lg p-2" @click="$router.back()">
+        <AppBaseSvg name="chevron-left" class="!w-4 !h-4" />
+      </PrimeVueButton>
     </section>
 
     <section id="kitchen-queue-tab-panel" class="absolute left-1/2 transform -translate-x-1/2">
