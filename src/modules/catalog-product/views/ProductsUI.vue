@@ -213,6 +213,8 @@ onMounted(() => {
 });
 
 import { useRbac } from '@/app/composables/useRbac';
+import ProductImportModal from '../components/ProductImportModal.vue';
+import eventBus from '@/plugins/mitt';
 const rbac = useRbac();
 const hasPermission = rbac.hasPermission('product_management');
 // v-if="hasPermission"
@@ -263,6 +265,26 @@ const hasPermission = rbac.hasPermission('product_management');
                   <PrimeVueInputText v-model="search" :placeholder="useLocalization('main.table.search')" />
                 </PrimeVueIconField>
               </form>
+
+              <PrimeVueButton
+                v-if="hasPermission"
+                class="bg-white hover:bg-gray-100 border border-primary text-primary px-4 py-2 h-10 rounded-md flex items-center gap-2"
+                @click="
+                  () => {
+                    const argsEventEmitter = {
+                      id: 'product-import-modal',
+                      isUsingClosableButton: false,
+                      isUsingBackdrop: true,
+                      isOpen: true,
+                      width: '600px',
+                    };
+                    eventBus.emit('AppBaseDialog', argsEventEmitter);
+                  }
+                "
+              >
+                <i class="pi pi-upload text-sm"></i>
+                Import Product
+              </PrimeVueButton>
 
               <router-link v-if="hasPermission" to="/catalog/products/add-product">
                 <PrimeVueButton
@@ -463,4 +485,5 @@ const hasPermission = rbac.hasPermission('product_management');
       </PrimeVueDialog>
     </div>
   </div>
+  <ProductImportModal />
 </template>

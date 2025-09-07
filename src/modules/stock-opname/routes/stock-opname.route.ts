@@ -9,7 +9,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/inventory/stock-opname',
+    path: '/stock-opname',
     name: 'stock-opname',
     component: AppBaseWrapper,
     children: [
@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: '/inventory/stock-opname/issue/:id',
+        path: 'issue/:id',
         name: 'stock-opname.create',
         component: () => import('../views/stock-opnameCreateEditUI.vue'),
         meta: {
@@ -35,9 +35,9 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: '/inventory/stock-opname/detail/:id',
+        path: 'detail/:id',
         name: 'stock-opname.detail',
-        
+
         component: () => import('../views/stock-opnameDetailUI.vue'),
         meta: {
           layout: LAYOUT_OPTIONS.SIMPLE_NAVBAR,

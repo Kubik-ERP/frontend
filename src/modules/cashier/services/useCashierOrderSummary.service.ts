@@ -57,6 +57,8 @@ import { minValue, numeric, required } from '@vuelidate/validators';
 import { useVoucherStore } from '@/modules/voucher/store';
 import { IVoucher } from '@/modules/voucher/interfaces';
 import eventBus from '@/plugins/mitt';
+// import { useProductService } from '@/modules/catalog-product/services/catalog-product.service';
+// import { IProduct } from '@/modules/catalog-product/interfaces';
 // import CashierSummaryModalVoucher from '../components/OrderSummary/Modal/CashierSummaryModalVoucher.vue';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
@@ -301,6 +303,17 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     },
     { deep: true },
   );
+  // const productService = useProductService();
+  //   const voucherProductList = ref<IProduct[]>([]);
+
+  //   const fetchVoucherProductList = async (): Promise<void> => {
+  //     try {
+  //       const response = await productService.getAllProducts(1, 100, '');
+  //       voucherProductList.value = response.products;
+  //     } catch (error) {
+  //       console.error('❌ Error fetching voucher product list:', error);
+  //     }
+  //   };
 
   watch(
     () => [
@@ -316,6 +329,14 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           cashierProduct_selectedProduct.value.map(p => p.productId),
         );
       }
+
+      // else{
+      //   fetchVoucherProductList();
+      //     getVoucherActive(
+      //       cashierOrderSummary_modalVoucher.value.search,
+      //       [voucherProductList.value[0].id],
+      //     );
+      // }
 
       if (cashierOrderSummary_modalVoucher.value.form.voucherId) {
         debouncedCalculateEstimation();

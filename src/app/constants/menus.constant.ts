@@ -146,7 +146,7 @@ export const LIST_SIDEBAR_MENUS = [
         name: 'Inventory',
         iconName: 'inventory',
         path: '/inventory',
-        isHaveSubMenus: false,
+        isHaveSubMenus: true,
         subMenus: [
           {
             name: 'Master Item',
@@ -166,12 +166,12 @@ export const LIST_SIDEBAR_MENUS = [
           },
           {
             name: 'Stock Opname',
-            path: '/inventory/stock-opname',
+            path: '/stock-opname',
           },
-          {
-            name: 'Storage Location',
-            path: '/storage-location',
-          },
+          // {
+          //   name: 'Storage Location',
+          //   path: '/storage-location',
+          // },
         ],
       },
       {
@@ -232,7 +232,7 @@ export const LIST_SIDEBAR_MENUS = [
         subMenus: [
           {
             name: 'Device',
-            path: '/pos-setting/device',
+            path: '/pos-setting/connected-device',
           },
           {
             name: 'Payment Method',
