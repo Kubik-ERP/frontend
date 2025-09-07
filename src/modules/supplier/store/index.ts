@@ -18,6 +18,7 @@ import type {
 
 // Plugins
 import httpClient from '@/plugins/axios';
+import { ISupplierActionResponse, ISupplierImport, ISupplierImportResponse } from '../interfaces/supplier-import.interface';
 
 export const useSupplierStore = defineStore('supplier', {
   state: (): ISupplierStateStore => ({
@@ -224,6 +225,114 @@ export const useSupplierStore = defineStore('supplier', {
         return Promise.reject(error);
       } finally {
         this.supplier_isLoading = false;
+      }
+    },
+
+    async Supplier_generateTemplate(requestConfigurations: AxiosRequestConfig): Promise<void> {
+      try {
+        const response = await httpClient.post<Blob>(
+          `${SUPPLIER_BASE_ENDPOINT}/import/generate-template`,
+          requestConfigurations?.data || {},
+          {
+            ...requestConfigurations,
+            responseType: 'blob', // penting untuk file download
+          },
+        );
+
+        // Buat blob URL untuk download
+        const blob = new Blob([response.data], { type: response.data.type });
+        const url = window.URL.createObjectURL(blob);
+
+        console.log('Blob URL:', url);
+
+        // Buat link untuk trigger download
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Supplier-template.xlsx';
+        document.body.appendChild(a);
+        a.click();
+
+        // Bersihkan
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    },
+
+    async Supplier_importItems(
+      data: FormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<ISupplierImportResponse> {
+      this.supplier_isLoading = true;
+      try {
+        const response = await httpClient.post<ISupplierImportResponse>(
+          `${SUPPLIER_BASE_ENDPOINT}/import/preview-data`,
+          data,
+          {
+            ...requestConfigurations,
+          },
+        );
+
+        response.data.data.mergedData = response.data.data.successData.map(
+          (item: ISupplierImport) => {
+            return {
+              ...item,
+              status: 'success',
+            };
+          },
+        );
+
+        response.data.data.mergedData = response.data.data.failedData.map(
+          (item: ISupplierImport) => {
+            return {
+              ...item,
+              status: 'failed',
+            };
+          },
+        );
+
+        return Promise.resolve(response.data);
+      } catch (error) {
+        return Promise.reject(error);
+      } finally {
+        this.supplier_isLoading = false;
+      }
+    },
+
+    async SupplierImport_reset(batchId: string) {
+      try {
+        const response = await httpClient.delete<ISupplierActionResponse>(
+          `${SUPPLIER_BASE_ENDPOINT}/import/batch`,
+          {
+            data: {
+              batchId,
+            },
+          },
+        );
+        return Promise.resolve(response.data);
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    },
+
+    async SupplierImport_execute(
+      batchId: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<ISupplierActionResponse> {
+      try {
+        const response = await httpClient.post<ISupplierActionResponse>(
+          `${SUPPLIER_BASE_ENDPOINT}/import/execute`,
+          {
+            batchId,
+          },
+          {
+            ...requestConfigurations,
+          },
+        );
+        return Promise.resolve(response.data);
+      } catch (error) {
+        return Promise.reject(error);
       }
     },
   },

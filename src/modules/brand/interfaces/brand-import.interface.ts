@@ -1,22 +1,28 @@
-export interface IBrandImport{
-  code: string;
-  name: string;
-  description: string;
-  status: string;
+export interface IBrandImportData{
+    batchId: string;
+    failedData:brand_importFailedSuccessData[];
+    successData:brand_importFailedSuccessData[];
+    invalidRows: number;
+    totalRows: number;
+    validRows: number;
+    mergedData:brand_importFailedSuccessData[];
+}
+
+export interface brand_importFailedSuccessData{
+    id: string;
+    name: string;
+    notes: string;
+    createdAt: string;
+    updatedAt: string;
+    rowNumber: number;
+    status: string;
+    errorMessages?: string
 }
 
 export interface IBrandImportResponse{
   statusCode: number;
   message: string;
-  data: {
-    items: IBrandImport[];
-    meta: {
-      page: number;
-      pageSize: number;
-      total: number;
-      totalPages: number;
-    };
-  };
+  data: IBrandImportData
 }
 
 export interface IBrandImportProvided{

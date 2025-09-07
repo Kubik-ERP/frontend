@@ -73,7 +73,7 @@ export const SUPPLIER_LIST_COLUMNS_IMPORT: IColumnDataTable[] = [
   {
     label: '',
     sortable: false,
-    value: 'action',
+    value: 'status',
   },
 ];
 
