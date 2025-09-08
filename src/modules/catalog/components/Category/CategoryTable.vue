@@ -91,7 +91,9 @@ function resetForm() {
 }
 const handleAddCategory = async () => {
   category_formValidations.value.$touch();
-  if (category_formValidations.value.$invalid) return;
+  if (category_formData.name === '') {
+    return;
+  }
   try {
     loading.value = true;
     await createCategory({
@@ -135,7 +137,7 @@ const displayEdit = (id: string) => {
 
 const handleEditCategory = async () => {
   category_formValidations.value.$touch();
-  if (category_formValidations.value.$invalid) return;
+  if (category_formData.name === '') return;
   if (selected.value) {
     try {
       const updatedCategory = await updateCategory(selected.value.id, {
@@ -432,13 +434,6 @@ const rbac = useRbac();
         <div class="flex items-center flex-col">
           <p>{{ useLocalization('modal.photoLabel') }}</p>
           <AppBaseImage :src="category_formData.imagePreview" alt="Photo" class="w-64 h-64 object-cover" />
-          <!-- <img
-            class="rounded-lg mt-2 w-64 h-64 object-cover"
-            :src="category_formData.imagePreview || 'https://placehold.co/250'"
-            alt="Photo"
-          /> -->
-
-          <!-- Hidden File Input -->
           <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
 
           <!-- PrimeVue Button as file selector -->
@@ -501,7 +496,6 @@ const rbac = useRbac();
             :loading="loading"
             class="w-48 bg-primary border-primary"
             type="submit"
-            :disabled="category_formValidations.$invalid"
           />
         </div>
       </form>
@@ -583,7 +577,6 @@ const rbac = useRbac();
             :loading="loading"
             class="w-48 bg-primary border-primary"
             type="submit"
-            :disabled="category_formValidations.$invalid"
           />
         </div>
       </form>
