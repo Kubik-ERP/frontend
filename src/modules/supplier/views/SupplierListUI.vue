@@ -62,11 +62,11 @@ onMounted(() => {
 });
 
 const rbac = useRbac();
-console.log('rbac', rbac.getCurrentUserPermissions());
+const hasPermission = rbac.hasPermission('supplier_management');
 </script>
 
 <template>
-  <section id="supplier-list" class="flex flex-col relative inset-0 z-0">
+  <section v-if="hasPermission" id="supplier-list" class="flex flex-col relative inset-0 z-0">
     <AppBaseDataTable
       btn-cta-create-title=""
       :columns="supplierList_columns"
@@ -95,7 +95,7 @@ console.log('rbac', rbac.getCurrentUserPermissions());
       </template>
 
       <template #header-suffix>
-        <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full">
+        <div v-if="hasPermission" class="flex flex-col sm:flex-row sm:items-center gap-2 w-full">
           <!-- Search -->
           <div class="w-full sm:w-auto">
             <PrimeVueIconField class="w-full">
@@ -211,6 +211,13 @@ console.log('rbac', rbac.getCurrentUserPermissions());
         </template>
       </template>
     </AppBaseDataTable>
+  </section>
+  <section v-else class="flex flex-col items-center justify-center min-h-[60vh]">
+    <div class="flex flex-col items-center text-center rounded-xl p-10 max-w-lg">
+      <h1 class="text-7xl font-bold text-primary-500">403</h1>
+      <h2 class="text-2xl font-semibold text-gray-800 mt-4">Access Forbidden</h2>
+      <p class="text-gray-500 mt-2">Kamu tidak memiliki izin untuk mengakses halaman ini.</p>
+    </div>
   </section>
   <SupplierImportModal />
   <AppBaseDialogConfirmation id="supplier-list-dialog-confirmation" />

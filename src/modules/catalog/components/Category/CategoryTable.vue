@@ -91,7 +91,9 @@ function resetForm() {
 }
 const handleAddCategory = async () => {
   category_formValidations.value.$touch();
-  if (category_formValidations.value.$invalid) return;
+  if (category_formData.name === '') {
+    return;
+  }
   try {
     loading.value = true;
     await createCategory({
@@ -135,7 +137,7 @@ const displayEdit = (id: string) => {
 
 const handleEditCategory = async () => {
   category_formValidations.value.$touch();
-  if (category_formValidations.value.$invalid) return;
+  if (category_formData.name === '') return;
   if (selected.value) {
     try {
       const updatedCategory = await updateCategory(selected.value.id, {
@@ -208,6 +210,17 @@ const prevPage = () => {
   }
 };
 
+const categoryImport_onOpen = () => {
+  const argsEventEmitter: IPropsDialog = {
+    id: 'category-import-modal',
+    isUsingClosableButton: false,
+    isUsingBackdrop: true,
+    isOpen: true,
+    width: '600px',
+  };
+  eventBus.emit('AppBaseDialog', argsEventEmitter);
+};
+
 const removePhoto = () => {
   category_formData.imageFile = undefined;
   category_formData.imagePreview = undefined;
@@ -227,10 +240,11 @@ onMounted(() => {
 });
 
 import { useRbac } from '@/app/composables/useRbac';
+import CategoryImportModal from './CategoryImportModal.vue';
+import eventBus from '@/plugins/mitt';
 
 const rbac = useRbac();
 </script>
-
 <template>
   <div>
     <PrimeVueDataTable
@@ -258,6 +272,15 @@ const rbac = useRbac();
                 />
               </PrimeVueIconField>
             </form>
+
+            <PrimeVueButton
+              class="bg-white hover:bg-gray-100 border border-primary text-primary px-4 py-2 h-10 rounded-md flex items-center gap-2"
+              @click="categoryImport_onOpen"
+            >
+              <i class="pi pi-upload text-sm"></i>
+              Import Category
+            </PrimeVueButton>
+
             <PrimeVueButton
               v-if="rbac.hasPermission('product_category')"
               type="button"
@@ -411,13 +434,6 @@ const rbac = useRbac();
         <div class="flex items-center flex-col">
           <p>{{ useLocalization('modal.photoLabel') }}</p>
           <AppBaseImage :src="category_formData.imagePreview" alt="Photo" class="w-64 h-64 object-cover" />
-          <!-- <img
-            class="rounded-lg mt-2 w-64 h-64 object-cover"
-            :src="category_formData.imagePreview || 'https://placehold.co/250'"
-            alt="Photo"
-          /> -->
-
-          <!-- Hidden File Input -->
           <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
 
           <!-- PrimeVue Button as file selector -->
@@ -480,7 +496,6 @@ const rbac = useRbac();
             :loading="loading"
             class="w-48 bg-primary border-primary"
             type="submit"
-            :disabled="category_formValidations.$invalid"
           />
         </div>
       </form>
@@ -562,7 +577,6 @@ const rbac = useRbac();
             :loading="loading"
             class="w-48 bg-primary border-primary"
             type="submit"
-            :disabled="category_formValidations.$invalid"
           />
         </div>
       </form>
@@ -591,4 +605,5 @@ const rbac = useRbac();
       </template>
     </PrimeVueDialog>
   </div>
+  <CategoryImportModal />
 </template>

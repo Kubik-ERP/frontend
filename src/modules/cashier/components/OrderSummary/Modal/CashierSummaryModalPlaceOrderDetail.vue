@@ -4,6 +4,8 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
 
 import { minValue, numeric, required } from '@vuelidate/validators';
 
+import { CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE } from '@/modules/cash-drawer/constants';
+
 /**
  * @description Inject all the data and methods what we need
  */
@@ -98,6 +100,30 @@ const handleSubmit = () => {
                 />
               </PrimeVueIconField>
             </AppBaseFormGroup>
+
+            <section id="list-balances" class="flex flex-wrap items-center gap-2 w-full">
+              <PrimeVueChip
+                v-for="suggestionPrice in CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE"
+                :key="suggestionPrice"
+                class="bg-secondary-background cursor-pointer hover:bg-secondary basic-smooth-animation"
+                @click="cashierOrderSummary_paymentForm.paymentAmount = suggestionPrice"
+              >
+                <template #default>
+                  <div class="flex items-center gap-2">
+                    <AppBaseSvg name="plus-line" class="!w-[10px] !h-[10px] text-secondary-hover" />
+
+                    <span class="font-semibold text-green-primary text-xs">
+                      {{
+                        useCurrencyFormat({
+                          data: suggestionPrice,
+                          addSuffix: true,
+                        })
+                      }}
+                    </span>
+                  </div>
+                </template>
+              </PrimeVueChip>
+            </section>
 
             <div class="flex flex-col gap-2">
               <div class="flex justify-between">

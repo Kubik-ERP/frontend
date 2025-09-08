@@ -1,38 +1,41 @@
 {
-  
+  "table": {
+    "title": "Categories",
+    "searchPlaceholder": "Keyword Search",
+    "addButton": "Add Category",
     "table": {
-      "title": "Categories",
-      "searchPlaceholder": "Keyword Search",
-      "addButton": "Add Category",
-      "table": {
-        "headerCategory": "Category",
-        "headerDescription": "Description"
-      },
-      "pagination": {
-        "previous": "Previous",
-        "next": "Next"
-      }
+      "headerCategory": "Category",
+      "headerDescription": "Description"
     },
-    "popover": {
-      "edit": "Edit",
-      "delete": "Delete"
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+  "popover": {
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "modal": {
+    "title": {
+      "add": "Add Category",
+      "edit": "Edit Category",
+      "delete": "Delete Category"
     },
-    "modal": {
-      "title": "Add Category",
-      "photoLabel": "Photo (Optional)",
-      "selectImageButton": "Select Image",
-      "nameLabel": "Category Name",
-      "notes": {
-        "label": "Notes",
-        "optional": "(Optional)"
-      },
-      "cancelButton": "Cancel",
-      "addButton": "Add",
-      "editButton": "Edit",
-      "deleteButton": "Delete Category",
-      "delete":{
-        "title": "Are you sure you want to delete this category?",
-        "description": "This action cannot be undone, and the category will be removed from catalog"
-      }
+    "photoLabel": "Photo (Optional)",
+    "selectImageButton": "Select Image",
+    "nameLabel": "Category Name",
+    "notes": {
+      "label": "Notes",
+      "optional": "(Optional)"
+    },
+    "cancelButton": "Cancel",
+    "addButton": "Add",
+    "editButton": "Edit",
+    "deleteButton": "Delete Category",
+    "delete": {
+      "title": "Are you sure you want to delete this category?",
+      "description": "This action cannot be undone, and the category will be removed from catalog"
     }
   }
+}

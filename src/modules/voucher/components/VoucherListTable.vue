@@ -100,6 +100,7 @@ const formatDate = (date: Date) => {
   const year = date.getFullYear();
   return `${day}-${month}-${year}`;
 };
+
 </script>
 
 <template>

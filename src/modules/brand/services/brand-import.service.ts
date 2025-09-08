@@ -1,8 +1,19 @@
 import { ref } from 'vue';
-import { IBrandImport, IBrandImportProvided, IBrandImportResponse } from '../interfaces/brand-import.interface';
+import {
+  brand_importFailedSuccessData,
+  IBrandImportProvided,
+  IBrandImportResponse,
+} from '../interfaces/brand-import.interface';
 import eventBus from '@/plugins/mitt';
-import { BRAND_LIST_COLUMNS_IMPORT, IMPORT_BRAND_DUMMY_DATA } from '../constants';
+import { BRAND_LIST_COLUMNS_IMPORT } from '../constants';
+import { useBrandStore } from '../store';
+import { useBrandListService } from './brand-list.service';
 export const useBrandImportService = (): IBrandImportProvided => {
+  const store = useBrandStore();
+  const { httpAbort_registerAbort } = useHttpAbort();
+  const {
+    brand_queryParams
+  } = useBrandListService();
   // State
   const brandImport_step = ref<number>(1);
   const brandImport_isLoading = ref<boolean>(false);
@@ -12,18 +23,44 @@ export const useBrandImportService = (): IBrandImportProvided => {
   const uploadedFile = ref<File | null>(null);
 
   // Handler
-  const brandImport_onSubmit = () => {
-    // Submit hasil import (misalnya kirim ke API)
-    console.log('Submitting import values:', brandImport_values.value);
+  const brandImport_onSubmit = async () => {
+    const batchId = localStorage.getItem('inventory_batch_id')?.toString();
+
+    if (batchId) {
+      const res = await store.brandImport_execute(batchId, {
+        ...httpAbort_registerAbort('BRAND_LIST_REQUEST_EXECUTE'),
+      });
+
+      if (res) {
+        const argsEventEmitter: IPropsToast = {
+          isOpen: true,
+          type: EToastType.SUCCESS,
+          message: res.message || 'Item imported successfully!',
+          position: EToastPosition.TOP_RIGHT,
+        };
+        eventBus.emit('AppBaseToast', argsEventEmitter);
+      }
+      localStorage.removeItem('inventory_batch_id');
+
+      await store.brandList_fetchList(brand_queryParams ,{
+        ...httpAbort_registerAbort('BRAND_LIST_REQUEST'),
+      });
+      brandImport_onClose();
+    }
   };
 
   const brandImport_onClose = () => {
+    const batchId = localStorage.getItem('inventory_batch_id')?.toString();
+    if (batchId) {
+      void store.brandImport_reset(batchId);
+    }
+
     brandImport_step.value = 1;
     brandImport_isLoading.value = false;
     brandImport_values.value = undefined;
     uploadedFile.value = null;
 
-     eventBus.emit('AppBaseDialog', {
+    eventBus.emit('AppBaseDialog', {
       id: 'brand-import-modal',
       isUsingClosableButton: false,
       isUsingBackdrop: true,
@@ -32,21 +69,24 @@ export const useBrandImportService = (): IBrandImportProvided => {
     });
   };
 
-  const brandImport_handleDownloadTemplate = () => {
-    // Contoh download file template
-    const link = document.createElement('a');
-    link.href = '/templates/brand-import.xlsx'; // ganti dengan API/URL template
-    link.download = 'brand-import-template.xlsx';
-    link.click();
+  const brandImport_handleDownloadTemplate = async () => {
+    try {
+      await store.brand_generateTemplate({
+        ...httpAbort_registerAbort('BRAND_LIST_REQUEST_TEMPLATE'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      }
+    }
   };
 
   const brandImport_handleDropFile = (acceptedFiles: File[]) => {
     if (acceptedFiles && acceptedFiles.length > 0) {
       uploadedFile.value = acceptedFiles[0];
-      console.log('File dropped:', uploadedFile.value);
 
       // langsung proses upload setelah file diterima
-       void brandImport_handleUpload();
+      void brandImport_handleUpload();
     }
   };
 
@@ -73,24 +113,39 @@ export const useBrandImportService = (): IBrandImportProvided => {
       console.warn('No file selected for upload');
       return;
     }
-     brandImport_step.value = 2;
-     brandImport_isLoading.value = true;
+    brandImport_step.value = 2;
+    brandImport_isLoading.value = true;
     try {
-      // TODO: Panggil API upload di sini
-      await new Promise(resolve => setTimeout(resolve, 2000)); // simulasi API
+      const formData = new FormData();
+      formData.append('file', uploadedFile.value);
+      const response = await store.brand_importItems(formData, {
+        ...httpAbort_registerAbort('BRAND_LIST_REQUEST_IMPORT'),
+      });
+
+      const successData = (response.data?.successData ?? []).map((row: brand_importFailedSuccessData) => ({
+        ...row,
+        status: 'success',
+      }));
+
+      const failedData = (response.data?.failedData ?? []).map((row: brand_importFailedSuccessData) => ({
+        ...row,
+        status: 'failed',
+        errorMessage: row.errorMessages,
+      }));
+
+      console.log(' Failed data: ', failedData);
+
+      if (response?.data.batchId) {
+        localStorage.setItem('inventory_batch_id', response.data.batchId);
+      }
+
       brandImport_values.value = {
-        statusCode: 400,
-        message: 'File uploaded successfully',
+        ...response,
         data: {
-          items: IMPORT_BRAND_DUMMY_DATA ||[] as IBrandImport[],
-          meta: {
-            page: 1,
-            pageSize: 10,
-            total: 0,
-            totalPages: 1,
-          },
+          ...response.data,
+          mergedData: [...successData, ...failedData],
         },
-      } as IBrandImportResponse;
+      };
 
       brandImport_step.value = 3;
     } catch (error) {
@@ -111,6 +166,6 @@ export const useBrandImportService = (): IBrandImportProvided => {
     brandImport_handleDropFile,
     brandImport_handleUpload,
     brandImport_triggerUpload,
-    brandImport_columns: BRAND_LIST_COLUMNS_IMPORT
+    brandImport_columns: BRAND_LIST_COLUMNS_IMPORT,
   };
 };

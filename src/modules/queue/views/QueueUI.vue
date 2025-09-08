@@ -1,18 +1,7 @@
 <script setup lang="ts">
-// import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
+
 import { useQueueService } from '../services/queue.service';
-// const {
-//   dailySalesList_getClassOfOrderType,
-//   dailySalesList_getClassOfPaymentStatus,
-//   dailySalesList_isLoading,
-//   dailySalesList_onChangePage,
-//   dailySales_handleOnSortChange,
-//   dailySalesList_queryParams,
-//   dailySalesList_typesOfOrderType,
-//   dailySalesList_typesOfPaymentStatus,
-//   dailySalesList_values,
-//   dailySalesList_fetchListInvoices,
-// } = useDailySalesListService();
+
 
 const {
   queueColumns,
@@ -62,7 +51,6 @@ onMounted(async () => {
 
     <section id="daily-sales" class="flex flex-col relative inset-0 z-0">
       <AppBaseDataTable
-        btn-cta-create-title="Add Cash In/Out"
         :columns="queueColumns"
         :data="dailySalesList_values.data.items"
         header-title="Daily Sales"

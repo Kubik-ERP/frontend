@@ -128,7 +128,7 @@ export const useInventoryCategoryStore = defineStore('inventory-category', {
         // Buat link untuk trigger download
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'items-template.xlsx';
+        a.download = 'category-template.xlsx';
         document.body.appendChild(a);
         a.click();
 

@@ -42,14 +42,10 @@ const applyDateChange = () => {
   if (localDateRange.value && localDateRange.value[0]) {
     // Create a new Date object for 'start' to work with
     const start = new Date(localDateRange.value[0]);
-    start.setHours(0, 0, 0, 0);
 
     // If an end date exists, create a new object from it.
     // If not, create a new object by COPYING the start date.
     const end = localDateRange.value[1] ? new Date(localDateRange.value[1]) : new Date(start); // This creates a copy, not a reference
-
-    // Now, this only modifies the 'end' object
-    end.setHours(23, 59, 59, 999);
 
     emit('update:startDate', start);
     emit('update:endDate', end);
@@ -76,9 +72,9 @@ const onClickShortcut = (label: string) => {
   switch (label) {
     case 'Today': {
       start = new Date();
-      start.setHours(0, 0, 0, 0);
-      end = new Date();
-      end.setHours(23, 59, 59, 999);
+
+      end = start;
+
       newType = 'time';
 
       break;
@@ -86,8 +82,8 @@ const onClickShortcut = (label: string) => {
 
     case 'Yesterday': {
       start = new Date(new Date().setDate(today.getDate() - 1));
-      start.setHours(0, 0, 0, 0);
-      end = new Date(new Date().setHours(0, 0, 0, 0) - 1);
+
+      end = start;
       newType = 'time';
       break;
     }
@@ -96,18 +92,18 @@ const onClickShortcut = (label: string) => {
       const firstDayOfWeek = new Date(today);
       // Assuming Sunday is the first day of the week (day 0)
       firstDayOfWeek.setDate(today.getDate() - today.getDay());
-      firstDayOfWeek.setHours(0, 0, 0, 0);
+
       start = firstDayOfWeek;
       end = new Date();
-      end.setHours(23, 59, 59, 999);
+
       newType = 'days';
       break;
     }
 
     case 'This Month': {
-      start = new Date(today.getFullYear(), today.getMonth(), 1);
-      end = new Date();
-      end.setHours(23, 59, 59, 999);
+      start = new Date(today.getFullYear(), today.getMonth(), 2);
+      end = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+
       newType = 'days';
       break;
     }
@@ -115,18 +111,18 @@ const onClickShortcut = (label: string) => {
     case 'Last 30 Days': {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(today.getDate() - 30);
-      thirtyDaysAgo.setHours(0, 0, 0, 0);
+
       start = thirtyDaysAgo;
       end = new Date();
-      end.setHours(23, 59, 59, 999);
+
       newType = 'days';
       break;
     }
 
     case 'Last Month': {
-      const firstDayOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-      const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-      lastDayOfLastMonth.setHours(23, 59, 59, 999);
+      const firstDayOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 2);
+      const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
       start = firstDayOfLastMonth;
       end = lastDayOfLastMonth;
       newType = 'days';
