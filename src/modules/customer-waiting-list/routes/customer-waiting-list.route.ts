@@ -19,13 +19,12 @@ const routes: RouteRecordRaw[] = [
         name: 'customer-waiting-list',
         component: () => import('../views/Customer-waiting-listUI.vue'),
         meta: {
-          title: 'customer waiting list',
-          breadcrumb: 'customer waiting list',
-
+          title: 'Customer Waiting List',
+          breadcrumb: 'Customer Waiting List',
           requiresAuthorization: true,
-          backArrow: true,
-          backArrowPath: '/dashboard',
-          layout: LAYOUT_OPTIONS.NAVBAR,
+          // backArrow: true,
+          // backArrowPath: '/dashboard',
+          layout: LAYOUT_OPTIONS.SIMPLE_NAVBAR,
         },
       },
     ],

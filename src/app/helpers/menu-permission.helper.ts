@@ -58,7 +58,13 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   accounts: ['/account'],
 
   // Reports and templates
-  reports: ['/report'],
+  reports: [
+    '/report',
+    '/report/financial-report',
+    '/report/sales-report',
+    '/report/inventory-report',
+    '/report/voucher-report',
+  ],
   invoice_templates: ['/pos-setting', '/pos-setting/invoice'],
 };
 
