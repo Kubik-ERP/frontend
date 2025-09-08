@@ -5,7 +5,7 @@ import DialogNotes from '../components/DialogNotes.vue';
 const route = useRoute();
 
 const stockOpname_id = ref<string>((route.params.id as string) || 'new');
-console.log('🚀 ~ stockOpname_id:', stockOpname_id.value);
+// console.log('🚀 ~ stockOpname_id:', stockOpname_id.value);
 
 const {
   // table
@@ -67,18 +67,18 @@ onMounted(async () => {
     {{ stockOpname_detail }}
   </pre> -->
   <section class="pb-8">
-    <h1 class="font-bold text-2xl text-text-primary">Details</h1>
+    <h1 class="font-bold text-2xl text-text-primary">{{ useLocalization('stockOpname.createEditPage.title') }}</h1>
     <section class="flex items-center justify-between mt-2">
       <div class="flex flex-col">
-        <h3>Stock Opname record</h3>
+        <h3>{{ useLocalization('stockOpname.createEditPage.recordLabel') }}</h3>
         <p>{{ stockOpname_detail.code }}</p>
       </div>
       <div class="flex flex-col">
-        <h3>Issue Date</h3>
+        <h3>{{ useLocalization('stockOpname.createEditPage.issueDateLabel') }}</h3>
         <p>{{ useFormatDate(stockOpname_detail.createdAt) }}</p>
       </div>
       <div class="flex flex-col">
-        <h3>Performed By</h3>
+        <h3>{{ useLocalization('stockOpname.createEditPage.performedByLabel') }}</h3>
         <p>{{ stockOpname_detail.users.fullname }}</p>
       </div>
     </section>
@@ -94,7 +94,7 @@ onMounted(async () => {
     is-using-custom-header-suffix
   >
     <template #header-prefix>
-      <h1 class="font-bold text-2xl text-text-primary">Item List</h1>
+      <h1 class="font-bold text-2xl text-text-primary">{{ useLocalization('stockOpname.createEditPage.itemListTitle') }}</h1>
     </template>
     <template #header-suffix>
       <!-- input search -->
@@ -103,7 +103,7 @@ onMounted(async () => {
           <PrimeVueInputIcon>
             <AppBaseSvg name="search" class="!w-4 !h-4" />
           </PrimeVueInputIcon>
-          <PrimeVueInputText v-model="search" :placeholder="'Search SKU or Item Name'" />
+          <PrimeVueInputText v-model="search" :placeholder="useLocalization('stockOpname.createEditPage.searchPlaceholder')" />
         </PrimeVueIconField>
       </div>
     </template>
@@ -186,7 +186,7 @@ onMounted(async () => {
             class="text-sm"
             rounded
             aria-label="detail"
-            label="Add Notes"
+            :label="useLocalization('stockOpname.createEditPage.addNotesButton')"
             @click="stockOpname_onShowNotesDialog(data)"
           >
             <template #icon>
@@ -209,13 +209,13 @@ onMounted(async () => {
     <div class="flex items-center gap-2">
       <PrimeVueButton
         variant="outlined"
-        label="Save as Draft"
+        :label="useLocalization('stockOpname.createEditPage.saveDraftButton')"
         @click="stockOpname_onSubmitCreateEdit(false, stockOpname_id)"
       />
-      <PrimeVueButton label="Issue Stock Opname" @click="stockOpname_onSubmitCreateEdit(true, stockOpname_id)" />
+      <PrimeVueButton :label="useLocalization('stockOpname.createEditPage.issueButton')" @click="stockOpname_onSubmitCreateEdit(true, stockOpname_id)" />
     </div>
     <router-link :to="{ name: 'stock-opname.index' }">
-      <PrimeVueButton variant="text" label="Cancel" />
+      <PrimeVueButton variant="text" :label="useLocalization('stockOpname.createEditPage.cancelButton')" />
     </router-link>
   </footer>
   <DialogNotes />

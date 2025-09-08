@@ -4,7 +4,7 @@ import { useStockOpnameService } from '../services/stock-opname.service.ts';
 const route = useRoute();
 
 const stockOpname_id = ref<string>((route.params.id as string) || 'new');
-console.log('🚀 ~ stockOpname_id:', stockOpname_id.value);
+// console.log('🚀 ~ stockOpname_id:', stockOpname_id.value);
 
 const {
   // table
@@ -55,34 +55,34 @@ onMounted(async () => {
     {{ stockOpname_detail }}
   </pre> -->
   <section class="pb-8">
-    <h1 class="font-bold text-2xl text-text-primary">Details</h1>
+    <h1 class="font-bold text-2xl text-text-primary">{{ useLocalization('stockOpname.detailPage.title') }}</h1>
     <section class="grid grid-cols-3 gap-2 mt-2">
       <div class="flex flex-col">
-        <h3>Stock Opname record</h3>
+        <h3>{{ useLocalization('stockOpname.detailPage.recordLabel') }}</h3>
         <p>{{ stockOpname_detail.code }}</p>
       </div>
       <div class="flex flex-col">
-        <h3>Issue Date</h3>
+        <h3>{{ useLocalization('stockOpname.detailPage.issueDateLabel') }}</h3>
         <p>{{ useFormatDate(stockOpname_detail.createdAt) }}</p>
       </div>
       <div class="flex flex-col">
-        <h3>Performed By</h3>
+        <h3>{{ useLocalization('stockOpname.detailPage.performedByLabel') }}</h3>
         <p>{{ stockOpname_detail.users.fullname }}</p>
       </div>
       <div class="flex flex-col">
-        <h3>Performed By</h3>
+        <h3>{{ useLocalization('stockOpname.detailPage.statusLabel') }}</h3>
         <PrimeVueChip
           :class="[statusClass(stockOpname_detail.status), 'text-xs font-normal py-1 px-1.5 w-fit']"
           :label="useTitleCaseWithSpaces(stockOpname_detail.status)"
         />
       </div>
       <div class="flex flex-col">
-        <h3>Performed By</h3>
+        <h3>{{ useLocalization('stockOpname.detailPage.verifiedDateLabel') }}</h3>
         <p>{{ useFormatDate(stockOpname_detail.updatedAt!) }}</p>
       </div>
     </section>
   </section>
-  
+
   <section class="pb-16">
     <AppBaseDataTable
       :data="filteredItems"
@@ -95,7 +95,9 @@ onMounted(async () => {
       is-using-custom-header-suffix
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Item List</h1>
+        <h1 class="font-bold text-2xl text-text-primary">
+          {{ useLocalization('stockOpname.detailPage.itemListTitle') }}
+        </h1>
       </template>
       <template #header-suffix>
         <!-- input search -->
@@ -104,7 +106,10 @@ onMounted(async () => {
             <PrimeVueInputIcon>
               <AppBaseSvg name="search" class="!w-4 !h-4" />
             </PrimeVueInputIcon>
-            <PrimeVueInputText v-model="search" :placeholder="'Search SKU or Item Name'" />
+            <PrimeVueInputText
+              v-model="search"
+              :placeholder="useLocalization('stockOpname.detailPage.searchPlaceholder')"
+            />
           </PrimeVueIconField>
         </div>
       </template>
@@ -170,14 +175,14 @@ onMounted(async () => {
   <footer v-if="stockOpname_detail.status !== 'verified'" class="flex items-center justify-between py-8">
     <div class="flex items-center gap-2">
       <router-link :to="{ name: 'stock-opname.create', params: { id: stockOpname_detail.id } }">
-        <PrimeVueButton variant="outlined" label="Recalculate" />
+        <PrimeVueButton variant="outlined" :label="useLocalization('stockOpname.detailPage.recalculateButton')" />
       </router-link>
       <PrimeVueButton
         :label="
           stockOpname_detail.status === 'draft'
-            ? 'Issue Stock Opname'
+            ? useLocalization('stockOpname.detailPage.issueRecordButton')
             : stockOpname_detail.status === 'on_review'
-              ? 'Verify Report'
+              ? useLocalization('stockOpname.detailPage.verifyReportButton')
               : ''
         "
         @click="
@@ -193,7 +198,7 @@ onMounted(async () => {
     <PrimeVueButton
       variant="text"
       class="text-error-main hover:bg-error-background"
-      label="Cancel Stock Opaname"
+      :label="useLocalization('stockOpname.detailPage.cancelButton')"
       @click="stockOpname_onShowDialogDeleteIssue(stockOpname_detail.id)"
     >
       <template #icon>
