@@ -80,7 +80,7 @@ const {
         <PrimeVueIconField>
           <PrimeVueInputIcon>
             <template #default>
-              <AppBaseSvg name="mail" />
+              <AppBaseSvg name="mail" class="w-4 h-4" />
             </template>
           </PrimeVueInputIcon>
 

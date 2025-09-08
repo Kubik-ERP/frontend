@@ -3,7 +3,6 @@
 import { useAuthenticationStore } from '@/modules/authentication/store';
 import { useOutletStore } from '@/modules/outlet/store';
 import { useMobileStore } from '@/app/store/mobile.store';
-import httpClient from '@/plugins/axios';
 
 /**
  * @description Injected variables
@@ -41,25 +40,14 @@ const toggleMobileSearch = () => {
 /**
  * @description Handle business logic for clicking the logout button
  */
-const handleLogout = () => {
-  const userDataRaw = localStorage.getItem('authentication');
-  let isStaff = false;
-
-  if (userDataRaw) {
-    const userData = JSON.parse(userDataRaw);
-    isStaff = userData?.authentication_userData?.isStaff;
+const handleLogout = async () => {
+  try {
+    await authenticationStore.handleLogout();
+  } catch (error) {
+    console.error('Logout failed:', error);
+    // Fallback: still redirect to login page even if API call fails
+    window.location.href = '/authentication/sign-in';
   }
-
-  if (isStaff) {
-    const res = httpClient.post(`authentication/staff/logout`);
-    console.log(res);
-  }
-  // // Remove all the data on the local storage
-  localStorage.removeItem('authentication');
-  localStorage.removeItem('outlet');
-
-  // Redirect to the login page
-  window.location.href = '/authentication/sign-in';
 };
 
 /**

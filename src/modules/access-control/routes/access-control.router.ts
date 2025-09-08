@@ -3,12 +3,12 @@ import { LAYOUT_OPTIONS } from '@/app/constants';
 import type { RouteRecordRaw } from 'vue-router';
 
 export default {
-  path: '/acceess-control',
+  path: '/user-permission',
   name: 'acceess-control',
   children: [
     {
       path: '',
-      name: 'access-control.index',
+      name: 'user-permission.index',
       component: import('../views/AccessControlListUI.vue'),
       meta: {
         layout: LAYOUT_OPTIONS.DEFAULT,
@@ -19,7 +19,7 @@ export default {
     },
     {
       path: 'edit',
-      name: 'access-control.edit',
+      name: 'user-permission.edit',
       component: import('../views/EditAccessControlUI.vue'),
       meta: {
         layout: LAYOUT_OPTIONS.NAVBAR,

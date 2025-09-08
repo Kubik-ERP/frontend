@@ -26,6 +26,7 @@ export interface IAuthenticationSignInProvided {
   authenticationSignIn_fetchAuthenticationPermissions: () => Promise<unknown>;
   authenticationSignIn_formData: IAuthenticationSignInFormData;
   authenticationSignIn_formValidations: globalThis.Ref<Validation>;
+  authenticationSignIn_handleLogout: () => Promise<void>;
   authenticationSignIn_isLoading: globalThis.Ref<boolean>;
   authenticationSignIn_isNotAuthenticated: globalThis.Ref<boolean>;
   authenticationSignIn_onSelectRole: (role: 'OWNER' | 'EMPLOYEE') => void;
