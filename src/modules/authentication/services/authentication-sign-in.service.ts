@@ -218,6 +218,21 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
   };
 
   /**
+   * @description Handle logout functionality using the store method
+   */
+  const authenticationSignIn_handleLogout = async (): Promise<void> => {
+    try {
+      await store.handleLogout();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
    * @description Handle action on submit form.
    */
   const authenticationSignIn_onSubmit = async (): Promise<void> => {
@@ -229,7 +244,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
         // For employee, redirect to connect device page with email
         await router.push({
           name: 'connect-device',
-          query: { email: authenticationSignIn_formData.email }
+          query: { email: authenticationSignIn_formData.email },
         });
       } else {
         // For owner, proceed with normal login
@@ -269,6 +284,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     authenticationSignIn_fetchAuthenticationPermissions,
     authenticationSignIn_formData,
     authenticationSignIn_formValidations,
+    authenticationSignIn_handleLogout,
     authenticationSignIn_isLoading: authentication_isLoading,
     authenticationSignIn_isNotAuthenticated,
     authenticationSignIn_onSelectRole,

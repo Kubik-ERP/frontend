@@ -12,7 +12,7 @@ export default {
       component: () => import('../views/AccessControlListUI.vue'),
       meta: {
         layout: LAYOUT_OPTIONS.DEFAULT,
-        breadcrumb: "Access Control Permissions",
+        breadcrumb: 'Access Control Permissions',
         requiresAuthorization: false,
         title: 'Access Control',
       },
@@ -23,7 +23,7 @@ export default {
       component: () => import('../views/EditAccessControlUI.vue'),
       meta: {
         layout: LAYOUT_OPTIONS.NAVBAR,
-        breadcrumb: "Access Control Permissions Edit",
+        breadcrumb: 'Access Control Permissions Edit',
         requiresAuthorization: false,
         title: 'Access Control Edit',
       },
