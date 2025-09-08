@@ -372,7 +372,7 @@ watch(product_formData, () => {
                       for="variant-price"
                       class="flex gap-2 text-sm font-medium leading-6 text-gray-900 w-full"
                     >
-                      Additional Price
+                      {{ useLocalization('productDetail.form.variant.additionalPriceLabel') }}
                       <p class="text-gray-400">
                         {{ useLocalization('productDetail.form.variant.optionalLabel') }}
                       </p>

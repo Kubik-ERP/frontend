@@ -570,19 +570,19 @@ const cancelUpdate = () => {
         <div class="w-[35rem] p-8">
           <div class="flex flex-col items-center gap-4 text-center">
             <span><img :src="confirmationSVG" alt="" /></span>
-            <h1 class="text-2xl font-semibold">Are you sure want to update this product item?</h1>
-            <p>The update will affect the product items in the catalog</p>
+            <h1 class="text-2xl font-semibold">{{ useLocalization('productDetail.editModal.title') }}</h1>
+            <p>{{ useLocalization('productDetail.editModal.description') }}</p>
             <div class="flex items-center justify-between gap-4">
               <PrimeVueButton
                 variant="text"
                 class="w-56 text-lg border-2 border-primary text-primary font-semibold"
                 @click="cancelUpdate"
-                >Cancel</PrimeVueButton
+                >{{ useLocalization('productDetail.editModal.cancelButton') }}</PrimeVueButton
               >
               <PrimeVueButton
                 class="text-xl w-56 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
                 unstyled
-                label="Yes, I'm Sure"
+                :label="useLocalization('productDetail.editModal.editButton')"
                 @click="confirmUpdate"
               />
             </div>

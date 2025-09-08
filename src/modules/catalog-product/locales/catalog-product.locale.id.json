@@ -71,6 +71,12 @@
       "description": "Tindakan ini tidak dapat dibatalkan, dan produk akan dihapus dari katalog",
       "deleteButton": "Hapus Produk",
       "cancelButton": "Batal"
+    },
+    "editModal": {
+      "title": "Apakah Anda yakin ingin mengubah item produk ini?",
+      "description": "Perubahan akan mempengaruhi item produk dalam katalog",
+      "editButton": "Ya, Saya yakin",
+      "cancelButton": "Batal"
     }
   }
 }
