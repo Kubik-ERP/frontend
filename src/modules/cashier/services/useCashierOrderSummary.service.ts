@@ -303,17 +303,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     },
     { deep: true },
   );
-  // const productService = useProductService();
-  //   const voucherProductList = ref<IProduct[]>([]);
-
-  //   const fetchVoucherProductList = async (): Promise<void> => {
-  //     try {
-  //       const response = await productService.getAllProducts(1, 100, '');
-  //       voucherProductList.value = response.products;
-  //     } catch (error) {
-  //       console.error('❌ Error fetching voucher product list:', error);
-  //     }
-  //   };
 
   watch(
     () => [
@@ -329,14 +318,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           cashierProduct_selectedProduct.value.map(p => p.productId),
         );
       }
-
-      // else{
-      //   fetchVoucherProductList();
-      //     getVoucherActive(
-      //       cashierOrderSummary_modalVoucher.value.search,
-      //       [voucherProductList.value[0].id],
-      //     );
-      // }
+      else{
+          getVoucherActive(
+            cashierOrderSummary_modalVoucher.value.search,
+            []
+          );
+      }
 
       if (cashierOrderSummary_modalVoucher.value.form.voucherId) {
         debouncedCalculateEstimation();

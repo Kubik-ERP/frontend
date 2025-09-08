@@ -41,7 +41,7 @@ const toggleMobileSearch = () => {
 /**
  * @description Handle business logic for clicking the logout button
  */
-const handleLogout = () => {
+const handleLogout = async () => {
   const userDataRaw = localStorage.getItem('authentication');
   let isStaff = false;
 
@@ -51,7 +51,7 @@ const handleLogout = () => {
   }
 
   if (isStaff) {
-    const res = httpClient.post(`authentication/staff/logout`);
+    const res = await httpClient.post(`authentication/staff/logout`);
     console.log(res);
   }
   // // Remove all the data on the local storage
