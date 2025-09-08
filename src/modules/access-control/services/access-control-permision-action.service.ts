@@ -42,8 +42,10 @@ export const useAccessControlPermissionsActionService = (): IAccesscControlPermi
         eventBus.emit('AppBaseToast', argsEventEmitter);
 
         authenticationStore.fetchAuthentication_permissions({
-           ...httpAbort_registerAbort(AUTHENTICATION_PERMISSIONS_REQUEST),
+          ...httpAbort_registerAbort(AUTHENTICATION_PERMISSIONS_REQUEST),
         });
+
+        router.push({ name: 'user-permission' });
       }
     } catch (err) {
       console.error('Submit failed:', err);
@@ -55,7 +57,7 @@ export const useAccessControlPermissionsActionService = (): IAccesscControlPermi
   const accessControlPermission_onCancel = () => {
     // reset form data
     accessControlPermission_formData.permissions = [];
-    
+
     router.push({ name: 'user-permission' });
   };
 
