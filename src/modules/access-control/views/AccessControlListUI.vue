@@ -6,12 +6,6 @@ const {
   accessControlPermission_listRole,
   accessControlPermission_onEdit,
 } = useAccessControlPermissionsListService();
-
-provide('accessControlPermission', {
-  accessControlPermission_listValue: permissions,
-  accessControlPermission_listRole,
-  accessControlPermission_onEdit,
-});
 </script>
 
 <template>

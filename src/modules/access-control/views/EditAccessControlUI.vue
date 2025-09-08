@@ -5,8 +5,13 @@ import { IRole } from '@/modules/role/interfaces/index.interface';
 import { useAccessControlPermissionsActionService } from '../services/access-control-permision-action.service';
 
 // list service (fetch permissions + roles)
-const { accessControlPermission_listValue: permissions, accessControlPermission_listRole } =
-  useAccessControlPermissionsListService();
+const {
+  accessControlPermission_listValue: permissions,
+  accessControlPermission_listRole,
+  accessControlPermission_fetchList,
+} = useAccessControlPermissionsListService();
+
+accessControlPermission_fetchList();
 
 // action service (submit / cancel / setData)
 const {
@@ -47,77 +52,84 @@ async function onSave() {
 </script>
 
 <template>
-  <div class="container mx-auto px-4 my-10">
-    <!-- Header -->
-    <div class="flex justify-between items-center flex-wrap gap-2">
-      <h2 class="font-semibold text-lg">Permission</h2>
-    </div>
-
-    <!-- Tables -->
-    <div v-for="(group, gIdx) in permissions.data" :key="gIdx" class="rounded-lg mt-6">
-      <!-- Category Header -->
-      <div class="py-2 font-semibold text-base md:text-lg">
-        {{ group.name }}
+  <section id="edit-access-control">
+    <div class="container mx-auto px-4 my-10">
+      <!-- Header -->
+      <div class="flex justify-between items-center flex-wrap gap-2">
+        <h2 class="font-semibold text-lg">Permission</h2>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr class="bg-gray-100">
-              <th class="text-left px-4 py-2 border border-gray-300 text-sm w-1/3 min-w-[200px]">Functionality</th>
-              <th
-                v-for="role in accessControlPermission_listRole.data.items"
-                :key="role.id"
-                class="px-2 py-2 text-center border-y border-gray-300 text-xs sm:text-sm font-medium min-w-[100px]"
-              >
-                {{ role.name }}
-              </th>
-            </tr>
-          </thead>
-          <tbody class="border-b border-solid border-gray-300">
-            <tr v-for="(item, idx) in group.permissions" :key="idx" class="hover:bg-gray-50">
-              <td class="px-4 py-2 border border-gray-300 text-sm min-w-[200px]">
-                {{ item.name }}
-              </td>
-              <td
-                v-for="role in accessControlPermission_listRole.data.items"
-                :key="role.id"
-                class="px-2 py-2 border-y border-gray-300 text-center"
-              >
-                <PrimeVueCheckbox
-                  class="text-primary bg-white"
-                  :binary="true"
-                  :model-value="item.storeRolePermissions.some(r => r.roleId === role.id)"
-                  @update:model-value="toggleRole(item, role)"
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- Tables -->
+      <div v-if="permissions.data.length > 0">
+        <div v-for="(group, gIdx) in permissions.data" :key="gIdx" class="rounded-lg mt-6">
+          <!-- Category Header -->
+          <div class="py-2 font-semibold text-base md:text-lg">
+            {{ group.name }}
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse border border-gray-300">
+              <thead>
+                <tr class="bg-gray-100">
+                  <th class="text-left px-4 py-2 border border-gray-300 text-sm w-1/3 min-w-[200px]">
+                    Functionality
+                  </th>
+                  <th
+                    v-for="role in accessControlPermission_listRole.data.items"
+                    :key="role.id"
+                    class="px-2 py-2 text-center border-y border-gray-300 text-xs sm:text-sm font-medium min-w-[100px]"
+                  >
+                    {{ role.name }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="border-b border-solid border-gray-300">
+                <tr v-for="(item, idx) in group.permissions" :key="idx" class="hover:bg-gray-50">
+                  <td class="px-4 py-2 border border-gray-300 text-sm min-w-[200px]">
+                    {{ item.name }}
+                  </td>
+                  <td
+                    v-for="role in accessControlPermission_listRole.data.items"
+                    :key="role.id"
+                    class="px-2 py-2 border-y border-gray-300 text-center"
+                  >
+                    <PrimeVueCheckbox
+                      class="text-primary bg-white"
+                      :binary="true"
+                      :model-value="item.storeRolePermissions.some(r => r.roleId === role.id)"
+                      @update:model-value="toggleRole(item, role)"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div v-else class="text-center mt-10">No permission found</div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-row justify-start gap-3 mt-10 pb-5 w-full sm:w-auto">
+        <!-- Cancel -->
+        <PrimeVueButton
+          type="button"
+          class="w-full sm:w-40 bg-white border-primary text-primary disabled:bg-gray-400 disabled:text-white disabled:border-none"
+          :loading="actionIsLoading"
+          @click="accessControlPermission_onCancel"
+        >
+          Cancel
+        </PrimeVueButton>
+
+        <!-- Update / Save -->
+        <PrimeVueButton
+          type="button"
+          class="w-full sm:w-48 disabled:bg-gray-400 disabled:text-white disabled:border-none"
+          :loading="actionIsLoading"
+          @click="onSave"
+        >
+          Update Permission
+        </PrimeVueButton>
       </div>
     </div>
-
-    <!-- Action Buttons -->
-    <div class="flex flex-row justify-start gap-3 mt-10 pb-5 w-full sm:w-auto">
-      <!-- Cancel -->
-      <PrimeVueButton
-        type="button"
-        class="w-full sm:w-40 bg-white border-primary text-primary disabled:bg-gray-400 disabled:text-white disabled:border-none"
-        :loading="actionIsLoading"
-        @click="accessControlPermission_onCancel"
-      >
-        Cancel
-      </PrimeVueButton>
-
-      <!-- Update / Save -->
-      <PrimeVueButton
-        type="button"
-        class="w-full sm:w-48 disabled:bg-gray-400 disabled:text-white disabled:border-none"
-        :loading="actionIsLoading"
-        @click="onSave"
-      >
-        Update Permission
-      </PrimeVueButton>
-    </div>
-  </div>
+  </section>
 </template>
