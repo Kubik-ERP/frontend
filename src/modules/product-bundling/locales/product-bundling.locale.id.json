@@ -1,1 +1,30 @@
-{}
+{
+  "productBundling": {
+    "listPage": {
+      "title": "Bundel Produk",
+      "addButton": "Tambah Bundel Produk"
+    },
+    "actions": {
+      "edit": "Ubah",
+      "delete": "Hapus"
+    },
+    "form": {
+      "nameLabel": "Nama Bundel Produk",
+      "namePlaceholder": "Nama Bundel Produk",
+      "descriptionLabel": "Deskripsi",
+      "descriptionPlaceholder": "Deskripsi",
+      "priceLabel": "Harga",
+      "pricePlaceholder": "Rp. 0,00",
+      "resetButton": "Atur Ulang",
+      "selectProductLabel": "Pilih Produk",
+      "selectProductPlaceholder": "Cari Berdasarkan Nama Produk",
+      "totalItemsLabel": "Total Barang",
+      "totalPriceLabel": "Total",
+      "actualPriceLabel": "Harga Asli",
+      "bundlingPriceLabel": "Harga Bundel",
+      "cancelButton": "Batal",
+      "addButton": "Tambah",
+      "editButton": "Ubah"
+    }
+  }
+}

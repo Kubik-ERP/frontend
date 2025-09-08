@@ -42,7 +42,7 @@ onMounted(() => {
     >
       <template #header-prefix>
         <div class="flex items-center">
-          <h6 class="font-semibold text-black text-lg">Product Bundling</h6>
+          <h6 class="font-semibold text-black text-lg">{{ useLocalization('productBundling.listPage.title') }}</h6>
         </div>
       </template>
 
@@ -56,7 +56,9 @@ onMounted(() => {
             <template #default>
               <section id="content" class="flex items-center gap-2">
                 <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
-                <span class="font-semibold text-base text-white">Add Product Bundling</span>
+                <span class="font-semibold text-base text-white">{{
+                  useLocalization('productBundling.listPage.addButton')
+                }}</span>
               </section>
             </template>
           </PrimeVueButton>
@@ -95,7 +97,9 @@ onMounted(() => {
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                    <span class="font-normal text-sm text-text-primary">Edit</span>
+                    <span class="font-normal text-sm text-text-primary">{{
+                      useLocalization('productBundling.actions.edit')
+                    }}</span>
                   </section>
                 </template>
               </PrimeVueButton>
@@ -107,7 +111,9 @@ onMounted(() => {
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="delete" class="!w-4 !h-4" />
-                    <span class="font-normal text-sm text-text-primary">Delete</span>
+                    <span class="font-normal text-sm text-text-primary">{{
+                      useLocalization('productBundling.actions.delete')
+                    }}</span>
                   </section>
                 </template>
               </PrimeVueButton>
