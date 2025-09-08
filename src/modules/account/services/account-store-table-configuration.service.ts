@@ -514,7 +514,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
         tables:
           table.storeTables?.map(storeTable => ({
             ...storeTable,
-            floorId: table.storeId,
+            floorId: storeTable.floorId,
             floorName: table.floorName, // Ensure each table has the floor name
           })) || [],
       });
