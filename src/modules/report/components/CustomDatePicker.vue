@@ -161,14 +161,14 @@ const onClickShortcut = (label: string) => {
       v-model:visible="dialogVisible"
       :draggable="false"
       :close-button-props="{ class: 'hidden' }"
-      class="w-1/2"
+      class="w-full max-w-2xl"
     >
       <template #header>
         <h5 class="font-semibold text-black text-xl">Date Filter</h5>
       </template>
       <template #default>
         <section class="flex flex-col gap-4">
-          <section id="date-range" class="flex gap-8">
+          <section id="date-range" class="flex gap-8 flex-wrap">
             <div class="flex flex-col w-full">
               <label class="text-sm" for="start-date">Start Date</label>
               <PrimeVueDatePicker
@@ -194,7 +194,7 @@ const onClickShortcut = (label: string) => {
             <PrimeVueDatePicker v-model="localDateRange" selection-mode="range" inline class="w-full" />
           </section>
           <section id="shortcut-button">
-            <div id="shortcut-button" class="grid grid-cols-2 gap-2">
+            <div id="shortcut-button" class="grid grid-cols-1 md:grid-cols-2 gap-2">
               <PrimeVueButton
                 v-for="label in ['Today', 'Yesterday', 'This Month', 'This Week', 'Last 30 Days', 'Last Month']"
                 :key="label"
