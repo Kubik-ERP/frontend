@@ -43,7 +43,7 @@ import { PrimeVueResolver } from '@primevue/auto-import-resolver';
  * @description Vite plugin to remove console.log and other console.* calls from your code.
  * @see https://github.com/xiaoxian521/vite-plugin-remove-console
  */
-import removeConsole from 'vite-plugin-remove-console';
+// import removeConsole from 'vite-plugin-remove-console';
 
 /**
  * @description Vite plugin to compress the build output using vite-plugin-compression.
@@ -57,7 +57,6 @@ import viteCompression from 'vite-plugin-compression';
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 
 export default defineConfig({
-
   plugins: [
     AutoImport({
       dts: 'src/auto-imports.d.ts',
@@ -122,7 +121,7 @@ export default defineConfig({
       ],
     }),
     // imagemin(),
-    removeConsole(),
+    // removeConsole(),
     tailwindcss(),
     viteCompression(),
     vue(),
