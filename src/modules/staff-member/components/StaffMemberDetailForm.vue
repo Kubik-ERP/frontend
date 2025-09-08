@@ -48,10 +48,9 @@ const findSocialMediaOption = (value: string | null) => {
           Photo <span class="text-text-disabled">(Optional)</span>
         </label>
         <div class="flex items-center gap-4">
-          <img
-            :src="staffMemberCreateEdit_formData.imagePreview || 'https://placehold.co/100'"
-            alt="Company Logo"
+          <AppBaseImage
             class="rounded-full w-24 h-24 object-cover"
+            :src="staffMemberCreateEdit_formData.imagePreview"
           />
           <PrimeVueFileUpload
             v-model="staffMemberCreateEdit_formData.image"
@@ -77,7 +76,7 @@ const findSocialMediaOption = (value: string | null) => {
               >
                 <template #default>
                   <section id="content" class="flex items-center gap-2">
-                    <AppBaseSvg name="image" />
+                    <AppBaseSvg name="image" class="!w-4 !h-4" />
                     <span class="font-normal text-sm">Change Image</span>
                   </section>
                 </template>
@@ -131,8 +130,8 @@ const findSocialMediaOption = (value: string | null) => {
             v-model="staffMemberCreateEdit_formData.permission"
             filter
             :options="staffMemberCreateEdit_typesOfUserPermissions"
-            option-label="label"
-            option-value="value"
+            option-label="name"
+            option-value="id"
             placeholder="Select"
             class="text-base text-text-primary w-full"
             :class="{ ...classes }"
@@ -370,7 +369,7 @@ const findSocialMediaOption = (value: string | null) => {
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="plus-line" />
+              <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
               <span class="font-semibold text-xs text-primary">Add Social Media</span>
             </section>
           </template>

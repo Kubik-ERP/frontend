@@ -13,20 +13,22 @@ const { accountStoreTableConfiguration_onShowDialogAddFloor } = inject<IAccountS
 <template>
   <section
     id="account-store-table-configuration-not-found"
-    class="flex items-center justify-between border border-solid border-grayscale-10 p-4 rounded-lg w-full"
+    class="flex flex-col lg:flex-row items-start lg:items-center justify-between border border-solid border-grayscale-10 p-4 rounded-lg w-full gap-4 lg:gap-0"
   >
-    <h6 class="font-bold text-primary text-lg">Please create a floor name before setting up tables</h6>
+    <h6 class="font-bold text-primary text-base lg:text-lg">
+      Please create a floor name before setting up tables
+    </h6>
 
     <PrimeVueButton
-      class="bg-primary border-none w-fit px-5"
+      class="bg-primary border-none w-full lg:w-fit px-5"
       severity="secondary"
       @click="accountStoreTableConfiguration_onShowDialogAddFloor"
     >
       <template #default>
         <section id="content" class="flex items-center gap-2">
-          <AppBaseSvg name="plus-line-white" />
+          <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
 
-          <span class="font-semibold text-base text-white"> Add Floor </span>
+          <span class="font-semibold text-sm lg:text-base text-white"> Add Floor </span>
         </section>
       </template>
     </PrimeVueButton>

@@ -15,7 +15,7 @@ const { cashierProduct_productState, cashierProduct_onSearchData } =
       <PrimeVueIconField>
         <PrimeVueInputIcon>
           <template #default>
-            <AppBaseSvg name="search" />
+            <AppBaseSvg name="search" class="!h-4 !w-4" />
           </template>
         </PrimeVueInputIcon>
 

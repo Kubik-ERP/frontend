@@ -1,6 +1,7 @@
 export interface IBrand {
   id: string;
   brandName: string;
+  code: string;
   notes: string;
   isHaveItems?: boolean ;
   createdAt: Date;
@@ -23,6 +24,7 @@ export interface IBrandListResponse {
 
 export interface IBrandCreateUpdatePayload {
   brandName: string;
+  code: string;
   notes: string;
 }
 

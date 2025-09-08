@@ -29,7 +29,7 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
         :to="{ name: 'account.store.edit', params: { id: accountStoreDetail_selectedOutlet?.id } }"
         class="flex items-center gap-2"
       >
-        <AppBaseSvg name="edit" />
+        <AppBaseSvg name="edit" class="w-4 h4" />
 
         <span class="font-semibold text-primary text-sm">
           {{ useLocalization('account.edit-store-details') }}
@@ -67,7 +67,7 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
             {{ useLocalization('app.business-type') }}
           </span>
 
-          <span class="font-normal text-text-primary text-base">
+          <span class="font-normal text-text-primary text-sm lg:text-base">
             {{ accountStoreDetail_selectedOutlet?.businessType }}
           </span>
         </section>
@@ -77,7 +77,7 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
             {{ useLocalization('app.email-address') }}
           </span>
 
-          <span class="font-normal text-text-primary text-base">
+          <span class="font-normal text-text-primary text-sm lg:text-base">
             {{ accountStoreDetail_selectedOutlet?.email }}
           </span>
         </section>
@@ -87,7 +87,7 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
             {{ useLocalization('app.phone-number') }}
           </span>
 
-          <span class="font-normal text-text-primary text-base">
+          <span class="font-normal text-text-primary text-sm lg:text-base">
             {{ accountStoreDetail_selectedOutlet?.phoneNumber }}
           </span>
         </section>
@@ -97,7 +97,7 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
             {{ useLocalization('app.street-address') }}
           </span>
 
-          <span class="font-normal text-text-primary text-base">
+          <span class="font-normal text-text-primary text-sm lg:text-base">
             {{ accountStoreDetail_selectedOutlet?.address }}
           </span>
         </section>
@@ -139,7 +139,7 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
                 <td
                   v-if="slotIndex === 0"
                   :rowspan="operationalHours.hours.length"
-                  class="px-6 py-7 font-normal text-base align-middle border-r border-solid border-grayscale-20"
+                  class="px-6 py-7 font-normal text-sm lg:text-base align-middle border-r border-solid border-grayscale-20"
                   :class="[
                     isOperationalHoursAllClosed(operationalHours) ? 'text-text-disabled' : 'text-text-primary',
                     slotIndex === 0 ? 'rounded-tl-lg' : '',
@@ -149,19 +149,25 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
                   {{ operationalHours.day }}
                 </td>
 
-                <td v-if="slot.openTime === 'Closed'" class="px-6 py-7 font-normal text-text-disabled text-base">
+                <td
+                  v-if="slot.openTime === 'Closed'"
+                  class="px-6 py-7 font-normal text-text-disabled text-sm lg:text-base"
+                >
                   {{ slot.openTime }}
                 </td>
 
-                <td v-if="slot.closeTime === 'Closed'" class="px-6 py-7 font-normal text-text-disabled text-base">
+                <td
+                  v-if="slot.closeTime === 'Closed'"
+                  class="px-6 py-7 font-normal text-text-disabled text-sm lg:text-base"
+                >
                   {{ slot.closeTime }}
                 </td>
 
                 <template v-else>
-                  <td class="px-6 py-7 font-normal text-text-primary text-base">
+                  <td class="px-6 py-7 font-normal text-text-primary text-sm lg:text-base">
                     {{ useFormatDate(slot.openTime, 'hh:mm') }}
                   </td>
-                  <td class="px-6 py-7 font-normal text-text-primary text-base">
+                  <td class="px-6 py-7 font-normal text-text-primary text-sm lg:text-base">
                     {{ useFormatDate(slot.closeTime, 'hh:mm') }}
                   </td>
                 </template>

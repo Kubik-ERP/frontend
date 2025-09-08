@@ -20,7 +20,7 @@ export const STAFF_MEMBER_COLUMNS_COMISSIONS: IColumnDataTable[] = [
   {
     sortable: false,
     label: 'Commission',
-    value: 'commission',
+    value: 'commissions',
   },
 ];
 

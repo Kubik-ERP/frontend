@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import InventoryCategoryModalForm from '../components/InventoryCategoryModalForm.vue';
+import InventoryCategoryModalImport from '../components/InventoryCategoryModalImport.vue';
 import { IInventoryCategory } from '../interfaces';
 import { useInventoryCategoryService } from '../services/inventory-category.service';
 import { ref } from 'vue';
@@ -22,6 +23,7 @@ const {
   inventoryCategoryList_queryParams,
   inventoryCategoryList_onEditCategory,
   inventoryCategoryList_onDeleteCategory,
+  inventoryCategoryList_onImport
 } = useInventoryCategoryService();
 
 </script>
@@ -38,7 +40,7 @@ const {
       @update:currentPage="inventoryCategoryList_onChangePage" @update:sort="inventoryCategoryList_handleOnSortChange">
       <!-- Header Prefix -->
       <template #header-suffix>
-        <div class="flex items-center gap-3">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full">
           <div class="relative">
             <PrimeVueIconField>
               <PrimeVueInputIcon>
@@ -46,9 +48,16 @@ const {
               </PrimeVueInputIcon>
               <PrimeVueInputText v-model="inventoryCategoryList_queryParams.search"
                 :placeholder="useLocalization('inventoryCategory.searchPlaceholder')"
-                class="w-80 h-10 pl-10 pr-4 border border-gray-300 rounded-md" />
+                class="w-full h-10 pl-10 pr-4 border border-gray-300 rounded-md" />
             </PrimeVueIconField>
           </div>
+           <PrimeVueButton
+            class="bg-white hover:bg-gray-100 border border-primary text-primary px-4 py-2 h-10 rounded-md flex items-center gap-2"
+            @click="inventoryCategoryList_onImport"
+          >
+            <i class="pi pi-upload text-sm"></i>
+            Import Category
+          </PrimeVueButton>
           <PrimeVueButton
             class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"
             @click="inventoryCategoryList_onCreateCategory">
@@ -58,13 +67,12 @@ const {
         </div>
       </template>
 
-      <!-- Filter -->
-      <template #filter>
-
-      </template>
 
       <!-- Body Table -->
       <template #body="{ column, data }">
+        <template v-if="column.value === 'code'">
+          <span class="text-gray-700">{{ data.code }}</span>
+        </template>
         <template v-if="column.value === 'name'">
           <span class="text-gray-700">{{ data.name }}</span>
         </template>
@@ -120,5 +128,6 @@ const {
     </AppBaseDataTable>
   </section>
   <InventoryCategoryModalForm />
+  <InventoryCategoryModalImport />
   <AppBaseDialogConfirmation id="inventory-category-dialog-confirmation" />
 </template>

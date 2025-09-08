@@ -16,6 +16,7 @@ export const useInventoryItemPreviewService = (): ItemsStockAdjustmentProvided =
 
   const stockadjustment_isLoading = ref(false);
 
+
   const inventoryItemPreview_fetchItemById = async (id: string) => {
     stockadjustment_isLoading.value = true;
     try {

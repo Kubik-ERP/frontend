@@ -3,10 +3,38 @@
 import DashboardLowStock from './DashboardLowStock.vue';
 import DashboardOutOfStock from './DashboardOutOfStock.vue';
 
+import type { IDashboardProvided } from '../interfaces';
+// inject
+const { dashboard_values } = inject<IDashboardProvided>('dashboard')!;
+
+const countPercentage = (value: number) => {
+  return parseFloat(
+    (
+      (value /
+        (dashboard_values.value.stockStatus.stockStatus.available +
+          dashboard_values.value.stockStatus.stockStatus.lowStock +
+          dashboard_values.value.stockStatus.stockStatus.outOfStock)) *
+      100
+    ).toFixed(2),
+  );
+};
+
 const value = ref([
-  { label: 'Available', color: '#8CC8EB', value: 56 },
-  { label: 'Low Stock', color: '#FFB84D', value: 32 },
-  { label: 'Out of Stock', color: '#E57171', value: 12 },
+  {
+    label: 'Available',
+    color: '#8CC8EB',
+    value: countPercentage(dashboard_values.value.stockStatus.stockStatus.available),
+  },
+  {
+    label: 'Low Stock',
+    color: '#FFB84D',
+    value: countPercentage(dashboard_values.value.stockStatus.stockStatus.lowStock),
+  },
+  {
+    label: 'Out of Stock',
+    color: '#E57171',
+    value: countPercentage(dashboard_values.value.stockStatus.stockStatus.outOfStock),
+  },
 ]);
 </script>
 
@@ -15,7 +43,7 @@ const value = ref([
     id="dashboard-stock-availability"
     class="flex flex-col bg-white border border-solid border-grayscale-10 p-4 gap-4 rounded-sm"
   >
-    <h5 class="font-semibold text-lg text-grayscale-70">Stock Availability</h5>
+    <h5 class="font-semibold text-base lg:text-lg text-grayscale-70">Stock Availability</h5>
 
     <PrimeVueMeterGroup
       :value="value"

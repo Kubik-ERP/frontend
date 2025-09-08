@@ -1,19 +1,21 @@
 // Constants
 import {
   AUTHENTICATION_GOOGLE_REDIRECT_REQUEST,
+  AUTHENTICATION_PERMISSIONS_REQUEST,
   AUTHENTICATION_PROFILE_REQUEST,
   AUTHENTICATION_SIGN_IN_REQUEST,
+  AUTHENTICATION_SIGN_IN_STEPPER,
 } from '../constants';
 
 // Interfaces
 import type {
   IAuthenticationSignInFormData,
   IAuthenticationSignInProvided,
-} from '../interfaces/authentication-sign-in.interface';
+  IAuthenticationStepper,
+} from '../interfaces';
 
 // Stores
 import { useAuthenticationStore } from '../store';
-import { useRbacStore } from '@/app/store/rbac.store';
 
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
@@ -27,15 +29,15 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
    * @description Injected variables
    */
   const store = useAuthenticationStore(); // Instance of the store
-  const rbacStore = useRbacStore(); // Instance of the RBAC store
   const route = useRoute(); // Instance of the route
   const router = useRouter(); // Instance of the router
-  const { authentication_isLoading, authentication_token, authentication_userData } = storeToRefs(store);
+  const { authentication_isLoading, authentication_userData } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
    * @description Reactive data binding
    */
+  const authenticationSignIn_activeStep = ref<number>(0);
   const authenticationSignIn_formData = reactive<IAuthenticationSignInFormData>({
     email: '',
     password: '',
@@ -45,14 +47,24 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     country: '',
   });
   const authenticationSignIn_isNotAuthenticated = ref<boolean>(false);
+  const authenticationSignIn_selectedRole = ref<'OWNER' | 'EMPLOYEE'>('OWNER');
+  const authenticationSignIn_stepper = shallowRef<IAuthenticationStepper[]>(AUTHENTICATION_SIGN_IN_STEPPER);
 
   /**
    * @description Form validations
    */
-  const authenticationSignIn_formRules = computed(() => ({
-    email: { email, required },
-    password: { required },
-  }));
+  const authenticationSignIn_formRules = computed(() => {
+    const rules: Record<string, Record<string, unknown>> = {
+      email: { email, required },
+    };
+
+    // Only require password for OWNER role
+    if (authenticationSignIn_selectedRole.value === 'OWNER') {
+      rules.password = { required };
+    }
+
+    return rules;
+  });
   const authenticationSignIn_formValidations = useVuelidate(
     authenticationSignIn_formRules,
     authenticationSignIn_formData,
@@ -104,6 +116,23 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
   };
 
   /**
+   * @description Handle fetch api authentication permissions. We call the fetchAuthentication_permissions function from the store to handle the request.
+   */
+  const authenticationSignIn_fetchAuthenticationPermissions = async () => {
+    try {
+      await store.fetchAuthentication_permissions({
+        ...httpAbort_registerAbort(AUTHENTICATION_PERMISSIONS_REQUEST),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
    * @description Handle fetch api authentication profile. We call the fetchAuthentication_profile function from the store to handle the request.
    */
   const authenticationSignIn_fetchAuthenticationProfile = async () => {
@@ -122,34 +151,20 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
         if (!authentication_userData.value.usingPin) {
           validationType = 'set-up-pin';
         }
-
-        // Initialize RBAC after successful authentication
-        // For now, we'll assign a default role based on user data
-        // This should be replaced with actual role data from backend
-        if (authentication_userData.value.roles?.id) {
-          // Map backend role ID to frontend role ID
-          const roleMapping: Record<number, string> = {
-            1: 'super-admin',
-            2: 'manager',
-            3: 'cashier',
-          };
-          const roleId = roleMapping[authentication_userData.value.roles.id] || 'cashier';
-          rbacStore.rbac_setUserRoleById(roleId);
-        } else {
-          // Default to cashier role if no role specified
-          rbacStore.rbac_setUserRoleById('cashier');
-        }
       }
 
       if (validationType) {
-        router.push({
-          name: 'sign-up',
-          query: {
-            email: authentication_userData.value?.email ?? authenticationSignIn_formData.email,
-            type: validationType,
-            token: authentication_token.value,
-          },
-        });
+        // ? UNCOMMENT THIS CODE IF WE'LL ENABLE SIGN UP PAGE
+        // router.push({
+        //   name: 'sign-up',
+        //   query: {
+        //     email: authentication_userData.value?.email ?? authenticationSignIn_formData.email,
+        //     type: validationType,
+        //     token: authentication_token.value,
+        //   },
+        // });
+
+        router.push({ name: 'outlet.list' });
       } else {
         router.push({ name: 'outlet.list' });
       }
@@ -188,6 +203,14 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
   };
 
   /**
+   * @description Handle user role selection.
+   */
+  const authenticationSignIn_onSelectRole = (role: 'OWNER' | 'EMPLOYEE'): void => {
+    authenticationSignIn_selectedRole.value = role;
+    authenticationSignIn_activeStep.value = 1;
+  };
+
+  /**
    * @description Handle business logic to direct user to the sso authentication
    */
   const authenticationSignIn_onSsoWithGoogle = async (): Promise<void> => {
@@ -202,8 +225,17 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     if (authenticationSignIn_formValidations.value.$invalid) return;
 
     try {
-      await authenticationSignIn_fetchAuthenticationSignIn();
-      await authenticationSignIn_fetchAuthenticationProfile();
+      if (authenticationSignIn_selectedRole.value === 'EMPLOYEE') {
+        // For employee, redirect to connect device page with email
+        await router.push({
+          name: 'connect-device',
+          query: { email: authenticationSignIn_formData.email }
+        });
+      } else {
+        // For owner, proceed with normal login
+        await authenticationSignIn_fetchAuthenticationSignIn();
+        await authenticationSignIn_fetchAuthenticationProfile();
+      }
     } catch (error: unknown) {
       authenticationSignIn_isNotAuthenticated.value = true;
 
@@ -231,13 +263,18 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
   );
 
   return {
+    authenticationSignIn_activeStep,
     authenticationSignIn_detectLocationAndBrowser,
     authenticationSignIn_fetchAuthenticationGoogleRedirect,
+    authenticationSignIn_fetchAuthenticationPermissions,
     authenticationSignIn_formData,
     authenticationSignIn_formValidations,
     authenticationSignIn_isLoading: authentication_isLoading,
     authenticationSignIn_isNotAuthenticated,
+    authenticationSignIn_onSelectRole,
     authenticationSignIn_onSsoWithGoogle,
     authenticationSignIn_onSubmit,
+    authenticationSignIn_selectedRole,
+    authenticationSignIn_stepper,
   };
 };

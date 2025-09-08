@@ -14,7 +14,7 @@ const {
   inventoryItemAction_supplierList: suppliers,
   inventoryItemsAction_formOnMode,
   inventoryItems_editingItem,
-  inventoryItems_handleBarcodeScanner
+  inventoryItems_handleBarcodeScanner,
 } = useInvetoryItemsActionService();
 
 const { inventoryItems_onDelete } = useInventoryItemsListService();
@@ -25,11 +25,9 @@ const isFormInvalid = computed(() => {
   return (
     !form.value.name ||
     !form.value.sku ||
-    !form.value.brandId ||
     !form.value.categoryId ||
     !form.value.unit ||
     !form.value.pricePerUnit ||
-    !form.value.storageLocationId ||
     !form.value.supplierId ||
     !form.value.stockQuantity ||
     !form.value.reorderLevel ||
@@ -59,12 +57,12 @@ const confirmUpdate = async () => {
 </script>
 
 <template>
-  <section id="items-create-edit" class="flex justify-center items-center min-h-screen p-6 bg-gray-50">
-    <div class="flex flex-col gap-2 max-w-7xl w-full">
+  <section id="items-create-edit" class="flex justify-center items-center min-h-screen p-4 sm:p-6">
+    <div class="flex flex-col gap-6 w-full max-w-6xl mx-auto">
       <!-- Item Details -->
       <section>
         <h3 class="font-semibold text-lg text-primary mb-4">Item Details</h3>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Item Name -->
           <AppBaseFormGroup
             v-slot="{ classes }"
@@ -93,7 +91,7 @@ const confirmUpdate = async () => {
             label-for="brand"
             name="Brand"
             spacing-bottom="mb-0"
-            :validators="itemFormValidation.brandId"
+            :validators="itemFormValidation.brand"
           >
             <PrimeVueDropdown
               id="brand"
@@ -127,10 +125,10 @@ const confirmUpdate = async () => {
                 :class="{ ...classes }"
               />
               <PrimeVueButton
-                class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-transparent border-none text-gray-400"
+                class="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 bg-transparent border-none text-gray-400"
                 type="button"
                 @click="inventoryItems_handleBarcodeScanner"
-                >
+              >
                 <i class="pi pi-camera"></i>
               </PrimeVueButton>
             </div>
@@ -199,7 +197,7 @@ const confirmUpdate = async () => {
             />
           </AppBaseFormGroup>
 
-          <!-- Notes -->
+          <!-- Notes (full width di mobile, half di tablet+) -->
           <AppBaseFormGroup
             v-slot="{ classes }"
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
@@ -207,7 +205,7 @@ const confirmUpdate = async () => {
             label-for="notes"
             name="Notes"
             spacing-bottom="mb-0"
-            class="col-span-1"
+            class="col-span-1 md:col-span-2"
           >
             <PrimeVueTextarea id="notes" v-model="form.notes" rows="3" class="w-full" :class="{ ...classes }" />
           </AppBaseFormGroup>
@@ -217,7 +215,7 @@ const confirmUpdate = async () => {
       <!-- Stock & Inventory -->
       <section>
         <h3 class="font-semibold text-lg text-primary mb-4">Stock & Inventory</h3>
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <AppBaseFormGroup
             v-slot="{ classes }"
             class-label="block text-sm font-medium text-gray-700 mb-1"
@@ -248,8 +246,9 @@ const confirmUpdate = async () => {
             <PrimeVueInputNumber v-model="form.reorderLevel" class="w-full" :class="{ ...classes }" />
           </AppBaseFormGroup>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-         <AppBaseFormGroup
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <AppBaseFormGroup
             v-slot="{ classes }"
             class-label="block text-sm font-medium text-gray-700 mb-1"
             is-name-as-label
@@ -257,7 +256,6 @@ const confirmUpdate = async () => {
             :validators="itemFormValidation.expiryDate"
           >
             <div class="p-input-icon-right w-full">
-              <!-- <i class="pi pi-calendar"></i> -->
               <PrimeVueCalendar
                 v-model="form.expiryDate as unknown as Date"
                 date-format="yy-mm-dd"
@@ -269,14 +267,16 @@ const confirmUpdate = async () => {
 
           <AppBaseFormGroup
             v-slot="{ classes }"
-            class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+            class-label="block text-sm font-medium leading-6 text-gray-900 w-full hidden"
             is-name-as-label
             label-for="storage-location"
             name="Storage Location"
             spacing-bottom="mb-0"
             :validators="itemFormValidation.storageLocationId"
+            :default-value="storageLocations[0] ?? ''"
           >
             <PrimeVueDropdown
+
               id="storage-location"
               v-model="form.storageLocationId"
               :options="storageLocations"
@@ -285,7 +285,7 @@ const confirmUpdate = async () => {
               filter
               show-clear
               placeholder="Select or search storage location"
-              class="w-full"
+              class="w-full hidden"
               :class="{ ...classes }"
             />
           </AppBaseFormGroup>
@@ -295,7 +295,7 @@ const confirmUpdate = async () => {
       <!-- Price & Supplier -->
       <section>
         <h3 class="font-semibold text-lg text-primary mb-4">Price & Supplier</h3>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <AppBaseFormGroup
             v-slot="{ classes }"
             class-label="block text-sm font-medium text-gray-700 mb-1"
@@ -307,6 +307,7 @@ const confirmUpdate = async () => {
               v-model="form.pricePerUnit"
               mode="currency"
               currency="IDR"
+              locale="id-ID"
               class="w-full"
               :class="{ ...classes }"
             />
@@ -317,7 +318,7 @@ const confirmUpdate = async () => {
             class-label="block text-sm font-medium text-gray-700 mb-1"
             is-name-as-label
             name="Supplier"
-            :validators="itemFormValidation.supplier"
+            :validators="itemFormValidation.supplierId"
           >
             <PrimeVueDropdown
               v-model="form.supplierId"
@@ -335,42 +336,50 @@ const confirmUpdate = async () => {
       </section>
 
       <!-- Actions -->
-      <div class="flex items-center gap-4 mt-6">
-        <PrimeVueButton label="Cancel" variant="text" class="!px-6 border-2 border-primary" @click="onCancel" />
+      <div class="flex flex-col sm:flex-row sm:items-center gap-4 mt-6">
+        <PrimeVueButton
+          label="Cancel"
+          variant="text"
+          class="w-full sm:w-auto !px-6 border-2 border-primary"
+          @click="onCancel"
+        />
         <PrimeVueButton
           :label="inventoryItemsAction_formOnMode === 'create' ? 'Add Item' : 'Update Item'"
-          class="!px-6"
+          class="w-full sm:w-auto !px-6"
           :disabled="isFormInvalid"
           @click="onSubmit"
         />
       </div>
+
       <PrimeVueButton
         v-if="inventoryItemsAction_formOnMode !== 'create'"
         label="Delete Item"
         severity="danger"
         icon="pi pi-trash"
-        class="absolute bottom-6 right-60 !px-6 bg-transparent border-none text-red-600"
+        class="mt-4 sm:absolute sm:bottom-6 sm:right-20 !px-6 bg-transparent border-none text-red-600"
         @click="inventoryItems_onDelete(inventoryItems_editingItem?.id ?? '')"
       />
     </div>
-    <!-- Delete button hanya muncul saat mode edit -->
   </section>
+
+  <!-- Dialog Update -->
   <PrimeVueDialog :visible="isUpdateModal" modal header="">
     <template #container>
-      <div class="w-[35rem] p-8">
+      <div class="w-full sm:w-[35rem] p-6 sm:p-8">
         <div class="flex flex-col items-center gap-4 text-center">
           <span><img :src="confirmationSVG" alt="confirmation" /></span>
-          <h1 class="text-2xl font-semibold">Are you sure want to update this category?</h1>
-          <p>The update will affect the related inventory category data</p>
-          <div class="flex items-center justify-between gap-4">
+          <h1 class="text-xl sm:text-2xl font-semibold">Are you sure want to update this category?</h1>
+          <p class="text-sm sm:text-base">The update will affect the related inventory category data</p>
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
             <PrimeVueButton
               variant="text"
-              class="w-56 text-lg border-2 border-primary text-primary font-semibold"
+              class="w-full sm:w-56 text-lg border-2 border-primary text-primary font-semibold"
               @click="cancelUpdate"
-              >Cancel</PrimeVueButton
             >
+              Cancel
+            </PrimeVueButton>
             <PrimeVueButton
-              class="text-xl w-56 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
+              class="w-full sm:w-56 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
               unstyled
               label="Yes, I'm Sure"
               @click="confirmUpdate"
@@ -380,5 +389,6 @@ const confirmUpdate = async () => {
       </div>
     </template>
   </PrimeVueDialog>
+
   <AppBaseDialogConfirmation id="inventory-items-dialog-confirmation" />
 </template>

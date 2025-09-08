@@ -52,6 +52,7 @@ const {
   cashierOrderSummary_modalPlaceOrderConfirmation,
   cashierOrderSummary_modalPlaceOrderDetail,
   cashierOrderSummary_modalCancelOrder,
+  cashierOrderSummary_paymentForm,
 
   cashierOrderSummary_getListActiveFloor,
   cashierOrderSummary_calculateEstimation,
@@ -127,6 +128,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_modalInvoiceDetail,
   cashierOrderSummary_modalPlaceOrderConfirmation,
   cashierOrderSummary_modalPlaceOrderDetail,
+  cashierOrderSummary_paymentForm,
   cashierOrderSummary_modalCancelOrder,
 
   cashierOrderSummary_getListActiveFloor,

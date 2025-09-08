@@ -2,6 +2,7 @@ export interface IStorageLocation {
   id: string;
   name: string;
   notes: string;
+  code: string;
   isHaveItems: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -9,6 +10,7 @@ export interface IStorageLocation {
 
 export interface IStorageLocationPayload {
   name: string;
+  code: string ;
   notes: string;
 }
 

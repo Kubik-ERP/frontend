@@ -60,7 +60,7 @@ const loadProduct = async () => {
     product_formData.categories = response.categoriesHasProducts;
     product_formData.is_percent = response.isPercent;
     product_formData.imagePreview = response.picture_url;
-    product_formData.isDiscount = response.discountPrice !== 0;
+    product_formData.isDiscount = response.discountPrice !== response.price;
 
     if (product_formData.isDiscount) {
       if (response.isPercent) {
@@ -111,7 +111,7 @@ const handleDelete = async () => {
     router.push({ name: 'catalog.products.index' });
   } catch (error) {
     console.error('Failed to delete product:', error);
-  }   finally {
+  } finally {
     loading.value = false;
   }
 };
@@ -119,6 +119,9 @@ const handleDelete = async () => {
 const handleUpdateProduct = async () => {
   try {
     loading.value = true;
+    if (!product_formData.isDiscount) {
+      product_formData.discount_price = product_formData.price;
+    }
     await updateProduct(productID.value, product_formData);
   } catch (error) {
     console.error(error);
@@ -220,7 +223,10 @@ const confirmUpdate = async () => {
     // Optionally show error feedback
   }
 };
-
+const removePhoto = () => {
+  product_formData.imageFile = null;
+  product_formData.imagePreview = null;
+};
 // Cancel just closes the modal
 const cancelUpdate = () => {
   isUpdateModal.value = false;
@@ -235,23 +241,33 @@ const cancelUpdate = () => {
 
       <form class="flex flex-col items-center justify-center" @submit.prevent="isUpdateModal = true">
         <p>{{ useLocalization('productDetail.photo.label') }}</p>
-        <img
-          class="rounded-lg mt-2 w-64 h-64 object-cover"
-          :src="product_formData.imagePreview || 'https://placehold.co/250'"
-          alt="Photo"
-        />
+        <AppBaseImage :src="product_formData.imagePreview" alt="Photo" class="w-64 h-64 object-cover" />
+
         <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
 
-        <PrimeVueButton
-          :label="useLocalization('productDetail.photo.button')"
-          class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
-          variant="outlined"
-          @click="triggerFileInput"
-        >
-          <template #icon>
-            <img :src="imageSVG" alt="" />
-          </template>
-        </PrimeVueButton>
+        <div class="flex items-center justify-center gap-2 mt-4">
+          <PrimeVueButton
+            :label="useLocalization('productDetail.photo.button')"
+            class="shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
+            variant="outlined"
+            @click="triggerFileInput"
+          >
+            <template #icon>
+              <img :src="imageSVG" alt="" />
+            </template>
+          </PrimeVueButton>
+          <PrimeVueButton
+            v-if="product_formData.imagePreview"
+            variant="text"
+            severity="danger"
+            label="Delete Image"
+            @click="removePhoto"
+          >
+            <template #icon>
+              <AppBaseSvg name="delete" class="!w-5 !h-5" />
+            </template>
+          </PrimeVueButton>
+        </div>
 
         <div class="grid grid-cols-2 w-full gap-8 mt-8">
           <AppBaseFormGroup
@@ -459,7 +475,7 @@ const cancelUpdate = () => {
               </template>
             </PrimeVueButton>
           </div>
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between pb-8">
             <div class="flex items-center gap-4">
               <router-link to="/catalog/products">
                 <PrimeVueButton

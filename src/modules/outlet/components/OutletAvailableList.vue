@@ -16,10 +16,10 @@ const {
 <template>
   <section id="outlet-available-list" class="grid grid-rows-1 grid-cols-10 gap-4">
     <section
-      v-for="(outlet, outletIndex) in outletList_lists"
+      v-for="(outlet, outletIndex) in outletList_lists.items"
       id="outlet"
       :key="`outlet-${outletIndex}`"
-      class="col-span-2 relative inset-0 z-0 flex flex-col items-center gap-4 p-2 rounded-lg cursor-pointer basic-smooth-animation hover:bg-primary-background hover:[&>a]:opacity-100 px-4 py-6"
+      class="col-span-5 lg:col-span-2 relative inset-0 z-0 flex flex-col items-center gap-4 p-2 rounded-lg cursor-pointer basic-smooth-animation hover:bg-primary-background hover:[&>a]:opacity-100 px-4 py-6"
       :class="outletList_dynamicClassOfSelectedOutlet(outlet)"
       @click="outletList_onSelectOutlet(outlet)"
     >
@@ -53,7 +53,7 @@ const {
 
     <RouterLink
       :to="{ name: 'outlet.create' }"
-      class="col-span-2 relative inset-0 z-0 flex flex-col items-center justify-center gap-4 cursor-pointer basic-smooth-animation hover:bg-primary-background hover:[&>#box-outlet]:!bg-white py-4"
+      class="col-span-5 lg:col-span-2 relative inset-0 z-0 flex flex-col items-center justify-center gap-4 cursor-pointer basic-smooth-animation hover:bg-primary-background hover:[&>#box-outlet]:!bg-white py-4"
     >
       <section id="box-outlet" class="basic-smooth-animation bg-primary-background p-5 rounded-full">
         <AppBaseSvg name="store" class="w-6 h-6" />
@@ -62,7 +62,7 @@ const {
       <PrimeVueButton class="bg-transparent border-none w-full" severity="secondary">
         <template #default>
           <section id="content" class="flex items-center gap-2">
-            <AppBaseSvg name="plus-line" />
+            <AppBaseSvg name="plus-line" class="w-4 h-4" />
             <span class="font-semibold text-blue-primary text-sm">Add Store</span>
           </section>
         </template>

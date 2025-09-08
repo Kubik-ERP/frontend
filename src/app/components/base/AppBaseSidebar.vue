@@ -2,15 +2,22 @@
 // Constants
 import { LIST_ADDITIONAL_MENUS, LIST_SIDEBAR_MENUS } from '@/app/constants/menus.constant';
 
+// Helpers
+import { filterMenusByPermissions } from '@/app/helpers/menu-permission.helper';
+
 // Stores
+import { useAuthenticationStore } from '@/modules/authentication/store';
 import { useOutletStore } from '@/modules/outlet/store';
-import { useRbacStore } from '@/app/store/rbac.store';
+import { useMobileStore } from '@/app/store/mobile.store';
 
 // Injected variables
+const authenticationStore = useAuthenticationStore();
 const outletStore = useOutletStore();
-const rbacStore = useRbacStore();
+const mobileStore = useMobileStore();
 const route = useRoute();
-const { outlet_currentOutlet } = storeToRefs(outletStore);
+const { authentication_userData, authentication_permissions } = storeToRefs(authenticationStore);
+const { outlet_currentOutlet, outlet_profile } = storeToRefs(outletStore);
+const { isCurrentlyMobile, isSidebarOpen } = storeToRefs(mobileStore);
 
 // Reactive state to track expanded menus
 interface ExpandedState {
@@ -23,11 +30,16 @@ const isCollapsed = ref<boolean>(false);
 
 // Filter menus based on user permissions
 const filteredSidebarMenus = computed(() => {
-  return rbacStore.rbac_getFilteredMenus(LIST_SIDEBAR_MENUS);
+  return filterMenusByPermissions(LIST_SIDEBAR_MENUS, authentication_permissions.value);
 });
 
+console.log('filteredSidebarMenus', filteredSidebarMenus.value);
 const filteredAdditionalMenus = computed(() => {
-  return rbacStore.rbac_getFilteredMenus([{ name: 'Additional', menus: LIST_ADDITIONAL_MENUS }])[0]?.menus || [];
+  const filtered = filterMenusByPermissions(
+    [{ name: 'Additional', menus: LIST_ADDITIONAL_MENUS }],
+    authentication_permissions.value,
+  );
+  return filtered[0]?.menus || [];
 });
 
 // Compute which submenus should be open based on the current route
@@ -56,6 +68,10 @@ watch(
   () => route.path,
   () => {
     autoExpandMenus();
+    // Close mobile sidebar when route changes
+    if (isCurrentlyMobile.value) {
+      mobileStore.closeSidebar();
+    }
   },
 );
 
@@ -76,25 +92,53 @@ const toggleSubMenu = (categoryIndex: number, menuIndex: number) => {
   expandedMenus.value[categoryIndex][menuIndex] = !expandedMenus.value[categoryIndex][menuIndex];
 };
 
-// Toggle sidebar collapse
+// Toggle sidebar collapse (only for desktop)
 const toggleSidebar = () => {
-  isCollapsed.value = !isCollapsed.value;
+  if (!isCurrentlyMobile.value) {
+    isCollapsed.value = !isCollapsed.value;
+  }
+};
+
+// Handle overlay click (close sidebar on mobile)
+const handleOverlayClick = () => {
+  if (isCurrentlyMobile.value) {
+    mobileStore.closeSidebar();
+  }
 };
 
 // Helper function to check if any submenu is active
 const isAnySubMenuActive = (menu: IMenu): boolean => {
   return menu.subMenus?.some((subMenu: ISubMenu) => subMenu.path === route.path) || false;
 };
+
+// Computed classes for sidebar
+const sidebarClasses = computed(() => {
+  const baseClasses =
+    'flex flex-col gap-4 bg-background border-r border-solid border-grayscale-10 px-4 py-2 transition-all duration-300 ease-in-out';
+
+  if (isCurrentlyMobile.value) {
+    return `${baseClasses} fixed inset-y-0 left-0 z-[60] w-80 transform overflow-auto ${
+      isSidebarOpen.value ? 'translate-x-0' : '-translate-x-full'
+    }`;
+  }
+
+  return `${baseClasses} sticky inset-0 z-0 ${isCollapsed.value ? 'w-20' : 'w-64 min-w-64'}`;
+});
 </script>
 
 <template>
-  <aside
-    id="sidebar"
-    class="sticky inset-0 z-0 flex flex-col gap-4 bg-background border-r border-solid border-grayscale-10 px-4 py-2 transition-all duration-300 ease-in-out"
-    :class="[isCollapsed ? 'w-20' : 'w-64 min-w-64']"
-  >
-    <!-- Hide Icon -->
+  <!-- Mobile Overlay -->
+  <div
+    v-if="isCurrentlyMobile && isSidebarOpen"
+    class="fixed inset-0 z-[50] bg-black opacity-50 transition-opacity duration-300"
+    @click="handleOverlayClick"
+  ></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" :class="sidebarClasses">
+    <!-- Hide Icon - Only show on desktop -->
     <section
+      v-if="!isCurrentlyMobile"
       id="trigger-icon"
       class="absolute top-8 -right-4 flex items-center justify-center w-8 h-8 bg-white rounded-full basic-smooth-animation hover:bg-grayscale-10 cursor-pointer"
       @click="toggleSidebar"
@@ -104,11 +148,18 @@ const isAnySubMenuActive = (menu: IMenu): boolean => {
 
     <!-- Header -->
     <header class="flex items-center gap-2 overflow-hidden">
-      <img src="@/app/assets/images/app-icon.png" alt="app-icon" class="w-fit h-fit flex-shrink-0" />
+      <PrimeVueAvatar
+        :image="APP_BASE_BUCKET_URL + outlet_profile?.user.image"
+        size="small"
+        shape="circle"
+        label="P"
+        class="hidden lg:inline-flex w-14 h-14"
+      />
+
       <h1
-        v-show="!isCollapsed"
+        v-show="!isCollapsed || isCurrentlyMobile"
         class="font-bold text-base leading-8 whitespace-nowrap transition-opacity duration-300"
-        :class="{ 'opacity-0': isCollapsed }"
+        :class="{ 'opacity-0': isCollapsed && !isCurrentlyMobile }"
       >
         Kubik POS
       </h1>
@@ -116,18 +167,40 @@ const isAnySubMenuActive = (menu: IMenu): boolean => {
 
     <!-- Main Content -->
     <section id="content" class="flex flex-col gap-2 w-full pb-2 border-b border-solid border-grayscale-10">
+      <section id="header-mobile" class="flex flex-col lg:hidden gap-4">
+        <img src="@/app/assets/images/app-logo.png" alt="app-icon" class="w-fit h-fit max-w-40 flex-shrink-0" />
+
+        <section id="user-profile" class="flex items-center gap-3">
+          <PrimeVueAvatar
+            :image="APP_BASE_BUCKET_URL + outlet_profile?.user.image"
+            size="small"
+            shape="circle"
+            label="P"
+          />
+
+          <div class="flex flex-col">
+            <h5 class="font-semibold text-primary text-sm">
+              {{ authentication_userData?.fullname }}
+            </h5>
+            <span class="font-normal text text-disabled text-xs">
+              {{ authentication_userData?.roles.name }}
+            </span>
+          </div>
+        </section>
+      </section>
+
       <section
         id="outlet"
         class="flex items-center p-2 rounded-md bg-white border border-solid border-grayscale-10 cursor-pointer basic-smooth-animation hover:bg-grayscale-10 overflow-hidden"
-        :class="[isCollapsed ? 'justify-center' : 'gap-2']"
+        :class="[isCollapsed && !isCurrentlyMobile ? 'justify-center' : 'gap-2']"
         @click="() => $router.push({ name: 'outlet.list' })"
       >
         <AppBaseSvg name="store" class="!w-5 !h-5 flex-shrink-0" />
         <section
-          v-show="!isCollapsed"
+          v-show="!isCollapsed || isCurrentlyMobile"
           id="outlet-information"
           class="flex flex-col transition-opacity duration-300 min-w-0"
-          :class="{ 'opacity-0': isCollapsed }"
+          :class="{ 'opacity-0': isCollapsed && !isCurrentlyMobile }"
         >
           <h5 class="font-semibold text-black text-sm truncate">
             {{ outlet_currentOutlet?.name }}
@@ -148,10 +221,10 @@ const isAnySubMenuActive = (menu: IMenu): boolean => {
           <li>
             <!-- Category Header (no chevron) -->
             <div
-              v-show="!isCollapsed"
+              v-show="!isCollapsed || isCurrentlyMobile"
               v-ripple
               class="px-4 py-2 flex items-center text-surface-500 dark:text-surface-400 cursor-default transition-opacity duration-300"
-              :class="{ 'opacity-0': isCollapsed }"
+              :class="{ 'opacity-0': isCollapsed && !isCurrentlyMobile }"
             >
               <span id="menu-category" class="font-normal text-text-disabled text-xs">
                 {{ menuCategory.name }}
@@ -164,7 +237,7 @@ const isAnySubMenuActive = (menu: IMenu): boolean => {
                 :id="`menu-${menuIndex}`"
                 :key="`menu-${menuIndex}`"
               >
-                <template v-if="menu.subMenus?.length && !isCollapsed">
+                <template v-if="menu.subMenus?.length && (!isCollapsed || isCurrentlyMobile)">
                   <a
                     v-ripple
                     class="flex items-center cursor-pointer px-4 py-2 rounded duration-150 transition-colors p-ripple gap-2"
@@ -219,7 +292,7 @@ const isAnySubMenuActive = (menu: IMenu): boolean => {
                 </template>
 
                 <!-- Collapsed submenu or collapsed single menu item -->
-                <template v-else-if="menu.subMenus?.length && isCollapsed">
+                <template v-else-if="menu.subMenus?.length && isCollapsed && !isCurrentlyMobile">
                   <div
                     v-ripple
                     class="flex items-center justify-center cursor-pointer px-2 py-2 rounded duration-150 transition-colors p-ripple mb-1"
@@ -244,9 +317,9 @@ const isAnySubMenuActive = (menu: IMenu): boolean => {
                     class="flex items-center cursor-pointer py-2 rounded text-surface-700 hover:bg-grayscale-10 dark:text-surface-0 dark:hover:bg-grayscale-10 duration-150 transition-colors p-ripple"
                     :class="[
                       route.path === menu.path ? 'bg-primary text-white' : '',
-                      isCollapsed ? 'justify-center px-2' : 'gap-2 px-4',
+                      isCollapsed && !isCurrentlyMobile ? 'justify-center px-2' : 'gap-2 px-4',
                     ]"
-                    :title="isCollapsed ? menu.name : ''"
+                    :title="isCollapsed && !isCurrentlyMobile ? menu.name : ''"
                   >
                     <AppBaseSvg
                       :name="menu.iconName"
@@ -254,11 +327,11 @@ const isAnySubMenuActive = (menu: IMenu): boolean => {
                       :class="[route.path === menu.path ? 'filter-white' : '']"
                     />
                     <p
-                      v-show="!isCollapsed"
+                      v-show="!isCollapsed || isCurrentlyMobile"
                       class="font-normal text-base whitespace-nowrap transition-opacity duration-300"
                       :class="[
                         route.path === menu.path ? 'text-white' : 'text-black',
-                        { 'opacity-0': isCollapsed },
+                        { 'opacity-0': isCollapsed && !isCurrentlyMobile },
                       ]"
                     >
                       {{ menu.name }}
@@ -284,15 +357,15 @@ const isAnySubMenuActive = (menu: IMenu): boolean => {
           class="flex items-center py-2 basic-smooth-animation hover:bg-grayscale-10 cursor-pointer rounded-md"
           :class="[
             route.path === additionalMenu.path ? 'bg-primary-border' : '',
-            isCollapsed ? 'justify-center px-2' : 'gap-2 px-4',
+            isCollapsed && !isCurrentlyMobile ? 'justify-center px-2' : 'gap-2 px-4',
           ]"
-          :title="isCollapsed ? additionalMenu.name : ''"
+          :title="isCollapsed && !isCurrentlyMobile ? additionalMenu.name : ''"
         >
           <AppBaseSvg :name="additionalMenu.iconName" class="!w-5 !h-5 flex-shrink-0" />
           <p
-            v-show="!isCollapsed"
+            v-show="!isCollapsed || isCurrentlyMobile"
             class="font-normal text-base text-black whitespace-nowrap transition-opacity duration-300"
-            :class="{ 'opacity-0': isCollapsed }"
+            :class="{ 'opacity-0': isCollapsed && !isCurrentlyMobile }"
           >
             {{ additionalMenu.name }}
           </p>

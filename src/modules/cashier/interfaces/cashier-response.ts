@@ -10,12 +10,15 @@ export interface ICashierResponseCalulateEstimationDetail {
 
 export interface ICashierResponseCalulateEstimationItem {
   total: number;
+  subTotal: number;
   discountTotal: number;
   grandTotal: number;
   serviceCharge: number | null;
   serviceChargeInclude: boolean;
   tax: number | null;
   taxInclude: boolean;
+  roundingAdjustment: number | null;
+  totalProductDiscount: number | null;
   items: ICashierResponseCalulateEstimationItem[];
   voucherAmount: number;
 }
@@ -64,41 +67,44 @@ export interface ICashierResponseWebsocketMessage {
   message: string;
 }
 
-export interface ICashierCategoryHasProduct {
-  categoriesId: string;
-  productsId: string;
-  products: ICashierProduct;
-}
-
-export interface ICashierCategory {
+export interface ICashierCategoriesData {
   id: string;
   category: string;
   description: string;
-  image: string;
   pictureUrl: string;
-  categoriesHasProducts: ICashierCategoryHasProduct[];
+  totalItems: number;
 }
 
-export interface ICashierCategoriesData {
-  categories: ICashierCategory[];
-  total: number;
-  page: number;
-  lastPage: number;
+export interface IProductVariant {
+  id: string;
+  productsId: string;
+  name: string;
+  price: number;
+}
+
+export interface IProductItem {
+  id: string;
+  name: string;
+  price: number;
+  discountPrice: number;
+  pictureUrl: string;
+  isPercent: boolean;
+  variant: IProductVariant[];
 }
 
 export interface ICashierCategoriesHasProductResponse {
-  data: {
-    id: string;
-    description: string;
-    category: string;
-    image: string;
-    pictureUrl: string;
-    categoriesHasProducts: ICashierCategoryHasProduct[];
-  };
+  id: string;
+  category: string;
+  description: string;
+  items: IProductItem[];
+}
+
+export interface ICashierCategoriesHasProductResponseData {
+  data: ICashierCategoriesHasProductResponse[];
 }
 
 export interface ICashierCategoriesResponse {
-  data: ICashierCategoriesData;
+  data: ICashierCategoriesData[];
 }
 
 export interface ICashierVariant {
@@ -123,22 +129,6 @@ export interface ICashierCategoriesHasProduct {
   categoriesId: string;
   productsId: string;
   categories: ICashierCategories;
-}
-
-export interface ICashierProduct {
-  id: string;
-  name: string;
-  price: number;
-  discountPrice: number;
-  pictureUrl: string | null | '';
-  isPercent: boolean;
-  quantity: number | null;
-  variantHasProducts: ICashierVariantHasProduct[] | null;
-  categoriesHasProducts: ICashierCategoriesHasProduct[] | null;
-}
-
-export interface ICashierProductResponse {
-  data: ICashierProduct[];
 }
 
 export interface ICashierCustomerTag {

@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { useCategoryService } from '../../services/Category/CategoryService';
 import { ICategory } from '../../interfaces/Category/CategoryInterface';
-//import { ICategory } from '@/modules/catalog/interfaces/Category/CategoryInterface';
 import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
-import deleteSVG from '@/app/assets/icons/delete.svg';
-import editSVG from '@/app/assets/icons/edit.svg';
 import plusLineWhiteSVG from '@/app/assets/icons/plus-line-white.svg';
 import threeDotsSVG from '@/app/assets/icons/three-dots.svg';
 import searchSVG from '@/app/assets/icons/search.svg';
@@ -112,9 +109,7 @@ const handleAddCategory = async () => {
     console.error('Failed to create category:', error);
     console.error(error);
     alert('Something went wrong while creating the category.');
-  }
-  finally
-  {
+  } finally {
     loading.value = false;
   }
 };
@@ -213,6 +208,22 @@ const prevPage = () => {
   }
 };
 
+const categoryImport_onOpen = () => {
+  const argsEventEmitter: IPropsDialog = {
+    id: 'category-import-modal',
+    isUsingClosableButton: false,
+    isUsingBackdrop: true,
+    isOpen: true,
+    width: '600px',
+  };
+  eventBus.emit('AppBaseDialog', argsEventEmitter);
+};
+
+const removePhoto = () => {
+  category_formData.imageFile = undefined;
+  category_formData.imagePreview = undefined;
+};
+
 onMounted(() => {
   loadCategories();
   const pageParam = route.query.page;
@@ -225,20 +236,15 @@ onMounted(() => {
     router.push({ query: { page: '1' } });
   }
 });
+
+import { useRbac } from '@/app/composables/useRbac';
+import CategoryImportModal from './CategoryImportModal.vue';
+import eventBus from '@/plugins/mitt';
+
+const rbac = useRbac();
 </script>
-
 <template>
-  <div class="m-4 p-1 border border-gray-200 rounded-lg shadow-2xl">
-    <!-- <AppBaseDataTable
-    header-title="Categories"
-    :columns="category_columns"
-    :data="categories"
-    :is-loading="loading"
-    is-using-custom-filter
-    
-    >
-  </AppBaseDataTable> -->
-
+  <div>
     <PrimeVueDataTable
       :selection="selectedCategories"
       :value="categories"
@@ -246,6 +252,9 @@ onMounted(() => {
       :rows="limit"
       table-style="min-width: 50rem"
       data-key="id"
+      :pt="{
+        root: 'rounded-sm border border-solid border-grayscale-20',
+      }"
     >
       <template #header>
         <div class="flex justify-between">
@@ -261,7 +270,17 @@ onMounted(() => {
                 />
               </PrimeVueIconField>
             </form>
+
             <PrimeVueButton
+              class="bg-white hover:bg-gray-100 border border-primary text-primary px-4 py-2 h-10 rounded-md flex items-center gap-2"
+              @click="categoryImport_onOpen"
+            >
+              <i class="pi pi-upload text-sm"></i>
+              Import Category
+            </PrimeVueButton>
+
+            <PrimeVueButton
+              v-if="rbac.hasPermission('product_category')"
               type="button"
               severity="info"
               :label="useLocalization('table.addButton')"
@@ -309,6 +328,7 @@ onMounted(() => {
       <PrimeVueColumn>
         <template #body="slotProps">
           <PrimeVueButton
+            v-if="rbac.hasPermission('product_category')"
             class="bg-transparent text-gray-500 border-none float-end"
             @click="displayPopover($event, slotProps.data)"
           >
@@ -363,26 +383,38 @@ onMounted(() => {
     </PrimeVueDataTable>
 
     <!-- Popover -->
-    <PrimeVuePopover ref="op">
-      <div class="flex flex-col items-start">
+    <PrimeVuePopover
+      ref="op"
+      :pt="{
+        root: { class: 'z-[9999]' }, // ✅ This forces the popover to the top layer
+        content: 'p-0',
+      }"
+    >
+      <div class="flex flex-col items-center justify-start">
         <PrimeVueButton
           variant="text"
           :label="useLocalization('popover.edit')"
-          class="text-black"
+          class="text-black w-full px-4 py-3"
           @click="selected && displayEdit(selected.id)"
         >
-          <template #icon>
-            <img :src="editSVG" alt="" />
+          <template #default>
+            <section class="flex items-center gap-2 w-full">
+              <AppBaseSvg name="edit" class="!w-4 !h-4" />
+              <span class="font-normal text-text-primary">{{ useLocalization('popover.edit') }}</span>
+            </section>
           </template>
         </PrimeVueButton>
         <PrimeVueButton
           variant="text"
           :label="useLocalization('popover.delete')"
-          class="text-red-500"
+          class="text-red-500 w-full px-4 py-3"
           @click="isDeleteOpen = true"
         >
-          <template #icon>
-            <img :src="deleteSVG" alt="" />
+          <template #default>
+            <section class="flex items-center gap-2 w-full">
+              <AppBaseSvg name="delete" class="!w-4 !h-4" />
+              <span class="font-normal text-text-red">{{ useLocalization('popover.delete') }}</span>
+            </section>
           </template>
         </PrimeVueButton>
       </div>
@@ -399,26 +431,34 @@ onMounted(() => {
       <form @submit.prevent="handleAddCategory">
         <div class="flex items-center flex-col">
           <p>{{ useLocalization('modal.photoLabel') }}</p>
-          <img
+          <AppBaseImage :src="category_formData.imagePreview" alt="Photo" class="w-64 h-64 object-cover" />
+          <!-- <img
             class="rounded-lg mt-2 w-64 h-64 object-cover"
             :src="category_formData.imagePreview || 'https://placehold.co/250'"
             alt="Photo"
-          />
+          /> -->
 
           <!-- Hidden File Input -->
           <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
 
           <!-- PrimeVue Button as file selector -->
-          <PrimeVueButton
-            :label="useLocalization('modal.selectImageButton')"
-            class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
-            variant="outlined"
-            @click="triggerFileInput"
-          >
-            <template #icon>
-              <img :src="imageSVG" alt="" />
-            </template>
-          </PrimeVueButton>
+          <div class="flex items-center justify-center gap-2 mt-4">
+            <PrimeVueButton
+              :label="useLocalization('modal.selectImageButton')"
+              class="shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
+              variant="outlined"
+              @click="triggerFileInput"
+            >
+              <template #icon>
+                <img :src="imageSVG" alt="" />
+              </template>
+            </PrimeVueButton>
+            <PrimeVueButton variant="text" @click="removePhoto">
+              <template #icon>
+                <AppBaseSvg name="delete" class="!w-5 !h-5" />
+              </template>
+            </PrimeVueButton>
+          </div>
         </div>
         <AppBaseFormGroup
           v-slot="{ classes }"
@@ -478,26 +518,29 @@ onMounted(() => {
       <form @submit.prevent="handleEditCategory">
         <div class="flex items-center flex-col">
           <p>{{ useLocalization('modal.photoLabel') }}</p>
-          <img
-            class="rounded-lg mt-2 w-64 h-64 object-cover"
-            :src="category_formData.imagePreview || 'https://placehold.co/250'"
-            alt="Photo"
-          />
+          <AppBaseImage :src="category_formData.imagePreview" alt="Photo" class="w-64 h-64 object-cover" />
 
           <!-- Hidden File Input -->
           <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
 
           <!-- PrimeVue Button as file selector -->
-          <PrimeVueButton
-            :label="useLocalization('modal.selectImageButton')"
-            class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
-            variant="outlined"
-            @click="triggerFileInput"
-          >
-            <template #icon>
-              <img :src="imageSVG" alt="" />
-            </template>
-          </PrimeVueButton>
+          <div class="flex items-center justify-center gap-2 mt-4">
+            <PrimeVueButton
+              :label="useLocalization('modal.selectImageButton')"
+              class="shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
+              variant="outlined"
+              @click="triggerFileInput"
+            >
+              <template #icon>
+                <img :src="imageSVG" alt="" />
+              </template>
+            </PrimeVueButton>
+            <PrimeVueButton variant="text" @click="removePhoto">
+              <template #icon>
+                <AppBaseSvg name="delete" class="!w-5 !h-5" />
+              </template>
+            </PrimeVueButton>
+          </div>
         </div>
         <AppBaseFormGroup
           v-slot="{ classes }"
@@ -569,4 +612,5 @@ onMounted(() => {
       </template>
     </PrimeVueDialog>
   </div>
+  <CategoryImportModal />
 </template>

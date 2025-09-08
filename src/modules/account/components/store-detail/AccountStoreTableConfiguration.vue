@@ -37,15 +37,15 @@ const {
     >
       <template #default>
         <section class="flex items-center gap-2">
-          <AppBaseSvg name="plus-line-white" />
-          <span class="font-semibold text-base text-white">Edit Table</span>
+          <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
+          <span class="font-semibold text-sm lg:text-base text-white">Edit Table</span>
         </section>
       </template>
     </PrimeVueButton>
   </header>
 
   <section
-    v-if="accountStoreDetail_storeTables?.items && accountStoreDetail_storeTables.items.length > 0"
+    v-if="accountStoreDetail_storeTables && accountStoreDetail_storeTables.length > 0"
     class="flex flex-col gap-4 p-4 border border-solid border-grayscale-10"
   >
     <header class="flex items-center justify-between w-full">
@@ -71,16 +71,18 @@ const {
   <template v-else>
     <section
       id="account-store-table-configuration"
-      class="flex items-center justify-between border border-solid border-grayscale-10 p-4 rounded-lg"
+      class="flex flex-col lg:flex-row items-start lg:items-center justify-between border border-solid border-grayscale-10 p-4 rounded-lg gap-4 lg:gap-0"
     >
       <section id="no-tables-configuration-information" class="flex flex-col gap-2">
-        <h6 class="font-bold text-primary text-lg">No tables configured yet</h6>
+        <h6 class="font-bold text-primary text-base lg:text-lg">No tables configured yet</h6>
 
-        <p class="font-normal text-base text-grayscale-70">Start by adding tables to set up your floor layout</p>
+        <p class="font-normal text-sm lg:text-base text-grayscale-70">
+          Start by adding tables to set up your floor layout
+        </p>
       </section>
 
       <PrimeVueButton
-        class="bg-blue-primary border-none text-base py-3 px-5 w-fit"
+        class="bg-blue-primary border-none text-sm lg:text-base py-3 px-5 w-full lg:w-fit"
         label="Set Up Table"
         type="button"
         @click="$router.push({ name: 'account.store.table-configuration' })"

@@ -58,7 +58,7 @@ const {
         <PrimeVueIconField>
           <PrimeVueInputIcon>
             <template #default>
-              <AppBaseSvg name="search" />
+              <AppBaseSvg name="search" class="w-4 h-4" />
             </template>
           </PrimeVueInputIcon>
 
@@ -71,73 +71,80 @@ const {
       </template>
 
       <template #filter>
-        <div class="flex flex-col gap-1 w-full">
-          <span class="font-semibold inline-block text-gray-900 text-base w-48">Filter by</span>
+        <div class="flex flex-col gap-1 w-full mt-1">
+          <span class="hidden lg:inline-block font-semibold text-gray-900 text-base w-48">Filter by</span>
 
-          <div class="flex items-center gap-4 w-full">
-            <PrimeVueDatePicker
-              v-model="dailySalesList_queryParams.createdAtFrom"
-              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
-              placeholder="Purchase Date From"
-              show-on-focus
-              show-icon
-              fluid
-              show-time
-              show-button-bar
-              hour-format="24"
-              @clear-click="dailySalesList_queryParams.createdAtFrom = null"
-            />
+          <section id="filter" class="grid grid-rows-1 grid-cols-10 gap-4">
+            <section id="createdAt" class="col-span-2 lg:col-span-auto">
+              <PrimeVueDatePicker
+                v-model="dailySalesList_queryParams.createdAtFrom"
+                class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-full lg:max-w-80"
+                placeholder="Purchase Date From"
+                show-on-focus
+                show-icon
+                fluid
+                show-time
+                show-button-bar
+                hour-format="24"
+                @clear-click="dailySalesList_queryParams.createdAtFrom = null"
+              />
+            </section>
 
-            <PrimeVueDatePicker
-              v-model="dailySalesList_queryParams.createdAtTo"
-              :manual-input="false"
-              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
-              placeholder="Purchase Date To"
-              show-on-focus
-              show-icon
-              fluid
-              show-time
-              show-button-bar
-              show-clear
-              hour-format="24"
-              :disabled="!dailySalesList_queryParams.createdAtFrom"
-              @clear-click="dailySalesList_queryParams.createdAtTo = null"
-            />
+            <section id="createdTo" class="col-span-2 lg:col-span-auto">
+              <PrimeVueDatePicker
+                v-model="dailySalesList_queryParams.createdAtTo"
+                class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-full lg:max-w-80"
+                placeholder="Purchase Date To"
+                show-on-focus
+                show-icon
+                fluid
+                show-time
+                show-button-bar
+                hour-format="24"
+                @clear-click="dailySalesList_queryParams.createdAtTo = null"
+              />
+            </section>
 
-            <PrimeVueMultiSelect
-              v-model="dailySalesList_queryParams.orderType"
-              display="chip"
-              :options="dailySalesList_typesOfOrderType"
-              option-label="label"
-              option-value="value"
-              filter
-              placeholder="Order Type"
-              class="text-sm text-text-disabled w-full"
-            />
+            <section id="order-type" class="col-span-2 lg:col-span-auto">
+              <PrimeVueMultiSelect
+                v-model="dailySalesList_queryParams.orderType"
+                display="chip"
+                :options="dailySalesList_typesOfOrderType"
+                option-label="label"
+                option-value="value"
+                filter
+                placeholder="Order Type"
+                class="text-sm text-text-disabled w-full"
+              />
+            </section>
 
-            <PrimeVueMultiSelect
-              v-model="dailySalesList_queryParams.paymentStatus"
-              display="chip"
-              :options="dailySalesList_typesOfPaymentStatus"
-              option-label="label"
-              option-value="value"
-              filter
-              show-clear
-              placeholder="Payment Status"
-              class="text-sm text-text-disabled w-full"
-            />
+            <section id="payment-status" class="col-span-2 lg:col-span-auto">
+              <PrimeVueMultiSelect
+                v-model="dailySalesList_queryParams.paymentStatus"
+                display="chip"
+                :options="dailySalesList_typesOfPaymentStatus"
+                option-label="label"
+                option-value="value"
+                filter
+                show-clear
+                placeholder="Payment Status"
+                class="text-sm text-text-disabled w-full"
+              />
+            </section>
 
-            <PrimeVueMultiSelect
-              v-model="dailySalesList_queryParams.orderStatus"
-              display="chip"
-              :options="dailySalesList_typesOfOrderStatus"
-              option-label="label"
-              option-value="value"
-              filter
-              placeholder="Order Status"
-              class="text-sm text-text-disabled w-full"
-            />
-          </div>
+            <section id="payment-status" class="col-span-2 lg:col-span-auto">
+              <PrimeVueMultiSelect
+                v-model="dailySalesList_queryParams.orderStatus"
+                display="chip"
+                :options="dailySalesList_typesOfOrderStatus"
+                option-label="label"
+                option-value="value"
+                filter
+                placeholder="Order Status"
+                class="text-sm text-text-disabled w-full"
+              />
+            </section>
+          </section>
         </div>
       </template>
 
@@ -159,9 +166,19 @@ const {
         </template>
 
         <template v-else-if="column.value === 'grandTotal'">
-          <span class="font-normal text-sm text-text-primary">{{
+          <span v-if="data[column.value]" class="font-normal text-sm text-text-primary">{{
             useCurrencyFormat({
               data: data[column.value],
+            })
+          }}</span>
+          <span v-else class="font-normal text-sm text-text-primary">{{
+            useCurrencyFormat({
+              data:
+                data['subtotal'] -
+                (data['discountAmount'] || 0) +
+                (data['serviceChargeAmount'] || 0) +
+                (data['taxAmount'] || 0) -
+                (data['voucherAmount'] || 0),
             })
           }}</span>
         </template>

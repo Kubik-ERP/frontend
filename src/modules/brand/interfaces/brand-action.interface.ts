@@ -3,6 +3,7 @@ import { IBrandCreateUpdatePayload } from ".";
 
 export interface IBrandFormData {
   brandName: string;
+  code: string;
   notes: string;
 }
 

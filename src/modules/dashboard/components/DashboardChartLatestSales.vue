@@ -1,71 +1,25 @@
 <script setup lang="ts">
-const chartData = ref();
-const chartOptions = ref();
-
-const setChartData = () => {
-  const documentStyle = getComputedStyle(document.documentElement);
-
-  return {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    datasets: [
-      {
-        label: 'Sales',
-        data: [500, 550, 500, 530, 540, 550, 560, 570, 580, 590, 600, 610],
-        fill: false,
-        borderColor: documentStyle.getPropertyValue('--p-cyan-500'),
-        tension: 0.4,
-      },
-    ],
-  };
-};
-
-const setChartOptions = () => {
-  const documentStyle = getComputedStyle(document.documentElement);
-  const textColor = documentStyle.getPropertyValue('--p-text-color');
-  const textColorSecondary = documentStyle.getPropertyValue('--p-text-muted-color');
-  const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color');
-
-  return {
-    maintainAspectRatio: false,
-    aspectRatio: 0.6,
-    plugins: {
-      legend: {
-        labels: {
-          color: textColor,
-        },
-      },
-    },
-    scales: {
-      x: {
-        ticks: {
-          color: textColorSecondary,
-        },
-        grid: {
-          color: surfaceBorder,
-        },
-      },
-      y: {
-        ticks: {
-          color: textColorSecondary,
-        },
-        grid: {
-          color: surfaceBorder,
-        },
-      },
-    },
-  };
-};
+import type { IDashboardProvided } from '../interfaces';
+// inject
+const {
+  dashboard_queryParams,
+  dashboard_values, // chart
+  setChartData,
+  setChartOptions,
+  chartData,
+  chartOptions,
+} = inject<IDashboardProvided>('dashboard')!;
 
 onMounted(() => {
-  chartData.value = setChartData();
-  chartOptions.value = setChartOptions();
+  setChartData();
+  setChartOptions();
 });
 </script>
 
 <template>
   <section
     id="dashboard-chart-latest-sales"
-    class="col-span-8 flex flex-col bg-white border border-solid border-grayscale-10 p-4 gap-4 rounded-sm"
+    class="col-span-full lg:col-span-8 flex flex-col bg-white border border-solid border-grayscale-10 p-4 gap-4 rounded-sm"
   >
     <h5 class="font-semibold text-lg text-grayscale-70">Latest Sales</h5>
 
@@ -74,21 +28,40 @@ onMounted(() => {
         <span class="font-normal text-grayscale-70 text-xs">Total Sales</span>
 
         <section id="amount" class="flex items-center gap-1">
-          <span class="font-semibold text-black text-base"> Rp. 100.000 </span>
+          <span class="font-semibold text-black text-base">
+            {{ useCurrencyFormat({ data: dashboard_values.summary.totalSales.value }) }}
+          </span>
 
-          <PrimeVueChip class="bg-secondary-background p-1">
-            <AppBaseSvg name="arrow-up-success-circle" class="w-3 h-3" />
+          <PrimeVueChip
+            class="py-1 px-2"
+            :class="[
+              dashboard_values.summary.totalSales.percentageChange < 0
+                ? 'bg-error-background'
+                : 'bg-secondary-background',
+            ]"
+          >
+            <AppBaseSvg
+              :name="
+                dashboard_values.summary.totalSales.percentageChange < 0 ? 'arrow-down-danger' : 'arrow-up-success'
+              "
+              class="w-3 h-3"
+            />
 
-            <span class="font-semibold text-secondary-hover text-xs"> 10% </span>
+            <span class="font-semibold text-secondary-hover text-xs">
+              {{ dashboard_values.summary.totalSales.percentageChange }}%
+            </span>
           </PrimeVueChip>
         </section>
       </section>
 
       <section id="period">
-        <span class="font-normal text-grayscale-70 text-xs"> January 2024 - December 2024 </span>
+        <span class="font-normal text-grayscale-70 text-xs">
+          {{ useFormatDate(dashboard_queryParams.startDate, 'dd MMM yyyy') }} -
+          {{ useFormatDate(dashboard_queryParams.endDate, 'dd MMM yyyy') }}
+        </span>
       </section>
     </section>
 
-    <PrimeVueChart type="line" :data="chartData" :options="chartOptions" class="h-[30rem]" />
+    <PrimeVueChart type="line" :data="chartData" :options="chartOptions" class="h-[20rem] lg:h-[30rem]" />
   </section>
 </template>

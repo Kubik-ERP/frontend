@@ -6,8 +6,8 @@ import type { IWorkingHoursListProvided } from '../interfaces';
  * @description Inject all the data and methods what we need
  */
 const {
-  workingHoursList_addTimeSlot,
   workingHoursList_computedColumns,
+  workingHoursList_getCurrentWeekDateString,
   workingHoursList_getWeekDateRange,
   workingHoursList_listValues,
   workingHoursList_listViewTypes,
@@ -16,6 +16,7 @@ const {
   workingHoursList_onChangeSelectedMonth,
   workingHoursList_onNavigateNext,
   workingHoursList_onNavigatePrevious,
+  workingHoursList_onOpenDialog,
 } = inject('workingHoursList') as IWorkingHoursListProvided;
 
 /**
@@ -48,33 +49,35 @@ const selectedMonthAsDate = computed({
 });
 
 /**
- * @description Handle adding a new shift (demonstration of new data structure)
+ * @description Handle adding a new shift (opens dialog)
  */
 const handleAddShift = (staffId: number, columnValue: string) => {
-  if (!workingHoursList_selectedMonth.value) return;
-
-  const [year, month] = workingHoursList_selectedMonth.value.split('-').map(Number);
+  let targetDate: string;
 
   if (workingHoursList_selectedViewType.value === 'Week') {
-    // For week view, calculate the actual date based on the column
+    // For week view, get the actual date for the specific day of the current week
     const dayOfWeek = parseInt(columnValue.replace('week_day_', ''));
-    const firstDayOfMonth = new Date(year, month - 1, 1);
-    const startDate = new Date(firstDayOfMonth);
-    startDate.setDate(startDate.getDate() - startDate.getDay()); // Go back to Sunday
-
-    const targetDate = new Date(startDate);
-    targetDate.setDate(startDate.getDate() + dayOfWeek);
-
-    const targetYear = targetDate.getFullYear();
-    const targetMonth = targetDate.getMonth() + 1;
-    const targetDay = targetDate.getDate();
-
-    // Add a sample time slot
-    workingHoursList_addTimeSlot(staffId, targetYear, targetMonth, targetDay, '09:00', '17:00');
+    targetDate = workingHoursList_getCurrentWeekDateString(dayOfWeek);
   } else {
     // For month view, extract day from column value
+    if (!workingHoursList_selectedMonth.value) return;
+    const [year, month] = workingHoursList_selectedMonth.value.split('-').map(Number);
     const day = parseInt(columnValue.replace('day_', ''));
-    workingHoursList_addTimeSlot(staffId, year, month, day, '09:00', '17:00');
+    const targetDay = String(day).padStart(2, '0');
+    const targetMonth = String(month).padStart(2, '0');
+    targetDate = `${year}-${targetMonth}-${targetDay}`;
+  }
+
+  // Open dialog with pre-filled data
+  workingHoursList_onOpenDialog('create', staffId, targetDate);
+};
+
+/**
+ * @description Handle clicking on absent cell (opens dialog for month view)
+ */
+const handleAbsentClick = (staffId: number, columnValue: string) => {
+  if (workingHoursList_selectedViewType.value === 'Month') {
+    handleAddShift(staffId, columnValue);
   }
 };
 </script>
@@ -108,29 +111,32 @@ const handleAddShift = (staffId: number, columnValue: string) => {
             <!-- Week view: Navigation arrows with date range -->
             <template v-if="workingHoursList_selectedViewType === 'Week'">
               <div class="flex items-center gap-2">
-                <button
-                  type="button"
-                  class="p-2 rounded hover:bg-gray-100 transition-colors"
-                  @click="workingHoursList_onNavigatePrevious"
+                <div
+                  class="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md bg-white min-w-44 h-10"
                 >
-                  <svg width="16" height="16" fill="currentColor" class="text-gray-600">
-                    <path d="M10 3l-5 5 5 5 1.4-1.4L7.8 8l3.6-3.6L10 3z" />
-                  </svg>
-                </button>
+                  <PrimeVueButton
+                    class="bg-white border-none shadow-xs hover:bg-grayscale-10/50 basic-smooth-animation rounded-lg p-2"
+                    @click="workingHoursList_onNavigatePrevious"
+                  >
+                    <AppBaseSvg name="chevron-left" class="w-3 h-3" />
+                  </PrimeVueButton>
 
-                <span class="text-sm font-medium text-gray-700 min-w-0 px-2">
-                  {{ workingHoursList_getWeekDateRange }}
-                </span>
-
-                <button
-                  type="button"
-                  class="p-2 rounded hover:bg-gray-100 transition-colors"
-                  @click="workingHoursList_onNavigateNext"
-                >
-                  <svg width="16" height="16" fill="currentColor" class="text-gray-600">
-                    <path d="M6 3L4.6 4.4 8.2 8l-3.6 3.6L6 13l5-5-5-5z" />
+                  <svg width="16" height="16" fill="currentColor" class="text-gray-400 flex-shrink-0">
+                    <path
+                      d="M4 2v2H3a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1V5a1 1 0 00-1-1h-1V2a1 1 0 10-2 0v2H6V2a1 1 0 10-2 0zM4 7h8v7H4V7z"
+                    />
                   </svg>
-                </button>
+                  <span class="text-sm text-gray-700 font-medium whitespace-nowrap">
+                    {{ workingHoursList_getWeekDateRange }}
+                  </span>
+
+                  <PrimeVueButton
+                    class="bg-white border-none shadow-xs hover:bg-grayscale-10/50 basic-smooth-animation rounded-lg p-2"
+                    @click="workingHoursList_onNavigateNext"
+                  >
+                    <AppBaseSvg name="chevron-right" class="w-3 h-3" />
+                  </PrimeVueButton>
+                </div>
               </div>
             </template>
 
@@ -181,7 +187,7 @@ const handleAddShift = (staffId: number, columnValue: string) => {
 
               <PrimeVueButton variant="text" rounded aria-label="detail">
                 <template #icon>
-                  <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
+                  <AppBaseSvg name="three-dots" class="w-5 h-5" />
                 </template>
               </PrimeVueButton>
             </div>
@@ -189,22 +195,32 @@ const handleAddShift = (staffId: number, columnValue: string) => {
 
           <template v-else-if="workingHoursList_selectedViewType === 'Week'">
             <!-- Week view: Show time slots and Add Shift button -->
-            <div class="flex flex-col gap-1 p-2">
-              <template v-if="data[column.value]">
+            <div
+              class="flex flex-col items-center justify-center gap-1 p-2 min-h-[60px]"
+              :class="!data[column.value] || data[column.value].trim() === '' ? 'bg-background' : ''"
+            >
+              <template v-if="data[column.value] && data[column.value].trim() !== ''">
                 <!-- Show existing shifts -->
-                <div class="text-xs text-gray-600 whitespace-pre-line">
+                <div class="text-sm text-text-disabled">
                   {{ data[column.value] }}
                 </div>
               </template>
 
-              <!-- Add Shift button -->
-              <button
-                class="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 font-medium"
-                @click="handleAddShift(data.id, column.value)"
-              >
-                <span class="text-lg leading-none">+</span>
-                <span>Add Shift</span>
-              </button>
+              <template v-else>
+                <PrimeVueButton
+                  class="border-none basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
+                  severity="secondary"
+                  variant="outlined"
+                  @click="handleAddShift(data.id, column.value)"
+                >
+                  <template #default>
+                    <section id="content" class="flex items-center gap-2">
+                      <AppBaseSvg name="plus-line" class="w-4 h-4" />
+                      <span class="font-semibold text-xs text-primary">Add Shift</span>
+                    </section>
+                  </template>
+                </PrimeVueButton>
+              </template>
             </div>
           </template>
 
@@ -213,19 +229,26 @@ const handleAddShift = (staffId: number, columnValue: string) => {
             <div class="flex justify-center">
               <span
                 v-if="data[column.value] === 'Present'"
-                class="w-6 h-6 bg-blue-500 rounded flex items-center justify-center"
+                class="w-10 h-10 bg-blue-500 rounded flex items-center justify-center"
               >
-                <AppBaseSvg name="check" class="w-4 h-4 text-white" />
+                <AppBaseSvg name="check" class="w-6 h-6 text-white" />
               </span>
-              <span
+              <button
                 v-else-if="data[column.value] === 'Absent'"
-                class="w-6 h-6 bg-gray-200 rounded flex items-center justify-center"
+                class="w-10 h-10 bg-gray-200 rounded flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer"
+                title="Click to add working hours"
+                @click="handleAbsentClick(data.id, column.value)"
               >
-                <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
-              </span>
-              <span v-else class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center">
+                <span class="w-4 h-4 bg-gray-400 rounded-full"></span>
+              </button>
+              <button
+                v-else
+                class="w-10 h-10 bg-gray-100 rounded flex items-center justify-center hover:bg-gray-200 transition-colors cursor-pointer"
+                title="Click to add working hours"
+                @click="handleAbsentClick(1, column.value)"
+              >
                 <span class="text-xs text-gray-400">-</span>
-              </span>
+              </button>
             </div>
           </template>
         </template>

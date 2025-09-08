@@ -48,9 +48,19 @@ const routes: RouteRecordRaw[] = [
         name: 'self-order',
         component: () => import('../views/CashierUI.vue'),
         meta: {
-          requiresAuthorization: true,
+          requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.NAVBAR,
           title: 'Self Order',
+        },
+      },
+      {
+        path: 'not-valid',
+        name: 'self-order.not-valid',
+        component: () => import('../views/self-order/SelfOrderNotValid.vue'),
+        meta: {
+          requiresAuthorization: false,
+          layout: LAYOUT_OPTIONS.EMPTY,
+          title: 'Self Order Not Valid',
         },
       },
       {

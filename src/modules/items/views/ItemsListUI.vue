@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useInventoryItemsListService } from '../services/items-list.service';
 import { IInventoryItems } from '../interfaces';
+import InventoryItemImportModal from '../components/InventoryItemImportModal.vue';
 
 const popover = ref();
 const selectedData = ref<IInventoryItems | null>(null);
@@ -22,11 +23,15 @@ const {
   inventoryItems_onEdit,
   inventoryItems_onDelete,
   inventoryItem_onAdjustment,
+  inventoryItem_onImport
 } = useInventoryItemsListService();
+
+const rbac = useRbac();
 </script>
 
+
 <template>
-  <section id="inventory-items-list-ui" class="flex flex-col relative inset-0 z-0">
+  <section id="inventory-items-list-ui" class="flex flex-col">
     <AppBaseDataTable
       :columns="inventoryItems_colums"
       :data="inventoryItems_values.data.items"
@@ -47,24 +52,40 @@ const {
     >
       <!-- Header Suffix -->
       <template #header-suffix>
-        <div class="flex items-center space-x-2">
-          <PrimeVueIconField>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2 gap-2 w-full">
+          <!-- Search -->
+          <PrimeVueIconField class="w-full sm:w-auto">
             <PrimeVueInputIcon>
               <i class="pi pi-search text-gray-400"></i>
             </PrimeVueInputIcon>
             <PrimeVueInputText
               v-model="inventoryItems_queryParams.search"
               placeholder="Search items..."
-              class="w-80 h-10 pl-10 pr-4 border border-gray-300 rounded-md"
+              class="w-full sm:w-64 md:w-80 h-10 pl-10 pr-4 border border-gray-300 rounded-md"
             />
           </PrimeVueIconField>
-          <PrimeVueButton
-            class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"
-            @click="inventoryItems_onCreate"
-          >
-            <i class="pi pi-plus text-sm"></i>
-            Create Item
-          </PrimeVueButton>
+
+          <!-- Action Buttons -->
+          <div class="flex justify-between w-full sm:w-auto gap-2">
+            <!-- Create -->
+            <PrimeVueButton
+              class="bg-white hover:bg-gray-100 text-primary px-4 py-2 h-10 rounded-md flex items-center gap-2 w-[48%] sm:w-auto"
+              @click="inventoryItem_onImport"
+            >
+              <i class="pi pi-upload text-sm"></i>
+
+              Import Item
+            </PrimeVueButton>
+
+            <!-- Import -->
+            <PrimeVueButton
+              class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2 w-[48%] sm:w-auto"
+              @click="inventoryItems_onCreate"
+            >
+              <i class="pi pi-plus text-sm"></i>
+              Create Item
+            </PrimeVueButton>
+          </div>
         </div>
       </template>
 
@@ -98,17 +119,17 @@ const {
 
           <!-- Item Name -->
           <template v-else-if="column.value === 'name'">
-            <span class="text-gray-700">{{ data.name || '-' }}</span>
+            <span class="text-gray-700">{{ data.itemName || '-' }}</span>
           </template>
 
           <!-- Category -->
           <template v-else-if="column.value === 'categoryName'">
-            <span class="text-gray-700">{{ data.categoryId || '-' }}</span>
+            <span class="text-gray-700">{{ data.category || '-' }}</span>
           </template>
 
           <!-- Brand -->
           <template v-else-if="column.value === 'brandName'">
-            <span class="text-gray-700">{{ data.brandId || '-' }}</span>
+            <span class="text-gray-700">{{ data.brand || '-' }}</span>
           </template>
 
           <!-- Unit -->
@@ -163,7 +184,7 @@ const {
           <template v-else-if="column.value === 'action'">
             <PrimeVueButton variant="text" rounded aria-label="Actions" @click="openActionsMenu($event, data)">
               <template #icon>
-                <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
+                <AppBaseSvg name="three-dots" class="!w-5 !h-5"  />
               </template>
             </PrimeVueButton>
 
@@ -182,6 +203,7 @@ const {
                 </PrimeVueButton>
 
                 <PrimeVueButton
+                  v-if="rbac.hasPermission('stock_adjustment')"
                   class="w-full px-4 py-3"
                   variant="text"
                   @click="inventoryItem_onAdjustment(selectedData.id)"
@@ -210,5 +232,6 @@ const {
       </template>
     </AppBaseDataTable>
   </section>
+  <InventoryItemImportModal />
   <AppBaseDialogConfirmation id="inventory-items-dialog-confirmation" />
 </template>

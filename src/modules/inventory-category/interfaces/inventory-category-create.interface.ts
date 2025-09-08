@@ -3,6 +3,7 @@ import { IInventoryCategoryCreateUpdatePayload } from ".";
 
 export interface IInventoryCategoryFormData {
   name: string;
+  code: string ;
   notes: string;
 }
 

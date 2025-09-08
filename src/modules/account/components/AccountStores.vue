@@ -5,7 +5,7 @@ import type { IAccountProvided } from '../interfaces';
 /**
  * @description Inject all the data and methods what we need
  */
-const { account_isLoadingOfOutlet, account_listColumns, account_onDirectToDetailOutlet, account_profile } =
+const { account_isLoadingOfOutlet, account_listColumns, account_listStores, account_onDirectToDetailOutlet } =
   inject<IAccountProvided>('account')!;
 </script>
 
@@ -13,14 +13,16 @@ const { account_isLoadingOfOutlet, account_listColumns, account_onDirectToDetail
   <AppBaseDataTable
     btn-cta-create-title="Create Store"
     :columns="account_listColumns"
-    :data="account_profile?.stores"
+    :data="account_listStores.items"
     :is-loading="account_isLoadingOfOutlet"
+    :rows-per-page="account_listStores.meta.pageSize || 10"
+    :total-records="account_listStores.meta.total || 0"
+    :first="account_listStores.meta ? (account_listStores.meta.page - 1) * account_listStores.meta.pageSize : 0"
     header-title="Stores"
     is-using-btn-cta-create
     is-using-custom-body
     is-using-custom-header
     :is-using-border-on-header="false"
-    :is-using-pagination="false"
   >
     <template #header>
       <header class="flex items-center justify-between py-5">
@@ -35,9 +37,9 @@ const { account_isLoadingOfOutlet, account_listColumns, account_onDirectToDetail
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="plus-line-white" />
+              <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
 
-              <span class="font-semibold text-base text-white">
+              <span class="font-semibold text-sm lg:text-base text-white">
                 {{ useLocalization('app.create-store') }}
               </span>
             </section>

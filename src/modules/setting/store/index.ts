@@ -4,6 +4,7 @@ import {
   SETTING_CHARGES_UPSERT_ENDPOINT,
   SETTING_INVOICE_BASE_ENDPOINT,
   SETTING_PAYMENT_METHOD_ENDPOINT,
+  SETTING_ROUNDING_BASE_ENDPOINT,
 } from '../constants/setting-api.constant';
 
 // Interfaces
@@ -238,6 +239,60 @@ export const useSettingStore = defineStore('pos-setting', {
       try {
         const response = await httpClient.put<unknown>(SETTING_PAYMENT_METHOD_ENDPOINT, payload, {
           params: { id },
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.setting_isLoading = false;
+      }
+    },
+    /**
+     * @description Handle fetch api pos setting - get rounding setting
+     * @url /rounding/setting
+     * @method GET
+     * @access private
+     */
+    async fetchSetting_getRoundingSetting(requestConfigurations: AxiosRequestConfig = {}): Promise<unknown> {
+      this.setting_isLoading = true;
+
+      try {
+        const response = await httpClient.get<unknown>(SETTING_ROUNDING_BASE_ENDPOINT, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.setting_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api pos setting - update rounding setting
+     * @url /rounding/setting
+     * @method PUT
+     * @access private
+     */
+    async fetchSetting_updateRoundingSetting(
+      payload: unknown,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.setting_isLoading = true;
+
+      try {
+        const response = await httpClient.post<unknown>(SETTING_ROUNDING_BASE_ENDPOINT, payload, {
           ...requestConfigurations,
         });
 

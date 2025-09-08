@@ -9,6 +9,11 @@ export const CASHIER_ORDER_TYPE = [
     label: 'Take Away',
     available: true,
   },
+  {
+    code: 'self_order',
+    label: 'Self Order',
+    available: true,
+  },
 ];
 
 export const CASHIER_PROVIDER = 'midtrans';

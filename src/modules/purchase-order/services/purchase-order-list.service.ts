@@ -55,20 +55,13 @@ export const usePurchaseOrderListService = (): IPurchaseOrderListProvided => {
     reason: '',
   });
   const purchaseOrderList_formDataOfConfirm = ref<IPurchaseOrderConfirmPayload>({
-    delivery_date: '',
+    delivery_date: null,
   });
   const purchaseOrderList_selectedId = ref<string>('');
 
   /**
    * @description Form validations
    */
-  const purchaseOrderList_formRulesOfCancel = computed(() => ({
-    reason: { required },
-  }));
-  const purchaseOrderList_formValidationsOfCancel = useVuelidate(
-    purchaseOrderList_formRulesOfCancel,
-    purchaseOrderList_formDataOfCancel,
-  );
   const purchaseOrderList_formRulesOfConfirm = computed(() => ({
     delivery_date: { required },
   }));
@@ -277,15 +270,38 @@ export const usePurchaseOrderListService = (): IPurchaseOrderListProvided => {
   const purchaseOrderList_onShowDialogCancel = (id: string): void => {
     purchaseOrderList_selectedId.value = id;
 
-    const argsEventEmitter: IPropsDialog = {
+    // Reset form data
+    purchaseOrderList_formDataOfCancel.value.reason = '';
+
+    const argsEventEmitter: IPropsDialogConfirmation = {
       id: 'purchase-order-list-cancel-dialog',
-      isUsingClosableButton: false,
-      isUsingBackdrop: true,
+      iconName: 'exclude',
+      title: 'Are you sure want to cancel this purchase order?',
+      description:
+        'This action cannot be undone, and any pending shipments related to this order will be cancelled.',
+      type: 'error',
       isOpen: true,
-      width: '414px',
+      isUsingButtonSecondary: true,
+      isUsingForm: true,
+      textButtonPrimary: 'Cancel',
+      textButtonSecondary: 'Cancel PO',
+      width: '460px',
+      formData: purchaseOrderList_formDataOfCancel.value,
+      formFields: [
+        {
+          key: 'reason',
+          label: 'Reason (optional)',
+          type: 'textarea',
+          placeholder: 'Enter cancellation reason...',
+          required: false,
+          rows: 3,
+        },
+      ],
+      onClickButtonPrimary: purchaseOrderList_onCloseDialogCancel,
+      onClickButtonSecondary: purchaseOrderList_onSubmitCancel,
     };
 
-    eventBus.emit('AppBaseDialog', argsEventEmitter);
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
   };
 
   /**
@@ -294,31 +310,61 @@ export const usePurchaseOrderListService = (): IPurchaseOrderListProvided => {
   const purchaseOrderList_onShowDialogConfirm = (id: string): void => {
     purchaseOrderList_selectedId.value = id;
 
-    const argsEventEmitter: IPropsDialog = {
+    // Reset form data
+    purchaseOrderList_formDataOfConfirm.value.delivery_date = null;
+
+    const argsEventEmitter: IPropsDialogConfirmation = {
       id: 'purchase-order-list-confirm-dialog',
-      isUsingClosableButton: false,
-      isUsingBackdrop: true,
+      iconName: 'info',
+      title: 'Confirm Purchase Order',
+      description: 'Please provide the delivery date to confirm this purchase order.',
+      type: 'info',
       isOpen: true,
-      width: '414px',
+      isUsingButtonSecondary: true,
+      isUsingForm: true,
+      textButtonPrimary: 'Confirm Order',
+      textButtonSecondary: 'Cancel',
+      width: '460px',
+      formData: purchaseOrderList_formDataOfConfirm.value,
+      formFields: [
+        {
+          key: 'delivery_date',
+          label: 'Delivery Date',
+          type: 'date',
+          placeholder: 'Select delivery date',
+          required: true,
+        },
+      ],
+      formValidations: {
+        delivery_date: purchaseOrderList_formValidationsOfConfirm.value.delivery_date,
+      },
+      onClickButtonPrimary: purchaseOrderList_onSubmitConfirm,
+      onClickButtonSecondary: () => {
+        const closeEventEmitter: IPropsDialogConfirmation = {
+          id: 'purchase-order-list-confirm-dialog',
+          isOpen: false,
+        };
+        eventBus.emit('AppBaseDialogConfirmation', closeEventEmitter);
+      },
     };
 
-    eventBus.emit('AppBaseDialog', argsEventEmitter);
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
   };
 
   /**
    * @description Handle business logic for submitting cancel form
    */
   const purchaseOrderList_onSubmitCancel = async (): Promise<void> => {
-    purchaseOrderList_formValidationsOfCancel.value.$touch();
-
-    if (purchaseOrderList_formValidationsOfCancel.value.$invalid) {
-      return;
-    }
-
     try {
       await purchaseOrderList_fetchCancel();
       await purchaseOrderList_fetchList();
-      purchaseOrderList_onCloseDialogCancel();
+
+      // Close the dialog
+      const closeEventEmitter: IPropsDialogConfirmation = {
+        id: 'purchase-order-list-cancel-dialog',
+        isOpen: false,
+      };
+      eventBus.emit('AppBaseDialogConfirmation', closeEventEmitter);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error('Error cancelling purchase order:', error);
@@ -341,7 +387,13 @@ export const usePurchaseOrderListService = (): IPurchaseOrderListProvided => {
     try {
       await purchaseOrderList_fetchConfirm();
       await purchaseOrderList_fetchList();
-      purchaseOrderList_onCloseDialogConfirm();
+
+      // Close the dialog
+      const closeEventEmitter: IPropsDialogConfirmation = {
+        id: 'purchase-order-list-confirm-dialog',
+        isOpen: false,
+      };
+      eventBus.emit('AppBaseDialogConfirmation', closeEventEmitter);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error('Error confirming purchase order:', error);
@@ -421,7 +473,7 @@ export const usePurchaseOrderListService = (): IPurchaseOrderListProvided => {
    */
   const purchaseOrderList_getClassOfStatus = (status: string): string => {
     switch (status.toUpperCase()) {
-      case 'CANCELED':
+      case 'CANCELLED':
         return 'bg-error-background text-error-main';
       case 'CONFIRMED':
         return 'bg-secondary-background text-green-primary';
@@ -442,7 +494,7 @@ export const usePurchaseOrderListService = (): IPurchaseOrderListProvided => {
    * @description Handle business logic to show button cancel PO
    */
   const purchaseOrderList_onShowButtonCancelPO = (status: string): boolean => {
-    const listAcceptedStatuses = ['CONFIRMED', 'PENDING', 'SHIPPED', 'PAID'];
+    const listAcceptedStatuses = ['CONFIRMED', 'PENDING', 'SHIPPED'];
 
     if (listAcceptedStatuses.includes(status.toUpperCase())) {
       return true;
@@ -455,7 +507,7 @@ export const usePurchaseOrderListService = (): IPurchaseOrderListProvided => {
    * @description Handle business logic to show button Delivery Order Document
    */
   const purchaseOrderList_onShowButtonDeliveryOrderDocument = (status: string): boolean => {
-    const listAcceptedStatuses = ['SHIPPED'];
+    const listAcceptedStatuses = ['CONFIRMED', 'PENDING', 'SHIPPED', 'PAID'];
 
     if (listAcceptedStatuses.includes(status.toUpperCase())) {
       return true;
@@ -469,7 +521,6 @@ export const usePurchaseOrderListService = (): IPurchaseOrderListProvided => {
     purchaseOrderList_fetchList,
     purchaseOrderList_formDataOfCancel,
     purchaseOrderList_formDataOfConfirm,
-    purchaseOrderList_formValidationsOfCancel,
     purchaseOrderList_formValidationsOfConfirm,
     purchaseOrderList_getClassOfStatus,
     purchaseOrderList_handleOnSortChange,

@@ -15,7 +15,7 @@ export interface IInventoryCategoryListProvided {
   inventoryCategoryList_isLoading: globalThis.Ref<boolean>;
   inventoryCategoryList_onChangePage: (page: number) => void;
   inventoryCategoryList_handleOnSortChange: (event: DataTableSortEvent) => void
-inventoryCategoryList_handleOnSearch: (searchTerm: string) => void;
+  inventoryCategoryList_handleOnSearch: (searchTerm: string) => void;
   inventoryCategoryList_queryParams: IInventoryCategoryListRequestQuery;
   inventoryCategoryList_values: globalThis.Ref<IInventoryCategoryListResponse>;
   inventoryCategoryList_onCreateCategory: () => void;
@@ -23,4 +23,5 @@ inventoryCategoryList_handleOnSearch: (searchTerm: string) => void;
   inventoryCategoryList_onDeleteCategory: (categoryId: string) => void;
   inventoryCategoryFormMode: globalThis.Ref<'create' | 'edit'>;
   inventoryCategoryList_editingItem: globalThis.Ref<IInventoryCategory | null>;
+  inventoryCategoryList_onImport: () => void
 }

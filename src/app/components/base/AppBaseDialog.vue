@@ -4,6 +4,9 @@ import eventBus from '@/plugins/mitt';
 
 // Interfaces
 interface IProps {
+  customBodyClass: string;
+  customHeaderClass: string;
+  customFooterClass: string;
   id: string; // Unique identifier for this dialog instance
   isDraggable?: boolean;
   isUsingBackdrop?: boolean;
@@ -13,6 +16,9 @@ interface IProps {
 }
 
 const props = withDefaults(defineProps<IProps>(), {
+  customBodyClass: 'p-6',
+  customFooterClass: 'p-6',
+  customHeaderClass: 'p-6',
   isDraggable: false,
   isUsingBackdrop: true,
   isUsingClosableButton: true,
@@ -22,6 +28,9 @@ const props = withDefaults(defineProps<IProps>(), {
 
 // Reactive dialog state
 const dialogProps = ref<IProps>({
+  customBodyClass: props.customBodyClass,
+  customHeaderClass: props.customHeaderClass,
+  customFooterClass: props.customFooterClass,
   id: props.id,
   isDraggable: props.isDraggable,
   isUsingBackdrop: props.isUsingBackdrop,
@@ -43,13 +52,19 @@ eventBus.on('AppBaseDialog', (params: unknown) => {
 </script>
 
 <template>
-  <PrimeVueDialog class="p-6" :closable="dialogProps.isUsingClosableButton" :draggable="dialogProps.isDraggable"
-    :dismissable-mask="false" :modal="dialogProps.isUsingBackdrop" :visible="dialogProps.isOpen"
-    :style="`width: ${dialogProps.width}`" :pt="{
-      content: 'px-0',
-      header: 'px-0 pt-0',
-      footer: 'p-0',
-    }">
+  <PrimeVueDialog
+    :closable="dialogProps.isUsingClosableButton"
+    :draggable="dialogProps.isDraggable"
+    :dismissable-mask="false"
+    :modal="dialogProps.isUsingBackdrop"
+    :visible="dialogProps.isOpen"
+    :style="`width: ${dialogProps.width}`"
+    :pt="{
+      content: dialogProps.customBodyClass,
+      header: dialogProps.customHeaderClass,
+      footer: dialogProps.customFooterClass,
+    }"
+  >
     <template #header>
       <slot name="header" />
     </template>

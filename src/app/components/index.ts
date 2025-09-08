@@ -9,6 +9,9 @@ import {
   AppLayoutSimpleNavbar,
 } from './layouts';
 
+// Base Components
+import AppInitializationLoader from './base/AppInitializationLoader.vue';
+
 /**
  * @description Register the components for make it globally available.
  *
@@ -21,4 +24,7 @@ export default (app: App): void => {
   app.component('AppLayoutOutlet', AppLayoutOutlet);
   app.component('AppLayoutNavbar', AppLayoutNavbar);
   app.component('AppLayoutSimpleNavbar', AppLayoutSimpleNavbar);
+
+  // Base Components
+  app.component('AppInitializationLoader', AppInitializationLoader);
 };

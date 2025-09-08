@@ -1,12 +1,5 @@
 export const LIST_ADDITIONAL_MENUS = [
   {
-    name: 'RBAC Demo',
-    iconName: 'gear',
-    path: '/rbac-demo',
-    isHaveSubMenus: false,
-    subMenus: [],
-  },
-  {
     name: 'Report',
     iconName: 'report-secondary',
     path: '/',
@@ -23,6 +16,18 @@ export const LIST_ADDITIONAL_MENUS = [
 ];
 
 export const LIST_SIDEBAR_MENUS = [
+  {
+    name: '',
+    menus: [
+      {
+        name: 'Dashboard',
+        iconName: 'dashboard',
+        path: '/dashboard',
+        isHaveSubMenus: false,
+        subMenus: [],
+      },
+    ],
+  },
   {
     name: 'Cashier',
     menus: [
@@ -66,7 +71,44 @@ export const LIST_SIDEBAR_MENUS = [
         iconName: 'report',
         path: '/report',
         isHaveSubMenus: false,
-        subMenus: [],
+        subMenus: [
+          {
+            name: 'Financial Report',
+            path: '/report/financial-report',
+          },
+          {
+            name: 'Loss Report',
+            path: '/report/loss-report',
+          },
+          {
+            name: 'Sales Report',
+            path: '/report/sales-report',
+          },
+          {
+            name: 'Inventory Report',
+            path: '/report/inventory-report',
+          },
+          {
+            name: 'Raw Material Report',
+            path: '/report/raw-material-report',
+          },
+          {
+            name: 'Voucher Report',
+            path: '/report/voucher-report',
+          },
+          {
+            name: 'Staff Report',
+            path: '/report/staff-report',
+          },
+          {
+            name: 'Customer Report',
+            path: '/report/customer-report',
+          },
+          {
+            name: 'Commision Report',
+            path: '/',
+          },
+        ],
       },
       {
         name: 'Catalog',
@@ -81,6 +123,10 @@ export const LIST_SIDEBAR_MENUS = [
           {
             name: 'Products',
             path: '/catalog/products',
+          },
+          {
+            name: 'Product Bundling',
+            path: '/catalog/product-bundling',
           },
         ],
       },
@@ -97,17 +143,10 @@ export const LIST_SIDEBAR_MENUS = [
     name: 'Operations',
     menus: [
       {
-        name: 'Store',
-        iconName: 'store',
-        path: '/store',
-        isHaveSubMenus: false,
-        subMenus: [],
-      },
-      {
         name: 'Inventory',
         iconName: 'inventory',
         path: '/inventory',
-        isHaveSubMenus: false,
+        isHaveSubMenus: true,
         subMenus: [
           {
             name: 'Master Item',
@@ -126,9 +165,13 @@ export const LIST_SIDEBAR_MENUS = [
             path: '/inventory-category',
           },
           {
-            name: 'Storage Location',
-            path: '/storage-location',
+            name: 'Stock Opname',
+            path: '/stock-opname',
           },
+          // {
+          //   name: 'Storage Location',
+          //   path: '/storage-location',
+          // },
         ],
       },
       {
@@ -141,14 +184,9 @@ export const LIST_SIDEBAR_MENUS = [
       {
         name: 'Marketing',
         iconName: 'marketing',
-        path: '/marketing',
-        isHaveSubMenus: true,
-        subMenus: [
-          {
-            name: 'Master Voucher',
-            path: '/voucher',
-          },
-        ],
+        path: '/voucher',
+        isHaveSubMenus: false,
+        subMenus: [],
       },
       {
         name: 'Staff',
@@ -162,15 +200,16 @@ export const LIST_SIDEBAR_MENUS = [
           },
           {
             name: 'Working Hours',
-            path: '/',
+            path: '/staff/working-hours',
           },
           {
             name: 'Attendance',
-            path: '/',
+            path: '/staff/attendance',
           },
+
           {
-            name: 'Commision Report',
-            path: '/',
+            name: 'User Permission',
+            path: '/user-permission',
           },
         ],
       },
@@ -194,7 +233,7 @@ export const LIST_SIDEBAR_MENUS = [
         subMenus: [
           {
             name: 'Device',
-            path: '/pos-setting/device',
+            path: '/pos-setting/connected-device',
           },
           {
             name: 'Payment Method',
@@ -206,16 +245,16 @@ export const LIST_SIDEBAR_MENUS = [
           },
           {
             name: 'Rounding',
-            path: '/',
+            path: '/pos-setting/rounding',
           },
           {
             name: 'Tax & Service Charge',
             path: '/pos-setting/tax-service',
           },
-          {
-            name: 'Notification',
-            path: '/',
-          },
+          // {
+          //   name: 'Notification',
+          //   path: '/',
+          // },
           {
             name: 'Invoice',
             path: '/pos-setting/invoice',

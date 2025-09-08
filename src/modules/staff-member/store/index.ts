@@ -1,5 +1,5 @@
 // Constants
-import { STAFF_MEMBER_BASE_ENDPOINT } from '../constants';
+import { STAFF_MEMBER_BASE_ENDPOINT, STAFF_MEMBER_PERMISSION_ENDPOINT } from '../constants';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
@@ -12,6 +12,7 @@ import type {
 
 // Plugins
 import httpClient from '@/plugins/axios';
+import { IRoleListQueryParams, IRoleListResponse } from '@/modules/role/interfaces/role-list.interface';
 
 export const useStaffMemberStore = defineStore('staff-member', {
   state: (): IStaffMemberStore => ({
@@ -30,6 +31,8 @@ export const useStaffMemberStore = defineStore('staff-member', {
           title: null,
           employeesHasSocialMedia: [],
           employeesShift: [],
+          productCommissions: [],
+          voucherCommissions: [],
         },
       ],
       meta: {
@@ -234,6 +237,24 @@ export const useStaffMemberStore = defineStore('staff-member', {
         }
       } finally {
         this.staffMember_isLoading = false;
+      }
+    },
+    async staffMember_getPermissions(
+      params: IRoleListQueryParams,
+      requestConfigurations: AxiosRequestConfig
+    ): Promise<IRoleListResponse> {
+      try {
+        const response = await httpClient.get<IRoleListResponse>(STAFF_MEMBER_PERMISSION_ENDPOINT, {
+          params,
+          ...requestConfigurations,
+        });
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
       }
     },
   },

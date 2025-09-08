@@ -6,7 +6,6 @@ import { useProductService } from '../services/catalog-product.service';
 import CategoryPill from '@/modules/catalog/components/Category/CategoryPill.vue';
 import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
 import deleteSVG from '@/app/assets/icons/delete.svg';
-import editSVG from '@/app/assets/icons/edit.svg';
 import plusLineWhiteSVG from '@/app/assets/icons/plus-line-white.svg';
 import threeDotsSVG from '@/app/assets/icons/three-dots.svg';
 import searchSVG from '@/app/assets/icons/search.svg';
@@ -158,11 +157,11 @@ const handleSearch = () => {
   }
 };
 
-watch(search, () =>{
+watch(search, () => {
   setTimeout(() => {
     handleSearch();
   }, 500);
-})
+});
 
 function goToPage(p) {
   router.push({ query: { page: p.toString() } });
@@ -212,10 +211,17 @@ onMounted(() => {
     router.push({ query: { page: '1' } });
   }
 });
+
+import { useRbac } from '@/app/composables/useRbac';
+import ProductImportModal from '../components/ProductImportModal.vue';
+import eventBus from '@/plugins/mitt';
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('product_management');
+// v-if="hasPermission"
 </script>
 
 <template>
-  <div class="p-1 border border-gray-200 rounded-lg shadow-2xl">
+  <div>
     <div>
       <PrimeVueDataTable
         v-model:selection="selectedProducts"
@@ -223,6 +229,9 @@ onMounted(() => {
         :rows="limit"
         data-key="ID"
         paginator
+        :pt="{
+          root: 'rounded-sm border border-solid border-grayscale-20',
+        }"
         @page="onPageChange"
       >
         <template #header>
@@ -257,7 +266,27 @@ onMounted(() => {
                 </PrimeVueIconField>
               </form>
 
-              <router-link to="/catalog/products/add-product">
+              <PrimeVueButton
+                v-if="hasPermission"
+                class="bg-white hover:bg-gray-100 border border-primary text-primary px-4 py-2 h-10 rounded-md flex items-center gap-2"
+                @click="
+                  () => {
+                    const argsEventEmitter = {
+                      id: 'product-import-modal',
+                      isUsingClosableButton: false,
+                      isUsingBackdrop: true,
+                      isOpen: true,
+                      width: '600px',
+                    };
+                    eventBus.emit('AppBaseDialog', argsEventEmitter);
+                  }
+                "
+              >
+                <i class="pi pi-upload text-sm"></i>
+                Import Product
+              </PrimeVueButton>
+
+              <router-link v-if="hasPermission" to="/catalog/products/add-product">
                 <PrimeVueButton
                   type="button"
                   severity="info"
@@ -330,7 +359,7 @@ onMounted(() => {
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn>
+        <PrimeVueColumn v-if="hasPermission">
           <template #body="slotProps">
             <PrimeVueButton
               type="text"
@@ -348,7 +377,6 @@ onMounted(() => {
           <div class="flex items-center gap-2 justify-between w-full py-2">
             <!-- Previous Page Button -->
             <PrimeVueButton
-              
               variant="text"
               :label="useLocalization('main.table.previous-page')"
               class="border border-primary text-primary hover:bg-transparent"
@@ -357,7 +385,7 @@ onMounted(() => {
               <template #icon>
                 <img :src="chevronLeftSVG" alt="" />
               </template>
-          </PrimeVueButton>
+            </PrimeVueButton>
 
             <div class="flex gap-1">
               <PrimeVueButton
@@ -383,21 +411,43 @@ onMounted(() => {
               <template #icon>
                 <img :src="chevronRightSVG" alt="" />
               </template>
-          </PrimeVueButton>
+            </PrimeVueButton>
           </div>
         </template>
       </PrimeVueDataTable>
 
-      <PrimeVuePopover ref="op">
+      <PrimeVuePopover
+        ref="op"
+        :pt="{
+          root: { class: 'z-[9999]' }, // ✅ This forces the popover to the top layer
+          content: 'p-0',
+        }"
+      >
         <div class="flex flex-col items-start">
-          <PrimeVueButton variant="text" :label="useLocalization('main.popover.edit')" class="text-black" @click="EditProducts">
-            <template #icon>
-              <img :src="editSVG" alt="" />
+          <PrimeVueButton
+            variant="text"
+            :label="useLocalization('main.popover.edit')"
+            class="text-black w-full px-4 py-3"
+            @click="EditProducts"
+          >
+            <template #default>
+              <section class="flex items-center gap-2 w-full">
+                <AppBaseSvg name="edit" class="!w-4 !h-4" />
+                <span class="font-normal text-text-primary">{{ useLocalization('main.popover.edit') }}</span>
+              </section>
             </template>
           </PrimeVueButton>
-          <PrimeVueButton variant="text" :label="useLocalization('main.popover.delete')" class="text-black" @click="isDeleteOpen = true">
-            <template #icon>
-              <img :src="deleteSVG" alt="" />
+          <PrimeVueButton
+            variant="text"
+            :label="useLocalization('main.popover.delete')"
+            class="text-red-500 w-full px-4 py-3"
+            @click="isDeleteOpen = true"
+          >
+            <template #default>
+              <section class="flex items-center gap-2 w-full">
+                <AppBaseSvg name="delete" class="!w-4 !h-4" />
+                <span class="font-normal text-red-500">{{ useLocalization('main.popover.delete') }}</span>
+              </section>
             </template>
           </PrimeVueButton>
         </div>
@@ -435,4 +485,5 @@ onMounted(() => {
       </PrimeVueDialog>
     </div>
   </div>
+  <ProductImportModal />
 </template>

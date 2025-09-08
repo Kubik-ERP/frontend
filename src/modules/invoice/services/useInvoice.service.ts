@@ -57,7 +57,10 @@ export const useInvoiceService = (): IInvoiceProvided => {
     invoice_modalPay.value.isLoading = true;
 
     try {
-      const response = await storeCashier.cashierProduct_fetchPaymentMethod(route.name === 'self-order-invoice');
+      const response = await storeCashier.cashierProduct_fetchPaymentMethod(
+        route.name === 'self-order-invoice',
+        route,
+      );
 
       invoice_modalPay.value.listPayment = response.data;
     } catch (error: unknown) {
@@ -253,7 +256,8 @@ export const useInvoiceService = (): IInvoiceProvided => {
       const response = await storeCashier.cashierProduct_calculateEstimation({
         products: mappedProducts || [],
         orderType: invoice_invoiceData.value.data?.orderType,
-      });
+        voucherId: invoice_invoiceData.value.data?.voucherId,
+      }, route);
 
       invoice_invoiceData.value.calculate = response.data;
     } catch (error: unknown) {
@@ -277,11 +281,16 @@ export const useInvoiceService = (): IInvoiceProvided => {
     invoice_invoiceData.value.isLoading = true;
 
     try {
-      const response = await store.invoice_fetchInvoiceById(invoiceId);
+      const response = await store.invoice_fetchInvoiceById(invoiceId, route);
 
       invoice_invoiceData.value.data = response.data;
 
-      await storeSetting.fetchSetting_detailInvoiceSetting(invoice_invoiceData.value.currentOutlet?.id || '', {});
+      if (route.name !== 'self-order-invoice') {
+        await storeSetting.fetchSetting_detailInvoiceSetting(
+          invoice_invoiceData.value.currentOutlet?.id || '',
+          {},
+        );
+      }
 
       invoice_invoiceData.value.configInvoice = setting_invoice.value;
 
@@ -329,7 +338,9 @@ export const useInvoiceService = (): IInvoiceProvided => {
     }
   };
 
-  invoice_handleFetchKitchenTableTicket(route.params.invoiceId as string);
+  if (route.name !== 'self-order-invoice') {
+    invoice_handleFetchKitchenTableTicket(route.params.invoiceId as string);
+  }
 
   const invoice_handlePayInvoice = async () => {
     invoice_modalPay.value.isLoading = true;
@@ -353,7 +364,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
         paymentAmount: invoice_invoiceData.value.form.paymentAmount,
       };
 
-      const response = await storeCashier.cashierProduct_paymentUnpaid(params);
+      const response = await storeCashier.cashierProduct_paymentUnpaid(params, route);
 
       invoice_modalPay.value.dataPayment = response.data;
 
@@ -387,7 +398,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
         order_id: invoiceId,
       };
 
-      await storeCashier.cashierProduct_simulatePayment(params);
+      await storeCashier.cashierProduct_simulatePayment(params, route);
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);

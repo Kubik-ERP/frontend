@@ -218,6 +218,7 @@ function handleExport() {
             <div class="flex flex-col items-center w-full px-6 py-5 gap-2">
               <section class="cash-register-actions flex items-end gap-6">
                 <PrimeVueButton
+                  v-rbac="{ permission: 'set_up_cash_drawer' }"
                   class="border border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
                   severity="secondary"
                   variant="outlined"
@@ -225,7 +226,7 @@ function handleExport() {
                 >
                   <template #default>
                     <section id="content" class="flex items-center gap-2">
-                      <AppBaseSvg name="plus-line" />
+                      <AppBaseSvg name="plus-line" class="w-4 h-4" />
                       <span class="font-semibold text-xs text-primary">Cash In</span>
                     </section>
                   </template>
@@ -250,6 +251,7 @@ function handleExport() {
                 </section>
 
                 <PrimeVueButton
+                  v-rbac="{ permission: 'set_up_cash_drawer' }"
                   class="border border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
                   severity="secondary"
                   variant="outlined"
@@ -257,7 +259,7 @@ function handleExport() {
                 >
                   <template #default>
                     <section class="cash-out-button flex items-center gap-2">
-                      <AppBaseSvg name="minus" />
+                      <AppBaseSvg name="minus" class="w-4 h-4" />
                       <span class="font-semibold text-xs text-primary">Cash Out</span>
                     </section>
                   </template>
@@ -265,6 +267,7 @@ function handleExport() {
               </section>
 
               <PrimeVueButton
+                v-rbac="{ permission: 'close_cash_register' }"
                 class="bg-error-main border-none w-fit px-4 py-2 rounded-lg basic-smooth-animation"
                 severity="secondary"
                 variant="outlined"
@@ -323,7 +326,7 @@ function handleExport() {
               >
                 <template #default>
                   <section id="content" class="flex items-center gap-2">
-                    <AppBaseSvg name="export" />
+                    <AppBaseSvg name="export" class="w-4 h-4" />
                     <span class="font-semibold text-sm text-primary">Export to PDF</span>
                   </section>
                 </template>

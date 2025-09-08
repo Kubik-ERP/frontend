@@ -1,11 +1,15 @@
+import { IInventoryItems } from "@/modules/items/interfaces";
+
 export interface ISupplierStateStore {
   supplier_isLoading: boolean;
   supplier_supplierLists: ISupplierListResponse;
+  supplier_itemLists: ISupplierItemListResponse;
   supplier_supplierDetail: ISupplierDetailResponse | null;
 }
 
 export interface ISupplierItem {
   id: string;
+  code: string;
   supplierName: string;
   contactPerson: string;
   phoneNumber: string;
@@ -33,12 +37,27 @@ export interface ISupplierListResponse {
   };
 }
 
+export interface ISupplierItemListResponse {
+  statusCode: number;
+  message: string;
+  data: {
+    items: IInventoryItems[];
+    meta: {
+      page: number;
+      pageSize: number;
+      total: number;
+      totalPages: number;
+    };
+  };
+}
+
 export interface ISupplierDetailResponse {
   data: ISupplierItem;
 }
 
 export interface ISupplierCreatePayload {
   supplierName: string;
+  code: string;
   contactPerson: string;
   phoneNumber: string;
   email: string;
@@ -51,6 +70,7 @@ export interface ISupplierCreatePayload {
 
 export interface ISupplierUpdatePayload {
   supplierName: string;
+  code: string;
   contactPerson: string;
   phoneNumber: string;
   email: string;

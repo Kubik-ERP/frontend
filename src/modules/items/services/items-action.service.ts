@@ -94,7 +94,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     async ([mode, item]) => {
       if (mode === 'edit' && item) {
         Object.assign(inventoryItemsAction_formData.value, {
-          name: item.name,
+          name: item.itemName,
           brandId: item.brandId,
           barcode: item.barcode,
           sku: item.sku,
@@ -139,7 +139,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
 
   const inventoryItems_formValidation = computed(() => ({
     name: { required: true },
-    brandId: { required: true },
+    brandId: { required: false },
     barcode: {},
     sku: { required: true },
     categoryId: { required: true },
@@ -149,7 +149,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     reorderLevel: { required: true },
     minimumStockQuantity: { required: true },
     expiryDate: {},
-    storageLocationId: { required: true },
+    storageLocationId: { required: false },
     supplierId: { required: true },
     pricePerUnit: { required: true },
   }));

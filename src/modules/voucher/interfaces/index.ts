@@ -12,7 +12,6 @@ export type IVoucher = {
   startPeriod: string;
   endPeriod: string;
   isPercent: boolean;
-  remainingQuota?: number;
   status: 'active' |  'expired' | 'upcoming'
   voucherHasProducts? : IVoucherHasProducts[]
   isApplyAllProducts: boolean,
@@ -30,16 +29,16 @@ type IVoucherHasProducts = {
 type IProductVoucher = {
   id: string;
   name: string;
-  category: IVoucherProductCategory[];
+  categoriesHasProducts: IProductCategory[] | [];
   price: number;
   discountPrice: number;
 }
 
-type IVoucherProductCategory ={
-  id: string,
-  name: string
+interface IProductCategory {
+  categories: {
+    category: string
+  }
 }
-
 
 export type IVoucherListResponse = {
   statusCode: number;

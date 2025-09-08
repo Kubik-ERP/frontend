@@ -37,8 +37,14 @@ provide('accountStoreDetail', {
   accountStoreDetail_storeTables,
 });
 
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
 onMounted(() => {
-  accountStoreDetail_fetchOutletStoreTable();
+  if (route.name !== 'self-order') {
+    accountStoreDetail_fetchOutletStoreTable();
+  }
 });
 
 /**
@@ -125,9 +131,9 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
                     !cashierOrderSummary_getListActiveFloor.length,
                 }"
               >
-                <template v-if="accountStoreDetail_storeTables?.items?.length">
+                <template v-if="accountStoreDetail_storeTables?.length">
                   <section
-                    v-for="(storeTable, storeTableIndex) in accountStoreDetail_storeTables.items.filter(
+                    v-for="(storeTable, storeTableIndex) in accountStoreDetail_storeTables.filter(
                       (f: IOutletTable) => {
                         return f.floorName === accountStoreDetail_selectedFloor;
                       },
@@ -154,7 +160,7 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
               }}</span>
 
               <template
-                v-for="(item, key) in accountStoreDetail_storeTables?.items?.filter((f: IOutletTable) => {
+                v-for="(item, key) in accountStoreDetail_storeTables?.filter((f: IOutletTable) => {
                   return f.floorName === accountStoreDetail_selectedFloor;
                 })"
                 :key="key"
@@ -204,7 +210,7 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
                 id="alert-table-will-merge"
                 class="flex gap-2 bg-secondary p-2 rounded-xl drop-shadow-lg drop-shadow-secondary/60"
               >
-                <AppBaseSvg name="info-secondary" class="mt-1" />
+                <AppBaseSvg name="info-secondary" class="mt-1 h-4 w-4" />
                 <div class="flex flex-col">
                   <span class="font-semibold text-secondary-hover">Table will be merged</span>
                   <span class="text-secondary-hover text-xs">Selected tables will be merged as one order</span>

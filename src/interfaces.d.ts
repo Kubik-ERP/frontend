@@ -115,6 +115,44 @@ declare global {
     limit: number;
   }
 
+  export type TPermissions =
+    | 'access_all_store'
+    | 'store_management'
+    | 'dashboard_view'
+    | 'reports'
+    | 'accounts'
+    | 'connected_device_configuration'
+    | 'payment_method_configuration'
+    | 'general_loyalty_point_configuration'
+    | 'tax_and_service_charge_configuration'
+    | 'invoice_templates'
+    | 'product_category'
+    | 'product_management'
+    | 'set_up_cash_drawer'
+    | 'close_cash_register'
+    | 'daily_sales'
+    | 'queue'
+    | 'check_out_sales'
+    | 'cancel_invoice'
+    | 'refund_invoice'
+    | 'process_unpaid_invoice'
+    | 'voucher'
+    | 'cash_in_out'
+    | 'customer_management'
+    | 'view_customer_profile'
+    | 'management_customer_loyalty_point'
+    | 'supplier_management'
+    | 'view_supplier_details'
+    | 'category_management'
+    | 'manage_item'
+    | 'stock_adjustment'
+    | 'manage_brand'
+    | 'manage_stock_opname'
+    | 'manage_storage_location'
+    | 'manage_purchase_order'
+    | 'manage_staff_member'
+    | 'manage_staff_attendance';
+
   interface IPropsDialog {
     id: string;
     isDraggable?: boolean;
@@ -141,6 +179,24 @@ declare global {
     title?: string;
     type?: 'error' | 'info';
     width?: string;
+    secondaryIcon?: string;
+    // Enhanced form support
+    isUsingForm?: boolean;
+    formData?: Record<string, unknown>;
+    formFields?: IDialogFormField[];
+    formValidations?: Record<string, unknown>;
+  }
+
+  interface IDialogFormField {
+    key: string;
+    label: string;
+    type: 'text' | 'textarea' | 'select' | 'number' | 'email' | 'password' | 'date';
+    placeholder?: string;
+    required?: boolean;
+    options?: IDropdownItem[]; // For select type
+    rows?: number; // For textarea type
+    disabled?: boolean;
+    validator?: unknown; // Vuelidate validator
   }
 
   interface IPropsDialogPinVerification {

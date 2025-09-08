@@ -11,7 +11,9 @@ import { useCashierStore } from '../store';
 
 // Vue
 import { ref } from 'vue';
-import { ICashierCategory, ICashierProduct } from '../interfaces/cashier-response';
+
+import { useRoute } from 'vue-router';
+import { IProductItem } from '../interfaces/cashier-response';
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -21,6 +23,8 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @description Injected variables
    */
   const store = useCashierStore();
+
+  const route = useRoute();
 
   const { cashierProduct_selectedProduct } = storeToRefs(store);
 
@@ -59,53 +63,15 @@ export const useCashierProductService = (): ICashierProductProvided => {
   });
 
   /**
-   * @description Handle fetch api cashier search. We call the fetchCashierSearch function from the store to handle the request.
-   */
-  const cashierProduct_onSearchData = async (searchData: string) => {
-    cashierProduct_productState.value.isLoadingProduct = true;
-    try {
-      const response = await store.cashierProduct_fetchSearch(searchData);
-
-      cashierProduct_productState.value.listProductSearch = response;
-    } catch (error) {
-      console.error(error);
-    } finally {
-      cashierProduct_productState.value.isLoadingProduct = false;
-    }
-  };
-
-  /**
-   * @description debounce function to handle search data
-   */
-  const debouncedSearch = debounce(val => cashierProduct_onSearchData(val), 500);
-
-  /**
-   * @description watch search data changes
-   */
-  watch(
-    () => cashierProduct_productState.value.searchProduct,
-    newValue => {
-      if (newValue) {
-        debouncedSearch(newValue);
-      }
-    },
-  );
-
-  /**
     @description Handle fetch category
     @param {string} category
   */
   const cashierProduct_handleFetchCategory = async () => {
     cashierProduct_productState.value.isLoadingProduct = true;
     try {
-      const response = await store.cashierProduct_fetchCategory({
-        params: {
-          page: 1,
-          limit: 1000,
-        },
-      });
+      const response = await store.cashierProduct_fetchCategory(route);
 
-      cashierProduct_productState.value.listCategory = response.data.categories;
+      cashierProduct_productState.value.listCategory = response.data;
     } catch (error) {
       console.error(error);
     } finally {
@@ -123,33 +89,16 @@ export const useCashierProductService = (): ICashierProductProvided => {
     cashierProduct_productState.value.isLoadingProduct = true;
     try {
       cashierProduct_productState.value.listProductSearch = [];
-      cashierProduct_productState.value.searchProduct = '';
-
-      const params = {
-        page: 1,
-        limit: 1000,
-      };
 
       const selectedCategoryId = cashierProduct_productState.value.selectedCategory;
 
-      if (selectedCategoryId) {
-        const response = await store.cashierProduct_fetchCategoryByID(selectedCategoryId, { params });
+      const response = await store.cashierProduct_fetchCategoryProducts(
+        selectedCategoryId,
+        cashierProduct_productState.value.searchProduct,
+        route,
+      );
 
-        const normalizedCategory: ICashierCategory = {
-          id: response.data.id,
-          category: response.data.category,
-          description: response.data.description,
-          image: response.data.image,
-          pictureUrl: response.data.pictureUrl,
-          categoriesHasProducts: response.data.categoriesHasProducts,
-        };
-
-        cashierProduct_productState.value.listProductCategory = [normalizedCategory];
-      } else {
-        const response = await store.cashierProduct_fetchCategory({ params });
-
-        cashierProduct_productState.value.listProductCategory = response.data.categories;
-      }
+      cashierProduct_productState.value.listProductCategory = response.data;
     } catch (error) {
       console.error(error);
     } finally {
@@ -167,7 +116,36 @@ export const useCashierProductService = (): ICashierProductProvided => {
     () => {
       cashierProduct_handleFetchProductCategory();
     },
-    { immediate: true, deep: true },
+    { deep: true },
+  );
+
+  /**
+   * @description Handle fetch api cashier search. We call the fetchCashierSearch function from the store to handle the request.
+   */
+  const cashierProduct_onSearchData = async () => {
+    cashierProduct_productState.value.isLoadingProduct = true;
+    try {
+      await cashierProduct_handleFetchProductCategory();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      cashierProduct_productState.value.isLoadingProduct = false;
+    }
+  };
+
+  /**
+   * @description debounce function to handle search data
+   */
+  const debouncedSearch = debounce(() => cashierProduct_onSearchData(), 500);
+
+  /**
+   * @description watch search data changes
+   */
+  watch(
+    () => cashierProduct_productState.value.searchProduct,
+    () => {
+      debouncedSearch();
+    },
   );
 
   /**
@@ -189,11 +167,12 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @param {ICashierProduct} product
    * @param {ICashierVariant} variant
    */
-  const cashierProduct_handleSelectProduct = (product?: ICashierProduct, item?: ICashierModalAddProductItem) => {
+  const cashierProduct_handleSelectProduct = (product?: IProductItem, item?: ICashierModalAddProductItem) => {
     if (product && item) {
       const existingProduct = cashierProduct_selectedProduct.value.find(
         val => val.product?.id === product?.id && item?.variant.id === val.variant?.id,
       );
+      
 
       if (existingProduct) {
         existingProduct.quantity = item.quantity;
@@ -215,7 +194,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @param {ICashierProduct} product
    * @returns {boolan}
    */
-  const isProductActive = (product: ICashierProduct): boolean => {
+  const isProductActive = (product: IProductItem): boolean => {
     return !!cashierProduct_selectedProduct.value.find(val => val.product?.id == product?.id);
   };
 
@@ -242,7 +221,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
     get: () => cashierProduct_modalAddEditItem.value.item?.quantity,
     set: (value: string) => {
       const qty = parseInt(value);
-      const productQty = cashierProduct_modalAddEditItem.value.product?.quantity || 1;
+      const productQty = cashierProduct_modalAddEditItem.value.product?.price || 1;
 
       if (qty > productQty) {
         cashierProduct_modalAddEditItem.value.item.quantity = productQty;
@@ -297,7 +276,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @description handle open modal add product
    * @param {ICashierProduct} product
    */
-  const cashierProduct_handleOpenModalAddProduct = (product: ICashierProduct) => {
+  const cashierProduct_handleOpenModalAddProduct = (product: IProductItem) => {
     cashierProduct_resetModalAddProduct();
 
     cashierProduct_modalAddEditItem.value.product = product;

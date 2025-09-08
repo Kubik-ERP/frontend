@@ -64,6 +64,8 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
     });
   const accountStoreTableConfiguration_existingFloorName = ref<string>('');
   // const accountStoreTableConfiguration_existingStoreTableId = ref<string>('');
+  const accountStoreTableConfiguration_originalTableName = ref<string>('');
+  const accountStoreTableConfiguration_originalFloorName = ref<string>('');
   const accountStoreTableConfiguration_isAlreadyHaveTable = ref(false);
   const accountStoreTableConfiguration_isEditableMode = ref(false);
   const accountStoreTableConfiguration_isUsingPutMethod = ref(false);
@@ -179,9 +181,9 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
         ...httpAbort_registerAbort(ACCOUNT_STORE_TABLE_LIST_REQUEST),
       });
 
-      if (result.data.items.length > 0) {
+      if (result.data.length > 0) {
         accountStoreTableConfiguration_isUsingPutMethod.value = true;
-        accountStoreTableConfiguration_onMappingExistingTableData(result.data.items);
+        accountStoreTableConfiguration_onMappingExistingTableData(result.data);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -252,68 +254,146 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
   };
 
   /**
-   * @description Handle business logic for creating a new table configuration form data
+   * @description Handle business logic for creating a new table configuration form data or editing existing one
    */
   const accountStoreTableConfiguration_addTable = (): void => {
     try {
-      let width = 0;
-      let height = 0;
-      let positionX = 0;
-      let positionY = 0;
+      // Check if we're in edit mode
+      if (accountStoreTableConfiguration_isEditableMode.value) {
+        // Edit existing table
+        const originalFloor = accountStoreTableConfiguration_formData.configurations.find(
+          config => config.floorName === accountStoreTableConfiguration_originalFloorName.value,
+        );
 
-      if (accountStoreTableConfiguration_formDataOfAddTable.shape === 'RECTANGLE') {
-        width = 200;
-        height = 100;
-      } else if (accountStoreTableConfiguration_formDataOfAddTable.shape === 'ROUND') {
-        width = 100;
-        height = 100;
+        if (originalFloor && originalFloor.tables) {
+          const tableIndex = originalFloor.tables.findIndex(
+            table => table.name === accountStoreTableConfiguration_originalTableName.value,
+          );
+
+          if (tableIndex !== -1) {
+            const existingTable = originalFloor.tables[tableIndex];
+
+            // Check if floor name changed
+            if (
+              accountStoreTableConfiguration_originalFloorName.value ===
+              accountStoreTableConfiguration_formDataOfAddTable.floorName
+            ) {
+              // Same floor, just update the table data
+              originalFloor.tables[tableIndex] = {
+                ...accountStoreTableConfiguration_formDataOfAddTable,
+                // Preserve position and size from existing table
+                positionX: existingTable.positionX,
+                positionY: existingTable.positionY,
+                width: existingTable.width,
+                height: existingTable.height,
+              };
+            } else {
+              // Floor name changed - move table to new floor
+              // Remove table from original floor
+              originalFloor.tables.splice(tableIndex, 1);
+
+              // If original floor becomes empty, remove it
+              if (originalFloor.tables.length === 0) {
+                const originalFloorIndex = accountStoreTableConfiguration_formData.configurations.findIndex(
+                  config => config.floorName === accountStoreTableConfiguration_originalFloorName.value,
+                );
+                if (originalFloorIndex !== -1) {
+                  accountStoreTableConfiguration_formData.configurations.splice(originalFloorIndex, 1);
+                }
+              }
+
+              // Add table to new floor
+              const targetFloor = accountStoreTableConfiguration_formData.configurations.find(
+                config => config.floorName === accountStoreTableConfiguration_formDataOfAddTable.floorName,
+              );
+
+              if (targetFloor) {
+                targetFloor.tables!.push({
+                  ...accountStoreTableConfiguration_formDataOfAddTable,
+                  positionX: existingTable.positionX,
+                  positionY: existingTable.positionY,
+                  width: existingTable.width,
+                  height: existingTable.height,
+                });
+              } else {
+                // Create new floor if it doesn't exist
+                accountStoreTableConfiguration_formData.configurations.push({
+                  floorName: accountStoreTableConfiguration_formDataOfAddTable.floorName,
+                  tables: [
+                    {
+                      ...accountStoreTableConfiguration_formDataOfAddTable,
+                      positionX: existingTable.positionX,
+                      positionY: existingTable.positionY,
+                      width: existingTable.width,
+                      height: existingTable.height,
+                    },
+                  ],
+                });
+              }
+            }
+          }
+        }
       } else {
-        width = 100;
-        height = 100;
-      }
+        // Add new table (existing logic)
+        let width = 0;
+        let height = 0;
+        let positionX = 0;
+        let positionY = 0;
 
-      // Check if the floor already exists
-      const existingFloor = accountStoreTableConfiguration_formData.configurations.find(
-        config => config.floorName === accountStoreTableConfiguration_formDataOfAddTable.floorName,
-      );
-
-      if (existingFloor) {
-        if (existingFloor.tables!.length > 0) {
-          // If the floor exists, we can add the new table to it
-          const lastTable = existingFloor.tables![existingFloor.tables!.length - 1];
-
-          // Calculate position for the new table
-          positionX = lastTable.positionX + lastTable.width + 40; // 40 is the gap between tables
-          positionY = lastTable.positionY; // Keep the same Y position for simplicity
+        if (accountStoreTableConfiguration_formDataOfAddTable.shape === 'RECTANGLE') {
+          width = 200;
+          height = 100;
+        } else if (accountStoreTableConfiguration_formDataOfAddTable.shape === 'ROUND') {
+          width = 100;
+          height = 100;
+        } else {
+          width = 100;
+          height = 100;
         }
 
-        // Add the new table to the existing floor
-        existingFloor.tables!.push({
-          ...accountStoreTableConfiguration_formDataOfAddTable,
-          positionX,
-          positionY,
-          width, // Default width
-          height, // Default height
-        });
-      } else {
-        // If the floor doesn't exist, create a new one with the table
-        accountStoreTableConfiguration_formData.configurations.push({
-          floorName: accountStoreTableConfiguration_formDataOfAddTable.floorName,
-          tables: [
-            {
-              ...accountStoreTableConfiguration_formDataOfAddTable,
-              positionX: 40,
-              positionY: 40,
-              width,
-              height,
-            },
-          ],
-        });
+        // Check if the floor already exists
+        const existingFloor = accountStoreTableConfiguration_formData.configurations.find(
+          config => config.floorName === accountStoreTableConfiguration_formDataOfAddTable.floorName,
+        );
+
+        if (existingFloor) {
+          if (existingFloor.tables!.length > 0) {
+            // If the floor exists, we can add the new table to it
+            const lastTable = existingFloor.tables![existingFloor.tables!.length - 1];
+
+            // Calculate position for the new table
+            positionX = lastTable.positionX + lastTable.width + 40; // 40 is the gap between tables
+            positionY = lastTable.positionY; // Keep the same Y position for simplicity
+          }
+
+          // Add the new table to the existing floor
+          existingFloor.tables!.push({
+            ...accountStoreTableConfiguration_formDataOfAddTable,
+            positionX,
+            positionY,
+            width, // Default width
+            height, // Default height
+          });
+        } else {
+          // If the floor doesn't exist, create a new one with the table
+          accountStoreTableConfiguration_formData.configurations.push({
+            floorName: accountStoreTableConfiguration_formDataOfAddTable.floorName,
+            tables: [
+              {
+                ...accountStoreTableConfiguration_formDataOfAddTable,
+                positionX: 40,
+                positionY: 40,
+                width,
+                height,
+              },
+            ],
+          });
+        }
       }
     } catch (error) {
-      console.error('Error adding table configuration:', error);
+      console.error('Error adding/editing table configuration:', error);
     } finally {
-      // Reset the form data and validators after adding a new table
+      // Reset the form data and validators after adding/editing a table
       Object.assign(accountStoreTableConfiguration_formDataOfAddTable, {
         floorName: '',
         name: '',
@@ -325,6 +405,9 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
         positionY: 0,
         isEnableQrCode: false,
       });
+      accountStoreTableConfiguration_originalTableName.value = '';
+      accountStoreTableConfiguration_originalFloorName.value = '';
+      accountStoreTableConfiguration_isEditableMode.value = false;
       accountStoreTableConfiguration_formValidationsOfAddTable.value.$reset();
     }
   };
@@ -388,6 +471,8 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
         positionY: 0,
         isEnableQrCode: false,
       });
+      accountStoreTableConfiguration_originalTableName.value = '';
+      accountStoreTableConfiguration_originalFloorName.value = '';
       accountStoreTableConfiguration_isEditableMode.value = false;
       accountStoreTableConfiguration_formValidationsOfAddTable.value.$reset();
     }
@@ -400,7 +485,11 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
     tables.forEach(table => {
       accountStoreTableConfiguration_formData.configurations.push({
         floorName: table.floorName,
-        tables: table.storeTables,
+        tables:
+          table.storeTables?.map(storeTable => ({
+            ...storeTable,
+            floorName: table.floorName, // Ensure each table has the floor name
+          })) || [],
       });
     });
   };
@@ -540,6 +629,10 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
     // Reset validators when opening edit dialog
     accountStoreTableConfiguration_formValidationsOfAddTable.value.$reset();
 
+    // Store the original table name and floor name for editing
+    accountStoreTableConfiguration_originalTableName.value = table.name;
+    accountStoreTableConfiguration_originalFloorName.value = table.floorName;
+
     Object.assign(accountStoreTableConfiguration_formDataOfAddTable, {
       ...table,
       floorName: table.floorName || '',
@@ -629,10 +722,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
       // Use the table-specific validation instead of the main form validation
       accountStoreTableConfiguration_formValidationsOfAddTable.value.$touch();
 
-      console.log('Table form validations:', accountStoreTableConfiguration_formValidationsOfAddTable.value);
-
       if (accountStoreTableConfiguration_formValidationsOfAddTable.value.$invalid) {
-        console.log('Table form is invalid, cannot submit');
         return;
       }
 

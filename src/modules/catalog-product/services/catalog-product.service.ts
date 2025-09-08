@@ -29,9 +29,8 @@ function convertProductToFormData(payload: CreateProductPayload): FormData {
   formData.append('is_percent', String(payload.is_percent));
 
   // Optional image
-  if (payload.imageFile) {
-    formData.append('image', payload.imageFile); // Make sure it's a File or Blob
-  }
+
+  formData.append('image', payload.imageFile!); // Make sure it's a File or Blob
 
   // Categories
   payload.categories?.forEach((cat, i) => {
@@ -60,6 +59,7 @@ export const useProductService = () => {
   const headers = {
     'X-STORE-ID': storeID,
     Authorization: `Bearer ${token?.authentication_token}`,
+    // 'ngrok-skip-browser-warning': 'true'
   };
 
   const product_formData = reactive<CreateProductPayload>({

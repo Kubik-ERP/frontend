@@ -4,7 +4,6 @@ import {
   CASHIER_ORDER_TYPE,
   CASHIER_DUMMY_LIST_FLOOR,
   CASHIER_DUMMY_LIST_TABLE,
-  // CASHIER_DUMMY_VOUCHER,
   CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT,
 } from '../constants';
 
@@ -58,6 +57,8 @@ import { minValue, numeric, required } from '@vuelidate/validators';
 import { useVoucherStore } from '@/modules/voucher/store';
 import { IVoucher } from '@/modules/voucher/interfaces';
 import eventBus from '@/plugins/mitt';
+// import { useProductService } from '@/modules/catalog-product/services/catalog-product.service';
+// import { IProduct } from '@/modules/catalog-product/interfaces';
 // import CashierSummaryModalVoucher from '../components/OrderSummary/Modal/CashierSummaryModalVoucher.vue';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
@@ -84,7 +85,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_modalOrderType = ref<ICashierOrderSummaryModalOrderType>({
     show: false,
     selectedOrderType: 'dine_in',
-    data: CASHIER_ORDER_TYPE,
+    data: CASHIER_ORDER_TYPE.filter(item => (route.name === 'self-order' ? true : item.code !== 'self_order')),
   });
 
   const cashierProduct_customerState = ref<ICashierCustomerState>({
@@ -191,13 +192,16 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     isLoading: false,
     data: {
       total: 0,
+      subTotal: 0,
       discountTotal: 0,
       grandTotal: 0,
       serviceCharge: 0,
+      roundingAdjustment: 0,
       serviceChargeInclude: false,
       tax: 0,
       taxInclude: false,
       items: [],
+      totalProductDiscount: 0,
       voucherAmount: 0,
     },
   });
@@ -210,7 +214,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_modalPaymentMethod.value.isLoading = true;
 
     try {
-      const response = await store.cashierProduct_fetchPaymentMethod(route.name === 'self-order', {});
+      const response = await store.cashierProduct_fetchPaymentMethod(route.name === 'self-order', route, {});
 
       cashierOrderSummary_modalPaymentMethod.value.data = response.data;
     } catch (error: unknown) {
@@ -293,6 +297,25 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   });
 
   watch(
+    () => cashierProduct_selectedProduct.value,
+    () => {
+      localStorage.setItem('shoppingCart', JSON.stringify(cashierProduct_selectedProduct.value));
+    },
+    { deep: true },
+  );
+  // const productService = useProductService();
+  //   const voucherProductList = ref<IProduct[]>([]);
+
+  //   const fetchVoucherProductList = async (): Promise<void> => {
+  //     try {
+  //       const response = await productService.getAllProducts(1, 100, '');
+  //       voucherProductList.value = response.products;
+  //     } catch (error) {
+  //       console.error('❌ Error fetching voucher product list:', error);
+  //     }
+  //   };
+
+  watch(
     () => [
       cashierProduct_selectedProduct.value,
       cashierOrderSummary_modalVoucher.value.show,
@@ -306,6 +329,14 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           cashierProduct_selectedProduct.value.map(p => p.productId),
         );
       }
+
+      // else{
+      //   fetchVoucherProductList();
+      //     getVoucherActive(
+      //       cashierOrderSummary_modalVoucher.value.search,
+      //       [voucherProductList.value[0].id],
+      //     );
+      // }
 
       if (cashierOrderSummary_modalVoucher.value.form.voucherId) {
         debouncedCalculateEstimation();
@@ -419,7 +450,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           validFrom: new Date(voucher.startPeriod).toISOString().split('T')[0],
           validUntil: new Date(voucher.endPeriod).toISOString().split('T')[0],
           type: voucher.isPercent ? 'percentage' : 'nominal',
-          stock: voucher.remainingQuota || 0,
+          stock: voucher.quota || 0,
         };
       });
     } catch (error: unknown) {
@@ -476,7 +507,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     isLoading: false,
     showModalPayment: false,
     data: {},
-    form: { paymentAmount: 0 },
+  });
+
+  const cashierOrderSummary_paymentForm = reactive({
+    paymentAmount: 0,
   });
 
   const cashierOrderSummary_formRules = {
@@ -489,7 +523,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_paymentAmountFormValidation = useVuelidate(
     cashierOrderSummary_formRules,
-    cashierOrderSummary_modalPlaceOrderDetail.value.form,
+    cashierOrderSummary_paymentForm,
     {
       $autoDirty: true,
     },
@@ -497,7 +531,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_storeId = ref('');
 
-  onMounted(() => {
+  onMounted(async () => {
     if (route.name === 'self-order') {
       cashierOrderSummary_modalOrderType.value.selectedOrderType = 'self_order';
       cashierOrderSummary_modalSelectTable.value.selectedTable = [
@@ -514,7 +548,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         router.push({
           name: 'login-self-order',
           query: {
-            redirect: route.fullPath,
+            ...route.query,
           },
         });
 
@@ -526,6 +560,35 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         });
 
         return;
+      }
+
+      try {
+        await store.cashierSelfOrder_handleVerify({
+          storeId: route.query.storeId as string,
+          tablesName: route.query.tablesName as string,
+        });
+      } catch (error) {
+        router.push({
+          name: 'self-order.not-valid',
+        });
+
+        console.error(error);
+        return;
+      }
+
+      const shoppingCart = localStorage.getItem('shoppingCart');
+
+      try {
+        store.cashierProduct_selectedProduct =
+          shoppingCart && shoppingCart.trim() !== '' ? JSON.parse(shoppingCart) : [];
+
+        if (!Array.isArray(store.cashierProduct_selectedProduct)) {
+          store.cashierProduct_selectedProduct = [];
+        }
+      } catch (e) {
+        store.cashierProduct_selectedProduct = [];
+
+        console.error('Error parsing shopping cart:', e);
       }
     }
   });
@@ -556,11 +619,14 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_calculateEstimation.value.isLoading = true;
 
     try {
-      const response = await store.cashierProduct_calculateEstimation({
-        voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId,
-        products: cashierOrderSummary_summary.value.product,
-        orderType: cashierOrderSummary_summary.value.orderType,
-      });
+      const response = await store.cashierProduct_calculateEstimation(
+        {
+          voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId,
+          products: cashierOrderSummary_summary.value.product,
+          orderType: cashierOrderSummary_summary.value.orderType,
+        },
+        route,
+      );
 
       cashierOrderSummary_calculateEstimation.value.data = response.data;
     } catch (error: unknown) {
@@ -593,13 +659,16 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       } else {
         cashierOrderSummary_calculateEstimation.value.data = {
           total: 0,
+          subTotal: 0,
           discountTotal: 0,
           grandTotal: 0,
           serviceCharge: 0,
+          roundingAdjustment: 0,
           serviceChargeInclude: false,
           tax: 0,
           taxInclude: false,
           items: [],
+          totalProductDiscount: 0,
           voucherAmount: 0,
         };
       }
@@ -616,12 +685,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       f => f.id === cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
     )?.name;
 
-    if (getSelectedPaymentMethod?.toUpperCase() === 'CASH') {
-      cashierOrderSummary_paymentAmountFormValidation.value.$touch();
-
-      if (cashierOrderSummary_paymentAmountFormValidation.value.$invalid) return;
-    }
-
     cashierOrderSummary_modalPlaceOrderDetail.value.show = false;
     cashierOrderSummary_modalPlaceOrderDetail.value.isLoading = true;
 
@@ -637,11 +700,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         customerId: cashierProduct_customerState.value.selectedCustomer?.id,
         tableCode: cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
-        paymentAmount: cashierOrderSummary_modalPlaceOrderDetail.value.form.paymentAmount || null,
+        paymentAmount: cashierOrderSummary_paymentForm.paymentAmount || null,
         voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId || null,
+        rounding_amount: cashierOrderSummary_calculateEstimation.value.data.roundingAdjustment || 0,
       };
 
-      const response = await store.cashierProduct_paymentInstant(params);
+      const response = await store.cashierProduct_paymentInstant(params, route);
 
       cashierOrderSummary_modalPlaceOrderDetail.value.data = response.data;
 
@@ -651,7 +715,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           params: {
             invoiceId: response.data.invoiceId,
           },
+          query: {
+            ...route.query,
+          },
         });
+
+        localStorage.removeItem('shoppingCart');
       } else {
         cashierOrderSummary_modalPlaceOrderDetail.value.showModalPayment = true;
       }
@@ -678,7 +747,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         order_id: invoiceId,
       };
 
-      await store.cashierProduct_simulatePayment(params);
+      await store.cashierProduct_simulatePayment(params, route);
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -704,13 +773,14 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         products: cashierOrderSummary_summary.value.product,
         orderType: cashierOrderSummary_summary.value.orderType,
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
-        vouchers: cashierOrderSummary_summary.value.selectedVoucher,
+        voucherId: cashierOrderSummary_summary.value.selectedVoucher,
         customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
         tableCode: cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
+        rounding_amount: cashierOrderSummary_calculateEstimation.value.data.roundingAdjustment || 0,
       };
 
-      const response = await store.cashierProduct_paymentProcess(params);
+      const response = await store.cashierProduct_paymentProcess(params, route);
 
       store.cashierProduct_selectedProduct = [];
 
@@ -727,7 +797,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           params: {
             invoiceId: response.data.orderId,
           },
+          query: {
+            ...route.query,
+          },
         });
+
+        localStorage.removeItem('shoppingCart');
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -795,14 +870,31 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     socket.emit('subscribe-invoice', orderId);
 
     socket.on('payment-success', (data: ICashierResponseWebsocketMessage) => {
+      localStorage.removeItem('shoppingCart');
+
       if (data.orderId === orderId) {
-        router.replace({ name: 'invoice', params: { invoiceId: data.orderId } });
+        if (route.name === 'cashier' || route.name === 'cashier-order-edit') {
+          router.replace({ name: 'invoice', params: { invoiceId: data.orderId } });
+        } else {
+          router.replace({
+            name: 'self-order-invoice',
+            params: { invoiceId: data.orderId },
+            query: { ...route.query },
+          });
+        }
       }
     });
 
     socket.on('payment-failed', data => {
-      if (data.orderId === orderId) {
-        router.replace({ name: 'invoice', params: { invoiceId: data.orderId } });
+      localStorage.removeItem('shoppingCart');
+
+      if (route.name === 'self-order') {
+        router.push({ name: 'self-order' });
+      }
+      if (route.name === 'cashier' || route.name === 'cashier-order-edit') {
+        if (data.orderId === orderId) {
+          router.replace({ name: 'invoice', params: { invoiceId: data.orderId } });
+        }
       }
     });
   };
@@ -836,7 +928,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_fetchInvoiceDetail = async (invoiceId: string) => {
     try {
-      const response = await storeInvoice.invoice_fetchInvoiceById(invoiceId);
+      const response = await storeInvoice.invoice_fetchInvoiceById(invoiceId, route);
 
       if (response.data) {
         cashierProduct_customerState.value.selectedCustomer = {
@@ -869,6 +961,16 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
               quantity: null,
               variantHasProducts: null,
               categoriesHasProducts: null,
+              variant: item.variant
+                ? [
+                    {
+                      id: item.variant.id,
+                      name: item.variant.name,
+                      price: item.variant.price,
+                      productsId: item.productId,
+                    },
+                  ]
+                : [],
             }),
             variant: item.variant
               ? reactive({
@@ -882,7 +984,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
                   price: 0,
                 }),
             productId: item.productId,
-            variantId: item.variantId || '',
+            variantId: item.variant?.id || '',
             quantity: item.qty,
             notes: item.notes,
           };
@@ -969,6 +1071,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_modalInvoiceDetail,
     cashierOrderSummary_modalPlaceOrderConfirmation,
     cashierOrderSummary_modalPlaceOrderDetail,
+    cashierOrderSummary_paymentForm,
     cashierOrderSummary_modalCancelOrder,
     cashierOrderSummary_paymentAmountFormValidation,
 

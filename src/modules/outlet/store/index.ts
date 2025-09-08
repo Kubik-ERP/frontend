@@ -25,7 +25,15 @@ export const useOutletStore = defineStore('outlet', {
     outlet_currentOutlet: null,
     outlet_detail: null,
     outlet_isLoading: false,
-    outlet_lists: [],
+    outlet_lists: {
+      items: [],
+      meta: {
+        page: 1,
+        pageSize: 10,
+        total: 0,
+        totalPages: 0,
+      },
+    },
     outlet_operationalHours: [],
     outlet_profile: null,
     outlet_tables: null,
@@ -36,11 +44,11 @@ export const useOutletStore = defineStore('outlet', {
      * @description Usually, we define getters if the getter name is different from the state name.
      */
     outlet_listAvailableFloor: (state): IDropdownItem[] => {
-      if (!state.outlet_tables || state.outlet_tables.items.length === 0) {
+      if (!state.outlet_tables || state.outlet_tables.length === 0) {
         return [];
       }
 
-      const sortedTables = [...state.outlet_tables.items].sort((a, b) => a.floorName.localeCompare(b.floorName));
+      const sortedTables = [...state.outlet_tables].sort((a, b) => a.floorName.localeCompare(b.floorName));
       const uniqueFloors = Array.from(new Set(sortedTables.map(table => table.floorName)));
 
       return uniqueFloors.map(floor => ({
@@ -217,10 +225,7 @@ export const useOutletStore = defineStore('outlet', {
           ...requestConfigurations,
         });
 
-        console.log('Full Response:', response.data);
-        console.log('Data Items:', response.data.data.items);
-
-        this.outlet_lists = response.data.data.items;
+        this.outlet_lists = response.data.data;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {

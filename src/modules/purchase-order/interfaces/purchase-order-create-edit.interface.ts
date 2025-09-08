@@ -1,8 +1,10 @@
 // Interfaces
 import type { Validation } from '@vuelidate/core';
 
+// Interface for display in UI (with full item information)
 export interface IPurchaseOrderCreateEditProductItem {
   id: string;
+  masterItemId: string; // The actual inventory item ID from backend
   name: string;
   brandName: string;
   quantity: number;
@@ -10,6 +12,21 @@ export interface IPurchaseOrderCreateEditProductItem {
   unit: string;
   unitPrice: number;
   totalPrice: number;
+  // Additional fields from backend inventory item
+  category?: string;
+  stockQuantity?: number;
+  reorderLevel?: number;
+  minimumStockQuantity?: number;
+  expiryDate?: string;
+  supplier?: string;
+  storageLocation?: string;
+}
+
+// Interface for API payload (minimal structure)
+export interface IPurchaseOrderCreateEditProductItemPayload {
+  id: string;
+  masterItemId: string;
+  quantity: number;
 }
 
 export interface IPurchaseOrderCreateEditFormData {
@@ -21,6 +38,7 @@ export interface IPurchaseOrderCreateEditFormData {
 export interface IPurchaseOrderCreateEditProvided {
   purchaseOrderCreateEdit_fetchCreate: () => Promise<unknown>;
   purchaseOrderCreateEdit_fetchDetails: (id: string) => Promise<unknown>;
+  purchaseOrderCreateEdit_fetchSupplierList: () => Promise<unknown>;
   purchaseOrderCreateEdit_fetchUpdate: (id: string) => Promise<unknown>;
   purchaseOrderCreateEdit_formData: globalThis.Ref<IPurchaseOrderCreateEditFormData>;
   purchaseOrderCreateEdit_formDataOfEditQuantity: globalThis.Ref<IPurchaseOrderCreateEditProductItem>;
@@ -28,8 +46,8 @@ export interface IPurchaseOrderCreateEditProvided {
   purchaseOrderCreateEdit_formValidationsOfEditQuantity: globalThis.Ref<Validation>;
   purchaseOrderCreateEdit_isEditMode: globalThis.ComputedRef<boolean>;
   purchaseOrderCreateEdit_listColumns: IColumnDataTable[];
-  purchaseOrderCreateEdit_listProductItems: IDropdownItem[];
-  purchaseOrderCreateEdit_listSuppliers: IDropdownItem[];
+  purchaseOrderCreateEdit_listProductItems: ComputedRef<IDropdownItem[]>;
+  purchaseOrderCreateEdit_listSuppliers: ComputedRef<IDropdownItem[]>;
   purchaseOrderCreateEdit_onAddProductItem: (productItem: IPurchaseOrderCreateEditProductItem) => void;
   purchaseOrderCreateEdit_onCloseDialogAddProductItem: () => void;
   purchaseOrderCreateEdit_onCloseDialogEditQuantity: () => void;

@@ -48,6 +48,28 @@ const routes: RouteRecordRaw[] = [
           title: 'Tax & Service Charge',
         },
       },
+      {
+        path: 'rounding',
+        name: 'setting.rounding',
+        component: () => import('../views/SettingRoundingUI.vue'),
+        meta: {
+          breadcrumb: 'Rounding',
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          requiresAuthorization: true,
+          title: 'Rounding',
+        },
+      },
+      {
+        path: 'connected-device',
+        name: 'setting.device',
+        component: () => import('@/modules/device/views/DeviceListUI.vue'),
+        meta: {
+          breadcrumb: 'Device',
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          requiresAuthorization: true,
+          title: 'Device',
+        },
+      },
     ],
   },
 ];

@@ -1,12 +1,11 @@
 // Constants
 import {
   PURCHASE_ORDER_CREATE_EDIT_LIST_COLUMNS,
-  PURCHASE_ORDER_CREATE_EDIT_PRODUCT_ITEMS,
-  PURCHASE_ORDER_CREATE_EDIT_SUPPLIERS,
   PURCHASE_ORDER_CREATE_REQUEST,
   PURCHASE_ORDER_DETAILS_REQUEST,
   PURCHASE_ORDER_UPDATE_REQUEST,
 } from '../constants';
+import { SUPPLIER_LIST_REQUEST } from '@/modules/supplier/constants';
 
 // Interfaces
 import type {
@@ -14,16 +13,27 @@ import type {
   IPurchaseOrderCreateEditProductItem,
   IPurchaseOrderCreateEditProvided,
 } from '../interfaces';
+import type { ISupplierListRequestQuery } from '@/modules/supplier/interfaces/supplier-list.interface';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
 
 // Stores
 import { usePurchaseOrderStore } from '../store';
+import { useInventoryItemsStore } from '@/modules/items/store';
+import { useSupplierStore } from '@/modules/supplier/store';
 
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
+import { IInventoryCategoryListRequestQuery } from '@/modules/inventory-category/interfaces/inventory-category-list.interface';
+
+/**
+ * @description Simple UUID generator for purchase order items
+ */
+const generateId = (): string => {
+  return 'po-item-' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+};
 
 /**
  * @description Closure function that returns everything what we need into an object
@@ -35,7 +45,10 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
   const router = useRouter(); // Router instance
   const route = useRoute(); // Current route
   const store = usePurchaseOrderStore(); // Instance of the store
+  const inventoryItemStore = useInventoryItemsStore(); // Instance of the inventory store
+  const supplierStore = useSupplierStore(); // Instance of the supplier store
   const { purchaseOrder_detail } = storeToRefs(store);
+  const { supplier_listItemsOnDropdown } = storeToRefs(supplierStore);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
@@ -43,6 +56,43 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
    */
   const purchaseOrderCreateEdit_isEditMode = computed(() => route.params.id !== undefined);
   const purchaseOrderCreateEdit_purchaseOrderId = computed(() => (route.params.id ? String(route.params.id) : ''));
+
+  /**
+   * @description Computed property to transform inventory items for dropdown display
+   */
+  const purchaseOrderCreateEdit_listProductItems = computed((): IDropdownItem[] => {
+    return inventoryItemStore.inventoryItems_lists.data.items.map(item => ({
+      value: {
+        id: generateId(), // Generate unique ID for the purchase order item
+        masterItemId: item.id, // Store the original inventory item ID
+        name: item.itemName,
+        brandName: item.brand,
+        quantity: 1, // Default quantity
+        sku: item.sku,
+        unit: item.unit,
+        unitPrice: item.pricePerUnit,
+        totalPrice: item.pricePerUnit, // Default to unit price * 1
+        category: item.category,
+        stockQuantity: item.stockQuantity,
+        reorderLevel: item.reorderLevel,
+        minimumStockQuantity: item.minimumStockQuantity,
+        expiryDate: item.expiryDate,
+        supplier: item.supplier,
+        storageLocation: item.storageLocation,
+      },
+      label: `${item.sku} - ${item.itemName} (${item.brand})`,
+    }));
+  });
+
+  /**
+   * @description Computed property for list columns
+   */
+  const purchaseOrderCreateEdit_listColumns = computed(() => PURCHASE_ORDER_CREATE_EDIT_LIST_COLUMNS);
+
+  /**
+   * @description Computed property for suppliers dropdown
+   */
+  const purchaseOrderCreateEdit_listSuppliers = computed(() => supplier_listItemsOnDropdown.value);
 
   /**
    * @description Reactive variables
@@ -54,6 +104,7 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
   });
   const purchaseOrderCreateEdit_formDataOfEditQuantity = ref<IPurchaseOrderCreateEditProductItem>({
     id: '',
+    masterItemId: '',
     name: '',
     brandName: '',
     quantity: 0,
@@ -61,6 +112,20 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
     unit: '',
     unitPrice: 0,
     totalPrice: 0,
+  });
+  const purchaseOrderCreateEdit_queryParamsOfSuppliers = reactive<ISupplierListRequestQuery>({
+    page: 1,
+    pageSize: 10,
+    search: null,
+    orderBy: null,
+    orderDirection: null,
+  });
+  const purchaseOrderCreateEdit_queryParamsOfInventoryItems = reactive<IInventoryCategoryListRequestQuery>({
+    page: 1,
+    pageSize: 10,
+    search: null,
+    orderBy: null,
+    orderDirection: null,
   });
   const purchaseOrderCreateEdit_selectedProductItem = ref<IPurchaseOrderCreateEditProductItem | null>(null);
   const purchaseOrderCreateEdit_selectedProductItems = ref<IPurchaseOrderCreateEditProductItem[]>([]);
@@ -133,7 +198,7 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
         orderDate: orderDate ? new Date(orderDate).toISOString() : new Date().toISOString(),
         productItems: purchaseOrderCreateEdit_selectedProductItems.value.map(item => ({
           id: item.id,
-          masterItemId: item.id, // Using the same ID as masterItemId for now
+          masterItemId: item.masterItemId, // Use the actual inventory item ID
           quantity: item.quantity,
         })),
       };
@@ -152,18 +217,9 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
       eventBus.emit('AppBaseToast', argsEventEmitter);
 
       setTimeout(() => {
-        router.push({ name: 'purchase-order.list' });
+        router.push({ name: 'purchase-order.index' });
       }, 1000);
     } catch (error: unknown) {
-      const argsEventEmitter: IPropsToast = {
-        isOpen: true,
-        type: EToastType.DANGER,
-        message: 'Failed to create purchase order',
-        position: EToastPosition.TOP_RIGHT,
-      };
-
-      eventBus.emit('AppBaseToast', argsEventEmitter);
-
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -181,15 +237,40 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
         ...httpAbort_registerAbort(PURCHASE_ORDER_DETAILS_REQUEST),
       });
     } catch (error: unknown) {
-      const argsEventEmitter: IPropsToast = {
-        isOpen: true,
-        type: EToastType.DANGER,
-        message: 'Failed to fetch purchase order details',
-        position: EToastPosition.TOP_RIGHT,
-      };
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
 
-      eventBus.emit('AppBaseToast', argsEventEmitter);
+  /**
+   * @description Handle fetch api inventory items - list
+   */
+  const purchaseOrderCreateEdit_fetchInventoryItemsList = async (): Promise<unknown> => {
+    try {
+      await inventoryItemStore.InventoryItems_fetchData(purchaseOrderCreateEdit_queryParamsOfInventoryItems, {
+        paramsSerializer: useParamsSerializer,
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
 
+  /**
+   * @description Handle fetch api supplier - list
+   */
+  const purchaseOrderCreateEdit_fetchSupplierList = async (): Promise<unknown> => {
+    try {
+      await supplierStore.supplier_list(purchaseOrderCreateEdit_queryParamsOfSuppliers, {
+        ...httpAbort_registerAbort(SUPPLIER_LIST_REQUEST),
+      });
+    } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -213,7 +294,7 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
         orderDate: orderDate ? new Date(orderDate).toISOString() : new Date().toISOString(),
         productItems: purchaseOrderCreateEdit_selectedProductItems.value.map(item => ({
           id: item.id,
-          masterItemId: item.id, // Using the same ID as masterItemId for now
+          masterItemId: item.masterItemId, // Use the actual inventory item ID
           quantity: item.quantity,
         })),
       };
@@ -232,18 +313,9 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
       eventBus.emit('AppBaseToast', argsEventEmitter);
 
       setTimeout(() => {
-        router.push({ name: 'purchase-order.list' });
+        router.push({ name: 'purchase-order.index' });
       }, 1000);
     } catch (error: unknown) {
-      const argsEventEmitter: IPropsToast = {
-        isOpen: true,
-        type: EToastType.DANGER,
-        message: 'Failed to update purchase order',
-        position: EToastPosition.TOP_RIGHT,
-      };
-
-      eventBus.emit('AppBaseToast', argsEventEmitter);
-
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -278,6 +350,11 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
    * @description Handle business logic for loading initial data (for edit mode)
    */
   const purchaseOrderCreateEdit_onLoadInitialData = async (): Promise<void> => {
+    await Promise.all([
+      purchaseOrderCreateEdit_fetchInventoryItemsList(),
+      purchaseOrderCreateEdit_fetchSupplierList(),
+    ]);
+
     if (purchaseOrderCreateEdit_isEditMode.value && purchaseOrderCreateEdit_purchaseOrderId.value) {
       try {
         await purchaseOrderCreateEdit_fetchDetails(purchaseOrderCreateEdit_purchaseOrderId.value);
@@ -285,7 +362,9 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
         console.error('Error loading purchase order details:', error);
       }
     }
-  }; /**
+  };
+
+  /**
    * @description Watcher to populate form when detail is loaded (for edit mode)
    */
   watch(
@@ -293,19 +372,20 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
     newDetail => {
       if (newDetail) {
         purchaseOrderCreateEdit_formData.value = {
-          supplierId: newDetail.supplierId,
+          supplierId: newDetail.supplierInfo.supplierName,
           orderDate: new Date(newDetail.orderDate),
           productItems: [],
         };
 
         // Transform product items to the create-edit format
-        purchaseOrderCreateEdit_selectedProductItems.value = newDetail.productItems.map(item => ({
+        purchaseOrderCreateEdit_selectedProductItems.value = newDetail.purchaseOrderItems.map(item => ({
           id: item.id,
-          name: item.productName,
-          brandName: '', // Not available in detail, will need to be fetched separately
+          masterItemId: item.masterInventoryItemId, // Use productId as masterItemId
+          name: item.itemInfo.name,
+          brandName: item.itemInfo.brandName,
           quantity: item.quantity,
-          sku: '', // Not available in detail
-          unit: '', // Not available in detail
+          sku: item.itemInfo.sku,
+          unit: item.itemInfo.unit,
           unitPrice: item.unitPrice,
           totalPrice: item.totalPrice,
         }));
@@ -323,7 +403,7 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
 
       // Check if product item already exists in formData
       const existingItemIndex = purchaseOrderCreateEdit_formData.value.productItems.findIndex(
-        item => item.id === productItem.id,
+        item => item.masterItemId === productItem.masterItemId,
       );
 
       if (existingItemIndex === -1) {
@@ -336,7 +416,7 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
 
       // Check if product item already exists in selectedProductItems
       const existingSelectedItemIndex = purchaseOrderCreateEdit_selectedProductItems.value.findIndex(
-        item => item.id === productItem.id,
+        item => item.masterItemId === productItem.masterItemId,
       );
 
       if (existingSelectedItemIndex === -1) {
@@ -382,6 +462,7 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
     eventBus.emit('AppBaseDialog', argsEventEmitter);
     purchaseOrderCreateEdit_formDataOfEditQuantity.value = {
       id: '',
+      masterItemId: '',
       name: '',
       brandName: '',
       quantity: 0,
@@ -398,18 +479,18 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
   const purchaseOrderCreateEdit_onDeleteProductItem = (
     productItem: IPurchaseOrderCreateEditProductItem | string,
   ) => {
-    // Handle both cases: receiving full object or just ID
-    const productItemId = typeof productItem === 'string' ? productItem : productItem.id;
+    // Handle both cases: receiving full object or just masterItemId
+    const masterItemId = typeof productItem === 'string' ? productItem : productItem.masterItemId;
 
     // Remove from selectedProductItems (what's displayed)
     purchaseOrderCreateEdit_selectedProductItems.value = purchaseOrderCreateEdit_selectedProductItems.value.filter(
-      item => item.id !== productItemId,
+      item => item.masterItemId !== masterItemId,
     );
 
     // Also remove from formData to keep them in sync
     if (purchaseOrderCreateEdit_formData.value) {
       purchaseOrderCreateEdit_formData.value.productItems =
-        purchaseOrderCreateEdit_formData.value.productItems.filter(item => item.id !== productItemId);
+        purchaseOrderCreateEdit_formData.value.productItems.filter(item => item.masterItemId !== masterItemId);
     }
   };
 
@@ -565,15 +646,16 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
   return {
     purchaseOrderCreateEdit_fetchCreate,
     purchaseOrderCreateEdit_fetchDetails,
+    purchaseOrderCreateEdit_fetchSupplierList,
     purchaseOrderCreateEdit_fetchUpdate,
     purchaseOrderCreateEdit_formData,
     purchaseOrderCreateEdit_formDataOfEditQuantity,
     purchaseOrderCreateEdit_formValidations,
     purchaseOrderCreateEdit_formValidationsOfEditQuantity,
     purchaseOrderCreateEdit_isEditMode,
-    purchaseOrderCreateEdit_listColumns: PURCHASE_ORDER_CREATE_EDIT_LIST_COLUMNS,
-    purchaseOrderCreateEdit_listProductItems: PURCHASE_ORDER_CREATE_EDIT_PRODUCT_ITEMS,
-    purchaseOrderCreateEdit_listSuppliers: PURCHASE_ORDER_CREATE_EDIT_SUPPLIERS,
+    purchaseOrderCreateEdit_listColumns: purchaseOrderCreateEdit_listColumns.value,
+    purchaseOrderCreateEdit_listProductItems,
+    purchaseOrderCreateEdit_listSuppliers,
     purchaseOrderCreateEdit_onAddProductItem,
     purchaseOrderCreateEdit_onCloseDialogAddProductItem,
     purchaseOrderCreateEdit_onCloseDialogEditQuantity,

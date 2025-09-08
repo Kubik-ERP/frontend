@@ -1,3 +1,4 @@
+export * from './authentication-connect-device.interface';
 export * from './authentication-create-new-password.interface';
 export * from './authentication-reset-password.interface';
 export * from './authentication-sign-in.interface';
@@ -16,8 +17,13 @@ export interface IAuthenticationProfile {
   };
 }
 
+export interface IAuthenticationPermissionResponse extends IDefaultResponseFetch {
+  data: string[];
+}
+
 export interface IAuthenticationStateStore {
   authentication_isLoading: boolean;
+  authentication_permissions: string[];
   authentication_token: string;
   authentication_userData: IAuthenticationProfile | null;
 }
@@ -36,4 +42,12 @@ export interface IAuthenticationVerifyOtpFormData {
   email: string;
   otp: string;
   type: string;
+}
+
+export interface ISetUnsetPin {
+  pin: string;
+}
+
+export interface ISetUnsetPin {
+  pin: string;
 }

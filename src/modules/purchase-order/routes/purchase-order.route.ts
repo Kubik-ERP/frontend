@@ -17,7 +17,6 @@ const routes: RouteRecordRaw[] = [
         name: 'purchase-order.index',
         component: () => import('../views/PurchaseOrderListUI.vue'),
         meta: {
-          breadcrumb: 'Purchase Order',
           layout: LAYOUT_OPTIONS.DEFAULT,
           requiresAuthorization: true,
           title: 'Purchase Order',
@@ -32,6 +31,28 @@ const routes: RouteRecordRaw[] = [
           layout: LAYOUT_OPTIONS.SIMPLE_NAVBAR,
           requiresAuthorization: true,
           title: 'Create New Purchase Order',
+        },
+      },
+      {
+        path: ':id/detail',
+        name: 'purchase-order.detail',
+        component: () => import('../views/PurchaseOrderDetailUI.vue'),
+        meta: {
+          breadcrumb: 'Purchase Order Detail',
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          requiresAuthorization: true,
+          title: 'Purchase Order Detail',
+        },
+      },
+      {
+        path: ':id/delivery-order-document',
+        name: 'purchase-order.delivery-order-document',
+        component: () => import('../views/PurchaseOrderDeliveryOrderDocumentUI.vue'),
+        meta: {
+          breadcrumb: 'Delivery Order Document',
+          layout: LAYOUT_OPTIONS.EMPTY,
+          requiresAuthorization: true,
+          title: 'Delivery Order Document',
         },
       },
       {

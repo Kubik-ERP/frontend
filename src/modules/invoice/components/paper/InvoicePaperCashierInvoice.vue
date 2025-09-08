@@ -96,8 +96,7 @@ const orderTypeLabel = computed(() => {
       class="flex items-center justify-between w-full"
     >
       <p id="label-queue" class="font-normal text-black text-sm">Queue</p>
-      <!-- TODO: Add queue -->
-      <p id="queue-value" class="font-normal text-black text-sm">38</p>
+      <p id="queue-value" class="font-normal text-black text-sm">{{ invoice_invoiceData.data.queue }}</p>
     </section>
 
     <section
@@ -201,7 +200,7 @@ const orderTypeLabel = computed(() => {
                 useCurrencyFormat({
                   data:
                     invoice_invoiceData.data.paymentStatus === 'unpaid'
-                      ? invoice_invoiceData.calculate?.total || 0
+                      ? invoice_invoiceData.calculate?.subTotal || 0
                       : invoice_invoiceData.data.subtotal,
                 })
               }}
@@ -209,12 +208,41 @@ const orderTypeLabel = computed(() => {
           </tr>
 
           <tr>
-            <td class="font-normal text-black text-sm py-2">Promo</td>
+            <td class="font-normal text-black text-sm py-2">Discount Product</td>
             <td colspan="3" class="font-normal text-black text-sm text-right py-2">
               -
               {{
                 useCurrencyFormat({
-                  data: invoice_invoiceData.data.paymentStatus === 'unpaid' ? 0 : 0,
+                  data:
+                    invoice_invoiceData.data.paymentStatus === 'unpaid'
+                      ? invoice_invoiceData.calculate?.discountTotal || 0
+                      : invoice_invoiceData.data.totalProductDiscount || 0,
+                })
+              }}
+            </td>
+          </tr>
+
+          <tr>
+            <td class="font-normal text-black text-sm py-2">Rounding</td>
+            <td colspan="3" class="font-normal text-black text-sm text-right py-2">
+              {{
+                useCurrencyFormat({
+                  data: invoice_invoiceData.data.roundingAmount || 0,
+                })
+              }}
+            </td>
+          </tr>
+
+          <tr>
+            <td class="font-normal text-black text-sm py-2">Promo Voucher</td>
+            <td colspan="3" class="font-normal text-black text-sm text-right py-2">
+              -
+              {{
+                useCurrencyFormat({
+                  data:
+                    invoice_invoiceData.data.paymentStatus === 'unpaid'
+                      ? invoice_invoiceData.calculate?.voucherAmount || 0
+                      : invoice_invoiceData.data.voucherAmount || 0,
                 })
               }}
             </td>

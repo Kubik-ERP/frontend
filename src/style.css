@@ -209,3 +209,13 @@
 span.p-datatable-column-title {
   @apply font-normal;
 }
+/* Untuk Chrome, Safari, dan Opera */
+/* ::-webkit-scrollbar {
+  display: none;
+} */
+
+/* Untuk IE, Edge, dan Firefox */
+.scrollbar-hidden::-webkit-scrollbar {
+  -ms-overflow-style: none;  /* IE dan Edge */
+  scrollbar-width: none;     /* Firefox */
+}

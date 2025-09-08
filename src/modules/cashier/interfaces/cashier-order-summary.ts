@@ -7,6 +7,7 @@ import {
   ICashierResponseMidtransQrisPayment,
 } from './cashier-response';
 import { Validation } from '@vuelidate/core';
+import { Reactive } from 'vue';
 
 export interface ICashierOrderType {
   code: string;
@@ -15,7 +16,7 @@ export interface ICashierOrderType {
 }
 
 export interface ICashierVoucher {
-  id: string
+  id: string;
   code: string;
   label: string;
   available: boolean;
@@ -62,7 +63,6 @@ export interface ICashierOrderSummaryModalPlaceOrderConfirmation {
   show: boolean;
   showModalPayment: boolean;
   isLoading: boolean;
-  form: { paymentAmount: number };
   data: Partial<ICashierResponseMidtransQrisPayment['data']>;
 }
 
@@ -184,6 +184,7 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_modalSelectTable: Ref<ICashierOrderSummaryModalSelectTable>;
   cashierOrderSummary_modalPlaceOrderConfirmation: Ref<ICashierOrderSummaryModalPlaceOrder>;
   cashierOrderSummary_modalPlaceOrderDetail: Ref<ICashierOrderSummaryModalPlaceOrderConfirmation>;
+  cashierOrderSummary_paymentForm: Reactive<{ paymentAmount: number }>;
 
   cashierOrderSummary_paymentAmountFormValidation: globalThis.Ref<Validation>;
   cashierOrderSummary_calculateEstimation: Ref<ICashierCalulateEstimationData>;

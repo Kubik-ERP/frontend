@@ -49,7 +49,81 @@ export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
     sortable: true,
     value: 'unitPrice',
   },
-    {
+  {
+    label: 'Expiry Date',
+    sortable: true,
+    value: 'expiryDate',
+  },
+  // {
+  //   label: 'Supplier',
+  //   sortable: false,
+  //   value: 'supplierId',
+  // },
+  // {
+  //   label: 'Storage Location',
+  //   sortable: false,
+  //   value: 'storageLocationId',
+  // },
+  {
+    label: '',
+    sortable: false,
+    value: 'action',
+    width: '100px',
+  },
+];
+export const ITEMS_LIST_COLUMS_IMPORT: IColumnDataTable[] = [
+  {
+    label: 'Row Number',
+    sortable: false,
+    value: 'rowNumber',
+  },
+  {
+    label: 'SKU',
+    sortable: false,
+    value: 'sku',
+  },
+  {
+    label: 'Item Name',
+    sortable: false,
+    value: 'name',
+  },
+  {
+    label: 'Category',
+    sortable: false,
+    value: 'category',
+  },
+  {
+    label: 'Brand',
+    sortable: false,
+    value: 'brand',
+  },
+  {
+    label: 'Unit',
+    sortable: false,
+    value: 'unit',
+  },
+  {
+    label: 'Stock Quantity',
+    sortable: true,
+    value: 'stockQuantity',
+  },
+  {
+    label: 'Reorder Level',
+    sortable: true,
+    value: 'reorderLevel',
+  },
+  {
+    label: 'Minimum Stock',
+    sortable: true,
+    value: 'minimumStockQuantity',
+
+  },
+  {
+    label: 'Price Per Unit',
+    sortable: true,
+    value: 'unitPrice',
+  },
+  {
     label: 'Expiry Date',
     sortable: true,
     value: 'expiryDate',
@@ -57,18 +131,17 @@ export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
   {
     label: 'Supplier',
     sortable: false,
-    value: 'supplierId',
+    value: 'supplier',
   },
   {
     label: 'Storage Location',
     sortable: false,
-    value: 'storageLocationId',
+    value: 'storageLocation',
   },
   {
     label: '',
     sortable: false,
-    value: 'action',
-    width: '100px',
+    value: 'status',
   },
 ];
 

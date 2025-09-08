@@ -7,14 +7,11 @@ import {
   NavigationGuardNext,
 } from 'vue-router';
 
-// Components
-import AppCommonNotFound from '../components/common/AppCommonNotFound.vue';
-import AppCommonUnauthorized from '../components/common/AppCommonUnauthorized.vue';
-
 // Stores
 import { useAuthenticationStore } from '@/modules/authentication/store';
 import { useOutletStore } from '@/modules/outlet/store';
-import { useRbacStore } from '@/app/store/rbac.store';
+
+export let router: Router;
 
 /**
  * Autoload route
@@ -40,17 +37,17 @@ const loadAllRoutes: () => Promise<Router> = async () => {
       // Auto register routes
       ...routes,
 
-      // 403
+      // 403 - Lazy loaded for better performance
       {
         path: '/not-authorized',
         name: 'not-authorized',
-        component: AppCommonUnauthorized,
+        component: () => import('../components/common/AppCommonUnauthorized.vue'),
       },
 
-      // 404
+      // 404 - Lazy loaded for better performance
       {
         path: '/:catchAll(.*)',
-        component: AppCommonNotFound,
+        component: () => import('../components/common/AppCommonNotFound.vue'),
       },
     ],
   });
@@ -58,7 +55,6 @@ const loadAllRoutes: () => Promise<Router> = async () => {
   router.beforeEach((to: RouteLocationNormalized, _from: RouteLocationNormalized, next: NavigationGuardNext) => {
     const authenticationStore = useAuthenticationStore();
     const outletStore = useOutletStore();
-    const rbacStore = useRbacStore();
     const { authentication_token } = storeToRefs(authenticationStore);
     const { outlet_currentOutlet } = storeToRefs(outletStore);
 
@@ -88,20 +84,28 @@ const loadAllRoutes: () => Promise<Router> = async () => {
           next({ name: 'dashboard' });
         }
 
-        // RBAC Permission Check
-        if (to.name && rbacStore.rbac_hasRole) {
-          const hasPermission = rbacStore.rbac_checkRoutePermission(to.name as string);
-          if (!hasPermission) {
-            next({ name: 'not-authorized' });
-            return;
-          }
-        }
-
         next();
       }
     } else {
       next();
     }
+  });
+
+  // Optional: Add loading state for route changes
+  router.beforeResolve((_to, from, next) => {
+    // Only show route loading for different routes, not for initial load
+    if (from.name !== undefined) {
+      // You can use the loading store here if you want to show loading during route changes
+      // const loadingStore = useLoadingStore();
+      // loadingStore.setLoading(true);
+    }
+    next();
+  });
+
+  router.afterEach(() => {
+    // Clear any route loading state
+    // const loadingStore = useLoadingStore();
+    // loadingStore.setLoading(false);
   });
 
   return router;

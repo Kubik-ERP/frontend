@@ -1,0 +1,34 @@
+{
+  "device": {
+    "title": "Daftar Perangkat",
+    "createButton": "Tambah Perangkat",
+    "editButton": "Ubah",
+    "deleteButton": "Hapus",
+    "searchPlaceholder": "Cari perangkat...",
+    "noDataMessage": "Tidak ada perangkat ditemukan.",
+    "form": {
+      "code": "Kode Perangkat",
+      "name": "Nama Perangkat",
+      "description": "Deskripsi",
+      "fields": {
+        "name": "Masukkan nama perangkat",
+        "description": "Masukkan deskripsi perangkat"
+      },
+      "buttons": {
+        "cancel": "Batal",
+        "create": "Simpan",
+        "update": "Perbarui"
+      }
+    },
+    "popover": {
+      "edit": {
+        "title": "Ubah Perangkat",
+        "message": "Apakah Anda yakin ingin mengubah perangkat ini?"
+      },
+      "delete": {
+        "title": "Hapus Perangkat",
+        "message": "Apakah Anda yakin ingin menghapus perangkat ini?"
+      }
+    }
+  }
+}

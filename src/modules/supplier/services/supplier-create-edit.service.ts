@@ -26,6 +26,7 @@ export const useSupplierCreateEditService = () => {
    */
   const supplierForm_formData = reactive<ISupplierCreatePayload>({
     supplierName: '',
+    code: '',
     contactPerson: '',
     phoneNumber: '',
     email: '',
@@ -109,13 +110,15 @@ export const useSupplierCreateEditService = () => {
           ...httpAbort_registerAbort(`SUPPLIER_UPDATE_${route.params.id}`),
         });
       } else {
-        // Create new supplier
+
         await store.supplier_create(supplierForm_formData, {
           ...httpAbort_registerAbort('SUPPLIER_CREATE'),
         });
       }
 
-      const meesage = supplierForm_isEditMode.value ? 'Supplier has been updated successfully' : 'Supplier has been created successfully';
+      const meesage = supplierForm_isEditMode.value
+        ? 'Supplier has been updated successfully'
+        : 'Supplier has been created successfully';
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,

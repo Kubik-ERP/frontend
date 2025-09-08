@@ -51,7 +51,7 @@ const imageUrl = (image: string) => {
               <div class="flex flex-col gap-1">
                 <span class="text-xs font-semibold">{{ category.category }}</span>
                 <span class="text-xs text-text-disabled"
-                  >{{ category.categoriesHasProducts.length }} {{ useLocalization('cashier.items') }}</span
+                  >{{ category.totalItems }} {{ useLocalization('cashier.items') }}</span
                 >
               </div>
             </section>

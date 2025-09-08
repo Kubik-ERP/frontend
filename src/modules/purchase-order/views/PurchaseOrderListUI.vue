@@ -13,7 +13,6 @@ const {
   purchaseOrderList_fetchList,
   purchaseOrderList_formDataOfCancel,
   purchaseOrderList_formDataOfConfirm,
-  purchaseOrderList_formValidationsOfCancel,
   purchaseOrderList_formValidationsOfConfirm,
   purchaseOrderList_getClassOfStatus,
   purchaseOrderList_handleOnSortChange,
@@ -35,17 +34,6 @@ const {
 } = usePurchaseOrderListService();
 
 /**
- * @description Load initial data
- */
-onMounted(async () => {
-  try {
-    await purchaseOrderList_fetchList();
-  } catch (error) {
-    console.error('Error loading purchase order list:', error);
-  }
-});
-
-/**
  * @description Provide all the data and methods what we need
  */
 provide('purchaseOrderList', {
@@ -53,7 +41,6 @@ provide('purchaseOrderList', {
   purchaseOrderList_fetchList,
   purchaseOrderList_formDataOfCancel,
   purchaseOrderList_formDataOfConfirm,
-  purchaseOrderList_formValidationsOfCancel,
   purchaseOrderList_formValidationsOfConfirm,
   purchaseOrderList_getClassOfStatus,
   purchaseOrderList_handleOnSortChange,
@@ -73,10 +60,25 @@ provide('purchaseOrderList', {
   purchaseOrderList_queryParams,
   purchaseOrderList_values,
 });
+
+/**
+ * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
+ */
+onMounted(async () => {
+  try {
+    await purchaseOrderList_fetchList();
+  } catch (error) {
+    console.error('Error loading purchase order list:', error);
+  }
+});
 </script>
 
 <template>
   <section id="purchase-order-list-ui" class="default-wrapper">
     <PurchaseOrderListTable />
+
+    <!-- Enhanced Confirmation Dialogs with Form Support -->
+    <AppBaseDialogConfirmation id="purchase-order-list-cancel-dialog" />
+    <AppBaseDialogConfirmation id="purchase-order-list-confirm-dialog" />
   </section>
 </template>

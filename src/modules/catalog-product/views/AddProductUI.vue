@@ -60,9 +60,7 @@ const handleCreateProduct = async () => {
     router.push({ name: 'catalog.products.index' });
   } catch (error) {
     console.error(error);
-  }
-  finally
-  {
+  } finally {
     loading.value = false;
   }
 };
@@ -154,6 +152,11 @@ onBeforeRouteLeave((to, from, next) => {
   }
 });
 
+const removePhoto = () => {
+  product_formData.imagePreview = '';
+  product_formData.imageFile = null;
+};
+
 watch(product_formData, () => {
   calculateDiscount();
 });
@@ -166,23 +169,33 @@ watch(product_formData, () => {
       <h2 class="text-xl font-semibold">{{ useLocalization('productDetail.header') }}</h2>
       <form class="flex flex-col items-center justify-center" @submit.prevent="handleCreateProduct">
         <p>{{ useLocalization('productDetail.photo.label') }}</p>
-        <img
-          class="rounded-lg mt-2 w-64 h-64 object-cover"
-          :src="product_formData.imagePreview || 'https://placehold.co/250'"
-          alt="Photo"
-        />
+        <AppBaseImage :src="product_formData.imagePreview" alt="Photo" class="w-64 h-64 object-cover" />
+
         <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
 
-        <PrimeVueButton
-          :label="useLocalization('productDetail.photo.button')"
-          class="mt-4 shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
-          variant="outlined"
-          @click="triggerFileInput"
-        >
-          <template #icon>
-            <img :src="imageSVG" alt="" />
-          </template>
-        </PrimeVueButton>
+        <div class="flex items-center justify-center gap-2 mt-4">
+          <PrimeVueButton
+            :label="useLocalization('productDetail.photo.button')"
+            class="shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
+            variant="outlined"
+            @click="triggerFileInput"
+          >
+            <template #icon>
+              <img :src="imageSVG" alt="" />
+            </template>
+          </PrimeVueButton>
+          <PrimeVueButton
+            v-if="product_formData.imagePreview"
+            variant="text"
+            severity="danger"
+            label="Delete Image"
+            @click="removePhoto"
+          >
+            <template #icon>
+              <AppBaseSvg name="delete" class="!w-5 !h-5" />
+            </template>
+          </PrimeVueButton>
+        </div>
 
         <div class="grid grid-cols-2 w-full gap-8 mt-8">
           <AppBaseFormGroup
