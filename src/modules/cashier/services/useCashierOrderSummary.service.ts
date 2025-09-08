@@ -329,6 +329,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           cashierProduct_selectedProduct.value.map(p => p.productId),
         );
       }
+      else{
+          getVoucherActive(
+            cashierOrderSummary_modalVoucher.value.search,
+            []
+          );
+      }
 
       // else{
       //   fetchVoucherProductList();

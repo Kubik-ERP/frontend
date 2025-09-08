@@ -8,12 +8,12 @@ import { LAYOUT_OPTIONS } from '@/app/constants';
 import type { RouteRecordRaw } from 'vue-router';
 
 export default {
-  path: '/role',
+  path: '/user-permission/role',
   name: 'role',
   component: () => AppBaseWrapper,
   children: [
     {
-      path: '/',
+      path: '',
       name: 'role.index',
       component: () => import('../views/RoleListUI.vue'),
       meta: {

@@ -30,7 +30,7 @@ function toggleRole(item: IAccessControlPermission, role: IRole) {
 async function onSave() {
   // mapping ke payload sesuai interface
   const payload = {
-    permissions: permissions.value.flatMap(group =>
+    permissions: permissions.value.data.flatMap(group =>
       group.permissions.map(p => ({
         id: p.id,
         roles: p.storeRolePermissions.map(r => r.roleId),
@@ -54,7 +54,7 @@ async function onSave() {
     </div>
 
     <!-- Tables -->
-    <div v-for="(group, gIdx) in permissions" :key="gIdx" class="rounded-lg mt-6">
+    <div v-for="(group, gIdx) in permissions.data" :key="gIdx" class="rounded-lg mt-6">
       <!-- Category Header -->
       <div class="py-2 font-semibold text-base md:text-lg">
         {{ group.name }}
