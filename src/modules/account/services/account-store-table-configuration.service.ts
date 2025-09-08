@@ -70,6 +70,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
   const accountStoreTableConfiguration_isEditableMode = ref(false);
   const accountStoreTableConfiguration_isUsingPutMethod = ref(false);
   const accountStoreTableConfiguration_isShowDialogExitConfirmation = ref(false);
+  const accountStoreTableConfiguration_isOperationSuccessful = ref(false);
   const accountStoreTableConfiguration_lists = ref<IAccountStoreTable[]>([]);
 
   /**
@@ -140,6 +141,8 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
 
+      accountStoreTableConfiguration_isOperationSuccessful.value = true;
+
       setTimeout(() => {
         router.push({
           name: 'account.store.detail',
@@ -147,6 +150,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
         });
       }, 1000);
     } catch (error: unknown) {
+      accountStoreTableConfiguration_isOperationSuccessful.value = false;
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -206,7 +210,26 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
           ...httpAbort_registerAbort(ACCOUNT_STORE_TABLE_DELETE_REQUEST),
         },
       );
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Table configuration updated successfully.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      accountStoreTableConfiguration_isOperationSuccessful.value = true;
+
+      setTimeout(() => {
+        router.push({
+          name: 'account.store.detail',
+          params: { id: route.params.id },
+        });
+      }, 1000);
     } catch (error: unknown) {
+      accountStoreTableConfiguration_isOperationSuccessful.value = false;
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
@@ -280,6 +303,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
             ) {
               // Same floor, just update the table data
               originalFloor.tables[tableIndex] = {
+                ...existingTable, // Preserve all existing fields including id, uid, etc.
                 ...accountStoreTableConfiguration_formDataOfAddTable,
                 // Preserve position and size from existing table
                 positionX: existingTable.positionX,
@@ -309,6 +333,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
 
               if (targetFloor) {
                 targetFloor.tables!.push({
+                  ...existingTable, // Preserve all existing fields including id, uid, etc.
                   ...accountStoreTableConfiguration_formDataOfAddTable,
                   positionX: existingTable.positionX,
                   positionY: existingTable.positionY,
@@ -321,6 +346,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
                   floorName: accountStoreTableConfiguration_formDataOfAddTable.floorName,
                   tables: [
                     {
+                      ...existingTable, // Preserve all existing fields including id, uid, etc.
                       ...accountStoreTableConfiguration_formDataOfAddTable,
                       positionX: existingTable.positionX,
                       positionY: existingTable.positionY,
@@ -488,6 +514,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
         tables:
           table.storeTables?.map(storeTable => ({
             ...storeTable,
+            floorId: storeTable.floorId,
             floorName: table.floorName, // Ensure each table has the floor name
           })) || [],
       });
@@ -581,6 +608,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
           }
         }
 
+        eventBus.emit('AppBaseDialog', { id: 'table-configuration-add-table-dialog', isOpen: false });
         eventBus.emit('AppBaseDialog', { id: 'account-store-table-dialog-confirmation', isOpen: false });
       },
       textButtonPrimary: 'Cancel',
@@ -767,6 +795,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
     accountStoreTableConfiguration_formValidationsOfAddTable,
     accountStoreTableConfiguration_isAlreadyHaveTable,
     accountStoreTableConfiguration_isEditableMode,
+    accountStoreTableConfiguration_isOperationSuccessful,
     accountStoreTableConfiguration_isShowDialogExitConfirmation,
     accountStoreTableConfiguration_lists,
     accountStoreTableConfiguration_listShapes: ACCOUNT_STORE_TABLE_CONFIGURATION_LIST_SHAPES,

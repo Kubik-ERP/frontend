@@ -27,6 +27,7 @@ const {
   accountStoreTableConfiguration_formValidationsOfAddTable,
   accountStoreTableConfiguration_isAlreadyHaveTable,
   accountStoreTableConfiguration_isEditableMode,
+  accountStoreTableConfiguration_isOperationSuccessful,
   accountStoreTableConfiguration_isShowDialogExitConfirmation,
   accountStoreTableConfiguration_lists,
   accountStoreTableConfiguration_listShapes,
@@ -77,6 +78,11 @@ let pendingNavigation: NavigationGuardNext | null = null;
 // 👉 PERBAIKAN 1: Handler untuk 'beforeunload' (refresh/close tab)
 // Fungsi ini HANYA untuk memicu dialog NATIVE browser.
 const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+  // If operation was successful, don't show browser confirmation
+  if (accountStoreTableConfiguration_isOperationSuccessful.value) {
+    return;
+  }
+
   const hasUnsavedChanges = accountStoreTableConfiguration_checkIfAlreadyHaveTable();
 
   if (hasUnsavedChanges) {
@@ -89,6 +95,12 @@ const handleBeforeUnload = (event: BeforeUnloadEvent) => {
 
 // 👉 PERBAIKAN 2: Handler untuk navigasi internal (menggunakan dialog kustom)
 onBeforeRouteLeave((_to, _from, next) => {
+  // If operation was successful, allow navigation without showing dialog
+  if (accountStoreTableConfiguration_isOperationSuccessful.value) {
+    next();
+    return;
+  }
+
   const hasUnsavedChanges = accountStoreTableConfiguration_checkIfAlreadyHaveTable();
 
   if (hasUnsavedChanges) {
@@ -130,6 +142,9 @@ const handleCancelLeave = () => {
  * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
  */
 onMounted(async () => {
+  // Reset operation success flag when component mounts
+  accountStoreTableConfiguration_isOperationSuccessful.value = false;
+
   accountStoreTableConfiguration_fetchOutletStoreTable();
 
   // Tambahkan listener untuk event refresh/close tab
