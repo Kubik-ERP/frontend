@@ -46,7 +46,7 @@ export const useReportService = (): IReportProvided => {
     return {
       startDate: (new Date(params.startDate).toISOString().split('T')[0] + 'T00:00:00.000Z') as unknown as Date,
       endDate: (new Date(params.endDate).toISOString().split('T')[0] + 'T23:59:59.999Z') as unknown as Date,
-      type,
+      type: type,
     };
   };
 
@@ -94,7 +94,7 @@ export const useReportService = (): IReportProvided => {
 
   const report_getVoucherReport = async () => {
     try {
-      await store.getVoucherReport(report_queryParams, {
+      await store.getVoucherReport(formatQueryParamsDate(report_queryParams), {
         ...httpAbort_registerAbort('VOUCHERREPORT_REQUEST'),
       });
     } catch (error: unknown) {

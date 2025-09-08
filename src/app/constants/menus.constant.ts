@@ -70,7 +70,7 @@ export const LIST_SIDEBAR_MENUS = [
         name: 'Report',
         iconName: 'report',
         path: '/report',
-        isHaveSubMenus: false,
+        isHaveSubMenus: true,
         subMenus: [
           {
             name: 'Financial Report',

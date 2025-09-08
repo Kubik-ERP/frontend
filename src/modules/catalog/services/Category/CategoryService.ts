@@ -51,7 +51,6 @@ export const useCategoryService = () => {
 
   const category_formRules = computed(() => ({
     name: { required },
-    description: {},
   }));
 
   const category_formValidations = useVuelidate(category_formRules, category_formData, {
@@ -63,7 +62,7 @@ export const useCategoryService = () => {
       headers: headers,
     });
     const lastPage = response.data.data.lastPage;
-    const categories: ICategory[] = response.data.data.categories.map((item: ICategory) => ({
+    const categories: ICategory[] = response.data.data.data.map((item: ICategory) => ({
       id: item.id,
       category: item.category,
       description: item.description ?? '-',
