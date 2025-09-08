@@ -5,6 +5,15 @@ import type { IAccountStoreDetailProvided } from '../../interfaces';
 // Qrcode
 import Qrcode from 'qrcode.vue';
 
+// Stores
+import { useOutletStore } from '@/modules/outlet/store';
+
+/**
+ * @description Injected variables
+ */
+const outletStore = useOutletStore();
+const { outlet_selectedOutletOnAccountPage } = storeToRefs(outletStore);
+
 /**
  * @description Inject all the data and methods what we need
  */
@@ -60,7 +69,7 @@ const {
 
           <div class="flex items-center gap-2">
             <Qrcode
-              :value="`http://103.191.63.109:8090/authentication/sign-in?floorName=${accountStoreDetail_selectedTable?.floorName ?? ''}&tablesName=${accountStoreDetail_selectedTable?.name ?? ''}`"
+              :value="`${APP_BASE_URL}/self-order?storeId=${outlet_selectedOutletOnAccountPage?.id}&floorName=${accountStoreDetail_selectedTable?.floorName ?? ''}&tablesName=${accountStoreDetail_selectedTable?.name ?? ''}`"
             />
 
             <PrimeVueButton
@@ -105,7 +114,7 @@ const {
         >
           <template #default>
             <section id="content" class="flex items-center justify-center gap-2 w-full">
-              <AppBaseSvg name="edit-white" />
+              <AppBaseSvg name="edit-white" class="w-4 h-4" />
               <span class="font-semibold text-sm lg:text-base text-center text-white">Edit Table</span>
             </section>
           </template>
