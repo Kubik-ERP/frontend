@@ -37,7 +37,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   manage_purchase_order: ['/inventory', '/purchase-order'],
 
   // Staff management
-  manage_staff_member: ['/staff', '/staff/staff-member', '/user-permission'],
+  manage_staff_member: ['/staff', '/staff/staff-member', '/user-permission', '/user-permission/edit', '/user-permission/role' ],
   manage_staff_attendance: ['/staff/attendance'],
 
   // Cash management
