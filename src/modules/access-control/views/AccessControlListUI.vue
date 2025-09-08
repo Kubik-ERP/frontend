@@ -29,7 +29,7 @@ provide('accessControlPermission', {
     </div>
 
     <!-- Tables -->
-    <div v-for="(group, gIdx) in permissions" :key="gIdx" class="rounded-lg mt-6">
+    <div v-for="(group, gIdx) in permissions.data" :key="gIdx" class="rounded-lg mt-6">
       <!-- Category Header -->
       <div class="py-2 font-semibold text-base md:text-lg">
         {{ group.name }}
