@@ -1,0 +1,7 @@
+{
+  "customer-waiting-list": {
+    "preparingOrders": "Pesanan Disiapkan",
+    "orderComplete": "Pesanan Selesai",
+    "orderNumber": "Nomor Pesanan"
+  }
+}
