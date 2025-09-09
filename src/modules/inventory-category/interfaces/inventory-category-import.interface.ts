@@ -1,7 +1,7 @@
 export interface IInventoryCategoryImport {
-  code: string;
-  name: string;
-  notes: string;
+  categoryCode: string;
+  categoryName: string;
+  description: string;
   status: string;
   errorMessages?: string;
 }

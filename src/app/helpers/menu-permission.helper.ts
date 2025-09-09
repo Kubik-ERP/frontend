@@ -27,7 +27,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
 
   // Inventory management
   manage_item: ['/inventory', '/items', '/items/view/:id', '/items/create', '/items/edit/:id'],
-  category_management: ['/inventory', '/inventory-category'],
+  category_management: ['/inventory',  '/inventory-category'],
   supplier_management: ['/inventory', '/supplier', '/supplier/create', '/supplier/edit/:id', '/supplier/view/:id'],
   view_supplier_details: ['/inventory', '/supplier/view/:id'],
   stock_adjustment: ['/inventory', '/items', '/items/view/:id'],
@@ -97,9 +97,9 @@ export const filterMenusByPermissions = (
   menuCategories: IMenuCategory[],
   userPermissions: string[],
 ): IMenuCategory[] => {
-  //   if (hasAccessAllStore(userPermissions)) {
-  //   return menuCategories;
-  // }
+//   if (hasAccessAllStore(userPermissions)) {
+//   return menuCategories;
+// }
   return menuCategories
     .map(category => {
       const filteredMenus = category.menus.filter((menu: IMenu) => {

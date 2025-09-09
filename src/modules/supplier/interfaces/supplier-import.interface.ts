@@ -15,6 +15,7 @@ export interface ISupplierImport {
   rowNumber: number;
 }
 
+
 export interface ISupplierActionResponse {
   statusCode: number;
   message: string;

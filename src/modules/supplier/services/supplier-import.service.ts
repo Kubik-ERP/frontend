@@ -119,7 +119,6 @@ export const useSupplierImportService = (): ISupplierImportProvided => {
       console.warn('No file selected for upload');
       return;
     }
-    supplierImport_step.value = 2;
     supplierImport_isLoading.value = true;
     try {
       const formData = new FormData();
@@ -154,10 +153,10 @@ export const useSupplierImportService = (): ISupplierImportProvided => {
       };
 
       supplierImport_step.value = 3;
+      supplierImport_isLoading.value = false;
     } catch (error) {
       supplierImport_step.value = 1;
       console.error('Upload failed:', error);
-    } finally {
       supplierImport_isLoading.value = false;
     }
   };

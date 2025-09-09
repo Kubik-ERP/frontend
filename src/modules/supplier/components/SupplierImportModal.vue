@@ -82,7 +82,7 @@ const {
         </section>
 
         <!-- Step 3: Preview / Error -->
-        <section v-else class="flex flex-col w-full h-full relative">
+        <section v-else-if="supplierImport_step === 3" class="flex flex-col w-full h-full relative">
           <div class="flex flex-col w-full">
             <AppBaseDataTable
               :columns="supplierImport_columns"
@@ -98,13 +98,22 @@ const {
             >
               <template #body="{ column, data }">
                 <template v-if="column.value === 'code'">
-                  <span class="text-gray-700">{{ data.code }}</span>
+                  <span class="text-gray-700">{{ data.supplierCode }}</span>
                 </template>
                 <template v-else-if="column.value === 'supplierName'">
                   <span class="text-gray-700">{{ data.supplierName }}</span>
                 </template>
-                <template v-else-if="column.value === 'notes'">
-                  <span class="text-gray-500">{{ data.notes }}</span>
+                <template v-else-if="column.value === 'contactPerson'">
+                  <span class="text-gray-500">{{ data.contactPerson }}</span>
+                </template>
+                <template v-else-if="column.value === 'phoneNumber'">
+                  <span class="text-gray-500">{{ data.phoneNumber }}</span>
+                </template>
+                <template v-else-if="column.value === 'email'">
+                  <span class="text-gray-500">{{ data.email }}</span>
+                </template>
+                <template v-else-if="column.value === 'address'">
+                  <span class="text-gray-500">{{ data.address }}</span>
                 </template>
                 <template v-else-if="column.value === 'status'">
                   <span

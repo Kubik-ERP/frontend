@@ -23,17 +23,15 @@ export const useStorageLocationImportService = (): IStorageLocationImportProvide
   const uploadedFile = ref<File | null>(null);
 
   // Handler
-  const storageLocationImport_onSubmit = () => {
+  const storageLocationImport_onSubmit = async () => {
     try{
       const batchId = localStorage.getItem('inventory_batch_id')?.toString();
       if (batchId) {
-        void store.storageLocationImport_execute(batchId, {
+        await store.storageLocationImport_execute(batchId, {
           ...httpAbort_registerAbort('STORAGE_LIST_REQUEST_EXECUTE'),
         });
 
-        localStorage.removeItem('inventory_batch_id');
-
-        void store.storageLocation_fetchListData(storageLocation_queryParams, {
+        await store.storageLocation_fetchListData(storageLocation_queryParams, {
           ...httpAbort_registerAbort('STORAGE_LIST_REQUEST'),
         })
       }

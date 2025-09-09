@@ -1,9 +1,9 @@
 export interface IStorageLocationImportFailedSuccessData {
   id: string;
   rowNumber: number;
-  code: string;
-  name: string;
-  notes: string;
+  locationCode: string;
+  locationName: string;
+  description: string;
   status: string;
   errorMessages?: string;
 }
