@@ -315,40 +315,30 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   //     }
   //   };
 
-  watch(
-    () => [
-      cashierProduct_selectedProduct.value,
-      cashierOrderSummary_modalVoucher.value.show,
-      cashierOrderSummary_modalVoucher.value.search,
-    ],
-    async () => {
-      if (cashierOrderSummary_modalVoucher.value.show && cashierProduct_selectedProduct.value.length > 0) {
-        debouncedCalculateEstimation();
-        getVoucherActive(
-          cashierOrderSummary_modalVoucher.value.search,
-          cashierProduct_selectedProduct.value.map(p => p.productId),
-        );
+watch(
+  () => [
+    cashierProduct_selectedProduct.value,
+    cashierOrderSummary_modalVoucher.value.show,
+    cashierOrderSummary_modalVoucher.value.search,
+  ],
+  async () => {
+    if (cashierOrderSummary_modalVoucher.value.show && cashierProduct_selectedProduct.value.length > 0) {
+      debouncedCalculateEstimation();
+      await getVoucherActive(
+        cashierOrderSummary_modalVoucher.value.search,
+        cashierProduct_selectedProduct.value.map(p => p.productId),
+      );
+      if (voucherData.value.length > 0) {
+        // Set default value voucherId dengan voucher pertama
+        cashierOrderSummary_modalVoucher.value.form.voucherId = voucherData.value[0].id;
       }
-      else{
-          getVoucherActive(
-            cashierOrderSummary_modalVoucher.value.search,
-            []
-          );
-      }
+    }
 
-      // else{
-      //   fetchVoucherProductList();
-      //     getVoucherActive(
-      //       cashierOrderSummary_modalVoucher.value.search,
-      //       [voucherProductList.value[0].id],
-      //     );
-      // }
-
-      if (cashierOrderSummary_modalVoucher.value.form.voucherId) {
-        debouncedCalculateEstimation();
-      }
-    },
-  );
+    if (cashierOrderSummary_modalVoucher.value.form.voucherId) {
+      debouncedCalculateEstimation();
+    }
+  },
+);
 
   /**
    * @description Handle voucher selection
@@ -434,11 +424,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description Handle voucher selection
    * @returns void
    */
-  const getVoucherActive = async (search: string, productIds: string[]) => {
+  const getVoucherActive = async (search: string, productIds?: string[]) => {
     try {
-      const response = await storeVoucher.voucherList_getActiveVoucher(search, productIds);
+      const response = await storeVoucher.voucherList_getActiveVoucher(search, productIds ?? []);
       const data = response.data;
 
+      cashierOrderSummary_modalVoucher.value.form.voucherId = data[0].id;
       voucherData.value = data.map((voucher: IVoucher) => {
         const total = cashierOrderSummary_calculateEstimation.value.data.grandTotal;
         const isAmountMatch = total >= voucher.minPrice;

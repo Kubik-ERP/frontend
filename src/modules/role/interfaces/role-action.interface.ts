@@ -9,5 +9,5 @@ export interface IRoleActionProvided{
     role_formValidation: globalThis.Ref<Validation>;
     role_formMode: globalThis.Ref<'create' | 'update'>;
     // role_createUpdatePayload: globalThis.Ref<IRoleFormData>;
-    // role_formValid: globalThis.ComputedRef<boolean>;
+    role_formValid: globalThis.ComputedRef<boolean>;
 }

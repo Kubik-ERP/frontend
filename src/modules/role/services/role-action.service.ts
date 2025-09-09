@@ -1,4 +1,5 @@
 import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 import { IRoleFormData } from '../interfaces/index.interface';
 import { IRoleActionProvided } from '../interfaces/role-action.interface';
 import { useRoleStore } from '../store';
@@ -10,8 +11,6 @@ export const useRoleActionService = (): IRoleActionProvided => {
   const role_formMode = ref<'update' | 'create'>('create');
 
   const role_formOnLoading = ref<boolean>(false);
-
-  // const role_formValid = ref<boolean>(false);
 
   const role_formData = ref<IRoleFormData>({
     id: '',
@@ -35,15 +34,33 @@ export const useRoleActionService = (): IRoleActionProvided => {
   });
 
   const role_formValidationRules = computed(() => ({
-    name: { required: true },
+    name: { required },
   }));
 
-  const role_formValidationInstance = useVuelidate(role_formValidationRules, role_formData, {
+  const role_validModel = computed(() => ({
+    name: role_formData.value.name,
+  }));
+
+  const role_formValidationInstance = useVuelidate(role_formValidationRules, role_validModel, {
     $autoDirty: true,
     $lazy: true,
   });
 
+  const role_formValid = computed(() => !role_formValidationInstance.value.$invalid);
+
   const role_onSubmit = async (payload: IRoleFormData, id?: string) => {
+    const isFormCorrect = await role_formValidationInstance.value.$validate();
+    if (!isFormCorrect) {
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Please fill all required fields',
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      return;
+    }
+
     role_formOnLoading.value = true;
     try {
       let result;
@@ -62,18 +79,9 @@ export const useRoleActionService = (): IRoleActionProvided => {
       });
 
       if (result) {
-        // await store.roleList_fetchListData(
-        //   {
-        //     page: 1,
-        //     pageSize: 10,
-        //     orderBy: null,
-        //     orderDirection: null,
-        //   },
-        //   {},
-        // );
         const argsEventEmitter: IPropsToast = {
           isOpen: true,
-          type: result.statusCode === 201 ? EToastType.SUCCESS : EToastType.DANGER,
+          type: result.statusCode === 201 || result.statusCode === 200 ? EToastType.SUCCESS : EToastType.DANGER,
           message: result.message || 'Role Action successfully!',
           position: EToastPosition.TOP_RIGHT,
         };
@@ -107,5 +115,7 @@ export const useRoleActionService = (): IRoleActionProvided => {
     role_onCancel,
     role_formValidation: role_formValidationInstance,
     role_formMode,
+    role_formValid,
   };
 };
+

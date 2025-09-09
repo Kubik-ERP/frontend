@@ -1,4 +1,5 @@
 import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 import { IDeviceActionProvided, IDeviceFormData, IDevicePayload } from '../interfaces';
 import { useDeviceStore } from '../store';
 import { DEVICE_LIST_REQUEST } from '../constans/index.constant';
@@ -17,7 +18,7 @@ export const useDeviceActionService = (): IDeviceActionProvided => {
   });
 
   const deviceAction_formValidationRules = computed(() => ({
-    name: { required: true },
+    name: { required },
   }));
 
   const deviceAction_validModel = computed(() => ({
@@ -38,15 +39,26 @@ export const useDeviceActionService = (): IDeviceActionProvided => {
     }
   });
 
-  const formValid = computed(() => {
-    // simple computed: name must not be empty
-    return device_actionformData.value.name.trim() !== '';
+  const formIsValid = computed(() => {
+    return !deviceAction_formValidation.value.$invalid;
   });
 
   /**
    * @description : handle action in modal form
    * */
   const device_ActionOnSubmit = async (id?: string, payload?: IDevicePayload) => {
+    const isFormCorrect = await deviceAction_formValidation.value.$validate();
+    if (!isFormCorrect) {
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Please fill all required fields',
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      return;
+    }
+
     if (deviceList_formMode.value === 'create') {
       deviceList_actionResponse.value = await store.deviceList_createData(payload as IDevicePayload, {
         ...httpAbort_registerAbort(DEVICE_LIST_REQUEST + '_CREATE'),
@@ -202,6 +214,7 @@ export const useDeviceActionService = (): IDeviceActionProvided => {
     device_actionOnDelete: device_actionOnDelete,
     device_actionLoading: deviceList_loading,
     device_actionResponse: deviceList_actionResponse,
-    formIsValid: formValid,
+    formIsValid: formIsValid,
   };
 };
+

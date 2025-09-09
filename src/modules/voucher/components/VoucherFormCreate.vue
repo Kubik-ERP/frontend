@@ -12,6 +12,7 @@ const {
   voucherFormReset,
   voucherFormOnSubmit,
   voucherProductList,
+  voucherFormIsValid,
 } = useVoucherCreateService();
 
 // --- State untuk UI
@@ -76,16 +77,7 @@ function removeSelectedProduct(id: string) {
 const formatCurrency = (val: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(val);
 
-const isFormValid = computed(
-  () =>
-    !!form.value.title &&
-    !!form.value.code &&
-    !!form.value.validity &&
-    (form.value.isPercentage ? form.value.discountPercent > 0 : form.value.discountNominal > 0) &&
-    (!form.value.enableMinTransaction || form.value.minTransaction >= 0) &&
-    form.value.quota >= 1 && // pastikan minimal 1
-    (form.value.productScope === 'all' || form.value.selectedProducts.length > 0),
-);
+
 
 function formatDate(date: string | Date | null) {
   if (!date) return '';
@@ -493,7 +485,7 @@ const onDateSelect = (val: [Date, Date] | null) => {
         <PrimeVueButton label="Cancel" class="p-button-outlined p-button-secondary px-6" @click="handleCancel" />
         <PrimeVueButton
           label="Add Voucher"
-          :disabled="!isFormValid || voucherFormIsLoading"
+          :disabled="!voucherFormIsValid || voucherFormIsLoading"
           class="p-button-primary px-6"
           type="submit"
         />

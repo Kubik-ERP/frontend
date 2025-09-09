@@ -1,5 +1,6 @@
 // useStorageLocationActionService.ts
 import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 import {
   IStorageLocationActionProvided,
   IStorageLocationFormData,
@@ -27,13 +28,15 @@ export const useStorageLocationActionService = (): IStorageLocationActionProvide
 
   // Rules simple
   const storageLocation_formValidationRules = computed(() => ({
-    name: { required: true },
-    notes: { required: false },
+    name: { required },
+    notes: {},
+    code: {},
   }));
 
   const storageLocation_validModel = computed(() => ({
     name: storageLocation_formData.value.name,
     notes: storageLocation_formData.value.notes,
+    code: storageLocation_formData.value.code,
   }));
 
   // useVuelidate instance
@@ -51,6 +54,18 @@ export const useStorageLocationActionService = (): IStorageLocationActionProvide
     mode: 'create' | 'edit',
     id?: string,
   ) => {
+    const isFormCorrect = await storageLocation_formValidationInstance.value.$validate();
+    if (!isFormCorrect) {
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Please fill all required fields',
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      return;
+    }
+
     storageLocation_formOnLoading.value = true;
     try {
       // Mapping payload ke data API
@@ -59,8 +74,6 @@ export const useStorageLocationActionService = (): IStorageLocationActionProvide
         name: payload.name?.trim(),
         notes: payload.notes?.trim(),
       };
-
-      console.log('storageLocation_createUpdatePayload.value', storageLocation_createUpdatePayload.value);
 
       let result;
       if (mode === 'create') {
@@ -111,10 +124,11 @@ export const useStorageLocationActionService = (): IStorageLocationActionProvide
 
     storageLocation_formData.value.name = '';
     storageLocation_formData.value.notes = '';
+    storageLocation_formData.value.code = '';
   };
 
   const storageLocation_formValid = computed(() => {
-    return storageLocation_formData.value.name.trim().length > 0;
+    return !storageLocation_formValidationInstance.value.$invalid;
   });
 
   // Sinkron payload setiap kali formData berubah
@@ -123,6 +137,7 @@ export const useStorageLocationActionService = (): IStorageLocationActionProvide
     newValue => {
       storageLocation_createUpdatePayload.value.name = newValue.name;
       storageLocation_createUpdatePayload.value.notes = newValue.notes;
+      storageLocation_createUpdatePayload.value.code = newValue.code;
     },
     { deep: true },
   );
@@ -137,3 +152,4 @@ export const useStorageLocationActionService = (): IStorageLocationActionProvide
     storageLocation_onCancel,
   };
 };
+
