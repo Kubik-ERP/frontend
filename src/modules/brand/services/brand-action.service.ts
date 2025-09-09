@@ -1,5 +1,6 @@
 // useBrandActionService.ts
 import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 import { IBrandCreateUpdatePayload } from '../interfaces';
 import { IBrandActionProvided, IBrandFormData } from '../interfaces/brand-action.interface';
 import eventBus from '@/plugins/mitt';
@@ -9,7 +10,7 @@ import { useBrandStore } from '../store';
 export const useBrandActionService = (): IBrandActionProvided => {
   const store = useBrandStore();
   const brand_formOnLoading = ref<boolean>(false);
-  const brand_formData = ref<IBrandFormData>({
+  const brand_formData = reactive<IBrandFormData>({
     code: '',
     brandName: '',
     notes: '',
@@ -23,22 +24,29 @@ export const useBrandActionService = (): IBrandActionProvided => {
 
   // rules simple (ganti/expand sesuai kebutuhan)
   const brand_formValidationRules = computed(() => ({
-    brandName: { required: true },
-    notes: { required: false },
-  }));
-
-  const brand_validModel = computed(() => ({
-    brandName: brand_formData.value.brandName,
-    notes: brand_formData.value.notes,
+    brandName: { required },
+    notes: {},
   }));
 
   // useVuelidate instance
-  const brand_formValidationInstance = useVuelidate(brand_formValidationRules, brand_validModel, {
+  const brand_formValidationInstance = useVuelidate(brand_formValidationRules, brand_formData, {
     $autoDirty: true,
     $lazy: true,
   });
 
   const brand_onSubmit = async (payload: IBrandFormData, mode: 'create' | 'edit', id?: string) => {
+    const isFormCorrect = await brand_formValidationInstance.value.$validate();
+    if (!isFormCorrect) {
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Please fill all required fields',
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      return;
+    }
+
     brand_formOnLoading.value = true;
     try {
       brand_createUpdatePayload.value = {
@@ -96,8 +104,7 @@ export const useBrandActionService = (): IBrandActionProvided => {
   };
 
   const brand_formValid = computed(() => {
-    // simple computed: brandName must not be empty
-    return brand_formData.value.brandName.trim().length > 0;
+    return !brand_formValidationInstance.value.$invalid;
   });
 
   // sinkron payload setiap kali formData berubah
@@ -120,3 +127,4 @@ export const useBrandActionService = (): IBrandActionProvided => {
     brand_onCancel,
   };
 };
+
