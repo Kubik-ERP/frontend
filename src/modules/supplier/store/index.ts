@@ -18,7 +18,7 @@ import type {
 
 // Plugins
 import httpClient from '@/plugins/axios';
-import { ISupplierActionResponse, ISupplierImport, ISupplierImportResponse } from '../interfaces/supplier-import.interface';
+import { ISupplierActionResponse, ISupplierImportResponse } from '../interfaces/supplier-import.interface';
 
 export const useSupplierStore = defineStore('supplier', {
   state: (): ISupplierStateStore => ({
@@ -271,24 +271,6 @@ export const useSupplierStore = defineStore('supplier', {
           data,
           {
             ...requestConfigurations,
-          },
-        );
-
-        response.data.data.mergedData = response.data.data.successData.map(
-          (item: ISupplierImport) => {
-            return {
-              ...item,
-              status: 'success',
-            };
-          },
-        );
-
-        response.data.data.mergedData = response.data.data.failedData.map(
-          (item: ISupplierImport) => {
-            return {
-              ...item,
-              status: 'failed',
-            };
           },
         );
 

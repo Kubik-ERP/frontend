@@ -98,13 +98,13 @@ const {
             >
               <template #body="{ column, data }">
                 <template v-if="column.value === 'code'">
-                  <span class="text-gray-700">{{ data.code }}</span>
+                  <span class="text-gray-700">{{ data.brandCode }}</span>
                 </template>
                 <template v-else-if="column.value === 'name'">
-                  <span class="text-gray-700">{{ data.name }}</span>
+                  <span class="text-gray-700">{{ data.brandName }}</span>
                 </template>
                 <template v-else-if="column.value === 'notes'">
-                  <span class="text-gray-500">{{ data.notes }}</span>
+                  <span class="text-gray-500">{{ data.description }}</span>
                 </template>
                   <template v-else-if="column.value === 'status'">
                   <span

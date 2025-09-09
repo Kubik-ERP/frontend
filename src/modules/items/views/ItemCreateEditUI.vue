@@ -267,16 +267,15 @@ const confirmUpdate = async () => {
 
           <AppBaseFormGroup
             v-slot="{ classes }"
-            class-label="block text-sm font-medium leading-6 text-gray-900 w-full hidden"
+            class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="storage-location"
             name="Storage Location"
             spacing-bottom="mb-0"
-            :validators="itemFormValidation.storageLocationId"
+            :validators="itemFormValidation.storageLocation"
             :default-value="storageLocations[0] ?? ''"
           >
             <PrimeVueDropdown
-
               id="storage-location"
               v-model="form.storageLocationId"
               :options="storageLocations"
@@ -285,7 +284,7 @@ const confirmUpdate = async () => {
               filter
               show-clear
               placeholder="Select or search storage location"
-              class="w-full hidden"
+              class="w-full"
               :class="{ ...classes }"
             />
           </AppBaseFormGroup>

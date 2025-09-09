@@ -101,22 +101,13 @@ const {
             >
               <template #body="{ column, data }">
                 <template v-if="column.value === 'code'">
-                  <span class="text-gray-700">{{ data.code }}</span>
+                  <span class="text-gray-700">{{ data.locationCode }}</span>
                 </template>
                 <template v-else-if="column.value === 'name'">
-                  <span class="text-gray-700">{{ data.name }}</span>
+                  <span class="text-gray-700">{{ data.locationName }}</span>
                 </template>
-                <template v-else-if="column.value === 'contactPerson'">
-                  <span class="text-gray-500">{{ data.contactPerson }}</span>
-                </template>
-                <template v-else-if="column.value === 'phoneNumber'">
-                  <span class="text-gray-500">{{ data.phoneNumber }}</span>
-                </template>
-                <template v-else-if="column.value === 'email'">
-                  <span class="text-gray-500">{{ data.email }}</span>
-                </template>
-                <template v-else-if="column.value === 'address'">
-                  <span class="text-gray-500">{{ data.address }}</span>
+                <template v-else-if="column.value === 'notes'">
+                  <span class="text-gray-500">{{ data.description }}</span>
                 </template>
                 <template v-else-if="column.value === 'status'">
                   <span
