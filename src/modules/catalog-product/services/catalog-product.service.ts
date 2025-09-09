@@ -85,7 +85,7 @@ export const useProductService = () => {
   const product_formRules = computed(() => ({
     name: { required },
     price: { required },
-    categories: { required },
+    categories: {},
     discount_value: { required },
     variants: {
       $each: helpers.forEach({

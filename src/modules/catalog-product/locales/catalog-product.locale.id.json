@@ -43,7 +43,7 @@
       "discount": {
         "checkbox": "Tambahkan Harga Diskon",
         "valueLabel": "Nilai Diskon",
-        "total": "Total Harga Setelah Diskon:"
+        "total": "Total Harga Setelah Diskon"
       },
       "variant": {
         "label": "Varian",
