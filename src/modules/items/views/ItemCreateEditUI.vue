@@ -11,6 +11,7 @@ const {
   inventoryItemsAction_onSubmit,
   inventoryItemsAction_onCancel,
   inventoryItemsAction_Validation: itemFormValidation,
+  inventoryItemsAction_isValid,
   inventoryItemAction_supplierList: suppliers,
   inventoryItemsAction_formOnMode,
   inventoryItems_editingItem,
@@ -21,19 +22,7 @@ const { inventoryItems_onDelete } = useInventoryItemsListService();
 
 const isUpdateModal = ref(false);
 
-const isFormInvalid = computed(() => {
-  return (
-    !form.value.name ||
-    !form.value.sku ||
-    !form.value.categoryId ||
-    !form.value.unit ||
-    !form.value.pricePerUnit ||
-    !form.value.supplierId ||
-    !form.value.stockQuantity ||
-    !form.value.reorderLevel ||
-    !form.value.minimumStockQuantity
-  );
-});
+
 
 const onSubmit = () => {
   if (inventoryItemsAction_formOnMode.value === 'create') {
@@ -345,7 +334,7 @@ const confirmUpdate = async () => {
         <PrimeVueButton
           :label="inventoryItemsAction_formOnMode === 'create' ? 'Add Item' : 'Update Item'"
           class="w-full sm:w-auto !px-6"
-          :disabled="isFormInvalid"
+          :disabled="!inventoryItemsAction_isValid"
           @click="onSubmit"
         />
       </div>

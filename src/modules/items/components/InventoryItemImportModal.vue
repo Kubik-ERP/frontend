@@ -58,7 +58,7 @@ const {
               <span class="text-gray-400">or</span>
               <PrimeVueButton
                 icon="pi pi-download"
-                label="Download Template"
+                label="Download Excel"
                 class="bg-white border border-primary text-primary px-4 py-2 mt-1"
                 @click.stop="inventoryItem_handleDownloadTemplate"
               />
