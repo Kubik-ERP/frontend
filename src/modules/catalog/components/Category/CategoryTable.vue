@@ -259,9 +259,9 @@ const rbac = useRbac();
       }"
     >
       <template #header>
-        <div class="flex justify-between">
+        <div class="flex flex-wrap items-center justify-between">
           <h1 class="text-2xl font-bold">{{ useLocalization('table.title') }}</h1>
-          <div class="flex gap-4">
+          <div class="flex flex-wrap gap-4">
             <form @submit.prevent="handleSearch">
               <PrimeVueIconField>
                 <PrimeVueInputIcon><img :src="searchSVG" alt="" /></PrimeVueInputIcon>

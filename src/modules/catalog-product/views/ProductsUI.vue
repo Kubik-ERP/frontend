@@ -235,11 +235,11 @@ const hasPermission = rbac.hasPermission('product_management');
         @page="onPageChange"
       >
         <template #header>
-          <div class="flex justify-between">
+          <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
               <h1 class="text-2xl font-bold">{{ useLocalization('main.table.title') }}</h1>
             </div>
-            <div class="flex gap-4 justify-end">
+            <div class="flex flex-wrap gap-4 justify-end">
               <div class="flex flex-col w-64 max-w-64">
                 <PrimeVueMultiSelect
                   v-model="selectedCategories"
