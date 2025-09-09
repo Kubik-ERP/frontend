@@ -34,10 +34,17 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   manage_brand: ['/inventory', '/brand'],
   manage_stock_opname: ['/inventory', '/stock-opname', '/stock-opname/issue/:id', '/stock-opname/detail/:id'],
   manage_storage_location: ['/inventory', '/storage-location'],
-  manage_purchase_order: ['/purchase-order' ],
+  manage_purchase_order: ['/purchase-order'],
 
   // Staff management
-  manage_staff_member: ['/staff', '/staff/staff-member', '/user-permission', '/user-permission/access-control', '/user-permission/access-control/edit','/user-permission/role' ],
+  manage_staff_member: [
+    '/staff',
+    '/staff/staff-member',
+    '/user-permission',
+    '/user-permission/access-control',
+    '/user-permission/access-control/edit',
+    '/user-permission/role',
+  ],
   manage_staff_attendance: ['/staff/attendance'],
 
   // Cash management

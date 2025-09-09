@@ -43,7 +43,7 @@ const {
           v-model="authenticationConnectDevice_formData.deviceCode"
           placeholder="Enter Device Code"
           :class="[
-            'border border-solid font-bold text-2xl text-text-primary text-center w-full placeholder:font-normal placeholder:text-2xl placeholder:text-text-disabled placeholder:text-center px-3 py-4 rounded-lg',
+            'border border-solid font-bold text-2xl text-text-primary uppercase text-center w-full placeholder:font-normal placeholder:text-2xl placeholder:text-text-disabled placeholder:text-center placeholder:capitalize px-3 py-4 rounded-lg',
             authenticationConnectDevice_formValidations.deviceCode.$error
               ? 'border-red-500'
               : 'border-grayscale-30',
