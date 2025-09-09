@@ -6,7 +6,7 @@ import type { IDashboardProvided } from '../interfaces';
 // inject
 const {
   dashboard_queryParams,
-  dashboard_values, // Uncommented to use in the template
+  // dashboard_values, // Uncommented to use in the template
 } = inject<IDashboardProvided>('dashboard')!;
 </script>
 <template>
@@ -20,7 +20,7 @@ const {
       />
     </section>
 
-    <section id="overview-cards" class="grid grid-rows-1 grid-cols-12 gap-4">
+    <!-- <section id="overview-cards" class="grid grid-rows-1 grid-cols-12 gap-4">
       <section
         id="card-total-sales"
         class="col-span-6 lg:col-span-3 flex flex-col justify-between bg-white border border-solid border-grayscale-10 p-4 rounded-sm gap-6"
@@ -170,6 +170,6 @@ const {
           </span>
         </section>
       </section>
-    </section>
+    </section> -->
   </section>
 </template>
