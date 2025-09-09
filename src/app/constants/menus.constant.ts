@@ -168,10 +168,10 @@ export const LIST_SIDEBAR_MENUS = [
             name: 'Stock Opname',
             path: '/stock-opname',
           },
-          // {
-          //   name: 'Storage Location',
-          //   path: '/storage-location',
-          // },
+          {
+            name: 'Storage Location',
+            path: '/storage-location',
+          },
         ],
       },
       {

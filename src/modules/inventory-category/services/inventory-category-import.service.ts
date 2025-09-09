@@ -1,14 +1,20 @@
 import { ref } from 'vue';
 import {
+  IInventoryCategoryImport,
   IInventoryCategoryImportProvided,
   IInventoryCategoryImportResponse,
 } from '../interfaces/inventory-category-import.interface';
 import eventBus from '@/plugins/mitt';
-import { INVENTORY_CATEGORY_LIST_COLUMNS_IMPORT } from '../constants';
+import { INVENTORY_CATEGORY_LIST_COLUMNS_IMPORT, VOUCHER_LIST_REQUEST } from '../constants';
 import { ITEMS_LIST_REQUEST } from '@/modules/items/constants';
 import { useInventoryCategoryStore } from '../store';
+import { useInventoryCategoryService } from './inventory-category.service';
 export const useInventoryCategoryImportService = (): IInventoryCategoryImportProvided => {
   const store = useInventoryCategoryStore();
+
+  const {
+    inventoryCategoryList_queryParams
+  } = useInventoryCategoryService();
 
   // State
   const inventoryCategoryImport_step = ref<number>(1);
@@ -28,6 +34,14 @@ export const useInventoryCategoryImportService = (): IInventoryCategoryImportPro
           ...httpAbort_registerAbort(ITEMS_LIST_REQUEST + '_EXECUTE'),
         });
         if (res) {
+          await store.inventoryCategoryList_fetchList(
+            inventoryCategoryList_queryParams,
+            {
+              ...httpAbort_registerAbort(VOUCHER_LIST_REQUEST),
+              paramsSerializer: useParamsSerializer,
+            }
+          )
+
           const argsEventEmitter: IPropsToast = {
             isOpen: true,
             type: EToastType.SUCCESS,
@@ -125,12 +139,28 @@ export const useInventoryCategoryImportService = (): IInventoryCategoryImportPro
         ...httpAbort_registerAbort(ITEMS_LIST_REQUEST + '_IMPORT'),
       });
 
-      if (response.data.batchId) {
-        localStorage.setItem('inventory_batch_id', response.data.batchId);
-        inventoryCategoryImport_values.value = response;
+      const successData = (response.data?.successData ?? []).map((row: IInventoryCategoryImport) => ({
+        ...row,
+        status: 'success',
+      }));
 
-        inventoryCategoryImport_step.value = 3;
+      const failedData = (response.data?.failedData ?? []).map((row: IInventoryCategoryImport) => ({
+        ...row,
+        status: 'failed',
+        errorMessage: row.errorMessages,
+      }));
+
+      if (response?.data.batchId) {
+        localStorage.setItem('inventory_batch_id', response.data.batchId);
       }
+
+      inventoryCategoryImport_values.value = {
+        ...response,
+        data: {
+          ...response.data,
+          mergedData: [...successData, ...failedData],
+        },
+      };
     } catch (error) {
       inventoryCategoryImport_step.value = 1;
       console.error('Upload failed:', error);
