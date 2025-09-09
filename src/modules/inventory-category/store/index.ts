@@ -147,7 +147,7 @@ export const useInventoryCategoryStore = defineStore('inventory-category', {
       this.inventoryCategoryList_isLoading = true;
       try {
         const response = await httpClient.post<IInventoryCategoryImportResponse>(
-          `${INVENTORY_CATEGORY_BASE_ENDPOINT}/import/preview-data`,
+          `${INVENTORY_CATEGORY_BASE_ENDPOINT}/import/preview`,
           data,
           {
             ...requestConfigurations,
@@ -183,12 +183,7 @@ export const useInventoryCategoryStore = defineStore('inventory-category', {
     async inventoryCategory_Import_reset(batchId: string) {
       try {
         const response = await httpClient.delete<IInventoryCategoryActionResponse>(
-          `${INVENTORY_CATEGORY_BASE_ENDPOINT}/import/batch`,
-          {
-            data: {
-              batchId,
-            },
-          },
+          `${INVENTORY_CATEGORY_BASE_ENDPOINT}/import/batch/${batchId}`,
         );
         return Promise.resolve(response.data);
       } catch (error) {

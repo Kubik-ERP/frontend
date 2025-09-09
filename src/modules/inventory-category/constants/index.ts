@@ -34,17 +34,17 @@ export const INVENTORY_CATEGORY_LIST_COLUMNS_IMPORT = [
   {
     label: 'Category code',
     sortable: false,
-    value: 'code',
+    value: 'categoryName',
   },
   {
     label: 'Category Name',
     sortable: false,
-    value: 'name',
+    value: 'categoryCode',
   },
   {
     label: 'Description',
     sortable: false,
-    value: 'notes',
+    value: 'description',
   },
   {
     label: '',

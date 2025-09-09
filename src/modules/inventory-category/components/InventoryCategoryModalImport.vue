@@ -101,14 +101,14 @@ const {
               :is-using-custom-filter="true"
             >
               <template #body="{ column, data }">
-                <template v-if="column.value === 'code'">
-                  <span class="text-gray-700">{{ data.code }}</span>
+                <template v-if="column.value === 'categoryCode'">
+                  <span class="text-gray-700">{{ data.categoryCode }}</span>
                 </template>
-                <template v-else-if="column.value === 'name'">
-                  <span class="text-gray-700">{{ data.name }}</span>
+                <template v-else-if="column.value === 'categoryName'">
+                  <span class="text-gray-700">{{ data.categoryName }}</span>
                 </template>
-                <template v-else-if="column.value === 'notes'">
-                  <span class="text-gray-500">{{ data.notes }}</span>
+                <template v-else-if="column.value === 'description'">
+                  <span class="text-gray-500">{{ data.description }}</span>
                 </template>
                 <template v-else-if="column.value === 'status'">
                   <span
@@ -133,22 +133,6 @@ const {
                 </template>
               </template>
             </AppBaseDataTable>
-
-            <!-- Alert ditempel di bawah table -->
-            <div
-              v-if="
-                inventoryCategoryImport_values?.data?.mergedData?.some(
-                  (item: IInventoryCategoryImport) => item.status === 'failed',
-                )
-              "
-              class="absolute top-0 left-1/2 -translate-x-1/2 mt-2 p-3 border border-red-300 bg-red-50 text-red-700 rounded-md text-sm flex items-start gap-2 shadow-md"
-            >
-              <i class="pi pi-exclamation-triangle mt-0.5"></i>
-              <span>
-                Import Validation Failed — Some records didn’t meet required fields or format rules. Correct the
-                errors in your CSV/XLSX and re-upload.
-              </span>
-            </div>
           </div>
         </section>
       </div>
