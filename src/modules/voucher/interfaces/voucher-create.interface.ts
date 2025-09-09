@@ -111,4 +111,5 @@ export interface IVoucherCreateProvided {
   voucherFormReset: () => void;
   voucherFormFetchData: () => Promise<void>;
   voucherProductList: Ref<IProduct[]>;
+  voucherFormIsValid: Ref<boolean>;
 }
