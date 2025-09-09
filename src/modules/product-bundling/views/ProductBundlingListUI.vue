@@ -22,6 +22,10 @@ const togglePopover = (id: string, event: Event) => {
 onMounted(() => {
   productBundling_fetchProductBundlingList();
 });
+
+import { useRbac } from '@/app/composables/useRbac';
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('product_management');
 </script>
 <template>
   <div>
@@ -49,6 +53,7 @@ onMounted(() => {
       <template #header-suffix>
         <div class="flex items-center gap-2">
           <PrimeVueButton
+            v-if="hasPermission"
             class="bg-primary border-none w-fit px-5"
             severity="secondary"
             @click="$router.push({ name: 'product-bundling.add' })"
@@ -68,6 +73,7 @@ onMounted(() => {
       <template #body="{ column, data }">
         <template v-if="column.value === 'action'">
           <PrimeVueButton
+            v-if="hasPermission"
             variant="text"
             rounded
             aria-label="detail"
@@ -90,6 +96,7 @@ onMounted(() => {
           >
             <section id="popover-content" class="flex flex-col">
               <PrimeVueButton
+                v-if="hasPermission"
                 class="w-full px-4 py-3"
                 variant="text"
                 @click="$router.push({ name: 'product-bundling.edit', params: { id: data.id } })"
@@ -104,6 +111,7 @@ onMounted(() => {
                 </template>
               </PrimeVueButton>
               <PrimeVueButton
+                v-if="hasPermission"
                 class="w-full px-4 py-3"
                 variant="text"
                 @click="productBundling_onShowDialogDelete(data.id)"
@@ -138,5 +146,5 @@ onMounted(() => {
       </template>
     </AppBaseDataTable>
   </div>
-  <AppBaseDialogConfirmation id="product-bundling-delete-dialog-confirmation" />
+  <AppBaseDialogConfirmation v-if="hasPermission" id="product-bundling-delete-dialog-confirmation" />
 </template>
