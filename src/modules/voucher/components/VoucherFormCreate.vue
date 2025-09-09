@@ -12,7 +12,6 @@ const {
   voucherFormReset,
   voucherFormOnSubmit,
   voucherProductList,
-  voucherFormIsValid,
 } = useVoucherCreateService();
 
 // --- State untuk UI
@@ -138,43 +137,6 @@ const handleCancel = () => {
   }
 };
 
-// --- Tambahkan State untuk Dialog Preview
-const isPreviewModal = ref(false);
-
-// Hitung subtotal dari produk terpilih
-const subtotal = computed(() => {
-  if (form.value.productScope === 'all') {
-    return voucherProductList.value.reduce((sum, p) => sum + (p.price ?? 0), 0);
-  } else {
-    return form.value.selectedProducts.reduce((sum, id) => {
-      const product = voucherProductList.value.find(p => p.id === id);
-      return sum + (product?.price ?? 0);
-    }, 0);
-  }
-});
-
-// Hitung total diskon
-const discountTotal = computed(() => {
-  if (form.value.isPercentage) {
-    const percentDiscount = (subtotal.value * form.value.discountPercent) / 100;
-    return Math.min(percentDiscount, form.value.maxDiscountPrice || percentDiscount);
-  }
-  return form.value.discountNominal;
-});
-
-// Handle klik Add Voucher → buka preview dialog
-const openPreview = () => {
-  isPreviewModal.value = true;
-};
-
-// Confirm di Preview → jalankan submit asli
-const confirmPreview = async () => {
-  try {
-    await handleSubmit();
-  } catch (err) {
-    console.error(err);
-  }
-};
 
 const onDateSelect = (val: [Date, Date] | null) => {
   form.value.validity = val;
@@ -183,7 +145,7 @@ const onDateSelect = (val: [Date, Date] | null) => {
 
 <template>
   <section class="flex flex-col gap-y-5 p-6 w-full max-w-6xl body">
-    <form @submit.prevent="openPreview">
+    <form @submit.prevent="handleSubmit">
       <!-- Title & Validity -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <AppBaseFormGroup
@@ -485,100 +447,11 @@ const onDateSelect = (val: [Date, Date] | null) => {
         <PrimeVueButton label="Cancel" class="p-button-outlined p-button-secondary px-6" @click="handleCancel" />
         <PrimeVueButton
           label="Add Voucher"
-          :disabled="!voucherFormIsValid || voucherFormIsLoading"
+          :disabled=" voucherFormIsLoading"
           class="p-button-primary px-6"
           type="submit"
         />
       </div>
     </form>
   </section>
-
-  <!-- Dialog Preview -->
-  <PrimeVueDialog
-    :visible="isPreviewModal"
-    modal
-    :style="{ width: '50rem', maxWidth: '80vw' }"
-    header="Voucher Preview"
-    @hide="isPreviewModal = false"
-  >
-    <template #container>
-      <div class="p-8 bg-gray-50 rounded-xl">
-        <div class="grid grid-cols-1 md:grid-cols-1 gap-8">
-          <!-- Order Summary -->
-          <div class="bg-white border border-primary rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
-            <h3 class="text-xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
-              <i class="pi pi-shopping-cart text-primary"></i>
-              Order Summary
-            </h3>
-            <div class="flex justify-between text-sm mb-2">
-              <span class="text-gray-600">Subtotal:</span>
-              <span class="font-medium text-gray-800">{{ formatCurrency(subtotal) }}</span>
-            </div>
-            <div class="flex justify-between text-sm mt-2 text-primary font-medium">
-              <span>Discount Applied:</span>
-              <span>-{{ formatCurrency(discountTotal) }}</span>
-            </div>
-            <div class="flex justify-between text-sm mb-2">
-              <span class="text-red-600">Tax (10%):</span>
-              <span class="font-medium text-red-800">{{ formatCurrency(subtotal * 0.1) }}</span>
-            </div>
-            <hr class="my-3 border-gray-200" />
-            <div class="flex justify-between text-lg font-bold mt-2 text-gray-900">
-              <span>Final Total:</span>
-              <span class="text-primary">{{ formatCurrency(subtotal + subtotal * 0.1 - discountTotal) }}</span>
-            </div>
-          </div>
-
-          <!-- Discount Details -->
-          <div class="bg-white border border-primary rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
-            <h3 class="text-xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
-              <i class="pi pi-percentage text-primary"></i>
-              Discount Details
-            </h3>
-            <div class="flex justify-between text-sm mb-2">
-              <span class="text-gray-600">Name</span>
-              <span class="font-medium text-gray-900">{{ form.title || '-' }}</span>
-            </div>
-            <div class="flex justify-between text-sm mb-2">
-              <span class="text-gray-600">Type</span>
-              <span class="font-medium text-gray-900">{{
-                form.isPercentage ? 'Percentage' : 'Fixed Amount'
-              }}</span>
-            </div>
-            <div class="flex justify-between text-sm mb-2">
-              <span class="text-gray-600">Value</span>
-              <span class="font-medium text-gray-900">
-                {{ form.isPercentage ? form.discountPercent + '%' : formatCurrency(form.discountNominal) }}
-              </span>
-            </div>
-            <div class="flex justify-between text-sm mb-2">
-              <span class="text-gray-600">Period</span>
-              <span class="font-medium text-gray-900">
-                {{ form.validity ? formatDate(form.validity[0]) + ' to ' + formatDate(form.validity[1]) : '-' }}
-              </span>
-            </div>
-            <!-- <div class="flex justify-between text-sm mb-2">
-              <span class="text-gray-600">Rounding Method</span>
-              <span class="font-medium text-gray-900">Round Down</span>
-            </div> -->
-          </div>
-        </div>
-
-        <!-- Buttons -->
-        <div class="flex justify-end gap-4 mt-8">
-          <PrimeVueButton
-            label="Cancel"
-            class="p-button-outlined p-button-secondary w-32 h-11 text-base font-medium"
-            @click="isPreviewModal = false"
-          />
-
-          <PrimeVueButton
-            label="Confirm"
-            class="p-button-primary w-32 h-11 text-base font-medium shadow-sm hover:shadow-md transition-shadow"
-            @click="confirmPreview"
-          />
-        </div>
-      </div>
-    </template>
-  </PrimeVueDialog>
 </template>
