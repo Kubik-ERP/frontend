@@ -6,7 +6,7 @@ import { useRoleListService } from '../services/role-list.service';
 import confirmationSVG from '@/app/assets/icons/confirmation.svg';
 
 // ambil dari action service
-const { role_formOnLoading, role_formData, role_formValidation, role_onSubmit, role_onCancel } =
+const { role_formOnLoading, role_formData, role_formValidation, role_onSubmit, role_onCancel, role_formValid } =
   useRoleActionService();
 
 const { roleList_onDelete, roleList_fetchData } = useRoleListService();
@@ -107,7 +107,7 @@ const handleDelete = async () => {
           type="submit"
           class="w-full disabled:bg-gray-400 disabled:text-white disabled:border-none"
           :loading="role_formOnLoading"
-          :disabled="!role_formValidation"
+          :disabled="!role_formValid"
           @click="handleSubmit"
         >
           {{

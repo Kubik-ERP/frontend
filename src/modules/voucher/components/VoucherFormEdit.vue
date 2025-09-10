@@ -65,16 +65,6 @@ onMounted(async () => {
 const formatCurrency = (val: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(val);
 
-const isFormValid = computed(
-  () =>
-    !!form.value.title &&
-    !!form.value.validity &&
-    (form.value.isPercentage ? form.value.discountPercent > 0 : form.value.discountNominal > 0) &&
-    (!form.value.enableMinTransaction || form.value.minTransaction >= 0) &&
-    form.value.quota > 1 &&
-    (form.value.productScope === 'all' || form.value.selectedProducts.length > 0),
-);
-
 const buildVoucherPayload = (): IVoucherEditRequest => {
   const [start, end] = form.value.validity || [null, null];
 
@@ -469,7 +459,7 @@ function removeSelectedProduct(id: string) {
         <PrimeVueButton label="Cancel" class="p-button-outlined p-button-secondary px-6" @click="router.back()" />
         <PrimeVueButton
           label="Update Voucher"
-          :disabled="!isFormValid || voucherEdit_isLoading"
+          :disabled="voucherEdit_isLoading"
           class="p-button-primary px-6"
           type="submit"
         />

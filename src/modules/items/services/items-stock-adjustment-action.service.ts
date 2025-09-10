@@ -1,4 +1,5 @@
 import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 import { IInventoryItemsStockAdjustmentPayload } from '../interfaces';
 import {
   ItemsStockAdjustmentActionProvided,
@@ -44,20 +45,14 @@ export const useItemStockAdjustmentActionService = (): ItemsStockAdjustmentActio
   );
 
   const itemsStockAdjustmentFormValidationRules = computed(() => ({
-    action: { required: true },
-    adjustmentQuantity: { required: true },
-    notes: { required: false },
-  }));
-
-  const itemStockAdjustmentValid = computed(() => ({
-    action: itemStockAdjustmentAction_formData.value.action,
-    adjustmentQuantity: itemStockAdjustmentAction_formData.value.adjustmentQuantity,
-    notes: itemStockAdjustmentAction_formData.value.notes,
+    action: { required },
+    adjustmentQuantity: { required },
+    notes: {},
   }));
 
   const itemStockAdjustmentAction_Validation = useVuelidate(
     itemsStockAdjustmentFormValidationRules,
-    itemStockAdjustmentValid,
+    itemStockAdjustmentAction_formData,
     {
       $scope: true,
       $lazy: true,
@@ -69,6 +64,17 @@ export const useItemStockAdjustmentActionService = (): ItemsStockAdjustmentActio
     mode: 'create' | 'edit',
     id?: string,
   ) => {
+    const isFormCorrect = await itemStockAdjustmentAction_Validation.value.$validate();
+    if (!isFormCorrect) {
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Please fill all required fields',
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      return;
+    }
     let result;
     if (mode === 'create') {
       result = await store.inventoryItem_StockAdjustment_PostData(
@@ -86,7 +92,6 @@ export const useItemStockAdjustmentActionService = (): ItemsStockAdjustmentActio
     } else {
       throw new Error('Edit mode requires a valid stock adjustment ID'); // ✅ lempar error
     }
-
 
     const resFetch = await store.inventoryItem_StockAdjustment({}, inventoryItemPreview_item.value?.id ?? '', {
       page: 1,
@@ -107,7 +112,6 @@ export const useItemStockAdjustmentActionService = (): ItemsStockAdjustmentActio
         (mode === 'create' ? 'Category created successfully!' : 'Category updated successfully!'),
       position: EToastPosition.TOP_RIGHT,
     };
-
 
     await eventBus.emit('AppBaseToast', argsEventEmitter);
 

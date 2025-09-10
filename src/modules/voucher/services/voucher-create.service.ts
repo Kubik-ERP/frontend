@@ -1,9 +1,10 @@
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { IVoucherCreateProvided, IVoucherFormData, mapFormToVoucherPayload } from '../interfaces';
 import { useProductService } from '@/modules/catalog-product/services/catalog-product.service';
 import { IProduct } from '@/modules/catalog-product/interfaces';
 import { useVoucherStore } from '../store';
 import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 import eventBus from '@/plugins/mitt';
 
 export const useVoucherCreateService = (): IVoucherCreateProvided => {
@@ -30,38 +31,22 @@ export const useVoucherCreateService = (): IVoucherCreateProvided => {
    * 2️⃣ Form Errors
    * ---------------------------------- */
   const voucherFormDataRules = computed(() => ({
-    name: { required: true },
-    code: { required: true },
-    amount: { required: true },
-    minPrice: { required: false },
-    startDate: { required: true },
-    endDate: { required: true },
-    status: { required: true },
-    quota: { required: false },
-    is_percentage: { required: true },
-    maxDiscountPrice: { required: false },
-    products: { required: false },
-    type: { required: true },
+    name: { required },
+    code: { required },
+    amount: { required },
+    startDate: { required },
+    endDate: { required },
+    status: { required },
+    type: { required },
   }));
 
-  const voucherFormDataValidatable = computed(() => ({
-    name: voucherFormData.value.name,
-    code: voucherFormData.value.code,
-    amount: voucherFormData.value.amount,
-    minPrice: voucherFormData.value.minPrice,
-    startDate: voucherFormData.value.startDate,
-    endDate: voucherFormData.value.endDate,
-    status: voucherFormData.value.status,
-    quota: voucherFormData.value.quota,
-    is_percentage: voucherFormData.value.is_percentage,
-    maxDiscountPrice: voucherFormData.value.maxDiscountPrice,
-    products: voucherFormData.value.products,
-    type: voucherFormData.value.type,
-  }));
+  const voucherFormDataValidatable = computed(() => voucherFormData.value);
 
   const voucherFormDataValidations = useVuelidate(voucherFormDataRules, voucherFormDataValidatable, {
     $autoDirty: true,
   });
+
+  const voucherFormIsValid = computed(() => !voucherFormDataValidations.value.$invalid);
 
   const voucherFormIsLoading = ref<boolean>(false);
 
@@ -69,6 +54,18 @@ export const useVoucherCreateService = (): IVoucherCreateProvided => {
    * 3️⃣ Submit Form
    * ---------------------------------- */
   const voucherFormOnSubmit = async (): Promise<void> => {
+    const isFormCorrect = await voucherFormDataValidations.value.$validate();
+    if (!isFormCorrect) {
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Please fill all required fields',
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      return;
+    }
+
     voucherFormIsLoading.value = true;
     try {
       const payload = mapFormToVoucherPayload(voucherFormData.value);
@@ -163,5 +160,6 @@ export const useVoucherCreateService = (): IVoucherCreateProvided => {
     voucherFormReset,
     voucherFormFetchData,
     voucherProductList,
+    voucherFormIsValid,
   };
 };

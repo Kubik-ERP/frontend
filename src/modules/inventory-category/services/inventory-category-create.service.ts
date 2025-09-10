@@ -3,6 +3,7 @@ import { IInventoryCategoryCreateUpdatePayload } from '../interfaces';
 import { IInventoryCategoryCreateProvided } from '../interfaces/inventory-category-create.interface';
 import { useInventoryCategoryStore } from '../store';
 import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 import eventBus from '@/plugins/mitt';
 import { useInventoryCategoryService } from './inventory-category.service';
 
@@ -11,7 +12,6 @@ export const inventoryCategoryCreateService = (): IInventoryCategoryCreateProvid
   const {
     inventoryCategoryList_fetchData,
     inventoryCategoryList_editingItem,
-    inventoryCategoryFormMode,
   } = useInventoryCategoryService();
 
   const inventoryCategoryCreate_isLoading = ref<boolean>(false);
@@ -22,26 +22,19 @@ export const inventoryCategoryCreateService = (): IInventoryCategoryCreateProvid
     notes: '',
   });
 
-  // Auto-isi form kalau mode edit
-  if (inventoryCategoryFormMode.value === 'edit' && inventoryCategoryList_editingItem.value) {
-    inventoryCategoryCreate_formData.value = {
-      name: inventoryCategoryList_editingItem.value.name,
-      code: inventoryCategoryList_editingItem.value.code,
-      notes: inventoryCategoryList_editingItem.value.notes,
-    };
-  }
-
   const inventoryCategoryCreate_formValidations = computed(() => ({
-    name: { required: true },
-    notes: { required: false },
+    name: { required },
+    notes: {},
+    code: {},
   }));
 
   const inventoryCategoryValid = computed(() => ({
     name: inventoryCategoryCreate_formData.value.name,
     notes: inventoryCategoryCreate_formData.value.notes,
+    code: inventoryCategoryCreate_formData.value.code,
   }));
 
-  const inventoryCategoryCreate_Validation = useVuelidate(
+  const inverntoryCategoryCreate_Validation = useVuelidate(
     inventoryCategoryCreate_formValidations,
     inventoryCategoryValid,
     {
@@ -51,7 +44,7 @@ export const inventoryCategoryCreateService = (): IInventoryCategoryCreateProvid
   );
 
   const inventoryCategoryCreate_isValid = computed<boolean>(() => {
-    return inventoryCategoryCreate_formData.value.name.trim().length > 0;
+    return !inverntoryCategoryCreate_Validation.value.$invalid;
   });
 
   const inventoryCategoryCreate_onSubmit = async (
@@ -59,12 +52,24 @@ export const inventoryCategoryCreateService = (): IInventoryCategoryCreateProvid
     mode: 'create' | 'edit' = 'create',
     id?: string,
   ): Promise<void> => {
+    const isFormCorrect = await inverntoryCategoryCreate_Validation.value.$validate();
+    if (!isFormCorrect) {
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Please fill all required fields',
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      return;
+    }
+
     inventoryCategoryCreate_isLoading.value = true;
     const data = {
       name: payload.name?.trim(),
       code: payload.code,
       notes: payload.notes?.trim(),
-    }
+    };
     try {
       let result;
       if (mode === 'create') {
@@ -88,9 +93,9 @@ export const inventoryCategoryCreateService = (): IInventoryCategoryCreateProvid
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,
-        message: result?.message || (mode === 'create'
-          ? 'Category created successfully!'
-          : 'Category updated successfully!'),
+        message:
+          result?.message ||
+          (mode === 'create' ? 'Category created successfully!' : 'Category updated successfully!'),
         position: EToastPosition.TOP_RIGHT,
       };
       eventBus.emit('AppBaseToast', argsEventEmitter);
@@ -132,7 +137,8 @@ export const inventoryCategoryCreateService = (): IInventoryCategoryCreateProvid
     inventoryCategoryCreate_onSubmit,
     inventoryCategoryCreate_onCancel,
     inventoryCategoryCreate_values: inventoryCategoryCreate_formData,
-    inverntoryCategoryCreate_Validation: inventoryCategoryCreate_Validation,
+    inverntoryCategoryCreate_Validation: inverntoryCategoryCreate_Validation,
     inventoryCategoryCreate_isValid,
   };
 };
+
