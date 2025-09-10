@@ -30,7 +30,7 @@ const formattedDataTable = () => {
 
 const page = ref<number>(1);
 const limit = ref<number>(10);
-const totalRecords = ref<number>(formattedDataTable.length);
+const totalRecords = ref<number>(formattedDataTable().length);
 const onChangePage = (newPage: number) => {
   page.value = newPage;
 };
@@ -76,7 +76,7 @@ const handleExportToCsv = () => {
         <PrimeVueButton
           variant="outlined"
           label="Export"
-          :disabled="formattedDataTable.length === 0"
+          :disabled="formattedDataTable().length === 0"
           @click="popover.toggle($event)"
         >
           <template #icon>

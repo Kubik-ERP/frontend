@@ -43,7 +43,7 @@
       "discount": {
         "checkbox": "Add Discount Price",
         "valueLabel": "Discount Value",
-        "total": "Total Price After Discount :"
+        "total": "Total Price After Discount"
       },
       "variant": {
         "label": "Variant",
@@ -71,6 +71,12 @@
       "description": "This action cannot be undone, and the product will be removed from catalog",
       "deleteButton": "Delete Product",
       "cancelButton": "Cancel"
+    },
+    "editModal": {
+      "title": "Are you sure want to update this product item?",
+      "description": "The update will affect the product items in the catalog",
+      "editButton": "Ya, Saya yakin",
+      "cancelButton": "Batal"
     }
   }
 }

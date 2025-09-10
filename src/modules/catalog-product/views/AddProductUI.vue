@@ -372,7 +372,7 @@ watch(product_formData, () => {
                       for="variant-price"
                       class="flex gap-2 text-sm font-medium leading-6 text-gray-900 w-full"
                     >
-                      Additional Price
+                      {{ useLocalization('productDetail.form.variant.additionalPriceLabel') }}
                       <p class="text-gray-400">
                         {{ useLocalization('productDetail.form.variant.optionalLabel') }}
                       </p>
@@ -408,14 +408,14 @@ watch(product_formData, () => {
             <router-link to="/catalog/products">
               <PrimeVueButton
                 :label="useLocalization('productDetail.form.button.cancel')"
-                class="text-xl w-48 py-2 border-2 border-primary cursor-pointer rounded-lg text-primary bg-transparent font-semibold"
+                class="text-xl min-w-48 px-3 py-2 border-2 border-primary cursor-pointer rounded-lg text-primary bg-transparent font-semibold"
                 unstyled
               />
             </router-link>
             <PrimeVueButton
               :label="useLocalization('productDetail.form.button.save')"
               :loading="loading"
-              class="text-xl w-48 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
+              class="text-xl min-w-48 px-3 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
               :disabled="product_formValidations.$invalid"
               type="submit"
             />

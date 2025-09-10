@@ -1,7 +1,5 @@
 <script setup lang="ts">
-
 import { useQueueService } from '../services/queue.service';
-
 
 const {
   queueColumns,
@@ -34,14 +32,14 @@ onMounted(async () => {
   <div class="flex flex-col gap-8">
     <div class="flex gap-2 items-center">
       <router-link :to="{ name: 'customer-waiting-list' }">
-        <PrimeVueButton class="w-fit" label="Customer Waiting List System">
+        <PrimeVueButton class="w-fit" :label="useLocalization('queue.customerWaitingList')">
           <template #icon>
             <AppBaseSvg name="display" class="!w-5 !h-5" />
           </template>
         </PrimeVueButton>
       </router-link>
       <router-link :to="{ name: 'queue-kitchen-display' }">
-        <PrimeVueButton class="w-fit" label="Kitchen Display System">
+        <PrimeVueButton class="w-fit" :label="useLocalization('queue.kitchenDisplay')">
           <template #icon>
             <AppBaseSvg name="display" class="!w-5 !h-5" />
           </template>
@@ -53,7 +51,7 @@ onMounted(async () => {
       <AppBaseDataTable
         :columns="queueColumns"
         :data="dailySalesList_values.data.items"
-        header-title="Daily Sales"
+        :header-title="useLocalization('queue.dailySales')"
         :rows-per-page="dailySalesList_values.data.meta.pageSize"
         :total-records="dailySalesList_values.data.meta.total"
         :first="(dailySalesList_values.data.meta.page - 1) * dailySalesList_values.data.meta.pageSize"
@@ -71,11 +69,10 @@ onMounted(async () => {
       >
         <template #header-prefix>
           <div class="flex items-center gap-2">
-            <h6 class="font-semibold text-gray-900 text-xl">Daily Sales</h6>
-
+            <h6 class="font-semibold text-gray-900 text-xl">{{ useLocalization('queue.dailySales') }}</h6>
             <PrimeVueChip
               class="text-xs font-normal bg-secondary-background text-green-primary"
-              :label="`${dailySalesList_values.data.meta.total} Invoices`"
+              :label="`${dailySalesList_values.data.meta.total} ${useLocalization('queue.invoices')}`"
             />
           </div>
         </template>
@@ -87,10 +84,9 @@ onMounted(async () => {
                 <AppBaseSvg name="search" class="w-4 h-4" />
               </template>
             </PrimeVueInputIcon>
-
             <PrimeVueInputText
               v-model="dailySalesList_queryParams.invoiceNumber"
-              placeholder="Search Invoice ID"
+              :placeholder="useLocalization('queue.searchInvoicePlaceholder')"
               class="text-sm w-full min-w-80"
             />
           </PrimeVueIconField>
@@ -98,13 +94,14 @@ onMounted(async () => {
 
         <template #filter>
           <div class="flex flex-col gap-1 w-full">
-            <span class="font-semibold inline-block text-gray-900 text-base w-48">Filter by</span>
-
+            <span class="font-semibold inline-block text-gray-900 text-base w-48">{{
+              useLocalization('queue.filterBy')
+            }}</span>
             <div class="flex items-center gap-4 w-full">
               <PrimeVueDatePicker
                 v-model="dailySalesList_queryParams.createdAtFrom"
                 class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
-                placeholder="Purchase Date From"
+                :placeholder="useLocalization('queue.purchaseDateFrom')"
                 show-on-focus
                 show-icon
                 fluid
@@ -113,12 +110,11 @@ onMounted(async () => {
                 hour-format="24"
                 @clear-click="dailySalesList_queryParams.createdAtFrom = null"
               />
-
               <PrimeVueDatePicker
                 v-model="dailySalesList_queryParams.createdAtTo"
                 :manual-input="false"
                 class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
-                placeholder="Purchase Date To"
+                :placeholder="useLocalization('queue.purchaseDateTo')"
                 show-on-focus
                 show-icon
                 fluid
@@ -129,7 +125,6 @@ onMounted(async () => {
                 :disabled="!dailySalesList_queryParams.createdAtFrom"
                 @clear-click="dailySalesList_queryParams.createdAtTo = null"
               />
-
               <PrimeVueMultiSelect
                 v-model="dailySalesList_queryParams.orderType"
                 display="chip"
@@ -137,10 +132,9 @@ onMounted(async () => {
                 option-label="label"
                 option-value="value"
                 filter
-                placeholder="Order Type"
+                :placeholder="useLocalization('queue.orderType')"
                 class="text-sm text-text-disabled w-full"
               />
-
               <PrimeVueMultiSelect
                 v-model="dailySalesList_queryParams.orderStatus"
                 display="chip"
@@ -148,10 +142,9 @@ onMounted(async () => {
                 option-label="label"
                 option-value="value"
                 filter
-                placeholder="Order Status"
+                :placeholder="useLocalization('queue.orderStatus')"
                 class="text-sm text-text-disabled w-full"
-              >
-              </PrimeVueMultiSelect>
+              />
             </div>
           </div>
         </template>

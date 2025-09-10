@@ -34,7 +34,7 @@ const search = (event: AutoCompleteCompleteEvent) => {
   const query = event.query.toLowerCase();
   suggestions.value = availableProducts.value.filter(product => product.name.toLowerCase().includes(query));
 
-  currentSelection.value = null;
+  // currentSelection.value = null;
 };
 
 /**

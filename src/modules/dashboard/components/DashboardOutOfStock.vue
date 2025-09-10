@@ -9,12 +9,15 @@ const { dashboard_values } = inject<IDashboardProvided>('dashboard')!;
     class="col-span-full md:col-span-6 flex flex-col gap-2 border-r border-solid border-grayscale-10 px-4"
   >
     <header class="flex items-center justify-between">
-      <h6 class="font-semibold text-base text-grayscale-70">Out of Stock</h6>
+      <h6 class="font-semibold text-base text-grayscale-70">
+        {{ useLocalization('dashboard.outOfStock.title') }}
+      </h6>
 
       <section id="detail-informations" class="flex items-center gap-2">
         <PrimeVueChip class="bg-error-background">
           <span class="font-semibold text-error-main text-xs w-fit min-w-[60px]">
-            {{ dashboard_values.stockStatus.detailedOutOfStock.count }}+ Items
+            {{ dashboard_values.stockStatus.detailedOutOfStock.count }}+
+            {{ useLocalization('dashboard.outOfStock.itemsUnit') }}
           </span>
         </PrimeVueChip>
 
@@ -22,7 +25,9 @@ const { dashboard_values } = inject<IDashboardProvided>('dashboard')!;
           <PrimeVueButton class="w-full bg-transparent border-none basic-smooth-animation hover:bg-grayscale-10">
             <template #default>
               <section id="content" class="flex items-center gap-2">
-                <span class="font-semibold text-text-primary text-sm">Show More</span>
+                <span class="font-semibold text-text-primary text-sm">{{
+                  useLocalization('dashboard.outOfStock.showMore')
+                }}</span>
                 <AppBaseSvg name="chevron-right" class="!w-3 !h-3" />
               </section>
             </template>
@@ -54,7 +59,9 @@ const { dashboard_values } = inject<IDashboardProvided>('dashboard')!;
             </section>
           </td>
 
-          <td class="font-normal text-sm text-text-disabled w-14 py-2">qty</td>
+          <td class="font-normal text-sm text-text-disabled w-14 py-2">
+            {{ useLocalization('dashboard.outOfStock.quantityUnit') }}
+          </td>
 
           <td class="font-semibold text-sm text-error-main w-16 border-r border-solid border-grayscale-10 py-2">
             {{ item.stock }}
@@ -68,7 +75,9 @@ const { dashboard_values } = inject<IDashboardProvided>('dashboard')!;
               >
                 <template #default>
                   <section id="content" class="flex items-center gap-2">
-                    <span class="font-semibold text-primary text-sm">Order</span>
+                    <span class="font-semibold text-primary text-sm">{{
+                      useLocalization('dashboard.outOfStock.orderAction')
+                    }}</span>
                   </section>
                 </template>
               </PrimeVueButton>

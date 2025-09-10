@@ -72,7 +72,12 @@ const onChangePage = (newPage: number) => {
         <h1 class="font-bold text-2xl text-text-primary">Sales By Item</h1>
       </template>
       <template #header-suffix>
-        <PrimeVueButton variant="outlined" label="Export" @click="popover.toggle($event)">
+        <PrimeVueButton
+          :disabled="formattedDataTable().length === 0"
+          variant="outlined"
+          label="Export"
+          @click="popover.toggle($event)"
+        >
           <template #icon>
             <AppBaseSvg name="export" class="!w-5 !h-5" />
           </template>

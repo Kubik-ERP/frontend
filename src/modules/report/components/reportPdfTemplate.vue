@@ -39,11 +39,27 @@ const props = withDefaults(defineProps<IProps>(), {
 });
 
 const chunkedData = computed(() => {
+  // // --- Configuration Constants (Adjust these to fine-tune your layout) ---
+  // const PAGE_HEIGHT_LIMIT = 800; // You may need to adjust this limit
+  // const NAVBAR_HEIGHT = 80; // ✅ Approx. height of your blue navbar
+  // const HEADER_HEIGHT = 150; // Approx. height of your main report header
+  // const ROW_BASE_HEIGHT = 30; // The height of a single-line row
+  // const CHARS_PER_LINE = 40; // Approx. characters per line in a cell
+  // const LINE_WRAP_HEIGHT = 15; // Extra height for wrapped lines
   // --- Configuration Constants (Adjust these to fine-tune your layout) ---
-  const PAGE_HEIGHT_LIMIT = 800; // You may need to adjust this limit
-  const NAVBAR_HEIGHT = 80; // ✅ Approx. height of your blue navbar
-  const HEADER_HEIGHT = 150; // Approx. height of your main report header
-  const ROW_BASE_HEIGHT = 30; // The height of a single-line row
+
+  
+  // const NAVBAR_HEIGHT = 118; // ✅ Approx. height of your blue navbar
+  // const PAGE_HEIGHT_LIMIT = 1201 + NAVBAR_HEIGHT; // You may need to adjust this limit
+  // const HEADER_HEIGHT = 201; // Approx. height of your main report header
+  // const ROW_BASE_HEIGHT = 30; // The height of a single-line row
+  // const CHARS_PER_LINE = 40; // Approx. characters per line in a cell
+  // const LINE_WRAP_HEIGHT = 15; // Extra height for wrapped lines
+
+  const NAVBAR_HEIGHT = 118; // ✅ Approx. height of your blue navbar
+  const PAGE_HEIGHT_LIMIT = 1201 + NAVBAR_HEIGHT; // You may need to adjust this limit
+  const HEADER_HEIGHT = 201; // Approx. height of your main report header
+  const ROW_BASE_HEIGHT = 55; // The height of a single-line row
   const CHARS_PER_LINE = 40; // Approx. characters per line in a cell
   const LINE_WRAP_HEIGHT = 15; // Extra height for wrapped lines
 
