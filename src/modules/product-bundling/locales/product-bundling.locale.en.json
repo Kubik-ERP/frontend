@@ -1,1 +1,30 @@
-{}
+{
+  "productBundling": {
+    "listPage": {
+      "title": "Product Bundling",
+      "addButton": "Add Product Bundling"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "form": {
+    "nameLabel": "Product Bundling Name",
+    "namePlaceholder": "Product Bundling Name",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Description",
+    "priceLabel": "Price",
+    "pricePlaceholder": "Rp. 0,00",
+    "resetButton": "Reset",
+    "selectProductLabel": "Select Product",
+    "selectProductPlaceholder": "Search by Product Name",
+    "totalItemsLabel": "Total Items",
+    "totalPriceLabel": "Total",
+    "actualPriceLabel": "Actual Price",
+    "bundlingPriceLabel": "Bundling Price",
+    "cancelButton": "Cancel",
+    "addButton": "Add",
+    "editButton": "Edit"
+  }
+  }
+}

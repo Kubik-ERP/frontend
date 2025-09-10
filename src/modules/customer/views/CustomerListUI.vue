@@ -65,10 +65,17 @@ const loadCustomers = async () => {
 
 const handleDelete = async () => {
   isDeleteOpen.value = false;
-  deleteCustomer(selectedCustomer.value.id);
-  loadCustomers();
+  await deleteCustomer(selectedCustomer.value.id);
+  await loadCustomers();
 };
 
+watch(
+    () => search,
+    debounce(async () => {
+      await loadCustomers();
+    }, 500),
+    { deep: true },
+  );
 const handleSearch = () => {
   router.push({ query: { page: '1' } });
   page.value = 1;

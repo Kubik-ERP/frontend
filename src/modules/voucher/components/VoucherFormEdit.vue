@@ -14,7 +14,6 @@ const {
   voucherEdit_fetchVoucher,
   voucherEdit_submit,
   voucherEdit_isLoading,
-  voucherEdit_isValid,
 } = useVoucherEditService();
 
 const { voucherProductList } = useVoucherCreateService();
@@ -65,9 +64,6 @@ onMounted(async () => {
 // Format currency helper
 const formatCurrency = (val: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(val);
-
-
-
 
 const buildVoucherPayload = (): IVoucherEditRequest => {
   const [start, end] = form.value.validity || [null, null];
@@ -463,7 +459,7 @@ function removeSelectedProduct(id: string) {
         <PrimeVueButton label="Cancel" class="p-button-outlined p-button-secondary px-6" @click="router.back()" />
         <PrimeVueButton
           label="Update Voucher"
-          :disabled=" voucherEdit_isLoading"
+          :disabled="voucherEdit_isLoading"
           class="p-button-primary px-6"
           type="submit"
         />

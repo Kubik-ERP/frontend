@@ -41,11 +41,11 @@ watch(
 const applyDateChange = () => {
   if (localDateRange.value && localDateRange.value[0]) {
     // Create a new Date object for 'start' to work with
-    const start = new Date(localDateRange.value[0]);
+    const start = (localDateRange.value[0]);
 
     // If an end date exists, create a new object from it.
     // If not, create a new object by COPYING the start date.
-    const end = localDateRange.value[1] ? new Date(localDateRange.value[1]) : new Date(start); // This creates a copy, not a reference
+    const end = localDateRange.value[1] ? (localDateRange.value[1]) : (start); // This creates a copy, not a reference
 
     emit('update:startDate', start);
     emit('update:endDate', end);
@@ -71,9 +71,9 @@ const onClickShortcut = (label: string) => {
 
   switch (label) {
     case 'Today': {
-      start = new Date();
+      start = today;
 
-      end = start;
+      end = today;
 
       newType = 'time';
 
@@ -81,9 +81,9 @@ const onClickShortcut = (label: string) => {
     }
 
     case 'Yesterday': {
-      start = new Date(new Date().setDate(today.getDate() - 1));
+      start = new Date(today.setDate(today.getDate() - 1));
 
-      end = start;
+      end = new Date(today.setDate(today.getDate() - 1));;
       newType = 'time';
       break;
     }
@@ -120,7 +120,7 @@ const onClickShortcut = (label: string) => {
     }
 
     case 'Last Month': {
-      const firstDayOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 2);
+      const firstDayOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
       const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
       start = firstDayOfLastMonth;
@@ -161,14 +161,14 @@ const onClickShortcut = (label: string) => {
       v-model:visible="dialogVisible"
       :draggable="false"
       :close-button-props="{ class: 'hidden' }"
-      class="w-1/2"
+      class="w-full max-w-2xl"
     >
       <template #header>
         <h5 class="font-semibold text-black text-xl">Date Filter</h5>
       </template>
       <template #default>
         <section class="flex flex-col gap-4">
-          <section id="date-range" class="flex gap-8">
+          <section id="date-range" class="flex gap-8 flex-wrap">
             <div class="flex flex-col w-full">
               <label class="text-sm" for="start-date">Start Date</label>
               <PrimeVueDatePicker
@@ -194,7 +194,7 @@ const onClickShortcut = (label: string) => {
             <PrimeVueDatePicker v-model="localDateRange" selection-mode="range" inline class="w-full" />
           </section>
           <section id="shortcut-button">
-            <div id="shortcut-button" class="grid grid-cols-2 gap-2">
+            <div id="shortcut-button" class="grid grid-cols-1 md:grid-cols-2 gap-2">
               <PrimeVueButton
                 v-for="label in ['Today', 'Yesterday', 'This Month', 'This Week', 'Last 30 Days', 'Last Month']"
                 :key="label"

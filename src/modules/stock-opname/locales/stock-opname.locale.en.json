@@ -1,1 +1,42 @@
-{}
+{
+  "stockOpname": {
+    "listPage": {
+      "title": "Stock Opname",
+      "recordTitle": "Stock Opname Record",
+      "issueButton": "Issue Stock Opname"
+    },
+    "detailPage": {
+      "title": "Details",
+      "recordLabel": "Stock Opname record",
+      "issueDateLabel": "Issue Date",
+      "performedByLabel": "Performed By",
+      "statusLabel": "Status",
+      "verifiedDateLabel": "Verified Date",
+      "itemListTitle": "Item List",
+      "searchPlaceholder": "Search SKU or Item Name",
+      "recalculateButton": "Recalculate",
+      "issueRecordButton": "Issue Stock Opname",
+      "verifyReportButton": "Verify Report",
+      "cancelButton": "Cancel Stock Opname"
+    },
+    "createEditPage": {
+      "title": "Details",
+      "recordLabel": "Stock Opname Record",
+      "issueDateLabel": "Issue Date",
+      "performedByLabel": "Performed By",
+      "itemListTitle": "Item List",
+      "searchPlaceholder": "Search SKU or Item Name",
+      "addNotesButton": "Add Notes",
+      "saveDraftButton": "Save as Draft",
+      "issueButton": "Issue Stock Opname",
+      "cancelButton": "Cancel"
+    },
+    "notesDialog": {
+      "title": "Notes",
+      "label": "Notes",
+      "placeholder": "Enter your notes here...",
+      "cancelButton": "Cancel",
+      "saveButton": "Save Notes"
+    }
+  }
+}

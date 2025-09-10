@@ -21,11 +21,11 @@ onMounted(() => {
     id="dashboard-chart-latest-sales"
     class="col-span-full lg:col-span-8 flex flex-col bg-white border border-solid border-grayscale-10 p-4 gap-4 rounded-sm"
   >
-    <h5 class="font-semibold text-lg text-grayscale-70">Latest Sales</h5>
+    <h5 class="font-semibold text-lg text-grayscale-70">{{ useLocalization('dashboard.chart.latestSales') }}</h5>
 
     <section id="detail-information" class="flex items-center justify-between">
       <section id="total-sales" class="flex flex-col gap-1">
-        <span class="font-normal text-grayscale-70 text-xs">Total Sales</span>
+        <span class="font-normal text-grayscale-70 text-xs">{{ useLocalization('dashboard.chart.totalSales') }}</span>
 
         <section id="amount" class="flex items-center gap-1">
           <span class="font-semibold text-black text-base">

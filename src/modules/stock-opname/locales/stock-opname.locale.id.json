@@ -1,1 +1,43 @@
-{}
+{
+  "stockOpname": {
+    "listPage": {
+      "title": "Stok Opname",
+      "recordTitle": "Catatan Stok Opname",
+      "issueButton": "Buat Stok Opname"
+    },
+    "detailPage": {
+      "title": "Detail",
+      "recordLabel": "Catatan Stok Opname",
+      "issueDateLabel": "Tanggal Dibuat",
+      "performedByLabel": "Dilakukan Oleh",
+      "statusLabel": "Status",
+      "verifiedDateLabel": "Tanggal Diverifikasi",
+      "itemListTitle": "Daftar Barang",
+      "searchPlaceholder": "Cari SKU atau Nama Barang",
+      "recalculateButton": "Hitung Ulang",
+      "issueRecordButton": "Keluarkan Catatan Stok Opname",
+      "verifyReportButton": "Verifikasi Laporan",
+      "cancelButton": "Batalkan Stok Opname"
+    },
+    "createEditPage": {
+      "title": "Detail",
+      "recordLabel": "Catatan Stok Opname",
+      "issueDateLabel": "Tanggal Dibuat",
+      "performedByLabel": "Dilakukan Oleh",
+      "itemListTitle": "Daftar Barang",
+      "searchPlaceholder": "Cari SKU atau Nama Barang",
+      "addNotesButton": "Tambah Catatan",
+      "saveDraftButton": "Simpan sebagai Draf",
+      "issueButton": "Buat Stok Opname",
+      "cancelButton": "Batal"
+    },
+    "notesDialog": {
+      "title": "Catatan",
+      "label": "Catatan",
+      "placeholder": "Masukkan catatan Anda di sini...",
+      "cancelButton": "Batal",
+      "saveButton": "Simpan Catatan"
+    }
+  }
+}
+
