@@ -20,7 +20,7 @@ const {
 <template>
   <header class="flex items-center justify-between w-full mb-4">
     <section id="left-content" class="flex items-center gap-2">
-      <h6 class="font-semibold text-black text-lg w-fit">Table</h6>
+      <h6 class="font-semibold text-black text-lg w-fit">{{ useLocalization('account.table') }}</h6>
     </section>
 
     <PrimeVueButton
@@ -38,7 +38,9 @@ const {
       <template #default>
         <section class="flex items-center gap-2">
           <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
-          <span class="font-semibold text-sm lg:text-base text-white">Edit Table</span>
+          <span class="font-semibold text-sm lg:text-base text-white">{{
+            useLocalization('account.edit-table')
+          }}</span>
         </section>
       </template>
     </PrimeVueButton>
@@ -50,7 +52,7 @@ const {
   >
     <header class="flex items-center justify-between w-full">
       <section id="left-content" class="flex items-center gap-2">
-        <h6 class="font-semibold text-black text-lg w-fit">Floor</h6>
+        <h6 class="font-semibold text-black text-lg w-fit">{{ useLocalization('account.floor') }}</h6>
 
         <PrimeVueSelect
           v-model="accountStoreDetail_selectedFloor"
@@ -74,16 +76,18 @@ const {
       class="flex flex-col lg:flex-row items-start lg:items-center justify-between border border-solid border-grayscale-10 p-4 rounded-lg gap-4 lg:gap-0"
     >
       <section id="no-tables-configuration-information" class="flex flex-col gap-2">
-        <h6 class="font-bold text-primary text-base lg:text-lg">No tables configured yet</h6>
+        <h6 class="font-bold text-primary text-base lg:text-lg">
+          {{ useLocalization('account.no-tables-configured') }}
+        </h6>
 
         <p class="font-normal text-sm lg:text-base text-grayscale-70">
-          Start by adding tables to set up your floor layout
+          {{ useLocalization('account.start-adding-tables-description') }}
         </p>
       </section>
 
       <PrimeVueButton
         class="bg-blue-primary border-none text-sm lg:text-base py-3 px-5 w-full lg:w-fit"
-        label="Set Up Table"
+        :label="useLocalization('account.set-up-table')"
         type="button"
         @click="$router.push({ name: 'account.store.table-configuration' })"
       />

@@ -7,10 +7,12 @@ export const ACCOUNT_STORE_EDIT_UPDATE_OUTLET_REQUEST = 'ACCOUNT_STORE_EDIT_UPDA
 export const ACCOUNT_STORE_EDIT_BUSINESS_TYPES: IDropdownItem[] = [
   {
     label: 'Restaurant (FnB)',
+    translationKey: 'account.business-types.restaurant',
     value: 'Restaurant',
   },
   {
     label: 'Retail',
+    translationKey: 'account.business-types.retail',
     value: 'Retail',
   },
 ];
@@ -24,6 +26,7 @@ export const ACCOUNT_STORE_EDIT_INITIAL_VALUES_OF_BUSINESS_HOURS: IStoreOperatio
       },
     ],
     day: 'Sunday',
+    dayTranslationKey: 'account.sunday',
     isOpen: false,
   },
   {
@@ -34,6 +37,7 @@ export const ACCOUNT_STORE_EDIT_INITIAL_VALUES_OF_BUSINESS_HOURS: IStoreOperatio
       },
     ],
     day: 'Monday',
+    dayTranslationKey: 'account.monday',
     isOpen: false,
   },
   {
@@ -44,6 +48,7 @@ export const ACCOUNT_STORE_EDIT_INITIAL_VALUES_OF_BUSINESS_HOURS: IStoreOperatio
       },
     ],
     day: 'Tuesday',
+    dayTranslationKey: 'account.tuesday',
     isOpen: false,
   },
   {
@@ -54,6 +59,7 @@ export const ACCOUNT_STORE_EDIT_INITIAL_VALUES_OF_BUSINESS_HOURS: IStoreOperatio
       },
     ],
     day: 'Wednesday',
+    dayTranslationKey: 'account.wednesday',
     isOpen: false,
   },
   {
@@ -64,6 +70,7 @@ export const ACCOUNT_STORE_EDIT_INITIAL_VALUES_OF_BUSINESS_HOURS: IStoreOperatio
       },
     ],
     day: 'Thursday',
+    dayTranslationKey: 'account.thursday',
     isOpen: false,
   },
   {
@@ -74,6 +81,7 @@ export const ACCOUNT_STORE_EDIT_INITIAL_VALUES_OF_BUSINESS_HOURS: IStoreOperatio
       },
     ],
     day: 'Friday',
+    dayTranslationKey: 'account.friday',
     isOpen: false,
   },
   {
@@ -84,6 +92,7 @@ export const ACCOUNT_STORE_EDIT_INITIAL_VALUES_OF_BUSINESS_HOURS: IStoreOperatio
       },
     ],
     day: 'Saturday',
+    dayTranslationKey: 'account.saturday',
     isOpen: false,
   },
 ];

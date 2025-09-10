@@ -27,7 +27,7 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
       <router-link
         id="edit-profile"
         :to="{ name: 'account.store.edit', params: { id: accountStoreDetail_selectedOutlet?.id } }"
-        class="flex items-center gap-2"
+        class="flex items-center gap-2 max-h-5"
       >
         <AppBaseSvg name="edit" class="w-4 h4" />
 
@@ -54,7 +54,7 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
             {{ accountStoreDetail_selectedOutlet?.name }}
           </h5>
           <span class="font-normal text text-disabled text-xs">
-            Created on:
+            {{ useLocalization('account.created-on') }}:
             <!-- Foramtted date into like this March 24, 2025 -->
             {{ useFormatDate(accountStoreDetail_selectedOutlet!.createdAt, 'MMMM dd, yyyy') }}
           </span>

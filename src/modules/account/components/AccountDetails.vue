@@ -82,7 +82,9 @@ const { account_profile } = inject<IAccountProvided>('account')!;
             <template #default>
               <section class="cash-out-button flex items-center gap-2">
                 <AppBaseSvg name="password" class="w-4 h-4" />
-                <span class="font-semibold text-sm text-primary">Reset Password</span>
+                <span class="font-semibold text-sm text-primary">{{
+                  useLocalization('account.reset-password')
+                }}</span>
               </section>
             </template>
           </PrimeVueButton>

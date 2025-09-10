@@ -10,11 +10,13 @@ declare global {
   // Menu interfaces for type safety
   interface ISubMenu {
     name: string;
+    translationKey?: string;
     path: string;
   }
 
   interface IMenu {
     name: string;
+    translationKey?: string;
     iconName: string;
     path: string;
     isHaveSubMenus: boolean;
@@ -23,6 +25,7 @@ declare global {
 
   interface IMenuCategory {
     name: string;
+    translationKey?: string;
     menus: IMenu[];
   }
 
@@ -45,6 +48,7 @@ declare global {
 
   interface IColumnDataTable {
     label: string;
+    translationKey?: string;
     sortable: boolean;
     value: string;
     width?: string;
@@ -88,6 +92,7 @@ declare global {
   interface IDropdownItem {
     iconName?: string;
     label: string;
+    translationKey?: string;
     value: string | number | Record<string, unknown>;
   }
 
@@ -255,6 +260,7 @@ declare global {
   interface IStoreOperationalHour {
     timeSlots: IStoreHour[];
     day: string;
+    dayTranslationKey?: string;
     isOpen: boolean;
   }
 
@@ -326,6 +332,7 @@ declare global {
     component: Component;
     label: string;
     value: string;
+    translationKey?: string;
   }
 
   interface IResponseListenerForm {
