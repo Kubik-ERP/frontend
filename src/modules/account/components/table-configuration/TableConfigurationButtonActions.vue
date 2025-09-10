@@ -21,7 +21,9 @@ const { accountStoreTableConfiguration_onShowDialogAddFloor, accountStoreTableCo
     >
       <template #default>
         <section id="content" class="flex items-center gap-2">
-          <span class="font-medium text-base text-green-primary"> Save Changes </span>
+          <span class="font-medium text-base text-green-primary">{{
+            useLocalization('account.save-changes')
+          }}</span>
         </section>
       </template>
     </PrimeVueButton>
@@ -35,7 +37,7 @@ const { accountStoreTableConfiguration_onShowDialogAddFloor, accountStoreTableCo
         <section id="content" class="flex items-center gap-2">
           <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
 
-          <span class="font-semibold text-base text-white"> Add Floor </span>
+          <span class="font-semibold text-base text-white">{{ useLocalization('account.add-floor') }}</span>
         </section>
       </template>
     </PrimeVueButton>

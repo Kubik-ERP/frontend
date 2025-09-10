@@ -215,6 +215,16 @@ const getPrimaryItem = (items: unknown[]) => {
 const getAdditionalItems = (items: unknown[]) => {
   return items.slice(1);
 };
+
+/**
+ * @description Get localized column header
+ */
+const getColumnHeader = (column: IColumnDataTable) => {
+  if (column.translationKey) {
+    return useLocalization(column.translationKey);
+  }
+  return column.label;
+};
 </script>
 
 <template>
@@ -352,7 +362,7 @@ const getAdditionalItems = (items: unknown[]) => {
                 class="px-4 py-3 text-center text-sm font-medium text-gray-700"
                 :style="column.width ? `width: ${column.width}` : undefined"
               >
-                {{ column.label }}
+                {{ getColumnHeader(column) }}
               </th>
             </tr>
           </thead>
@@ -737,7 +747,7 @@ const getAdditionalItems = (items: unknown[]) => {
           v-for="(column, columnIndex) in props.columns"
           :key="`column-${columnIndex}`"
           :field="column.value"
-          :header="column.label"
+          :header="getColumnHeader(column)"
           :sortable="column.sortable"
           :pt="{
             columnTitle: 'text-sm font-normal text-grayscale-70',

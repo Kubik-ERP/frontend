@@ -4,14 +4,18 @@ import type { IDashboardProvided } from '../interfaces';
 // inject
 const { authentication_userData } = inject<IDashboardProvided>('dashboard')!;
 
+// Vue i18n
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+
 const greeting = computed(() => {
   const currentHour = new Date().getHours();
   if (currentHour < 12) {
-    return useLocalization('dashboard.greeting.morning');
+    return t('dashboard.greeting.morning');
   } else if (currentHour < 18) {
-    return useLocalization('dashboard.greeting.afternoon');
+    return t('dashboard.greeting.afternoon');
   } else {
-    return useLocalization('dashboard.greeting.evening');
+    return t('dashboard.greeting.evening');
   }
 });
 

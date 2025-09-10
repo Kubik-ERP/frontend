@@ -10,18 +10,21 @@ export const ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_COLUMNS: IColumnDataTable[] = [
   {
     sortable: false,
     label: 'Name',
+    translationKey: 'app.name',
     value: 'name',
     width: '31.6%',
   },
   {
     sortable: false,
     label: 'Title',
+    translationKey: 'account.staff-title',
     value: 'title',
     width: '31.6%',
   },
   {
     sortable: false,
     label: 'Phone Number',
+    translationKey: 'app.phone-number',
     value: 'phone',
     width: '31.6%',
   },
@@ -55,12 +58,14 @@ export const ACCOUNT_STORE_DETAIL_FACILITY_COLUMNS: IColumnDataTable[] = [
   {
     sortable: false,
     label: 'Facility',
+    translationKey: 'account.facility',
     value: 'facility',
     width: '47%',
   },
   {
     sortable: false,
     label: 'Description',
+    translationKey: 'app.description',
     value: 'description',
     width: '47%',
   },
@@ -87,44 +92,94 @@ export const ACCOUNT_STORE_DETAIL_FACILITY_VALUES = [
   },
 ];
 
+export const ACCOUNT_STORE_DETAIL_TABS: IDropdownItem[] = [
+  {
+    value: 'basic_info',
+    label: 'Basic Information',
+    translationKey: 'account.basicInformation',
+  },
+  {
+    value: 'assigned_staff',
+    label: 'Assigned Staff',
+    translationKey: 'account.assignedStaff',
+  },
+  {
+    value: 'operational_hour',
+    label: 'Operational Hours',
+    translationKey: 'account.operationalHours',
+  },
+  {
+    value: 'subscription_plan',
+    label: 'Subscription Plan',
+    translationKey: 'account.subscriptionPlan',
+  },
+  {
+    value: 'facility',
+    label: 'Facility',
+    translationKey: 'account.facility',
+  },
+];
+
 export const ACCOUNT_STORE_DETAIL_LIST_TABS: ITabs[] = [
   {
     component: AccountStoreFacility,
     label: 'Store Facilities',
+    translationKey: 'account.facilities',
     value: 'store-facilities',
   },
   {
     component: AccountStoreTableConfiguration,
     label: 'Table Configuration',
+    translationKey: 'account.table-configuration',
     value: 'table-configuration',
   },
   {
     component: AccountAssignedStaff,
     label: 'Assigned Staffs',
+    translationKey: 'account.assigned-staffs',
     value: 'assigned-staffs',
   },
 ];
 
-export const ACCOUNT_STORE_DETAIL_OPERATIONAL_HOURS_COLUMNS: IColumnDataTable[] = [
+export const ACCOUNT_STORE_DETAIL_OPERATIONAL_HOUR_COLUMNS: IColumnDataTable[] = [
   {
     sortable: false,
     label: 'Day',
+    translationKey: 'account.day',
     value: 'day',
-    width: '33.3%',
+    width: '20%',
   },
   {
     sortable: false,
     label: 'Open',
-    value: 'openTime',
-    width: '66.6%',
+    translationKey: 'account.open',
+    value: 'open',
+    width: '20%',
   },
   {
     sortable: false,
     label: 'Close',
-    value: 'closeTime',
-    width: '66.6%',
+    translationKey: 'account.close',
+    value: 'close',
+    width: '20%',
+  },
+  {
+    sortable: false,
+    label: 'Status',
+    translationKey: 'account.status',
+    value: 'status',
+    width: '20%',
+  },
+  {
+    sortable: false,
+    label: '',
+    value: 'action',
+    width: '20%',
   },
 ];
+
+// Alias for backward compatibility with service file
+export const ACCOUNT_STORE_DETAIL_OPERATIONAL_HOURS_COLUMNS = ACCOUNT_STORE_DETAIL_OPERATIONAL_HOUR_COLUMNS;
 
 export const ACCOUNT_STORE_DETAIL_OPERATIONAL_HOURS_VALUES: IOperationalDay[] = [
   {

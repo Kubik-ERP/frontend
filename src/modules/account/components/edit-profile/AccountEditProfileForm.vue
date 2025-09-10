@@ -25,7 +25,7 @@ const { accountEditProfile_formData, accountEditProfile_formValidations, account
         <PrimeVueInputText
           v-model="accountEditProfile_formData.fullname"
           :loading="accountEditProfile_isLoading"
-          placeholder="Input your full name"
+          :placeholder="useLocalization('account.form.placeholder.full-name')"
           class="text-sm w-full"
           :class="{ ...classes }"
           v-on="useListenerForm(accountEditProfile_formValidations, 'fullname')"
@@ -46,7 +46,7 @@ const { accountEditProfile_formData, accountEditProfile_formValidations, account
         <PrimeVueInputText
           v-model="accountEditProfile_formData.email"
           :loading="accountEditProfile_isLoading"
-          placeholder="Input your email"
+          :placeholder="useLocalization('account.form.placeholder.email')"
           class="text-sm w-full"
           :class="{ ...classes }"
           v-on="useListenerForm(accountEditProfile_formValidations, 'email')"
@@ -60,7 +60,7 @@ const { accountEditProfile_formData, accountEditProfile_formValidations, account
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="phoneCountryCode"
-        name="Phone Code"
+        :name="useLocalization('account.form.phone-code')"
         spacing-bottom="mb-0"
       >
         <PrimeVueSelect
@@ -99,7 +99,7 @@ const { accountEditProfile_formData, accountEditProfile_formValidations, account
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="phoneNumber"
-          name="Phone Number"
+          :name="useLocalization('account.form.phone-number')"
           spacing-bottom="mb-0"
           :validators="accountEditProfile_formValidations.phone"
         >
