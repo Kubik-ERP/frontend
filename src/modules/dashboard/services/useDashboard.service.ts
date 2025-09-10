@@ -44,6 +44,7 @@ export const useDashboardService = (): IDashboardProvided => {
       labels: dashboard_values.value.salesData.map(item => item.label),
       datasets: [
         {
+          // label: useLocalization('dashboard.chart.label'),
           label: 'Sales',
           data: dashboard_values.value.salesData.map(item => item.value),
           fill: false,

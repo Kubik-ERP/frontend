@@ -43,6 +43,7 @@ export const useReportService = (): IReportProvided => {
   });
 
   const formatQueryParamsDate = (params: IReportQueryParams, type?: string): IReportQueryParams => {
+    console.log(JSON.stringify(params, null, 2));
     return {
       startDate: (new Date(params.startDate).toISOString().split('T')[0] + 'T00:00:00.000Z') as unknown as Date,
       endDate: (new Date(params.endDate).toISOString().split('T')[0] + 'T23:59:59.999Z') as unknown as Date,

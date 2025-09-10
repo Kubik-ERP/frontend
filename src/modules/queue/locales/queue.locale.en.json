@@ -1,0 +1,15 @@
+{
+  "queue": {
+    "customerWaitingList": "Customer Waiting List System",
+    "kitchenDisplay": "Kitchen Display System",
+    "dailySales": "Daily Sales",
+    "invoices": "Invoices",
+    "searchInvoicePlaceholder": "Search Invoice ID",
+    "filterBy": "Filter by",
+    "purchaseDateFrom": "Purchase Date From",
+    "purchaseDateTo": "Purchase Date To",
+    "orderType": "Order Type",
+    "orderStatus": "Order Status",
+    "notApplicable": "N/A"
+  }
+}

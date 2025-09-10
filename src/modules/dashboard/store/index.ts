@@ -14,12 +14,12 @@ export const useDashboardStore = defineStore('dashboard', {
     dashboard_values: {
       summary: {
         totalSales: {
-          value: 240000,
-          percentageChange: 100,
+          value: 0,
+          percentageChange: 0,
         },
         totalCostOfGoodSold: {
-          value: 240000,
-          percentageChange: 100,
+          value: 0,
+          percentageChange: 0,
         },
         totalGrossProfit: {
           value: 0,
@@ -61,7 +61,7 @@ export const useDashboardStore = defineStore('dashboard', {
         },
         {
           label: 'August',
-          value: 280000,
+          value: 0,
         },
         {
           label: 'September',
@@ -81,35 +81,25 @@ export const useDashboardStore = defineStore('dashboard', {
         },
       ],
       latestSales: {
-        value: 280000,
-        percentageChange: 100,
+        value: 0,
+        percentageChange: 0,
       },
       productSales: [],
       stockStatus: {
         stockStatus: {
-          available: 1,
-          outOfStock: 1,
-          lowStock: 1,
+          available: 0,
+          outOfStock: 0,
+          lowStock: 0,
         },
         detailedLowStock: {
           items: [
-            {
-              name: 'item',
-              stock: 1,
-              unit: 'gram',
-              minimumStock: 10,
-            },
+            
           ],
           count: 0,
         },
         detailedOutOfStock: {
           items: [
-            {
-              name: 'Milk',
-              stock: 0,
-              unit: 'unit',
-              minimumStock: 1,
-            },
+            
           ],
           count: 0,
         },

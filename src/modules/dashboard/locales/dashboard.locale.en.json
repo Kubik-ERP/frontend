@@ -1,0 +1,46 @@
+{
+  "dashboard": {
+    "greeting": {
+      "morning": "Good Morning",
+      "afternoon": "Good Afternoon",
+      "evening": "Good Evening"
+    },
+    "overview": {
+      "dataPeriod": "Data Period",
+      "totalSales": "Total Sales",
+      "totalCogs": "Total Cost of Good Sold",
+      "totalGrossProfit": "Total Gross Profit",
+      "totalNettProfit": "Total Nett Profit",
+      "currency": "Rp"
+    },
+    "chart": {
+      "label": "Sales",
+      "latestSales": "Latest Sales",
+      "totalSales": "Total Sales"
+    },
+    "topProducts": {
+      "title": "Top Products",
+      "salesUnit": "sales"
+    },
+    "stockAvailability": {
+      "title": "Stock Availability",
+      "available": "Available",
+      "lowStock": "Low Stock",
+      "outOfStock": "Out of Stock"
+    },
+    "lowStock": {
+      "title": "Low Stock",
+      "itemsUnit": "Items",
+      "showMore": "Show More",
+      "quantityUnit": "qty",
+      "orderAction": "Order"
+    },
+    "outOfStock": {
+      "title": "Out of Stock",
+      "itemsUnit": "Items",
+      "showMore": "Show More",
+      "quantityUnit": "qty",
+      "orderAction": "Order"
+    }
+  }
+}

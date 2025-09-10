@@ -1,0 +1,46 @@
+{
+  "dashboard": {
+    "greeting": {
+      "morning": "Selamat Pagi",
+      "afternoon": "Selamat Siang",
+      "evening": "Selamat Malam"
+    },
+    "overview": {
+      "dataPeriod": "Periode Data",
+      "totalSales": "Total Penjualan",
+      "totalCogs": "Total Harga Pokok Penjualan",
+      "totalGrossProfit": "Total Laba Kotor",
+      "totalNettProfit": "Total Laba Bersih",
+      "currency": "Rp"
+    },
+    "chart": {
+      "label": "Penjualan",
+      "latestSales": "Penjualan Terkini",
+      "totalSales": "Total Penjualan"
+    },
+    "topProducts": {
+      "title": "Produk Terlaris",
+      "salesUnit": "penjualan"
+    },
+    "stockAvailability": {
+      "title": "Ketersediaan Stok",
+      "available": "Tersedia",
+      "lowStock": "Stok Hampir Habis",
+      "outOfStock": "Stok Habis"
+    },
+    "lowStock": {
+      "title": "Stok Hampir Habis",
+      "itemsUnit": "Item",
+      "showMore": "Lihat Selengkapnya",
+      "quantityUnit": "Jml",
+      "orderAction": "Pesan"
+    },
+    "outOfStock": {
+      "title": "Stok Habis",
+      "itemsUnit": "Item",
+      "showMore": "Lihat Selengkapnya",
+      "quantityUnit": "Jml",
+      "orderAction": "Pesan"
+    }
+  }
+}

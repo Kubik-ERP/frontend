@@ -22,6 +22,10 @@ const togglePopover = (id: string, event: Event) => {
 onMounted(() => {
   productBundling_fetchProductBundlingList();
 });
+
+import { useRbac } from '@/app/composables/useRbac';
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('product_management');
 </script>
 <template>
   <div>
@@ -42,13 +46,14 @@ onMounted(() => {
     >
       <template #header-prefix>
         <div class="flex items-center">
-          <h6 class="font-semibold text-black text-lg">Product Bundling</h6>
+          <h6 class="font-semibold text-black text-lg">{{ useLocalization('productBundling.listPage.title') }}</h6>
         </div>
       </template>
 
       <template #header-suffix>
         <div class="flex items-center gap-2">
           <PrimeVueButton
+            v-if="hasPermission"
             class="bg-primary border-none w-fit px-5"
             severity="secondary"
             @click="$router.push({ name: 'product-bundling.add' })"
@@ -56,7 +61,9 @@ onMounted(() => {
             <template #default>
               <section id="content" class="flex items-center gap-2">
                 <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
-                <span class="font-semibold text-base text-white">Add Product Bundling</span>
+                <span class="font-semibold text-base text-white">{{
+                  useLocalization('productBundling.listPage.addButton')
+                }}</span>
               </section>
             </template>
           </PrimeVueButton>
@@ -66,6 +73,7 @@ onMounted(() => {
       <template #body="{ column, data }">
         <template v-if="column.value === 'action'">
           <PrimeVueButton
+            v-if="hasPermission"
             variant="text"
             rounded
             aria-label="detail"
@@ -88,6 +96,7 @@ onMounted(() => {
           >
             <section id="popover-content" class="flex flex-col">
               <PrimeVueButton
+                v-if="hasPermission"
                 class="w-full px-4 py-3"
                 variant="text"
                 @click="$router.push({ name: 'product-bundling.edit', params: { id: data.id } })"
@@ -95,11 +104,14 @@ onMounted(() => {
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                    <span class="font-normal text-sm text-text-primary">Edit</span>
+                    <span class="font-normal text-sm text-text-primary">{{
+                      useLocalization('productBundling.actions.edit')
+                    }}</span>
                   </section>
                 </template>
               </PrimeVueButton>
               <PrimeVueButton
+                v-if="hasPermission"
                 class="w-full px-4 py-3"
                 variant="text"
                 @click="productBundling_onShowDialogDelete(data.id)"
@@ -107,7 +119,9 @@ onMounted(() => {
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="delete" class="!w-4 !h-4" />
-                    <span class="font-normal text-sm text-text-primary">Delete</span>
+                    <span class="font-normal text-sm text-text-primary">{{
+                      useLocalization('productBundling.actions.delete')
+                    }}</span>
                   </section>
                 </template>
               </PrimeVueButton>
@@ -132,5 +146,5 @@ onMounted(() => {
       </template>
     </AppBaseDataTable>
   </div>
-  <AppBaseDialogConfirmation id="product-bundling-delete-dialog-confirmation" />
+  <AppBaseDialogConfirmation v-if="hasPermission" id="product-bundling-delete-dialog-confirmation" />
 </template>
