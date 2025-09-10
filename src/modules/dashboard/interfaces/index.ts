@@ -3,6 +3,7 @@ import type { IAuthenticationProfile } from '@/modules/authentication/interfaces
 export interface IDashboardQueryParams {
   startDate: Date;
   endDate: Date;
+  type?: string | null;
 }
 
 export interface IDashboardProvided {
@@ -11,6 +12,12 @@ export interface IDashboardProvided {
   dashboard_getSummary: () => Promise<void>;
   dashboard_isLoading: globalThis.Ref<boolean>;
   dashboard_values: globalThis.Ref<IDashBoardValues>;
+
+  // chart
+  setChartData: () => object;
+  setChartOptions: () => object;
+  chartData: globalThis.Ref<object>;
+  chartOptions: globalThis.Ref<object>;
 }
 export interface IDashBoardValues {
   summary: {
@@ -31,15 +38,17 @@ export interface IDashBoardValues {
       percentageChange: number;
     };
   };
-  monthlySalesData: { month: string; sales: number }[];
+  salesData: { label: string; value: number }[];
   latestSales: {
     value: number;
     percentageChange: number;
   };
-  productSales: {
-    name: string;
-    quantity: number;
-  }[];
+  productSales?:
+    | {
+        name: string;
+        quantity: number;
+      }[]
+    | null;
   stockStatus: {
     stockStatus: {
       available: number;

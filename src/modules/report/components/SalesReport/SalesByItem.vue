@@ -3,153 +3,81 @@
 import CustomDatePicker from '../../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../../services/report.service';
-const { salesReport_salesByItem_columns } = useReportService();
-
+const {
+  salesReport_salesByItem_columns,
+  report_queryParams,
+  report_getSalesReport,
+  salesReport_salesByItem_values,
+} = useReportService();
+// composables for export pdf
+import { useReportExporter } from '../../composables/useReportExporter';
+const { exportToPdf, exportToCsv } = useReportExporter();
 const popover = ref();
+const handleExportToPdf = () => {
+  exportToPdf({
+    reportName: 'Sales Report - Sales By Items Report',
+    period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
+    columns: salesReport_salesByItem_columns,
+    tableData: formattedDataTable(),
+  });
+};
+const handleExportToCsv = () => {
+  exportToCsv({
+    reportName: 'Sales Report - Sales By Items Report',
+    period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
+    columns: salesReport_salesByItem_columns,
+    tableData: formattedDataTable(),
+  });
+};
 
-const TEMPORARY_FORMDATA = reactive({
-  // ... other properties
-  start_date: new Date(),
-  end_date: new Date(),
-});
+const formattedDataTable = () => {
+  const newData = salesReport_salesByItem_values.value.map(item => {
+    return {
+      productId: item.productId,
+      itemName: item.itemName,
+      category: item.category,
+      qtySold: item.qtySold,
+      unitPrice: useCurrencyFormat({ data: item.unitPrice }),
+      grossSales: useCurrencyFormat({ data: item.grossSales }),
+      discount: useCurrencyFormat({ data: item.discount }),
+      netSales: useCurrencyFormat({ data: item.netSales }),
+      tax: useCurrencyFormat({ data: item.tax }),
+      totalSales: useCurrencyFormat({ data: item.totalSales }),
+    };
+  });
 
-const TEMPORARY_DATA = reactive([
-  {
-    productId: '#001',
-    itemName: 'Spaghetti Aglio Olio',
-    category: 'Pasta',
-    qtySold: 120,
-    unitPrice: 100000,
-    grossSales: 12000000,
-    discount: 1000000,
-    netSales: 11000000,
-    tax: 1100000,
-    totalSales: 12100000,
-  },
-  {
-    productId: '#002',
-    itemName: 'Beef Fettuccine',
-    category: 'Pasta',
-    qtySold: 200,
-    unitPrice: 100000,
-    grossSales: 200000000,
-    discount: 40000000,
-    netSales: 160000000,
-    tax: 16000000,
-    totalSales: 176000000,
-  },
-  {
-    productId: '#003',
-    itemName: 'Lasagna',
-    category: 'Pasta, Lunch, Dinner',
-    qtySold: 90,
-    unitPrice: 100000,
-    grossSales: 90000000,
-    discount: 0,
-    netSales: 90000000,
-    tax: 9000000,
-    totalSales: 99000000,
-  },
-  {
-    productId: '#004',
-    itemName: 'Bolognese Mac n Cheese',
-    category: 'Pasta, Dinner',
-    qtySold: 100,
-    unitPrice: 100000,
-    grossSales: 100000000,
-    discount: 0,
-    netSales: 100000000,
-    tax: 10000000,
-    totalSales: 110000000,
-  },
-  {
-    productId: '#005',
-    itemName: 'Hummus',
-    category: 'Middle East Food',
-    qtySold: 100,
-    unitPrice: 100000,
-    grossSales: 100000000,
-    discount: 0,
-    netSales: 100000000,
-    tax: 10000000,
-    totalSales: 110000000,
-  },
-  {
-    productId: '#006',
-    itemName: 'Falafel',
-    category: 'Middle East Food',
-    qtySold: 100,
-    unitPrice: 100000,
-    grossSales: 100000000,
-    discount: 0,
-    netSales: 100000000,
-    tax: 10000000,
-    totalSales: 110000000,
-  },
-  {
-    productId: '#007',
-    itemName: 'Fried Rice',
-    category: 'Asian Food, Breakfast',
-    qtySold: 100,
-    unitPrice: 100000,
-    grossSales: 100000000,
-    discount: 0,
-    netSales: 100000000,
-    tax: 10000000,
-    totalSales: 110000000,
-  },
-  {
-    productId: '#008',
-    itemName: 'Fried Noodle',
-    category: 'Asian Food, Breakfast',
-    qtySold: 100,
-    unitPrice: 100000,
-    grossSales: 100000000,
-    discount: 0,
-    netSales: 100000000,
-    tax: 10000000,
-    totalSales: 110000000,
-  },
-  {
-    productId: '#009',
-    itemName: 'Lemon Tea Ice',
-    category: 'Drink',
-    qtySold: 100,
-    unitPrice: 100000,
-    grossSales: 100000000,
-    discount: 0,
-    netSales: 100000000,
-    tax: 10000000,
-    totalSales: 110000000,
-  },
-  {
-    productId: '#010',
-    itemName: 'Avocado Juice',
-    category: 'Drink',
-    qtySold: 100,
-    unitPrice: 100000,
-    grossSales: 100000000,
-    discount: 0,
-    netSales: 100000000,
-    tax: 10000000,
-    totalSales: 110000000,
-  },
-]);
+  return newData || [];
+};
+
+const page = ref<number>(1);
+const limit = ref<number>(10);
+const onChangePage = (newPage: number) => {
+  page.value = newPage;
+};
 </script>
 <template>
   <section>
     <AppBaseDataTable
-      :data="TEMPORARY_DATA"
+      :data="formattedDataTable()"
       :columns="salesReport_salesByItem_columns"
+      :first="(page - 1) * limit"
+      :rows-per-page="limit"
+      :total-records="formattedDataTable().length"
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-custom-filter
+      @update:currentPage="onChangePage"
     >
       <template #header-prefix>
         <h1 class="font-bold text-2xl text-text-primary">Sales By Item</h1>
       </template>
       <template #header-suffix>
-        <PrimeVueButton variant="outlined" label="Export" @click="popover.toggle($event)">
+        <PrimeVueButton
+          :disabled="formattedDataTable().length === 0"
+          variant="outlined"
+          label="Export"
+          @click="popover.toggle($event)"
+        >
           <template #icon>
             <AppBaseSvg name="export" class="!w-5 !h-5" />
           </template>
@@ -165,11 +93,13 @@ const TEMPORARY_DATA = reactive([
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .pdf"
+              @click="handleExportToPdf"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .csv"
+              @click="handleExportToCsv"
             />
           </section>
         </PrimeVuePopover>
@@ -177,8 +107,10 @@ const TEMPORARY_DATA = reactive([
 
       <template #filter>
         <CustomDatePicker
-          v-model:start-date="TEMPORARY_FORMDATA.start_date"
-          v-model:end-date="TEMPORARY_FORMDATA.end_date"
+          v-model:start-date="report_queryParams.startDate"
+          v-model:end-date="report_queryParams.endDate"
+          :should-update-type="false"
+          @update:start-date="report_getSalesReport('item')"
         />
       </template>
     </AppBaseDataTable>

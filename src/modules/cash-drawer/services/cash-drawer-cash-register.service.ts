@@ -308,6 +308,11 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
       await cashDrawerCashRegister_fetchCashDrawerDetails();
       await cashDrawerCashRegister_fetchTrasanctions();
       cashDrawerCashRegister_onCloseDialogAddTransaction();
+
+      // Reset the form and validation
+      cashDrawerCashRegister_formDataOfTransaction.amount = null;
+      cashDrawerCashRegister_formDataOfTransaction.notes = null;
+      cashDrawerCashRegister_formValidationsOfTransaction.value.$reset();
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);

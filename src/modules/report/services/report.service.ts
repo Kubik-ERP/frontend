@@ -1,5 +1,5 @@
 // store
-
+import { useReportStore } from '../store';
 // constant
 import {
   FINANCIALREPORT_CASHINOUT_COLUMNS,
@@ -14,10 +14,101 @@ import {
   SALESREPORT_SALESBYORDERTYPE_COLUMNS,
 } from '../constants';
 // type
-import { IReportProvided } from '../interfaces';
+import { IReportProvided, IReportQueryParams } from '../interfaces';
 
 export const useReportService = (): IReportProvided => {
+  const store = useReportStore();
+  const {
+    report_isLoading,
+    // financial
+    report_profitAndLost_values,
+    report_cashInOut_values,
+    report_paymentMethod_values,
+    report_taxAndServiceCharge_values,
+    // sales
+    salesReport_salesByItem_values,
+    salesReport_salesByOrderType_values,
+    // inventory
+    inventoryReport_stock_values,
+    inventoryReport_stockMovement_values,
+    // voucher
+    voucherReport_values,
+  } = storeToRefs(store);
+
+  const { httpAbort_registerAbort } = useHttpAbort();
+
+  const report_queryParams = reactive<IReportQueryParams>({
+    startDate: new Date(),
+    endDate: new Date(),
+  });
+
+  const formatQueryParamsDate = (params: IReportQueryParams, type?: string): IReportQueryParams => {
+    console.log(JSON.stringify(params, null, 2));
+    return {
+      startDate: (new Date(params.startDate).toISOString().split('T')[0] + 'T00:00:00.000Z') as unknown as Date,
+      endDate: (new Date(params.endDate).toISOString().split('T')[0] + 'T23:59:59.999Z') as unknown as Date,
+      type: type,
+    };
+  };
+
+  const report_getFinancialReport = async (type?: string) => {
+    try {
+      await store.getFinancialReport_profitAndLost(formatQueryParamsDate(report_queryParams, type), {
+        ...httpAbort_registerAbort('FINANCIALREPORT_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
+
+  const report_getSalesReport = async (type?: string) => {
+    try {
+      await store.getSalesReport(formatQueryParamsDate(report_queryParams, type), {
+        ...httpAbort_registerAbort('SALESREPORT_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
+
+  const report_getInventoryReport = async (type?: string) => {
+    try {
+      await store.getInventoryReport(formatQueryParamsDate(report_queryParams, type), {
+        ...httpAbort_registerAbort('INVENTORYREPORT_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
+
+  const report_getVoucherReport = async () => {
+    try {
+      await store.getVoucherReport(formatQueryParamsDate(report_queryParams), {
+        ...httpAbort_registerAbort('VOUCHERREPORT_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
+
   return {
+    // constants
     financialReport_profitAndLost_columns: FINANCIALREPORT_PROFITANDLOST_COLUMNS,
     financialReport_cashInOut_columns: FINANCIALREPORT_CASHINOUT_COLUMNS,
     financialReport_paymentMethod_columns: FINANCIALREPORT_PAYMENTMETHOD_COLUMNS,
@@ -27,6 +118,28 @@ export const useReportService = (): IReportProvided => {
     salesReport_salesByOrderType_columns: SALESREPORT_SALESBYORDERTYPE_COLUMNS,
     inventoryReport_stock_columns: INVENTORYREPORT_STOCK_COLUMNS,
     inventoryReport_stockMovement_columns: INVENTORYREPORT_STOCKMOVEMENT_COLUMNS,
-    marketingReport_columns: MARKETINGREPORT_COLUMNS,
+    voucherReport_columns: MARKETINGREPORT_COLUMNS,
+    // params
+    report_queryParams,
+    // methods
+    report_getFinancialReport,
+    report_getSalesReport,
+    report_getInventoryReport,
+    report_getVoucherReport,
+    // store
+    report_isLoading,
+    // financial
+    report_profitAndLost_values,
+    report_cashInOut_values,
+    report_paymentMethod_values,
+    report_taxAndServiceCharge_values,
+    // sales
+    salesReport_salesByItem_values,
+    salesReport_salesByOrderType_values,
+    // inventory
+    inventoryReport_stock_values,
+    inventoryReport_stockMovement_values,
+    // voucher
+    voucherReport_values,
   };
 };

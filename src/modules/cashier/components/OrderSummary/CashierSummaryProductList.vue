@@ -58,7 +58,7 @@ const showImageUrl = (picture: string | null) => {
                   })
                 }}</span>
                 <span
-                  v-if="item.product.discountPrice"
+                  v-if="item.product.discountPrice && item.product.discountPrice < item.product.price"
                   class="text-text-disabled text-[10px] line-through text-right"
                   >{{
                     useCurrencyFormat({
@@ -103,7 +103,7 @@ const showImageUrl = (picture: string | null) => {
                 cashierOrderSummary_modalAddEditNotes.tempValue = item.notes;
               "
             >
-              <AppBaseSvg name="add-notes" />
+              <AppBaseSvg name="add-notes" class="h-4 w-4" />
 
               <span class="font-semibold text-primary">{{
                 item.notes ? useLocalization('cashier.edit') : useLocalization('cashier.mainSection.addNotes')
@@ -134,7 +134,7 @@ const showImageUrl = (picture: string | null) => {
               variant="outlined"
               label="+"
               :disabled="cashierOrderSummary_calculateEstimation.isLoading"
-              @click="item.quantity == item.product.quantity ? item.quantity : (item.quantity += 1)"
+              @click="item.quantity += 1"
             />
           </div>
         </div>

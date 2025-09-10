@@ -22,7 +22,7 @@ const { account_profile, account_onEditBankAccount, account_onSetUpBankAccount }
         class="flex items-center gap-2 cursor-pointer"
         @click="account_onEditBankAccount"
       >
-        <AppBaseSvg name="edit" />
+        <AppBaseSvg name="edit" class="w-4 h4" />
 
         <span class="font-semibold text-primary text-sm"> Edit Bank Information </span>
       </section>

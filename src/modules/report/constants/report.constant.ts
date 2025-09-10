@@ -38,7 +38,7 @@ export const FINANCIALREPORT_PAYMENTMETHOD_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Payment Method',
     sortable: false,
-    value: 'payment_method',
+    value: 'paymentMethod',
   },
   {
     label: 'Transaction',
@@ -58,15 +58,15 @@ export const FINANCIALREPORT_TAXANDSERVICECHARGE_COLUMNS: IColumnDataTable[] = [
     sortable: false,
     value: 'type',
   },
-  {
-    label: 'Rate (%)',
-    sortable: false,
-    value: 'rate',
-  },
+  // {
+  //   label: 'Rate (%)',
+  //   sortable: false,
+  //   value: 'rate',
+  // },
   {
     label: 'Subtotal Applied',
     sortable: false,
-    value: 'subtotal_applied',
+    value: 'subtotalApplied',
   },
   {
     label: 'Nominal',
@@ -119,11 +119,11 @@ export const LOSSREPORT_COLUMNS: IColumnDataTable[] = [
 ];
 
 export const SALESREPORT_SALESBYITEM_COLUMNS: IColumnDataTable[] = [
-  {
-    label: 'Product ID',
-    sortable: true,
-    value: 'productId',
-  },
+  // {
+  //   label: 'Product ID',
+  //   sortable: true,
+  //   value: 'productId',
+  // },
   {
     label: 'Item Name',
     sortable: false,
@@ -175,17 +175,17 @@ export const SALESREPORT_SALESBYORDERTYPE_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Invoice ID',
     sortable: true,
-    value: 'invoice_id',
+    value: 'invoiceId',
   },
   {
     label: 'Order Type',
     sortable: false,
-    value: 'order_type',
+    value: 'orderType',
   },
   {
     label: 'Gross Sales',
     sortable: true,
-    value: 'gross_sales',
+    value: 'grossSales',
   },
   {
     label: 'Tax',
@@ -200,7 +200,7 @@ export const SALESREPORT_SALESBYORDERTYPE_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Net Sales',
     sortable: true,
-    value: 'net_sales',
+    value: 'netSales',
   },
 ];
 
@@ -213,7 +213,7 @@ export const INVENTORYREPORT_STOCK_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Item Name',
     sortable: false,
-    value: 'item_name',
+    value: 'itemName',
   },
   {
     label: 'Category',
@@ -223,17 +223,17 @@ export const INVENTORYREPORT_STOCK_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Stock on Hand',
     sortable: true,
-    value: 'stock_on_hand',
+    value: 'stock',
   },
   {
     label: 'Reorder Level',
     sortable: true,
-    value: 'reorder_level',
+    value: 'reorderLevel',
   },
   {
     label: 'Minimum Stock',
     sortable: true,
-    value: 'minimum_stock',
+    value: 'minimumStock',
   },
   {
     label: 'Unit',
@@ -243,7 +243,7 @@ export const INVENTORYREPORT_STOCK_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Storage Location',
     sortable: false,
-    value: 'storage_location',
+    value: 'storageLocation',
   },
 ];
 export const INVENTORYREPORT_STOCKMOVEMENT_COLUMNS: IColumnDataTable[] = [
@@ -255,12 +255,12 @@ export const INVENTORYREPORT_STOCKMOVEMENT_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Item Name',
     sortable: false,
-    value: 'item_name',
+    value: 'itemName',
   },
   {
     label: 'Movement Type',
     sortable: false,
-    value: 'movement_type',
+    value: 'movementType',
   },
   {
     label: 'Qty',
@@ -270,12 +270,12 @@ export const INVENTORYREPORT_STOCKMOVEMENT_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Stock Before',
     sortable: true,
-    value: 'stock_before',
+    value: 'stockBefore',
   },
   {
     label: 'Stock After',
     sortable: true,
-    value: 'stock_after',
+    value: 'stockAfter',
   },
   {
     label: 'Notes',
@@ -285,7 +285,7 @@ export const INVENTORYREPORT_STOCKMOVEMENT_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Storage Location',
     sortable: false,
-    value: 'storage_location',
+    value: 'storageLocation',
   },
 ];
 
@@ -293,12 +293,12 @@ export const MARKETINGREPORT_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Voucher Name',
     sortable: false,
-    value: 'voucher_name',
+    value: 'voucherName',
   },
   {
     label: 'Validity Period',
     sortable: true,
-    value: 'validity_period',
+    value: 'validityPeriod',
   },
   {
     label: 'Usage',

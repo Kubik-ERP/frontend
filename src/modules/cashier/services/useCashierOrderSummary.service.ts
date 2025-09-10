@@ -4,7 +4,6 @@ import {
   CASHIER_ORDER_TYPE,
   CASHIER_DUMMY_LIST_FLOOR,
   CASHIER_DUMMY_LIST_TABLE,
-  // CASHIER_DUMMY_VOUCHER,
   CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT,
 } from '../constants';
 
@@ -58,6 +57,8 @@ import { minValue, numeric, required } from '@vuelidate/validators';
 import { useVoucherStore } from '@/modules/voucher/store';
 import { IVoucher } from '@/modules/voucher/interfaces';
 import eventBus from '@/plugins/mitt';
+// import { useProductService } from '@/modules/catalog-product/services/catalog-product.service';
+// import { IProduct } from '@/modules/catalog-product/interfaces';
 // import CashierSummaryModalVoucher from '../components/OrderSummary/Modal/CashierSummaryModalVoucher.vue';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
@@ -84,7 +85,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_modalOrderType = ref<ICashierOrderSummaryModalOrderType>({
     show: false,
     selectedOrderType: 'dine_in',
-    data: CASHIER_ORDER_TYPE,
+    data: CASHIER_ORDER_TYPE.filter(item => (route.name === 'self-order' ? true : item.code !== 'self_order')),
   });
 
   const cashierProduct_customerState = ref<ICashierCustomerState>({
@@ -195,10 +196,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       discountTotal: 0,
       grandTotal: 0,
       serviceCharge: 0,
+      roundingAdjustment: 0,
       serviceChargeInclude: false,
       tax: 0,
       taxInclude: false,
       items: [],
+      totalProductDiscount: 0,
       voucherAmount: 0,
     },
   });
@@ -300,27 +303,42 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     },
     { deep: true },
   );
+  // const productService = useProductService();
+  //   const voucherProductList = ref<IProduct[]>([]);
 
-  watch(
-    () => [
-      cashierProduct_selectedProduct.value,
-      cashierOrderSummary_modalVoucher.value.show,
-      cashierOrderSummary_modalVoucher.value.search,
-    ],
-    async () => {
-      if (cashierOrderSummary_modalVoucher.value.show && cashierProduct_selectedProduct.value.length > 0) {
-        debouncedCalculateEstimation();
-        getVoucherActive(
-          cashierOrderSummary_modalVoucher.value.search,
-          cashierProduct_selectedProduct.value.map(p => p.productId),
-        );
-      }
+  //   const fetchVoucherProductList = async (): Promise<void> => {
+  //     try {
+  //       const response = await productService.getAllProducts(1, 100, '');
+  //       voucherProductList.value = response.products;
+  //     } catch (error) {
+  //       console.error('❌ Error fetching voucher product list:', error);
+  //     }
+  //   };
 
-      if (cashierOrderSummary_modalVoucher.value.form.voucherId) {
-        debouncedCalculateEstimation();
+watch(
+  () => [
+    cashierProduct_selectedProduct.value,
+    cashierOrderSummary_modalVoucher.value.show,
+    cashierOrderSummary_modalVoucher.value.search,
+  ],
+  async () => {
+    if (cashierOrderSummary_modalVoucher.value.show && cashierProduct_selectedProduct.value.length > 0) {
+      debouncedCalculateEstimation();
+      await getVoucherActive(
+        cashierOrderSummary_modalVoucher.value.search,
+        cashierProduct_selectedProduct.value.map(p => p.productId),
+      );
+      if (voucherData.value.length > 0) {
+        // Set default value voucherId dengan voucher pertama
+        cashierOrderSummary_modalVoucher.value.form.voucherId = voucherData.value[0].id;
       }
-    },
-  );
+    }
+
+    if (cashierOrderSummary_modalVoucher.value.form.voucherId) {
+      debouncedCalculateEstimation();
+    }
+  },
+);
 
   /**
    * @description Handle voucher selection
@@ -406,11 +424,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description Handle voucher selection
    * @returns void
    */
-  const getVoucherActive = async (search: string, productIds: string[]) => {
+  const getVoucherActive = async (search: string, productIds?: string[]) => {
     try {
-      const response = await storeVoucher.voucherList_getActiveVoucher(search, productIds);
+      const response = await storeVoucher.voucherList_getActiveVoucher(search, productIds ?? []);
       const data = response.data;
 
+      cashierOrderSummary_modalVoucher.value.form.voucherId = data[0].id;
       voucherData.value = data.map((voucher: IVoucher) => {
         const total = cashierOrderSummary_calculateEstimation.value.data.grandTotal;
         const isAmountMatch = total >= voucher.minPrice;
@@ -428,7 +447,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           validFrom: new Date(voucher.startPeriod).toISOString().split('T')[0],
           validUntil: new Date(voucher.endPeriod).toISOString().split('T')[0],
           type: voucher.isPercent ? 'percentage' : 'nominal',
-          stock: voucher.remainingQuota || 0,
+          stock: voucher.quota || 0,
         };
       });
     } catch (error: unknown) {
@@ -509,7 +528,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_storeId = ref('');
 
-  onMounted(() => {
+  onMounted(async () => {
     if (route.name === 'self-order') {
       cashierOrderSummary_modalOrderType.value.selectedOrderType = 'self_order';
       cashierOrderSummary_modalSelectTable.value.selectedTable = [
@@ -537,6 +556,20 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           type: EToastType.DANGER,
         });
 
+        return;
+      }
+
+      try {
+        await store.cashierSelfOrder_handleVerify({
+          storeId: route.query.storeId as string,
+          tablesName: route.query.tablesName as string,
+        });
+      } catch (error) {
+        router.push({
+          name: 'self-order.not-valid',
+        });
+
+        console.error(error);
         return;
       }
 
@@ -627,10 +660,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           discountTotal: 0,
           grandTotal: 0,
           serviceCharge: 0,
+          roundingAdjustment: 0,
           serviceChargeInclude: false,
           tax: 0,
           taxInclude: false,
           items: [],
+          totalProductDiscount: 0,
           voucherAmount: 0,
         };
       }
@@ -664,6 +699,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
         paymentAmount: cashierOrderSummary_paymentForm.paymentAmount || null,
         voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId || null,
+        rounding_amount: cashierOrderSummary_calculateEstimation.value.data.roundingAdjustment || 0,
       };
 
       const response = await store.cashierProduct_paymentInstant(params, route);
@@ -738,6 +774,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
         tableCode: cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
+        rounding_amount: cashierOrderSummary_calculateEstimation.value.data.roundingAdjustment || 0,
       };
 
       const response = await store.cashierProduct_paymentProcess(params, route);
@@ -921,6 +958,16 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
               quantity: null,
               variantHasProducts: null,
               categoriesHasProducts: null,
+              variant: item.variant
+                ? [
+                    {
+                      id: item.variant.id,
+                      name: item.variant.name,
+                      price: item.variant.price,
+                      productsId: item.productId,
+                    },
+                  ]
+                : [],
             }),
             variant: item.variant
               ? reactive({
@@ -934,7 +981,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
                   price: 0,
                 }),
             productId: item.productId,
-            variantId: item.variantId || '',
+            variantId: item.variant?.id || '',
             quantity: item.qty,
             notes: item.notes,
           };

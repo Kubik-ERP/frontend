@@ -22,6 +22,11 @@ interface IProps {
   title?: string;
   type?: 'error' | 'info';
   width?: string;
+  // Enhanced form support
+  isUsingForm?: boolean;
+  formData?: Record<string, unknown>;
+  formFields?: IDialogFormField[];
+  formValidations?: Record<string, unknown>;
 }
 
 const props = withDefaults(defineProps<IProps>(), {
@@ -41,7 +46,10 @@ const props = withDefaults(defineProps<IProps>(), {
   title: '',
   type: 'info',
   width: '',
-  secondaryIcon: 'delete',
+  isUsingForm: false,
+  formData: () => ({}),
+  formFields: () => [],
+  formValidations: () => ({}),
 });
 
 /**
@@ -64,6 +72,10 @@ const dialogConfirmation = ref<IProps>({
   title: '',
   type: 'info',
   width: '',
+  isUsingForm: false,
+  formData: {},
+  formFields: [],
+  formValidations: {},
 });
 const dialog = ref<IPropsDialog>({
   id: dialogConfirmation.value.id,
@@ -72,6 +84,26 @@ const dialog = ref<IPropsDialog>({
   isUsingClosableButton: false,
   isOpen: false,
   width: dialogConfirmation.value.width || '534px',
+});
+
+/**
+ * @description Get field validation errors
+ */
+const getFieldValidation = (fieldKey: string) => {
+  const validations = dialogConfirmation.value.formValidations as Record<string, unknown>;
+  return validations?.[fieldKey];
+};
+
+/**
+ * @description Check if form is valid
+ */
+const isFormValid = computed(() => {
+  if (!dialogConfirmation.value.isUsingForm) return true;
+
+  const validations = dialogConfirmation.value.formValidations as Record<string, { $invalid: boolean }>;
+  if (!validations) return true;
+
+  return Object.values(validations).every(validation => !validation.$invalid);
 });
 
 eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
@@ -109,7 +141,7 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
         </h6>
 
         <template v-if="dialogConfirmation.isUsingHtmlTagOnDescription">
-          <div v-html="dialogConfirmation.description"></div>
+          <div class="text-center" v-html="dialogConfirmation.description"></div>
         </template>
 
         <template v-else>
@@ -117,6 +149,89 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
             {{ dialogConfirmation.description }}
           </p>
         </template>
+
+        <!-- Enhanced Form Section -->
+        <section
+          v-if="dialogConfirmation.isUsingForm && dialogConfirmation.formFields"
+          id="form-section"
+          class="w-full mt-4"
+        >
+          <form class="flex flex-col gap-4" @submit.prevent>
+            <template v-for="field in dialogConfirmation.formFields" :key="field.key">
+              <AppBaseFormGroup
+                v-slot="{ classes }"
+                :class-label="'block text-sm font-medium leading-6 text-gray-900 w-full'"
+                :is-name-as-label="true"
+                :label-for="field.key"
+                :name="field.label"
+                spacing-bottom="mb-0"
+                :validators="getFieldValidation(field.key)"
+              >
+                <!-- Text Input -->
+                <PrimeVueInputText
+                  v-if="field.type === 'text' || field.type === 'email' || field.type === 'password'"
+                  :id="field.key"
+                  v-model="(dialogConfirmation.formData as Record<string, string>)[field.key]"
+                  :type="field.type"
+                  :placeholder="field.placeholder"
+                  :disabled="field.disabled"
+                  class="text-base text-text-primary w-full"
+                  :class="{ ...classes }"
+                />
+
+                <!-- Textarea -->
+                <PrimeVueTextarea
+                  v-else-if="field.type === 'textarea'"
+                  :id="field.key"
+                  v-model="(dialogConfirmation.formData as Record<string, string>)[field.key]"
+                  :placeholder="field.placeholder"
+                  :disabled="field.disabled"
+                  :rows="field.rows || 3"
+                  class="text-base text-text-primary w-full resize-none"
+                  :class="{ ...classes }"
+                />
+
+                <!-- Number Input -->
+                <PrimeVueInputNumber
+                  v-else-if="field.type === 'number'"
+                  :id="field.key"
+                  v-model="(dialogConfirmation.formData as Record<string, number>)[field.key]"
+                  :placeholder="field.placeholder"
+                  :disabled="field.disabled"
+                  class="text-base text-text-primary w-full"
+                  :class="{ ...classes }"
+                />
+
+                <!-- Select/Dropdown -->
+                <PrimeVueSelect
+                  v-else-if="field.type === 'select'"
+                  :id="field.key"
+                  v-model="(dialogConfirmation.formData as Record<string, string>)[field.key]"
+                  :options="field.options"
+                  option-label="label"
+                  option-value="value"
+                  :placeholder="field.placeholder"
+                  :disabled="field.disabled"
+                  class="text-base text-text-primary w-full"
+                  :class="{ ...classes }"
+                />
+
+                <!-- Date Input -->
+                <PrimeVueDatePicker
+                  v-else-if="field.type === 'date'"
+                  :id="field.key"
+                  v-model="(dialogConfirmation.formData as Record<string, Date>)[field.key]"
+                  :placeholder="field.placeholder"
+                  :disabled="field.disabled"
+                  class="text-base text-text-primary w-full"
+                  :class="{ ...classes }"
+                  show-icon
+                  date-format="dd/mm/yy"
+                />
+              </AppBaseFormGroup>
+            </template>
+          </form>
+        </section>
       </section>
     </template>
 
@@ -132,7 +247,6 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
-                  <AppBaseSvg :name="dialogConfirmation.iconName === 'exclude' ? 'exclude' : 'delete'" class="!w-5 !h-5"/>
                   <span class="font-semibold text-base text-error-main">
                     {{ dialogConfirmation.textButtonSecondary }}
                   </span>
@@ -155,9 +269,11 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
 
         <PrimeVueButton
           class="bg-blue-primary border-none text-sm py-[10px] w-full"
+          :class="{ 'opacity-50 cursor-not-allowed': dialogConfirmation.isUsingForm && !isFormValid }"
           :label="dialogConfirmation.textButtonPrimary"
           type="button"
           :loading="dialogConfirmation.isLoading"
+          :disabled="dialogConfirmation.isUsingForm && !isFormValid"
           @click="dialogConfirmation.onClickButtonPrimary"
         />
       </footer>

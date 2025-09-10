@@ -41,9 +41,7 @@ const {
             @click="inventoryItem_triggerUpload"
             @dragover.prevent
             @drop.prevent="
-              inventoryItem_handleDropFile(
-                $event.dataTransfer?.files ? Array.from($event.dataTransfer.files) : [],
-              )
+              inventoryItem_handleDropFile($event.dataTransfer?.files ? Array.from($event.dataTransfer.files) : [])
             "
           >
             <i class="pi pi-paperclip text-4xl text-gray-400 mb-3"></i>
@@ -60,7 +58,7 @@ const {
               <span class="text-gray-400">or</span>
               <PrimeVueButton
                 icon="pi pi-download"
-                label="Download Template"
+                label="Download Excel"
                 class="bg-white border border-primary text-primary px-4 py-2 mt-1"
                 @click.stop="inventoryItem_handleDownloadTemplate"
               />
@@ -87,14 +85,10 @@ const {
           <div class="flex flex-col w-full">
             <AppBaseDataTable
               :columns="inventoryItem_columns"
-              :data="inventoryItem_values?.data.items"
-              :rows-per-page="inventoryItem_values?.data.meta.pageSize"
-              :total-records="inventoryItem_values?.data.meta.total"
-              :first="
-                inventoryItem_values?.data?.meta && inventoryItem_values.data.meta.page
-                  ? (inventoryItem_values.data.meta.page - 1) * inventoryItem_values.data.meta.pageSize
-                  : 0
-              "
+              :data="inventoryItem_values?.data.mergedData.sort((a, b) => a.rowNumber - b.rowNumber)"
+              :rows-per-page="inventoryItem_values?.data.totalRows"
+              :total-records="inventoryItem_values?.data.totalRows"
+              :first="0"
               :is-loading="inventoryItem_isLoading"
               is-using-custom-header-suffix
               is-using-header
@@ -102,15 +96,55 @@ const {
               :is-using-custom-filter="true"
             >
               <template #body="{ column, data }">
-                <template v-if="column.value === 'code'">
-                  <span class="text-gray-700">{{ data.code }}</span>
+                <template v-if="column.value === 'name'">
+                  <span class="text-gray-700">{{ data.itemName }}</span>
                 </template>
-                <template v-else-if="column.value === 'name'">
-                  <span class="text-gray-700">{{ data.name }}</span>
+                <template v-else-if="column.value === 'rowNumber'">
+                  <span class="text-gray-700">{{ data.rowNumber }}</span>
+                </template>
+                <template v-if="column.value === 'name'">
+                  <span class="text-gray-700">{{ data.itemName }}</span>
+                </template>
+                <template v-else-if="column.value === 'rowNumber'">
+                  <span class="text-gray-700">{{ data.rowNumber }}</span>
+                </template>
+                <template v-else-if="column.value === 'sku'">
+                  <span class="text-gray-700">{{ data.sku }}</span>
                 </template>
                 <template v-else-if="column.value === 'notes'">
                   <span class="text-gray-500">{{ data.notes }}</span>
                 </template>
+                <template v-else-if="column.value === 'category'">
+                  <span class="text-gray-500">{{ data.category }}</span>
+                </template>
+                <template v-else-if="column.value === 'brand'">
+                  <span class="text-gray-500">{{ data.brand }}</span>
+                </template>
+                <template v-else-if="column.value === 'supplier'">
+                  <span class="text-gray-500">{{ data.supplier }}</span>
+                </template>
+                <template v-else-if="column.value === 'unit'">
+                  <span class="text-gray-500">{{ data.unit }}</span>
+                </template>
+                <template v-else-if="column.value === 'stockQuantity'">
+                  <span class="text-gray-500">{{ data.stockQuantity }}</span>
+                </template>
+                <template v-else-if="column.value === 'reorderLevel'">
+                  <span class="text-gray-500">{{ data.reorderLevel }}</span>
+                </template>
+                <template v-else-if="column.value === 'unitPrice'">
+                  <span class="text-gray-500">Rp. {{ data.pricePerUnit }}</span>
+                </template>
+                <template v-else-if="column.value === 'minimumStockQuantity'">
+                  <span class="text-gray-500">{{ data.minimumStockQuantity }}</span>
+                </template>
+                <template v-else-if="column.value === 'expiryDate'">
+                  <span class="text-gray-500">{{ data.expiryDate }}</span>
+                </template>
+                <template v-else-if="column.value === 'storageLocation'">
+                  <span class="text-gray-500">{{ data.storageLocation }}</span>
+                </template>
+
                 <template v-else-if="column.value === 'status'">
                   <span
                     v-if="data.status === 'success'"
@@ -120,7 +154,11 @@ const {
                   </span>
                   <span
                     v-else-if="data.status === 'failed'"
-                    class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700"
+                    v-tooltip.bottom="{
+                      value: data.errorMessages,
+                      class: ' text-white text-sm rounded-lg px-3 py-2 shadow-lg max-w-xs break-words',
+                    }"
+                    class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 cursor-help transition duration-200 hover:bg-red-200"
                   >
                     Failed
                   </span>
@@ -130,18 +168,6 @@ const {
                 </template>
               </template>
             </AppBaseDataTable>
-
-            <!-- Alert ditempel di bawah table -->
-            <div
-              v-if="inventoryItem_values?.data?.items?.some(item => item.status === 'failed')"
-              class="absolute top-0 left-1/2 -translate-x-1/2 mt-2 p-3 border border-red-300 bg-red-50 text-red-700 rounded-md text-sm flex items-start gap-2 shadow-md"
-            >
-              <i class="pi pi-exclamation-triangle mt-0.5"></i>
-              <span>
-                Import Validation Failed — Some records didn’t meet required fields or format rules. Correct the
-                errors in your CSV/XLSX and re-upload.
-              </span>
-            </div>
           </div>
         </section>
       </div>
@@ -157,10 +183,7 @@ const {
         <PrimeVueButton
           label="Import"
           class="px-4 py-2 bg-primary text-white disabled:bg-gray-400 disabled:text-white disabled:border-none"
-          :disabled="
-            inventoryItem_step === 1 ||
-            inventoryItem_values?.data?.items?.some(item => item.status === 'failed')
-          "
+          :disabled="inventoryItem_step === 1 || (inventoryItem_values?.data?.failedData?.length ?? 0) > 0"
           @click="inventoryItem_onSubmit"
         />
       </div>

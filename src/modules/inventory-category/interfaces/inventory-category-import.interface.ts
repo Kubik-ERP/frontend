@@ -1,25 +1,28 @@
-export interface IInventoryCategoryImport{
-  code: string;
-  name: string;
-  notes: string;
+export interface IInventoryCategoryImport {
+  categoryCode: string;
+  categoryName: string;
+  description: string;
   status: string;
+  errorMessages?: string;
 }
 
-export interface IInventoryCategoryImportResponse{
+export interface IInventoryCategotyImportData {
+  batchId: string;
+  failedData: IInventoryCategoryImport[];
+  successData: IInventoryCategoryImport[];
+  invalidRows: number;
+  totalRows: number;
+  validRows: number;
+  mergedData: IInventoryCategoryImport[];
+}
+
+export interface IInventoryCategoryImportResponse {
   statusCode: number;
   message: string;
-  data: {
-    items: IInventoryCategoryImport[];
-    meta: {
-      page: number;
-      pageSize: number;
-      total: number;
-      totalPages: number;
-    };
-  };
+  data: IInventoryCategotyImportData;
 }
 
-export interface IInventoryCategoryImportProvided{
+export interface IInventoryCategoryImportProvided {
   inventoryCategoryImport_onSubmit: () => void;
   inventoryCategoryImport_onClose: () => void;
   inventoryCategoryImport_step: globalThis.Ref<number>;
@@ -29,5 +32,5 @@ export interface IInventoryCategoryImportProvided{
   inventoryCategoryImport_handleDropFile: (acceptedFiles: File[]) => void;
   inventoryCategoryImport_handleUpload: () => void;
   inventoryCategoryImport_triggerUpload: () => void;
-  inventoryCategoryImport_columns: IColumnDataTable[]
+  inventoryCategoryImport_columns: IColumnDataTable[];
 }

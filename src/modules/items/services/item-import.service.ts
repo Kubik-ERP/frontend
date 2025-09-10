@@ -1,43 +1,94 @@
-import eventBus from "@/plugins/mitt";
-import { IInventoryItemImport, IInventoryItemImportProvided, IInventoryItemImportResponse } from "../interfaces/item-import.interface";
-import { ITEMS_LIST_COLUMS_IMPORT } from "../constants";
+import eventBus from '@/plugins/mitt';
+import {
+  IInventoryItemImportProvided,
+  IInventoryItemImportResponse,
+  inventoryItems_importFailedSuccessData,
+} from '../interfaces/item-import.interface';
+import { ITEMS_LIST_COLUMS_IMPORT, ITEMS_LIST_REQUEST } from '../constants';
+import { useInventoryItemsStore } from '../store';
+import { useInventoryItemsListService } from './items-list.service';
 
 export const useInventoryItemImportService = (): IInventoryItemImportProvided => {
+  const store = useInventoryItemsStore();
+  const { httpAbort_registerAbort } = useHttpAbort();
   // State
   const inventoryItem_step = ref<number>(1);
   const inventoryItem_isLoading = ref<boolean>(false);
   const inventoryItem_values = ref<IInventoryItemImportResponse>();
+  const{
+    inventoryItems_queryParams
+  } = useInventoryItemsListService();
 
   // Simpan file sementara
   const uploadedFile = ref<File | null>(null);
 
   // Handler
-  const inventoryItem_onSubmit = () => {
-    // Submit hasil import (misalnya kirim ke API)
-    console.log('Submitting import values:', inventoryItem_values.value);
+  const inventoryItem_onSubmit = async () => {
+    try {
+      const batchId = localStorage.getItem('inventory_batch_id')?.toString();
+
+      if (batchId) {
+        const res = await store.inventoryItemImport_execute(batchId, {
+          ...httpAbort_registerAbort(ITEMS_LIST_REQUEST+"_EXECUTE"),
+        });
+        if (res) {
+          const argsEventEmitter: IPropsToast = {
+            isOpen: true,
+            type: EToastType.SUCCESS,
+            message: res.message || 'Item imported successfully!',
+            position: EToastPosition.TOP_RIGHT,
+          };
+          eventBus.emit('AppBaseToast', argsEventEmitter);
+        }
+        localStorage.removeItem('inventory_batch_id');
+
+        await store.InventoryItems_fetchData( inventoryItems_queryParams ,{
+          ...httpAbort_registerAbort(ITEMS_LIST_REQUEST),
+        })
+        inventoryItem_onClose();
+      }
+    } catch (error) {
+      console.error('Upload failed:', error);
+    }
   };
 
-  const inventoryItem_onClose = () => {
-    inventoryItem_step.value = 1;
-    inventoryItem_isLoading.value = false;
-    inventoryItem_values.value = undefined;
-    uploadedFile.value = null;
+  const inventoryItem_onClose = async () => {
+    const batchId = localStorage.getItem('inventory_batch_id');
+    console.log('batchId', batchId);
 
-     eventBus.emit('AppBaseDialog', {
-      id: 'inventory-item-import-modal',
-      isUsingClosableButton: false,
-      isUsingBackdrop: true,
-      isOpen: false,
-      width: '600px',
-    });
+    if (batchId) {
+      await store.inventoryItemImport_reset(batchId);
+      eventBus.emit('AppBaseDialog', {
+        id: 'inventory-item-import-modal',
+        isUsingClosableButton: false,
+        isUsingBackdrop: true,
+        isOpen: false,
+        width: '600px',
+      });
+      inventoryItem_step.value = 1;
+      inventoryItem_isLoading.value = false;
+      inventoryItem_values.value = undefined;
+      uploadedFile.value = null;
+      localStorage.removeItem('inventory_batch_id');
+    } else {
+       eventBus.emit('AppBaseDialog', {
+        id: 'inventory-item-import-modal',
+        isUsingClosableButton: false,
+        isUsingBackdrop: true,
+        isOpen: false,
+        width: '600px',
+      });
+    }
   };
 
-  const inventoryItem_handleDownloadTemplate = () => {
-    // Contoh download file template
-    const link = document.createElement('a');
-    link.href = '/templates/brand-import.xlsx'; // ganti dengan API/URL template
-    link.download = 'brand-import-template.xlsx';
-    link.click();
+  const inventoryItem_handleDownloadTemplate = async () => {
+    try {
+      await store.inventoryItem_generateTemplate({
+        ...httpAbort_registerAbort(ITEMS_LIST_REQUEST),
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const inventoryItem_handleDropFile = (acceptedFiles: File[]) => {
@@ -46,7 +97,7 @@ export const useInventoryItemImportService = (): IInventoryItemImportProvided =>
       console.log('File dropped:', uploadedFile.value);
 
       // langsung proses upload setelah file diterima
-       void inventoryItem_handleUpload();
+      void inventoryItem_handleUpload();
     }
   };
 
@@ -73,24 +124,41 @@ export const useInventoryItemImportService = (): IInventoryItemImportProvided =>
       console.warn('No file selected for upload');
       return;
     }
-     inventoryItem_step.value = 2;
-     inventoryItem_isLoading.value = true;
+    inventoryItem_step.value = 2;
+    inventoryItem_isLoading.value = true;
     try {
-      // TODO: Panggil API upload di sini
-      await new Promise(resolve => setTimeout(resolve, 2000)); // simulasi API
+      const formData = new FormData();
+      formData.append('file', uploadedFile.value);
+      const response = await store.inventoryItem_importItems(formData, {
+        ...httpAbort_registerAbort(ITEMS_LIST_REQUEST),
+      });
+
+      const successData = (response.data?.successData ?? []).map(
+        (row: inventoryItems_importFailedSuccessData) => ({
+          ...row,
+          status: 'success',
+        }),
+      );
+
+      const failedData = (response.data?.failedData ?? []).map((row: inventoryItems_importFailedSuccessData) => ({
+        ...row,
+        status: 'failed',
+        errorMessage: row.errorMessages,
+      }));
+
+      console.log(' Failed data: ', failedData);
+
+      if (response?.data.batchId) {
+        localStorage.setItem('inventory_batch_id', response.data.batchId);
+      }
+
       inventoryItem_values.value = {
-        statusCode: 400,
-        message: 'File uploaded successfully',
+        ...response,
         data: {
-          items:   [] as IInventoryItemImport[],
-          meta: {
-            page: 1,
-            pageSize: 10,
-            total: 0,
-            totalPages: 1,
-          },
+          ...response.data,
+          mergedData: [...successData, ...failedData],
         },
-      } as IInventoryItemImportResponse;
+      };
 
       inventoryItem_step.value = 3;
     } catch (error) {
@@ -111,6 +179,6 @@ export const useInventoryItemImportService = (): IInventoryItemImportProvided =>
     inventoryItem_handleDropFile,
     inventoryItem_handleUpload,
     inventoryItem_triggerUpload,
-    inventoryItem_columns: ITEMS_LIST_COLUMS_IMPORT
+    inventoryItem_columns: ITEMS_LIST_COLUMS_IMPORT,
   };
 };

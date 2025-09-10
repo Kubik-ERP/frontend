@@ -1,8 +1,18 @@
-import eventBus from "@/plugins/mitt";
-import { ISupplierImport, ISupplierImportProvided, ISupplierImportResponse } from "../interfaces/supplier-import.interface";
-import { SUPPLIER_LIST_COLUMNS_IMPORT } from "../constants";
+import eventBus from '@/plugins/mitt';
+import {
+  ISupplierImport,
+  ISupplierImportProvided,
+  ISupplierImportResponse,
+} from '../interfaces/supplier-import.interface';
+import { SUPPLIER_LIST_COLUMNS_IMPORT } from '../constants';
+import { useSupplierStore } from '../store';
+import { useSupplierListService } from './supplier-list.service';
 
 export const useSupplierImportService = (): ISupplierImportProvided => {
+  const store = useSupplierStore();
+  const { httpAbort_registerAbort } = useHttpAbort();
+  const { supplierList_queryParams } = useSupplierListService();
+
   // State
   const supplierImport_step = ref<number>(1);
   const supplierImport_isLoading = ref<boolean>(false);
@@ -12,18 +22,50 @@ export const useSupplierImportService = (): ISupplierImportProvided => {
   const uploadedFile = ref<File | null>(null);
 
   // Handler
-  const supplierImport_onSubmit = () => {
-    // Submit hasil import (misalnya kirim ke API)
-    console.log('Submitting import values:', supplierImport_values.value);
+  const supplierImport_onSubmit = async () => {
+    try {
+      const batchId = localStorage.getItem('inventory_batch_id')?.toString();
+
+      if (batchId) {
+        const res = await store.SupplierImport_execute(batchId, {
+          ...httpAbort_registerAbort('SUPPLIER_LIST_REQUEST_EXECUTE'),
+        });
+
+        if (res) {
+          const argsEventEmitter: IPropsToast = {
+            isOpen: true,
+            type: EToastType.SUCCESS,
+            message: res.message || 'Item imported successfully!',
+            position: EToastPosition.TOP_RIGHT,
+          };
+          eventBus.emit('AppBaseToast', argsEventEmitter);
+        }
+        localStorage.removeItem('inventory_batch_id');
+
+        await store.supplier_list(supplierList_queryParams, {
+          ...httpAbort_registerAbort('SUPPLIER_LIST_REQUEST'),
+        });
+        supplierImport_onClose();
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      }
+    }
   };
 
-  const supplierImport_onClose = () => {
+  const supplierImport_onClose = async () => {
+    const batchId = localStorage.getItem('inventory_batch_id')?.toString();
+    if (batchId) {
+      await store.SupplierImport_reset(batchId);
+    }
+
     supplierImport_step.value = 1;
     supplierImport_isLoading.value = false;
     supplierImport_values.value = undefined;
     uploadedFile.value = null;
 
-     eventBus.emit('AppBaseDialog', {
+    eventBus.emit('AppBaseDialog', {
       id: 'supplier-import-modal',
       isUsingClosableButton: false,
       isUsingBackdrop: true,
@@ -32,12 +74,16 @@ export const useSupplierImportService = (): ISupplierImportProvided => {
     });
   };
 
-  const supplierImport_handleDownloadTemplate = () => {
-    // Contoh download file template
-    const link = document.createElement('a');
-    link.href = '/templates/brand-import.xlsx'; // ganti dengan API/URL template
-    link.download = 'brand-import-template.xlsx';
-    link.click();
+  const supplierImport_handleDownloadTemplate = async () => {
+    try {
+      await store.Supplier_generateTemplate({
+        ...httpAbort_registerAbort('SUPPLIER_GENERATE_TEMPLATE'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      }
+    }
   };
 
   const supplierImport_handleDropFile = (acceptedFiles: File[]) => {
@@ -46,7 +92,7 @@ export const useSupplierImportService = (): ISupplierImportProvided => {
       console.log('File dropped:', uploadedFile.value);
 
       // langsung proses upload setelah file diterima
-       void supplierImport_handleUpload();
+      void supplierImport_handleUpload();
     }
   };
 
@@ -73,30 +119,44 @@ export const useSupplierImportService = (): ISupplierImportProvided => {
       console.warn('No file selected for upload');
       return;
     }
-     supplierImport_step.value = 2;
-     supplierImport_isLoading.value = true;
+    supplierImport_isLoading.value = true;
     try {
-      // TODO: Panggil API upload di sini
-      await new Promise(resolve => setTimeout(resolve, 2000)); // simulasi API
+      const formData = new FormData();
+      formData.append('file', uploadedFile.value);
+      const response = await store.Supplier_importItems(formData, {
+        ...httpAbort_registerAbort('STORAGE_LIST_REQUEST_IMPORT'),
+      });
+
+      const successData = (response.data?.successData ?? []).map((row: ISupplierImport) => ({
+        ...row,
+        status: 'success',
+      }));
+
+      const failedData = (response.data?.failedData ?? []).map((row: ISupplierImport) => ({
+        ...row,
+        status: 'failed',
+        errorMessage: row.errorMessages,
+      }));
+
+      console.log(' Failed data: ', failedData);
+
+      if (response?.data.batchId) {
+        localStorage.setItem('inventory_batch_id', response.data.batchId);
+      }
+
       supplierImport_values.value = {
-        statusCode: 400,
-        message: 'File uploaded successfully',
+        ...response,
         data: {
-          items:  [] as ISupplierImport[],
-          meta: {
-            page: 1,
-            pageSize: 10,
-            total: 0,
-            totalPages: 1,
-          },
+          ...response.data,
+          mergedData: [...successData, ...failedData],
         },
-      } as ISupplierImportResponse;
+      };
 
       supplierImport_step.value = 3;
+      supplierImport_isLoading.value = false;
     } catch (error) {
       supplierImport_step.value = 1;
       console.error('Upload failed:', error);
-    } finally {
       supplierImport_isLoading.value = false;
     }
   };
@@ -111,6 +171,6 @@ export const useSupplierImportService = (): ISupplierImportProvided => {
     supplierImport_handleDropFile,
     supplierImport_handleUpload,
     supplierImport_triggerUpload,
-    supplierImport_columns: SUPPLIER_LIST_COLUMNS_IMPORT
+    supplierImport_columns: SUPPLIER_LIST_COLUMNS_IMPORT,
   };
 };

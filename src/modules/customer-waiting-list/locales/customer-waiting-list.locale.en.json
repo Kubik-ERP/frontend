@@ -1,0 +1,7 @@
+{
+  "customer-waiting-list": {
+    "preparingOrders": "Preparing Orders",
+    "orderComplete": "Order Complete",
+    "orderNumber": "Order Number"
+  }
+}

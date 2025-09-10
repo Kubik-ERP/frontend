@@ -8,7 +8,7 @@ import { useProductBundlingService } from '../services/product-bundling.service'
 const route = useRoute();
 const {
   price_type_option,
-  productBundling_grandTotal,
+  // productBundling_grandTotal,
   productBundling_formData,
   productBundling_formValidations,
   productBundling_productList,
@@ -40,7 +40,7 @@ const search = (event: AutoCompleteCompleteEvent) => {
   const query = event.query.toLowerCase();
   suggestions.value = availableProducts.value.filter(product => product.name.toLowerCase().includes(query));
 
-  currentSelection.value = null;
+  // currentSelection.value = null;
 };
 
 /**
@@ -62,6 +62,11 @@ const onProductSelect = (event: AutoCompleteOptionSelectEvent) => {
   // ✅ Pushes directly to the reactive formData
   productBundling_formData.products.push(itemToAdd);
 
+  productBundling_formData.price = productBundling_formData.products.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
+
   // ✅ Use nextTick to clear the input after the current update cycle
   nextTick(() => {
     currentSelection.value = null;
@@ -74,6 +79,17 @@ const onProductSelect = (event: AutoCompleteOptionSelectEvent) => {
 const removeFromPool = (productToRemove: IProduct) => {
   // ✅ Filters the reactive formData directly
   productBundling_formData.products = productBundling_formData.products.filter(p => p.id !== productToRemove.id);
+  productBundling_formData.price = productBundling_formData.products.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
+};
+
+const onResetButtonClick = () => {
+  productBundling_formData.price = productBundling_formData.products.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
 };
 
 onMounted(async () => {
@@ -92,13 +108,13 @@ onMounted(async () => {
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="name"
-        name="Product Bundling Name"
+        :name="useLocalization('productBundling.form.nameLabel')"
         spacing-bottom="mb-0"
         :validators="productBundling_formValidations.name"
       >
         <PrimeVueInputText
           v-model="productBundling_formData.name"
-          placeholder="Product Bundling Name"
+          :placeholder="useLocalization('productBundling.form.namePlaceholder')"
           class="w-full"
           :class="{ ...classes }"
         />
@@ -110,12 +126,12 @@ onMounted(async () => {
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="description"
-        name="Description"
+        :name="useLocalization('productBundling.form.descriptionLabel')"
         spacing-bottom="mb-0"
       >
         <PrimeVueTextarea
           v-model="productBundling_formData.description"
-          placeholder="Description"
+          :placeholder="useLocalization('productBundling.form.descriptionPlaceholder')"
           class="w-full"
           rows="5"
           cols="30"
@@ -128,7 +144,7 @@ onMounted(async () => {
         class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
         is-name-as-label
         label-for="price"
-        name="Price"
+        :name="useLocalization('productBundling.form.priceLabel')"
         spacing-bottom="mb-0"
         :validators="productBundling_formValidations.price"
       >
@@ -148,10 +164,8 @@ onMounted(async () => {
           />
           <PrimeVueInputNumber
             v-model="productBundling_formData.price"
-            :disabled="
-              productBundling_formData.type === 'TOTAL_ITEMS' || productBundling_formData.products.length === 0
-            "
-            placeholder="Rp. 0,00"
+            :placeholder="useLocalization('productBundling.form.pricePlaceholder')"
+            :disabled="productBundling_formData.products.length === 0"
             :prefix="productBundling_formData.type !== 'DISCOUNT' ? 'Rp ' : ''"
             :suffix="productBundling_formData.type === 'DISCOUNT' ? '%' : ''"
             fluid
@@ -160,23 +174,33 @@ onMounted(async () => {
             :max="productBundling_formData.type === 'DISCOUNT' ? 100 : undefined"
             class="w-full"
             :class="{ ...classes }"
-            @value-change="calculateTotalPrice()"
           />
         </div>
       </AppBaseFormGroup>
+      <PrimeVueButton
+        v-show="
+          productBundling_formData.type === 'TOTAL_ITEMS' &&
+          productBundling_formData.products.reduce((total, item) => total + item.price * item.quantity, 0) !==
+            productBundling_formData.price
+        "
+        class="w-fit px-3 py-2"
+        variant="text"
+        :label="useLocalization('productBundling.form.resetButton')"
+        @click="onResetButtonClick"
+      />
     </section>
     <section id="card" class="">
       <PrimeVueCard class="h-fit">
         <template #content>
           <div class="flex flex-col gap-4 w-full">
-            <label for="product-picker" class="font-semibold">Select Product</label>
+            <label for="product-picker" class="font-semibold">{{ useLocalization('productBundling.form.selectProductLabel') }}</label>
             <PrimeVueAutoComplete
               id="product-picker"
               v-model="currentSelection"
               :suggestions="suggestions"
               :loading="productList_isLoading"
               option-label="name"
-              placeholder="Search by Product Name"
+              :placeholder="useLocalization('productBundling.form.selectProductPlaceholder')"
               :dropdown="true"
               @complete="search"
               @item-select="onProductSelect"
@@ -214,7 +238,7 @@ onMounted(async () => {
                         spacing-bottom="mb-0"
                       >
                         <label class="flex items-center">
-                          <span class="block text-sm font-medium leading-6 text-gray-900">Total Items</span>
+                          <span class="block text-sm font-medium leading-6 text-gray-900">{{ useLocalization('productBundling.form.totalItemsLabel') }}</span>
                           <span class="text-error-main">*</span>
                         </label>
                         <PrimeVueInputNumber
@@ -227,8 +251,10 @@ onMounted(async () => {
                           :step="1"
                           :class="{ ...classes }"
                           @value-change="
-                            setPricingType();
-                            calculateTotalPrice();
+                            productBundling_formData.price = productBundling_formData.products.reduce(
+                              (total, item) => total + item.price * item.quantity,
+                              0,
+                            )
                           "
                         >
                           <template #decrementicon>
@@ -242,7 +268,7 @@ onMounted(async () => {
                     </div>
 
                     <span class="font-semibold text-right mt-4">
-                      Total : {{ useCurrencyFormat({ data: product.price * product.quantity }) }}
+                      {{ useLocalization('productBundling.form.totalPriceLabel') }} : {{ useCurrencyFormat({ data: product.price * product.quantity }) }}
                     </span>
                   </div>
 
@@ -262,7 +288,7 @@ onMounted(async () => {
             <template #content>
               <section class="flex flex-col gap-1 justify-end">
                 <div class="flex flex-col">
-                  <span class="text-right">Actual Price</span>
+                  <span class="text-right">{{ useLocalization('productBundling.form.actualPriceLabel') }}</span>
                   <span class="text-right font-semibold">{{
                     useCurrencyFormat({
                       data: productBundling_formData.products.reduce(
@@ -273,10 +299,10 @@ onMounted(async () => {
                   }}</span>
                 </div>
                 <div class="flex flex-col">
-                  <span class="text-right">Bundling Price</span>
+                  <span class="text-right">{{ useLocalization('productBundling.form.bundlingPriceLabel') }}</span>
                   <span class="text-right font-semibold">{{
                     useCurrencyFormat({
-                      data: productBundling_grandTotal,
+                      data: productBundling_formData.price,
                     })
                   }}</span>
                 </div>
@@ -291,14 +317,14 @@ onMounted(async () => {
         <router-link :to="{ name: 'product-bundling.index' }">
           <PrimeVueButton class="bg-transparent border-primary min-w-44">
             <template #default>
-              <span class="font-semibold text-base text-primary">Cancel</span>
+              <span class="font-semibold text-base text-primary">{{ useLocalization('productBundling.form.cancelButton') }}</span>
             </template>
           </PrimeVueButton>
         </router-link>
         <PrimeVueButton
           class="bg-primary border-none min-w-44 disabled:bg-grayscale-20"
           :disabled="productBundling_formValidations.$invalid"
-          :label="route.name === 'product-bundling.edit' ? 'Edit' : 'Add'"
+          :label="route.name === 'product-bundling.edit' ? useLocalization('productBundling.form.editButton') : useLocalization('productBundling.form.addButton')"
           @click="
             route.name === 'product-bundling.edit'
               ? productBundling_fetchUpdateProductBundlingList()

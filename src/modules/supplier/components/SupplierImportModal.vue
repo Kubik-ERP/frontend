@@ -59,7 +59,7 @@ const {
               <span class="text-gray-400">or</span>
               <PrimeVueButton
                 icon="pi pi-download"
-                label="Download Template"
+                label="Download Excel"
                 class="bg-white border border-primary text-primary px-4 py-2 mt-1"
                 @click.stop="supplierImport_handleDownloadTemplate"
               />
@@ -82,18 +82,14 @@ const {
         </section>
 
         <!-- Step 3: Preview / Error -->
-        <section v-else class="flex flex-col w-full h-full relative">
+        <section v-else-if="supplierImport_step === 3" class="flex flex-col w-full h-full relative">
           <div class="flex flex-col w-full">
             <AppBaseDataTable
               :columns="supplierImport_columns"
-              :data="supplierImport_values?.data.items"
-              :rows-per-page="supplierImport_values?.data.meta.pageSize"
-              :total-records="supplierImport_values?.data.meta.total"
-              :first="
-                supplierImport_values?.data?.meta && supplierImport_values.data.meta.page
-                  ? (supplierImport_values.data.meta.page - 1) * supplierImport_values.data.meta.pageSize
-                  : 0
-              "
+              :data="supplierImport_values?.data.mergedData"
+              :rows-per-page="10"
+              :total-records="supplierImport_values?.data.mergedData.length"
+              :first="0"
               :is-loading="supplierImport_isLoading"
               is-using-custom-header-suffix
               is-using-header
@@ -102,13 +98,22 @@ const {
             >
               <template #body="{ column, data }">
                 <template v-if="column.value === 'code'">
-                  <span class="text-gray-700">{{ data.code }}</span>
+                  <span class="text-gray-700">{{ data.supplierCode }}</span>
                 </template>
-                <template v-else-if="column.value === 'name'">
-                  <span class="text-gray-700">{{ data.name }}</span>
+                <template v-else-if="column.value === 'supplierName'">
+                  <span class="text-gray-700">{{ data.supplierName }}</span>
                 </template>
-                <template v-else-if="column.value === 'notes'">
-                  <span class="text-gray-500">{{ data.notes }}</span>
+                <template v-else-if="column.value === 'contactPerson'">
+                  <span class="text-gray-500">{{ data.contactPerson }}</span>
+                </template>
+                <template v-else-if="column.value === 'phoneNumber'">
+                  <span class="text-gray-500">{{ data.phoneNumber }}</span>
+                </template>
+                <template v-else-if="column.value === 'email'">
+                  <span class="text-gray-500">{{ data.email }}</span>
+                </template>
+                <template v-else-if="column.value === 'address'">
+                  <span class="text-gray-500">{{ data.address }}</span>
                 </template>
                 <template v-else-if="column.value === 'status'">
                   <span
@@ -119,7 +124,11 @@ const {
                   </span>
                   <span
                     v-else-if="data.status === 'failed'"
-                    class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700"
+                    v-tooltip.bottom="{
+                      value: data.errorMessages,
+                      class: ' text-white text-sm rounded-lg px-3 py-2 shadow-lg max-w-xs break-words',
+                    }"
+                    class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 cursor-help transition duration-200 hover:bg-red-200"
                   >
                     Failed
                   </span>
@@ -129,18 +138,6 @@ const {
                 </template>
               </template>
             </AppBaseDataTable>
-
-            <!-- Alert ditempel di bawah table -->
-            <div
-              v-if="supplierImport_values?.data?.items?.some(item => item.status === 'failed')"
-              class="absolute top-0 left-1/2 -translate-x-1/2 mt-2 p-3 border border-red-300 bg-red-50 text-red-700 rounded-md text-sm flex items-start gap-2 shadow-md"
-            >
-              <i class="pi pi-exclamation-triangle mt-0.5"></i>
-              <span>
-                Import Validation Failed — Some records didn’t meet required fields or format rules. Correct the
-                errors in your CSV/XLSX and re-upload.
-              </span>
-            </div>
           </div>
         </section>
       </div>
@@ -157,7 +154,7 @@ const {
           label="Import"
           class="px-4 py-2 bg-primary text-white disabled:bg-gray-400 disabled:text-white disabled:border-none"
           :disabled="
-            supplierImport_step === 1 || supplierImport_values?.data?.items?.some(item => item.status === 'failed')
+            supplierImport_step === 1 || supplierImport_values?.data?.mergedData?.some(item => item.status === 'failed')
           "
           @click="supplierImport_onSubmit"
         />

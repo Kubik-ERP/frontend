@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useInventoryCategoryImportService } from '../services/inventory-category-import.service';
+import type { IInventoryCategoryImport } from '../interfaces/inventory-category-import.interface';
 
 const {
   inventoryCategoryImport_step,
@@ -41,7 +42,9 @@ const {
             @click="inventoryCategoryImport_triggerUpload"
             @dragover.prevent
             @drop.prevent="
-              inventoryCategoryImport_handleDropFile($event.dataTransfer?.files ? Array.from($event.dataTransfer.files) : [])
+              inventoryCategoryImport_handleDropFile(
+                $event.dataTransfer?.files ? Array.from($event.dataTransfer.files) : [],
+              )
             "
           >
             <i class="pi pi-paperclip text-4xl text-gray-400 mb-3"></i>
@@ -49,7 +52,9 @@ const {
             <p class="text-gray-500 text-sm text-center mb-3">
               Drop your CSV/XLSX file here <br />
               or
-              <span class="text-primary cursor-pointer" @click.stop="inventoryCategoryImport_triggerUpload">click</span>
+              <span class="text-primary cursor-pointer" @click.stop="inventoryCategoryImport_triggerUpload"
+                >click</span
+              >
               to browse from your device.
             </p>
 
@@ -58,7 +63,7 @@ const {
               <span class="text-gray-400">or</span>
               <PrimeVueButton
                 icon="pi pi-download"
-                label="Download Template"
+                label="Download Excel"
                 class="bg-white border border-primary text-primary px-4 py-2 mt-1"
                 @click.stop="inventoryCategoryImport_handleDownloadTemplate"
               />
@@ -85,14 +90,10 @@ const {
           <div class="flex flex-col w-full">
             <AppBaseDataTable
               :columns="inventoryCategoryImport_columns"
-              :data="inventoryCategoryImport_values?.data.items"
-              :rows-per-page="inventoryCategoryImport_values?.data.meta.pageSize"
-              :total-records="inventoryCategoryImport_values?.data.meta.total"
-              :first="
-                inventoryCategoryImport_values?.data?.meta && inventoryCategoryImport_values.data.meta.page
-                  ? (inventoryCategoryImport_values.data.meta.page - 1) * inventoryCategoryImport_values.data.meta.pageSize
-                  : 0
-              "
+              :data="inventoryCategoryImport_values?.data.mergedData || []"
+              :rows-per-page="10"
+              :total-records="inventoryCategoryImport_values?.data.totalRows || 0"
+              :first="0"
               :is-loading="inventoryCategoryImport_isLoading"
               is-using-custom-header-suffix
               is-using-header
@@ -100,14 +101,14 @@ const {
               :is-using-custom-filter="true"
             >
               <template #body="{ column, data }">
-                <template v-if="column.value === 'code'">
-                  <span class="text-gray-700">{{ data.code }}</span>
+                <template v-if="column.value === 'categoryCode'">
+                  <span class="text-gray-700">{{ data.categoryCode }}</span>
                 </template>
-                <template v-else-if="column.value === 'name'">
-                  <span class="text-gray-700">{{ data.name }}</span>
+                <template v-else-if="column.value === 'categoryName'">
+                  <span class="text-gray-700">{{ data.categoryName }}</span>
                 </template>
-                <template v-else-if="column.value === 'notes'">
-                  <span class="text-gray-500">{{ data.notes }}</span>
+                <template v-else-if="column.value === 'description'">
+                  <span class="text-gray-500">{{ data.description }}</span>
                 </template>
                 <template v-else-if="column.value === 'status'">
                   <span
@@ -118,7 +119,11 @@ const {
                   </span>
                   <span
                     v-else-if="data.status === 'failed'"
-                    class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700"
+                    v-tooltip.bottom="{
+                      value: data.errorMessages,
+                      class: ' text-white text-sm rounded-lg px-3 py-2 shadow-lg max-w-xs break-words',
+                    }"
+                    class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 cursor-help transition duration-200 hover:bg-red-200"
                   >
                     Failed
                   </span>
@@ -128,18 +133,6 @@ const {
                 </template>
               </template>
             </AppBaseDataTable>
-
-            <!-- Alert ditempel di bawah table -->
-            <div
-              v-if="inventoryCategoryImport_values?.data?.items?.some(item => item.status === 'failed')"
-              class="absolute top-0 left-1/2 -translate-x-1/2 mt-2 p-3 border border-red-300 bg-red-50 text-red-700 rounded-md text-sm flex items-start gap-2 shadow-md"
-            >
-              <i class="pi pi-exclamation-triangle mt-0.5"></i>
-              <span>
-                Import Validation Failed — Some records didn’t meet required fields or format rules. Correct the
-                errors in your CSV/XLSX and re-upload.
-              </span>
-            </div>
           </div>
         </section>
       </div>
@@ -156,7 +149,10 @@ const {
           label="Import"
           class="px-4 py-2 bg-primary text-white disabled:bg-gray-400 disabled:text-white disabled:border-none"
           :disabled="
-            inventoryCategoryImport_step === 1 || inventoryCategoryImport_values?.data?.items?.some(item => item.status === 'failed')
+            inventoryCategoryImport_step === 1 ||
+            inventoryCategoryImport_values?.data?.mergedData?.some(
+              (item: IInventoryCategoryImport) => item.status === 'failed',
+            )
           "
           @click="inventoryCategoryImport_onSubmit"
         />

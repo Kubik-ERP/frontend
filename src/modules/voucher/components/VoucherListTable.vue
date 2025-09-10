@@ -100,6 +100,7 @@ const formatDate = (date: Date) => {
   const year = date.getFullYear();
   return `${day}-${month}-${year}`;
 };
+
 </script>
 
 <template>
@@ -162,6 +163,7 @@ const formatDate = (date: Date) => {
               show-icon
               fluid
               show-button-bar
+              :hide-on-range-selection="true"
               @update:modelValue="
                 (val: Date | Date[] | (Date | null)[] | null | undefined) => {
                   const startDate = Array.isArray(val) ? val[0] : val;

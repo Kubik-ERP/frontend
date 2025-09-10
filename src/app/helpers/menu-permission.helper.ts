@@ -5,7 +5,7 @@
 const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   // Store and dashboard access
   access_all_store: ['/'],
-  dashboard_view: ['/'],
+  dashboard_view: ['/dashboard'],
   store_management: ['/outlet/list', '/outlet/create', 'outlet/edit/:id'],
 
   // Sales operations
@@ -19,8 +19,6 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   // Product and catalog management
   product_management: ['/catalog', '/catalog/products', '/catalog/product-bundling'],
   product_category: ['/catalog', '/catalog/categories'],
-  category_management: ['/catalog/categories', '/inventory/categories'],
-  manage_item: ['/catalog/products', '/inventory', '/inventory/items'],
 
   // Customer management
   customer_management: ['/customer'],
@@ -28,14 +26,25 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   management_customer_loyalty_point: ['/customer'],
 
   // Inventory management
-  stock_adjustment: ['/inventory', '/inventory/stock-adjustment'],
-  manage_brand: ['/inventory/brands'],
-  manage_stock_opname: ['/inventory/stock-opname'],
-  manage_storage_location: ['/inventory/storage-locations'],
+  manage_item: ['/inventory', '/items', '/items/view/:id', '/items/create', '/items/edit/:id'],
+  category_management: ['/inventory',  '/inventory-category'],
+  supplier_management: ['/inventory', '/supplier', '/supplier/create', '/supplier/edit/:id', '/supplier/view/:id'],
+  view_supplier_details: ['/inventory', '/supplier/view/:id'],
+  stock_adjustment: ['/inventory', '/items', '/items/view/:id'],
+  manage_brand: ['/inventory', '/brand'],
+  manage_stock_opname: ['/inventory', '/stock-opname', '/stock-opname/issue/:id', '/stock-opname/detail/:id'],
+  manage_storage_location: ['/inventory', '/storage-location'],
   manage_purchase_order: ['/purchase-order'],
 
   // Staff management
-  manage_staff_member: ['/staff', '/staff/staff-member'],
+  manage_staff_member: [
+    '/staff',
+    '/staff/staff-member',
+    '/user-permission',
+    '/user-permission/access-control',
+    '/user-permission/access-control/edit',
+    '/user-permission/role',
+  ],
   manage_staff_attendance: ['/staff/attendance'],
 
   // Cash management
@@ -44,24 +53,26 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   cash_in_out: ['/cash-in-out'],
 
   // Configuration and settings
-  connected_device_configuration: ['/pos-setting', '/integrations'],
-  payment_method_configuration: ['/pos-setting'],
-  general_loyalty_point_configuration: ['/pos-setting'],
-  tax_and_service_charge_configuration: ['/pos-setting'],
+  connected_device_configuration: ['/pos-setting', '/pos-setting/connected-device', 'device'],
+  payment_method_configuration: ['/pos-setting', '/pos-setting/payment-method'],
+  general_loyalty_point_configuration: ['/pos-setting', '/pos-setting/point-configuration'],
+  tax_and_service_charge_configuration: ['/pos-setting', '/pos-setting/tax-service'],
 
   // Marketing and vouchers
   voucher: ['/marketing', '/voucher'],
-
-  // Supplier management
-  supplier_management: ['/supplier'],
-  view_supplier_details: ['/supplier/view/:id'],
 
   // Account management
   accounts: ['/account'],
 
   // Reports and templates
-  reports: ['/report'],
-  invoice_templates: ['/invoice'],
+  reports: [
+    '/report',
+    '/report/financial-report',
+    '/report/sales-report',
+    '/report/inventory-report',
+    '/report/voucher-report',
+  ],
+  invoice_templates: ['/pos-setting', '/pos-setting/invoice'],
 };
 
 /**
@@ -82,44 +93,46 @@ export const hasAccessAllStore = (userPermissions: string[]): boolean => {
   return userPermissions.includes('access_all_store');
 };
 
-/**
- * @description Filter menu categories based on user permissions
- */
 export const filterMenusByPermissions = (
   menuCategories: IMenuCategory[],
   userPermissions: string[],
 ): IMenuCategory[] => {
-  // If user has access to all stores, return all menus
-  if (hasAccessAllStore(userPermissions)) {
-    return menuCategories;
-  }
-
+//   if (hasAccessAllStore(userPermissions)) {
+//   return menuCategories;
+// }
   return menuCategories
-    .map(category => ({
-      ...category,
-      menus: category.menus.filter((menu: IMenu) => {
-        // Check main menu permission
+    .map(category => {
+      const filteredMenus = category.menus.filter((menu: IMenu) => {
+        // 🔹 Cek akses main menu
+        console.log('🚀 ~ hasMenuPermission ~ menu.path:', menu);
         const hasMainMenuAccess = hasMenuPermission(menu.path, userPermissions);
 
-        if (!hasMainMenuAccess) {
+        // 🔹 Kalau menu ini store-related dan user punya access_all_store → auto boleh
+        const isStoreMenu = menu.path?.includes('/store'); // sesuaikan dengan struktur path
+        const allowByAllStore = isStoreMenu && hasAccessAllStore(userPermissions);
+
+        if (!hasMainMenuAccess && !allowByAllStore) {
           return false;
         }
 
-        // If menu has submenus, filter them too
+        // 🔹 Filter submenus juga
         if (menu.subMenus && menu.subMenus.length > 0) {
-          const filteredSubMenus = menu.subMenus.filter((subMenu: ISubMenu) =>
-            hasMenuPermission(subMenu.path, userPermissions),
-          );
+          const filteredSubMenus = menu.subMenus.filter((subMenu: ISubMenu) => {
+            const hasSubAccess = hasMenuPermission(subMenu.path, userPermissions);
+            const isStoreSub = subMenu.path?.includes('/store');
+            return hasSubAccess || (isStoreSub && hasAccessAllStore(userPermissions));
+          });
 
-          // Only show menu if it has accessible submenus or is accessible itself
           menu.subMenus = filteredSubMenus;
-          return filteredSubMenus.length > 0 || hasMainMenuAccess;
+          return filteredSubMenus.length > 0 || hasMainMenuAccess || allowByAllStore;
         }
 
-        return hasMainMenuAccess;
-      }),
-    }))
-    .filter(category => category.menus.length > 0); // Remove empty categories
+        return true;
+      });
+
+      return filteredMenus.length > 0 ? { ...category, menus: filteredMenus } : null;
+    })
+    .filter(Boolean) as IMenuCategory[];
 };
 
 /**

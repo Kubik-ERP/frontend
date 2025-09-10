@@ -33,6 +33,7 @@ const filteredSidebarMenus = computed(() => {
   return filterMenusByPermissions(LIST_SIDEBAR_MENUS, authentication_permissions.value);
 });
 
+console.log('filteredSidebarMenus', filteredSidebarMenus.value);
 const filteredAdditionalMenus = computed(() => {
   const filtered = filterMenusByPermissions(
     [{ name: 'Additional', menus: LIST_ADDITIONAL_MENUS }],
@@ -123,6 +124,16 @@ const sidebarClasses = computed(() => {
 
   return `${baseClasses} sticky inset-0 z-0 ${isCollapsed.value ? 'w-20' : 'w-64 min-w-64'}`;
 });
+
+const handleLogout = async () => {
+  try {
+    await authenticationStore.handleLogout();
+  } catch (error) {
+    console.error('Logout failed:', error);
+    // Fallback: still redirect to login page even if API call fails
+    window.location.href = '/authentication/sign-in';
+  }
+};
 </script>
 
 <template>
@@ -370,6 +381,25 @@ const sidebarClasses = computed(() => {
           </p>
         </RouterLink>
       </template>
+    </section>
+
+    <!-- logout -->
+    <section v-if="isCurrentlyMobile" id="logout" class="flex flex-col gap-2 w-full">
+      <PrimeVueButton
+        class="flex items-center px-4 py-2 rounded text-surface-700 hover:bg-primary-border dark:text-surface-0 dark:hover:bg-primary-border hover:cursor-pointer duration-150 transition-colors p-ripple"
+        variant="text"
+        unstyled
+        @click="handleLogout"
+      >
+        <template #default>
+          <section id="content" class="flex items-center gap-2 w-full">
+            <span class="font-normal text-base text-text-primary">Log Out</span>
+          </section>
+        </template>
+        <template #icon>
+          <AppBaseSvg name="logout" class="!w-5 !h-5 flex-shrink-0" />
+        </template>
+      </PrimeVueButton>
     </section>
   </aside>
 </template>

@@ -4,26 +4,29 @@ import CustomDatePicker from '@/modules/report/components/CustomDatePicker.vue';
 // type
 import type { IDashboardProvided } from '../interfaces';
 // inject
-const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('dashboard')!;
+const {
+  dashboard_queryParams,
+  // dashboard_values, // Uncommented to use in the template
+} = inject<IDashboardProvided>('dashboard')!;
 </script>
 <template>
   <section id="dashboard-overview" class="flex flex-col gap-4">
     <section id="filter" class="flex flex-col">
-      <label for="" class="font-semibold text-black text-xs"> Data Period </label>
+      <label for="" class="font-semibold text-black text-xs"> {{ useLocalization('dashboard.overview.dataPeriod') }} </label>
       <CustomDatePicker
         v-model:start-date="dashboard_queryParams.startDate"
         v-model:end-date="dashboard_queryParams.endDate"
+        v-model:type="dashboard_queryParams.type"
       />
     </section>
 
-    <section id="overview-cards" class="grid grid-rows-1 grid-cols-12 gap-4">
+    <!-- <section id="overview-cards" class="grid grid-rows-1 grid-cols-12 gap-4">
       <section
         id="card-total-sales"
         class="col-span-6 lg:col-span-3 flex flex-col justify-between bg-white border border-solid border-grayscale-10 p-4 rounded-sm gap-6"
       >
         <section id="summary" class="flex items-center gap-1">
-          <p class="font-semibold text-grayscale-70 text-xs">Total Sales</p>
-
+          <p class="font-semibold text-grayscale-70 text-xs">{{ useLocalization('dashboard.overview.totalSales') }}</p>
           <PrimeVueChip
             class="py-1 px-2"
             :class="[
@@ -41,16 +44,13 @@ const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('
               "
               class="w-3 h-3"
             />
-
             <span class="font-semibold text-secondary-hover text-xs">
               {{ dashboard_values.summary.totalSales.percentageChange }}%
             </span>
           </PrimeVueChip>
         </section>
-
         <section id="total-amount" class="flex items-center justify-between">
-          <span class="font-semibold text-text-disabled text-sm"> Rp </span>
-
+          <span class="font-semibold text-text-disabled text-sm"> {{ useLocalization('dashboard.overview.currency') }} </span>
           <span class="font-semibold text-primary text-2xl">
             {{ useCurrencyFormat({ data: dashboard_values.summary.totalSales.value, hidePrefix: true }) }}
           </span>
@@ -62,9 +62,7 @@ const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('
         class="col-span-6 lg:col-span-3 flex flex-col justify-between bg-white border border-solid border-grayscale-10 p-4 rounded-sm gap-6"
       >
         <section id="summary" class="flex items-center gap-1">
-          <p class="font-semibold text-grayscale-70 text-xs">Total Cost of Good Sold</p>
-
-          <!-- <AppBaseSvg name="info" class="w-3 h-3" /> -->
+          <p class="font-semibold text-grayscale-70 text-xs">{{ useLocalization('dashboard.overview.totalCogs') }}</p>
           <PrimeVueChip
             class="py-1 px-2"
             :class="[
@@ -84,16 +82,13 @@ const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('
               "
               class="w-3 h-3"
             />
-
             <span class="font-semibold text-secondary-hover text-xs">
               {{ dashboard_values.summary.totalCostOfGoodSold.percentageChange }}%
             </span>
           </PrimeVueChip>
         </section>
-
         <section id="total-amount" class="flex items-center justify-between">
-          <span class="font-semibold text-text-disabled text-sm"> Rp </span>
-
+          <span class="font-semibold text-text-disabled text-sm"> {{ useLocalization('dashboard.overview.currency') }} </span>
           <span class="font-semibold text-primary text-2xl">
             {{ useCurrencyFormat({ data: dashboard_values.summary.totalCostOfGoodSold.value, hidePrefix: true }) }}
           </span>
@@ -105,10 +100,7 @@ const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('
         class="col-span-6 lg:col-span-3 flex flex-col justify-between bg-white border border-solid border-grayscale-10 p-4 rounded-sm gap-6"
       >
         <section id="summary" class="flex items-center gap-1">
-          <p class="font-semibold text-grayscale-70 text-xs">Total Gross Profit</p>
-
-          <!-- <AppBaseSvg name="info" class="w-3 h-3" /> -->
-
+          <p class="font-semibold text-grayscale-70 text-xs">{{ useLocalization('dashboard.overview.totalGrossProfit') }}</p>
           <PrimeVueChip
             class="py-1 px-2"
             :class="[
@@ -128,16 +120,13 @@ const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('
               "
               class="w-3 h-3"
             />
-
             <span class="font-semibold text-secondary-hover text-xs">
               {{ dashboard_values.summary.totalGrossProfit.percentageChange }}%
             </span>
           </PrimeVueChip>
         </section>
-
         <section id="total-amount" class="flex items-center justify-between">
-          <span class="font-semibold text-text-disabled text-sm"> Rp </span>
-
+          <span class="font-semibold text-text-disabled text-sm"> {{ useLocalization('dashboard.overview.currency') }} </span>
           <span class="font-semibold text-primary text-2xl">
             {{ useCurrencyFormat({ data: dashboard_values.summary.totalGrossProfit.value, hidePrefix: true }) }}
           </span>
@@ -149,10 +138,7 @@ const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('
         class="col-span-6 lg:col-span-3 flex flex-col justify-between bg-white border border-solid border-grayscale-10 p-4 rounded-sm gap-6"
       >
         <section id="summary" class="flex items-center gap-1">
-          <p class="font-semibold text-grayscale-70 text-xs">Total Nett Profit</p>
-
-          <!-- <AppBaseSvg name="info" class="w-3 h-3" /> -->
-
+          <p class="font-semibold text-grayscale-70 text-xs">{{ useLocalization('dashboard.overview.totalNettProfit') }}</p>
           <PrimeVueChip
             class="py-1 px-2"
             :class="[
@@ -172,21 +158,18 @@ const { dashboard_queryParams, dashboard_values } = inject<IDashboardProvided>('
               "
               class="w-3 h-3"
             />
-
             <span class="font-semibold text-secondary-hover text-xs">
               {{ dashboard_values.summary.totalNettProfit.percentageChange }}%
             </span>
           </PrimeVueChip>
         </section>
-
         <section id="total-amount" class="flex items-center justify-between">
-          <span class="font-semibold text-text-disabled text-sm"> Rp </span>
-
+          <span class="font-semibold text-text-disabled text-sm"> {{ useLocalization('dashboard.overview.currency') }} </span>
           <span class="font-semibold text-primary text-2xl">
             {{ useCurrencyFormat({ data: dashboard_values.summary.totalNettProfit.value, hidePrefix: true }) }}
           </span>
         </section>
       </section>
-    </section>
+    </section> -->
   </section>
 </template>

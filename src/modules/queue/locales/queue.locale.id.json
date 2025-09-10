@@ -1,0 +1,15 @@
+{
+  "queue": {
+    "customerWaitingList": "Sistem Daftar Tunggu Pelanggan",
+    "kitchenDisplay": "Sistem Tampilan Dapur",
+    "dailySales": "Penjualan Harian",
+    "invoices": "Faktur",
+    "searchInvoicePlaceholder": "Cari ID Faktur",
+    "filterBy": "Saring Berdasarkan",
+    "purchaseDateFrom": "Tanggal Pembelian Dari",
+    "purchaseDateTo": "Tanggal Pembelian Hingga",
+    "orderType": "Tipe Pesanan",
+    "orderStatus": "Status Pesanan",
+    "notApplicable": "T/A"
+  }
+}

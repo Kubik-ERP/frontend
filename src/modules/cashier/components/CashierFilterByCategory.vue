@@ -91,7 +91,7 @@ const imageUrl = (image: string) => {
             </p>
 
             <p class="text-text-disabled text-xs">
-              {{ category.categoriesHasProducts.length }} {{ useLocalization('cashier.items') }}
+              {{ category.totalItems }} {{ useLocalization('cashier.items') }}
             </p>
           </section>
         </template>

@@ -11,31 +11,18 @@ const {
   inventoryItemsAction_onSubmit,
   inventoryItemsAction_onCancel,
   inventoryItemsAction_Validation: itemFormValidation,
+  inventoryItemsAction_isValid,
   inventoryItemAction_supplierList: suppliers,
   inventoryItemsAction_formOnMode,
   inventoryItems_editingItem,
-  inventoryItems_handleBarcodeScanner
+  inventoryItems_handleBarcodeScanner,
 } = useInvetoryItemsActionService();
 
 const { inventoryItems_onDelete } = useInventoryItemsListService();
 
 const isUpdateModal = ref(false);
 
-const isFormInvalid = computed(() => {
-  return (
-    !form.value.name ||
-    !form.value.sku ||
-    !form.value.brandId ||
-    !form.value.categoryId ||
-    !form.value.unit ||
-    !form.value.pricePerUnit ||
-    !form.value.storageLocationId ||
-    !form.value.supplierId ||
-    !form.value.stockQuantity ||
-    !form.value.reorderLevel ||
-    !form.value.minimumStockQuantity
-  );
-});
+
 
 const onSubmit = () => {
   if (inventoryItemsAction_formOnMode.value === 'create') {
@@ -59,10 +46,7 @@ const confirmUpdate = async () => {
 </script>
 
 <template>
-  <section
-    id="items-create-edit"
-    class="flex justify-center items-center min-h-screen p-4 sm:p-6 bg-gray-50"
-  >
+  <section id="items-create-edit" class="flex justify-center items-center min-h-screen p-4 sm:p-6">
     <div class="flex flex-col gap-6 w-full max-w-6xl mx-auto">
       <!-- Item Details -->
       <section>
@@ -96,7 +80,7 @@ const confirmUpdate = async () => {
             label-for="brand"
             name="Brand"
             spacing-bottom="mb-0"
-            :validators="itemFormValidation.brandId"
+            :validators="itemFormValidation.brand"
           >
             <PrimeVueDropdown
               id="brand"
@@ -212,13 +196,7 @@ const confirmUpdate = async () => {
             spacing-bottom="mb-0"
             class="col-span-1 md:col-span-2"
           >
-            <PrimeVueTextarea
-              id="notes"
-              v-model="form.notes"
-              rows="3"
-              class="w-full"
-              :class="{ ...classes }"
-            />
+            <PrimeVueTextarea id="notes" v-model="form.notes" rows="3" class="w-full" :class="{ ...classes }" />
           </AppBaseFormGroup>
         </div>
       </section>
@@ -283,7 +261,8 @@ const confirmUpdate = async () => {
             label-for="storage-location"
             name="Storage Location"
             spacing-bottom="mb-0"
-            :validators="itemFormValidation.storageLocationId"
+            :validators="itemFormValidation.storageLocation"
+            :default-value="storageLocations[0] ?? ''"
           >
             <PrimeVueDropdown
               id="storage-location"
@@ -316,6 +295,7 @@ const confirmUpdate = async () => {
               v-model="form.pricePerUnit"
               mode="currency"
               currency="IDR"
+              locale="id-ID"
               class="w-full"
               :class="{ ...classes }"
             />
@@ -354,7 +334,7 @@ const confirmUpdate = async () => {
         <PrimeVueButton
           :label="inventoryItemsAction_formOnMode === 'create' ? 'Add Item' : 'Update Item'"
           class="w-full sm:w-auto !px-6"
-          :disabled="isFormInvalid"
+          :disabled="!inventoryItemsAction_isValid"
           @click="onSubmit"
         />
       </div>

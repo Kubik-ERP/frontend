@@ -36,7 +36,7 @@ const hasPermission = rbac.hasPermission('manage_stock_opname');
   <AppBaseDataTable
     :data="stockOpname_lists.items"
     :columns="stockOpnameRecordColumns"
-    header-title="Stock Opname"
+    :header-title="useLocalization('stockOpname.listPage.title')"
     :rows-per-page="10"
     :total-records="stockOpname_lists.meta.total"
     :first="(stockOpname_lists.meta.page - 1) * stockOpname_lists.meta.pageSize"
@@ -50,11 +50,13 @@ const hasPermission = rbac.hasPermission('manage_stock_opname');
     @update:sort="stockOpname_onChangeSort"
   >
     <template #header-prefix>
-      <h1 class="font-bold text-2xl text-text-primary">Stock Opname Record</h1>
+      <h1 class="font-bold text-2xl text-text-primary">
+        {{ useLocalization('stockOpname.listPage.recordTitle') }}
+      </h1>
     </template>
     <template #header-suffix>
       <router-link v-if="hasPermission" :to="{ name: 'stock-opname.create', params: { id: 'new' } }">
-        <PrimeVueButton class="w-fit" label="Issue Stock Opname">
+        <PrimeVueButton class="w-fit" :label="useLocalization('stockOpname.listPage.issueButton')">
           <template #icon>
             <AppBaseSvg name="plus-line-white" class="!w-5 !h-5" />
           </template>

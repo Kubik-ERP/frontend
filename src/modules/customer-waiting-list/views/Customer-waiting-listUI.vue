@@ -9,7 +9,7 @@ const orderComplete = ref([]);
 onMounted(async () => {
   const response = await getCustomerWaitingList();
   preparingOrder.value = response.data.preparingOrders;
-  console.log("🚀 ~ onMounted ~ response.data.preparingOrders:", response.data.preparingOrders)
+  // console.log("🚀 ~ onMounted ~ response.data.preparingOrders:", response.data.preparingOrders)
   orderComplete.value = response.data.completedOrders;
 });
 </script>
@@ -17,12 +17,12 @@ onMounted(async () => {
   <section class="container mx-auto py-8">
     <div class="grid grid-cols-2 gap-4">
       <section class="flex flex-col gap-4">
-        <h2 class="text-2xl font-bold text-warning-hover">Preparing Orders</h2>
+        <h2 class="text-2xl font-bold text-warning-hover">{{ useLocalization('customer-waiting-list.preparingOrders') }}</h2>
         <div class="rounded-lg shadow-md border border-grayscale-20">
           <div class="p-2 border-b border-gray-200 bg-grayscale-10">
-            <span class="font-semibold text-sm">Order Number</span>
+            <span class="font-semibold text-sm">{{ useLocalization('customer-waiting-list.orderNumber') }}</span>
           </div>
-  
+
           <div
             v-if="!isLoading"
             class="grid min-h-96 max-h-96 overflow-y-auto"
@@ -46,12 +46,12 @@ onMounted(async () => {
         </div>
       </section>
       <section class="flex flex-col gap-4">
-        <h2 class="text-2xl font-bold text-primary">Order Complete</h2>
+        <h2 class="text-2xl font-bold text-primary">{{ useLocalization('customer-waiting-list.orderComplete') }}</h2>
         <div class="rounded-lg shadow-md border border-grayscale-20">
           <div class="p-2 border-b border-gray-200 bg-grayscale-10">
-            <span class="font-semibold text-sm">Order Number</span>
+            <span class="font-semibold text-sm">{{ useLocalization('customer-waiting-list.orderNumber') }}</span>
           </div>
-  
+
           <div
             v-if="!isLoading"
             class="grid min-h-96 max-h-96 overflow-y-auto"
@@ -69,7 +69,7 @@ onMounted(async () => {
               #{{ order.invoiceNumber }}
             </div>
           </div>
-  
+
           <div v-else class="min-h-96 max-h-96 flex items-center justify-center">
             <PrimeVueProgressSpinner style="width: 50px; height: 50px" />
           </div>

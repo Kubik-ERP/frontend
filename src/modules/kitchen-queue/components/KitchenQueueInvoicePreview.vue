@@ -105,7 +105,7 @@ const {
                   size="small"
                   @click="kitchenQueue_handleUpdateStatusBulk(invoice.queueReferenceId, invoice.items)"
                 >
-                  <AppBaseSvg name="checkCircle" />
+                  <AppBaseSvg name="checkCircle" class="h-4 w-4" />
                   Order Complete
                 </PrimeVueButton>
               </div>

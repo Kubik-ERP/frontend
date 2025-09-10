@@ -86,7 +86,13 @@ export const useCashierSelfOrderService = () => {
 
       const redirectPath = (route.query.redirect as string) || '/self-order';
 
-      router.push(redirectPath);
+      const queryParams = {
+        storeId: route.query.storeId as string,
+        floorName: route.query.floorName as string,
+        tablesName: route.query.tablesName as string,
+      };
+
+      router.push({ path: redirectPath, query: queryParams });
     } catch (error) {
       console.error('Error during sign in:', error);
     }

@@ -3,22 +3,20 @@ import { IAccessControlPermissionProvided } from '../interfaces/access-control-l
 import { useAccessControlStore } from '../store/index';
 import { useRoleStore } from '@/modules/role/store';
 import { IRoleListQueryParams } from '@/modules/role/interfaces/role-list.interface';
-import { IAccessControlPermissionCategory } from '../interfaces/index.interface';
 
 export const useAccessControlPermissionsListService = (): IAccessControlPermissionProvided => {
   const store = useAccessControlStore();
   const roleStore = useRoleStore();
-  const { accessControlPermission_isLoading } = storeToRefs(store);
+  const { accessControlPermission_isLoading, accessControlPermission_listvalue } = storeToRefs(store);
   const { roleList_items } = storeToRefs(roleStore);
   const router = useRouter();
   const accessControlPermission_listRole = ref<IRole[]>([]);
-  const acceessControlPermisson_listValue = ref<IAccessControlPermissionCategory[]>([]);
 
   const fetchAccessControlPermissionList = async () => {
     accessControlPermission_isLoading.value = true;
     try {
       const res = await store.getAccessControlPermission_List();
-      acceessControlPermisson_listValue.value = res.data;
+      accessControlPermission_listvalue.value = res;
     } catch (error) {
       console.log(error);
     } finally {
@@ -48,7 +46,7 @@ export const useAccessControlPermissionsListService = (): IAccessControlPermissi
   };
 
   const accessControlPermission_onEdit = () => {
-    router.push({ name: 'access-control.edit' });
+    router.push({ name: 'user-permission.edit' });
   };
 
   onMounted(() => {
@@ -58,7 +56,7 @@ export const useAccessControlPermissionsListService = (): IAccessControlPermissi
 
   return {
     accessControlPermission_isLoading,
-    accessControlPermission_listValue: acceessControlPermisson_listValue,
+    accessControlPermission_listValue: accessControlPermission_listvalue,
     accessControlPermission_listRole: roleList_items,
     accessControlPermission_onEdit,
     accessControlPermission_fetchList: fetchAccessControlPermissionList,

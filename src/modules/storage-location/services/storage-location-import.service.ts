@@ -1,8 +1,19 @@
 import { ref } from 'vue';
-import { IStorageLocationImport, IStorageLocationImportProvided, IStorageLocationImportResponse } from '../interfaces/storage-location-import.interface';
+import {
+  IStorageLocationImportFailedSuccessData,
+  IStorageLocationImportProvided,
+  IStorageLocationImportResponse,
+} from '../interfaces/storage-location-import.interface';
 import eventBus from '@/plugins/mitt';
 import { STORAGE_LOCATION_LIST_COLUMNS_IMPORT } from '../contants';
+import { useStorageLocationStore } from '../store';
+import { useStorageLocationService } from './storage-location.service';
 export const useStorageLocationImportService = (): IStorageLocationImportProvided => {
+  const store = useStorageLocationStore();
+  const { httpAbort_registerAbort } = useHttpAbort();
+  const {
+    storageLocation_queryParams
+  } = useStorageLocationService();
   // State
   const storageLocationImport_step = ref<number>(1);
   const storageLocationImport_isLoading = ref<boolean>(false);
@@ -12,19 +23,39 @@ export const useStorageLocationImportService = (): IStorageLocationImportProvide
   const uploadedFile = ref<File | null>(null);
 
   // Handler
-  const storageLocationImport_onSubmit = () => {
-    // Submit hasil import (misalnya kirim ke API)
-    console.log('Submitting import values:', storageLocationImport_values.value);
+  const storageLocationImport_onSubmit = async () => {
+    try{
+      const batchId = localStorage.getItem('inventory_batch_id')?.toString();
+      if (batchId) {
+        await store.storageLocationImport_execute(batchId, {
+          ...httpAbort_registerAbort('STORAGE_LIST_REQUEST_EXECUTE'),
+        });
+
+        await store.storageLocation_fetchListData(storageLocation_queryParams, {
+          ...httpAbort_registerAbort('STORAGE_LIST_REQUEST'),
+        })
+      }
+
+      storageLocationImport_onClose();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      }
+    }
   };
 
+  const storageLocationImport_onClose = async () => {
+    const batchId = localStorage.getItem('inventory_batch_id')?.toString();
+    if (batchId) {
+      await store.storageLocationImport_reset(batchId);
+    }
 
-  const storageLocationImport_onClose = () => {
     storageLocationImport_step.value = 1;
     storageLocationImport_isLoading.value = false;
     storageLocationImport_values.value = undefined;
     uploadedFile.value = null;
 
-     eventBus.emit('AppBaseDialog', {
+    eventBus.emit('AppBaseDialog', {
       id: 'storage-location-import-modal',
       isUsingClosableButton: false,
       isUsingBackdrop: true,
@@ -33,12 +64,16 @@ export const useStorageLocationImportService = (): IStorageLocationImportProvide
     });
   };
 
-  const storageLocationImport_handleDownloadTemplate = () => {
-    // Contoh download file template
-    const link = document.createElement('a');
-    link.href = '/templates/brand-import.xlsx';
-    link.download = 'storage-import-template.xlsx';
-    link.click();
+  const storageLocationImport_handleDownloadTemplate = async () => {
+   try {
+    await store.storageLocation_generateTemplate({
+      ...httpAbort_registerAbort('STORAGE_LIST_REQUEST_TEMPLATE'),
+    })
+   } catch (error: unknown) {
+    if (error instanceof Error) {
+      return Promise.reject(error);
+    }
+   }
   };
 
   const storageLocationImport_handleDropFile = (acceptedFiles: File[]) => {
@@ -47,7 +82,7 @@ export const useStorageLocationImportService = (): IStorageLocationImportProvide
       console.log('File dropped:', uploadedFile.value);
 
       // langsung proses upload setelah file diterima
-       void storageLocationImport_handleUpload();
+      void storageLocationImport_handleUpload();
     }
   };
 
@@ -74,24 +109,41 @@ export const useStorageLocationImportService = (): IStorageLocationImportProvide
       console.warn('No file selected for upload');
       return;
     }
-     storageLocationImport_step.value = 2;
-     storageLocationImport_isLoading.value = true;
+    storageLocationImport_step.value = 2;
+    storageLocationImport_isLoading.value = true;
     try {
-      // TODO: Panggil API upload di sini
-      await new Promise(resolve => setTimeout(resolve, 2000)); // simulasi API
+      const formData = new FormData();
+      formData.append('file', uploadedFile.value);
+      const response = await store.storageLocation_importItems(formData, {
+        ...httpAbort_registerAbort('STORAGE_LIST_REQUEST_IMPORT'),
+      });
+
+      const successData = (response.data?.successData ?? []).map(
+        (row: IStorageLocationImportFailedSuccessData) => ({
+          ...row,
+          status: 'success',
+        }),
+      );
+
+      const failedData = (response.data?.failedData ?? []).map((row: IStorageLocationImportFailedSuccessData) => ({
+        ...row,
+        status: 'failed',
+        errorMessage: row.errorMessages,
+      }));
+
+      console.log(' Failed data: ', failedData);
+
+      if (response?.data.batchId) {
+        localStorage.setItem('inventory_batch_id', response.data.batchId);
+      }
+
       storageLocationImport_values.value = {
-        statusCode: 400,
-        message: 'File uploaded successfully',
+        ...response,
         data: {
-          items: [] as IStorageLocationImport[],
-          meta: {
-            page: 1,
-            pageSize: 10,
-            total: 0,
-            totalPages: 1,
-          },
+          ...response.data,
+          mergedData: [...successData, ...failedData],
         },
-      } as IStorageLocationImportResponse;
+      };
 
       storageLocationImport_step.value = 3;
     } catch (error) {
@@ -112,6 +164,6 @@ export const useStorageLocationImportService = (): IStorageLocationImportProvide
     storageLocationImport_handleDropFile,
     storageLocationImport_handleUpload,
     storageLocationImport_triggerUpload,
-    storageLocationImport_columns: STORAGE_LOCATION_LIST_COLUMNS_IMPORT
+    storageLocationImport_columns: STORAGE_LOCATION_LIST_COLUMNS_IMPORT,
   };
 };

@@ -40,16 +40,14 @@ const toggleMobileSearch = () => {
 /**
  * @description Handle business logic for clicking the logout button
  */
-const handleLogout = () => {
-  // Implement logout logic here, e.g., clear tokens, redirect to login page
-  console.log('Logging out...');
-
-  // Remove all the data on the local storage
-  localStorage.removeItem('authentication');
-  localStorage.removeItem('outlet');
-
-  // Redirect to the login page
-  window.location.href = '/authentication/sign-in';
+const handleLogout = async () => {
+  try {
+    await authenticationStore.handleLogout();
+  } catch (error) {
+    console.error('Logout failed:', error);
+    // Fallback: still redirect to login page even if API call fails
+    window.location.href = '/authentication/sign-in';
+  }
 };
 
 /**

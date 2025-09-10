@@ -52,6 +52,7 @@ export interface IAccountStoreTableConfigurationProvided {
   accountStoreTableConfiguration_formValidationsOfAddTable: globalThis.Ref<Validation>;
   accountStoreTableConfiguration_isAlreadyHaveTable: globalThis.Ref<boolean>;
   accountStoreTableConfiguration_isEditableMode: globalThis.Ref<boolean>;
+  accountStoreTableConfiguration_isOperationSuccessful: globalThis.Ref<boolean>;
   accountStoreTableConfiguration_isShowDialogExitConfirmation: globalThis.Ref<boolean>;
   accountStoreTableConfiguration_lists: globalThis.Ref<IAccountStoreTable[]>;
   accountStoreTableConfiguration_listShapes: IDropdownItem[];

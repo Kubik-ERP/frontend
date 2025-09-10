@@ -41,7 +41,9 @@ const {
             @click="storageLocationImport_triggerUpload"
             @dragover.prevent
             @drop.prevent="
-              storageLocationImport_handleDropFile($event.dataTransfer?.files ? Array.from($event.dataTransfer.files) : [])
+              storageLocationImport_handleDropFile(
+                $event.dataTransfer?.files ? Array.from($event.dataTransfer.files) : [],
+              )
             "
           >
             <i class="pi pi-paperclip text-4xl text-gray-400 mb-3"></i>
@@ -49,7 +51,9 @@ const {
             <p class="text-gray-500 text-sm text-center mb-3">
               Drop your CSV/XLSX file here <br />
               or
-              <span class="text-primary cursor-pointer" @click.stop="storageLocationImport_triggerUpload">click</span>
+              <span class="text-primary cursor-pointer" @click.stop="storageLocationImport_triggerUpload"
+                >click</span
+              >
               to browse from your device.
             </p>
 
@@ -58,7 +62,7 @@ const {
               <span class="text-gray-400">or</span>
               <PrimeVueButton
                 icon="pi pi-download"
-                label="Download Template"
+                label="Download Excel"
                 class="bg-white border border-primary text-primary px-4 py-2 mt-1"
                 @click.stop="storageLocationImport_handleDownloadTemplate"
               />
@@ -85,14 +89,10 @@ const {
           <div class="flex flex-col w-full">
             <AppBaseDataTable
               :columns="storageLocationImport_columns"
-              :data="storageLocationImport_values?.data.items"
-              :rows-per-page="storageLocationImport_values?.data.meta.pageSize"
-              :total-records="storageLocationImport_values?.data.meta.total"
-              :first="
-                storageLocationImport_values?.data?.meta && storageLocationImport_values.data.meta.page
-                  ? (storageLocationImport_values.data.meta.page - 1) * storageLocationImport_values.data.meta.pageSize
-                  : 0
-              "
+              :data="storageLocationImport_values?.data.mergedData"
+              :rows-per-page="10"
+              :total-records="storageLocationImport_values?.data.mergedData.length"
+              :first="0"
               :is-loading="storageLocationImport_isLoading"
               is-using-custom-header-suffix
               is-using-header
@@ -101,13 +101,13 @@ const {
             >
               <template #body="{ column, data }">
                 <template v-if="column.value === 'code'">
-                  <span class="text-gray-700">{{ data.code }}</span>
+                  <span class="text-gray-700">{{ data.locationCode }}</span>
                 </template>
                 <template v-else-if="column.value === 'name'">
-                  <span class="text-gray-700">{{ data.name }}</span>
+                  <span class="text-gray-700">{{ data.locationName }}</span>
                 </template>
                 <template v-else-if="column.value === 'notes'">
-                  <span class="text-gray-500">{{ data.notes }}</span>
+                  <span class="text-gray-500">{{ data.description }}</span>
                 </template>
                 <template v-else-if="column.value === 'status'">
                   <span
@@ -118,8 +118,13 @@ const {
                   </span>
                   <span
                     v-else-if="data.status === 'failed'"
-                    class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700"
+                    v-tooltip.bottom="{
+                      value: data.errorMessages,
+                      class: ' text-white text-sm rounded-lg px-3 py-2 shadow-lg max-w-xs break-words',
+                    }"
+                    class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 cursor-help transition duration-200 hover:bg-red-200"
                   >
+                    <i class="pi pi-exclamation-triangle"></i>
                     Failed
                   </span>
                   <span v-else class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
@@ -128,18 +133,6 @@ const {
                 </template>
               </template>
             </AppBaseDataTable>
-
-            <!-- Alert ditempel di bawah table -->
-            <div
-              v-if="storageLocationImport_values?.data?.items?.some(item => item.status === 'failed')"
-              class="absolute top-0 left-1/2 -translate-x-1/2 mt-2 p-3 border border-red-300 bg-red-50 text-red-700 rounded-md text-sm flex items-start gap-2 shadow-md"
-            >
-              <i class="pi pi-exclamation-triangle mt-0.5"></i>
-              <span>
-                Import Validation Failed — Some records didn’t meet required fields or format rules. Correct the
-                errors in your CSV/XLSX and re-upload.
-              </span>
-            </div>
           </div>
         </section>
       </div>
@@ -156,7 +149,8 @@ const {
           label="Import"
           class="px-4 py-2 bg-primary text-white disabled:bg-gray-400 disabled:text-white disabled:border-none"
           :disabled="
-            storageLocationImport_step === 1 || storageLocationImport_values?.data?.items?.some(item => item.status === 'failed')
+            storageLocationImport_step === 1 ||
+            storageLocationImport_values?.data?.mergedData?.some(item => item.status === 'failed')
           "
           @click="storageLocationImport_onSubmit"
         />

@@ -107,12 +107,14 @@ export interface IInvoiceData {
   taxAmount: number | null;
   serviceChargeAmount: number | null;
   grandTotal: number | null;
+  roundingAmount: number | null;
   paymentAmount: number | null;
   changeAmount: number | null;
   voucherId: string | null;
   voucherAmount: number | null;
   customer: IInvoiceCustomer;
   invoiceDetails: IInvoiceDetail[];
+  totalProductDiscount: number | null;
   invoiceCharges: [];
   paymentMethods: IInvoicePaymentMethod | null;
   users: {

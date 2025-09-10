@@ -1,10 +1,11 @@
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useVoucherStore } from "../store";
 import type { IVoucherEditRequest } from "../interfaces/voucher-edit.interface";
 import type { IVoucherViewResponse } from "../interfaces/voucher-view.interface";
 import eventBus from "@/plugins/mitt";
 import useVuelidate from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
 
 export const useVoucherEditService = () => {
   const store = useVoucherStore();
@@ -31,34 +32,17 @@ export const useVoucherEditService = () => {
   });
 
    const voucherFormDataRules = computed(() => ({
-      name: { required: true },
-      code: { required: true },
-      amount: { required: true },
-      minPrice: { required: false, },
-      startDate: { required: true },
-      endDate: { required: true },
-      status: { required: true },
-      quota: { required: false },
-      is_percentage: { required: true },
-      maxDiscountPrice: { required: false },
-      products: { required: false },
-      type: { required: true },
+      name: { required },
+      promoCode: { required },
+      amount: { required },
+      startPeriod: { required },
+      endPeriod: { required },
+      status: { required },
+      isPercent: { required },
+      hasProducts: { required },
     }));
 
-    const voucherFormDataValidatable = computed(() => ({
-      name: voucherEdit_formData.value.name,
-      code: voucherEdit_formData.value.promoCode,
-      amount: voucherEdit_formData.value.amount,
-      minPrice: voucherEdit_formData.value.minPrice,
-      startDate: voucherEdit_formData.value.startPeriod,
-      endDate: voucherEdit_formData.value.endPeriod,
-      status: voucherEdit_formData.value.status,
-      quota: voucherEdit_formData.value.quota,
-      is_percentage: voucherEdit_formData.value.isPercent,
-      maxDiscountPrice: voucherEdit_formData.value.maxPrice,
-      products: voucherEdit_formData.value.hasProducts.products,
-      type: voucherEdit_formData.value.hasProducts.type,
-    }));
+    const voucherFormDataValidatable = computed(() => voucherEdit_formData.value);
 
     const voucherFormDataValidations = useVuelidate(
       voucherFormDataRules,
@@ -67,6 +51,8 @@ export const useVoucherEditService = () => {
         $autoDirty: true,
       }
     );
+
+    const voucherEdit_isValid = computed(() => !voucherFormDataValidations.value.$invalid);
 
   /** Fetch voucher by ID dan isi form */
   const voucherEdit_fetchVoucher = async (voucherId: string) => {
@@ -102,6 +88,18 @@ export const useVoucherEditService = () => {
 
   /** Submit update voucher */
   const voucherEdit_submit = async (voucherId: string, payload: IVoucherEditRequest) => {
+    const isFormCorrect = await voucherFormDataValidations.value.$validate();
+    if (!isFormCorrect) {
+        const argsEventEmitter: IPropsToast = {
+            isOpen: true,
+            type: EToastType.DANGER,
+            message: 'Please fill all required fields',
+            position: EToastPosition.TOP_RIGHT,
+        };
+        eventBus.emit('AppBaseToast', argsEventEmitter);
+        return;
+    }
+
     try {
       voucherEdit_isLoading.value = true;
       const result = await store.voucherList_updateVoucher(voucherId, payload);
@@ -152,5 +150,6 @@ export const useVoucherEditService = () => {
     voucherEdit_formData,
     voucherEdit_fetchVoucher,
     voucherEdit_submit,
+    voucherEdit_isValid,
   };
 };

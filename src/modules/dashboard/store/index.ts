@@ -14,12 +14,12 @@ export const useDashboardStore = defineStore('dashboard', {
     dashboard_values: {
       summary: {
         totalSales: {
-          value: 240000,
-          percentageChange: 100,
+          value: 0,
+          percentageChange: 0,
         },
         totalCostOfGoodSold: {
-          value: 240000,
-          percentageChange: 100,
+          value: 0,
+          percentageChange: 0,
         },
         totalGrossProfit: {
           value: 0,
@@ -30,95 +30,76 @@ export const useDashboardStore = defineStore('dashboard', {
           percentageChange: 0,
         },
       },
-      monthlySalesData: [
+      salesData: [
         {
-          month: 'January',
-          sales: 0,
+          label: 'January',
+          value: 0,
         },
         {
-          month: 'February',
-          sales: 0,
+          label: 'February',
+          value: 0,
         },
         {
-          month: 'March',
-          sales: 0,
+          label: 'March',
+          value: 0,
         },
         {
-          month: 'April',
-          sales: 0,
+          label: 'April',
+          value: 0,
         },
         {
-          month: 'May',
-          sales: 0,
+          label: 'May',
+          value: 0,
         },
         {
-          month: 'June',
-          sales: 0,
+          label: 'June',
+          value: 0,
         },
         {
-          month: 'July',
-          sales: 0,
+          label: 'July',
+          value: 0,
         },
         {
-          month: 'August',
-          sales: 280000,
+          label: 'August',
+          value: 0,
         },
         {
-          month: 'September',
-          sales: 0,
+          label: 'September',
+          value: 0,
         },
         {
-          month: 'October',
-          sales: 0,
+          label: 'October',
+          value: 0,
         },
         {
-          month: 'November',
-          sales: 0,
+          label: 'November',
+          value: 0,
         },
         {
-          month: 'December',
-          sales: 0,
+          label: 'December',
+          value: 0,
         },
       ],
       latestSales: {
-        value: 280000,
-        percentageChange: 100,
+        value: 0,
+        percentageChange: 0,
       },
-      productSales: [
-        {
-          name: 'Sausage McMuffin',
-          quantity: 6,
-        },
-        {
-          name: 'Egg & Cheese Muffin',
-          quantity: 1,
-        },
-      ],
+      productSales: [],
       stockStatus: {
         stockStatus: {
-          available: 1,
-          outOfStock: 1,
-          lowStock: 1,
+          available: 0,
+          outOfStock: 0,
+          lowStock: 0,
         },
         detailedLowStock: {
           items: [
-            {
-              name: 'item',
-              stock: 1,
-              unit: 'gram',
-              minimumStock: 10,
-            },
+            
           ],
           count: 0,
         },
         detailedOutOfStock: {
           items: [
-            {
-              name: 'Milk',
-              stock: 0,
-              unit: 'unit',
-              minimumStock: 1,
-            },
+            
           ],
           count: 0,
         },
@@ -133,7 +114,7 @@ export const useDashboardStore = defineStore('dashboard', {
           params,
           ...requestConfigurations,
         });
-        console.log(response.data.data);
+        // console.log(response.data.data);
         this.dashboard_values = response.data.data;
       } catch (error: unknown) {
         if (error instanceof Error) {

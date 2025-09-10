@@ -8,6 +8,8 @@ import {
   AUTHENTICATION_ENDPOINT_SEND_OTP,
   AUTHENTICATION_ENDPOINT_SIGN_IN,
   AUTHENTICATION_ENDPOINT_SIGN_UP,
+  AUTHENTICATION_ENDPOINT_STAFF_LOGIN,
+  AUTHENTICATION_ENDPOINT_STAFF_LOGOUT,
   AUTHENTICATION_ENDPOINT_VERIFY_OTP,
 } from '../constants';
 
@@ -15,6 +17,8 @@ import {
 import type { AxiosRequestConfig } from 'axios';
 import type { LocationQuery } from 'vue-router';
 import type {
+  IAuthenticationConnectDeviceFormData,
+  IAuthenticationConnectDeviceResponse,
   IAuthenticationCreateNewPasswordFormData,
   IAuthenticationResetPasswordFormData,
   IAuthenticationVerifyOtpFormData,
@@ -330,6 +334,70 @@ export const useAuthenticationStore = defineStore('authentication', {
     },
 
     /**
+     * @description Handle fetch api authentication staff login.
+     * @url /authentication/staff/login
+     * @method POST
+     * @access public
+     */
+    async fetchAuthentication_staffLogin(
+      payload: IAuthenticationConnectDeviceFormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IAuthenticationConnectDeviceResponse> {
+      this.authentication_isLoading = true;
+
+      try {
+        const response = await httpClient.post<IAuthenticationConnectDeviceResponse>(
+          AUTHENTICATION_ENDPOINT_STAFF_LOGIN,
+          payload,
+          {
+            ...requestConfigurations,
+          },
+        );
+
+        // Store the token and user data if successful
+        if (response.data.data?.accessToken) {
+          this.authentication_token = response.data.data.accessToken;
+        }
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.authentication_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api authentication staff logout.
+     * @url /authentication/staff/logout
+     * @method POST
+     * @access public
+     */
+    async fetchAuthentication_staffLogout(requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+      this.authentication_isLoading = true;
+
+      try {
+        const response = await httpClient.post<unknown>(AUTHENTICATION_ENDPOINT_STAFF_LOGOUT, null, {
+          ...requestConfigurations,
+        });
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.authentication_isLoading = false;
+      }
+    },
+
+    /**
      * @description Handle fetch api authentication verify otp.
      * @url /authentication/otp/verify
      * @method POST
@@ -355,6 +423,60 @@ export const useAuthenticationStore = defineStore('authentication', {
         }
       } finally {
         this.authentication_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle logout functionality for both staff and regular users.
+     * For staff users, it will call the staff logout API before clearing local storage.
+     * For regular users, it will only clear local storage.
+     * @access public
+     */
+    async handleLogout(requestConfigurations?: AxiosRequestConfig): Promise<void> {
+      try {
+        // Check if user is staff by looking at local storage
+        const userDataRaw = localStorage.getItem('authentication');
+        let isStaff = false;
+
+        if (userDataRaw) {
+          const userData = JSON.parse(userDataRaw);
+          isStaff = userData?.authentication_userData?.isStaff;
+        }
+
+        // If user is staff, call the staff logout API
+        if (isStaff) {
+          try {
+            await this.fetchAuthentication_staffLogout({
+              ...requestConfigurations,
+            });
+          } catch (error) {
+            // Log the error but don't prevent logout from continuing
+            console.error('Staff logout API failed:', error);
+          }
+        }
+
+        // Clear authentication state
+        this.authentication_token = '';
+        this.authentication_userData = null;
+        this.authentication_permissions = [];
+
+        // Clear local storage
+        localStorage.removeItem('authentication');
+        localStorage.removeItem('outlet');
+
+        // Redirect to login page
+        window.location.href = '/authentication/sign-in';
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error('Logout error:', error);
+        } else {
+          console.error('Logout error:', String(error));
+        }
+
+        // Even if there's an error, still clear local storage and redirect
+        localStorage.removeItem('authentication');
+        localStorage.removeItem('outlet');
+        window.location.href = '/authentication/sign-in';
       }
     },
   },

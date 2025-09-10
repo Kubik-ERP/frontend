@@ -1,75 +1,52 @@
-import { ref } from "vue";
-import {
-  IVoucherCreateProvided,
-  IVoucherFormData,
-  mapFormToVoucherPayload,
-} from "../interfaces";
-import { useProductService } from "@/modules/catalog-product/services/catalog-product.service";
-import { IProduct } from "@/modules/catalog-product/interfaces";
-import { useVoucherStore } from "../store";
-import useVuelidate from "@vuelidate/core";
-import eventBus from "@/plugins/mitt";
+import { ref, computed } from 'vue';
+import { IVoucherCreateProvided, IVoucherFormData, mapFormToVoucherPayload } from '../interfaces';
+import { useProductService } from '@/modules/catalog-product/services/catalog-product.service';
+import { IProduct } from '@/modules/catalog-product/interfaces';
+import { useVoucherStore } from '../store';
+import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
+import eventBus from '@/plugins/mitt';
 
 export const useVoucherCreateService = (): IVoucherCreateProvided => {
   const store = useVoucherStore();
-  // const router = useRouter();
+  const router = useRouter();
   /* ----------------------------------
    * 1️⃣ Form Data
    * ---------------------------------- */
   const voucherFormData = ref<IVoucherFormData>({
-    name: "",
-    code: "",
+    name: '',
+    code: '',
     amount: 0,
     minPrice: 0,
-    startDate: "",
-    endDate: "",
-    status: "",
+    startDate: '',
+    endDate: '',
+    status: '',
     quota: 0,
     is_percentage: false,
     products: [],
-    type: "all",
+    type: 'all',
   });
 
   /* ----------------------------------
    * 2️⃣ Form Errors
    * ---------------------------------- */
-   const voucherFormDataRules = computed(() => ({
-    name: { required: true },
-    code: { required: true },
-    amount: { required: true },
-    minPrice: { required: false, },
-    startDate: { required: true },
-    endDate: { required: true },
-    status: { required: true },
-    quota: { required: false },
-    is_percentage: { required: true },
-    maxDiscountPrice: { required: false },
-    products: { required: false },
-    type: { required: true },
+  const voucherFormDataRules = computed(() => ({
+    name: { required },
+    code: { required },
+    amount: { required },
+    startDate: { required },
+    endDate: { required },
+    status: { required },
+    type: { required },
   }));
 
-  const voucherFormDataValidatable = computed(() => ({
-    name: voucherFormData.value.name,
-    code: voucherFormData.value.code,
-    amount: voucherFormData.value.amount,
-    minPrice: voucherFormData.value.minPrice,
-    startDate: voucherFormData.value.startDate,
-    endDate: voucherFormData.value.endDate,
-    status: voucherFormData.value.status,
-    quota: voucherFormData.value.quota,
-    is_percentage: voucherFormData.value.is_percentage,
-    maxDiscountPrice: voucherFormData.value.maxDiscountPrice,
-    products: voucherFormData.value.products,
-    type: voucherFormData.value.type,
-  }));
+  const voucherFormDataValidatable = computed(() => voucherFormData.value);
 
-  const voucherFormDataValidations = useVuelidate(
-    voucherFormDataRules,
-    voucherFormDataValidatable,
-    {
-      $autoDirty: true,
-    }
-  );
+  const voucherFormDataValidations = useVuelidate(voucherFormDataRules, voucherFormDataValidatable, {
+    $autoDirty: true,
+  });
+
+  const voucherFormIsValid = computed(() => !voucherFormDataValidations.value.$invalid);
 
   const voucherFormIsLoading = ref<boolean>(false);
 
@@ -77,6 +54,18 @@ export const useVoucherCreateService = (): IVoucherCreateProvided => {
    * 3️⃣ Submit Form
    * ---------------------------------- */
   const voucherFormOnSubmit = async (): Promise<void> => {
+    const isFormCorrect = await voucherFormDataValidations.value.$validate();
+    if (!isFormCorrect) {
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Please fill all required fields',
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      return;
+    }
+
     voucherFormIsLoading.value = true;
     try {
       const payload = mapFormToVoucherPayload(voucherFormData.value);
@@ -86,12 +75,16 @@ export const useVoucherCreateService = (): IVoucherCreateProvided => {
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,
-        message: result.message || "Voucher created successfully!",
+        message: result.message || 'Voucher created successfully!',
         position: EToastPosition.TOP_RIGHT,
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
       voucherFormReset();
+
+      if (result.data.id !== '') {
+        router.push({ name: 'voucher.index' });
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -104,17 +97,17 @@ export const useVoucherCreateService = (): IVoucherCreateProvided => {
    * ---------------------------------- */
   const voucherFormReset = (): void => {
     voucherFormData.value = {
-      name: "",
-      code: "",
+      name: '',
+      code: '',
       amount: 0,
       minPrice: 0,
-      startDate: "",
-      endDate: "",
-      status: "",
+      startDate: '',
+      endDate: '',
+      status: '',
       quota: 0,
       is_percentage: false,
       products: [],
-      type: "all",
+      type: 'all',
     };
   };
 
@@ -135,7 +128,7 @@ export const useVoucherCreateService = (): IVoucherCreateProvided => {
         ...data,
       };
     } catch (error) {
-      console.error("❌ Failed to fetch voucher:", error);
+      console.error('❌ Failed to fetch voucher:', error);
     } finally {
       voucherFormIsLoading.value = false;
     }
@@ -149,10 +142,10 @@ export const useVoucherCreateService = (): IVoucherCreateProvided => {
 
   const fetchVoucherProductList = async (): Promise<void> => {
     try {
-      const response = await productService.getAllProducts(1, 100, "");
+      const response = await productService.getAllProducts(1, 100, '');
       voucherProductList.value = response.products;
     } catch (error) {
-      console.error("❌ Error fetching voucher product list:", error);
+      console.error('❌ Error fetching voucher product list:', error);
     }
   };
 
@@ -167,5 +160,6 @@ export const useVoucherCreateService = (): IVoucherCreateProvided => {
     voucherFormReset,
     voucherFormFetchData,
     voucherProductList,
+    voucherFormIsValid,
   };
 };
