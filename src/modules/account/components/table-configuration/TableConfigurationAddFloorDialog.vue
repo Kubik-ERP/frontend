@@ -18,7 +18,11 @@ const {
   <AppBaseDialog id="table-configuration-add-floor-dialog">
     <template #header>
       <h5 class="font-semibold text-black text-lg">
-        {{ accountStoreTableConfiguration_isEditableMode ? 'Edit Floor' : 'Add Floor' }}
+        {{
+          accountStoreTableConfiguration_isEditableMode
+            ? useLocalization('account.edit-floor')
+            : useLocalization('account.add-floor')
+        }}
       </h5>
     </template>
 
@@ -30,7 +34,7 @@ const {
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="floor-name"
-            name="Floor Name"
+            :name="useLocalization('account.form.floor-name')"
             spacing-bottom="mb-0"
             :validators="accountStoreTableConfiguration_formValidationsOfAddFloor.floorName"
           >
@@ -48,7 +52,7 @@ const {
       <footer class="flex items-center justify-end w-full gap-4">
         <PrimeVueButton
           class="font-semibold text-base text-primary w-full max-w-40 border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
-          label="Cancel"
+          :label="useLocalization('account.buttons.cancel')"
           severity="secondary"
           variant="outlined"
           @click="accountStoreTableConfiguration_onCloseDialogAddFloor"
@@ -56,7 +60,11 @@ const {
 
         <PrimeVueButton
           class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
-          :label="accountStoreTableConfiguration_isEditableMode ? 'Update' : 'Add Floor'"
+          :label="
+            accountStoreTableConfiguration_isEditableMode
+              ? useLocalization('account.buttons.update')
+              : useLocalization('account.buttons.add-floor')
+          "
           type="button"
           @click="accountStoreTableConfiguration_onSubmitFormAddFloor"
         />

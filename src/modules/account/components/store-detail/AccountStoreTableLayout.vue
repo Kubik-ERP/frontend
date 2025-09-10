@@ -103,8 +103,10 @@ const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetai
           @click="accountStoreDetail_onShowDialogDetailTable(table)"
         />
         <div class="font-bold text-sm">{{ table.name }}</div>
-        <div v-if="props.cashierPreview" class="text-[10px] lg:text-sm">Available</div>
-        <div class="text-sm pb-2">{{ table.seats }} seats</div>
+        <div v-if="props.cashierPreview" class="text-[10px] lg:text-sm">
+          {{ useLocalization('account.available') }}
+        </div>
+        <div class="text-sm pb-2">{{ table.seats }} {{ useLocalization('account.seats') }}</div>
       </div>
     </section>
   </section>

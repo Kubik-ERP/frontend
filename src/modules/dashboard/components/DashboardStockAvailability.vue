@@ -4,6 +4,10 @@ import { computed } from 'vue';
 import DashboardLowStock from './DashboardLowStock.vue';
 import DashboardOutOfStock from './DashboardOutOfStock.vue';
 
+// Vue i18n
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+
 import type { IDashboardProvided } from '../interfaces';
 // inject
 const { dashboard_values } = inject<IDashboardProvided>('dashboard')!;
@@ -22,17 +26,17 @@ const countPercentage = (value: number) => {
 // Use a computed property to make the labels reactive to language changes
 const value = computed(() => [
   {
-    label: useLocalization('dashboard.stockAvailability.available'),
+    label: t('dashboard.stockAvailability.available'),
     color: '#8CC8EB',
     value: countPercentage(dashboard_values.value.stockStatus.stockStatus.available),
   },
   {
-    label: useLocalization('dashboard.stockAvailability.lowStock'),
+    label: t('dashboard.stockAvailability.lowStock'),
     color: '#FFB84D',
     value: countPercentage(dashboard_values.value.stockStatus.stockStatus.lowStock),
   },
   {
-    label: useLocalization('dashboard.stockAvailability.outOfStock'),
+    label: t('dashboard.stockAvailability.outOfStock'),
     color: '#E57171',
     value: countPercentage(dashboard_values.value.stockStatus.stockStatus.outOfStock),
   },

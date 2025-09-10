@@ -11,8 +11,8 @@ const { accountStoreEdit_formData } = inject<IAccountStoreEditProvided>('account
 <template>
   <section id="outlet-create-edit-form-operational" class="flex flex-col gap-4">
     <section id="information" class="flex flex-col gap-2">
-      <h5 class="font-semibold text-black text-lg">Operational</h5>
-      <h6 class="font-semibold text-base text-black">Busines Hours</h6>
+      <h5 class="font-semibold text-black text-lg">{{ useLocalization('account.operational') }}</h5>
+      <h6 class="font-semibold text-base text-black">{{ useLocalization('account.business-hours') }}</h6>
     </section>
 
     <section id="working-hours" class="grid-wrapper gap-4">
@@ -51,7 +51,9 @@ const { accountStoreEdit_formData } = inject<IAccountStoreEditProvided>('account
         <section id="working-hours-list" class="grid-wrapper gap-4">
           <template v-for="(timeSlot, timeSlotIndex) in day.timeSlots" :key="`business-hour-${timeSlotIndex}`">
             <section id="open-time" class="col-span-full lg:col-span-6 flex flex-col items-center gap-2">
-              <label for="open-time" class="font-semibold text-black text-sm">Open Time</label>
+              <label for="open-time" class="font-semibold text-black text-sm">{{
+                useLocalization('account.form.open-time')
+              }}</label>
 
               <PrimeVueInputGroup>
                 <PrimeVueDatePicker
@@ -69,7 +71,9 @@ const { accountStoreEdit_formData } = inject<IAccountStoreEditProvided>('account
             </section>
 
             <section id="close-time" class="col-span-full lg:col-span-6 flex flex-col items-center gap-2">
-              <label for="close-time" class="font-semibold text-black text-sm">Close Time</label>
+              <label for="close-time" class="font-semibold text-black text-sm">{{
+                useLocalization('account.form.close-time')
+              }}</label>
 
               <PrimeVueInputGroup>
                 <PrimeVueDatePicker

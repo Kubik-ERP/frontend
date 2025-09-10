@@ -15,11 +15,13 @@ export const ACCOUNT_STORE_TABLE_UPDATE_REQUEST = 'ACCOUNT_STORE_TABLE_UPDATE_RE
 export const ACCOUNT_LIST_COLUMNS_STORE: IColumnDataTable[] = [
   {
     label: 'Store Name',
+    translationKey: 'app.store-name',
     sortable: true,
     value: 'name',
   },
   {
     label: 'Address',
+    translationKey: 'app.address',
     sortable: true,
     value: 'address',
   },

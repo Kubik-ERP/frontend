@@ -68,6 +68,16 @@ const tabListClasses = computed(() => {
 });
 
 /**
+ * @description Get localized label for a tab
+ */
+const getTabLabel = (tab: ITabs) => {
+  if (tab.translationKey) {
+    return useLocalization(tab.translationKey);
+  }
+  return tab.label;
+};
+
+/**
  * @description Watch for changes in the value prop and update localValue accordingly
  */
 const onChange = (value: string | number) => {
@@ -95,7 +105,7 @@ const onChange = (value: string | number) => {
           }`,
         }"
       >
-        {{ tab.label }}
+        {{ getTabLabel(tab) }}
       </PrimeVueTab>
     </PrimeVueTabList>
 

@@ -23,7 +23,7 @@ const {
 
 <template>
   <section id="account-assigned-staff" class="flex flex-col gap-4 w-full">
-    <h6 class="font-semibold text-black text-lg">Assigned Staffs</h6>
+    <h6 class="font-semibold text-black text-lg">{{ useLocalization('account.assigned-staffs') }}</h6>
 
     <AppBaseDataTable
       btn-cta-create-title="Assign Staff"
@@ -41,7 +41,7 @@ const {
           <!-- Chip -->
           <PrimeVueChip
             class="text-xs font-normal bg-secondary-background text-green-primary w-fit"
-            :label="`${accountDetail_listAssignedStaff.length} Staffs`"
+            :label="`${accountDetail_listAssignedStaff.length} ${useLocalization('account.staffs')}`"
           />
 
           <!-- Right Content -->
@@ -69,7 +69,9 @@ const {
             >
               <section id="content" class="flex items-center justify-center gap-2">
                 <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
-                <span class="font-semibold text-sm lg:text-base text-white"> Add Assign Staff </span>
+                <span class="font-semibold text-sm lg:text-base text-white">{{
+                  useLocalization('account.add-assign-staff')
+                }}</span>
               </section>
             </PrimeVueButton>
           </section>

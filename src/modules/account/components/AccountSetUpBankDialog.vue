@@ -85,7 +85,7 @@ const {
       <footer class="flex items-center justify-end w-full gap-4">
         <PrimeVueButton
           class="font-semibold text-base text-primary w-full max-w-40 border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
-          label="Cancel"
+          :label="useLocalization('account.buttons.cancel')"
           severity="secondary"
           variant="outlined"
           @click="account_onCloseDialogSetUpBank"
@@ -93,7 +93,7 @@ const {
 
         <PrimeVueButton
           class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
-          label="Save"
+          :label="useLocalization('account.buttons.save')"
           type="button"
           :disabled="account_bankAccountFormValidations.$invalid"
           @click="account_onSubmitBankAccount()"

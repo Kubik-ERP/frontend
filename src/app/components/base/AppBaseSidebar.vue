@@ -237,7 +237,9 @@ const handleLogout = async () => {
               :class="{ 'opacity-0': isCollapsed && !isCurrentlyMobile }"
             >
               <span id="menu-category" class="font-normal text-text-disabled text-xs">
-                {{ menuCategory.name }}
+                {{
+                  menuCategory.translationKey ? useLocalization(menuCategory.translationKey) : menuCategory.name
+                }}
               </span>
             </div>
 
@@ -263,7 +265,7 @@ const handleLogout = async () => {
                       class="font-normal text-base whitespace-nowrap"
                       :class="[isAnySubMenuActive(menu) ? 'text-white' : 'text-black']"
                     >
-                      {{ menu.name }}
+                      {{ menu.translationKey ? useLocalization(menu.translationKey) : menu.name }}
                     </span>
                     <i
                       :class="[
@@ -293,7 +295,7 @@ const handleLogout = async () => {
                           :class="[route.path === subMenu.path ? 'bg-primary-border' : 'bg-grayscale-10']"
                         >
                           <span class="font-normal text-base text-black pl-7">
-                            {{ subMenu.name }}
+                            {{ subMenu.translationKey ? useLocalization(subMenu.translationKey) : subMenu.name }}
                           </span>
                         </div>
                       </RouterLink>
@@ -309,7 +311,7 @@ const handleLogout = async () => {
                     :class="[
                       isAnySubMenuActive(menu) ? 'bg-primary text-white' : 'text-black hover:bg-grayscale-10',
                     ]"
-                    :title="menu.name"
+                    :title="menu.translationKey ? useLocalization(menu.translationKey) : menu.name"
                   >
                     <AppBaseSvg
                       :name="menu.iconName"
@@ -329,7 +331,13 @@ const handleLogout = async () => {
                       route.path === menu.path ? 'bg-primary text-white' : '',
                       isCollapsed && !isCurrentlyMobile ? 'justify-center px-2' : 'gap-2 px-4',
                     ]"
-                    :title="isCollapsed && !isCurrentlyMobile ? menu.name : ''"
+                    :title="
+                      isCollapsed && !isCurrentlyMobile
+                        ? menu.translationKey
+                          ? useLocalization(menu.translationKey)
+                          : menu.name
+                        : ''
+                    "
                   >
                     <AppBaseSvg
                       :name="menu.iconName"
@@ -344,7 +352,7 @@ const handleLogout = async () => {
                         { 'opacity-0': isCollapsed && !isCurrentlyMobile },
                       ]"
                     >
-                      {{ menu.name }}
+                      {{ menu.translationKey ? useLocalization(menu.translationKey) : menu.name }}
                     </p>
                   </RouterLink>
                 </template>
@@ -393,7 +401,9 @@ const handleLogout = async () => {
       >
         <template #default>
           <section id="content" class="flex items-center gap-2 w-full">
-            <span class="font-normal text-base text-text-primary">Log Out</span>
+            <span class="font-normal text-base text-text-primary">{{
+              useLocalization('app.sidebar.log-out')
+            }}</span>
           </section>
         </template>
         <template #icon>

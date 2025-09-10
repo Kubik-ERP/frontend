@@ -16,7 +16,7 @@ const { accountStoreTableConfiguration_onShowDialogAddFloor } = inject<IAccountS
     class="flex flex-col lg:flex-row items-start lg:items-center justify-between border border-solid border-grayscale-10 p-4 rounded-lg w-full gap-4 lg:gap-0"
   >
     <h6 class="font-bold text-primary text-base lg:text-lg">
-      Please create a floor name before setting up tables
+      {{ useLocalization('account.please-create-floor-before-tables') }}
     </h6>
 
     <PrimeVueButton
@@ -28,7 +28,9 @@ const { accountStoreTableConfiguration_onShowDialogAddFloor } = inject<IAccountS
         <section id="content" class="flex items-center gap-2">
           <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
 
-          <span class="font-semibold text-sm lg:text-base text-white"> Add Floor </span>
+          <span class="font-semibold text-sm lg:text-base text-white">{{
+            useLocalization('account.buttons.add-floor')
+          }}</span>
         </section>
       </template>
     </PrimeVueButton>

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Vue i18n
+import { useI18n } from 'vue-i18n';
+
 // Stores
 import { useAuthenticationStore } from '@/modules/authentication/store';
 import { useOutletStore } from '@/modules/outlet/store';
@@ -11,6 +14,7 @@ const authenticationStore = useAuthenticationStore();
 const outletStore = useOutletStore();
 const mobileStore = useMobileStore();
 const route = useRoute();
+const { locale } = useI18n();
 const { authentication_userData } = storeToRefs(authenticationStore);
 const { outlet_profile } = storeToRefs(outletStore);
 const { isCurrentlyMobile } = storeToRefs(mobileStore);
@@ -18,7 +22,7 @@ const { isCurrentlyMobile } = storeToRefs(mobileStore);
 /**
  * @description Reactive data binding
  */
-const language = ref('en');
+const language = ref(locale.value);
 const popover = ref();
 const popoverLocalization = ref();
 const showMobileSearch = ref(false);
@@ -67,6 +71,9 @@ const onChangeLanguage = (selectedLanguage: string) => {
   localStorage.setItem('lang', selectedLanguage);
   language.value = selectedLanguage;
 
+  // Update the i18n locale to trigger reactivity
+  locale.value = selectedLanguage;
+
   // Emit an event to notify other components about the language change
   popoverLocalization.value.hide();
   popover.value.hide();
@@ -111,7 +118,10 @@ const onChangeLanguage = (selectedLanguage: string) => {
         </template>
       </PrimeVueInputIcon>
 
-      <PrimeVueInputText placeholder="Search everything here..." class="text-sm w-full min-w-80" />
+      <PrimeVueInputText
+        :placeholder="useLocalization('app.navbar.search-placeholder')"
+        class="text-sm w-full min-w-80"
+      />
     </PrimeVueIconField>
 
     <section id="right-content" class="flex items-center gap-2">
@@ -127,7 +137,7 @@ const onChangeLanguage = (selectedLanguage: string) => {
             &nbsp;
           </section>
           <span class="font-normal text-disabled text-xs">
-            {{ isOnline() ? 'Online' : 'Offline' }}
+            {{ isOnline() ? useLocalization('app.navbar.online') : useLocalization('app.navbar.offline') }}
           </span>
         </section>
 
@@ -194,7 +204,9 @@ const onChangeLanguage = (selectedLanguage: string) => {
           >
             <template #default>
               <section id="content" class="flex items-center gap-2 w-full">
-                <span class="font-normal text-base text-text-primary">My Account</span>
+                <span class="font-normal text-base text-text-primary">{{
+                  useLocalization('app.navbar.my-account')
+                }}</span>
               </section>
             </template>
           </PrimeVueButton>
@@ -203,9 +215,13 @@ const onChangeLanguage = (selectedLanguage: string) => {
             <template #default>
               <section id="content" class="flex items-center gap-2 w-full">
                 <span class="font-normal text-base text-text-primary">
-                  Change Language :
+                  {{ useLocalization('app.navbar.change-language') }} :
                   <span class="text-primary">
-                    {{ language === 'en' ? '🇺🇸 English' : '🇮🇩 Indonesia' }}
+                    {{
+                      language === 'en'
+                        ? useLocalization('app.navbar.english')
+                        : useLocalization('app.navbar.indonesian')
+                    }}
                   </span>
                 </span>
               </section>
@@ -219,7 +235,9 @@ const onChangeLanguage = (selectedLanguage: string) => {
           >
             <template #default>
               <section id="content" class="flex items-center gap-2 w-full">
-                <span class="font-normal text-base text-text-primary">Log Out</span>
+                <span class="font-normal text-base text-text-primary">{{
+                  useLocalization('app.navbar.log-out')
+                }}</span>
               </section>
             </template>
           </PrimeVueButton>
@@ -237,7 +255,9 @@ const onChangeLanguage = (selectedLanguage: string) => {
           <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="onChangeLanguage('en')">
             <template #default>
               <section id="content" class="flex items-center gap-2 w-full">
-                <span class="font-normal text-base text-text-primary">🇺🇸 English</span>
+                <span class="font-normal text-base text-text-primary">{{
+                  useLocalization('app.navbar.english')
+                }}</span>
               </section>
             </template>
           </PrimeVueButton>
@@ -245,7 +265,9 @@ const onChangeLanguage = (selectedLanguage: string) => {
           <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="onChangeLanguage('id')">
             <template #default>
               <section id="content" class="flex items-center gap-2 w-full">
-                <span class="font-normal text-base text-text-primary">🇮🇩 Indonesia</span>
+                <span class="font-normal text-base text-text-primary">{{
+                  useLocalization('app.navbar.indonesian')
+                }}</span>
               </section>
             </template>
           </PrimeVueButton>
@@ -263,14 +285,18 @@ const onChangeLanguage = (selectedLanguage: string) => {
             <PrimeVueInputIcon>
               <AppBaseSvg name="search" />
             </PrimeVueInputIcon>
-            <PrimeVueInputText placeholder="Search everything here..." class="text-sm w-full" autofocus />
+            <PrimeVueInputText
+              :placeholder="useLocalization('app.navbar.search-placeholder')"
+              class="text-sm w-full"
+              autofocus
+            />
           </PrimeVueIconField>
         </div>
       </div>
 
       <!-- Search Results Area -->
       <div class="flex-1 p-4">
-        <p class="text-gray-500 text-sm">Start typing to search...</p>
+        <p class="text-gray-500 text-sm">{{ useLocalization('app.navbar.start-typing-to-search') }}</p>
       </div>
     </div>
   </nav>

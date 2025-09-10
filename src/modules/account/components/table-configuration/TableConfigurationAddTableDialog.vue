@@ -33,14 +33,20 @@ const {
   <AppBaseDialog id="table-configuration-add-table-dialog">
     <template #header>
       <h5 class="font-semibold text-black text-lg">
-        {{ accountStoreTableConfiguration_isEditableMode ? 'Edit Table' : 'Add Table' }}
+        {{
+          accountStoreTableConfiguration_isEditableMode
+            ? useLocalization('account.edit-table')
+            : useLocalization('account.add-table')
+        }}
       </h5>
     </template>
 
     <template #content>
       <section id="form-groups" class="grid-wrapper gap-4">
         <section id="floor" class="col-span-full flex flex-col gap-1">
-          <span class="font-normal text-grayscale-70 text-sm"> Floor Name </span>
+          <span class="font-normal text-grayscale-70 text-sm">{{
+            useLocalization('account.form.floor-name')
+          }}</span>
 
           <p class="font-normal text-base text-primary">
             {{ accountStoreTableConfiguration_formDataOfAddTable.floorName }}
@@ -53,7 +59,7 @@ const {
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="table-name"
-            name="Table Name"
+            :name="useLocalization('account.form.table-name')"
             spacing-bottom="mb-0"
             :validators="accountStoreTableConfiguration_formValidationsOfAddTable.name"
           >
@@ -72,7 +78,7 @@ const {
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="seat-count"
-            name="Seat Count"
+            :name="useLocalization('account.form.seat-count')"
             spacing-bottom="mb-0"
             :validators="accountStoreTableConfiguration_formValidationsOfAddTable.seats"
           >
@@ -100,7 +106,7 @@ const {
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="table-shape"
-            name="Table Shape"
+            :name="useLocalization('account.form.table-shape')"
             spacing-bottom="mb-0"
             :validators="accountStoreTableConfiguration_formValidationsOfAddTable.shape"
           >
@@ -186,7 +192,7 @@ const {
 
         <PrimeVueButton
           class="font-semibold text-base text-center text-primary w-full border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10 py-3"
-          label="Cancel"
+          :label="useLocalization('account.buttons.cancel')"
           severity="secondary"
           variant="outlined"
           @click="accountStoreTableConfiguration_onCloseDialogAddTable"
@@ -194,7 +200,11 @@ const {
 
         <PrimeVueButton
           class="bg-blue-primary border-none text-base text-center py-3 w-full"
-          :label="accountStoreTableConfiguration_isEditableMode ? 'Update' : 'Add Table'"
+          :label="
+            accountStoreTableConfiguration_isEditableMode
+              ? useLocalization('account.buttons.update')
+              : useLocalization('account.buttons.add-table')
+          "
           type="button"
           @click="accountStoreTableConfiguration_onSubmitFormAddTable"
         />

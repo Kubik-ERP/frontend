@@ -186,6 +186,25 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     isLoading: false,
     selectedPaymentMethod: '',
     data: [],
+<<<<<<< HEAD
+=======
+    dataSelfOrder: [
+      {
+        sortNo: 1,
+        id: '1',
+        iconName: 'cash',
+        name: 'Pay at Cashier',
+        isAvailable: true,
+      },
+      {
+        sortNo: 4,
+        id: '4',
+        iconName: 'qris',
+        name: 'QRIS',
+        isAvailable: false,
+      },
+    ],
+>>>>>>> d4ff141 (fix: duplicate values on cashier)
   });
 
   const cashierOrderSummary_calculateEstimation = ref<ICashierCalulateEstimationData>({
