@@ -480,13 +480,13 @@ const cancelUpdate = () => {
               <router-link to="/catalog/products">
                 <PrimeVueButton
                   :label="useLocalization('productDetail.form.button.cancel')"
-                  class="text-xl w-48 py-2 border-2 border-primary cursor-pointer rounded-lg text-primary bg-transparent font-semibold"
+                  class="text-xl min-w-48 px-3 py-2 border-2 border-primary cursor-pointer rounded-lg text-primary bg-transparent font-semibold"
                   unstyled
                 />
               </router-link>
               <PrimeVueButton
                 :label="useLocalization('productDetail.form.button.edit')"
-                class="text-xl w-48 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
+                class="text-xl min-w-48 px-3 py-2 cursor-pointer border-2 border-primary rounded-lg text-white bg-primary font-semibold"
                 :loading="loading"
                 :disabled="product_formValidations.$invalid"
                 type="submit"
