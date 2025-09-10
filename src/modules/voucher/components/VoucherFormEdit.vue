@@ -14,6 +14,7 @@ const {
   voucherEdit_fetchVoucher,
   voucherEdit_submit,
   voucherEdit_isLoading,
+  voucherEdit_isValid,
 } = useVoucherEditService();
 
 const { voucherProductList } = useVoucherCreateService();
@@ -64,6 +65,7 @@ onMounted(async () => {
 // Format currency helper
 const formatCurrency = (val: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(val);
+
 
 
 

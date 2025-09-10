@@ -12,6 +12,7 @@ const {
   voucherFormReset,
   voucherFormOnSubmit,
   voucherProductList,
+  voucherFormIsValid,
 } = useVoucherCreateService();
 
 // --- State untuk UI
@@ -75,6 +76,7 @@ function removeSelectedProduct(id: string) {
 
 const formatCurrency = (val: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(val);
+
 
 
 
