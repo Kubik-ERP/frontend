@@ -114,7 +114,7 @@ const hasPermission = rbac.hasPermission('supplier_management');
             @click="supplierList_onImport"
           >
             <i class="pi pi-upload text-sm"></i>
-            Import Supplier
+            {{ useLocalization('supplier.import') }}
           </PrimeVueButton>
           <!-- Button -->
           <PrimeVueButton

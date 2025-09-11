@@ -7,26 +7,31 @@ export const INVERNTORY_CATEGORY_LIST_COLUMNS = [
     label: 'Category code',
     sortable: false,
     value: 'code',
+    translationKey: 'inventoryCategory.table.code',
   },
   {
     label: 'Category Name',
     sortable: false,
     value: 'name',
+    translationKey: 'inventoryCategory.table.name',
   },
   {
     label: 'Description',
     sortable: false,
     value: 'notes',
+    translationKey: 'inventoryCategory.table.description',
   },
   {
     label: 'Created At',
     sortable: true,
     value: 'createdAt',
+    translationKey: 'inventoryCategory.table.createdAt',
   },
   {
     label: '',
     sortable: false,
     value: 'action',
+    translationKey: 'inventoryCategory.table.actions',
   },
 ]
 

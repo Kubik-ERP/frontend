@@ -32,22 +32,22 @@ function formatCurrency(value?: number) {
 
       <!-- Item Details -->
       <div class="mb-4">
-        <p class="text-base font-semibold text-primary mb-3">Item Details</p>
+        <p class="text-base font-semibold text-primary mb-3">{{ useLocalization('items.form.details') }}</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <p class="text-sm text-gray-500">Brand</p>
+            <p class="text-sm text-gray-500">{{ useLocalization('items.form.brand') }}</p>
             <p class="text-base font-medium text-black">{{ item?.brand ?? '-' }}</p>
           </div>
           <div>
-            <p class="text-sm text-gray-500">Barcode</p>
+            <p class="text-sm text-gray-500">{{ useLocalization('items.form.barcode') }}</p>
             <p class="text-base text-black">{{ item?.barcode ?? '-' }}</p>
           </div>
           <div>
-            <p class="text-sm text-gray-500">Category</p>
+            <p class="text-sm text-gray-500">{{ useLocalization('items.form.category') }}</p>
             <p class="text-base text-black">{{ item?.category }}</p>
           </div>
           <div>
-            <p class="text-sm text-gray-500">Unit</p>
+            <p class="text-sm text-gray-500">{{ useLocalization('items.form.unit') }}</p>
             <p class="text-base text-black">{{ item?.unit }}</p>
           </div>
         </div>
@@ -55,22 +55,22 @@ function formatCurrency(value?: number) {
 
       <!-- Stock & Inventory -->
       <div class="mb-4">
-        <p class="text-base font-semibold text-primary mb-3">Stock & Inventory</p>
+        <p class="text-base font-semibold text-primary mb-3">{{ useLocalization('items.form.stock') }}</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <p class="text-sm text-gray-500">Current Stock Quantity</p>
+            <p class="text-sm text-gray-500">{{ useLocalization('items.stockAdjustment.currentStock') }}</p>
             <p class="text-base text-black">{{ item?.stockQuantity }}</p>
           </div>
           <div>
-            <p class="text-sm text-gray-500">Reorder Level</p>
+            <p class="text-sm text-gray-500">{{ useLocalization('items.form.reorderLevel') }}</p>
             <p class="text-base text-black">{{ item?.reorderLevel }}</p>
           </div>
           <div>
-            <p class="text-sm text-gray-500">Minimum Stock Quantity</p>
+            <p class="text-sm text-gray-500">{{ useLocalization('items.form.minStockQuantity') }}</p>
             <p class="text-base text-black">{{ item?.minimumStockQuantity }}</p>
           </div>
           <div>
-            <p class="text-sm text-gray-500">Expiry Date</p>
+            <p class="text-sm text-gray-500">{{ useLocalization('items.form.expiryDate') }}</p>
             <p class="text-base text-black">{{ item?.expiryDate || '-' }}</p>
           </div>
         </div>
@@ -78,18 +78,18 @@ function formatCurrency(value?: number) {
 
       <!-- Price & Supplier -->
       <div>
-        <p class="text-base font-semibold text-primary mb-3">Price & Supplier</p>
+        <p class="text-base font-semibold text-primary mb-3">{{ useLocalization('items.form.priceAndSupplier') }}</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <p class="text-sm text-gray-500">Price per Unit</p>
+            <p class="text-sm text-gray-500">{{ useLocalization('items.form.pricePerUnit') }}</p>
             <p class="text-base text-black">{{ formatCurrency(item?.pricePerUnit) }}</p>
           </div>
           <div>
-            <p class="text-sm text-gray-500">Supplier</p>
+            <p class="text-sm text-gray-500">{{ useLocalization('items.form.supplier') }}</p>
             <p class="text-base text-black">{{ item?.supplier ?? '-' }}</p>
           </div>
           <div>
-            <p class="text-sm text-gray-500">Location</p>
+            <p class="text-sm text-gray-500">{{ useLocalization('items.preview.location') }}</p>
             <p class="text-base text-black">{{ item?.storageLocation ?? '-' }}</p>
           </div>
         </div>
