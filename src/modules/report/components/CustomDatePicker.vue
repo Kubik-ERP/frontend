@@ -20,7 +20,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['update:startDate', 'update:endDate', 'update:type']);
+const emit = defineEmits(['update:startDate', 'update:endDate', 'update:type', 'update:dateTimeType']);
 
 const dialogVisible = ref<boolean>(false);
 
@@ -52,6 +52,8 @@ const applyDateChange = () => {
     emit('update:endDate', end);
 
     type.value = 'custom';
+
+    emit('update:dateTimeType', type.value);
     if (props.shouldUpdateType) {
       emit('update:type', type.value);
     }
@@ -108,8 +110,8 @@ const onClickShortcut = (label: string) => {
     case 'This Month': {
       today = new Date();
 
-      start = new Date(today.getFullYear(), today.getMonth(), 2);
-      end = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+      start = new Date(today.getFullYear(), today.getMonth(), 1);
+      end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
       newType = 'days';
       break;
@@ -132,7 +134,7 @@ const onClickShortcut = (label: string) => {
       today = new Date();
 
       const firstDayOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-      const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
 
       start = firstDayOfLastMonth;
       end = lastDayOfLastMonth;

@@ -120,8 +120,8 @@ export const useDashboardService = (): IDashboardProvided => {
 
         // 2. Use setDate() to add one day to the new object.
         //    getDate() gets the day of the month (e.g., 11), we add 1 to it.
-        newStartDate.setDate(newStartDate.getDate() + 1);
-        newEndDate.setDate(newEndDate.getDate() + 1);
+        // newStartDate.setDate(newStartDate.getDate() + 1);
+        // newEndDate.setDate(newEndDate.getDate() + 1);
 
         // 3. Now, assign the new, correct date.
         formattedQueryParams.startDate = new Date(newStartDate.toISOString().split('T')[0] + 'T00:00:00.000Z');
