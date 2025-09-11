@@ -5,6 +5,15 @@ import type { IAccountStoreTableConfigurationProvided } from '../../interfaces';
 // Qrcode
 import Qrcode from 'qrcode.vue';
 
+// Stores
+import { useOutletStore } from '@/modules/outlet/store';
+
+/**
+ * @description Injected variables
+ */
+const outletStore = useOutletStore();
+const { outlet_selectedOutletOnAccountPage } = storeToRefs(outletStore);
+
 /**
  * @description Inject all the data and methods what we need
  */
@@ -121,7 +130,7 @@ const {
 
             <div class="flex items-center gap-2">
               <Qrcode
-                :value="`${APP_BASE_URL}/authentication/sign-in?floorName=${accountStoreTableConfiguration_formDataOfAddTable.floorName}&tablesName=${accountStoreTableConfiguration_formDataOfAddTable.name}`"
+                :value="`${APP_BASE_URL}/self-order?storeId=${outlet_selectedOutletOnAccountPage?.id}&floorName=${accountStoreTableConfiguration_formDataOfAddTable.floorName}&tablesName=${accountStoreTableConfiguration_formDataOfAddTable.name}`"
               />
 
               <PrimeVueButton
