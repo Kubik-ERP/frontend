@@ -83,14 +83,14 @@ const handleSubmit = async () => {
   <AppBaseDialog id="stock-adjustment-modal">
     <template #header>
       <h6 class="font-semibold text-lg">
-        {{ itemStockAdjustmentAction_formOnMode === 'create' ? 'Add' : 'Edit' }} Stock Adjustment
+        {{ useLocalization(itemStockAdjustmentAction_formOnMode === 'create' ? 'items.stockAdjustment.formTitle.add' : 'items.stockAdjustment.formTitle.edit') }}
       </h6>
     </template>
 
     <template #content>
       <div class="flex flex-col gap-4">
         <div v-if="itemStockAdjustmentPreview_item" class="flex flex-col items-start">
-          <span class="text-md text-gray-600">Addjustment Date :</span>
+          <span class="text-md text-gray-600">{{ useLocalization('items.stockAdjustment.date') }}</span>
           <span class="font-semibold ml-1">
             {{
              formatDate(itemStockAdjustmentPreview_item?.createdAt)
@@ -100,7 +100,7 @@ const handleSubmit = async () => {
 
         <!-- Current Stock -->
         <div>
-          <span class="text-sm text-gray-600">Current Stock Quantity :</span>
+          <span class="text-sm text-gray-600">{{ useLocalization('items.stockAdjustment.currentStock') }}</span>
           <span class="font-semibold ml-1">
             {{
               inventoryItemPreview_item?.stockQuantity
@@ -112,7 +112,7 @@ const handleSubmit = async () => {
         <AppBaseFormGroup
           is-name-as-label
           label-for="adjustmentType"
-          name="Type"
+                    :name="useLocalization('items.stockAdjustment.type')"
           :validators="itemStockAdjustmentAction_Validation.action"
         >
           <PrimeVueDropdown
@@ -120,7 +120,7 @@ const handleSubmit = async () => {
             :options="itemStockAdjustmentAction_typeOption"
             option-label="label"
             option-value="value"
-            placeholder="Select Type"
+                        :placeholder="useLocalization('items.stockAdjustment.selectType')"
             class="w-full"
           >
             <!-- Tampilkan di list dropdown -->
@@ -153,7 +153,7 @@ const handleSubmit = async () => {
                 </span>
                 <span>{{ slotProps.value }}</span>
               </div>
-              <span v-else class="text-gray-400">Select Type</span>
+              <span v-else class="text-gray-400">{{ useLocalization('items.stockAdjustment.selectType') }}</span>
             </template>
           </PrimeVueDropdown>
         </AppBaseFormGroup>
@@ -162,7 +162,7 @@ const handleSubmit = async () => {
         <AppBaseFormGroup
           is-name-as-label
           label-for="adjustmentQuantity"
-          name="Adjustment Quantity"
+                    :name="useLocalization('items.stockAdjustment.adjustmentQuantity')"
           :validators="itemStockAdjustmentAction_Validation.adjustmentQuantity"
         >
           <PrimeVueInputNumber
@@ -175,7 +175,7 @@ const handleSubmit = async () => {
 
         <!-- New Stock Quantity -->
         <div>
-          <span class="text-sm text-gray-600">New Stock Quantity :</span>
+          <span class="text-sm text-gray-600">{{ useLocalization('items.stockAdjustment.newStock') }}</span>
           <span class="font-semibold ml-1">{{ newStockQuantity }}</span>
         </div>
 
@@ -183,13 +183,13 @@ const handleSubmit = async () => {
         <AppBaseFormGroup
           is-name-as-label
           label-for="notes"
-          name="Notes"
+                    :name="useLocalization('items.stockAdjustment.notes')"
           :validation="itemStockAdjustmentAction_Validation.notes"
         >
           <PrimeVueTextarea
             id="notes"
             v-model="itemStockAdjustmentAction_formData.notes"
-            placeholder="Enter notes"
+                        :placeholder="useLocalization('items.stockAdjustment.notesPlaceholder')"
             rows="3"
             class="w-full border border-gray-300 rounded-md px-3 py-2"
           />
@@ -204,7 +204,7 @@ const handleSubmit = async () => {
           class="bg-white text-primary border border-primary"
           @click="itemStockAdjustmentAction_onCancel"
         >
-          Cancel
+          {{ useLocalization('items.stockAdjustment.cancel') }}
         </PrimeVueButton>
         <PrimeVueButton
           type="button"
@@ -212,7 +212,7 @@ const handleSubmit = async () => {
           :disabled="!formIsValid || itemStockAdjustmentAction_isLoading"
           @click="handleSubmit"
         >
-          {{ itemStockAdjustmentAction_formOnMode === 'create' ? 'Save' : 'Update' }}
+          {{ useLocalization(itemStockAdjustmentAction_formOnMode === 'create' ? 'items.stockAdjustment.save' : 'items.stockAdjustment.update') }}
         </PrimeVueButton>
       </div>
     </template>

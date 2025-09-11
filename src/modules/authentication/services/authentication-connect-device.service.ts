@@ -83,9 +83,15 @@ export const useAuthenticationConnectDeviceService = (): IAuthenticationConnectD
    */
   const authenticationConnectDevice_fetchAuthenticationStaffLogin = async () => {
     try {
-      const response = await store.fetchAuthentication_staffLogin(authenticationConnectDevice_formData, {
-        ...httpAbort_registerAbort(AUTHENTICATION_CONNECT_DEVICE_REQUEST),
-      });
+      const response = await store.fetchAuthentication_staffLogin(
+        {
+          ...authenticationConnectDevice_formData,
+          deviceCode: authenticationConnectDevice_formData.deviceCode.toUpperCase(),
+        },
+        {
+          ...httpAbort_registerAbort(AUTHENTICATION_CONNECT_DEVICE_REQUEST),
+        },
+      );
 
       if (response.data?.accessToken) {
         await authenticationConnectDevice_fetchAuthenticationProfile();

@@ -18,4 +18,7 @@ export interface IAuthenticationResetPasswordProvided {
   authenticationResetPassword_isSuccess: Ref<boolean>;
   authenticationResetPassword_onSubmit: () => Promise<void>;
   authenticationResetPassword_stepper: ShallowRef<IAuthenticationStepper[]>;
+  authenticationResetPassword_resendCooldown: Ref<number>;
+  authenticationResetPassword_canResend: Ref<boolean>;
+  authenticationResetPassword_onResendEmail: () => Promise<void>;
 }

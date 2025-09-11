@@ -7,36 +7,43 @@ export const SUPPLIER_LIST_COLUMNS: IColumnDataTable[] = [
     label: 'Supplier Code',
     sortable: true,
     value: 'code',
+    translationKey: 'supplier.table.code',
   },
   {
     label: 'Supplier Name',
     sortable: true,
     value: 'supplierName',
+    translationKey: 'supplier.table.name',
   },
   {
     label: 'Contact Person',
     sortable: false,
     value: 'contactPerson',
+    translationKey: 'supplier.table.contact',
   },
   {
     label: 'Phone Number',
     sortable: false,
     value: 'phoneNumber',
+    translationKey: 'supplier.table.phone',
   },
   {
     label: 'Email',
     sortable: false,
     value: 'email',
+    translationKey: 'supplier.table.email',
   },
   {
     label: 'Address',
     sortable: false,
     value: 'address',
+    translationKey: 'supplier.table.address',
   },
   {
     label: '',
     sortable: false,
     value: 'action',
+    translationKey: 'supplier.table.actions',
   },
 ];
 export const SUPPLIER_LIST_COLUMNS_IMPORT: IColumnDataTable[] = [

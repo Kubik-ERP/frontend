@@ -1,5 +1,9 @@
 // Constants
-import { AUTHENTICATION_RESET_PASSWORD_REQUEST, AUTHENTICATION_RESET_PASSWORD_STEPPER } from '../constants';
+import {
+  AUTHENTICATION_RESET_PASSWORD_REQUEST,
+  AUTHENTICATION_RESEND_RESET_PASSWORD_REQUEST,
+  AUTHENTICATION_RESET_PASSWORD_STEPPER,
+} from '../constants';
 import { IAuthenticationStepper } from '../interfaces';
 
 // Interfaces
@@ -41,6 +45,10 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
   const authenticationResetPassword_formDataOfVerifyPin = reactive<IAuthenticationVerifyPinFormData>({
     pinConfirmation: '',
   });
+  const authenticationResetPassword_resendCooldown = ref<number>(0);
+  const authenticationResetPassword_canResend = computed<boolean>(
+    () => authenticationResetPassword_resendCooldown.value <= 0,
+  );
 
   /**
    * @description Form validations
@@ -70,12 +78,47 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
   );
 
   /**
+   * @description Start countdown timer for resend email functionality
+   */
+  const authenticationResetPassword_startResendCountdown = () => {
+    authenticationResetPassword_resendCooldown.value = 60; // 60 seconds cooldown
+    const interval = setInterval(() => {
+      authenticationResetPassword_resendCooldown.value -= 1;
+      if (authenticationResetPassword_resendCooldown.value <= 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+  };
+
+  /**
+   * @description Handle resend email reset password functionality
+   */
+  const authenticationResetPassword_onResendEmail = async (): Promise<void> => {
+    if (!authenticationResetPassword_canResend.value) return;
+
+    try {
+      await store.fetchAuthentication_resetPassword(authenticationResetPassword_formData, {
+        ...httpAbort_registerAbort(AUTHENTICATION_RESEND_RESET_PASSWORD_REQUEST),
+      });
+
+      // Start countdown after successful resend
+      authenticationResetPassword_startResendCountdown();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
    * @description Handle fetch api authentication reset password. We call the fetchAuthentication_resetPassword function from the store to handle the request.
    */
   const authenticationResetPassword_fetchAuthenticationResetPassword = async () => {
     try {
       await store.fetchAuthentication_resetPassword(
-        authenticationResetPassword_formDataOfVerifyPin.pinConfirmation,
+        // authenticationResetPassword_formDataOfVerifyPin.pinConfirmation,
         authenticationResetPassword_formData,
         {
           ...httpAbort_registerAbort(AUTHENTICATION_RESET_PASSWORD_REQUEST),
@@ -83,6 +126,8 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
       );
 
       authenticationResetPassword_isSuccess.value = true;
+      // Start countdown after successful initial reset password request
+      authenticationResetPassword_startResendCountdown();
     } catch (error: unknown) {
       authenticationResetPassword_isPinInvalid.value = true;
 
@@ -107,11 +152,13 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
     }
 
     try {
-      if (authenticationResetPassword_activeStep.value === 0) {
-        authenticationResetPassword_activeStep.value = 1;
-      } else {
-        await authenticationResetPassword_fetchAuthenticationResetPassword();
-      }
+      await authenticationResetPassword_fetchAuthenticationResetPassword();
+
+      // if (authenticationResetPassword_activeStep.value === 0) {
+      //   authenticationResetPassword_activeStep.value = 1;
+      // } else {
+      //   await authenticationResetPassword_fetchAuthenticationResetPassword();
+      // }
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -132,5 +179,8 @@ export const useAuthenticationResetPasswordService = (): IAuthenticationResetPas
     authenticationResetPassword_isSuccess,
     authenticationResetPassword_onSubmit,
     authenticationResetPassword_stepper,
+    authenticationResetPassword_resendCooldown,
+    authenticationResetPassword_canResend,
+    authenticationResetPassword_onResendEmail,
   };
 };

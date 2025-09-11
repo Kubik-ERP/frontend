@@ -1,5 +1,15 @@
 {
   "supplier": {
+    "import": "Impor Supplier",
+    "table": {
+      "code": "Kode Supplier",
+      "name": "Nama Supplier",
+      "contact": "Kontak Person",
+      "phone": "Nomor Telepon",
+      "email": "Email",
+      "address": "Alamat",
+      "actions": "Aksi"
+    },
     "title": "Master Supplier",
     "list": {
       "header": "Master Supplier",

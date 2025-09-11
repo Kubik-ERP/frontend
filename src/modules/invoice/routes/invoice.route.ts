@@ -16,7 +16,7 @@ const routes: RouteRecordRaw[] = [
         name: 'invoice',
         component: () => import('../views/InvoiceUI.vue'),
         meta: {
-          requiresAuthorization: true,
+          requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.EMPTY,
           title: 'Invoice',
         },
@@ -32,7 +32,7 @@ const routes: RouteRecordRaw[] = [
         name: 'self-order-invoice',
         component: () => import('../views/InvoiceUI.vue'),
         meta: {
-          requiresAuthorization: true,
+          requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.EMPTY,
           title: 'Invoice',
         },
@@ -48,7 +48,7 @@ const routes: RouteRecordRaw[] = [
         name: 'static-invoice',
         component: () => import('../views/StaticInvoice.vue'),
         meta: {
-          requiresAuthorization: true,
+          requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.EMPTY,
           title: 'Invoice',
         },

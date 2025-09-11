@@ -1,5 +1,14 @@
 {
   "storageLocation": {
+    "import": "Import Storage Location",
+    "table":{
+      "code": "Storage Code",
+      "name": "Name",
+      "notes": "Notes",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "actions": "Actions"
+    },
     "title": "Storage Location List",
     "createButton": "Create Storage Location",
     "editButton": "Edit",

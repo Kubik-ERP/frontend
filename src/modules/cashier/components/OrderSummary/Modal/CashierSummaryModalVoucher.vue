@@ -15,6 +15,14 @@ watch(
   () => cashierOrderSummary_modalVoucher.value.data,
   (newVal) => {
     if (newVal && newVal.length > 0) {
+      const isSelectedVoucherStillAvailable = newVal.find(
+        (f) => f.id === cashierOrderSummary_modalVoucher.value.form.voucherId && f.available,
+      );
+
+      if (isSelectedVoucherStillAvailable) {
+        return;
+      }
+
       const first = newVal.find((f) => f.available === true);
       if (first) {
         cashierOrderSummary_modalVoucher.value.form.voucher_code = first.code;
@@ -26,7 +34,7 @@ watch(
       }
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 // Composables

@@ -67,12 +67,7 @@ const {
           variant="text"
           rounded
           aria-label="detail"
-          @click="
-            $router.push({
-              name: 'cash-drawer.cash-register',
-              params: { id: data.id },
-            })
-          "
+          @click="$router.push({ name: 'cash-drawer.cash-register', params: { id: data.id } })"
         >
           <template #icon>
             <AppBaseSvg name="eye-visible" class="!w-5 !h-5" />
