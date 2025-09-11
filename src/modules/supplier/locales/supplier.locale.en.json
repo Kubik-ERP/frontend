@@ -1,5 +1,15 @@
 {
   "supplier": {
+    "import": "Import Supplier",
+    "table": {
+      "code": "Supplier Code",
+      "name": "Supplier Name",
+      "contact": "Contact Person",
+      "phone": "Phone Number",
+      "email": "Email",
+      "address": "Address",
+      "actions": "Actions"
+    },
     "title": "Master Supplier",
     "list": {
       "header": "Master Supplier",

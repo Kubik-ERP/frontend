@@ -156,7 +156,8 @@ declare global {
     | 'manage_storage_location'
     | 'manage_purchase_order'
     | 'manage_staff_member'
-    | 'manage_staff_attendance';
+    | 'manage_staff_attendance'
+    | 'edit_invoice';
 
   interface IPropsDialog {
     id: string;

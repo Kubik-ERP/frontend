@@ -15,6 +15,7 @@ export interface IAccountStoreTable {
   shape: 'SQUARE' | 'RECTANGLE' | 'ROUND';
   storeId: string;
   uid: number;
+  statusTable: 'available' | 'occupied' | 'reserved';
   updatedAt: Date | string;
   width: number;
 }

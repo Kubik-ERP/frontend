@@ -1,5 +1,14 @@
 {
   "storageLocation": {
+    "import": "Impor Lokasi Penyimpanan",
+    "table":{
+      "code": "Kode Penyimpanan",
+      "name": "Nama",
+      "notes": "Catatan",
+      "createdAt": "Dibuat Pada",
+      "updatedAt": "Diperbarui Pada",
+      "actions": "Aksi"
+    },
     "title": "Daftar Lokasi Penyimpanan",
     "createButton": "Buat Lokasi Penyimpanan",
     "editButton": "Ubah",

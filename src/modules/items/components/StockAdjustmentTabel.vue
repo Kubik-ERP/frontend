@@ -31,7 +31,7 @@ function formatDate(date: string) {
   <AppBaseDataTable
     :columns="stockadjustment_listColumns"
     :data="stockadjustment_list.data.items"
-    header-title="Stock Adjustment"
+        :header-title="useLocalization('items.stockAdjustment.title')"
     :rows-per-page="stockadjustment_queryParams.pageSize"
     :total-records="stockadjustment_list.data.items.length"
     :first="(stockadjustment_queryParams.page - 1) * stockadjustment_queryParams.pageSize"
@@ -52,7 +52,7 @@ function formatDate(date: string) {
           @click="stockadjustment_onCreate"
         >
           <i class="pi pi-plus text-sm"></i>
-          Create Adjustment
+                    {{ useLocalization('items.stockAdjustment.create') }}
         </PrimeVueButton>
       </div>
     </template>
@@ -60,17 +60,17 @@ function formatDate(date: string) {
     <!-- header Filter -->
     <template #filter>
       <section class="flex items-center gap-3">
-        <span class="font-semibold text-sm text-gray-800">Filter by</span>
+        <span class="font-semibold text-sm text-gray-800">{{ useLocalization('items.stockAdjustment.filterBy') }}</span>
         <PrimeVueDropdown
           v-model="stockadjustment_queryParams.action"
           :options="[
-            { label: 'All Adjustment Type', value: null },
-            { label: 'Stock In', value: 'STOCK_IN' },
-            { label: 'Stock Out', value: 'STOCK_OUT' },
+            { label: useLocalization('items.stockAdjustment.allTypes'), value: null },
+            { label: useLocalization('items.stockAdjustment.stockIn'), value: 'STOCK_IN' },
+            { label: useLocalization('items.stockAdjustment.stockOut'), value: 'STOCK_OUT' },
           ]"
           option-label="label"
           option-value="value"
-          placeholder="All Adjustment Type"
+          :placeholder="useLocalization('items.stockAdjustment.allTypes')"
           class="w-60"
           @change="stockadjustment_handleOnFilter(stockadjustment_queryParams.action)"
         />

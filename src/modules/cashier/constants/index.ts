@@ -48,6 +48,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: true,
     totalSeat: 4,
     floor: 1,
+    statusTable: 'available',
   },
   {
     value: '2',
@@ -55,6 +56,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: false,
     totalSeat: 8,
     floor: 1,
+    statusTable: 'available',
   },
   {
     value: '3',
@@ -62,6 +64,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: true,
     totalSeat: 12,
     floor: 1,
+    statusTable: 'available',
   },
   {
     value: '4',
@@ -69,6 +72,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: false,
     totalSeat: 6,
     floor: 1,
+    statusTable: 'available',
   },
   {
     value: '5',
@@ -76,6 +80,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: false,
     totalSeat: 6,
     floor: 1,
+    statusTable: 'available',
   },
   {
     value: '6',
@@ -83,6 +88,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: false,
     totalSeat: 6,
     floor: 2,
+    statusTable: 'available',
   },
   {
     value: '7',
@@ -90,6 +96,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: false,
     totalSeat: 6,
     floor: 2,
+    statusTable: 'available',
   },
   {
     value: '8',
@@ -97,6 +104,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: false,
     totalSeat: 6,
     floor: 2,
+    statusTable: 'available',
   },
   {
     value: '9',
@@ -104,6 +112,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: false,
     totalSeat: 6,
     floor: 2,
+    statusTable: 'available',
   },
   {
     value: '10',
@@ -111,6 +120,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: false,
     totalSeat: 12,
     floor: 2,
+    statusTable: 'available',
   },
   {
     value: '11',
@@ -118,6 +128,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: false,
     totalSeat: 2,
     floor: 2,
+    statusTable: 'available',
   },
   {
     value: '12',
@@ -125,6 +136,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: false,
     totalSeat: 2,
     floor: 2,
+    statusTable: 'available',
   },
   {
     value: '13',
@@ -132,6 +144,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: false,
     totalSeat: 2,
     floor: 2,
+    statusTable: 'available',
   },
   {
     value: '14',
@@ -139,6 +152,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: false,
     totalSeat: 2,
     floor: 2,
+    statusTable: 'available',
   },
   {
     value: '15',
@@ -146,6 +160,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: false,
     totalSeat: 2,
     floor: 2,
+    statusTable: 'available',
   },
   {
     value: '16',
@@ -153,6 +168,7 @@ export const CASHIER_DUMMY_LIST_TABLE = [
     available: false,
     totalSeat: 2,
     floor: 2,
+    statusTable: 'available',
   },
 ];
 

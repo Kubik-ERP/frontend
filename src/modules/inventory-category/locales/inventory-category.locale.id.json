@@ -1,5 +1,14 @@
 {
   "inventoryCategory": {
+    "import": "Impor Kategori Penyimpanan",
+    "table":{
+      "code": "Kode ",
+      "name": "Nama ",
+      "description": "Deskripsi",
+      "createdAt": "Dibuat Pada",
+      "updatedAt": "Diperbarui Pada",
+      "actions": "Aksi"
+    },
     "title": "Gudang",
     "createButton": "Buat ",
     "editButton": "Ubah",
