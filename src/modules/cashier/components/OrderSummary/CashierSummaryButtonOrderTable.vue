@@ -44,7 +44,7 @@ const selectedTableLabel = computed(() => {
         <button
           :class="[
             'flex border truncate rounded-sm p-2.5 justify-between items-center',
-            props.isSelfOrder || !hasCustomerManagementPermission ? 'w-full' : 'w-1/2',
+            props.isSelfOrder ? 'w-full' : 'w-1/2',
             route.name === 'cashier-order-edit' || route.name === 'self-order'
               ? 'cursor-not-allowed opacity-50 bg-transparent border-text-disabled'
               : 'cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 border-text-disabled',
