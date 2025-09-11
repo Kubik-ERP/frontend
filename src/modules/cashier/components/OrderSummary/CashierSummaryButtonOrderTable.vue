@@ -13,8 +13,8 @@ const route = useRoute();
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalOrderType, cashierOrderSummary_modalSelectTable } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierOrderSummary_modalOrderType, cashierOrderSummary_modalSelectTable, hasCustomerManagementPermission } =
+  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!
 
 const props = defineProps({
   isSelfOrder: {
@@ -44,7 +44,7 @@ const selectedTableLabel = computed(() => {
         <button
           :class="[
             'flex border truncate rounded-sm p-2.5 justify-between items-center',
-            props.isSelfOrder ? 'w-full' : 'w-1/2',
+            props.isSelfOrder || !hasCustomerManagementPermission ? 'w-full' : 'w-1/2',
             route.name === 'cashier-order-edit' || route.name === 'self-order'
               ? 'cursor-not-allowed opacity-50 bg-transparent border-text-disabled'
               : 'cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 border-text-disabled',
@@ -62,7 +62,7 @@ const selectedTableLabel = computed(() => {
           <AppBaseSvg name="order" class="!h-5 !w-5" />
         </button>
         <button
-          v-if="!props.isSelfOrder"
+          v-if="!props.isSelfOrder && hasCustomerManagementPermission"
           :class="[
             'flex w-1/2 border truncate rounded-sm p-2.5 justify-between items-center',
             route.name === 'cashier-order-edit' ||

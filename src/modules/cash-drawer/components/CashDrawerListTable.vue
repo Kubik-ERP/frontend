@@ -13,6 +13,12 @@ const {
   cashDrawerList_values,
   cashDrawerList_onShowOpenRegisterDialog,
 } = inject('cashDrawerList') as ICashDrawerListProvided;
+
+const router = useRouter();
+const onDirectToDetail = (id: number) => {
+  // Navigate to detail page
+  router.push({ name: 'cash-drawer.cash-register', params: { id } });
+};
 </script>
 
 <template>
@@ -63,17 +69,7 @@ const {
       </template>
 
       <template v-else-if="column.value === 'action'">
-        <PrimeVueButton
-          variant="text"
-          rounded
-          aria-label="detail"
-          @click="
-            $router.push({
-              name: 'cash-drawer.cash-register',
-              params: { id: data.id },
-            })
-          "
-        >
+        <PrimeVueButton variant="text" rounded aria-label="detail" @click="onDirectToDetail(data.id)">
           <template #icon>
             <AppBaseSvg name="eye-visible" class="!w-5 !h-5" />
           </template>
