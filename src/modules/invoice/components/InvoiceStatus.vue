@@ -42,6 +42,9 @@ const orderStatusLabel = computed(() => {
   );
   return status?.label ?? '';
 });
+
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('edit_invoice')
 </script>
 
 <template>
@@ -157,11 +160,12 @@ const orderStatusLabel = computed(() => {
       </tbody>
 
       <tfoot
-        v-if="
+      v-if="
           invoice_invoiceData.data.paymentStatus === 'unpaid' &&
           (invoice_invoiceData.data.orderStatus === 'in_progress' ||
             invoice_invoiceData.data.orderStatus === 'placed')
         "
+        v-rbac="hasPermission"
       >
         <tr>
           <td colspan="2" class="pt-6">

@@ -10,7 +10,7 @@ const { account_profile, account_onEditBankAccount, account_onSetUpBankAccount }
 </script>
 
 <template>
-  <section id="bank-information" class="flex flex-col gap-2">
+  <section id="bank-information" class="flex flex-col gap-2 hidden">
     <header class="flex items-center gap-4">
       <h6 class="font-semibold text-black text-lg">
         {{ useLocalization('account.bank-information') }}

@@ -12,6 +12,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   check_out_sales: ['/cashier', '/sales-order', '/invoice'],
   cancel_invoice: ['/invoice'],
   refund_invoice: ['/invoice'],
+  edit_invoice: ['//cashier/order-edit/:id'],
   process_unpaid_invoice: ['/invoice'],
   daily_sales: ['/daily-sales'],
   queue: ['/queue', '/queue/kitchen-display'],
