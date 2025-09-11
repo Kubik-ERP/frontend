@@ -8,26 +8,31 @@ export const CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE: number[] = [5000, 100
 export const CASH_DRAWER_LIST_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Date',
+    translationKey: 'cash-drawer.date',
     sortable: true,
     value: 'createdAt',
   },
   {
     label: 'Staff Name',
+    translationKey: 'cash-drawer.staff-name',
     sortable: true,
     value: 'staffName',
   },
   {
     label: 'Expected Balance',
+    translationKey: 'cash-drawer.expected-balance',
     sortable: true,
     value: 'expectedBalance',
   },
   {
     label: 'Actual Balance',
+    translationKey: 'cash-drawer.actual-balance',
     sortable: true,
     value: 'actualBalance',
   },
   {
     label: 'Status',
+    translationKey: 'cash-drawer.status',
     sortable: true,
     value: 'status',
   },
@@ -41,36 +46,43 @@ export const CASH_DRAWER_LIST_COLUMNS: IColumnDataTable[] = [
 export const CASH_DRAWER_LIST_COLUMNS_OF_CASH_REGISTER: IColumnDataTable[] = [
   {
     label: 'Date',
+    translationKey: 'cash-drawer.date',
     sortable: true,
     value: 'createdAt',
   },
   {
     label: 'Type',
+    translationKey: 'cash-drawer.type',
     sortable: true,
     value: 'type',
   },
   {
     label: 'Notes',
+    translationKey: 'cash-drawer.notes',
     sortable: true,
     value: 'notes',
   },
   {
     label: 'Cash In (+)',
+    translationKey: 'cash-drawer.cash-in',
     sortable: true,
     value: 'amountIn',
   },
   {
     label: 'Cash Out (-)',
+    translationKey: 'cash-drawer.cash-out',
     sortable: true,
     value: 'amountOut',
   },
   {
     label: 'Ending Balance',
+    translationKey: 'cash-drawer.ending-balance',
     sortable: true,
     value: 'finalAmount',
   },
   {
     label: 'Cashier',
+    translationKey: 'cash-drawer.cashier',
     sortable: true,
     value: 'cashierName',
   },
@@ -84,26 +96,32 @@ export const CASH_DRAWER_LIST_COLUMNS_OF_CASH_REGISTER: IColumnDataTable[] = [
 export const CASH_DRAWER_LIST_TYPES_OF_CASH_REGISTER: IDropdownItem[] = [
   {
     label: 'Cash In',
+    translationKey: 'cash-drawer.cash-in',
     value: 1,
   },
   {
     label: 'Cash Out',
+    translationKey: 'cash-drawer.cash-out',
     value: 3,
   },
   {
     label: 'Cash Refund',
+    translationKey: 'cash-drawer.cash-refund',
     value: 4,
   },
   {
     label: 'Opening Balance',
+    translationKey: 'cash-drawer.opening-balance',
     value: 0,
   },
   {
     label: 'Sale',
+    translationKey: 'cash-drawer.sale',
     value: 2,
   },
   {
     label: 'Closing',
+    translationKey: 'cash-drawer.closing',
     value: 5,
   },
 ];

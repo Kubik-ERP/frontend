@@ -17,10 +17,10 @@ const {
 
 <template>
   <AppBaseDataTable
-    btn-cta-create-title="Open Register"
+    :btn-cta-create-title="useLocalization('cash-drawer.open-register')"
     :columns="cashDrawerList_columns"
     :data="cashDrawerList_values?.items"
-    header-title="Cash Drawer"
+    :header-title="useLocalization('cash-drawer.title')"
     is-using-btn-cta-create
     is-using-custom-body
     :is-loading="cashDrawerList_isLoading"

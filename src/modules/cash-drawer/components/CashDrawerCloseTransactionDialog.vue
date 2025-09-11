@@ -20,14 +20,16 @@ const {
   <AppBaseDialog id="cash-drawer-close-transaction-dialog">
     <template #header>
       <header class="flex flex-col gap-2">
-        <h6 class="font-semibold text-black text-lg">Close Register</h6>
+        <h6 class="font-semibold text-black text-lg">{{ useLocalization('cash-drawer.close-register') }}</h6>
       </header>
     </template>
 
     <template #content>
       <form class="grid-wrapper gap-4">
         <section id="expected-balance" class="col-span-full lg:col-span-6 flex flex-col gap-1">
-          <span class="font-normal text-grayscale-70 text-sm"> Expected Balance </span>
+          <span class="font-normal text-grayscale-70 text-sm">{{
+            useLocalization('cash-drawer.expected-balance')
+          }}</span>
 
           <p class="font-semibold text-base text-primary">
             {{
@@ -45,7 +47,7 @@ const {
             class-label="block text-sm font-normal leading-6 text-grayscale-70 w-full"
             is-name-as-label
             label-for="open-balance"
-            name="Amount`"
+            :name="useLocalization('common.amount')"
             spacing-bottom="mb-0"
             :validators="cashDrawerCashRegister_formValidationsOfCloseTransaction.amount"
           >
@@ -59,7 +61,7 @@ const {
               placeholder="Rp 0,00"
             />
             <span class="font-normal text-text-disabled text-sm">
-              Difference
+              {{ useLocalization('cash-drawer.difference') }}
 
               <template
                 v-if="
@@ -96,7 +98,7 @@ const {
         <section class="col-span-full flex items-center justify-between">
           <div class="flex items-center gap-2">
             <AppBaseSvg name="order-primary" class="w-4 h-4" />
-            <span class="font-semibold text-primary text-sm"> Details </span>
+            <span class="font-semibold text-primary text-sm">{{ useLocalization('common.details') }}</span>
           </div>
 
           <PrimeVueButton
@@ -117,7 +119,7 @@ const {
       <footer class="flex items-center justify-end w-full gap-4">
         <PrimeVueButton
           class="font-semibold text-base text-primary rounded-lg w-fit border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10 px-14 py-3"
-          label="Cancel"
+          :label="useLocalization('common.cancel')"
           severity="secondary"
           variant="outlined"
           @click="cashDrawerCashRegister_onCloseDialogCloseTransaction"
@@ -125,7 +127,7 @@ const {
 
         <PrimeVueButton
           class="bg-blue-primary border-none text-base rounded-lg w-fit px-5 py-3"
-          label="Confirm & Close Cash Register"
+          :label="useLocalization('cash-drawer.confirm-close-register')"
           type="button"
           :disabled="
             cashDrawerCashRegister_formValidationsOfCloseTransaction.$invalid || cashDrawerCashRegister_isLoading

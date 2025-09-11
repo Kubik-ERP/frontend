@@ -21,7 +21,11 @@ const {
     <template #header>
       <header class="flex flex-col gap-2">
         <h6 class="font-semibold text-black text-lg">
-          {{ cashDrawerCashRegister_typeOfTransaction === 'in' ? 'Cash In' : 'Cash Out' }}
+          {{
+            cashDrawerCashRegister_typeOfTransaction === 'in'
+              ? useLocalization('cash-drawer.cash-in')
+              : useLocalization('cash-drawer.cash-out')
+          }}
         </h6>
       </header>
     </template>
@@ -34,7 +38,11 @@ const {
             class-label="block text-sm font-normal leading-6 text-grayscale-70 w-full"
             is-name-as-label
             label-for="open-balance"
-            :name="`Cash ${cashDrawerCashRegister_typeOfTransaction === 'in' ? 'In' : 'Out'} Amount`"
+            :name="
+              cashDrawerCashRegister_typeOfTransaction === 'in'
+                ? useLocalization('cash-drawer.cash-in-amount')
+                : useLocalization('cash-drawer.cash-out-amount')
+            "
             spacing-bottom="mb-0"
             :validators="cashDrawerCashRegister_formValidationsOfTransaction.amount"
           >
@@ -75,13 +83,15 @@ const {
         </section>
 
         <section id="form-group" class="flex flex-col col-span-full gap-2">
-          <label for="notes" class="font-normal text-sm text-text-secondary"> Notes </label>
+          <label for="notes" class="font-normal text-sm text-text-secondary">{{
+            useLocalization('cash-drawer.notes')
+          }}</label>
 
           <PrimeVueIconField>
             <PrimeVueTextarea
               id="notes"
               v-model="cashDrawerCashRegister_formDataOfTransaction.notes"
-              placeholder="Describe open register notes here"
+              :placeholder="useLocalization('cash-drawer.notes-placeholder')"
               class="text-sm w-full"
               rows="5"
             />
@@ -94,7 +104,7 @@ const {
       <footer class="flex items-center justify-end w-full gap-4">
         <PrimeVueButton
           class="font-semibold text-base text-primary rounded-lg w-full border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
-          label="Cancel"
+          :label="useLocalization('common.cancel')"
           severity="secondary"
           variant="outlined"
           @click="cashDrawerCashRegister_onCloseDialogAddTransaction"
@@ -102,7 +112,7 @@ const {
 
         <PrimeVueButton
           class="bg-blue-primary border-none text-base py-[10px] rounded-lg w-full"
-          label="Save"
+          :label="useLocalization('common.save')"
           type="button"
           :disabled="
             cashDrawerCashRegister_formValidationsOfTransaction.$invalid || cashDrawerCashRegister_isLoading

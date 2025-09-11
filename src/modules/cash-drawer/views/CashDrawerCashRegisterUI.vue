@@ -161,7 +161,9 @@ function handleExport() {
             <div class="flex flex-col items-center gap-2 py-4">
               <section id="information-balances" class="flex items-center gap-6">
                 <section id="total-balances" class="flex flex-col items-center gap-2">
-                  <h6 class="font-semibold text-grayscale-70 text-xs">Total Balance</h6>
+                  <h6 class="font-semibold text-grayscale-70 text-xs">
+                    {{ useLocalization('cash-drawer.total-balance') }}
+                  </h6>
 
                   <div class="flex items-end gap-1">
                     <span class="font-semibold text-text-disabled text-sm">Rp</span>
@@ -181,7 +183,9 @@ function handleExport() {
                 <PrimeVueDivider layout="vertical" class="h-16" />
 
                 <section id="actual-balances" class="flex flex-col items-center gap-2">
-                  <h6 class="font-semibold text-grayscale-70 text-xs">Actual Balance</h6>
+                  <h6 class="font-semibold text-grayscale-70 text-xs">
+                    {{ useLocalization('cash-drawer.actual-balance') }}
+                  </h6>
 
                   <div class="flex items-end gap-1">
                     <span class="font-semibold text-text-disabled text-sm">Rp</span>
@@ -207,7 +211,9 @@ function handleExport() {
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                    <span class="font-semibold text-base text-text-primary">Edit Cash Register</span>
+                    <span class="font-semibold text-base text-text-primary">{{
+                      useLocalization('cash-drawer.edit-cash-register')
+                    }}</span>
                   </section>
                 </template>
               </PrimeVueButton>
@@ -227,13 +233,17 @@ function handleExport() {
                   <template #default>
                     <section id="content" class="flex items-center gap-2">
                       <AppBaseSvg name="plus-line" class="w-4 h-4" />
-                      <span class="font-semibold text-xs text-primary">Cash In</span>
+                      <span class="font-semibold text-xs text-primary">{{
+                        useLocalization('cash-drawer.cash-in')
+                      }}</span>
                     </section>
                   </template>
                 </PrimeVueButton>
 
                 <section id="balances" class="flex flex-col items-center gap-2">
-                  <h6 class="font-semibold text-grayscale-70 text-xs">Total Balance</h6>
+                  <h6 class="font-semibold text-grayscale-70 text-xs">
+                    {{ useLocalization('cash-drawer.total-balance') }}
+                  </h6>
 
                   <div class="flex items-end gap-1">
                     <span class="font-semibold text-text-disabled text-sm">Rp</span>
@@ -260,7 +270,9 @@ function handleExport() {
                   <template #default>
                     <section class="cash-out-button flex items-center gap-2">
                       <AppBaseSvg name="minus" class="w-4 h-4" />
-                      <span class="font-semibold text-xs text-primary">Cash Out</span>
+                      <span class="font-semibold text-xs text-primary">{{
+                        useLocalization('cash-drawer.cash-out')
+                      }}</span>
                     </section>
                   </template>
                 </PrimeVueButton>
@@ -276,7 +288,9 @@ function handleExport() {
                 <template #default>
                   <section id="content" class="flex items-center gap-2">
                     <AppBaseSvg name="close-circle" class="!w-5 !h-5" />
-                    <span class="font-semibold text-sm text-white">Close Register</span>
+                    <span class="font-semibold text-sm text-white">{{
+                      useLocalization('cash-drawer.close-register')
+                    }}</span>
                   </section>
                 </template>
               </PrimeVueButton>
@@ -291,7 +305,9 @@ function handleExport() {
               <table>
                 <tbody>
                   <tr>
-                    <td class="font-normal text-grayscale-70 text-xs p-1">Opened On</td>
+                    <td class="font-normal text-grayscale-70 text-xs p-1">
+                      {{ useLocalization('cash-drawer.opened-on') }}
+                    </td>
                     <td class="font-normal text-grayscale-70 text-xs p-1">:</td>
                     <td class="font-normal text-grayscale-70 text-xs p-1">
                       {{ useFormatDate(cashDrawerCashRegister_detail?.createdAt ?? 0) }}

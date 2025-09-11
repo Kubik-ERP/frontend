@@ -22,10 +22,10 @@ const { staffMemberList_dropdownItemStaff } = inject('staffMemberList') as IStaf
   <AppBaseDialog id="cash-drawer-list-open-register-dialog">
     <template #header>
       <header class="flex flex-col gap-2">
-        <h6 class="font-semibold text-black text-lg">Set Up Cash Drawer</h6>
+        <h6 class="font-semibold text-black text-lg">{{ useLocalization('cash-drawer.setup-cash-drawer') }}</h6>
 
         <span class="font-normal text-black-secondary text-sm">
-          Please enter the opening cash amount to ensure accurate transactions.
+          {{ useLocalization('cash-drawer.setup-description') }}
         </span>
       </header>
     </template>
@@ -38,7 +38,7 @@ const { staffMemberList_dropdownItemStaff } = inject('staffMemberList') as IStaf
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="open-balance"
-            name="Open Register Balance"
+            :name="useLocalization('cash-drawer.opening-balance')"
             spacing-bottom="mb-0"
             :validators="cashDrawerList_formValidationsOfOpenRegister.balance"
           >
@@ -84,7 +84,7 @@ const { staffMemberList_dropdownItemStaff } = inject('staffMemberList') as IStaf
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="staff"
-            name="Staff"
+            :name="useLocalization('common.staff')"
             spacing-bottom="mb-0"
             :validators="cashDrawerList_formValidationsOfOpenRegister.userId"
           >
@@ -95,7 +95,7 @@ const { staffMemberList_dropdownItemStaff } = inject('staffMemberList') as IStaf
               :options="staffMemberList_dropdownItemStaff"
               option-label="label"
               option-value="value"
-              placeholder="Select Staff"
+              :placeholder="useLocalization('common.select-staff')"
               class="text-base text-text-primary w-full"
               :class="{ ...classes }"
               v-on="useListenerForm(cashDrawerList_formValidationsOfOpenRegister, 'userId')"
@@ -104,13 +104,15 @@ const { staffMemberList_dropdownItemStaff } = inject('staffMemberList') as IStaf
         </section>
 
         <section id="form-group" class="flex flex-col col-span-full gap-2">
-          <label for="notes" class="font-normal text-sm text-text-secondary"> Notes </label>
+          <label for="notes" class="font-normal text-sm text-text-secondary">{{
+            useLocalization('cash-drawer.notes')
+          }}</label>
 
           <PrimeVueIconField>
             <PrimeVueTextarea
               id="notes"
               v-model="cashDrawerList_formDataOfOpenRegister.notes"
-              placeholder="Describe open register notes here"
+              :placeholder="useLocalization('cash-drawer.notes-placeholder')"
               class="text-sm w-full"
               rows="5"
             />
@@ -123,7 +125,7 @@ const { staffMemberList_dropdownItemStaff } = inject('staffMemberList') as IStaf
       <footer class="flex items-center justify-end w-full gap-4">
         <PrimeVueButton
           class="font-semibold text-base text-primary w-full max-w-40 border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
-          label="Cancel"
+          :label="useLocalization('common.cancel')"
           severity="secondary"
           variant="outlined"
           @click="cashDrawerList_onCloseOpenRegisterDialog"
@@ -131,7 +133,7 @@ const { staffMemberList_dropdownItemStaff } = inject('staffMemberList') as IStaf
 
         <PrimeVueButton
           class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
-          label="Save"
+          :label="useLocalization('common.save')"
           type="button"
           :disabled="cashDrawerList_formValidationsOfOpenRegister.$invalid || cashDrawerList_isLoading"
           @click="cashDrawerList_onSubmitOpenRegisterForm"
