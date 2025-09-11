@@ -22,7 +22,7 @@ export interface IAccountStoreTable {
 
 export type IAccountStoreTableConfigurationFormDataOfAddTable = Omit<
   IAccountStoreTable,
-  'id' | 'createdAt' | 'updatedAt' | 'storeId' | 'floorId' | 'uid'
+  'id' | 'createdAt' | 'updatedAt' | 'storeId' | 'floorId' | 'uid' | 'statusTable'
 >;
 
 export interface IAccountStoreTableConfigurationFormDataOfAddFloor {
