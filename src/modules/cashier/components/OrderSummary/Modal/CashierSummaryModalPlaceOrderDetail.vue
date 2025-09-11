@@ -32,6 +32,55 @@ const v$ = useVuelidate(rules, cashierOrderSummary_paymentForm, {
   $autoDirty: true,
 });
 
+/**
+ * @description Reactive change amount that updates automatically
+ */
+const changeAmount = ref(0);
+
+/**
+ * @description Calculate change amount
+ * Positive = customer gets change back
+ * Negative = customer still owes money
+ */
+const calculateChangeAmount = () => {
+  const paymentAmount = cashierOrderSummary_paymentForm.paymentAmount || 0;
+  const totalPrice = cashierOrderSummary_calculateEstimation.value.data.grandTotal || 0;
+  changeAmount.value = +paymentAmount - +totalPrice;
+};
+
+/**
+ * @description Handle real-time input changes
+ */
+const handlePaymentInput = (event: { value: string | number | undefined }) => {
+  // Update the model value immediately
+  const numericValue = typeof event.value === 'string' ? parseFloat(event.value) || 0 : event.value || 0;
+  cashierOrderSummary_paymentForm.paymentAmount = numericValue;
+  // Trigger calculation immediately
+  calculateChangeAmount();
+};
+
+/**
+ * @description Watch for changes in payment amount and auto-calculate change
+ */
+watch(
+  () => cashierOrderSummary_paymentForm.paymentAmount,
+  () => {
+    calculateChangeAmount();
+  },
+  { immediate: true },
+);
+
+/**
+ * @description Watch for changes in total price and auto-calculate change
+ */
+watch(
+  () => cashierOrderSummary_calculateEstimation.value.data.grandTotal,
+  () => {
+    calculateChangeAmount();
+  },
+  { immediate: true },
+);
+
 const handleSubmit = () => {
   v$.value.$touch();
   if (v$.value.$invalid) return;
@@ -97,6 +146,8 @@ const handleSubmit = () => {
                   v-model="cashierOrderSummary_paymentForm.paymentAmount"
                   :class="[classes, 'w-full']"
                   :placeholder="useLocalization('cashier.orderSummary.placeOrderDetail.paymentAmountPlaceholder')"
+                  @input="handlePaymentInput"
+                  @update:model-value="calculateChangeAmount"
                 />
               </PrimeVueIconField>
             </AppBaseFormGroup>
@@ -106,7 +157,10 @@ const handleSubmit = () => {
                 v-for="suggestionPrice in CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE"
                 :key="suggestionPrice"
                 class="bg-secondary-background cursor-pointer hover:bg-secondary basic-smooth-animation"
-                @click="cashierOrderSummary_paymentForm.paymentAmount = suggestionPrice"
+                @click="
+                  cashierOrderSummary_paymentForm.paymentAmount = suggestionPrice;
+                  calculateChangeAmount();
+                "
               >
                 <template #default>
                   <div class="flex items-center gap-2">
@@ -147,16 +201,17 @@ const handleSubmit = () => {
 
               <div class="flex justify-between">
                 <span class="text-sm lg:text-base font-bold">
-                  {{ useLocalization('cashier.orderSummary.placeOrderDetail.changeAmount') }}
-                </span>
-                <span class="text-sm lg:text-base font-semibold text-primary">
                   {{
-                    useCurrencyFormat({
-                      data:
-                        (cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0) -
-                        cashierOrderSummary_paymentForm.paymentAmount,
-                    })
+                    changeAmount >= 0
+                      ? useLocalization('cashier.orderSummary.placeOrderDetail.changeAmount')
+                      : 'Amount Due'
                   }}
+                </span>
+                <span
+                  class="text-sm lg:text-base font-semibold"
+                  :class="changeAmount >= 0 ? 'text-primary' : 'text-error'"
+                >
+                  {{ useCurrencyFormat({ data: changeAmount }) }}
                 </span>
               </div>
             </div>
