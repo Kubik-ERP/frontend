@@ -41,7 +41,7 @@ provide<IInvoiceProvided>('invoice', {
 </script>
 
 <template>
-  <section id="invoice" class="default-wrapper-fullscreen">
+  <section id="invoice" class="mx-auto w-full">
     <InvoicePaperCashierInvoice />
   </section>
 </template>
