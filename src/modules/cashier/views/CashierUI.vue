@@ -64,6 +64,8 @@ const {
 
   cashierProduct_customerState,
 
+  hasCustomerManagementPermission,
+
   cashierOrderSummary_paymentAmountFormValidation,
 
   cashierOrderSummary_handleModalAddCustomer,
@@ -140,6 +142,8 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_isLoadingUnpaidOrder,
 
   cashierProduct_customerState,
+
+  hasCustomerManagementPermission,
 
   cashierOrderSummary_paymentAmountFormValidation,
 

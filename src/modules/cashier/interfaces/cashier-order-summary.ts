@@ -7,7 +7,7 @@ import {
   ICashierResponseMidtransQrisPayment,
 } from './cashier-response';
 import { Validation } from '@vuelidate/core';
-import { Reactive } from 'vue';
+import { Reactive, ComputedRef } from 'vue';
 
 export interface ICashierOrderType {
   code: string;
@@ -194,6 +194,8 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_isButtonPlaceOrderDisabled: ComputedRef<boolean>;
 
   cashierProduct_customerState: Ref<ICashierCustomerState>;
+
+  hasCustomerManagementPermission: ComputedRef<boolean>;
 
   cashierOrderSummary_handleModalAddCustomer: (response: ICashierResponseAddCustomer | null) => void;
 

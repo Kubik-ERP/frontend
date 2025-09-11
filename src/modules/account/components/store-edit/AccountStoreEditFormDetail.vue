@@ -18,7 +18,7 @@ const {
 
 <template>
   <section id="outlet-create-edit-form-detail" class="flex flex-col gap-2">
-    <h5 class="font-semibold text-black text-lg">Details</h5>
+    <h5 class="font-semibold text-black text-lg">{{ useLocalization('account.details') }}</h5>
 
     <section id="form-inputs" class="grid grid-rows-1 grid-cols-12 gap-4">
       <section id="outlet-name" class="col-span-full md:col-span-6">
@@ -27,13 +27,13 @@ const {
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="name"
-          name="Store Name"
+          :name="useLocalization('account.form.store-name')"
           :validators="accountStoreEdit_formValidations.storeName"
         >
           <PrimeVueIconField>
             <PrimeVueInputText
               v-model="accountStoreEdit_formData.storeName"
-              placeholder="Input your store name"
+              :placeholder="useLocalization('account.form.placeholders.store-name')"
               class="text-sm w-full"
               :class="{ ...classes }"
               v-on="useListenerForm(accountStoreEdit_formValidations, 'storeName')"
@@ -48,13 +48,13 @@ const {
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="email"
-          name="Email"
+          :name="useLocalization('account.form.email')"
           :validators="accountStoreEdit_formValidations.email"
         >
           <PrimeVueIconField>
             <PrimeVueInputText
               v-model="accountStoreEdit_formData.email"
-              placeholder="Input your store email"
+              :placeholder="useLocalization('account.form.placeholders.email')"
               class="text-sm w-full"
               :class="{ ...classes }"
               v-on="useListenerForm(accountStoreEdit_formValidations, 'email')"
@@ -71,7 +71,7 @@ const {
               class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
               is-name-as-label
               label-for="phoneCode"
-              name="Phone Code"
+              :name="useLocalization('account.form.phone-code')"
               spacing-bottom="mb-0"
               :validators="accountStoreEdit_formValidations.phoneCode"
             >
@@ -108,13 +108,13 @@ const {
               class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
               is-name-as-label
               label-for="phoneNumber"
-              name="Phone Number"
+              :name="useLocalization('account.form.phone-number')"
               spacing-bottom="mb-0"
               :validators="accountStoreEdit_formValidations.phoneNumber"
             >
               <PrimeVueInputText
                 v-model="accountStoreEdit_formData.phoneNumber"
-                placeholder="Input your phone number"
+                :placeholder="useLocalization('account.form.placeholders.phone-number')"
                 class="text-sm w-full"
                 :class="{ ...classes }"
                 type="tel"
@@ -131,7 +131,7 @@ const {
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="business-type"
-          name="Business Type"
+          :name="useLocalization('account.form.business-type')"
           :validators="accountStoreEdit_formValidations.businessType"
         >
           <div class="flex items-center gap-4 pt-4">
@@ -186,7 +186,7 @@ const {
               <template #default>
                 <section id="content" class="flex items-center gap-2">
                   <AppBaseSvg name="image" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm">Select Image</span>
+                  <span class="font-normal text-sm">{{ useLocalization('account.form.select-image') }}</span>
                 </section>
               </template>
             </PrimeVueButton>
@@ -195,8 +195,8 @@ const {
           <template #empty>
             <section id="main-content" class="flex flex-col items-center gap-2 absolute inset-0 z-0 w-full h-full">
               <span class="absolute top-28 font-normal text-black-secondary text-xs">
-                or
-                <span class="font-semibold"> Drop Image here </span>
+                {{ useLocalization('account.form.or') }}
+                <span class="font-semibold">{{ useLocalization('account.form.drop-image-here') }}</span>
               </span>
             </section>
           </template>

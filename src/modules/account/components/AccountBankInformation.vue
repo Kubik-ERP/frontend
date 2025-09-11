@@ -24,7 +24,9 @@ const { account_profile, account_onEditBankAccount, account_onSetUpBankAccount }
       >
         <AppBaseSvg name="edit" class="w-4 h4" />
 
-        <span class="font-semibold text-primary text-sm"> Edit Bank Information </span>
+        <span class="font-semibold text-primary text-sm">{{
+          useLocalization('account.edit-bank-information')
+        }}</span>
       </section>
     </header>
 
@@ -35,7 +37,9 @@ const { account_profile, account_onEditBankAccount, account_onSetUpBankAccount }
       <template v-if="(account_profile?.user.banks?.length ?? 0) > 0">
         <section id="bank" class="grid grid-rows-1 grid-cols-6 relative inset-0 z-0 gap-4 w-full">
           <section id="bank-name" class="col-span-full lg:col-span-2 flex flex-col gap-1">
-            <span class="font-normal text-text-disabled text-sm"> Bank Name </span>
+            <span class="font-normal text-text-disabled text-sm">{{
+              useLocalization('account.form.bank-name')
+            }}</span>
 
             <span class="font-normal text-black text-base">
               {{ account_profile?.user.banks[0].bankName ?? '-' }}
@@ -43,7 +47,9 @@ const { account_profile, account_onEditBankAccount, account_onSetUpBankAccount }
           </section>
 
           <section id="account-number" class="col-span-full lg:col-span-4 flex flex-col gap-1">
-            <span class="font-normal text-text-disabled text-sm"> Account Number </span>
+            <span class="font-normal text-text-disabled text-sm">{{
+              useLocalization('account.form.bank-account-number')
+            }}</span>
 
             <span class="font-normal text-black text-base">
               {{ account_profile?.user.banks[0].accountNumber ?? '-' }}
@@ -51,7 +57,9 @@ const { account_profile, account_onEditBankAccount, account_onSetUpBankAccount }
           </section>
 
           <section id="account-name" class="col-span-full lg:col-span-2 flex flex-col gap-1">
-            <span class="font-normal text-text-disabled text-sm"> Account Name </span>
+            <span class="font-normal text-text-disabled text-sm">{{
+              useLocalization('account.form.bank-account-name')
+            }}</span>
 
             <span class="font-normal text-black text-base">
               {{ account_profile?.user.banks[0].accountName ?? '-' }}

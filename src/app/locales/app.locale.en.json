@@ -1,5 +1,6 @@
 {
   "app": {
+    "address": "Address",
     "business-type": "Business Type",
     "cancel": "Cancel",
     "create-store": "Create Store",
@@ -25,12 +26,79 @@
       "cancelButton": "Cancel"
     },
 
+    "navbar": {
+      "my-account": "My Account",
+      "change-language": "Change Language",
+      "log-out": "Log Out",
+      "english": "🇺🇸 English",
+      "indonesian": "🇮🇩 Indonesia",
+      "online": "Online",
+      "offline": "Offline",
+      "search-placeholder": "Search everything here...",
+      "start-typing-to-search": "Start typing to search..."
+    },
+
+    "sidebar": {
+      "log-out": "Log Out"
+    },
+
+    "menus": {
+      "dashboard": "Dashboard",
+      "cashier": "Cashier",
+      "sales-order": "Sales Order",
+      "queue": "Queue",
+      "customer-queue": "Customer Queue",
+      "kitchen-queue": "Kitchen Queue",
+      "report": "Report",
+      "financial-report": "Financial Report",
+      "sales-report": "Sales Report",
+      "inventory-report": "Inventory Report",
+      "voucher-report": "Voucher Report",
+      "catalog": "Catalog",
+      "categories": "Categories",
+      "products": "Products",
+      "product-bundling": "Product Bundling",
+      "customer": "Customer",
+      "inventory": "Inventory",
+      "master-item": "Master Item",
+      "master-supplier": "Master Supplier",
+      "master-brand": "Master Brand",
+      "inventory-categories": "Inventory Categories",
+      "stock-opname": "Stock Opname",
+      "storage-location": "Storage Location",
+      "purchase-order": "Purchase Order",
+      "marketing": "Marketing",
+      "staff": "Staff",
+      "staff-members": "Staff Members",
+      "working-hours": "Working Hours",
+      "attendance": "Attendance",
+      "user-permission": "User Permission",
+      "account": "Account",
+      "pos-settings": "POS Settings",
+      "device": "Device",
+      "payment-method": "Payment Method",
+      "loyalty-point": "Loyalty Point",
+      "rounding": "Rounding",
+      "tax-service-charge": "Tax & Service Charge",
+      "invoice": "Invoice"
+    },
+
+    "menu-categories": {
+      "cashier": "Cashier",
+      "sales": "Sales",
+      "operations": "Operations",
+      "settings": "Settings"
+    },
+
+    "name": "Name",
+    "no": "No",
     "operational-hours": "Operational Hours",
     "optional": "optional",
     "password": "Password",
     "phone-number": "Phone Number",
     "photo": "Photo",
     "select-image": "Select Image",
+    "store-name": "Store Name",
     "street-address": "Street Address",
     "stores": "Stores",
     "submit": "Submit",

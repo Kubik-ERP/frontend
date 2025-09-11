@@ -57,7 +57,9 @@ const togglePopover = (id: string, event: Event) => {
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
 
-              <span class="font-semibold text-sm lg:text-base text-white"> Add Store Facility </span>
+              <span class="font-semibold text-sm lg:text-base text-white">{{
+                useLocalization('account.add-store-facility')
+              }}</span>
             </section>
           </template>
         </PrimeVueButton>
@@ -96,7 +98,7 @@ const togglePopover = (id: string, event: Event) => {
               <template #default>
                 <section id="content" class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Edit</span>
+                  <span class="font-normal text-sm text-text-primary">{{ useLocalization('account.edit') }}</span>
                 </section>
               </template>
             </PrimeVueButton>
@@ -108,7 +110,9 @@ const togglePopover = (id: string, event: Event) => {
               <template #default>
                 <section id="content" class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="delete" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Delete</span>
+                  <span class="font-normal text-sm text-text-primary">{{
+                    useLocalization('account.delete')
+                  }}</span>
                 </section>
               </template>
             </PrimeVueButton>

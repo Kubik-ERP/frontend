@@ -153,7 +153,9 @@ function zoomOut() {
           <template #default>
             <section id="content" class="flex items-center gap-2 w-full">
               <AppBaseSvg name="edit" class="w-4 h-4" />
-              <span class="font-semibold text-sm text-primary">Edit Floor Name</span>
+              <span class="font-semibold text-sm text-primary">{{
+                useLocalization('account.edit-floor-name')
+              }}</span>
             </section>
           </template>
         </PrimeVueButton>
@@ -166,7 +168,7 @@ function zoomOut() {
         <template #default>
           <section class="flex items-center gap-2">
             <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
-            <span class="font-semibold text-base text-white">Add Table</span>
+            <span class="font-semibold text-base text-white">{{ useLocalization('account.add-table') }}</span>
           </section>
         </template>
       </PrimeVueButton>
@@ -174,7 +176,7 @@ function zoomOut() {
 
     <section id="content" class="flex flex-col gap-2">
       <span class="font-normal text-black-secondary text-sm">
-        Click and drag a table to move it around the floor plan.
+        {{ useLocalization('account.click-drag-table-instruction') }}
       </span>
 
       <section
@@ -186,7 +188,7 @@ function zoomOut() {
           id="zoom-in-out"
           class="absolute right-5 top-5 bg-white flex items-center gap-3 rounded-lg button-shadow w-fit px-2 py-1"
         >
-          <span class="font-medium text-sm text-grayscale-70"> Zoom </span>
+          <span class="font-medium text-sm text-grayscale-70">{{ useLocalization('account.zoom') }}</span>
 
           <div class="flex items-center gap-3">
             <AppBaseSvg name="zoom-in" class="cursor-pointer w-4 h-4" @click="zoomIn" />
@@ -223,7 +225,9 @@ function zoomOut() {
             "
           />
           <div class="font-bold text-sm text-secondary-hover">{{ table.name }}</div>
-          <div class="text-sm text-secondary-hover pb-2">{{ table.seats }} seats</div>
+          <div class="text-sm text-secondary-hover pb-2">
+            {{ table.seats }} {{ useLocalization('account.seats') }}
+          </div>
         </div>
       </section>
     </section>

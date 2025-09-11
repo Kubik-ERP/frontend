@@ -1,5 +1,6 @@
 {
   "app": {
+    "address": "Alamat",
     "business-type": "Tipe Bisnis",
     "cancel": "Batalkan",
     "create-store": "Buat Toko",
@@ -17,12 +18,81 @@
     },
 
     "hi": "Halo!",
+
+    "navbar": {
+      "my-account": "Akun Saya",
+      "change-language": "Ubah Bahasa",
+      "log-out": "Keluar",
+      "english": "🇺🇸 English",
+      "indonesian": "🇮🇩 Indonesia",
+      "online": "Online",
+      "offline": "Offline",
+      "search-placeholder": "Cari semua di sini...",
+      "start-typing-to-search": "Mulai mengetik untuk mencari..."
+    },
+
+    "sidebar": {
+      "log-out": "Keluar"
+    },
+
+    "menus": {
+      "dashboard": "Dashboard",
+      "cashier": "Kasir",
+      "sales-order": "Pesanan Penjualan",
+      "queue": "Antrian",
+      "customer-queue": "Antrian Pelanggan",
+      "kitchen-queue": "Antrian Dapur",
+      "report": "Laporan",
+      "financial-report": "Laporan Keuangan",
+      "sales-report": "Laporan Penjualan",
+      "inventory-report": "Laporan Inventori",
+      "voucher-report": "Laporan Voucher",
+      "catalog": "Katalog",
+      "categories": "Kategori",
+      "products": "Produk",
+      "product-bundling": "Bundling Produk",
+      "customer": "Pelanggan",
+      "inventory": "Inventori",
+      "master-item": "Master Item",
+      "master-supplier": "Master Supplier",
+      "master-brand": "Master Brand",
+      "inventory-categories": "Kategori Inventori",
+      "stock-opname": "Stock Opname",
+      "storage-location": "Lokasi Penyimpanan",
+      "purchase-order": "Purchase Order",
+      "marketing": "Marketing",
+      "staff": "Staff",
+      "staff-members": "Anggota Staff",
+      "working-hours": "Jam Kerja",
+      "attendance": "Absensi",
+      "user-permission": "Izin Pengguna",
+      "account": "Akun",
+      "pos-settings": "Pengaturan POS",
+      "device": "Perangkat",
+      "payment-method": "Metode Pembayaran",
+      "loyalty-point": "Poin Loyalitas",
+      "rounding": "Pembulatan",
+      "tax-service-charge": "Pajak & Biaya Layanan",
+      "invoice": "Invoice"
+    },
+
+    "menu-categories": {
+      "cashier": "Kasir",
+      "sales": "Penjualan",
+      "operations": "Operasional",
+      "settings": "Pengaturan"
+    },
+
+    "name": "Nama",
+    "no": "Nomor",
+    "no-data-available": "Tidak ada data tersedia",
     "operational-hours": "Jam Operasional",
     "optional": "opsional",
     "password": "Kata Sandi",
     "phone-number": "Nomor Telepon",
     "photo": "Foto",
     "select-image": "Pilih Gambar",
+    "store-name": "Nama Toko",
     "street-address": "Alamat Jalan",
     "stores": "Toko",
     "submit": "Kirim",

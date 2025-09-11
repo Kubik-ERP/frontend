@@ -11,7 +11,7 @@ const { accountStoreEdit_formData, accountStoreEdit_formValidations } =
 
 <template>
   <section id="outlet-create-edit-form-location" class="flex flex-col gap-2">
-    <h5 class="font-semibold text-black text-lg">Location</h5>
+    <h5 class="font-semibold text-black text-lg">{{ useLocalization('account.location') }}</h5>
 
     <section id="form-inputs" class="grid grid-rows-1 grid-cols-12 gap-4">
       <section id="outlet-address" class="col-span-full md:col-span-6">
@@ -20,13 +20,13 @@ const { accountStoreEdit_formData, accountStoreEdit_formValidations } =
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="address"
-          name="Address"
+          :name="useLocalization('account.form.address')"
           :validators="accountStoreEdit_formValidations.streetAddress"
         >
           <PrimeVueIconField>
             <PrimeVueTextarea
               v-model="accountStoreEdit_formData.streetAddress"
-              placeholder="Input your store address"
+              :placeholder="useLocalization('account.form.placeholders.address')"
               class="text-sm w-full"
               :class="{ ...classes }"
               rows="5"
@@ -44,13 +44,13 @@ const { accountStoreEdit_formData, accountStoreEdit_formValidations } =
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="city"
-          name="City"
+          :name="useLocalization('account.form.city')"
           :validators="accountStoreEdit_formValidations.city"
         >
           <PrimeVueIconField>
             <PrimeVueInputText
               v-model="accountStoreEdit_formData.city"
-              placeholder="Input your store city"
+              :placeholder="useLocalization('account.form.placeholders.city')"
               class="text-sm w-full"
               :class="{ ...classes }"
               v-on="useListenerForm(accountStoreEdit_formValidations, 'city')"
@@ -65,13 +65,13 @@ const { accountStoreEdit_formData, accountStoreEdit_formValidations } =
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="postalCode"
-          name="Postal Code"
+          :name="useLocalization('account.form.postal-code')"
           :validators="accountStoreEdit_formValidations.postalCode"
         >
           <PrimeVueIconField>
             <PrimeVueInputText
               v-model="accountStoreEdit_formData.postalCode"
-              placeholder="Input your store postal code"
+              :placeholder="useLocalization('account.form.placeholders.postal-code')"
               class="text-sm w-full"
               :class="{ ...classes }"
               v-on="useListenerForm(accountStoreEdit_formValidations, 'postalCode')"
@@ -86,13 +86,13 @@ const { accountStoreEdit_formData, accountStoreEdit_formValidations } =
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="building"
-          name="Building"
+          :name="useLocalization('account.form.building')"
           :validators="accountStoreEdit_formValidations.building"
         >
           <PrimeVueIconField>
             <PrimeVueInputText
               v-model="accountStoreEdit_formData.building"
-              placeholder="Input your store building"
+              :placeholder="useLocalization('account.form.placeholders.building')"
               class="text-sm w-full"
               :class="{ ...classes }"
               v-on="useListenerForm(accountStoreEdit_formValidations, 'building')"

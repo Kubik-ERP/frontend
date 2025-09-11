@@ -5,6 +5,15 @@ import type { IAccountStoreDetailProvided } from '../../interfaces';
 // Qrcode
 import Qrcode from 'qrcode.vue';
 
+// Stores
+import { useOutletStore } from '@/modules/outlet/store';
+
+/**
+ * @description Injected variables
+ */
+const outletStore = useOutletStore();
+const { outlet_selectedOutletOnAccountPage } = storeToRefs(outletStore);
+
 /**
  * @description Inject all the data and methods what we need
  */
@@ -18,13 +27,15 @@ const {
 <template>
   <AppBaseDialog id="account-store-table-configuration-detail-dialog">
     <template #header>
-      <h5 class="font-semibold text-black text-lg">Table Details</h5>
+      <h5 class="font-semibold text-black text-lg">{{ useLocalization('account.table-details') }}</h5>
     </template>
 
     <template #content>
       <section id="form-groups" class="grid-wrapper gap-4">
         <section id="floor" class="col-span-full flex flex-col gap-1">
-          <span class="font-normal text-grayscale-70 text-sm"> Table Name </span>
+          <span class="font-normal text-grayscale-70 text-sm">{{
+            useLocalization('account.form.table-name')
+          }}</span>
 
           <p class="font-normal text-base text-text-primary">
             {{ accountStoreDetail_selectedTable?.name }}
@@ -32,7 +43,7 @@ const {
         </section>
 
         <section id="form-input" class="col-span-full lg:col-span-6 flex flex-col gap-1">
-          <h6 class="font-normal text-grayscale-70 text-sm">Floor Name</h6>
+          <h6 class="font-normal text-grayscale-70 text-sm">{{ useLocalization('account.form.floor-name') }}</h6>
 
           <p class="font-normal text-base text-primary">
             {{ accountStoreDetail_selectedTable?.floorName }}
@@ -40,15 +51,15 @@ const {
         </section>
 
         <section id="form-input" class="col-span-full lg:col-span-6">
-          <h6 class="font-normal text-grayscale-70 text-sm">Seat Count</h6>
+          <h6 class="font-normal text-grayscale-70 text-sm">{{ useLocalization('account.form.seat-count') }}</h6>
 
           <p class="font-normal text-base text-text-primary">
-            {{ accountStoreDetail_selectedTable?.seats }} Seats
+            {{ accountStoreDetail_selectedTable?.seats }} {{ useLocalization('account.seats') }}
           </p>
         </section>
 
         <section id="form-input" class="col-span-full">
-          <h6 class="font-normal text-grayscale-70 text-sm">Table Shape</h6>
+          <h6 class="font-normal text-grayscale-70 text-sm">{{ useLocalization('account.form.table-shape') }}</h6>
 
           <p class="font-normal text-base text-text-primary">
             {{ accountStoreDetail_selectedTable?.shape }}
@@ -56,11 +67,11 @@ const {
         </section>
 
         <section id="form-input" class="col-span-full flex flex-col gap-2">
-          <span class="font-normal text-grayscale-70 text-xs"> Table QR Code </span>
+          <span class="font-normal text-grayscale-70 text-xs">{{ useLocalization('account.table-qr-code') }}</span>
 
           <div class="flex items-center gap-2">
             <Qrcode
-              :value="`http://103.191.63.109:8090/authentication/sign-in?floorName=${accountStoreDetail_selectedTable?.floorName ?? ''}&tablesName=${accountStoreDetail_selectedTable?.name ?? ''}`"
+              :value="`${APP_BASE_URL}/self-order?storeId=${outlet_selectedOutletOnAccountPage?.id}&floorName=${accountStoreDetail_selectedTable?.floorName ?? ''}&tablesName=${accountStoreDetail_selectedTable?.name ?? ''}`"
             />
 
             <PrimeVueButton
@@ -71,7 +82,9 @@ const {
               <template #default>
                 <section id="content" class="flex items-center justify-center gap-2">
                   <AppBaseSvg name="download" class="!w-6 !h-6" />
-                  <span class="font-semibold text-primary text-sm">Download Table QR Code</span>
+                  <span class="font-semibold text-primary text-sm">{{
+                    useLocalization('account.download-table-qr-code')
+                  }}</span>
                 </section>
               </template>
             </PrimeVueButton>
@@ -84,7 +97,7 @@ const {
       <footer class="flex items-center justify-end w-full gap-4">
         <PrimeVueButton
           class="font-semibold text-base text-center text-primary w-full border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10 py-3"
-          label="Cancel"
+          :label="useLocalization('account.buttons.cancel')"
           severity="secondary"
           variant="outlined"
           @click="accountStoreDetail_onCloseDialogDetailTable"
@@ -106,7 +119,9 @@ const {
           <template #default>
             <section id="content" class="flex items-center justify-center gap-2 w-full">
               <AppBaseSvg name="edit-white" />
-              <span class="font-semibold text-sm lg:text-base text-center text-white">Edit Table</span>
+              <span class="font-semibold text-sm lg:text-base text-center text-white">{{
+                useLocalization('account.edit-table')
+              }}</span>
             </section>
           </template>
         </PrimeVueButton>

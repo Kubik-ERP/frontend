@@ -28,6 +28,7 @@ const {
   cashierProduct_onScrollFetchMoreCustomers,
   cashierProduct_onSearchCustomer,
   cashierOrderSummary_handleIsExpandedToggle,
+  hasCustomerManagementPermission,
 
   cashierOrderSummary_handleModalAddCustomer,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
@@ -64,7 +65,7 @@ const {
       id="cashier-summary-section-order-item"
       class="flex flex-col gap-2"
     >
-      <div class="flex flex-col gap-2 w-full">
+      <div v-if="hasCustomerManagementPermission" class="flex flex-col gap-2 w-full">
         <label for="username" class="text-sm">{{ useLocalization('cashier.mainSection.username') }}</label>
 
         <PrimeVueIconField class="flex w-full">
@@ -142,7 +143,10 @@ const {
           </span>
         </div>
 
-        <div class="flex items-center gap-1 p-1 bg-primary-background">
+        <div
+          v-if="hasCustomerManagementPermission"
+          class="flex items-center gap-1 p-1 bg-primary-background"
+        >
           <AppBaseSvg name="table-primary" class="!h-4 !w-4 text-primary" />
 
           <span

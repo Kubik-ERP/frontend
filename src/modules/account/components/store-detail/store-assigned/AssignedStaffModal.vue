@@ -16,7 +16,7 @@ const {
   <AppBaseDialog id="assigned-staff-dialog">
     <!-- HEADER -->
     <template #header>
-      <h5 class="font-semibold text-black text-lg">Assign Staff</h5>
+      <h5 class="font-semibold text-black text-lg">{{ useLocalization('account.assign-staff') }}</h5>
     </template>
 
     <!-- CONTENT -->
@@ -25,7 +25,7 @@ const {
         <!-- SELECT STAFF -->
         <div class="flex flex-col gap-2">
           <label for="staff" class="font-medium text-sm text-text-primary">
-            Staff <span class="text-red-500">*</span>
+            {{ useLocalization('account.staff') }} <span class="text-red-500">*</span>
           </label>
           <PrimeVueDropdown
             id="staff"
@@ -33,7 +33,7 @@ const {
             :options="accountDetail_listAssignedStaff"
             option-label="name"
             option-value="id"
-            placeholder="Select Staff"
+            :placeholder="useLocalization('account.select-staff')"
             class="w-full"
             :class="{ 'p-invalid': accountDetail_AssignedStaff_formValidations.staffId?.$invalid }"
           />
@@ -42,12 +42,18 @@ const {
         <!-- PREVIEW STAFF INFO -->
         <div class="flex flex-col gap-2">
           <p class="text-sm">
-            <span class="font-semibold">Staff Name :</span>
-            {{ accountDetail_listAssignedStaff.find(s => s.id === accountDetail_AssignedStaff_formData.employeeId)?.name ?? '-' }}
+            <span class="font-semibold">{{ useLocalization('account.staff-name') }} :</span>
+            {{
+              accountDetail_listAssignedStaff.find(s => s.id === accountDetail_AssignedStaff_formData.employeeId)
+                ?.name ?? '-'
+            }}
           </p>
           <p class="text-sm">
-            <span class="font-semibold">Title :</span>
-            {{ accountDetail_listAssignedStaff.find(s => s.id === accountDetail_AssignedStaff_formData.employeeId)?.title ?? '-' }}
+            <span class="font-semibold">{{ useLocalization('account.staff-title') }} :</span>
+            {{
+              accountDetail_listAssignedStaff.find(s => s.id === accountDetail_AssignedStaff_formData.employeeId)
+                ?.title ?? '-'
+            }}
           </p>
         </div>
       </section>
@@ -58,7 +64,7 @@ const {
       <footer class="flex items-center justify-end w-full gap-4">
         <PrimeVueButton
           class="font-semibold text-base text-primary w-full max-w-40 border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
-          label="Cancel"
+          :label="useLocalization('account.buttons.cancel')"
           severity="secondary"
           variant="outlined"
           @click="accountStoreDetail_onCloseAddStaff"
@@ -66,7 +72,7 @@ const {
 
         <PrimeVueButton
           class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
-          label="Assign Staff"
+          :label="useLocalization('account.assign-staff')"
           type="button"
           :disabled="accountDetail_AssignedStaff_formValidations.$invalid"
           @click="accountDetail_AssignedStaff_onSubmit"

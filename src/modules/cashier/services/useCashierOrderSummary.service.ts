@@ -51,8 +51,11 @@ import { useOutletStore } from '@/modules/outlet/store';
 import { useSocket } from '@/plugins/socket';
 
 // Vue
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { ICashierCustomerState, ICashierSelected } from '../interfaces';
+
+// Composables
+import { useRbac } from '@/app/composables/useRbac';
 import useVuelidate from '@vuelidate/core';
 import { minValue, numeric, required } from '@vuelidate/validators';
 import { useVoucherStore } from '@/modules/voucher/store';
@@ -66,6 +69,14 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   // Router
   const router = useRouter();
   const route = useRoute();
+
+  // RBAC
+  const { hasPermission } = useRbac();
+
+  /**
+   * @description Check if user has customer management permission
+   */
+  const hasCustomerManagementPermission = computed(() => hasPermission('customer_management'));
 
   /**
    * @description Injected variables
@@ -329,6 +340,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           cashierOrderSummary_modalVoucher.value.search,
           cashierProduct_selectedProduct.value.map(p => p.productId),
         );
+        if (voucherData.value.length > 0) {
+          // Set default value voucherId dengan voucher pertama
+          cashierOrderSummary_modalVoucher.value.form.voucherId = voucherData.value[0].id;
+        }
       }
 
       if (cashierOrderSummary_modalVoucher.value.form.voucherId) {
@@ -356,10 +371,19 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description Debounce function to handle watch changes
    */
   const debouncedHandleWatchChanges = debounce(() => {
+    // If user doesn't have customer management permission, only check order type
+    const customerCheck = hasCustomerManagementPermission.value 
+      ? cashierProduct_customerState.value.selectedCustomer?.id
+      : true; // Skip customer validation if no permission
+
+    const tableCheck = hasCustomerManagementPermission.value 
+      ? cashierOrderSummary_modalSelectTable.value.selectedTable.length > 0
+      : true; // Skip table validation if no permission
+
     if (
-      cashierProduct_customerState.value.selectedCustomer?.id &&
+      customerCheck &&
       cashierOrderSummary_modalOrderType.value.selectedOrderType &&
-      cashierOrderSummary_modalSelectTable.value.selectedTable.length > 0
+      tableCheck
     ) {
       cashierOrderSummary_data.value.isExpanded = false;
       cashierOrderSummary_data.value.isExpandedVisible = true;
@@ -591,14 +615,27 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @returns boolean
    */
   const cashierOrderSummary_isButtonPlaceOrderDisabled = computed(() => {
+    // If user doesn't have customer management permission, skip customer validation
+    const customerValidation = hasCustomerManagementPermission.value 
+      ? (cashierProduct_customerState.value.selectedCustomer?.id === '' ||
+         cashierProduct_customerState.value.selectedCustomer?.id === null ||
+         cashierProduct_customerState.value.selectedCustomer?.id === undefined)
+      : false;
+
+    // If user doesn't have customer management permission, skip table validation for dine_in
+    let tableValidation = false;
+    if (hasCustomerManagementPermission.value) {
+      if (cashierOrderSummary_modalOrderType.value.selectedOrderType === 'take_away') {
+        tableValidation = false;
+      } else {
+        tableValidation = cashierOrderSummary_modalSelectTable.value.selectedTable.length === 0;
+      }
+    }
+
     const isDisabled =
-      cashierProduct_customerState.value.selectedCustomer?.id === '' ||
-      cashierProduct_customerState.value.selectedCustomer?.id === null ||
-      cashierProduct_customerState.value.selectedCustomer?.id === undefined ||
+      customerValidation ||
       cashierOrderSummary_modalOrderType.value.selectedOrderType === '' ||
-      (cashierOrderSummary_modalOrderType.value.selectedOrderType === 'take_away'
-        ? false
-        : cashierOrderSummary_modalSelectTable.value.selectedTable.length === 0) ||
+      tableValidation ||
       cashierProduct_selectedProduct.value.length === 0;
 
     return isDisabled;
@@ -1093,6 +1130,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_isLoadingUnpaidOrder,
 
     cashierProduct_customerState,
+
+    hasCustomerManagementPermission,
 
     cashierOrderSummary_handleModalAddCustomer,
 
