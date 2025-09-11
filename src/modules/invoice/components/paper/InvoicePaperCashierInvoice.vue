@@ -341,6 +341,13 @@ const orderTypeLabel = computed(() => {
               }}
             </td>
           </tr>
+
+          <tr v-if="invoice_invoiceData.data.paymentStatus === 'paid'">
+            <td colspan="2" class="font-semibold text-black text-left py-1">Payment Method</td>
+            <td colspan="2" class="font-semibold text-black text-right py-1">
+              {{ useCapitalize(invoice_invoiceData?.data?.paymentMethods?.name || '') }}
+            </td>
+          </tr>
         </tfoot>
       </table>
     </section>
