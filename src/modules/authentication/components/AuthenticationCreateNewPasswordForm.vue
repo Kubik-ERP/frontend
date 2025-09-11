@@ -61,7 +61,7 @@ const {
         <PrimeVueIconField>
           <PrimeVueInputIcon>
             <template #default>
-              <AppBaseSvg name="key" />
+              <AppBaseSvg name="key" class="w-4 h-4" />
             </template>
           </PrimeVueInputIcon>
 
@@ -91,7 +91,7 @@ const {
         <PrimeVueIconField>
           <PrimeVueInputIcon>
             <template #default>
-              <AppBaseSvg name="key" />
+              <AppBaseSvg name="key" class="w-4 h-4" />
             </template>
           </PrimeVueInputIcon>
 

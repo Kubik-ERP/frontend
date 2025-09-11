@@ -72,7 +72,11 @@ const orderTypeLabel = computed(() => {
       </p>
     </section>
 
-    <section id="customer-information" class="flex items-center justify-between w-full">
+    <section
+      v-if="invoice_invoiceData.data.customer"
+      id="customer-information"
+      class="flex items-center justify-between w-full"
+    >
       <p id="label-customer" class="font-normal text-black text-sm">Cust. Name</p>
       <p id="customer-name" class="font-normal text-black text-sm">
         {{ invoice_invoiceData.data.customer.name }}

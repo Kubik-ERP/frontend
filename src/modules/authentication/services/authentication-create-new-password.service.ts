@@ -29,7 +29,7 @@ export const useAuthenticationCreateNewPasswordService = (): IAuthenticationCrea
    * @description Reactive data binding
    */
   const authenticationCreateNewPassword_formData = reactive<IAuthenticationCreateNewPasswordFormData>({
-    email: 'khoirulloh.rafi2@gmail.com',
+    email: '',
     password: '',
     passwordConfirmation: '',
     token: '',
