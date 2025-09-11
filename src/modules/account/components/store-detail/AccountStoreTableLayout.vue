@@ -71,11 +71,10 @@ const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetai
           table.shape === 'ROUND' ? 'rounded-full' : 'rounded-lg',
           table.isEnableQrCode ? 'has-qr-code' : '',
           (modelValue || []).includes(table.name)
-            ? 'bg-secondary-hover text-white border border-teal-400'
+            ? 'bg-secondary-hover text-white border-2 border-teal-400'
             : table.statusTable === 'occupied' && props.cashierPreview
-              ? 'bg-primary-50 text-primary border-1 border-primary'
+              ? 'bg-primary-50 text-primary-400 border-2'
               : 'bg-white text-secondary-hover border border-teal-400',
-          cashierPreview && table.statusTable === 'occupied' ? 'bg-secondary text-white' : '',
           props.cashierPreview ? 'cursor-pointer' : '',
         ]"
         :data-id="table.name"
@@ -108,7 +107,6 @@ const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetai
         />
         <div class="font-bold text-sm">{{ table.name }}</div>
         <div v-if="props.cashierPreview" class="text-[10px] lg:text-sm">{{ table.statusTable === 'occupied' ? useLocalization('account.occupied') : useLocalization('account.available') }}</div>
-        <div v-if="props.cashierPreview" class="text-[10px] lg:text-sm">{{ table.statusTable === 'occupied' ? 'Occupied' : useLocalization('account.available') }}</div>
         <div class="text-sm pb-2">{{ table.seats }} {{ useLocalization('account.seats') }}</div>
       </div>
     </section>
