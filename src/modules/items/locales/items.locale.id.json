@@ -1,0 +1,91 @@
+{
+  "items": {
+    "title": "Master Item",
+    "list": {
+      "title": "Inventaris Item",
+      "searchPlaceholder": "Cari item...",
+      "import": "Impor Item",
+      "create": "Buat Item"
+    },
+    "form": {
+      "title": {
+        "create": "Tambah Item Baru",
+        "edit": "Ubah Item"
+      },
+      "details": "Detail Item",
+      "name": "Nama Item",
+      "namePlaceholder": "Masukkan nama item",
+      "brand": "Merek",
+      "brandPlaceholder": "Pilih atau cari merek",
+      "barcode": "Barcode",
+      "barcodePlaceholder": "Pindai atau masukkan barcode produk",
+      "sku": "SKU",
+      "skuPlaceholder": "Masukkan SKU",
+      "category": "Kategori",
+      "categoryPlaceholder": "Pilih atau cari kategori",
+      "unit": "Unit",
+      "unitPlaceholder": "Masukkan unit",
+      "notes": "Catatan",
+      "stock": "Stok & Inventaris",
+      "stockQuantity": "Jumlah Stok",
+      "minStockQuantity": "Jumlah Stok Minimum",
+      "reorderLevel": "Level Pemesanan Ulang",
+      "expiryDate": "Tanggal Kadaluarsa",
+      "storageLocation": "Lokasi Penyimpanan",
+      "storageLocationPlaceholder": "Pilih atau cari lokasi penyimpanan",
+      "priceAndSupplier": "Harga & Pemasok",
+      "pricePerUnit": "Harga Per Unit",
+      "supplier": "Pemasok",
+      "supplierPlaceholder": "Pilih atau cari pemasok",
+      "buttons": {
+        "cancel": "Batal",
+        "add": "Tambah Item",
+        "update": "Perbarui Item",
+        "delete": "Hapus Item"
+      },
+      "dialog": {
+        "updateConfirmationTitle": "Apakah Anda yakin ingin memperbarui item ini?",
+        "updateConfirmationMessage": "Pembaruan akan memengaruhi data item inventaris terkait",
+        "confirm": "Ya, Saya Yakin"
+      }
+    },
+    "import": {
+      "title": "Impor File",
+      "dropzone": "Letakkan file CSV/XLSX Anda di sini",
+      "or": "atau",
+      "clickToBrowse": "klik untuk menelusuri dari perangkat Anda.",
+      "downloadTemplate": "Unduh Excel",
+      "uploading": "Mengunggah file...",
+      "success": "Berhasil",
+      "failed": "Gagal",
+      "cancel": "Batal",
+      "import": "Impor"
+    },
+    "stockAdjustment": {
+      "title": "Penyesuaian Stok",
+      "date": "Tanggal Penyesuaian",
+      "currentStock": "Jumlah Stok Saat Ini",
+      "type": "Tipe",
+      "selectType": "Pilih Tipe",
+      "adjustmentQuantity": "Jumlah Penyesuaian",
+      "newStock": "Jumlah Stok Baru",
+      "notes": "Catatan",
+      "notesPlaceholder": "Masukkan catatan",
+      "cancel": "Batal",
+      "save": "Simpan",
+      "update": "Perbarui",
+      "filterBy": "Filter berdasarkan",
+      "allTypes": "Semua Jenis Penyesuaian",
+      "stockIn": "Stok Masuk",
+      "stockOut": "Stok Keluar",
+      "create": "Buat Penyesuaian",
+      "formTitle": {
+        "add": "Tambah Penyesuaian Stok",
+        "edit": "Ubah Penyesuaian Stok"
+      }
+    },
+    "preview": {
+        "location": "Lokasi"
+    }
+  }
+}

@@ -65,7 +65,7 @@ const {
             @click="brand_onImport"
           >
             <i class="pi pi-upload text-sm"></i>
-            Import Brand
+            {{ $t('brand.form.buttons.import') }}
           </PrimeVueButton>
           <PrimeVueButton
             class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"
@@ -125,7 +125,7 @@ const {
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="edit" class="!w-4 !h-4" />
                   <span class="font-normal text-sm text-text-primary">{{
-                    useLocalization('inventoryCategory.editButton')
+                    useLocalization('brand.editButton')
                   }}</span>
                 </section>
               </PrimeVueButton>
@@ -135,7 +135,7 @@ const {
                 <section class="flex items-center gap-2 w-full">
                   <AppBaseSvg name="delete" class="!w-4 !h-4" />
                   <span class="font-normal text-sm text-text-primary">{{
-                    useLocalization('inventoryCategory.deleteButton')
+                    useLocalization('brand.deleteButton')
                   }}</span>
                 </section>
               </PrimeVueButton>

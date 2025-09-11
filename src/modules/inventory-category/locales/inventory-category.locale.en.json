@@ -1,5 +1,14 @@
 {
   "inventoryCategory": {
+    "import": "Import Inventory Category",
+    "table":{
+      "code": "Code",
+      "name": "Inventory Name",
+      "description": "Description",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "actions": "Actions"
+    },
     "title": "Inventory Inventory List",
     "createButton": "Create Inventory",
     "editButton": "Edit",

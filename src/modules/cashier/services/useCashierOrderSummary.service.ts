@@ -13,6 +13,7 @@ import { debounce } from '@/app/helpers/debounce.helper';
 // interfaces
 import {
   ICashierCalulateEstimationData,
+  ICashierListTable,
   ICashierOrderSummary,
   ICashierOrderSummaryData,
   ICashierOrderSummaryModalAddCustomer,
@@ -261,7 +262,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     selectedTable: [],
     activeFloor: 1,
     listFloor: CASHIER_DUMMY_LIST_FLOOR,
-    data: CASHIER_DUMMY_LIST_TABLE,
+    data: CASHIER_DUMMY_LIST_TABLE as ICashierListTable[],
   });
 
   /**
@@ -449,7 +450,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       const response = await storeVoucher.voucherList_getActiveVoucher(search, productIds ?? []);
       const data = response.data;
 
-      cashierOrderSummary_modalVoucher.value.form.voucherId = data[0].id;
       voucherData.value = data.map((voucher: IVoucher) => {
         const total = cashierOrderSummary_calculateEstimation.value.data.grandTotal;
         const isAmountMatch = total >= voucher.minPrice;
@@ -645,7 +645,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description Handle calculation of estimation
    * @returns void
    */
-  const cashierOrderSummary_handleCalculateEstimation = async () => {
+  const cashierOrderSummary_handleCalculateEstimation = async (recalculating = false) => {
     cashierOrderSummary_calculateEstimation.value.isLoading = true;
 
     try {
@@ -659,6 +659,20 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       );
 
       cashierOrderSummary_calculateEstimation.value.data = response.data;
+
+      if (!recalculating) {
+        await getVoucherActive(
+          cashierOrderSummary_modalVoucher.value.search,
+          cashierProduct_selectedProduct.value.map(p => p.productId),
+        );
+
+        const firstAvailable = voucherData.value.find(v => v.available);
+        if (firstAvailable && firstAvailable.id !== cashierOrderSummary_modalVoucher.value.form.voucherId) {
+          cashierOrderSummary_modalVoucher.value.form.voucherId = firstAvailable.id;
+          cashierOrderSummary_modalVoucher.value.form.voucher_code = firstAvailable.code;
+          await cashierOrderSummary_handleCalculateEstimation(true);
+        }
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -685,6 +699,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         cashierOrderSummary_modalOrderType.value.selectedOrderType &&
         cashierProduct_selectedProduct.value.length > 0
       ) {
+        cashierOrderSummary_modalVoucher.value.form.voucherId = '';
+        cashierOrderSummary_modalVoucher.value.form.voucher_code = '';
         debouncedCalculateEstimation();
       } else {
         cashierOrderSummary_calculateEstimation.value.data = {

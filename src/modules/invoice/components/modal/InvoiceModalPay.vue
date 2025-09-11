@@ -8,6 +8,55 @@ import { IInvoiceProvided } from '../../interfaces';
  */
 const { invoice_invoiceData, invoice_modalPay, invoice_invoiceDataValidation, invoice_handlePayInvoice } =
   inject<IInvoiceProvided>('invoice')!;
+
+/**
+ * @description Reactive change amount that updates automatically
+ */
+const changeAmount = ref(0);
+
+/**
+ * @description Calculate change amount
+ * Positive = customer gets change back
+ * Negative = customer still owes money
+ */
+const calculateChangeAmount = () => {
+  const paymentAmount = invoice_invoiceData.value.form.paymentAmount || 0;
+  const totalPrice = invoice_invoiceData.value.calculate?.grandTotal || 0;
+  changeAmount.value = +paymentAmount - +totalPrice;
+};
+
+/**
+ * @description Handle real-time input changes
+ */
+const handlePaymentInput = (event: { value: string | number | undefined }) => {
+  // Update the model value immediately
+  const numericValue = typeof event.value === 'string' ? parseFloat(event.value) || 0 : event.value || 0;
+  invoice_invoiceData.value.form.paymentAmount = numericValue;
+  // Trigger calculation immediately
+  calculateChangeAmount();
+};
+
+/**
+ * @description Watch for changes in payment amount and auto-calculate change
+ */
+watch(
+  () => invoice_invoiceData.value.form.paymentAmount,
+  () => {
+    calculateChangeAmount();
+  },
+  { immediate: true },
+);
+
+/**
+ * @description Watch for changes in total price and auto-calculate change
+ */
+watch(
+  () => invoice_invoiceData.value.calculate?.grandTotal,
+  () => {
+    calculateChangeAmount();
+  },
+  { immediate: true },
+);
 </script>
 <template>
   <PrimeVueDialog
@@ -69,6 +118,8 @@ const { invoice_invoiceData, invoice_modalPay, invoice_invoiceDataValidation, in
                 v-model="invoice_invoiceData.form.paymentAmount"
                 :class="[classes, 'w-full']"
                 placeholder="Enter payment amount"
+                @input="handlePaymentInput"
+                @update:model-value="calculateChangeAmount"
               />
             </PrimeVueIconField>
           </AppBaseFormGroup>
@@ -92,13 +143,14 @@ const { invoice_invoiceData, invoice_modalPay, invoice_invoiceDataValidation, in
           <hr />
 
           <div class="flex justify-between">
-            <span class="text-sm lg:text-base font-bold"> Change Amount </span>
-            <span class="text-sm lg:text-base font-semibold text-primary">
-              {{
-                useCurrencyFormat({
-                  data: (invoice_invoiceData?.data?.grandTotal || 0) - invoice_invoiceData.form.paymentAmount,
-                })
-              }}
+            <span class="text-sm lg:text-base font-bold">
+              {{ changeAmount >= 0 ? 'Change Amount' : 'Amount Due' }}
+            </span>
+            <span
+              class="text-sm lg:text-base font-semibold"
+              :class="changeAmount >= 0 ? 'text-primary' : 'text-error'"
+            >
+              {{ useCurrencyFormat({ data: changeAmount }) }}
             </span>
           </div>
         </template>

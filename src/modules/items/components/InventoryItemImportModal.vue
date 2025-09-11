@@ -26,7 +26,7 @@ const {
     :dismissable-mask="true"
   >
     <template #header>
-      <h2 class="font-semibold text-lg">Import File</h2>
+      <h2 class="font-semibold text-lg">{{ useLocalization('items.import.title') }}</h2>
     </template>
 
     <template #content>
@@ -47,18 +47,17 @@ const {
             <i class="pi pi-paperclip text-4xl text-gray-400 mb-3"></i>
 
             <p class="text-gray-500 text-sm text-center mb-3">
-              Drop your CSV/XLSX file here <br />
-              or
-              <span class="text-primary cursor-pointer" @click.stop="inventoryItem_triggerUpload">click</span>
-              to browse from your device.
+              {{ useLocalization('items.import.dropzone') }} <br />
+              {{ useLocalization('items.import.or') }}
+              <span class="text-primary cursor-pointer" @click.stop="inventoryItem_triggerUpload">{{ useLocalization('items.import.clickToBrowse') }}</span>
             </p>
 
             <!-- Tombol Download Template nempel di bawah paragraf -->
             <div class="flex justify-center items-center flex-col">
-              <span class="text-gray-400">or</span>
+              <span class="text-gray-400">{{ useLocalization('items.import.or') }}</span>
               <PrimeVueButton
                 icon="pi pi-download"
-                label="Download Excel"
+                :label="useLocalization('items.import.downloadTemplate')"
                 class="bg-white border border-primary text-primary px-4 py-2 mt-1"
                 @click.stop="inventoryItem_handleDownloadTemplate"
               />
@@ -77,7 +76,7 @@ const {
             fill="transparent"
             animation-duration=".8s"
           />
-          <p class="text-gray-500 mt-4">Uploading file...</p>
+          <p class="text-gray-500 mt-4">{{ useLocalization('items.import.uploading') }}</p>
         </section>
 
         <!-- Step 3: Preview / Error -->
@@ -150,7 +149,7 @@ const {
                     v-if="data.status === 'success'"
                     class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700"
                   >
-                    Success
+                    {{ useLocalization('items.import.success') }}
                   </span>
                   <span
                     v-else-if="data.status === 'failed'"
@@ -160,7 +159,7 @@ const {
                     }"
                     class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 cursor-help transition duration-200 hover:bg-red-200"
                   >
-                    Failed
+                    {{ useLocalization('items.import.failed') }}
                   </span>
                   <span v-else class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
                     {{ data.status }}
@@ -176,12 +175,12 @@ const {
     <template #footer>
       <div class="flex justify-end gap-2">
         <PrimeVueButton
-          label="Cancel"
+          :label="useLocalization('items.import.cancel')"
           class="px-4 py-2 bg-white border border-primary text-primary"
           @click="inventoryItem_onClose"
         />
         <PrimeVueButton
-          label="Import"
+          :label="useLocalization('items.import.import')"
           class="px-4 py-2 bg-primary text-white disabled:bg-gray-400 disabled:text-white disabled:border-none"
           :disabled="inventoryItem_step === 1 || (inventoryItem_values?.data?.failedData?.length ?? 0) > 0"
           @click="inventoryItem_onSubmit"

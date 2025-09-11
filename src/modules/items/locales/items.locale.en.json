@@ -1,0 +1,96 @@
+{
+  "items": {
+    "title": "Master Items",
+    "list": {
+      "title": "Inventory Items",
+      "searchPlaceholder": "Search items...",
+      "import": "Import Item",
+      "create": "Create Item",
+      "actions": {
+        "edit": "Edit",
+        "stockAdjustment": "Stock Adjustment",
+        "delete": "Delete"
+      }
+    },
+    "form": {
+      "title": {
+        "create": "Add New Items",
+        "edit": "Edit Items"
+      },
+      "details": "Item Details",
+      "name": "Item Name",
+      "namePlaceholder": "Enter item name",
+      "brand": "Brand",
+      "brandPlaceholder": "Select or search brand",
+      "barcode": "Barcode",
+      "barcodePlaceholder": "Scan or input product barcode",
+      "sku": "SKU",
+      "skuPlaceholder": "Enter SKU",
+      "category": "Category",
+      "categoryPlaceholder": "Select or search category",
+      "unit": "Unit",
+      "unitPlaceholder": "Enter unit",
+      "notes": "Notes",
+      "stock": "Stock & Inventory",
+      "stockQuantity": "Stock Quantity",
+      "minStockQuantity": "Minimum Stock Quantity",
+      "reorderLevel": "Reorder Level",
+      "expiryDate": "Expiry Date",
+      "storageLocation": "Storage Location",
+      "storageLocationPlaceholder": "Select or search storage location",
+      "priceAndSupplier": "Price & Supplier",
+      "pricePerUnit": "Price Per Unit",
+      "supplier": "Supplier",
+      "supplierPlaceholder": "Select or search supplier",
+      "buttons": {
+        "cancel": "Cancel",
+        "add": "Add Item",
+        "update": "Update Item",
+        "delete": "Delete Item"
+      },
+      "dialog": {
+        "updateConfirmationTitle": "Are you sure want to update this item?",
+        "updateConfirmationMessage": "The update will affect the related inventory item data",
+        "confirm": "Yes, I'm Sure"
+      }
+    },
+    "import": {
+      "title": "Import File",
+      "dropzone": "Drop your CSV/XLSX file here",
+      "or": "or",
+      "clickToBrowse": "click to browse from your device.",
+      "downloadTemplate": "Download Excel",
+      "uploading": "Uploading file...",
+      "success": "Success",
+      "failed": "Failed",
+      "cancel": "Cancel",
+      "import": "Import"
+    },
+    "stockAdjustment": {
+      "title": "Stock Adjustment",
+      "date": "Adjustment Date",
+      "currentStock": "Current Stock Quantity",
+      "type": "Type",
+      "selectType": "Select Type",
+      "adjustmentQuantity": "Adjustment Quantity",
+      "newStock": "New Stock Quantity",
+      "notes": "Notes",
+      "notesPlaceholder": "Enter notes",
+      "cancel": "Cancel",
+      "save": "Save",
+      "update": "Update",
+      "filterBy": "Filter by",
+      "allTypes": "All Adjustment Type",
+      "stockIn": "Stock In",
+      "stockOut": "Stock Out",
+      "create": "Create Adjustment",
+      "formTitle": {
+        "add": "Add Stock Adjustment",
+        "edit": "Edit Stock Adjustment"
+      }
+    },
+    "preview": {
+        "location": "Location"
+    }
+  }
+}

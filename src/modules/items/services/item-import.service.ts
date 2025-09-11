@@ -40,7 +40,6 @@ export const useInventoryItemImportService = (): IInventoryItemImportProvided =>
           };
           eventBus.emit('AppBaseToast', argsEventEmitter);
         }
-        localStorage.removeItem('inventory_batch_id');
 
         await store.InventoryItems_fetchData( inventoryItems_queryParams ,{
           ...httpAbort_registerAbort(ITEMS_LIST_REQUEST),
@@ -58,6 +57,8 @@ export const useInventoryItemImportService = (): IInventoryItemImportProvided =>
 
     if (batchId) {
       await store.inventoryItemImport_reset(batchId);
+      localStorage.removeItem('inventory_batch_id');
+    }
       eventBus.emit('AppBaseDialog', {
         id: 'inventory-item-import-modal',
         isUsingClosableButton: false,
@@ -65,20 +66,6 @@ export const useInventoryItemImportService = (): IInventoryItemImportProvided =>
         isOpen: false,
         width: '600px',
       });
-      inventoryItem_step.value = 1;
-      inventoryItem_isLoading.value = false;
-      inventoryItem_values.value = undefined;
-      uploadedFile.value = null;
-      localStorage.removeItem('inventory_batch_id');
-    } else {
-       eventBus.emit('AppBaseDialog', {
-        id: 'inventory-item-import-modal',
-        isUsingClosableButton: false,
-        isUsingBackdrop: true,
-        isOpen: false,
-        width: '600px',
-      });
-    }
   };
 
   const inventoryItem_handleDownloadTemplate = async () => {
