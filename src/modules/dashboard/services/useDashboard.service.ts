@@ -41,12 +41,12 @@ export const useDashboardService = (): IDashboardProvided => {
     const documentStyle = getComputedStyle(document.documentElement);
 
     return {
-      labels: dashboard_values.value.salesData.map(item => item.label),
+      labels: dashboard_values.value === null ? [] : dashboard_values.value.salesData.map(item => item.label),
       datasets: [
         {
           // label: useLocalization('dashboard.chart.label'),
           label: 'Sales',
-          data: dashboard_values.value.salesData.map(item => item.value),
+          data: dashboard_values.value === null ? [] : dashboard_values.value.salesData.map(item => item.value),
           fill: false,
           borderColor: documentStyle.getPropertyValue('--p-cyan-500'),
           tension: 0.4,
