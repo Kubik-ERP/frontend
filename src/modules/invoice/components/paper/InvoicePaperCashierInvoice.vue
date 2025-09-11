@@ -150,6 +150,10 @@ const orderTypeLabel = computed(() => {
         </thead>
 
         <tbody class="border-b border-solid border-black">
+          <!-- <pre>
+        {{ invoice_invoiceData.data.invoiceDetails }}
+      </pre
+          > -->
           <template v-for="item in invoice_invoiceData.data.invoiceDetails" :key="item.id">
             <tr>
               <td class="font-normal pr-0.5 text-black text-sm">{{ item.products.name }}</td>
@@ -176,11 +180,11 @@ const orderTypeLabel = computed(() => {
               </td>
             </tr>
             <tr v-if="item.variant">
-              <td class="pl-4 font-normal pr-0.5 text-black text-sm italic py-2">{{ item.variant.name }}</td>
-              <td class="font-normal pr-0.5 text-black text-sm text-center py-2"></td>
+              <td class="pl-4 font-normal pr-0.5 text-black text-sm italic">{{ item.variant.name }}</td>
+              <td class="font-normal pr-0.5 text-black text-sm text-center"></td>
               <td
                 v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
-                class="font-normal pr-0.5 text-black text-sm text-center py-2"
+                class="font-normal pr-0.5 text-black text-sm text-center"
               >
                 {{
                   useCurrencyFormat({
@@ -190,7 +194,7 @@ const orderTypeLabel = computed(() => {
               </td>
               <td
                 v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
-                class="font-normal pr-0.5 text-black text-sm text-right py-2"
+                class="font-normal pr-0.5 text-black text-sm text-right"
               >
                 {{
                   useCurrencyFormat({
@@ -198,6 +202,10 @@ const orderTypeLabel = computed(() => {
                   })
                 }}
               </td>
+            </tr>
+            <tr v-if="item.notes">
+              <td colspan="1" class="pl-4 font-normal pr-0.5 text-black text-sm italic">notes</td>
+              <td colspan="3" class="text-right font-normal pr-0.5 text-black text-sm italic">{{ item.notes }}</td>
             </tr>
           </template>
         </tbody>
