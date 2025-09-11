@@ -47,10 +47,11 @@ const applyDateChange = () => {
     // If not, create a new object by COPYING the start date.
     const end = localDateRange.value[1] ? localDateRange.value[1] : start; // This creates a copy, not a reference
 
+    
     emit('update:startDate', start);
     emit('update:endDate', end);
 
-    type.value = null;
+    type.value = 'custom';
     if (props.shouldUpdateType) {
       emit('update:type', type.value);
     }
