@@ -69,7 +69,7 @@ const hasPermission = rbac.hasPermission('manage_storage_location');
             @click="storageLocation_onImport"
           >
             <i class="pi pi-upload text-sm"></i>
-            Import Storage
+            {{ useLocalization('storageLocation.import') }}
           </PrimeVueButton>
           <PrimeVueButton
             class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"

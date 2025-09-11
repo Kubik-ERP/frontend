@@ -161,11 +161,11 @@ const hasPermission = rbac.hasPermission('edit_invoice')
 
       <tfoot
       v-if="
+          hasPermission &&
           invoice_invoiceData.data.paymentStatus === 'unpaid' &&
           (invoice_invoiceData.data.orderStatus === 'in_progress' ||
             invoice_invoiceData.data.orderStatus === 'placed')
         "
-        v-rbac="hasPermission"
       >
         <tr>
           <td colspan="2" class="pt-6">

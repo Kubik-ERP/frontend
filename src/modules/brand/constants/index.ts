@@ -7,26 +7,32 @@ export const BRAND_LIST_COLUMNS = [
     label: 'Brand Code',
     sortable: false,
     value: 'code',
+    translationKey: 'brand.table.code',
   },
   {
     label: 'Name',
     sortable: false,
     value: 'brandName',
+    translationKey: 'brand.table.name',
   },
   {
     label: 'Notes',
     sortable: false,
     value: 'notes',
+    translationKey: 'brand.table.description',
   },
   {
     label: 'Created At',
     sortable: true,
     value: 'created_at',
+    translationKey: 'brand.table.createdAt',
   },
   {
     label: '',
     sortable: false,
     value: 'action',
+    width: '100px',
+    translationKey: 'brand.table.actions',
   },
 ];
 export const BRAND_LIST_COLUMNS_IMPORT = [

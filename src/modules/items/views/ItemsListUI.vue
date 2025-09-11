@@ -35,7 +35,7 @@ const rbac = useRbac();
     <AppBaseDataTable
       :columns="inventoryItems_colums"
       :data="inventoryItems_values.data.items"
-      header-title="Inventory Items"
+            :header-title="useLocalization('items.list.title')"
       :rows-per-page="inventoryItems_values.data.meta.pageSize"
       :total-records="inventoryItems_values.data.meta.total"
       :first="(inventoryItems_values.data.meta.page - 1) * inventoryItems_values.data.meta.pageSize"
@@ -60,7 +60,7 @@ const rbac = useRbac();
             </PrimeVueInputIcon>
             <PrimeVueInputText
               v-model="inventoryItems_queryParams.search"
-              placeholder="Search items..."
+                            :placeholder="useLocalization('items.list.searchPlaceholder')"
               class="w-full sm:w-64 md:w-80 h-10 pl-10 pr-4 border border-gray-300 rounded-md"
             />
           </PrimeVueIconField>
@@ -74,7 +74,7 @@ const rbac = useRbac();
             >
               <i class="pi pi-upload text-sm"></i>
 
-              Import Item
+                            {{ useLocalization('items.list.import') }}
             </PrimeVueButton>
 
             <!-- Import -->
@@ -83,7 +83,7 @@ const rbac = useRbac();
               @click="inventoryItems_onCreate"
             >
               <i class="pi pi-plus text-sm"></i>
-              Create Item
+                            {{ useLocalization('items.list.create') }}
             </PrimeVueButton>
           </div>
         </div>
@@ -198,7 +198,7 @@ const rbac = useRbac();
                 >
                   <section class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                    <span class="font-normal text-sm text-text-primary">Edit</span>
+                    <span class="font-normal text-sm text-text-primary">{{ useLocalization('items.list.actions.edit') }}</span>
                   </section>
                 </PrimeVueButton>
 
@@ -210,7 +210,7 @@ const rbac = useRbac();
                 >
                   <section class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="settings" class="!w-4 !h-4" />
-                    <span class="font-normal text-sm text-text-primary">Stock Adjustment</span>
+                    <span class="font-normal text-sm text-text-primary">{{ useLocalization('items.list.actions.stockAdjustment') }}</span>
                   </section>
                 </PrimeVueButton>
 
@@ -222,7 +222,7 @@ const rbac = useRbac();
                 >
                   <section class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="delete" class="!w-4 !h-4" />
-                    <span class="font-normal text-sm text-text-primary">Delete</span>
+                    <span class="font-normal text-sm text-text-primary">{{ useLocalization('items.list.actions.delete') }}</span>
                   </section>
                 </PrimeVueButton>
               </section>
