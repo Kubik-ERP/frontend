@@ -196,7 +196,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod = '';
     cashierProduct_customerState.value.selectedCustomer = {} as ICashierCustomer;
     cashierOrderSummary_modalSelectTable.value.selectedTable = [];
-    cashierOrderSummary_modalVoucher.value.form.voucherId = '';
+    cashierOrderSummary_modalVoucher.value.form = { voucherId: '', voucher_code: '' };
+    cashierProduct_selectedProduct.value = [];
     // storeOutlet.outlet_currentOutlet?.id = '';
     // cashierOrderSummary_paymentForm.paymentAmount = null;
     // cashierOrderSummary_modalVoucher.value.data = [];
