@@ -6,7 +6,7 @@ const { dashboard_values } = inject<IDashboardProvided>('dashboard')!;
 <template>
   <section
     id="dashboard-top-products"
-    class="col-span-full lg:col-span-4 flex flex-col bg-white border border-solid border-grayscale-10 p-4 gap-4 rounded-sm"
+    class="flex flex-col bg-white border border-solid border-grayscale-10 p-4 gap-4 rounded-sm h-full"
   >
     <h5 class="font-semibold text-lg text-grayscale-70">{{ useLocalization('dashboard.topProducts.title') }}</h5>
 
@@ -24,7 +24,9 @@ const { dashboard_values } = inject<IDashboardProvided>('dashboard')!;
 
         <section id="amount" class="flex items-center gap-1">
           <span class="font-semibold text-primary text-sm">{{ product.quantity }}</span>
-          <span class="font-normal text-text-disabled text-sm">{{ useLocalization('dashboard.topProducts.salesUnit') }}</span>
+          <span class="font-normal text-text-disabled text-sm">{{
+            useLocalization('dashboard.topProducts.salesUnit')
+          }}</span>
         </section>
       </section>
     </section>

@@ -22,6 +22,9 @@
       "title": "Produk Terlaris",
       "salesUnit": "penjualan"
     },
+    "paymentMethods": {
+      "title": "Metode Pembayaran"
+    },
     "stockAvailability": {
       "title": "Ketersediaan Stok",
       "available": "Tersedia",
