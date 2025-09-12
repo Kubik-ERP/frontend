@@ -181,7 +181,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
       const whatsappNumber =
         invoice_invoiceData.value.data?.customer.code.toString() +
         invoice_invoiceData.value.data?.customer.number.toString();
-      const whatsappMessage = `Please find the invoice details at: ${window.location.href}`;
+      const whatsappMessage = `Please find the invoice details at: ${window.location.host + '/static/invoice/' + route.params.invoiceId}`;
 
       switch (type) {
         case 'copy':
@@ -253,11 +253,14 @@ export const useInvoiceService = (): IInvoiceProvided => {
     }));
 
     try {
-      const response = await storeCashier.cashierProduct_calculateEstimation({
-        products: mappedProducts || [],
-        orderType: invoice_invoiceData.value.data?.orderType,
-        voucherId: invoice_invoiceData.value.data?.voucherId,
-      }, route);
+      const response = await storeCashier.cashierProduct_calculateEstimation(
+        {
+          products: mappedProducts || [],
+          orderType: invoice_invoiceData.value.data?.orderType,
+          voucherId: invoice_invoiceData.value.data?.voucherId,
+        },
+        route,
+      );
 
       invoice_invoiceData.value.calculate = response.data;
     } catch (error: unknown) {
