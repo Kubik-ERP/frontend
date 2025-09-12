@@ -1,6 +1,9 @@
 // html2pdf.js
 import html2pdf from 'html2pdf.js';
 
+// Plugins
+import eventBus from '@/plugins/mitt';
+
 // Interfaces
 import {
   IInvoiceInvoiceData,
@@ -177,44 +180,56 @@ export const useInvoiceService = (): IInvoiceProvided => {
    * @returns void
    */
   const invoice_handleOtherOptions = async (type: 'copy' | 'email' | 'whatsapp') => {
-    if (invoice_invoiceData.value.data?.customer.code && invoice_invoiceData.value.data?.customer.number) {
-      const whatsappNumber =
-        invoice_invoiceData.value.data?.customer.code.toString() +
-        invoice_invoiceData.value.data?.customer.number.toString();
-      const whatsappMessage = `Please find the invoice details at: ${window.location.href}`;
+    switch (type) {
+      case 'copy':
+        try {
+          navigator.clipboard.writeText(window.location.host + '/static/invoice/' + route.params.invoiceId);
+          alert('Invoice link copied to clipboard!');
+        } catch (error) {
+          console.error('Failed to copy text: ', error);
+        }
+        break;
+      case 'email':
+        invoice_otherOptions.value.isLoadingSendEmail = true;
+        try {
+          await store.invoice_sendEmail(route.params.invoiceId as string);
 
-      switch (type) {
-        case 'copy':
-          try {
-            navigator.clipboard.writeText(window.location.host + '/static/invoice/' + route.params.invoiceId);
-            alert('Invoice link copied to clipboard!');
-          } catch (error) {
-            console.error('Failed to copy text: ', error);
+          alert('Email sent successfully!');
+        } catch (error) {
+          if (error instanceof Error) {
+            return Promise.reject(error);
+          } else {
+            return Promise.reject(new Error(String(error)));
           }
-          break;
-        case 'email':
-          invoice_otherOptions.value.isLoadingSendEmail = true;
-          try {
-            await store.invoice_sendEmail(route.params.invoiceId as string);
+        } finally {
+          invoice_otherOptions.value.isLoadingSendEmail = false;
+        }
 
-            alert('Email sent successfully!');
-          } catch (error) {
-            if (error instanceof Error) {
-              return Promise.reject(error);
-            } else {
-              return Promise.reject(new Error(String(error)));
-            }
-          } finally {
-            invoice_otherOptions.value.isLoadingSendEmail = false;
-          }
+        break;
+      case 'whatsapp':
+        if (invoice_invoiceData.value.data?.customer === null) {
+          const argsEventEmitter: IPropsToast = {
+            isOpen: true,
+            type: EToastType.DANGER,
+            message: 'Customer not found',
+            position: EToastPosition.TOP_RIGHT,
+          };
 
-          break;
-        case 'whatsapp':
+          eventBus.emit('AppBaseToast', argsEventEmitter);
+          return;
+        }
+        if (invoice_invoiceData.value.data?.customer.code && invoice_invoiceData.value.data?.customer.number) {
+          const whatsappNumber =
+            invoice_invoiceData.value.data?.customer.code.toString() +
+            invoice_invoiceData.value.data?.customer.number.toString();
+          const whatsappMessage = `Please find the invoice details at: ${window.location.host + '/static/invoice/' + route.params.invoiceId}`;
           window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-          break;
-        default:
-          console.error('Unknown option selected');
-      }
+        } else {
+          console.error('Customer code or number not found');
+        }
+        break;
+      default:
+        console.error('Unknown option selected');
     }
   };
 
@@ -253,11 +268,14 @@ export const useInvoiceService = (): IInvoiceProvided => {
     }));
 
     try {
-      const response = await storeCashier.cashierProduct_calculateEstimation({
-        products: mappedProducts || [],
-        orderType: invoice_invoiceData.value.data?.orderType,
-        voucherId: invoice_invoiceData.value.data?.voucherId,
-      }, route);
+      const response = await storeCashier.cashierProduct_calculateEstimation(
+        {
+          products: mappedProducts || [],
+          orderType: invoice_invoiceData.value.data?.orderType,
+          voucherId: invoice_invoiceData.value.data?.voucherId,
+        },
+        route,
+      );
 
       invoice_invoiceData.value.calculate = response.data;
     } catch (error: unknown) {

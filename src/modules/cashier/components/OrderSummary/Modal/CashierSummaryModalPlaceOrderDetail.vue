@@ -154,6 +154,29 @@ const handleSubmit = () => {
 
             <section id="list-balances" class="flex flex-wrap items-center gap-2 w-full">
               <PrimeVueChip
+                class="bg-secondary-background cursor-pointer hover:bg-secondary basic-smooth-animation"
+                @click="
+                  cashierOrderSummary_paymentForm.paymentAmount =
+                    cashierOrderSummary_calculateEstimation?.data?.grandTotal;
+                  calculateChangeAmount();
+                "
+              >
+                <template #default>
+                  <div class="flex items-center gap-2">
+                    <AppBaseSvg name="plus-line" class="!w-[10px] !h-[10px] text-secondary-hover" />
+
+                    <span class="font-semibold text-green-primary text-xs">
+                      {{
+                        useCurrencyFormat({
+                          data: cashierOrderSummary_calculateEstimation?.data?.grandTotal,
+                          addSuffix: true,
+                        })
+                      }}
+                    </span>
+                  </div>
+                </template>
+              </PrimeVueChip>
+              <PrimeVueChip
                 v-for="suggestionPrice in CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE"
                 :key="suggestionPrice"
                 class="bg-secondary-background cursor-pointer hover:bg-secondary basic-smooth-animation"

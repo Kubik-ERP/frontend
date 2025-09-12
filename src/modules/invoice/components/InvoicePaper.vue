@@ -41,13 +41,16 @@ defineExpose({ invoiceRef, kitchenRef, tableRef, print, download });
 <template>
   <section
     id="box-paper"
-    class="overflow-y-auto col-span-12 lg:col-span-8 h-full inset-0 z-0 bg-background flex justify-center p-6 w-full"
+    class="overflow-y-auto overflow-x-clip col-span-12 lg:col-span-8 h-full inset-0 z-0 bg-background flex justify-center p-6 w-full"
   >
-    <section id="invoice-change-paper">
-      <PrimeVueTabs v-model:value="invoice_activeInvoice" class="max-w-max lg:max-w-md">
+    <section id="invoice-change-paper" class="max-w-screen md:max-w-xl">
+      <PrimeVueTabs
+        v-model:value="invoice_activeInvoice"
+        class="flex items-center justify-center max-w-screen md:max-w-xl"
+      >
         <PrimeVueTabList
           unstyled
-          class="flex cursor-pointer mb-6 w-full max-w-md items-center justify-center p-2 bg-secondary-background rounded-xl"
+          class="flex cursor-pointer mb-6 w-fit items-center justify-center p-2 bg-secondary-background rounded-md"
         >
           <PrimeVueTab
             v-for="(item, index) in INVOICE_LIST_TAB"
@@ -55,7 +58,7 @@ defineExpose({ invoiceRef, kitchenRef, tableRef, print, download });
             unstyled
             :value="item.id"
             :class="[
-              'p-2 mx-2 cursor-pointer rounded-xl text-[10px] lg:text-base',
+              'p-2 cursor-pointer rounded-md',
               invoice_activeInvoice === item.id
                 ? 'bg-[#64C9B1] text-white font-semibold'
                 : 'text-secondary-hover hover:bg-secondary/20',
@@ -79,21 +82,21 @@ defineExpose({ invoiceRef, kitchenRef, tableRef, print, download });
       <Teleport to="body">
         <div
           ref="invoiceRef"
-          class="print-invoice-paper hidden relative inset-0 mx-auto min-w-svw m-0 p-0 w-full items-center justify-center"
+          class="print-invoice-paper hidden relative inset-0 mx-auto m-0 p-0 w-full items-center justify-center"
         >
           <InvoicePaperCashierInvoice />
         </div>
 
         <div
           ref="kitchenRef"
-          class="print-invoice-paper hidden relative inset-0 mx-auto min-w-svw m-0 p-0 w-full items-center justify-center"
+          class="print-invoice-paper hidden relative inset-0 mx-auto m-0 p-0 w-full items-center justify-center"
         >
           <InvoicePaperKitchenTicket />
         </div>
 
         <div
           ref="tableRef"
-          class="print-invoice-paper hidden relative inset-0 mx-auto min-w-svw m-0 p-0 w-full items-center justify-center"
+          class="print-invoice-paper hidden relative inset-0 mx-auto m-0 p-0 w-full items-center justify-center"
         >
           <InvoicePaperTableTicket />
         </div>

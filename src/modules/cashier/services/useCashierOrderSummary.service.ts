@@ -190,7 +190,16 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description Handle cancel order action
    * @returns void
    */
-  const cashierOrderSummary_handleCancelOrder = () => {};
+  const cashierOrderSummary_handleCancelOrder = () => {
+    cashierOrderSummary_summary.value.product = [];
+    cashierOrderSummary_summary.value.orderType = 'dine_in';
+    cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod = '';
+    cashierProduct_customerState.value.selectedCustomer = {} as ICashierCustomer;
+    cashierOrderSummary_modalSelectTable.value.selectedTable = [];
+    cashierOrderSummary_modalVoucher.value.form = { voucherId: '', voucher_code: '' };
+    cashierProduct_selectedProduct.value = [];
+    cashierOrderSummary_modalCancelOrder.value.show = false;
+  };
 
   // Modal for payment method selection
   const cashierOrderSummary_modalPaymentMethod = ref<ICashierOrderSummaryModalPaymentMethod>({
@@ -356,19 +365,15 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    */
   const debouncedHandleWatchChanges = debounce(() => {
     // If user doesn't have customer management permission, only check order type
-    const customerCheck = hasCustomerManagementPermission.value 
+    const customerCheck = hasCustomerManagementPermission.value
       ? cashierProduct_customerState.value.selectedCustomer?.id
       : true; // Skip customer validation if no permission
 
-    const tableCheck = hasCustomerManagementPermission.value 
+    const tableCheck = hasCustomerManagementPermission.value
       ? cashierOrderSummary_modalSelectTable.value.selectedTable.length > 0
       : true; // Skip table validation if no permission
 
-    if (
-      customerCheck &&
-      cashierOrderSummary_modalOrderType.value.selectedOrderType &&
-      tableCheck
-    ) {
+    if (customerCheck && cashierOrderSummary_modalOrderType.value.selectedOrderType && tableCheck) {
       cashierOrderSummary_data.value.isExpanded = false;
       cashierOrderSummary_data.value.isExpandedVisible = true;
     } else {
@@ -600,10 +605,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    */
   const cashierOrderSummary_isButtonPlaceOrderDisabled = computed(() => {
     // If user doesn't have customer management permission, skip customer validation
-    const customerValidation = hasCustomerManagementPermission.value 
-      ? (cashierProduct_customerState.value.selectedCustomer?.id === '' ||
-         cashierProduct_customerState.value.selectedCustomer?.id === null ||
-         cashierProduct_customerState.value.selectedCustomer?.id === undefined)
+    const customerValidation = hasCustomerManagementPermission.value
+      ? cashierProduct_customerState.value.selectedCustomer?.id === '' ||
+        cashierProduct_customerState.value.selectedCustomer?.id === null ||
+        cashierProduct_customerState.value.selectedCustomer?.id === undefined
       : false;
 
     // If user doesn't have customer management permission, skip table validation for dine_in
