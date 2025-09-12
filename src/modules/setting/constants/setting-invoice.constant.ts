@@ -1,5 +1,6 @@
 // Components
-import AppBaseInvoicePaper from '@/app/components/base/AppBaseInvoicePaper.vue';
+// import AppBaseInvoicePaper from '@/app/components/base/AppBaseInvoicePaper.vue';
+import AppBaseKitchenAndTableTicket from '@/app/components/base/AppBaseKitchenAndTableTicket.vue'
 import SettingInvoiceCashierPreview from '../components/setting-invoice/SettingInvoiceCashierPreview.vue';
 
 export const LIST_GENERAL_SETTINGS_INVOICE: IDefaultContent[] = [
@@ -93,12 +94,12 @@ export const LIST_TABS_INVOICE_PREVIEW: ITabs[] = [
     value: 'cashier-invoice',
   },
   {
-    component: AppBaseInvoicePaper,
+    component: AppBaseKitchenAndTableTicket,
     label: 'Kitchen Ticket',
     value: 'kitchen-ticket',
   },
   {
-    component: AppBaseInvoicePaper,
+    component: AppBaseKitchenAndTableTicket,
     label: 'Table Ticket',
     value: 'table-ticket',
   },
