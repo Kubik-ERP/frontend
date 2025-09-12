@@ -34,7 +34,7 @@ const orderTypeLabel = computed(() => {
       invoice_invoiceData.currentOutlet
     "
     id="invoice-paper"
-    class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4"
+    class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4 max-w-screen md:max-w-xl"
   >
     <section v-if="invoice_invoiceData.configInvoice.isShowCompanyLogo" id="logo">
       <pre>

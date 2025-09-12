@@ -11,7 +11,10 @@ import { IInvoiceProvided } from '../../interfaces';
 const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 </script>
 <template>
-  <section id="table-ticket" class="invoice-paper bg-white flex text-sm flex-col items-center gap-2 w-full p-4">
+  <section
+    id="table-ticket"
+    class="invoice-paper bg-white flex text-sm flex-col items-center gap-2 w-full p-4 max-w-screen md:max-w-xl"
+  >
     <div class="invoice-name">
       <span class="font-bold w-full flex justify-center">{{
         invoice_invoiceData.tableKitchenTicket?.customer?.name || ''
