@@ -24,6 +24,7 @@ export const useBrandActionService = (): IBrandActionProvided => {
 
   // rules simple (ganti/expand sesuai kebutuhan)
   const brand_formValidationRules = computed(() => ({
+    code: {},
     brandName: { required },
     notes: {},
   }));
@@ -44,6 +45,7 @@ export const useBrandActionService = (): IBrandActionProvided => {
         position: EToastPosition.TOP_RIGHT,
       };
       eventBus.emit('AppBaseToast', argsEventEmitter);
+      console.warn('Form is invalid', brand_formValidationInstance.value.$errors);
       return;
     }
 

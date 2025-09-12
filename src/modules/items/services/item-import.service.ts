@@ -41,9 +41,12 @@ export const useInventoryItemImportService = (): IInventoryItemImportProvided =>
           eventBus.emit('AppBaseToast', argsEventEmitter);
         }
 
+
+
         await store.InventoryItems_fetchData( inventoryItems_queryParams ,{
           ...httpAbort_registerAbort(ITEMS_LIST_REQUEST),
         })
+        localStorage.removeItem('inventory_batch_id');
         inventoryItem_onClose();
       }
     } catch (error) {
