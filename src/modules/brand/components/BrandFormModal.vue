@@ -58,7 +58,9 @@ watch(
       brand_formData.brandName = item.brandName ?? '';
       brand_formData.notes = item.notes ?? '';
       brand_formData.code = item.code ?? '';
+      brand_formValidation.value.$touch();
     } else {
+      brand_formValidation.value.$reset();
       brand_formData.brandName = '';
       brand_formData.notes = '';
       brand_formData.code = '';
@@ -93,6 +95,13 @@ const handleSubmit = async () => {
   }
 };
 
+const handleCancel = () => {
+  brand_onCancel();
+  brand_formValidation.value.$reset();
+  brand_formData.brandName = '';
+  brand_formData.notes = '';
+  brand_formData.code = '';
+}
 // fungsi jika user confirm update
 const confirmUpdate = async () => {
   const id = brand_editingItem.value?.id;
@@ -213,7 +222,7 @@ const handleDelete = async () => {
           type="button"
           class="w-full bg-white text-primary border border-primary"
           :disabled="brand_formOnLoading"
-          @click="brand_onCancel"
+          @click="handleCancel"
         >
           {{ useLocalization('brand.form.buttons.cancel') || 'Cancel' }}
         </PrimeVueButton>

@@ -23,21 +23,21 @@ export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
     sortable: false,
     value: 'brandName',
   },
-  {
-    label: 'Unit',
-    sortable: false,
-    value: 'unit',
-  },
+  // {
+  //   label: 'Unit',
+  //   sortable: false,
+  //   value: 'unit',
+  // },
   {
     label: 'Stock Quantity',
     sortable: true,
     value: 'stockQuantity',
   },
-  {
-    label: 'Reorder Level',
-    sortable: true,
-    value: 'reorderLevel',
-  },
+  // {
+  //   label: 'Reorder Level',
+  //   sortable: true,
+  //   value: 'reorderLevel',
+  // },
   {
     label: 'Minimum Stock',
     sortable: true,

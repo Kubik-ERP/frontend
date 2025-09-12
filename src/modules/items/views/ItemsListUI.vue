@@ -35,7 +35,7 @@ const rbac = useRbac();
     <AppBaseDataTable
       :columns="inventoryItems_colums"
       :data="inventoryItems_values.data.items"
-            :header-title="useLocalization('items.list.title')"
+      :header-title="useLocalization('items.list.title')"
       :rows-per-page="inventoryItems_values.data.meta.pageSize"
       :total-records="inventoryItems_values.data.meta.total"
       :first="(inventoryItems_values.data.meta.page - 1) * inventoryItems_values.data.meta.pageSize"
@@ -47,6 +47,7 @@ const rbac = useRbac();
       is-using-header
       is-using-custom-body
       :is-using-custom-filter="true"
+      class="w-full md:max-w-5xl"
       @update:currentPage="inventoryItems_onChangePage"
       @update:sort="inventoryItems_handleOnSortChange"
     >
