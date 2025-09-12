@@ -2,24 +2,6 @@
 import type { IDashboardProvided } from '../interfaces';
 // inject
 const { dashboard_values } = inject<IDashboardProvided>('dashboard')!;
-dashboard_values.value.paymentMethods = [
-  {
-    label: 'Cash',
-    value: 100000,
-  },
-  {
-    label: 'Qris',
-    value: 100000,
-  },
-  {
-    label: 'Debit Card',
-    value: 100000,
-  },
-  {
-    label: 'Credit Card',
-    value: 100000,
-  },
-];
 </script>
 <template>
   <section
