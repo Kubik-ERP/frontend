@@ -14,7 +14,7 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
   <section id="table-ticket" class="invoice-paper bg-white flex text-sm flex-col items-center gap-2 w-full p-4">
     <div class="invoice-name">
       <span class="font-bold w-full flex justify-center">{{
-        invoice_invoiceData.tableKitchenTicket?.customer.name
+        invoice_invoiceData.tableKitchenTicket?.customer?.name || ''
       }}</span>
       <span class="w-full flex justify-center text-[10px]">Table Checker</span>
     </div>
