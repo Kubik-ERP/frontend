@@ -1,13 +1,28 @@
 {
   "brand": {
+    "table": {
+      "code": "Kode Merek",
+      "name": "Nama Merek",
+      "description": "Deskripsi",
+      "createdAt": "Dibuat Pada",
+      "updatedAt": "Diperbarui Pada",
+      "actions": "Aksi"
+    },
     "title": "Daftar Merek",
+    "headerTitle": "Merek",
     "createButton": "Buat Merek",
     "editButton": "Ubah",
     "deleteButton": "Hapus",
     "searchPlaceholder": "Cari merek...",
     "noDataMessage": "Tidak ada merek yang ditemukan.",
     "form": {
+      "title": {
+        "create": "Tambah Merek Baru",
+        "edit": "Ubah Merek"
+      },
       "code": "Kode Merek",
+      "codePlaceholder": "Masukkan kode merek",
+      "autoGenerate": "Buat Otomatis",
       "name": "Nama Merek",
       "description": "Deskripsi",
       "fields": {
@@ -16,8 +31,14 @@
       },
       "buttons": {
         "cancel": "Batal",
-        "create": "Buat",
-        "update": "Perbarui"
+        "create": "Simpan",
+        "update": "Perbarui",
+        "import": "Impor"
+      },
+      "dialog": {
+        "updateConfirmationTitle": "Apakah Anda yakin ingin memperbarui merek ini?",
+        "updateConfirmationMessage": "Pembaruan akan memengaruhi data merek terkait",
+        "confirm": "Ya, Saya Yakin"
       }
     },
     "popover": {
@@ -29,6 +50,18 @@
         "title": "Hapus Merek",
         "message": "Apakah Anda yakin ingin menghapus merek ini?"
       }
+    },
+    "import": {
+      "title": "Impor File",
+      "dropzone": "Letakkan file CSV/XLSX Anda di sini",
+      "or": "atau",
+      "clickToBrowse": "klik untuk menelusuri dari perangkat Anda.",
+      "downloadTemplate": "Unduh Excel",
+      "uploading": "Mengunggah file...",
+      "success": "Berhasil",
+      "failed": "Gagal",
+      "cancel": "Batal",
+      "import": "Impor"
     }
   }
 }

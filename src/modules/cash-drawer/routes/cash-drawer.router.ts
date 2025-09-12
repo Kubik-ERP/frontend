@@ -10,7 +10,7 @@ import type { RouteRecordRaw } from 'vue-router';
 export default {
   path: 'cash-drawer',
   name: 'cash-drawer',
-  component: () => AppBaseWrapper,
+  component: AppBaseWrapper,
   children: [
     {
       path: ':id/cash-register',

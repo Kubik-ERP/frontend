@@ -19,6 +19,9 @@ const {
   authenticationResetPassword_isSuccess,
   authenticationResetPassword_onSubmit,
   authenticationResetPassword_stepper,
+  authenticationResetPassword_resendCooldown,
+  authenticationResetPassword_canResend,
+  authenticationResetPassword_onResendEmail,
 } = useAuthenticationResetPasswordService();
 
 /**
@@ -32,6 +35,9 @@ provide('authenticationResetPassword', {
   authenticationResetPassword_isLoading,
   authenticationResetPassword_isPinInvalid,
   authenticationResetPassword_onSubmit,
+  authenticationResetPassword_resendCooldown,
+  authenticationResetPassword_canResend,
+  authenticationResetPassword_onResendEmail,
 });
 </script>
 

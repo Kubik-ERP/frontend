@@ -72,6 +72,7 @@ export interface ICashierListTable {
   available: boolean;
   totalSeat: number;
   floor: number;
+  statusTable: 'available' | 'occupied' | 'reserved';
 }
 
 export interface ICashierOrderSummarylistFloor {

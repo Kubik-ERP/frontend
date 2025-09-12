@@ -13,6 +13,7 @@ import { debounce } from '@/app/helpers/debounce.helper';
 // interfaces
 import {
   ICashierCalulateEstimationData,
+  ICashierListTable,
   ICashierOrderSummary,
   ICashierOrderSummaryData,
   ICashierOrderSummaryModalAddCustomer,
@@ -189,7 +190,16 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description Handle cancel order action
    * @returns void
    */
-  const cashierOrderSummary_handleCancelOrder = () => {};
+  const cashierOrderSummary_handleCancelOrder = () => {
+    cashierOrderSummary_summary.value.product = [];
+    cashierOrderSummary_summary.value.orderType = 'dine_in';
+    cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod = '';
+    cashierProduct_customerState.value.selectedCustomer = {} as ICashierCustomer;
+    cashierOrderSummary_modalSelectTable.value.selectedTable = [];
+    cashierOrderSummary_modalVoucher.value.form = { voucherId: '', voucher_code: '' };
+    cashierProduct_selectedProduct.value = [];
+    cashierOrderSummary_modalCancelOrder.value.show = false;
+  };
 
   // Modal for payment method selection
   const cashierOrderSummary_modalPaymentMethod = ref<ICashierOrderSummaryModalPaymentMethod>({
@@ -261,7 +271,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     selectedTable: [],
     activeFloor: 1,
     listFloor: CASHIER_DUMMY_LIST_FLOOR,
-    data: CASHIER_DUMMY_LIST_TABLE,
+    data: CASHIER_DUMMY_LIST_TABLE as ICashierListTable[],
   });
 
   /**
@@ -371,19 +381,15 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    */
   const debouncedHandleWatchChanges = debounce(() => {
     // If user doesn't have customer management permission, only check order type
-    const customerCheck = hasCustomerManagementPermission.value 
+    const customerCheck = hasCustomerManagementPermission.value
       ? cashierProduct_customerState.value.selectedCustomer?.id
       : true; // Skip customer validation if no permission
 
-    const tableCheck = hasCustomerManagementPermission.value 
+    const tableCheck = hasCustomerManagementPermission.value
       ? cashierOrderSummary_modalSelectTable.value.selectedTable.length > 0
       : true; // Skip table validation if no permission
 
-    if (
-      customerCheck &&
-      cashierOrderSummary_modalOrderType.value.selectedOrderType &&
-      tableCheck
-    ) {
+    if (customerCheck && cashierOrderSummary_modalOrderType.value.selectedOrderType && tableCheck) {
       cashierOrderSummary_data.value.isExpanded = false;
       cashierOrderSummary_data.value.isExpandedVisible = true;
     } else {
@@ -449,7 +455,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       const response = await storeVoucher.voucherList_getActiveVoucher(search, productIds ?? []);
       const data = response.data;
 
-      cashierOrderSummary_modalVoucher.value.form.voucherId = data[0].id;
       voucherData.value = data.map((voucher: IVoucher) => {
         const total = cashierOrderSummary_calculateEstimation.value.data.grandTotal;
         const isAmountMatch = total >= voucher.minPrice;
@@ -616,10 +621,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    */
   const cashierOrderSummary_isButtonPlaceOrderDisabled = computed(() => {
     // If user doesn't have customer management permission, skip customer validation
-    const customerValidation = hasCustomerManagementPermission.value 
-      ? (cashierProduct_customerState.value.selectedCustomer?.id === '' ||
-         cashierProduct_customerState.value.selectedCustomer?.id === null ||
-         cashierProduct_customerState.value.selectedCustomer?.id === undefined)
+    const customerValidation = hasCustomerManagementPermission.value
+      ? cashierProduct_customerState.value.selectedCustomer?.id === '' ||
+        cashierProduct_customerState.value.selectedCustomer?.id === null ||
+        cashierProduct_customerState.value.selectedCustomer?.id === undefined
       : false;
 
     // If user doesn't have customer management permission, skip table validation for dine_in
@@ -645,7 +650,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description Handle calculation of estimation
    * @returns void
    */
-  const cashierOrderSummary_handleCalculateEstimation = async () => {
+  const cashierOrderSummary_handleCalculateEstimation = async (recalculating = false) => {
     cashierOrderSummary_calculateEstimation.value.isLoading = true;
 
     try {
@@ -659,6 +664,20 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       );
 
       cashierOrderSummary_calculateEstimation.value.data = response.data;
+
+      if (!recalculating) {
+        await getVoucherActive(
+          cashierOrderSummary_modalVoucher.value.search,
+          cashierProduct_selectedProduct.value.map(p => p.productId),
+        );
+
+        const firstAvailable = voucherData.value.find(v => v.available);
+        if (firstAvailable && firstAvailable.id !== cashierOrderSummary_modalVoucher.value.form.voucherId) {
+          cashierOrderSummary_modalVoucher.value.form.voucherId = firstAvailable.id;
+          cashierOrderSummary_modalVoucher.value.form.voucher_code = firstAvailable.code;
+          await cashierOrderSummary_handleCalculateEstimation(true);
+        }
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -685,6 +704,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         cashierOrderSummary_modalOrderType.value.selectedOrderType &&
         cashierProduct_selectedProduct.value.length > 0
       ) {
+        cashierOrderSummary_modalVoucher.value.form.voucherId = '';
+        cashierOrderSummary_modalVoucher.value.form.voucher_code = '';
         debouncedCalculateEstimation();
       } else {
         cashierOrderSummary_calculateEstimation.value.data = {

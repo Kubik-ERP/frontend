@@ -15,13 +15,14 @@ export interface IAccountStoreTable {
   shape: 'SQUARE' | 'RECTANGLE' | 'ROUND';
   storeId: string;
   uid: number;
+  statusTable: 'available' | 'occupied' | 'reserved';
   updatedAt: Date | string;
   width: number;
 }
 
 export type IAccountStoreTableConfigurationFormDataOfAddTable = Omit<
   IAccountStoreTable,
-  'id' | 'createdAt' | 'updatedAt' | 'storeId' | 'floorId' | 'uid'
+  'id' | 'createdAt' | 'updatedAt' | 'storeId' | 'floorId' | 'uid' | 'statusTable'
 >;
 
 export interface IAccountStoreTableConfigurationFormDataOfAddFloor {

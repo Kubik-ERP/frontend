@@ -39,6 +39,7 @@ const props = withDefaults(defineProps<IProps>(), {
         shape: 'RECTANGLE',
         storeId: '',
         uid: 0,
+        statusTable: 'available',
         updatedAt: '',
       },
     ],
@@ -69,10 +70,12 @@ const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetai
         :class="[
           table.shape === 'ROUND' ? 'rounded-full' : 'rounded-lg',
           table.isEnableQrCode ? 'has-qr-code' : '',
-          props.cashierPreview ? 'cursor-pointer' : '',
           (modelValue || []).includes(table.name)
-            ? 'bg-secondary-hover text-white'
-            : 'bg-white border border-teal-400 text-secondary-hover',
+            ? 'bg-secondary-hover text-white border-2 border-teal-400'
+            : table.statusTable === 'occupied' && props.cashierPreview
+              ? 'bg-primary-50 text-primary-400 border-2'
+              : 'bg-white text-secondary-hover border border-teal-400',
+          props.cashierPreview ? 'cursor-pointer' : '',
         ]"
         :data-id="table.name"
         :style="{
@@ -103,9 +106,7 @@ const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetai
           @click="accountStoreDetail_onShowDialogDetailTable(table)"
         />
         <div class="font-bold text-sm">{{ table.name }}</div>
-        <div v-if="props.cashierPreview" class="text-[10px] lg:text-sm">
-          {{ useLocalization('account.available') }}
-        </div>
+        <div v-if="props.cashierPreview" class="text-[10px] lg:text-sm">{{ table.statusTable === 'occupied' ? useLocalization('account.occupied') : useLocalization('account.available') }}</div>
         <div class="text-sm pb-2">{{ table.seats }} {{ useLocalization('account.seats') }}</div>
       </div>
     </section>

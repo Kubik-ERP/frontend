@@ -169,6 +169,7 @@ const onDateSelect = (val: [Date, Date] | null) => {
           is-name-as-label
           label-for="validity"
           name="Validity"
+          :validators="voucherFormDataValidations.startDate"
         >
           <PrimeVueDatePicker
             v-model="form.validity"
@@ -180,6 +181,7 @@ const onDateSelect = (val: [Date, Date] | null) => {
             :hide-on-range-selection="true"
             :manual-input="false"
             @update:value="onDateSelect"
+            
           />
         </AppBaseFormGroup>
       </div>

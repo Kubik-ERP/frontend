@@ -42,6 +42,9 @@ const orderStatusLabel = computed(() => {
   );
   return status?.label ?? '';
 });
+
+const rbac = useRbac();
+const hasPermission = rbac.hasPermission('edit_invoice')
 </script>
 
 <template>
@@ -56,13 +59,13 @@ const orderStatusLabel = computed(() => {
       <p id="invoice-id" class="font-semibold text-black text-lg">{{ invoice_invoiceData.data?.invoiceNumber }}</p>
     </section>
 
-    <section
+    <!-- <section
       id="box-icon"
       class="absolute top-5 right-5 bg-transparent basic-smooth-animation flex items-center gap-1 hover:bg-grayscale-10 p-2 rounded-md cursor-pointer"
     >
       <AppBaseSvg name="more" class="h-4 w-4" />
       <span class="font-normal text-text-disabled text-xs">More</span>
-    </section>
+    </section> -->
 
     <PrimeVueChip
       class="bg-primary-background px-4 py-2 rounded-full"
@@ -157,7 +160,8 @@ const orderStatusLabel = computed(() => {
       </tbody>
 
       <tfoot
-        v-if="
+      v-if="
+          hasPermission &&
           invoice_invoiceData.data.paymentStatus === 'unpaid' &&
           (invoice_invoiceData.data.orderStatus === 'in_progress' ||
             invoice_invoiceData.data.orderStatus === 'placed')
