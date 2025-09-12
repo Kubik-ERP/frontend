@@ -324,18 +324,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     },
     { deep: true },
   );
-  // const productService = useProductService();
-  //   const voucherProductList = ref<IProduct[]>([]);
-
-  //   const fetchVoucherProductList = async (): Promise<void> => {
-  //     try {
-  //       const response = await productService.getAllProducts(1, 100, '');
-  //       voucherProductList.value = response.products;
-  //     } catch (error) {
-  //       console.error('❌ Error fetching voucher product list:', error);
-  //     }
-  //   };
-
   watch(
     () => [
       cashierProduct_selectedProduct.value,
@@ -349,10 +337,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           cashierOrderSummary_modalVoucher.value.search,
           cashierProduct_selectedProduct.value.map(p => p.productId),
         );
-        if (voucherData.value.length > 0) {
-          // Set default value voucherId dengan voucher pertama
-          cashierOrderSummary_modalVoucher.value.form.voucherId = voucherData.value[0].id;
-        }
       }
 
       if (cashierOrderSummary_modalVoucher.value.form.voucherId) {
@@ -671,11 +655,34 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           cashierProduct_selectedProduct.value.map(p => p.productId),
         );
 
-        const firstAvailable = voucherData.value.find(v => v.available);
-        if (firstAvailable && firstAvailable.id !== cashierOrderSummary_modalVoucher.value.form.voucherId) {
-          cashierOrderSummary_modalVoucher.value.form.voucherId = firstAvailable.id;
-          cashierOrderSummary_modalVoucher.value.form.voucher_code = firstAvailable.code;
-          await cashierOrderSummary_handleCalculateEstimation(true);
+        const availableVouchers = voucherData.value.filter(v => v.available);
+
+        if (availableVouchers.length > 0) {
+          availableVouchers.sort((a, b) => {
+            // Sort by stock (quota) ascending
+            if (a.stock !== b.stock) {
+              return a.stock - b.stock;
+            }
+
+            // Then sort by discount amount descending
+            const subTotal = cashierOrderSummary_calculateEstimation.value.data.subTotal;
+
+            const discountA =
+              a.type === 'percentage' ? Math.min((subTotal * a.discount) / 100, a.maxDiscount) : a.discount;
+
+            const discountB =
+              b.type === 'percentage' ? Math.min((subTotal * b.discount) / 100, b.maxDiscount) : b.discount;
+
+            return discountB - discountA;
+          });
+
+          const bestVoucher = availableVouchers[0];
+
+          if (bestVoucher && !cashierOrderSummary_modalVoucher.value.form.voucherId) {
+            cashierOrderSummary_modalVoucher.value.form.voucherId = bestVoucher.id;
+            cashierOrderSummary_modalVoucher.value.form.voucher_code = bestVoucher.code;
+            await cashierOrderSummary_handleCalculateEstimation(true);
+          }
         }
       }
     } catch (error: unknown) {
