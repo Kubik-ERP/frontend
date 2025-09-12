@@ -49,6 +49,10 @@ export interface IDashBoardValues {
         quantity: number;
       }[]
     | null;
+  paymentMethods: {
+    label: string;
+    value: number;
+  }[];
   stockStatus: {
     stockStatus: {
       available: number;
