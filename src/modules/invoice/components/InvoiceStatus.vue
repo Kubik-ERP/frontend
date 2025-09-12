@@ -59,13 +59,13 @@ const hasPermission = rbac.hasPermission('edit_invoice')
       <p id="invoice-id" class="font-semibold text-black text-lg">{{ invoice_invoiceData.data?.invoiceNumber }}</p>
     </section>
 
-    <section
+    <!-- <section
       id="box-icon"
       class="absolute top-5 right-5 bg-transparent basic-smooth-animation flex items-center gap-1 hover:bg-grayscale-10 p-2 rounded-md cursor-pointer"
     >
       <AppBaseSvg name="more" class="h-4 w-4" />
       <span class="font-normal text-text-disabled text-xs">More</span>
-    </section>
+    </section> -->
 
     <PrimeVueChip
       class="bg-primary-background px-4 py-2 rounded-full"

@@ -36,7 +36,7 @@ export const useVoucherCreateService = (): IVoucherCreateProvided => {
     amount: { required },
     startDate: { required },
     endDate: { required },
-    status: { required },
+    status: {},
     type: { required },
   }));
 
