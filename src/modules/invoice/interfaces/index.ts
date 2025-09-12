@@ -137,10 +137,10 @@ export interface ITableKitcenTicketData {
     fullname: string;
   };
   orderType: 'dine_in' | 'take_away' | 'self_order';
-  customer: {
+  customer?: {
     id: string;
     name: string;
-  };
+  } | null;
   invoiceDetails: IInvoiceDetail[];
   createdAtFormatted: string;
 }

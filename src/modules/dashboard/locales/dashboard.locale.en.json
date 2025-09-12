@@ -22,6 +22,9 @@
       "title": "Top Products",
       "salesUnit": "sales"
     },
+    "paymentMethods": {
+      "title": "Payment Methods"
+    },
     "stockAvailability": {
       "title": "Stock Availability",
       "available": "Available",

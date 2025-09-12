@@ -85,6 +85,16 @@ export const useDashboardStore = defineStore('dashboard', {
         percentageChange: 0,
       },
       productSales: [],
+      paymentMethods:[
+        {
+          label: 'Cash',
+          value: 0,
+        },
+        {
+          label: 'Qris',
+          value: 0,
+        }
+      ],
       stockStatus: {
         stockStatus: {
           available: 0,

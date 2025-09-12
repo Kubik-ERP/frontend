@@ -71,7 +71,10 @@ const handleDownload = () => {
       <InvoiceHeader />
 
       <InvoiceStatusMobile />
-
+      <!-- <pre>
+          {{ invoice_invoiceData.data?.customer. }}
+        </pre
+      > -->
       <section id="content" class="relative grid grid-rows-1 grid-cols-12 h-[calc(100dvh-5rem)]">
         <InvoicePaper ref="invoicePaperRef" />
         <InvoiceStatus @download="handleDownload" @print="handlePrint" />
