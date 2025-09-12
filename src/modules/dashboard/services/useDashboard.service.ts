@@ -41,12 +41,12 @@ export const useDashboardService = (): IDashboardProvided => {
     const documentStyle = getComputedStyle(document.documentElement);
 
     return {
-      labels: dashboard_values.value.salesData.map(item => item.label),
+      labels: dashboard_values.value === null ? [] : dashboard_values.value.salesData.map(item => item.label),
       datasets: [
         {
           // label: useLocalization('dashboard.chart.label'),
           label: 'Sales',
-          data: dashboard_values.value.salesData.map(item => item.value),
+          data: dashboard_values.value === null ? [] : dashboard_values.value.salesData.map(item => item.value),
           fill: false,
           borderColor: documentStyle.getPropertyValue('--p-cyan-500'),
           tension: 0.4,
@@ -111,6 +111,30 @@ export const useDashboardService = (): IDashboardProvided => {
           'T23:59:59.999Z') as unknown as Date,
         type: dashboard_queryParams.type,
       };
+      console.log(formattedQueryParams);
+      if (formattedQueryParams.type === 'custom') {
+        console.log('custom');
+        // 1. Create a new Date object (a copy) from your original date.
+        const newStartDate = new Date(dashboard_queryParams.startDate);
+        const newEndDate = new Date(dashboard_queryParams.endDate);
+
+        // 2. Use setDate() to add one day to the new object.
+        //    getDate() gets the day of the month (e.g., 11), we add 1 to it.
+        // newStartDate.setDate(newStartDate.getDate() + 1);
+        // newEndDate.setDate(newEndDate.getDate() + 1);
+
+        // 3. Now, assign the new, correct date.
+        formattedQueryParams.startDate = new Date(newStartDate.toISOString().split('T')[0] + 'T00:00:00.000Z');
+        formattedQueryParams.endDate = new Date(newEndDate.toISOString().split('T')[0] + 'T23:59:59.999Z');
+      }
+      if (
+        dashboard_queryParams.startDate.toISOString().split('T')[0] ===
+        dashboard_queryParams.endDate.toISOString().split('T')[0]
+      ) {
+        formattedQueryParams.type = 'time';
+      } else {
+        formattedQueryParams.type = 'days';
+      }
       await store.getDashboardData(formattedQueryParams, {
         ...httpAbort_registerAbort('DASHBOARD_SUMMARY_REQUEST'),
       });

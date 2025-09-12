@@ -15,7 +15,7 @@ const emit = defineEmits(['print', 'download']);
         </section>
       </PrimeVueButton>
 
-      <PrimeVueButton class="py-2.5 px-14" type="button" @click="emit('print')">
+      <PrimeVueButton class="py-2.5 px-14" type="button" @click="emit('print', 'invoice')">
         <section class="flex gap-2 justify-center w-full items-center">
           <AppBaseSvg name="printer" class="!h-5 !w-5" />
           <span class="font-semibold truncate">Print Invoice</span>

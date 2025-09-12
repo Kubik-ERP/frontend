@@ -6,7 +6,7 @@
     "edit-store-details": "Edit Store Details",
     "facilities": "Facilities",
     "facility": "Facility",
-
+    "occupied": "Occupied",
     "form": {
       "bank-account-number": "Account Number",
       "bank-account-name": "Account Name",

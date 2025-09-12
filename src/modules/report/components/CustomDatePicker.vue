@@ -20,7 +20,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['update:startDate', 'update:endDate', 'update:type']);
+const emit = defineEmits(['update:startDate', 'update:endDate', 'update:type', 'update:dateTimeType']);
 
 const dialogVisible = ref<boolean>(false);
 
@@ -41,16 +41,19 @@ watch(
 const applyDateChange = () => {
   if (localDateRange.value && localDateRange.value[0]) {
     // Create a new Date object for 'start' to work with
-    const start = (localDateRange.value[0]);
+    const start = localDateRange.value[0];
 
     // If an end date exists, create a new object from it.
     // If not, create a new object by COPYING the start date.
-    const end = localDateRange.value[1] ? (localDateRange.value[1]) : (start); // This creates a copy, not a reference
+    const end = localDateRange.value[1] ? localDateRange.value[1] : start; // This creates a copy, not a reference
 
+    
     emit('update:startDate', start);
     emit('update:endDate', end);
 
-    type.value = null;
+    type.value = 'custom';
+
+    emit('update:dateTimeType', type.value);
     if (props.shouldUpdateType) {
       emit('update:type', type.value);
     }
@@ -64,13 +67,14 @@ const cancelDateChange = () => {
 };
 
 const onClickShortcut = (label: string) => {
-  const today = new Date();
+  let today = new Date();
   let start = new Date();
   let end = new Date();
   let newType = '';
 
   switch (label) {
     case 'Today': {
+      today = new Date();
       start = today;
 
       end = today;
@@ -81,14 +85,17 @@ const onClickShortcut = (label: string) => {
     }
 
     case 'Yesterday': {
+      today = new Date();
       start = new Date(today.setDate(today.getDate() - 1));
 
-      end = new Date(today.setDate(today.getDate() - 1));;
+      end = start;
       newType = 'time';
       break;
     }
 
     case 'This Week': {
+      today = new Date();
+
       const firstDayOfWeek = new Date(today);
       // Assuming Sunday is the first day of the week (day 0)
       firstDayOfWeek.setDate(today.getDate() - today.getDay());
@@ -101,14 +108,18 @@ const onClickShortcut = (label: string) => {
     }
 
     case 'This Month': {
-      start = new Date(today.getFullYear(), today.getMonth(), 2);
-      end = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+      today = new Date();
+
+      start = new Date(today.getFullYear(), today.getMonth(), 1);
+      end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
       newType = 'days';
       break;
     }
 
     case 'Last 30 Days': {
+      today = new Date();
+
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(today.getDate() - 30);
 
@@ -120,8 +131,10 @@ const onClickShortcut = (label: string) => {
     }
 
     case 'Last Month': {
+      today = new Date();
+
       const firstDayOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-      const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
 
       start = firstDayOfLastMonth;
       end = lastDayOfLastMonth;

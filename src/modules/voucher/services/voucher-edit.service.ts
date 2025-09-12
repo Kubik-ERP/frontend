@@ -37,7 +37,7 @@ export const useVoucherEditService = () => {
       amount: { required },
       startPeriod: { required },
       endPeriod: { required },
-      status: { required },
+      status: {},
       isPercent: { required },
       hasProducts: { required },
     }));
