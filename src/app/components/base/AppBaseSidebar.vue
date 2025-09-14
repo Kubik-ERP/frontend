@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Constants
-import { LIST_ADDITIONAL_MENUS, LIST_SIDEBAR_MENUS } from '@/app/constants/menus.constant';
+import { LIST_SIDEBAR_MENUS } from '@/app/constants/menus.constant';
 
 // Helpers
 import { filterMenusByPermissions } from '@/app/helpers/menu-permission.helper';
@@ -34,13 +34,14 @@ const filteredSidebarMenus = computed(() => {
 });
 
 console.log('filteredSidebarMenus', filteredSidebarMenus.value);
-const filteredAdditionalMenus = computed(() => {
-  const filtered = filterMenusByPermissions(
-    [{ name: 'Additional', menus: LIST_ADDITIONAL_MENUS }],
-    authentication_permissions.value,
-  );
-  return filtered[0]?.menus || [];
-});
+// ? Since Additional menus are not used currently, we will comment this out for now
+// const filteredAdditionalMenus = computed(() => {
+//   const filtered = filterMenusByPermissions(
+//     [{ name: 'Additional', menus: LIST_ADDITIONAL_MENUS }],
+//     authentication_permissions.value,
+//   );
+//   return filtered[0]?.menus || [];
+// });
 
 // Compute which submenus should be open based on the current route
 const autoExpandMenus = () => {
@@ -114,7 +115,7 @@ const isAnySubMenuActive = (menu: IMenu): boolean => {
 // Computed classes for sidebar
 const sidebarClasses = computed(() => {
   const baseClasses =
-    'flex flex-col gap-4 bg-background border-r border-solid border-grayscale-10 px-4 py-2 transition-all duration-300 ease-in-out';
+    'sticky inset-0 z-10 overflow-y-auto flex flex-col gap-4 bg-background border-r border-solid border-grayscale-10 px-4 py-2 transition-all duration-300 ease-in-out max-h-dvh';
 
   if (isCurrentlyMobile.value) {
     return `${baseClasses} fixed inset-y-0 left-0 z-[60] w-80 transform overflow-auto ${
@@ -122,7 +123,7 @@ const sidebarClasses = computed(() => {
     }`;
   }
 
-  return `${baseClasses} sticky inset-0 z-0 ${isCollapsed.value ? 'w-20' : 'w-64 min-w-64'}`;
+  return `${baseClasses} ${isCollapsed.value ? 'w-20' : 'w-64 min-w-64'}`;
 });
 
 const handleLogout = async () => {
@@ -140,7 +141,7 @@ const handleLogout = async () => {
   <!-- Mobile Overlay -->
   <div
     v-if="isCurrentlyMobile && isSidebarOpen"
-    class="fixed inset-0 z-[50] bg-black opacity-50 transition-opacity duration-300"
+    class="fixed inset-0 bg-black opacity-50 transition-opacity duration-300"
     @click="handleOverlayClick"
   ></div>
 
@@ -176,7 +177,7 @@ const handleLogout = async () => {
     </header>
 
     <!-- Main Content -->
-    <section id="content" class="flex flex-col gap-2 w-full pb-2 border-b border-solid border-grayscale-10">
+    <section id="content" class="flex flex-col gap-2 w-full pb-2">
       <section id="header-mobile" class="flex flex-col lg:hidden gap-4">
         <img src="@/app/assets/images/app-logo.png" alt="app-icon" class="w-fit h-fit max-w-40 flex-shrink-0" />
 
@@ -363,8 +364,9 @@ const handleLogout = async () => {
       </div>
     </section>
 
+    <!-- ? Since Additional menus are not used currently, we will comment this out for now -->
     <!-- Additional Menus -->
-    <section id="additional-menus" class="flex flex-col gap-2 w-full">
+    <!-- <section id="additional-menus" class="flex flex-col gap-2 w-full">
       <template
         v-for="(additionalMenu, additionalMenuIndex) in filteredAdditionalMenus"
         :key="`additionalMenu-${additionalMenuIndex}`"
@@ -389,7 +391,7 @@ const handleLogout = async () => {
           </p>
         </RouterLink>
       </template>
-    </section>
+    </section> -->
 
     <!-- logout -->
     <section v-if="isCurrentlyMobile" id="logout" class="flex flex-col gap-2 w-full">
