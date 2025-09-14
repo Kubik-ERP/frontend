@@ -91,7 +91,7 @@ const {
                   :min-length="1"
                   :loading="cashierProduct_customerState.isLoading"
                   dropdown
-                  class="w-full"
+                  class="w-full text-sm"
                   placeholder="Please select Customer Name"
                   :disabled="route.name === 'cashier-order-edit'"
                   :virtual-scroller-options="{
@@ -133,7 +133,7 @@ const {
               <PrimeVueIconField v-else class="flex w-full">
                 <PrimeVueInputText
                   :value="cashierProduct_customerState.selectedCustomer?.name"
-                  class="w-full"
+                  class="w-full text-sm"
                   placeholder="Please select Customer Name"
                   disabled
                 >

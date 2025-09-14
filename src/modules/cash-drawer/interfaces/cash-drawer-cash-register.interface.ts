@@ -21,14 +21,15 @@ export interface ICashDrawerCashRegisterQueryParamsOfTransaction {
 
 export interface ICashDrawerCashRegisterProvide {
   cashDrawerCashRegister_detail: globalThis.Ref<ICashDrawerItem | null>;
-  cashDrawerCashRegister_fetchCashDrawerDetails: () => Promise<unknown>;
-  cashDrawerCashRegister_fetchTrasanctions: () => Promise<unknown>;
+  cashDrawerCashRegister_fetchCashDrawerDetails: (id?: string) => Promise<unknown>;
+  cashDrawerCashRegister_fetchTrasanctions: (id?: string) => Promise<unknown>;
   cashDrawerCashRegister_formDataOfCloseTransaction: ICashDrawerCashRegisterFormDataOfCloseTransaction;
   cashDrawerCashRegister_formDataOfTransaction: ICashDrawerCashRegisterFormDataOfTransaction;
   cashDrawerCashRegister_formValidationsOfTransaction: globalThis.Ref<Validation>;
   cashDrawerCashRegister_formValidationsOfCloseTransaction: globalThis.Ref<Validation>;
   cashDrawerCashRegister_getIconOfTypeCashRegister: (type: number) => string;
   cashDrawerCashRegister_getValueOfTypeCashRegister: (type: number) => string;
+  cashDrawerCashRegister_isFormInvalid: globalThis.Ref<boolean>;
   cashDrawerCashRegister_isLoading: globalThis.Ref<boolean>;
   cashDrawerCashRegister_isOpenCashRegisterSummary: globalThis.Ref<boolean>;
   cashDrawerCashRegister_listColumns: IColumnDataTable[];

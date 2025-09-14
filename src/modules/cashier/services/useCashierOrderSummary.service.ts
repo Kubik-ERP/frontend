@@ -10,7 +10,7 @@ import {
 // Helpers
 import { debounce } from '@/app/helpers/debounce.helper';
 
-// interfaces
+// Interfaces
 import {
   ICashierCalulateEstimationData,
   ICashierListTable,
@@ -61,11 +61,21 @@ import { minValue, numeric, required } from '@vuelidate/validators';
 import { useVoucherStore } from '@/modules/voucher/store';
 import { IVoucher } from '@/modules/voucher/interfaces';
 import eventBus from '@/plugins/mitt';
-// import { useProductService } from '@/modules/catalog-product/services/catalog-product.service';
-// import { IProduct } from '@/modules/catalog-product/interfaces';
-// import CashierSummaryModalVoucher from '../components/OrderSummary/Modal/CashierSummaryModalVoucher.vue';
+
+// Services
+import { useCashDrawerCashRegisterService } from '@/modules/cash-drawer/services/cash-drawer-cash-register.service';
+import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
+import { useCashDrawerListService } from '@/modules/cash-drawer/services/cash-drawer-list.service';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
+  /**
+   * @description Destructure all the data and methods what we need
+   */
+  const { cashDrawerCashRegister_fetchCashDrawerDetails, cashDrawerCashRegister_fetchTrasanctions } =
+    useCashDrawerCashRegisterService();
+  const { cashDrawerList_todayStatus } = useCashDrawerListService();
+  const { dailySalesList_fetchListInvoices, dailySalesList_queryParams } = useDailySalesListService();
+
   // Router
   const router = useRouter();
   const route = useRoute();
@@ -86,8 +96,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const storeInvoice = useInvoiceStore();
   const storeVoucher = useVoucherStore();
   const voucherData = ref<ICashierVoucher[]>([]);
-
   const { cashierProduct_selectedProduct } = storeToRefs(store);
+
+  /**
+   * @description Reactive data binding
+   */
+  const cashierOrderSummary_isShowQuickOverview = ref<boolean>(false);
 
   const cashierOrderSummary_modalOrderSummary = ref({
     show: false,
@@ -1063,6 +1077,90 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     }
   };
 
+  /**
+   * @description Handle business logic for closing dialog cash drawer overview
+   */
+  const cashierOrderSummary_onCloseDialogCashDrawerOverview = () => {
+    eventBus.emit('AppBaseDialog', {
+      id: 'cashier-cash-drawer-overview-dialog',
+      isOpen: false,
+    });
+  };
+
+  /**
+   * @description Handle business logic for closing dialog queue overview
+   */
+  const cashierOrderSummary_onCloseDialogQueueOverview = () => {
+    eventBus.emit('AppBaseDialog', {
+      id: 'cashier-queue-overview-dialog',
+      isOpen: false,
+    });
+  };
+
+  /**
+   * @description Handle business logic for closing dialog table overview
+   */
+  const cashierOrderSummary_onCloseDialogTableOverview = () => {
+    eventBus.emit('AppBaseDialog', {
+      id: 'cashier-table-overview-dialog',
+      isOpen: false,
+    });
+  };
+
+  /**
+   * @description Handle business logic for showing dialog cash drawer overview
+   */
+  const cashierOrderSummary_onOpenDialogCashDrawerOverview = async () => {
+    await Promise.all([
+      cashDrawerCashRegister_fetchCashDrawerDetails(cashDrawerList_todayStatus.value?.id),
+      cashDrawerCashRegister_fetchTrasanctions(cashDrawerList_todayStatus.value?.id),
+    ]);
+
+    const argsEventEmitter: IPropsDialog = {
+      id: 'cashier-cash-drawer-overview-dialog',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: 'w-fit',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle business logic for showing dialog quota overview
+   */
+  const cashierOrderSummary_onOpenDialogQueueOverview = async () => {
+    dailySalesList_queryParams.createdAtFrom = new Date();
+    dailySalesList_queryParams.createdAtTo = new Date();
+    await dailySalesList_fetchListInvoices();
+
+    const argsEventEmitter: IPropsDialog = {
+      id: 'cashier-queue-overview-dialog',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: 'w-fit',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle business logic for showing dialog table overview
+   */
+  const cashierOrderSummary_onOpenDialogTableOverview = () => {
+    const argsEventEmitter: IPropsDialog = {
+      id: 'cashier-table-overview-dialog',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: 'w-[1200px]',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
   onMounted(() => {
     if (route.name === 'cashier-order-edit') {
       const invoiceId = route.params.invoiceId as string;
@@ -1166,5 +1264,13 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierProduct_onScrollFetchMoreCustomers,
 
     cashierOrderSummary_handleEditOrder,
+
+    cashierOrderSummary_isShowQuickOverview,
+    cashierOrderSummary_onCloseDialogCashDrawerOverview,
+    cashierOrderSummary_onCloseDialogQueueOverview,
+    cashierOrderSummary_onCloseDialogTableOverview,
+    cashierOrderSummary_onOpenDialogCashDrawerOverview,
+    cashierOrderSummary_onOpenDialogQueueOverview,
+    cashierOrderSummary_onOpenDialogTableOverview,
   };
 };

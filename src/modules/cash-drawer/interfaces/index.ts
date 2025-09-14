@@ -6,6 +6,17 @@ export interface ICashDrawerStateStore {
   cashDrawer_isLoading: boolean;
   cashDrawer_lists: ICashDrawerData | null;
   cashDrawer_transactionOfOpenRegister: ICashDrawerTransactionData;
+  cashDrawer_todayStatus: ICashDrawerTodayStatus | null;
+}
+
+export interface ICashDrawerTodayStatus {
+  actualBalance: number | null;
+  createdAt: Date;
+  createdBy: number;
+  expectedBalance: number;
+  id: string;
+  notes: string;
+  status: string;
 }
 
 export interface ICashDrawerDetailResponse {
@@ -19,6 +30,11 @@ export interface ICashDrawerResponse {
   message: string;
   data: ICashDrawerData;
 }
+
+export interface ICashDrawerTodayResponse extends IDefaultResponseFetch {
+  data: ICashDrawerTodayStatus | Record<string, never>;
+}
+
 export interface ICashDrawerData {
   items: ICashDrawerItem[];
   meta: ISecondPageMeta;
@@ -73,4 +89,3 @@ export interface ICashDrawerTransactionResponse {
   message: string;
   data: ICashDrawerTransactionData;
 }
-

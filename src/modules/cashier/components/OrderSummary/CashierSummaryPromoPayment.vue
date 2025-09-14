@@ -37,7 +37,7 @@ const selectedPaymentName = computed(
   <section id="cashier-summary-promo-payment" class="border-b-2 border-b-grayscale-10 p-2">
     <div class="flex flex-col lg:flex-row w-full p-2 gap-4 bg-primary-background">
       <PrimeVueButton
-        class="w-full lg:w-1/2 py-2 border border-primary-border text-primary"
+        class="w-full lg:w-1/2 py-2 border border-primary-border text-sm text-primary"
         :class="cashierOrderSummary_modalVoucher.form.voucher_code ? 'bg-white' : ''"
         outlined
         :disabled="route.name === 'cashier-order-edit'"
@@ -48,14 +48,12 @@ const selectedPaymentName = computed(
             <div v-if="cashierOrderSummary_modalVoucher.form.voucher_code" class="flex gap-2 items-center">
               <AppBaseSvg name="tag" class="!h-5 !w-5" />
 
-              <span class="font-semibold truncate">
-                <span class="font-semibold truncate">
-                  {{ selectedVoucherLabel }}
-                </span>
+              <span class="font-semibold text-sm truncate">
+                {{ selectedVoucherLabel }}
               </span>
             </div>
             <div v-else class="flex gap-2 w-full items-center justify-between">
-              <span class="font-semibold truncate">
+              <span class="font-semibold text-sm truncate">
                 {{ useLocalization('cashier.orderSummary.promoVoucher') }}
               </span>
 
@@ -65,7 +63,7 @@ const selectedPaymentName = computed(
         </template>
       </PrimeVueButton>
       <PrimeVueButton
-        class="w-full lg:w-1/2 py-2 border border-primary-border text-primary"
+        class="w-full lg:w-1/2 py-2 border border-primary-border text-sm text-primary"
         :class="cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod ? 'bg-white' : ''"
         outlined
         :disabled="route.name === 'cashier-order-edit'"
@@ -79,11 +77,11 @@ const selectedPaymentName = computed(
             >
               <AppBaseSvg :name="selectedPaymentIcon" class="!h-5 !w-5" />
 
-              <span class="font-semibold truncate">
+              <span class="font-semibold text-sm truncate">
                 {{ selectedPaymentName }}
               </span>
             </div>
-            <span v-else class="font-semibold truncate">
+            <span v-else class="font-semibold text-sm truncate">
               {{ useLocalization('cashier.orderSummary.paymentMethod') }}
             </span>
 

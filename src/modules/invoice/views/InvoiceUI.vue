@@ -13,9 +13,6 @@ import InvoiceCustomerDetails from '../components/self-order/InvoiceCustomerDeta
 import InvoiceStatusMobile from '../components/InvoiceStatusMobile.vue';
 import InvoiceMobileButtonAction from '../components/InvoiceMobileButtonAction.vue';
 
-// Interfaces
-import type { IInvoiceProvided } from '../interfaces/index';
-
 // Services
 import { useInvoiceService } from '../services/useInvoice.service';
 import InvoiceModalPay from '../components/modal/InvoiceModalPay.vue';
@@ -40,7 +37,7 @@ const {
   invoice_handleSimulatePayment,
 } = useInvoiceService();
 
-provide<IInvoiceProvided>('invoice', {
+provide('invoice', {
   invoice_activeInvoice,
   invoice_invoiceData,
   invoice_modalPay,

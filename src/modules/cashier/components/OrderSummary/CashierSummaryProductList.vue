@@ -21,7 +21,7 @@ const showImageUrl = (picture: string | null) => {
 <template>
   <section
     id="cashier-summary-product-list"
-    class="flex flex-col overflow-y-auto flex-grow border-b-grayscale-10 border-b-2 p-4 border-t-grayscale-10 justify-center items-center"
+    class="flex flex-col overflow-y-auto flex-grow border-b-grayscale-10 border-b-2 p-4 border-t-grayscale-10 justify-center items-center h-![5000px]"
     :class="cashierProduct_selectedProduct.length === 0 ? 'justify-center' : 'justify-start'"
   >
     <div v-if="cashierProduct_selectedProduct.length === 0" class="">
@@ -105,7 +105,7 @@ const showImageUrl = (picture: string | null) => {
             >
               <AppBaseSvg name="add-notes" class="h-4 w-4" />
 
-              <span class="font-semibold text-primary">{{
+              <span class="font-semibold text-primary text-sm">{{
                 item.notes ? useLocalization('cashier.edit') : useLocalization('cashier.mainSection.addNotes')
               }}</span>
             </PrimeVueButton>
