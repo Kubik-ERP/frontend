@@ -50,9 +50,11 @@ export interface IDashBoardValues {
       }[]
     | null;
   paymentMethods: {
-    label: string;
-    value: number;
-  }[];
+    paymentMethods: {
+      label: string;
+      value: number;
+    }[];
+  };
   stockStatus: {
     stockStatus: {
       available: number;
