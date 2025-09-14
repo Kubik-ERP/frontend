@@ -2,9 +2,6 @@
 // Components
 import InvoicePaperCashierInvoice from '../components/paper/InvoicePaperCashierInvoice.vue';
 
-// Interfaces
-import type { IInvoiceProvided } from '../interfaces/index';
-
 // Services
 import { useInvoiceService } from '../services/useInvoice.service';
 
@@ -25,13 +22,12 @@ const {
   invoice_handleSimulatePayment,
 } = useInvoiceService();
 
-provide<IInvoiceProvided>('invoice', {
+provide('invoice', {
   invoice_activeInvoice,
   invoice_invoiceData,
   invoice_modalPay,
   invoice_otherOptions,
   invoice_invoiceDataValidation,
-
   invoice_handleDownload,
   invoice_handlePrint,
   invoice_handleOtherOptions,
