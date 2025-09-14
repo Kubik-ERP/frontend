@@ -221,4 +221,12 @@ export interface ICashierOrderSummaryProvided {
   cashierProduct_onScrollFetchMoreCustomers: (event: VirtualScrollerLazyEvent) => void;
 
   cashierOrderSummary_handleEditOrder: () => void;
+
+  cashierOrderSummary_isShowQuickOverview: Ref<boolean>;
+  cashierOrderSummary_onCloseDialogCashDrawerOverview: () => void;
+  cashierOrderSummary_onCloseDialogQueueOverview: () => void;
+  cashierOrderSummary_onCloseDialogTableOverview: () => void;
+  cashierOrderSummary_onOpenDialogCashDrawerOverview: () => void;
+  cashierOrderSummary_onOpenDialogQueueOverview: () => void;
+  cashierOrderSummary_onOpenDialogTableOverview: () => void;
 }

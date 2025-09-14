@@ -19,7 +19,7 @@ const routes: RouteRecordRaw[] = [
           requiresAuthorization: true,
           backArrow: true,
           backArrowPath: '/dashboard',
-          layout: LAYOUT_OPTIONS.NAVBAR,
+          layout: LAYOUT_OPTIONS.EMPTY,
           title: 'Cashier',
         },
         children: [

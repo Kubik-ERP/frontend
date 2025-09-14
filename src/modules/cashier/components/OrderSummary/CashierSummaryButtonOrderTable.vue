@@ -43,7 +43,7 @@ const selectedTableLabel = computed(() => {
       <div class="flex justify-between w-full items-center py-4 gap-2">
         <button
           :class="[
-            'flex border truncate rounded-sm p-2.5 justify-between items-center',
+            'flex border truncate rounded-sm p-2.5 text-sm justify-between items-center',
             props.isSelfOrder ? 'w-full' : 'w-1/2',
             route.name === 'cashier-order-edit' || route.name === 'self-order'
               ? 'cursor-not-allowed opacity-50 bg-transparent border-text-disabled'
@@ -64,7 +64,7 @@ const selectedTableLabel = computed(() => {
         <button
           v-if="!props.isSelfOrder && hasCustomerManagementPermission"
           :class="[
-            'flex w-1/2 border truncate rounded-sm p-2.5 justify-between items-center',
+            'flex w-1/2 border truncate rounded-sm p-2.5 text-sm justify-between items-center',
             route.name === 'cashier-order-edit' ||
             cashierOrderSummary_modalOrderType.selectedOrderType !== 'dine_in'
               ? 'cursor-not-allowed opacity-50 bg-transparent border-text-disabled'

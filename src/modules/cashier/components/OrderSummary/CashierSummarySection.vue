@@ -82,7 +82,7 @@ const {
             :min-length="1"
             :loading="cashierProduct_customerState.isLoading"
             :dropdown="true"
-            class="w-full"
+            class="w-full text-sm placeholder:text-sm"
             placeholder="Please select Customer Name"
             :disabled="route.name === 'cashier-order-edit'"
             :virtual-scroller-options="{
@@ -93,15 +93,25 @@ const {
               loading: cashierProduct_customerState.isLoading,
               onLazyLoad: cashierProduct_onScrollFetchMoreCustomers,
             }"
+            :pt="{
+              pcInputText: 'text-sm placeholder:text-sm',
+              option: 'text-sm',
+            }"
             @complete="(event: AutoCompleteCompleteEvent) => cashierProduct_onSearchCustomer(event.query)"
           >
             <template #option="slotProps">
               <div class="flex gap-1 text-xs w-full items-center">
                 <div class="flex flex-col w-full">
-                  <div class="font-semibold">{{ slotProps.option.name }}</div>
-                  <span class="text-[10px] text-text-disabled">{{ slotProps.option.email }}</span>
+                  <div class="font-semibold text-sm">{{ slotProps.option.name }}</div>
+                  <span class="text-xs text-text-disabled">{{ slotProps.option.email }}</span>
                 </div>
-                <div class="text-[10px]">({{ slotProps.option.code }}) {{ slotProps.option.number }}</div>
+                <div class="text-xs">({{ slotProps.option.code }}) {{ slotProps.option.number }}</div>
+              </div>
+            </template>
+
+            <template #empty>
+              <div class="flex flex-col items-center justify-center p-4 h-full">
+                <p class="font-semibold text-sm text-black">No customer found</p>
               </div>
             </template>
 
@@ -114,6 +124,7 @@ const {
                   severity="secondary"
                   size="small"
                   icon="pi pi-plus"
+                  class="text-sm"
                   @click="cashierOrderSummary_handleModalAddCustomer(null)"
                 />
               </div>
@@ -134,7 +145,7 @@ const {
         <div class="flex items-center gap-1 p-1 bg-primary-background">
           <AppBaseSvg name="order-primary" class="!h-4 !w-4 text-primary" />
 
-          <span class="text-primary font-semibold">
+          <span class="text-primary text-sm font-semibold">
             {{
               CASHIER_ORDER_TYPE.find(
                 (f: ICashierOrderType) => f.code === cashierOrderSummary_modalOrderType.selectedOrderType,
@@ -143,15 +154,12 @@ const {
           </span>
         </div>
 
-        <div
-          v-if="hasCustomerManagementPermission"
-          class="flex items-center gap-1 p-1 bg-primary-background"
-        >
+        <div v-if="hasCustomerManagementPermission" class="flex items-center gap-1 p-1 bg-primary-background">
           <AppBaseSvg name="table-primary" class="!h-4 !w-4 text-primary" />
 
           <span
             v-if="cashierOrderSummary_modalSelectTable.selectedTable.length > 0"
-            class="text-primary font-semibold"
+            class="text-primary text-sm font-semibold"
           >
             {{ cashierOrderSummary_modalSelectTable.selectedTable.toString() }}
           </span>
@@ -176,5 +184,9 @@ const {
 <style>
 .text-text-action-error .p-menu-item-content {
   color: var(--color-text-action-error) !important;
+}
+
+input {
+  font-size: 14px !important;
 }
 </style>

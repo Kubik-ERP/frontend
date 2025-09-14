@@ -60,6 +60,7 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
       endDate: null,
     });
   const cashDrawerCashRegister_routeParamsId = route.params?.id ? String(route.params.id) : '';
+  const cashDrawerCashRegister_selectedCashDrawerId = ref<string | null>(null);
   const cashDrawerCashRegister_typeOfTransaction = ref<'in' | 'out'>('in');
 
   /**
@@ -81,12 +82,22 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
   );
 
   /**
+   * @description Computed property to check if the cash drawer transaction form is invalid
+   * This isolates the validation check to only the cash drawer fields, avoiding pollution from other forms
+   */
+  const cashDrawerCashRegister_isFormInvalid = computed(() => {
+    const validation = cashDrawerCashRegister_formValidationsOfTransaction.value;
+    // Check specifically for the amount field validation
+    return !validation.amount || validation.amount.$invalid;
+  });
+
+  /**
    * @description Handle fetch api cash drawer. We call the cashDrawer_addTransaction function from the store to handle the request.
    */
   const cashDrawerCashRegister_fetchAddTransaction = async (): Promise<unknown> => {
     try {
       await store.cashDrawer_addTransaction(
-        cashDrawerCashRegister_routeParamsId,
+        cashDrawer_detail.value?.id ?? cashDrawerCashRegister_routeParamsId,
         cashDrawerCashRegister_typeOfTransaction.value,
         cashDrawerCashRegister_formDataOfTransaction,
         {
@@ -126,11 +137,20 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
   /**
    * @description Handle fetch api cash drawer. We call the cashDrawer_list function from the store to handle the request.
    */
-  const cashDrawerCashRegister_fetchCashDrawerDetails = async (): Promise<unknown> => {
+  const cashDrawerCashRegister_fetchCashDrawerDetails = async (id?: string): Promise<unknown> => {
+    if (id) {
+      if (cashDrawerCashRegister_selectedCashDrawerId.value === id) return;
+
+      cashDrawerCashRegister_selectedCashDrawerId.value = id;
+    }
+
     try {
-      await store.cashDrawer_details(cashDrawerCashRegister_routeParamsId, {
-        ...httpAbort_registerAbort(CASH_DRAWER_DETAILS_REQUEST),
-      });
+      await store.cashDrawer_details(
+        cashDrawerCashRegister_selectedCashDrawerId.value ?? cashDrawerCashRegister_routeParamsId,
+        {
+          ...httpAbort_registerAbort(CASH_DRAWER_DETAILS_REQUEST),
+        },
+      );
 
       if (cashDrawer_detail.value?.actualBalance) {
         cashDrawerCashRegister_differenceBalance.value =
@@ -149,10 +169,10 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
   /**
    * @description Handle fetch api cash drawer. We call the cashDrawer_list function from the store to handle the request.
    */
-  const cashDrawerCashRegister_fetchTrasanctions = async (): Promise<unknown> => {
+  const cashDrawerCashRegister_fetchTrasanctions = async (id?: string): Promise<unknown> => {
     try {
       await store.cashDrawer_transactions(
-        cashDrawerCashRegister_routeParamsId,
+        id ?? cashDrawer_detail.value?.id ?? cashDrawerCashRegister_routeParamsId,
         cashDrawerCashRegister_queryParamsOfTransaction,
         {
           ...httpAbort_registerAbort(CASH_DRAWER_TRANSACTION_REQUEST),
@@ -211,6 +231,11 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
    * @description Handle business logic for closing dialog add transaction
    */
   const cashDrawerCashRegister_onCloseDialogAddTransaction = (): void => {
+    // Reset form data and validation state when closing dialog
+    cashDrawerCashRegister_formDataOfTransaction.amount = null;
+    cashDrawerCashRegister_formDataOfTransaction.notes = null;
+    cashDrawerCashRegister_formValidationsOfTransaction.value.$reset();
+
     const argsEventEmitter: IPropsDialog = {
       id: 'cash-drawer-add-transaction-dialog',
       isOpen: false,
@@ -267,6 +292,11 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
   const cashDrawerCashRegister_onOpenDialogAddTransaction = (type: 'in' | 'out'): void => {
     cashDrawerCashRegister_typeOfTransaction.value = type;
 
+    // Reset form data and validation state when opening dialog
+    cashDrawerCashRegister_formDataOfTransaction.amount = null;
+    cashDrawerCashRegister_formDataOfTransaction.notes = null;
+    cashDrawerCashRegister_formValidationsOfTransaction.value.$reset();
+
     const argsEventEmitter: IPropsDialog = {
       id: 'cash-drawer-add-transaction-dialog',
       isUsingClosableButton: false,
@@ -299,14 +329,19 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
   const cashDrawerCashRegister_onSubmitAddTransaction = async (): Promise<void> => {
     cashDrawerCashRegister_formValidationsOfTransaction.value.$touch();
 
-    if (cashDrawerCashRegister_formValidationsOfTransaction.value.$invalid) {
+    // Use the specific form validation check instead of the general $invalid
+    if (cashDrawerCashRegister_isFormInvalid.value) {
       return;
     }
 
     try {
       await cashDrawerCashRegister_fetchAddTransaction();
-      await cashDrawerCashRegister_fetchCashDrawerDetails();
-      await cashDrawerCashRegister_fetchTrasanctions();
+      await cashDrawerCashRegister_fetchCashDrawerDetails(
+        cashDrawer_detail.value?.id ?? cashDrawerCashRegister_routeParamsId,
+      );
+      await cashDrawerCashRegister_fetchTrasanctions(
+        cashDrawer_detail.value?.id ?? cashDrawerCashRegister_routeParamsId,
+      );
       cashDrawerCashRegister_onCloseDialogAddTransaction();
 
       // Reset the form and validation
@@ -375,6 +410,7 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
     cashDrawerCashRegister_formValidationsOfTransaction,
     cashDrawerCashRegister_getIconOfTypeCashRegister,
     cashDrawerCashRegister_getValueOfTypeCashRegister,
+    cashDrawerCashRegister_isFormInvalid,
     cashDrawerCashRegister_isLoading: cashDrawer_isLoading,
     cashDrawerCashRegister_isOpenCashRegisterSummary,
     cashDrawerCashRegister_listColumns: CASH_DRAWER_LIST_COLUMNS_OF_CASH_REGISTER,

@@ -3,6 +3,7 @@ import {
   CASH_DRAWER_LIST_COLUMNS,
   CASH_DRAWER_LIST_REQUEST,
   CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE,
+  CASH_DRAWER_STATUS_REQUEST,
 } from '../constants/cash-drawer.constant';
 
 // Interfaces
@@ -33,7 +34,7 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
   const outletStore = useOutletStore(); // Instance of the outlet store
   const router = useRouter();
   const store = useCashDrawerStore(); // Instance of the store
-  const { cashDrawer_isLoading, cashDrawer_lists } = storeToRefs(store);
+  const { cashDrawer_isLoading, cashDrawer_lists, cashDrawer_todayStatus } = storeToRefs(store);
   const { outlet_currentOutlet } = storeToRefs(outletStore);
   const { httpAbort_registerAbort } = useHttpAbort();
 
@@ -73,6 +74,25 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
       await store.cashDrawer_list(outlet_currentOutlet.value!.id, cashDrawerList_queryParams, {
         ...httpAbort_registerAbort(CASH_DRAWER_LIST_REQUEST),
       });
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api cash drawer . We call the cashDrawer_status function from the store to handle the request.
+   */
+  const cashDrawerList_fetchTodayStatus = async (): Promise<unknown> => {
+    try {
+      const result = await store.cashDrawer_status(outlet_currentOutlet.value!.id, {
+        ...httpAbort_registerAbort(CASH_DRAWER_STATUS_REQUEST),
+      });
+
+      return Promise.resolve(result);
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -211,6 +231,7 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
   return {
     cashDrawerList_columns: CASH_DRAWER_LIST_COLUMNS,
     cashDrawerList_fetchListTransactions,
+    cashDrawerList_fetchTodayStatus,
     cashDrawerList_formDataOfOpenRegister,
     cashDrawerList_formValidationsOfOpenRegister,
     cashDrawerList_getClassOfStatus,
@@ -221,6 +242,7 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
     cashDrawerList_onSubmitOpenRegisterForm,
     cashDrawerList_queryParams,
     cashDrawerList_suggestionRegisterBalance: CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE,
+    cashDrawerList_todayStatus: cashDrawer_todayStatus,
     cashDrawerList_values: cashDrawer_lists,
   };
 };
