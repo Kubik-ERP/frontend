@@ -22,6 +22,8 @@ import type {
   ICashDrawerStateStore,
   ICashDrawerCashRegisterQueryParamsOfTransaction,
   ICashDrawerCashRegisterFormDataOfCloseTransaction,
+  ICashDrawerTodayResponse,
+  ICashDrawerTodayStatus,
 } from '../interfaces';
 
 // Plugins
@@ -32,6 +34,7 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
     cashDrawer_detail: null,
     cashDrawer_isLoading: false,
     cashDrawer_lists: null,
+    cashDrawer_todayStatus: null,
     cashDrawer_transactionOfOpenRegister: {
       items: [],
       meta: {
@@ -246,13 +249,23 @@ export const useCashDrawerStore = defineStore('cash-drawer', {
      * @method GET
      * @access private
      */
-    async cashDrawer_status(cashDrawerId: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async cashDrawer_status(
+      storeId: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<ICashDrawerTodayResponse> {
       this.cashDrawer_isLoading = true;
 
       try {
-        const response = await httpClient.get(`${CASH_DRAWER_STATUS_ENDPOINT}/${cashDrawerId}`, {
-          ...requestConfigurations,
-        });
+        const response = await httpClient.get<ICashDrawerTodayResponse>(
+          `${CASH_DRAWER_STATUS_ENDPOINT}/${storeId}`,
+          {
+            ...requestConfigurations,
+          },
+        );
+
+        if (Object.keys(response.data.data).length) {
+          this.cashDrawer_todayStatus = response.data.data as ICashDrawerTodayStatus;
+        }
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {

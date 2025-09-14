@@ -31,7 +31,7 @@ const imageUrl = computed(() => {
       v-if="!cashierProduct_productState.isLoadingProduct"
       :unstyled="true"
       :pt="{
-        body: 'rounded-sm bg-white border border-grayscale-10 shadow-none drop-shadow-none p-2 cursor-pointer hover:border-grayscale-20 active:bg-grayscale-10/5',
+        body: 'rounded-2x bg-white border border-grayscale-10 shadow-none drop-shadow-none p-2 cursor-pointer hover:border-grayscale-20 active:bg-grayscale-10/5',
       }"
       :class="{
         'border-primary-border border rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]': isProductActive(
@@ -42,7 +42,7 @@ const imageUrl = computed(() => {
     >
       <template #content>
         <section id="cashier-card-content" class="flex flex-col gap-2 relative">
-          <AppBaseImage :src="imageUrl" :alt="props.product.name" class="h-[98px] w-full object-cover" />
+          <AppBaseImage :src="imageUrl" :alt="props.product.name" class="h-40 w-full object-cover rounded-sm" />
 
           <div
             v-if="isProductActive(props.product)"
@@ -57,9 +57,15 @@ const imageUrl = computed(() => {
           </p>
 
           <div class="flex w-full mt-2 justify-between items-end">
-            <div class="bg-primary-background p-1 h-fit rounded-full">
+            <PrimeVueChip
+              class="bg-primary-background font-normal text-xs px-2 py-[6px] text-text-disabled"
+              :label="props.category"
+            />
+
+            <!-- <div class="bg-primary-background py-1 px-2 h-fit rounded-full">
               <span class="text-xs text-text-disabled">{{ props.category }}</span>
-            </div>
+            </div> -->
+
             <div class="flex flex-col">
               <!-- Harga coret (asli) -->
               <span

@@ -53,8 +53,11 @@ const imageUrl = (image: string) => {
 </script>
 
 <template>
-  <section id="cashier-filter-by-category" class="hidden lg:flex flex-col gap-2 mb-6 mt-2">
-    <h2 class="text-xs text-text-disabled">{{ useLocalization('cashier.mainSection.filterByCategory') }}</h2>
+  <section id="cashier-filter-by-category" class="hidden lg:flex flex-col gap-4 mb-6 mt-2">
+    <h2 class="font-normal text-xs text-text-disabled">
+      {{ useLocalization('cashier.mainSection.filterByCategory') }}
+    </h2>
+
     <section
       id="cashier-filter-by-category-card"
       ref="containerRef"
@@ -69,7 +72,7 @@ const imageUrl = (image: string) => {
         :key="category.id"
         :unstyled="true"
         :pt="{
-          body: 'rounded-sm bg-white border border-grayscale-10 shadow-none drop-shadow-none p-2 hover:border-grayscale-20 active:bg-grayscale-10/5',
+          body: 'bg-white border border-grayscale-10 shadow-none drop-shadow-none p-4 rounded-2xl hover:border-grayscale-20 active:bg-grayscale-10/5',
         }"
         class="flex-shrink-0 w-[calc(100%/4)] xl:w-[calc(100%/7)] cursor-pointer"
         :class="{
@@ -79,19 +82,15 @@ const imageUrl = (image: string) => {
         @click="cashierProduct_handleSelectCategory(category.id)"
       >
         <template #content>
-          <section id="cashier-card-content" class="flex flex-col gap-[3px]">
+          <section id="cashier-card-content" class="flex flex-col gap-3">
             <AppBaseImage
               :src="imageUrl(category.pictureUrl)"
               :alt="category.category"
-              class="h-10 w-10 rounded-full object-cover pointer-events-none"
+              class="h-8 w-8 rounded-full object-cover pointer-events-none"
             />
 
-            <p class="font-semibold text-sm line-clamp-2">
+            <p class="font-semibold text-sm text-grayscale-70 line-clamp-2">
               {{ category.category }}
-            </p>
-
-            <p class="text-text-disabled text-xs">
-              {{ category.totalItems }} {{ useLocalization('cashier.items') }}
             </p>
           </section>
         </template>

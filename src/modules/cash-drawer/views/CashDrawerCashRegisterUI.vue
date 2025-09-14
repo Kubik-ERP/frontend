@@ -30,6 +30,7 @@ const {
   cashDrawerCashRegister_formValidationsOfTransaction,
   cashDrawerCashRegister_getIconOfTypeCashRegister,
   cashDrawerCashRegister_getValueOfTypeCashRegister,
+  cashDrawerCashRegister_isFormInvalid,
   cashDrawerCashRegister_isLoading,
   cashDrawerCashRegister_isOpenCashRegisterSummary,
   cashDrawerCashRegister_listColumns,
@@ -57,6 +58,7 @@ provide('cashDrawerCashRegister', {
   cashDrawerCashRegister_formDataOfTransaction,
   cashDrawerCashRegister_formValidationsOfCloseTransaction,
   cashDrawerCashRegister_formValidationsOfTransaction,
+  cashDrawerCashRegister_isFormInvalid,
   cashDrawerCashRegister_isLoading,
   cashDrawerCashRegister_isOpenCashRegisterSummary,
   cashDrawerCashRegister_onCloseDialogAddTransaction,
@@ -402,12 +404,8 @@ function handleExport() {
         </template>
 
         <template v-else-if="column.value === 'action'">
-          <PrimeVueButton
-            v-if="data.type === 'Cash In' || data.type === 'Cash Out'"
-            variant="text"
-            rounded
-            aria-label="detail"
-          >
+          <!-- 1. Cash In, 3. Cash Out -->
+          <PrimeVueButton v-if="data.type === 1 || data.type === 3" variant="text" rounded aria-label="detail">
             <template #icon>
               <AppBaseSvg name="delete" class="!w-5 !h-5" />
             </template>

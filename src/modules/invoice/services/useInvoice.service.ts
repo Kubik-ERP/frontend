@@ -326,7 +326,9 @@ export const useInvoiceService = (): IInvoiceProvided => {
     }
   };
 
-  invoice_handleFetchInvoiceById(route.params.invoiceId as string);
+  if (route.name !== 'cashier') {
+    invoice_handleFetchInvoiceById(route.params.invoiceId as string);
+  }
 
   /**
    * @description Fetch kitchen table ticket by invoice ID
@@ -356,7 +358,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
     }
   };
 
-  if (route.name !== 'self-order-invoice') {
+  if (route.name !== 'self-order-invoice' && route.name !== 'cashier') {
     invoice_handleFetchKitchenTableTicket(route.params.invoiceId as string);
   }
 
@@ -432,6 +434,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
 
   return {
     invoice_activeInvoice,
+    invoice_handleFetchInvoiceById,
     invoice_invoiceData,
     invoice_modalPay,
     invoice_otherOptions,

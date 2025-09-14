@@ -4,9 +4,9 @@ import eventBus from '@/plugins/mitt';
 
 // Interfaces
 interface IProps {
-  customBodyClass: string;
-  customHeaderClass: string;
-  customFooterClass: string;
+  customBodyClass?: string;
+  customHeaderClass?: string;
+  customFooterClass?: string;
   id: string; // Unique identifier for this dialog instance
   isDraggable?: boolean;
   isUsingBackdrop?: boolean;
@@ -16,9 +16,9 @@ interface IProps {
 }
 
 const props = withDefaults(defineProps<IProps>(), {
-  customBodyClass: 'p-6',
-  customFooterClass: 'p-6',
-  customHeaderClass: 'p-6',
+  customBodyClass: 'px-6',
+  customFooterClass: 'px-6 pb-6',
+  customHeaderClass: 'px-6 pt-6',
   isDraggable: false,
   isUsingBackdrop: true,
   isUsingClosableButton: true,

@@ -179,6 +179,7 @@ export interface IInvoiceResponseTableKitchenTicket {
 
 export interface IInvoiceProvided {
   invoice_activeInvoice: Ref<number>;
+  invoice_handleFetchInvoiceById: (invoiceId: string) => Promise<void>;
   invoice_invoiceData: Ref<IInvoiceInvoiceData>;
   invoice_modalPay: Ref<IInvoiceModalPayData>;
   invoice_otherOptions: Ref<IInvoiceOtherOptionsData>;

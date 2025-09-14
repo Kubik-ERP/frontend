@@ -23,7 +23,7 @@ const { cashierProduct_productState, cashierProduct_onSearchData } =
           v-model="cashierProduct_productState.searchProduct"
           :loading="cashierProduct_productState.isLoadingProduct"
           :placeholder="useLocalization('cashier.mainSection.searchProductPlaceholder')"
-          class="text-sm w-full"
+          class="text-sm w-full placeholder:text-sm placeholder:text-text-disabled"
         />
       </PrimeVueIconField>
     </form>
