@@ -44,22 +44,38 @@ watch(
 
 // Computed classes for main layout
 const mainLayoutClasses = computed(() => {
-  const baseClasses = 'default-wrapper flex-1 transition-all duration-300 ease-in-out';
+  const baseClasses = 'default-wrapper transition-all duration-300 ease-in-out';
 
   if (isCurrentlyMobile.value) {
-    return `${baseClasses} w-full`;
+    return `${baseClasses} w-full h-full flex flex-col`;
   }
 
-  return baseClasses;
+  return `${baseClasses} flex-1 flex flex-col`;
 });
 </script>
 
 <template>
-  <section id="default-layout" class="default-wrapper-fullscreen relative inset-0 z-0 flex">
-    <!-- Sidebar - handles its own mobile/desktop display logic -->
-    <AppBaseSidebar />
+  <section id="default-layout" class="default-wrapper-fullscreen relative inset-0 z-0">
+    <!-- Mobile Sidebar - positioned absolutely outside of flex layout -->
+    <AppBaseSidebar v-if="isCurrentlyMobile" />
+    
+    <!-- Desktop Layout with Sidebar -->
+    <div v-if="!isCurrentlyMobile" class="flex h-full">
+      <AppBaseSidebar />
+      <section id="main-layout" :class="mainLayoutClasses">
+        <AppBaseNavbar />
+        <AppBaseBreadcrumb />
 
-    <section id="main-layout" :class="mainLayoutClasses">
+        <section id="main-content" class="w-full h-fit p-4 sm:p-6 lg:p-10">
+          <AppBaseSkeletonWrapper variant="card" :rows="4">
+            <RouterView />
+          </AppBaseSkeletonWrapper>
+        </section>
+      </section>
+    </div>
+    
+    <!-- Mobile Layout without Sidebar in flex -->
+    <section v-else id="main-layout" :class="mainLayoutClasses">
       <AppBaseNavbar />
       <AppBaseBreadcrumb />
 

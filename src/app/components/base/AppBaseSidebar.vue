@@ -114,16 +114,16 @@ const isAnySubMenuActive = (menu: IMenu): boolean => {
 
 // Computed classes for sidebar
 const sidebarClasses = computed(() => {
-  const baseClasses =
-    'sticky inset-0 z-10 overflow-y-auto overflow-x-hidden flex flex-col gap-4 bg-background border-r border-solid border-grayscale-10 px-4 py-2 transition-all duration-300 ease-in-out max-h-dvh';
-
   if (isCurrentlyMobile.value) {
-    return `${baseClasses} fixed inset-y-0 left-0 z-[60] w-80 transform overflow-auto ${
+    return `fixed inset-y-0 left-0 z-[60] w-80 overflow-y-auto overflow-x-hidden flex flex-col gap-4 bg-background border-r border-solid border-grayscale-10 px-4 py-2 transition-transform duration-300 ease-in-out max-h-dvh transform ${
       isSidebarOpen.value ? 'translate-x-0' : '-translate-x-full'
     }`;
   }
 
-  return `${baseClasses} ${isCollapsed.value ? 'w-20' : 'w-64 min-w-64'}`;
+  // Desktop classes - using sticky for desktop only
+  return `sticky inset-0 z-10 overflow-y-auto overflow-x-hidden flex flex-col gap-4 bg-background border-r border-solid border-grayscale-10 px-4 py-2 transition-all duration-300 ease-in-out max-h-dvh ${
+    isCollapsed.value ? 'w-20' : 'w-64 min-w-64'
+  }`;
 });
 
 const handleLogout = async () => {
@@ -141,7 +141,7 @@ const handleLogout = async () => {
   <!-- Mobile Overlay -->
   <div
     v-if="isCurrentlyMobile && isSidebarOpen"
-    class="fixed inset-0 bg-black opacity-50 transition-opacity duration-300"
+    class="fixed inset-0 z-[50] bg-black opacity-50 transition-opacity duration-300"
     @click="handleOverlayClick"
   ></div>
 
