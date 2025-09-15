@@ -115,7 +115,7 @@ const isAnySubMenuActive = (menu: IMenu): boolean => {
 // Computed classes for sidebar
 const sidebarClasses = computed(() => {
   const baseClasses =
-    'sticky inset-0 z-10 overflow-y-auto flex flex-col gap-4 bg-background border-r border-solid border-grayscale-10 px-4 py-2 transition-all duration-300 ease-in-out max-h-dvh';
+    'sticky inset-0 z-10 overflow-y-auto overflow-x-hidden flex flex-col gap-4 bg-background border-r border-solid border-grayscale-10 px-4 py-2 transition-all duration-300 ease-in-out max-h-dvh';
 
   if (isCurrentlyMobile.value) {
     return `${baseClasses} fixed inset-y-0 left-0 z-[60] w-80 transform overflow-auto ${
