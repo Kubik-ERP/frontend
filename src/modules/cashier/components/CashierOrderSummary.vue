@@ -37,7 +37,7 @@ const voucherPermission = rbac.hasPermission('voucher');
 <template>
   <section
     id="order-summary"
-    class="hidden xl:col-span-4 lg:col-span-6 pb-4 overflow-y-auto bg-white w-full h-full lg:flex flex-col"
+    class="hidden sticky inset-0 z-10 xl:col-span-4 lg:col-span-6 pb-4 overflow-y-auto bg-white w-full h-full lg:flex flex-col max-h-[120dvh]"
   >
     <CashierSummarySection />
     <CashierSummaryProductList />

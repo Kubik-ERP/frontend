@@ -50,10 +50,10 @@ const wrapperClass = computed(() => {
         v-for="(item, index) in cashierProduct_productState.listProductCategory"
         id="cashier-list-featured-product"
         :key="index"
-        class="flex flex-col gap-2"
+        class="flex flex-col gap-4"
       >
         <template v-if="item.items.length > 0">
-          <h2 class="text-xs text-text-disabled">{{ item.category }}</h2>
+          <h2 class="font-normal text-xs text-text-disabled">{{ item.category }}</h2>
 
           <section id="cashier-list-wrapper-class" :class="wrapperClass">
             <component

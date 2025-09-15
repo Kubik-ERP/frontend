@@ -52,14 +52,12 @@ const voucherPermission = rbac.hasPermission('voucher');
             <div v-if="cashierOrderSummary_modalVoucher.form.voucher_code" class="flex gap-2 items-center">
               <AppBaseSvg name="tag" class="!h-5 !w-5" />
 
-              <span class="font-semibold truncate">
-                <span class="font-semibold truncate">
-                  {{ selectedVoucherLabel }}
-                </span>
+              <span class="font-semibold text-sm truncate">
+                {{ selectedVoucherLabel }}
               </span>
             </div>
             <div v-else class="flex gap-2 w-full items-center justify-between">
-              <span class="font-semibold truncate">
+              <span class="font-semibold text-sm truncate">
                 {{ useLocalization('cashier.orderSummary.promoVoucher') }}
               </span>
 
@@ -69,8 +67,8 @@ const voucherPermission = rbac.hasPermission('voucher');
         </template>
       </PrimeVueButton>
       <PrimeVueButton
-        class=" py-2 border border-primary-border text-primary"
-        :class="cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod ? 'bg-white' : '' + voucherPermission ? 'w-full' : 'lg:w-1/2'"
+        class="w-full lg:w-1/2 py-2 border border-primary-border text-sm text-primary"
+        :class="cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod ? 'bg-white' : ''"
         outlined
         :disabled="route.name === 'cashier-order-edit'"
         @click="cashierOrderSummary_modalPaymentMethod.show = true"
@@ -83,11 +81,11 @@ const voucherPermission = rbac.hasPermission('voucher');
             >
               <AppBaseSvg :name="selectedPaymentIcon" class="!h-5 !w-5" />
 
-              <span class="font-semibold truncate">
+              <span class="font-semibold text-sm truncate">
                 {{ selectedPaymentName }}
               </span>
             </div>
-            <span v-else class="font-semibold truncate">
+            <span v-else class="font-semibold text-sm truncate">
               {{ useLocalization('cashier.orderSummary.paymentMethod') }}
             </span>
 
