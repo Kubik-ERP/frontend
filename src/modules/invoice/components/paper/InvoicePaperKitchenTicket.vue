@@ -13,15 +13,16 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 <template>
   <section
     id="kitchen-invoice"
-    class="invoice-paper bg-white flex text-xs flex-col items-center gap-2 w-full p-4 max-w-screen md:max-w-xl"
+    class="invoice-paper bg-white flex text-xs flex-col items-center gap-2 w-full p-4 pb-16 border-y"
   >
     <div class="invoice-name">
       <span class="font-bold w-full flex justify-center text-sm">{{
         invoice_invoiceData.tableKitchenTicket?.customer?.name || ''
       }}</span>
+      <span class="w-full flex justify-center">Kitchen Ticket</span>
     </div>
 
-    <section id="cashier-information" class="flex items-center justify-between w-full">
+    <section id="cashier-information" class="flex items-center justify-between w-full border-b border-black py-2">
       <p id="label-cashier" class="font-normal text-black text-sm">Order Date</p>
       <p id="cashier-name" class="font-normal text-black text-sm">
         {{ invoice_invoiceData.tableKitchenTicket?.createdAtFormatted }}
@@ -54,49 +55,35 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
     <table id="product-items" class="w-full">
       <thead>
         <tr class="border-y border-dashed border-black py-2">
-          <th class="font-normal text-black text-sm text-start w-28 py-2">Qty</th>
-          <th class="font-normal text-black text-sm text-start py-2">Order Item</th>
+          <th class="font-normal text-black text-sm text-start py-2">Qty</th>
+          <th class="font-normal text-black text-sm text-start py-2 whitespace-nowrap">Order Item</th>
         </tr>
       </thead>
-      <tbody>
-        <tr v-for="(item, index) in invoice_invoiceData.tableKitchenTicket?.invoiceDetails" :key="index">
-          <td class="text-black text-sm py-2 align-top font-bold w-28">{{ item.qty }}x</td>
-          <td class="text-black text-sm py-2">
-            <div class="flex flex-col font-bold">
-              <span>{{ item.products.name }}</span>
-              <span v-if="item.variant">{{ item.variant.name }}</span>
+      <tbody
+        v-for="(item, index) in invoice_invoiceData.tableKitchenTicket?.invoiceDetails"
+        :key="index"
+        class="border-b border-dashed border-black"
+      >
+        <tr>
+          <td class="text-black text-sm font-bold w-full">{{ item.qty }}x</td>
+          <td class="text-black text-sm whitespace-nowrap">
+            <div class="flex flex-col">
+              <span class="font-bold">{{ item.products.name }}</span>
             </div>
           </td>
+        </tr>
+        <tr>
+          <td>variants</td>
+          <td class="font-bold text-right">{{ item.variant?.name || '-' }}</td>
+        </tr>
+        <tr>
+          <td>notes</td>
+
+          <td class="font-bold text-right">{{ item.notes || '-' }}</td>
         </tr>
       </tbody>
     </table>
   </section>
 </template>
 
-<style scoped>
-.invoice-name {
-  position: relative;
-  width: 100%;
-  font-family: 'Inter', monospace; /* Ensures uniform spacing */
-  font-size: 12px;
-}
-
-.invoice-name::after {
-  content: '================================================================================================================================================================================================================'; /* Adjust length as needed */
-  display: block;
-  font-family: monospace;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: clip;
-  width: 100%;
-  text-align: center;
-  line-height: 1;
-  color: #000; /* Adjust color */
-}
-
-@media (max-width: 1024px) {
-  .invoice-name::after {
-    content: '================================================================================================================================================================================================';
-  }
-}
-</style>
+<style scoped></style>
