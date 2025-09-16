@@ -127,6 +127,89 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
   };
 
   /**
+   * @description Handle business logic for downloading table QR code as image
+   */
+  const accountStoreDetail_onDownloadTableQRCode = (): void => {
+    try {
+      if (!accountStoreDetail_selectedTable.value || !outlet_selectedOutletOnAccountPage.value) {
+        const argsEventEmitter: IPropsToast = {
+          isOpen: true,
+          type: EToastType.DANGER,
+          message: 'Table information is not available for download.',
+          position: EToastPosition.TOP_RIGHT,
+        };
+
+        eventBus.emit('AppBaseToast', argsEventEmitter);
+        return;
+      }
+
+      // Find the existing QR code canvas element in the dialog
+      const qrCodeElement = document.querySelector('canvas#account-store-table-qr-code');
+
+      if (qrCodeElement instanceof HTMLCanvasElement) {
+        // Use the existing QR code canvas to create image
+        qrCodeElement.toBlob(blob => {
+          if (!blob) {
+            const argsEventEmitter: IPropsToast = {
+              isOpen: true,
+              type: EToastType.DANGER,
+              message: 'Failed to generate QR code image.',
+              position: EToastPosition.TOP_RIGHT,
+            };
+
+            eventBus.emit('AppBaseToast', argsEventEmitter);
+            return;
+          }
+
+          // Create download link
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `table-qr-${accountStoreDetail_selectedTable.value?.floorName}-${accountStoreDetail_selectedTable.value?.name}.png`;
+
+          // Trigger download
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          // Clean up
+          URL.revokeObjectURL(url);
+
+          // Show success message
+          const argsEventEmitter: IPropsToast = {
+            isOpen: true,
+            type: EToastType.SUCCESS,
+            message: 'QR code downloaded successfully.',
+            position: EToastPosition.TOP_RIGHT,
+          };
+
+          eventBus.emit('AppBaseToast', argsEventEmitter);
+        }, 'image/png');
+      } else {
+        // If canvas not found, show error message
+        const argsEventEmitter: IPropsToast = {
+          isOpen: true,
+          type: EToastType.DANGER,
+          message: 'QR code not found. Please make sure the dialog is open.',
+          position: EToastPosition.TOP_RIGHT,
+        };
+
+        eventBus.emit('AppBaseToast', argsEventEmitter);
+      }
+    } catch (error: unknown) {
+      console.error('Download QR code error:', error);
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Failed to download QR code.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+    }
+  };
+
+  /**
    * @description Watch active tab changes
    */
   watch(accountStoreDetail_activeTab, newTab => {
@@ -155,6 +238,17 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
   const accountStoreDetail_selectedTableLayout = computed(() =>
     outlet_tables.value?.find(floor => floor.floorName === accountStoreDetail_selectedFloor.value),
   );
+
+  /**
+   * @description Filter tabs based on business type
+   */
+  const filteredTabs = computed(() => {
+    if (outlet_selectedOutletOnAccountPage.value?.businessType === 'Retail') {
+      // Hide 'Table Configuration' tab for Retail
+      return ACCOUNT_STORE_DETAIL_LIST_TABS.filter(tab => tab.value !== 'table-configuration');
+    }
+    return ACCOUNT_STORE_DETAIL_LIST_TABS;
+  });
 
   /**
    * @description Handle business logic for fetching API account store facilities
@@ -288,7 +382,6 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
   };
 
   const accountStoreDetail_onShowDialogCreateEdit = (facility: IStoreFacility | null): void => {
-    console.log('🚀 ~ constaccountStoreDetail_onShowDialogCreateEdit= ~ facility:', facility);
     if (facility) {
       accountStoreDetail_formData.id = facility.id;
       accountStoreDetail_formData.facility = facility.facility;
@@ -442,7 +535,7 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     accountStoreDetail_fetchOutletStoreTable,
     accountStoreDetail_isLoadingOfOutlet: outlet_isLoading,
     accountStoreDetail_listAvailableFloor: outlet_listAvailableFloor,
-    accountStoreDetail_listTabs: ACCOUNT_STORE_DETAIL_LIST_TABS,
+    accountStoreDetail_listTabs: filteredTabs.value,
     accountStoreDetail_listColumnsOfAssignedStaff: ACCOUNT_STORE_DETAIL_ASSIGNED_STAFF_COLUMNS,
     accountStoreDetail_listColumnsOfOperationalHours: ACCOUNT_STORE_DETAIL_OPERATIONAL_HOUR_COLUMNS,
     accountStoreDetail_listColumnsOfStoreFacilities: ACCOUNT_STORE_DETAIL_FACILITY_COLUMNS,
@@ -474,6 +567,7 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     accountStoreDetail_onCloseDialogCreateEdit,
     accoutnStoreDetail_onSubmitDialogCreateEdit,
     accountStoreDetail_onDeleteDialogConfirmation,
+    accountStoreDetail_onDownloadTableQRCode,
 
     accountStoreDetail_onAddStaff,
     accountStoreDetail_onCloseAddStaff,

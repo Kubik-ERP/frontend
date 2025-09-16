@@ -30,7 +30,11 @@ const isCollapsed = ref<boolean>(false);
 
 // Filter menus based on user permissions
 const filteredSidebarMenus = computed(() => {
-  return filterMenusByPermissions(LIST_SIDEBAR_MENUS, authentication_permissions.value);
+  return filterMenusByPermissions(
+    LIST_SIDEBAR_MENUS,
+    authentication_permissions.value,
+    outlet_currentOutlet.value?.businessType,
+  );
 });
 
 console.log('filteredSidebarMenus', filteredSidebarMenus.value);
@@ -121,7 +125,7 @@ const sidebarClasses = computed(() => {
   }
 
   // Desktop classes - using sticky for desktop only
-  return `sticky inset-0 z-10 overflow-y-auto overflow-x-hidden flex flex-col gap-4 bg-background border-r border-solid border-grayscale-10 px-4 py-2 transition-all duration-300 ease-in-out max-h-dvh ${
+  return `sticky inset-0 z-10 overflow-y-auto overflow-x-hidden flex flex-col gap-4 bg-background border-r border-solid border-grayscale-10 px-4 py-2 transition-all duration-300 ease-in-out min-h-dvh max-h-dvh ${
     isCollapsed.value ? 'w-20' : 'w-64 min-w-64'
   }`;
 });

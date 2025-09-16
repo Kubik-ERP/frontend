@@ -18,7 +18,16 @@ const router = useRouter();
 // Services
 import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
 
+// Stores
+import { useOutletStore } from '@/modules/outlet/store';
+
 const { dailySalesList_getClassOfOrderStatus, dailySalesList_getClassOfOrderType } = useDailySalesListService();
+
+/**
+ * @description Injected variables
+ */
+const outletStore = useOutletStore();
+const { outlet_currentOutlet } = storeToRefs(outletStore);
 
 /**
  * @description Inject all the data and methods what we need
@@ -44,7 +53,7 @@ const orderStatusLabel = computed(() => {
 });
 
 const rbac = useRbac();
-const hasPermission = rbac.hasPermission('edit_invoice')
+const hasPermission = rbac.hasPermission('edit_invoice');
 </script>
 
 <template>
@@ -160,7 +169,7 @@ const hasPermission = rbac.hasPermission('edit_invoice')
       </tbody>
 
       <tfoot
-      v-if="
+        v-if="
           hasPermission &&
           invoice_invoiceData.data.paymentStatus === 'unpaid' &&
           (invoice_invoiceData.data.orderStatus === 'in_progress' ||
@@ -259,6 +268,7 @@ const hasPermission = rbac.hasPermission('edit_invoice')
 
       <section id="print-buttons" class="flex flex-col items-center gap-4 w-full">
         <PrimeVueButton
+          v-if="outlet_currentOutlet?.businessType !== 'Retail'"
           class="w-full py-4 bg-white border-primary"
           severity="primary"
           @click="emit('print', 'kitchen')"
@@ -272,6 +282,7 @@ const hasPermission = rbac.hasPermission('edit_invoice')
         </PrimeVueButton>
 
         <PrimeVueButton
+          v-if="outlet_currentOutlet?.businessType !== 'Retail'"
           class="w-full py-4 bg-white border-primary"
           severity="primary"
           @click="emit('print', 'table')"

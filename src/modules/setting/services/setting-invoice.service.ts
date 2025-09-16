@@ -37,6 +37,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
   const store = useSettingStore(); // Instance of the store
 
   const storeId = useOutletStore();
+  const { outlet_currentOutlet } = storeToRefs(storeId);
 
   const { httpAbort_registerAbort } = useHttpAbort();
   const { setting_invoice, setting_isLoading } = storeToRefs(store);
@@ -114,13 +115,9 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
   const footerText_formRules = computed(() => ({
     text: { required },
   }));
-  const footerText_formValidations = useVuelidate(
-    footerText_formRules,
-    footerText_formData,
-    {
-      $autoDirty: true,
-    },
-  );
+  const footerText_formValidations = useVuelidate(footerText_formRules, footerText_formData, {
+    $autoDirty: true,
+  });
   /**
    * @description Form validations
    */
@@ -247,6 +244,7 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
   const settingInvoice_bindings = computed(
     (): IPropsInvoicePaper => ({
       companyLogoUrl: settingInvoice_formData.companyLogoUrl,
+      businessType: outlet_currentOutlet.value?.businessType,
       ...settingInvoice_formData.generalSettings,
       ...settingInvoice_formData.contentSettings,
     }),

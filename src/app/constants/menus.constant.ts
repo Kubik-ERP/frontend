@@ -190,6 +190,11 @@ export const LIST_SIDEBAR_MENUS = [
             path: '/inventory-category',
           },
           {
+            name: 'Purchase Order',
+            translationKey: 'app.menus.purchase-order',
+            path: '/purchase-order',
+          },
+          {
             name: 'Stock Opname',
             translationKey: 'app.menus.stock-opname',
             path: '/stock-opname',
@@ -200,14 +205,6 @@ export const LIST_SIDEBAR_MENUS = [
             path: '/storage-location',
           },
         ],
-      },
-      {
-        name: 'Purchase Order',
-        translationKey: 'app.menus.purchase-order',
-        iconName: 'receipt',
-        path: '/purchase-order',
-        isHaveSubMenus: false,
-        subMenus: [],
       },
       {
         name: 'Marketing',
