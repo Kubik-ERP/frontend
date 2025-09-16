@@ -85,10 +85,10 @@ export interface ISettingInvoiceProvided {
   settingInvoice_isEditableInvoiceConfiguration: globalThis.Ref<boolean>;
   settingInvoice_isLoading: globalThis.Ref<boolean>;
   settingInvoice_listContentSettings: IDefaultContent[];
-  settingInvoice_listGeneralSettings: IDefaultContent[];
+  settingInvoice_listGeneralSettings: globalThis.ComputedRef<IDefaultContent[]>;
   settingInvoice_listInvoiceNumberContents: IDefaultContent[];
   settingInvoice_listResetSequences: IDropdownItem[];
-  settingInvoice_listTabsInvoicePreview: ITabs[];
+  settingInvoice_listTabsInvoicePreview: globalThis.ComputedRef<ITabs[]>;
   settingInvoice_onCloseEditFooterContentDialog: () => void;
   settingInvoice_onCloseEditInvoiceNumberConfigurationDialog: () => void;
   settingInvoice_onShowEditFooterContentDialog: () => void;

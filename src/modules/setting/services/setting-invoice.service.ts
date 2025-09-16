@@ -251,6 +251,48 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
   );
 
   /**
+   * @description Computed property that filters general settings based on business type
+   * Hides kitchen and table printing options for Retail business type
+   */
+  const settingInvoice_filteredListGeneralSettings = computed(() => {
+    if (outlet_currentOutlet.value?.businessType === 'Retail') {
+      return LIST_GENERAL_SETTINGS_INVOICE.filter(
+        setting => setting.key !== 'isAutomaticallyPrintKitchen' && setting.key !== 'isAutomaticallyPrintTable'
+      );
+    }
+    return LIST_GENERAL_SETTINGS_INVOICE;
+  });
+
+  /**
+   * @description Computed property that filters invoice preview tabs based on business type
+   * Hides Kitchen Ticket and Table Ticket tabs for Retail business type
+   */
+  const settingInvoice_filteredListTabsInvoicePreview = computed(() => {
+    if (outlet_currentOutlet.value?.businessType === 'Retail') {
+      return LIST_TABS_INVOICE_PREVIEW.filter(
+        tab => tab.value !== 'kitchen-ticket' && tab.value !== 'table-ticket'
+      );
+    }
+    return LIST_TABS_INVOICE_PREVIEW;
+  });
+
+  /**
+   * @description Watch for business type changes and adjust active tab if needed
+   */
+  watch(
+    () => outlet_currentOutlet.value?.businessType,
+    (newBusinessType) => {
+      if (newBusinessType === 'Retail') {
+        // If current tab is kitchen-ticket or table-ticket, switch to cashier-invoice
+        if (settingInvoice_activeTab.value === 'kitchen-ticket' || settingInvoice_activeTab.value === 'table-ticket') {
+          settingInvoice_activeTab.value = 'cashier-invoice';
+        }
+      }
+    },
+    { immediate: true }
+  );
+
+  /**
    * @description Handle business logic for mapping invoice detail of general settings
    */
   const settingInvoice_mappingInvoiceDetailOfGeneralSettings = (): void => {
@@ -500,10 +542,10 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
     settingInvoice_isEditableInvoiceConfiguration,
     settingInvoice_isLoading: setting_isLoading,
     settingInvoice_listContentSettings: LIST_CONTENT_SETTINGS_INVOICE,
-    settingInvoice_listGeneralSettings: LIST_GENERAL_SETTINGS_INVOICE,
+    settingInvoice_listGeneralSettings: settingInvoice_filteredListGeneralSettings,
     settingInvoice_listInvoiceNumberContents: LIST_INVOICE_NUMBER_CONTENTS,
     settingInvoice_listResetSequences: LIST_TYPES_OF_RESET_SEQUENCE,
-    settingInvoice_listTabsInvoicePreview: LIST_TABS_INVOICE_PREVIEW,
+    settingInvoice_listTabsInvoicePreview: settingInvoice_filteredListTabsInvoicePreview,
     settingInvoice_onCloseEditFooterContentDialog,
     settingInvoice_onCloseEditInvoiceNumberConfigurationDialog,
     settingInvoice_onShowEditFooterContentDialog,

@@ -24,6 +24,7 @@ export interface IOutletListProvided {
   outletList_fetchOutletLists: () => Promise<IOutletListResponse>;
   outletList_isLoading: globalThis.Ref<boolean>;
   outletList_lists: Ref<IOutletListData>;
+  outletList_onNavigateToCreateStore: () => void;
   outletList_onSelectOutlet: (outlet: IOutlet) => void;
   outletList_selectedOutlet: Ref<IOutlet | null>;
 }

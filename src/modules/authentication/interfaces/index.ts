@@ -10,6 +10,7 @@ export interface IAuthenticationProfile {
   email: string;
   phone: string;
   isVerified: boolean;
+  limitStore: number;
   id: number;
   roles: {
     id: number;
