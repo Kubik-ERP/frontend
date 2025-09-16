@@ -213,9 +213,20 @@ export const LIST_SIDEBAR_MENUS = [
         name: 'Marketing',
         translationKey: 'app.menus.marketing',
         iconName: 'marketing',
-        path: '/voucher',
-        isHaveSubMenus: false,
-        subMenus: [],
+        path: '/marketing',
+        isHaveSubMenus: true,
+        subMenus: [
+          {
+            name: 'Voucher',
+            translationKey: 'app.menus.voucher',
+            path: '/marketing/voucher',
+          },
+          {
+            name: 'Discount',
+            translationKey: 'app.menus.discount',
+            path: '/marketing/discount',
+          },
+        ],
       },
       {
         name: 'Staff',
