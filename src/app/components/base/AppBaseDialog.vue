@@ -58,7 +58,7 @@ eventBus.on('AppBaseDialog', (params: unknown) => {
     :dismissable-mask="false"
     :modal="dialogProps.isUsingBackdrop"
     :visible="dialogProps.isOpen"
-    :style="`width: ${dialogProps.width}`"
+    :style="`width: ${dialogProps.width}; max-width: 90vw;`"
     :pt="{
       content: dialogProps.customBodyClass,
       header: dialogProps.customHeaderClass,

@@ -13,7 +13,7 @@ const route = useRoute();
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalOrderType, cashierOrderSummary_modalSelectTable, hasCustomerManagementPermission } =
+const { cashierOrderSummary_modalOrderType, cashierOrderSummary_modalSelectTable, hasCustomerManagementPermission, useCashierOrderSummary_isRetailBusinessType } =
   inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!
 
 const props = defineProps({
@@ -38,7 +38,7 @@ const selectedTableLabel = computed(() => {
 });
 </script>
 <template>
-  <section id="cashier-summary-button-order-table">
+  <section v-if="!useCashierOrderSummary_isRetailBusinessType" id="cashier-summary-button-order-table">
     <div class="border-t-2 border-t-grayscale-10 mx-4 lg:mx-0">
       <div class="flex justify-between w-full items-center py-4 gap-2">
         <button

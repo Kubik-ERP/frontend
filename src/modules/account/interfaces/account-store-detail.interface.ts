@@ -105,6 +105,7 @@ export interface IAccountStoreDetailProvided {
   accountStoreDetail_onCloseDialogCreateEdit: () => void;
   accoutnStoreDetail_onSubmitDialogCreateEdit: () => Promise<void>;
   accountStoreDetail_onDeleteDialogConfirmation: (id: string) => void;
+  accountStoreDetail_onDownloadTableQRCode: () => void;
 
   // staff
   accountStoreDetail_onAddStaff: () => void;

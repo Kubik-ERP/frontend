@@ -121,7 +121,7 @@ const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetai
 
 <style>
 /* Latar belakang titik-titik untuk container lantai */
-.account-store-table-layout {
+#account-store-table-layout {
   background-image: url('@/app/assets/images/bg-layout-table.png');
   background-size: 100% 100%;
   border: 1px solid #8cc8eb;

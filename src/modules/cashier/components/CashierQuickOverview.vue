@@ -21,7 +21,10 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
 </script>
 
 <template>
-  <section id="cashier-quick-overview" class="default-wrapper bg-white sticky inset-0 z-10 gap-4 px-10 py-6">
+  <section
+    id="cashier-quick-overview"
+    class="default-wrapper bg-white static xl:sticky inset-0 z-10 gap-4 px-10 py-6"
+  >
     <section id="main-section" class="flex flex-col gap-4 bg-white">
       <header class="flex items-center justify-between">
         <section id="left-content" class="flex items-center gap-4">

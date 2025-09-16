@@ -89,6 +89,11 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const hasCustomerManagementPermission = computed(() => hasPermission('customer_management'));
 
   /**
+   * @description Check if the current outlet business type is retail
+   */
+  const useCashierOrderSummary_isRetailBusinessType = computed(() => storeOutlet.outlet_currentOutlet?.businessType === 'Retail');
+
+  /**
    * @description Injected variables
    */
   const store = useCashierStore();
@@ -1242,6 +1247,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierProduct_customerState,
 
     hasCustomerManagementPermission,
+    useCashierOrderSummary_isRetailBusinessType,
 
     cashierOrderSummary_handleModalAddCustomer,
 

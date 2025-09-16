@@ -11,6 +11,9 @@ import { useFormatDateLocal } from '@/app/composables';
 
 import { useCustomerDetailsStore } from '../store';
 
+// Stores
+import { useOutletStore } from '@/modules/outlet/store';
+
 import {
   SALES_INVOICE_LIST_REQUEST,
   SALES_INVOICE_COLUMNS,
@@ -36,11 +39,26 @@ export const useCustomerDetailService = () => {
   const selectedPointId = ref<string>();
 
   const store = useCustomerDetailsStore();
+  const outletStore = useOutletStore();
 
   const { customerDetails_isLoading, customerDetails, loyaltyPoints_list, loyaltyPoints_isLoading } =
     storeToRefs(store);
+  const { outlet_currentOutlet } = storeToRefs(outletStore);
 
   const { httpAbort_registerAbort } = useHttpAbort();
+
+  /**
+   * @description Filter columns based on business type
+   */
+  const filteredColumns = computed(() => {
+    if (outlet_currentOutlet.value?.businessType === 'Retail') {
+      // Hide 'Table Number' and 'Order Type' columns for Retail
+      return SALES_INVOICE_COLUMNS.filter(
+        column => column.value !== 'tableNumber' && column.value !== 'orderType',
+      );
+    }
+    return SALES_INVOICE_COLUMNS;
+  });
 
   const customerDetails_queryParams = reactive<ICustomerDetailsRequestQuery>({
     start_date: null,
@@ -431,7 +449,7 @@ export const useCustomerDetailService = () => {
     decreasePoint_formValidations,
     decreasePoint_ResetFormData,
 
-    customerDetail_columns: SALES_INVOICE_COLUMNS,
+    customerDetail_columns: filteredColumns.value,
     customerDetail_values: SALES_INVOICE_VALUES,
 
     customerLoyaltyPoint_columns: LOYALTY_POINT_COLUMNS,

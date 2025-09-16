@@ -230,6 +230,7 @@ declare global {
     companyLogo?: File | null;
     companyLogoUrl?: string | null;
     footerText?: string | null;
+    businessType?: string;
     isAutomaticallyPrintReceipt: boolean;
     isAutomaticallyPrintKitchen: boolean;
     isAutomaticallyPrintTable: boolean;
