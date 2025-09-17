@@ -189,6 +189,15 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
       await store.fetchOutlet_createNewOutlet(outletCreateEdit_formDataOfVerifyPin.pinConfirmation, formData, {
         ...httpAbort_registerAbort(OUTLET_CREATE_EDIT_CREATE_NEW_OUTLET_REQUEST),
       });
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'You have successfully created a new store.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
     } catch (error: unknown) {
       outletCreateEdit_isPinInvalid.value = true;
 
@@ -208,6 +217,15 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
       await store.fetchOutlet_deleteOutlet(outletCreateEdit_formDataOfVerifyPin.pinConfirmation, id, {
         ...httpAbort_registerAbort(OUTLET_CREATE_EDIT_DELETE_OUTLET_REQUEST),
       });
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'You have successfully deleted the store.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
     } catch (error: unknown) {
       outletCreateEdit_isPinInvalid.value = true;
 
@@ -246,6 +264,15 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
       await store.fetchOutlet_updateOutlet(outletCreateEdit_formDataOfVerifyPin.pinConfirmation, id, formData, {
         ...httpAbort_registerAbort(OUTLET_CREATE_EDIT_UPDATE_OUTLET_REQUEST),
       });
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'You have successfully updated the store data.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
     } catch (error: unknown) {
       outletCreateEdit_isPinInvalid.value = true;
 
@@ -389,20 +416,33 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
 
       if (outletCreateEdit_formValidations.value.$invalid) return;
 
+      // Map form data
+      const formData: FormData = outletCreateEdit_onMappingFormData();
+
+      if (outletCreateEdit_isEditable.value) {
+        await outletCreateEdit_fetchUpdateOutlet(outletCreateEdit_routeParamsId.value!, formData);
+      } else {
+        await outletCreateEdit_fetchCreateNewOutlet(formData);
+      }
+
+      // Reset form and validations after successful submission
+      outletCreateEdit_onResetForm();
+      router.push({ name: 'outlet.list' });
+
       // Reset PIN data before showing dialog
-      outletCreateEdit_formDataOfVerifyPin.pinConfirmation = '';
-      outletCreateEdit_isPinInvalid.value = false;
+      // outletCreateEdit_formDataOfVerifyPin.pinConfirmation = '';
+      // outletCreateEdit_isPinInvalid.value = false;
 
-      const argsEventEmitter: IPropsDialogPinVerification = {
-        isOpen: true,
-        isInvalid: outletCreateEdit_isPinInvalid.value,
-        pinConfirmation: outletCreateEdit_formDataOfVerifyPin.pinConfirmation,
-        onClickPrimaryButton: outletCreateEdit_onSubmitDialogVerifyPIN,
-        onClickSecondaryButton: outletCreateEdit_onCloseDialogVerifyPIN,
-        primaryButtonLabel: outletCreateEdit_isEditable.value ? 'Update Store Data' : 'Create Store',
-      };
+      // const argsEventEmitter: IPropsDialogPinVerification = {
+      //   isOpen: true,
+      //   isInvalid: outletCreateEdit_isPinInvalid.value,
+      //   pinConfirmation: outletCreateEdit_formDataOfVerifyPin.pinConfirmation,
+      //   onClickPrimaryButton: outletCreateEdit_onSubmitDialogVerifyPIN,
+      //   onClickSecondaryButton: outletCreateEdit_onCloseDialogVerifyPIN,
+      //   primaryButtonLabel: outletCreateEdit_isEditable.value ? 'Update Store Data' : 'Create Store',
+      // };
 
-      eventBus.emit('AppBaseDialogPinVerification', argsEventEmitter);
+      // eventBus.emit('AppBaseDialogPinVerification', argsEventEmitter);
     } catch (error) {
       console.error(error);
     }

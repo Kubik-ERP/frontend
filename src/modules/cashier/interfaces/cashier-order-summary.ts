@@ -196,6 +196,7 @@ export interface ICashierOrderSummaryProvided {
   cashierProduct_customerState: Ref<ICashierCustomerState>;
 
   hasCustomerManagementPermission: ComputedRef<boolean>;
+  useCashierOrderSummary_isRetailBusinessType: ComputedRef<boolean>;
 
   cashierOrderSummary_handleModalAddCustomer: (response: ICashierResponseAddCustomer | null) => void;
 

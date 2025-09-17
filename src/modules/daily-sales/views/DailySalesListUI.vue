@@ -2,6 +2,15 @@
 // Services
 import { useDailySalesListService } from '../services/daily-sales-list.service';
 
+// Stores
+import { useOutletStore } from '@/modules/outlet/store';
+
+/**
+ * @description Injected variables
+ */
+const outletStore = useOutletStore();
+const { outlet_currentOutlet } = storeToRefs(outletStore);
+
 /**
  * @description Destructure all the data and methods what we need
  */
@@ -18,7 +27,7 @@ const {
   dailySalesList_typesOfOrderType,
   dailySalesList_typesOfPaymentStatus,
   dailySalesList_values,
-} = useDailySalesListService();
+} = useDailySalesListService(outlet_currentOutlet.value?.businessType);
 </script>
 
 <template>
@@ -105,7 +114,11 @@ const {
               />
             </section>
 
-            <section id="order-type" class="col-span-2 lg:col-span-auto">
+            <section
+              v-if="outlet_currentOutlet?.businessType !== 'Retail'"
+              id="order-type"
+              class="col-span-2 lg:col-span-auto"
+            >
               <PrimeVueMultiSelect
                 v-model="dailySalesList_queryParams.orderType"
                 display="chip"

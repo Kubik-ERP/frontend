@@ -237,8 +237,8 @@ function zoomOut() {
 <style>
 /* Latar belakang titik-titik untuk container lantai */
 .floor-plan-container {
-  background-image: radial-gradient(#d1d5db 2px, transparent 2px);
-  background-size: 20px 20px;
+  background-image: url('@/app/assets/images/bg-layout-table.png');
+  background-size: 100% 100%;
   border: 1px solid #8cc8eb;
   border-radius: 4px;
 }

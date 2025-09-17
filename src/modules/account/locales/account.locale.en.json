@@ -162,7 +162,9 @@
       "add": "Add",
       "closeStorePermanent": "Close Store Permanent",
       "add-floor": "Add Floor",
+      "edit-floor": "Edit Floor",
       "add-table": "Add Table",
+      "edit-table": "Edit Table",
       "delete-store": "Delete Store"
     }
   }

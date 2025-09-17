@@ -8,9 +8,10 @@ import type { IOutletListProvided } from '../interfaces/outlet-list.interface';
 const {
   outletList_dynamicClassOfSelectedOutlet,
   outletList_lists,
+  outletList_onNavigateToCreateStore,
   outletList_onSelectOutlet,
   outletList_selectedOutlet,
-} = inject<IOutletListProvided>('outletList')!;
+} = inject<IOutletListProvided>('outletList')!;;
 </script>
 
 <template>
@@ -51,9 +52,9 @@ const {
       </section>
     </section>
 
-    <RouterLink
-      :to="{ name: 'outlet.create' }"
+    <section
       class="col-span-5 lg:col-span-2 relative inset-0 z-0 flex flex-col items-center justify-center gap-4 cursor-pointer basic-smooth-animation hover:bg-primary-background hover:[&>#box-outlet]:!bg-white py-4"
+      @click="outletList_onNavigateToCreateStore"
     >
       <section id="box-outlet" class="basic-smooth-animation bg-primary-background p-5 rounded-full">
         <AppBaseSvg name="store" class="w-6 h-6" />
@@ -67,7 +68,7 @@ const {
           </section>
         </template>
       </PrimeVueButton>
-    </RouterLink>
+    </section>
   </section>
 </template>
 
