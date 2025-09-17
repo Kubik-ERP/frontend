@@ -8,7 +8,7 @@ import { useBrandStore } from '@/modules/brand/store';
 import { useStorageLocationStore } from '@/modules/storage-location/store';
 import eventBus from '@/plugins/mitt';
 import { useSupplierStore } from '@/modules/supplier/store';
-// import { useOutletStore } from '@/modules/outlet/store';
+import { useOutletStore } from '@/modules/outlet/store';
 
 export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided => {
   const store = useInventoryItemsStore();
@@ -17,6 +17,8 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
   const storeBrand = useBrandStore();
   const storeStorageLocation = useStorageLocationStore();
   const storeSupplier = useSupplierStore();
+  const outletStore = useOutletStore();
+  const businessType = outletStore.outlet_currentOutlet?.businessType;
 
   const { supplier_supplierLists } = storeToRefs(storeSupplier);
   const { brandList } = storeToRefs(storeBrand);
@@ -160,7 +162,11 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     };
     await eventBus.emit('AppBaseToast', argsEventEmitter);
 
-    router.push({ name: 'items.list' });
+   if (businessType === 'Retail') {
+    router.push({ name: 'cashier'})
+   } else {
+    router.push({ name: 'items.list'})
+   }
   };
 
   const onCancel = () => {
