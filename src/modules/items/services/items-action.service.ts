@@ -72,6 +72,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
           storageLocationId: item.storageLocationId,
           supplierId: item.supplierId,
           pricePerUnit: item.pricePerUnit,
+          priceGrosir: item.priceGrosir,
         });
       } else if (route.params.id) {
         inventoryItemsFormMode.value = 'edit';
