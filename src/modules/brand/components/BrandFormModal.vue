@@ -50,6 +50,15 @@ const { brand_onDelete } = useBrandListService();
 // state untuk konfirmasi update
 const isUpdateModal = ref(false);
 
+function clearForm() {
+  brand_formValidation.value.$reset();
+  brand_formData.brandName = '';
+  brand_formData.notes = '';
+  brand_formData.code = '';
+  isAutoGenerateCode.value = true;
+
+}
+
 // isi form ketika mode / editing item berubah
 watch(
   [brandFormMode, brand_editingItem],
@@ -58,12 +67,10 @@ watch(
       brand_formData.brandName = item.brandName ?? '';
       brand_formData.notes = item.notes ?? '';
       brand_formData.code = item.code ?? '';
+      isAutoGenerateCode.value = !item.code;
       brand_formValidation.value.$touch();
     } else {
-      brand_formValidation.value.$reset();
-      brand_formData.brandName = '';
-      brand_formData.notes = '';
-      brand_formData.code = '';
+      clearForm();
     }
   },
   { immediate: true },
@@ -74,39 +81,24 @@ const handleSubmit = async () => {
   if (brandFormMode.value === 'edit') {
     // buka dialog konfirmasi update
     isUpdateModal.value = true;
-
-    eventBus.emit('AppBaseDialog', {
-      id: 'brand-modal-form',
-      isUsingClosableButton: false,
-      isUsingBackdrop: true,
-      isOpen: false,
-      width: '600px',
-    });
   } else {
     const id = brand_editingItem.value?.id;
     await brand_onSubmit(brand_formData, brandFormMode.value, id);
-    eventBus.emit('AppBaseDialog', {
-      id: 'brand-modal-form',
-      isUsingClosableButton: false,
-      isUsingBackdrop: true,
-      isOpen: false,
-      width: '600px',
-    });
+    clearForm();
+   await brand_onCancel();
   }
 };
 
 const handleCancel = () => {
   brand_onCancel();
-  brand_formValidation.value.$reset();
-  brand_formData.brandName = '';
-  brand_formData.notes = '';
-  brand_formData.code = '';
-}
+  clearForm();
+};
 // fungsi jika user confirm update
 const confirmUpdate = async () => {
   const id = brand_editingItem.value?.id;
   await brand_onSubmit(brand_formData, brandFormMode.value, id);
   isUpdateModal.value = false;
+  brand_onCancel();
 };
 
 const cancelUpdate = () => {
