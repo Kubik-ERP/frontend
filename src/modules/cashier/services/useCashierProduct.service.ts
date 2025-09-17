@@ -134,6 +134,52 @@ export const useCashierProductService = (): ICashierProductProvided => {
   };
 
   /**
+   * @description Handle barcode scanning from external device
+   * This function will search for product by barcode and automatically add it to selectedProduct
+   * @param {string} barcode - The scanned barcode
+   */
+  const cashierProduct_handleBarcodeScanned = async (barcode: string) => {
+    if (!barcode || barcode.length < 3) return;
+
+    try {
+      cashierProduct_productState.value.isLoadingProduct = true;
+
+      // Fetch product by barcode
+      const response = await store.cashierProduct_fetchProductByBarcode(barcode, route);
+      const product = response.data;
+
+      if (product && product.variant && product.variant.length > 0) {
+        // Get the first variant if available
+        const firstVariant = product.variant[0];
+
+        // Create item object for adding to cart
+        const item: ICashierModalAddProductItem = {
+          quantity: 1,
+          variant: {
+            id: firstVariant.id,
+            name: firstVariant.name,
+            price: firstVariant.price,
+          },
+          notes: '',
+        };
+
+        // Add product to selected products
+        cashierProduct_handleSelectProduct(product, item);
+
+        // Show success message or feedback
+        console.log(`Product "${product.name}" added to cart via barcode scan`);
+      } else {
+        console.warn(`Product with barcode "${barcode}" not found or has no variants`);
+      }
+    } catch (error) {
+      console.error('Error scanning barcode:', error);
+      // You can add toast notification here for better UX
+    } finally {
+      cashierProduct_productState.value.isLoadingProduct = false;
+    }
+  };
+
+  /**
    * @description debounce function to handle search data
    */
   const debouncedSearch = debounce(() => cashierProduct_onSearchData(), 500);
@@ -172,7 +218,6 @@ export const useCashierProductService = (): ICashierProductProvided => {
       const existingProduct = cashierProduct_selectedProduct.value.find(
         val => val.product?.id === product?.id && item?.variant.id === val.variant?.id,
       );
-      
 
       if (existingProduct) {
         existingProduct.quantity = item.quantity;
@@ -316,6 +361,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
     cashierProduct_handleSelectProduct,
 
     cashierProduct_onSearchData,
+    cashierProduct_handleBarcodeScanned,
 
     isProductActive,
     cashierProduct_handleQuantity,

@@ -27,6 +27,7 @@ export interface ICashierProductProvided {
   cashierProduct_handleSelectProduct: (product: IProductItem, item: ICashierModalAddProductItem) => void;
 
   cashierProduct_onSearchData: (searchData: string) => Promise<void>;
+  cashierProduct_handleBarcodeScanned: (barcode: string) => Promise<void>;
 
   isProductActive: (product: IProductItem) => boolean;
   cashierProduct_handleQuantity: (type: 'increase' | 'decrease') => void;

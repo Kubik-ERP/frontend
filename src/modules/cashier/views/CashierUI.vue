@@ -78,6 +78,7 @@ const {
   cashierProduct_handleSelectCategory,
   cashierProduct_handleSelectProduct,
   cashierProduct_onSearchData,
+  cashierProduct_handleBarcodeScanned,
   isProductActive,
   cashierProduct_handleQuantity,
   cashierProduct_handleOpenModalAddProduct,
@@ -217,6 +218,7 @@ provide<ICashierProductProvided>('cashierProduct', {
   cashierProduct_handleSelectProduct,
 
   cashierProduct_onSearchData,
+  cashierProduct_handleBarcodeScanned,
 
   isProductActive,
   cashierProduct_handleQuantity,

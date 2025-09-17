@@ -89,6 +89,7 @@ export interface IProductItem {
   discountPrice: number;
   pictureUrl: string;
   isPercent: boolean;
+  barcode?: string;
   variant: IProductVariant[];
 }
 
@@ -161,4 +162,8 @@ export interface ICashierCustomerResponse {
     page: number;
     lastPage: number;
   };
+}
+
+export interface ICashierProductBarcodeResponse {
+  data: IProductItem;
 }
