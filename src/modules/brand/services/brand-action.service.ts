@@ -45,7 +45,6 @@ export const useBrandActionService = (): IBrandActionProvided => {
         position: EToastPosition.TOP_RIGHT,
       };
       eventBus.emit('AppBaseToast', argsEventEmitter);
-      console.warn('Form is invalid', brand_formValidationInstance.value.$errors);
       return;
     }
 
@@ -73,6 +72,11 @@ export const useBrandActionService = (): IBrandActionProvided => {
       };
 
       eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      brand_formValidationInstance.value.$reset();
+      brand_formData.brandName = '';
+      brand_formData.notes = '';
+      brand_formData.code = '';
 
       // Refresh list setelah create/update
       await store.brandList_fetchList(

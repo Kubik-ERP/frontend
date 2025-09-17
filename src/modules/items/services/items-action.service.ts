@@ -55,6 +55,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     [inventoryItemsFormMode, inventoryItems_editingItem],
     async ([mode, item]) => {
       if (mode === 'edit' && item) {
+
         Object.assign(inventoryItemsAction_formData.value, {
           name: item.itemName,
           brandId: item.brandId,
