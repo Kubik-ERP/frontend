@@ -17,8 +17,6 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
   const storeBrand = useBrandStore();
   const storeStorageLocation = useStorageLocationStore();
   const storeSupplier = useSupplierStore();
-  // const outletStore = useOutletStore();
-  // const businessType = outletStore.outlet_currentOutlet?.businessType;
 
   const { supplier_supplierLists } = storeToRefs(storeSupplier);
   const { brandList } = storeToRefs(storeBrand);
@@ -72,6 +70,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
           storageLocationId: item.storageLocationId,
           supplierId: item.supplierId,
           pricePerUnit: item.pricePerUnit,
+          priceGrosir: item.priceGrosir,
         });
       } else if (route.params.id) {
         inventoryItemsFormMode.value = 'edit';
@@ -161,7 +160,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     };
     await eventBus.emit('AppBaseToast', argsEventEmitter);
 
-    router.push({ name: 'items.list'})
+    router.push({ name: 'items.list' });
   };
 
   const onCancel = () => {
