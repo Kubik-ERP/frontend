@@ -34,13 +34,19 @@ const orderTypeLabel = computed(() => {
       invoice_invoiceData.currentOutlet
     "
     id="invoice-paper"
-    class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4 max-w-screen md:max-w-xl"
-  >
-    <section v-if="invoice_invoiceData.configInvoice.isShowCompanyLogo" id="logo">
-      <pre>
-        <!-- {{ invoice_invoiceData }} -->
-      </pre>
-      <AppBaseImage :src="imageUrl" :alt="invoice_invoiceData.currentOutlet.name" class="w-20 h-20" />
+    class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4 pb-16 text-xl border-y"
+    >
+    <!-- class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4 md:max-w-xl max-w-[58mm]" -->
+    <section
+      v-if="
+        invoice_invoiceData.configInvoice.isShowCompanyLogo && invoice_invoiceData.configInvoice.companyLogoUrl
+      "
+      id="logo"
+    >
+      <!-- <pre>
+        {{ invoice_invoiceData.configInvoice.companyLogoUrl }}
+      </pre> -->
+      <AppBaseImage :src="imageUrl" :alt="invoice_invoiceData.currentOutlet.name" class="w-16 h-16" />
     </section>
     <h6 id="outlet-name" class="font-semibold text-black text-sm">{{ invoice_invoiceData.currentOutlet.name }}</h6>
 
@@ -52,10 +58,10 @@ const orderTypeLabel = computed(() => {
       {{ invoice_invoiceData.currentOutlet.address }}
     </p>
 
-    <div class="invoice-datetime-or-status">
-      <div class="invoice-datetime-or-status-content">
-        <span class="date">{{ useFormatDate(new Date(invoice_invoiceData.data.createdAt)) }}</span>
-        <span class="cashier">KASIR {{ invoice_invoiceData.data.invoiceNumber }}</span>
+    <div class="flex flex-col text-xs gap-2 border-y border-dashed border-black py-2 w-full">
+      <div class="flex justify-between">
+        <span class="text-left">{{ useFormatDate(new Date(invoice_invoiceData.data.createdAt)) }}</span>
+        <span class="text-right">KASIR {{ invoice_invoiceData.data.invoiceNumber }}</span>
       </div>
     </div>
 
@@ -129,7 +135,7 @@ const orderTypeLabel = computed(() => {
     </section>
 
     <section class="flex flex-col w-full">
-      <table id="product-items" class="w-full">
+      <table id="product-items" class="">
         <thead>
           <tr class="border-y border-dashed border-black py-2">
             <th class="font-normal pr-0.5 text-black text-left py-2">Deskripsi</th>
@@ -379,61 +385,4 @@ const orderTypeLabel = computed(() => {
 </template>
 
 <style lang="css" scoped>
-.invoice-datetime-or-status {
-  position: relative;
-  width: 100%;
-  font-family: 'Inter', monospace; /* Ensures uniform spacing */
-  font-size: 12px;
-}
-
-.invoice-datetime-or-status::before,
-.invoice-datetime-or-status::after {
-  content: '================================================================================================================================================================================================================================================================================================================================';
-  display: block;
-  font-family: monospace;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: clip;
-  width: 100%;
-  text-align: center;
-  line-height: 1;
-  color: #000;
-}
-
-@media (max-width: 1024px) {
-  .invoice-datetime-or-status::before,
-  .invoice-datetime-or-status::after {
-    content: '';
-    display: block;
-    font-family: monospace;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: clip;
-    width: 100%;
-    text-align: center;
-    line-height: 1;
-  }
-
-  .invoice-datetime-or-status::before {
-    content: '================================================================================================================================================================================================================================================================================================================================';
-  }
-
-  .invoice-datetime-or-status::after {
-    content: '================================================================================================================================================================================================================================================================================================================================';
-  }
-}
-
-/* Content styling with flexbox for alignment */
-.invoice-datetime-or-status-content {
-  display: flex;
-  justify-content: space-between; /* Pushes date and cashier to opposite ends */
-}
-
-.date {
-  text-align: left;
-}
-
-.cashier {
-  text-align: right;
-}
 </style>

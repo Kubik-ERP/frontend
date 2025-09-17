@@ -33,6 +33,8 @@ const {
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
+const rbac = useRbac();
+const voucherPermission = rbac.hasPermission('voucher');
 </script>
 
 <template>
@@ -57,7 +59,7 @@ const route = useRoute();
 
       <CashierSummaryModalMoreOptionsMobile />
 
-      <CashierSummaryModalVoucher />
+      <CashierSummaryModalVoucher v-show="voucherPermission" />
       <CashierSummaryModalPaymentMethod />
       <CashierSummaryModalPlaceOrderDetail />
       <CashierSummaryModalPlaceOrderConfirmation />

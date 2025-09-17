@@ -31,13 +31,17 @@ const selectedPaymentIcon = computed(() => selectedPaymentMethod.value?.iconName
 const selectedPaymentName = computed(
   () => selectedPaymentMethod.value?.name || useLocalization('cashier.orderSummary.paymentMethod'),
 );
+
+const rbac = useRbac();
+const voucherPermission = rbac.hasPermission('voucher');
 </script>
 
 <template>
   <section id="cashier-summary-promo-payment" class="border-b-2 border-b-grayscale-10 p-2">
     <div class="flex flex-col lg:flex-row w-full p-2 gap-4 bg-primary-background">
       <PrimeVueButton
-        class="w-full lg:w-1/2 py-2 border border-primary-border text-sm text-primary"
+        v-if="voucherPermission"
+        class="w-full lg:w-1/2 py-2 border border-primary-border text-primary "
         :class="cashierOrderSummary_modalVoucher.form.voucher_code ? 'bg-white' : ''"
         outlined
         :disabled="route.name === 'cashier-order-edit'"

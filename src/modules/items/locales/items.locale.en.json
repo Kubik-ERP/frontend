@@ -17,6 +17,8 @@
         "create": "Add New Items",
         "edit": "Edit Items"
       },
+      "priceRetail": "Price Retail",
+      "priceGrosir": "Price Grosir",
       "details": "Item Details",
       "name": "Item Name",
       "namePlaceholder": "Enter item name",
