@@ -53,10 +53,11 @@ export interface IInventoryItemsPayload {
   stockQuantity: number;
   reorderLevel: number;
   minimumStockQuantity: number;
-  expiryDate: string;
+  expiryDate: Date | string;
   storageLocationId: string;
   pricePerUnit: number;
   supplierId: string;
+  priceGrosir: number;
 }
 
 

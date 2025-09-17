@@ -3,6 +3,8 @@
 import { IProduct } from '@/modules/catalog-product/interfaces';
 import type { ICommissionTableData, IStaffMemberCreateEditProvided } from '../interfaces';
 import { IVoucher } from '@/modules/voucher/interfaces';
+// import eventBus from '@/plugins/mitt';
+// import { EToastType, EToastPosition } from '@/app/constants/toast.constant';
 
 const {
   staffMemberCreateEdit_columnsOfCommissions,
@@ -97,6 +99,19 @@ function formatCurrency(value?: number) {
  * @description Handle submit
  */
 function handleSubmit() {
+  if (staffMemberCreateEdit_commisionType.value === 'PRODUCT') {
+    if(staffMemberCreateEdit_formData.defaultCommissionProduct === null){
+      staffMemberCreateEdit_formData.defaultCommissionProduct = 0
+    }
+  } else {
+    staffMemberCreateEdit_formData.defaultCommissionVoucher = 
+    staffMemberCreateEdit_formData.defaultCommissionVoucher === null
+    ? 0
+    : defaultCommissionValue.value ?? 0;
+  }
+
+  console.log('formData', staffMemberCreateEdit_formData);
+
   const form = new FormData();
 
   if (staffMemberCreateEdit_commisionType.value === 'PRODUCT') {

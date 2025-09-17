@@ -2,6 +2,7 @@
 import { useInvetoryItemsActionService } from '../services/items-action.service';
 import confirmationSVG from '@/app/assets/icons/confirmation.svg';
 import { useInventoryItemsListService } from '../services/items-list.service';
+import { useOutletStore } from '@/modules/outlet/store';
 
 const {
   inventoryItemsAction_formData: form,
@@ -43,6 +44,9 @@ const cancelUpdate = () => {
 const confirmUpdate = async () => {
   await inventoryItemsAction_onSubmit(form.value, 'edit', inventoryItems_editingItem.value?.id);
 };
+
+const outletStore = useOutletStore();
+const businessType = outletStore.outlet_currentOutlet?.businessType;
 </script>
 
 <template>
@@ -288,11 +292,29 @@ const confirmUpdate = async () => {
             v-slot="{ classes }"
             class-label="block text-sm font-medium text-gray-700 mb-1"
             is-name-as-label
-                        :name="useLocalization('items.form.pricePerUnit')"
+            :name="businessType === 'Restaurant' ? useLocalization('items.form.pricePerUnit') : useLocalization('items.form.priceRetail')"
             :validators="itemFormValidation.pricePerUnit"
           >
             <PrimeVueInputNumber
               v-model="form.pricePerUnit"
+              mode="currency"
+              currency="IDR"
+              locale="id-ID"
+              class="w-full"
+              :class="{ ...classes }"
+            />
+          </AppBaseFormGroup>
+
+          <AppBaseFormGroup
+               v-if="businessType !== 'Restaurant'"
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium text-gray-700 mb-1"
+              is-name-as-label
+              :name="useLocalization('items.form.priceGrosir')"
+              :validators="itemFormValidation.priceGrosir"
+            >
+            <PrimeVueInputNumber
+              v-model="form.priceGrosir"
               mode="currency"
               currency="IDR"
               locale="id-ID"
