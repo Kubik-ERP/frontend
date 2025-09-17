@@ -66,10 +66,11 @@ export const useInventoryItemsListService = (): IInventoryItemsListProvided => {
     router.push({ name: 'items.create' });
   };
 
-  const inventoryItems_onEdit = (inventoryItemsId: string) => {
+  const inventoryItems_onEdit = async (inventoryItemsId: string) => {
     inventoryItemsFormMode.value = 'edit';
-    inventoryItems_editingItem.value =
-      inventoryItems_lists.value.data.items.find(item => item.id === inventoryItemsId) ?? null;
+  inventoryItemsFormMode.value = 'edit';
+        const res = await store.inventoryItems_GetData({ paramsSerializer: useParamsSerializer }, inventoryItemsId as string);
+        inventoryItems_editingItem.value = res.data;
 
     router.push({ name: 'items.edit', params: { id: inventoryItemsId } });
   };
