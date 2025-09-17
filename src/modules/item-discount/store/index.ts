@@ -3,29 +3,25 @@ import httpClient from '@/plugins/axios';
 
 // type
 import type { AxiosRequestConfig } from 'axios';
-// import type { IDashboardStore, IDashboardQueryParams } from '../interfaces';
+import type { IProductListQueryParams, IProductListResponse } from '../interfaces';
 
 // constant
-import {} from '../constants'
+import { PRODUCTS_BASE_ENDPOINT } from '../constants';
 
 export const useDiscountStore = defineStore('discount', {
   state: () => ({
     productList_isLoading: false,
-    productList_values: [],
+    productList_values: {} as IProductListResponse,
   }),
   actions: {
-    async fetchProductList(requestConfigurations: AxiosRequestConfig) {
+    async fetchProductList(params: IProductListQueryParams, requestConfigurations: AxiosRequestConfig) {
       this.productList_isLoading = true;
       try {
-        const params = {
-          page: 1,
-          limit: 10,
-        };
-        const response = await httpClient.get(`/products`, {
+        const response = await httpClient.get(`${PRODUCTS_BASE_ENDPOINT}`, {
           params,
           ...requestConfigurations,
         });
-        this.productList_values = response.data.data.products;
+        this.productList_values = response.data.data;
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
