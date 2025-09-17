@@ -40,7 +40,7 @@ export const useCategoryService = () => {
   const headers = {
     'X-STORE-ID': storeID,
     Authorization: `Bearer ${token?.authentication_token}`,
-    'ngrok-skip-browser-warning': 'true'
+    // 'ngrok-skip-browser-warning': 'true'
   };
 
   const category_formData = reactive<ICategoryFormData>({

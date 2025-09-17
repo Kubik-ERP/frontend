@@ -1,6 +1,7 @@
 export interface ICategoryImportFailedSuccessData {
   id: string;
-  name: string;
+  rowNumber: number;
+  category: string;
   description?: string;
   imageUrl?: string;
   status: string;
