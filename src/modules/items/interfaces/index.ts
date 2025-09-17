@@ -17,6 +17,7 @@ export interface IInventoryItems {
   createdAt: string;
   updatedAt: string;
   brand: string;
+  priceGrosir: number;
   category: string;
   storageLocation: string;
   supplier: string;
