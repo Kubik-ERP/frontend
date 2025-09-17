@@ -12,6 +12,8 @@
         "create": "Tambah Item Baru",
         "edit": "Ubah Item"
       },
+      "priceRetail": "Harga Eceran",
+      "priceGrosir": "Harga Grosir",
       "details": "Detail Item",
       "name": "Nama Item",
       "namePlaceholder": "Masukkan nama item",

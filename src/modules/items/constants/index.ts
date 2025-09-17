@@ -1,27 +1,35 @@
+import { useOutletStore } from "@/modules/outlet/store";
+
 export const ITEMS_API_BASE_ENDPOINT = '/inventory-items';
 
 export const ITEMS_LIST_REQUEST = 'ITEMS_LIST_REQUEST';
 
+const store = useOutletStore();
+const businessType = store.outlet_currentOutlet?.businessType;
 export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
   {
     label: 'SKU',
     sortable: false,
     value: 'sku',
+    translationKey: 'items.form.sku',
   },
   {
     label: 'Item Name',
     sortable: false,
     value: 'name',
+    translationKey: 'items.form.name',
   },
   {
     label: 'Category',
     sortable: false,
     value: 'categoryName',
+    translationKey: 'items.form.category',
   },
   {
     label: 'Brand',
     sortable: false,
     value: 'brandName',
+    translationKey: 'items.form.brand',
   },
   // {
   //   label: 'Unit',
@@ -32,6 +40,7 @@ export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
     label: 'Stock Quantity',
     sortable: true,
     value: 'stockQuantity',
+    translationKey: 'items.form.stockQuantity',
   },
   // {
   //   label: 'Reorder Level',
@@ -42,17 +51,20 @@ export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
     label: 'Minimum Stock',
     sortable: true,
     value: 'minimumStockQuantity',
+    translationKey: 'items.form.minStockQuantity',
 
   },
   {
     label: 'Price Per Unit',
     sortable: true,
     value: 'unitPrice',
+    translationKey: businessType === 'Restaurant' ? 'items.form.pricePerUnit' : 'items.form.priceRetail',
   },
   {
     label: 'Expiry Date',
     sortable: true,
     value: 'expiryDate',
+    translationKey: 'items.form.expiryDate',
   },
   // {
   //   label: 'Supplier',
