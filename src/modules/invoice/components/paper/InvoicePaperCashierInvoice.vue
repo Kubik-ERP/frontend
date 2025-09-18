@@ -155,11 +155,7 @@ const orderTypeLabel = computed(() => {
           </tr>
         </thead>
 
-        <tbody class="border-b border-solid border-black">
-          <!-- <pre>
-        {{ invoice_invoiceData.data.invoiceDetails }}
-      </pre
-          > -->
+        <tbody class="border-b border-solid border-black ">
           <template v-for="item in invoice_invoiceData.data.invoiceDetails" :key="item.id">
             <tr>
               <td class="font-normal pr-0.5 text-black text-sm">{{ item.products.name }}</td>

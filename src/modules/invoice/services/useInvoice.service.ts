@@ -102,7 +102,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
 
       setTimeout(() => {
         ref.classList.add('hidden');
-      }, 1000);
+      }, 15000);
     };
 
     switch (type) {
@@ -144,9 +144,13 @@ export const useInvoiceService = (): IInvoiceProvided => {
         .set({
           margin: 0,
           filename: 'invoice.pdf',
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+          image: { type: 'jpeg', quality: 1 },
+          html2canvas: { scale: 1 },
+          jsPDF: {
+            unit: 'mm',
+            format: [80, 300],
+            orientation: 'portrait',
+          },
         })
         .save()
         .then(() => {
