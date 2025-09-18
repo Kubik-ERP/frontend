@@ -4,7 +4,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/voucher',
+    path: '/marketing/voucher',
     name: '/voucher',
     children: [
       {

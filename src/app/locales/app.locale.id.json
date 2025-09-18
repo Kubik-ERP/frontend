@@ -8,7 +8,6 @@
     "edit-profile": "Edit Profil",
     "email": "Email",
     "email-address": "Alamat Email",
-
     "form": {
       "full-name": "Nama Lengkap",
       "email": "Email",
@@ -16,9 +15,7 @@
       "phone-number": "Nomor Telepon",
       "username": "Nama Pengguna"
     },
-
     "hi": "Halo!",
-
     "navbar": {
       "my-account": "Akun Saya",
       "change-language": "Ubah Bahasa",
@@ -30,11 +27,9 @@
       "search-placeholder": "Cari semua di sini...",
       "start-typing-to-search": "Mulai mengetik untuk mencari..."
     },
-
     "sidebar": {
       "log-out": "Keluar"
     },
-
     "menus": {
       "dashboard": "Dashboard",
       "cashier": "Kasir",
@@ -61,6 +56,8 @@
       "storage-location": "Lokasi Penyimpanan",
       "purchase-order": "Purchase Order",
       "marketing": "Marketing",
+      "voucher": "Voucher",
+      "discount": "Diskon",
       "staff": "Staff",
       "staff-members": "Anggota Staff",
       "working-hours": "Jam Kerja",
@@ -75,14 +72,12 @@
       "tax-service-charge": "Pajak & Biaya Layanan",
       "invoice": "Invoice"
     },
-
     "menu-categories": {
       "cashier": "Kasir",
       "sales": "Penjualan",
       "operations": "Operasional",
       "settings": "Pengaturan"
     },
-
     "name": "Nama",
     "no": "Nomor",
     "no-data-available": "Tidak ada data tersedia",
