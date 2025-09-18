@@ -59,8 +59,9 @@ export type IItemDiscountProvided = {
 
   itemDiscount_onShowDialog: () => void;
   itemDiscount_onCloseDialog: () => void;
-  itemDiscount_onSubmitDialog: () => void;
+  itemDiscount_onSubmitDialog: () => Promise<void>;
   itemDiscount_formData: IItemDiscountFormData;
   itemDiscount_formValidations: globalThis.Ref<Validation>;
+  productDiscount_isLoading: globalThis.Ref<boolean>;
   fetchProductList: () => Promise<void>;
 };

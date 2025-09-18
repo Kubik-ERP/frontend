@@ -10,7 +10,7 @@ const {
 
   productList_queryParams,
   productList_onChangePage,
-  
+
   isProductSelected,
   toggleSelection,
 
@@ -41,7 +41,7 @@ const {
 
           <PrimeVueChip
             class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-0.5"
-            :label="`${productList_values.total} Members`"
+            :label="`${productList_values.total} Products`"
           />
         </div>
       </template>

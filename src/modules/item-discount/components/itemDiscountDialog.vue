@@ -7,6 +7,7 @@ const {
   itemDiscount_onSubmitDialog,
   itemDiscount_formData,
   itemDiscount_formValidations,
+  productDiscount_isLoading,
 } = inject<IItemDiscountProvided>('productList')!;
 
 const discountUnit = ref('Rp');
@@ -74,6 +75,7 @@ watch(
         class="bg-blue-primary border-none text-sm py-[10px]"
         label="Apply"
         type="button"
+        :loading="productDiscount_isLoading"
         @click="itemDiscount_onSubmitDialog()"
       />
     </template>

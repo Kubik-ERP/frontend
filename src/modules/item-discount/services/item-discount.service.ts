@@ -18,7 +18,7 @@ import { required } from '@vuelidate/validators';
 
 export const useDiscountService = (): IItemDiscountProvided => {
   const store = useDiscountStore();
-  const { productList_isLoading, productList_values } = storeToRefs(store);
+  const { productDiscount_isLoading, productList_isLoading, productList_values } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const fetchProductList = async () => {
@@ -62,7 +62,7 @@ export const useDiscountService = (): IItemDiscountProvided => {
   );
 
   const itemDiscount_formData = reactive<IItemDiscountFormData>({
-    discountValue: 0,
+    discountValue: 1,
     isPercent: false,
   });
 
@@ -98,7 +98,7 @@ export const useDiscountService = (): IItemDiscountProvided => {
     itemDiscount_clearFormData();
   };
 
-  const itemDiscount_onSubmitDialog = (): void => {
+  const itemDiscount_onSubmitDialog = async (): Promise<void> => {
     if (selectedProducts.value.length === 0) {
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
@@ -112,19 +112,13 @@ export const useDiscountService = (): IItemDiscountProvided => {
       return;
     }
     try {
-      console.log(
-        JSON.stringify(
-          {
-            selectedProducts: selectedProducts.value,
-            itemDiscountFormData: itemDiscount_formData,
-          },
-          null,
-          2,
-        ),
-      );
+      await store.patchDiscountPrice(selectedProducts.value, itemDiscount_formData, {
+        ...httpAbort_registerAbort('PATCH_DISCOUNT_PRICE'),
+      });
       itemDiscount_onCloseDialog();
       itemDiscount_clearFormData();
       clearSelectedProducts();
+      fetchProductList();
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,
@@ -160,6 +154,8 @@ export const useDiscountService = (): IItemDiscountProvided => {
     itemDiscount_onSubmitDialog,
     itemDiscount_formData,
     itemDiscount_formValidations,
+
+    productDiscount_isLoading,
 
     fetchProductList,
   };

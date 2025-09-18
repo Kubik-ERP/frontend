@@ -27,7 +27,7 @@ const {
 
   itemDiscount_formData,
   itemDiscount_formValidations,
-
+  productDiscount_isLoading,
   fetchProductList,
 } = useDiscountService();
 
@@ -47,7 +47,7 @@ provide('productList', {
   itemDiscount_onShowDialog,
   itemDiscount_onCloseDialog,
   itemDiscount_onSubmitDialog,
-
+  productDiscount_isLoading,
   itemDiscount_formData,
   itemDiscount_formValidations,
 
