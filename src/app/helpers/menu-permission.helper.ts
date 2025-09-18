@@ -60,7 +60,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   tax_and_service_charge_configuration: ['/pos-setting', '/pos-setting/tax-service'],
 
   // Marketing and vouchers
-  voucher: ['/marketing', '/voucher'],
+  voucher: ['/marketing', '/marketing/voucher', '/marketing/discount'],
 
   // Account management
   accounts: ['/account'],
