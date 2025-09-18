@@ -17,6 +17,7 @@ export interface IInventoryItems {
   createdAt: string;
   updatedAt: string;
   brand: string;
+  priceGrosir: number;
   category: string;
   storageLocation: string;
   supplier: string;
@@ -53,10 +54,11 @@ export interface IInventoryItemsPayload {
   stockQuantity: number;
   reorderLevel: number;
   minimumStockQuantity: number;
-  expiryDate: string;
+  expiryDate: Date | string;
   storageLocationId: string;
   pricePerUnit: number;
   supplierId: string;
+  priceGrosir: number;
 }
 
 

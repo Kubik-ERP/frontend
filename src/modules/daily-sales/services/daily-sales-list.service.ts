@@ -25,7 +25,7 @@ import { useDailySalesStore } from '../store';
 /**
  * @description Closure function that returns everything what we need into an object
  */
-export const useDailySalesListService = (): IDailySalesListProvided => {
+export const useDailySalesListService = (businessType?: string): IDailySalesListProvided => {
   /**
    * @description Injected variables
    */
@@ -47,6 +47,19 @@ export const useDailySalesListService = (): IDailySalesListProvided => {
     paymentStatus: null,
     orderBy: null,
     orderDirection: null,
+  });
+
+  /**
+   * @description Filter columns based on business type
+   */
+  const filteredColumns = computed(() => {
+    if (businessType === 'Retail') {
+      // Hide 'Table Number' (tableCode) and 'Order Type' (orderType) for Retail
+      return DAILY_SALES_LIST_COLUMNS.filter(
+        column => column.value !== 'tableCode' && column.value !== 'orderType',
+      );
+    }
+    return DAILY_SALES_LIST_COLUMNS;
   });
 
   /**
@@ -191,7 +204,7 @@ export const useDailySalesListService = (): IDailySalesListProvided => {
   };
 
   return {
-    dailySalesList_columns: DAILY_SALES_LIST_COLUMNS,
+    dailySalesList_columns: filteredColumns.value,
     dailySalesList_fetchListInvoices,
     dailySalesList_getClassOfOrderStatus,
     dailySalesList_getClassOfOrderType,

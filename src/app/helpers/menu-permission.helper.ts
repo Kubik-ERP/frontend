@@ -97,6 +97,7 @@ export const hasAccessAllStore = (userPermissions: string[]): boolean => {
 export const filterMenusByPermissions = (
   menuCategories: IMenuCategory[],
   userPermissions: string[],
+  businessType?: string,
 ): IMenuCategory[] => {
   //   if (hasAccessAllStore(userPermissions)) {
   //   return menuCategories;
@@ -104,6 +105,11 @@ export const filterMenusByPermissions = (
   return menuCategories
     .map(category => {
       const filteredMenus = category.menus.filter((menu: IMenu) => {
+        // 🔹 Hide queue menu for Retail business type
+        if (businessType === 'Retail' && menu.path === '/queue') {
+          return false;
+        }
+
         // 🔹 Cek akses main menu
         console.log('🚀 ~ hasMenuPermission ~ menu.path:', menu);
         const hasMainMenuAccess = hasMenuPermission(menu.path, userPermissions);

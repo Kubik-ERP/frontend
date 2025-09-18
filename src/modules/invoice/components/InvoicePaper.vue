@@ -10,8 +10,28 @@ import InvoicePaperCashierInvoice from './paper/InvoicePaperCashierInvoice.vue';
 import InvoicePaperKitchenTicket from './paper/InvoicePaperKitchenTicket.vue';
 import InvoicePaperTableTicket from './paper/InvoicePaperTableTicket.vue';
 
+// Stores
+import { useOutletStore } from '@/modules/outlet/store';
+
 const { invoice_activeInvoice, invoice_handleDownload, invoice_handlePrint } =
   inject<IInvoiceProvided>('invoice')!;
+
+/**
+ * @description Injected variables
+ */
+const outletStore = useOutletStore();
+const { outlet_currentOutlet } = storeToRefs(outletStore);
+
+/**
+ * @description Filter tabs based on business type
+ */
+const filteredTabs = computed(() => {
+  if (outlet_currentOutlet.value?.businessType === 'Retail') {
+    // Only show Cashier Invoice for Retail
+    return INVOICE_LIST_TAB.filter(tab => tab.id === 1);
+  }
+  return INVOICE_LIST_TAB;
+});
 
 /**
  * @description Ref for invoice paper
@@ -53,7 +73,7 @@ defineExpose({ invoiceRef, kitchenRef, tableRef, print, download });
           class="flex cursor-pointer mb-6 w-fit items-center justify-center p-2 bg-secondary-background rounded-md"
         >
           <PrimeVueTab
-            v-for="(item, index) in INVOICE_LIST_TAB"
+            v-for="(item, index) in filteredTabs"
             :key="index"
             unstyled
             :value="item.id"
@@ -70,10 +90,10 @@ defineExpose({ invoiceRef, kitchenRef, tableRef, print, download });
           <PrimeVueTabPanel :value="1">
             <InvoicePaperCashierInvoice />
           </PrimeVueTabPanel>
-          <PrimeVueTabPanel :value="2">
+          <PrimeVueTabPanel v-if="outlet_currentOutlet?.businessType !== 'Retail'" :value="2">
             <InvoicePaperKitchenTicket />
           </PrimeVueTabPanel>
-          <PrimeVueTabPanel :value="3">
+          <PrimeVueTabPanel v-if="outlet_currentOutlet?.businessType !== 'Retail'" :value="3">
             <InvoicePaperTableTicket />
           </PrimeVueTabPanel>
         </PrimeVueTabPanels>
