@@ -22,6 +22,8 @@ export interface IInventoryItems {
   storageLocation: string;
   supplier: string;
   itemName: string;
+  imagePreview: string | null;
+  imageUrl?: string;
 }
 
 export interface IInventoryItemsStockAdjustment {
@@ -59,6 +61,8 @@ export interface IInventoryItemsPayload {
   pricePerUnit: number;
   supplierId: string;
   priceGrosir: number;
+  imagePreview: string | null;
+  imageFile?: File | null;
 }
 
 

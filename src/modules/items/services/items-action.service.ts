@@ -48,6 +48,8 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     supplierId: '',
     pricePerUnit: 0,
     priceGrosir: 0,
+    imagePreview: null,
+    imageFile: null,
   });
 
   const route = useRoute();
@@ -71,6 +73,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
           supplierId: item.supplierId,
           pricePerUnit: item.pricePerUnit,
           priceGrosir: item.priceGrosir,
+          imagePreview: item.imageUrl || null,
         });
       } else if (route.params.id) {
         inventoryItemsFormMode.value = 'edit';
@@ -93,6 +96,8 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
           supplierId: '',
           pricePerUnit: 0,
           priceGrosir: 0,
+          imagePreview: null,
+          imageFile: null,
         };
       }
     },

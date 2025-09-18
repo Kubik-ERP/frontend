@@ -105,6 +105,11 @@ export const filterMenusByPermissions = (
   return menuCategories
     .map(category => {
       const filteredMenus = category.menus.filter((menu: IMenu) => {
+        // 🔹 Hide catalog menu if businessType is not 'Restaurant'
+        if (businessType !== 'Restaurant' && menu.path === '/catalog') {
+          return false;
+        }
+
         // 🔹 Hide queue menu for Retail business type
         if (businessType === 'Retail' && menu.path === '/queue') {
           return false;
