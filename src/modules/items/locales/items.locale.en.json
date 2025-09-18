@@ -20,6 +20,11 @@
       "priceRetail": "Price Retail",
       "priceGrosir": "Price Grosir",
       "details": "Item Details",
+      "photo": {
+        "label": "Photo (Optional)",
+        "button": "Select Image",
+        "delete": "Delete Image"
+      },
       "name": "Item Name",
       "namePlaceholder": "Enter item name",
       "brand": "Brand",

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useInvetoryItemsActionService } from '../services/items-action.service';
 import confirmationSVG from '@/app/assets/icons/confirmation.svg';
+import imageSVG from '@/app/assets/icons/image.svg';
 import { useInventoryItemsListService } from '../services/items-list.service';
 import { useOutletStore } from '@/modules/outlet/store';
 
@@ -22,8 +23,6 @@ const {
 const { inventoryItems_onDelete } = useInventoryItemsListService();
 
 const isUpdateModal = ref(false);
-
-
 
 const onSubmit = () => {
   if (inventoryItemsAction_formOnMode.value === 'create') {
@@ -47,6 +46,32 @@ const confirmUpdate = async () => {
 
 const outletStore = useOutletStore();
 const businessType = outletStore.outlet_currentOutlet?.businessType;
+
+// handle image for retail
+const fileInput = ref<HTMLInputElement | null>(null);
+
+const triggerFileInput = () => {
+  fileInput.value?.click();
+};
+
+const handleImageUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (file) {
+    form.value.imageFile = file; // ✅ Save the file
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      form.value.imagePreview = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const removePhoto = () => {
+  form.value.imagePreview = null;
+  form.value.imageFile = null;
+};
 </script>
 
 <template>
@@ -54,6 +79,38 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
     <div class="flex flex-col gap-6 w-full max-w-6xl mx-auto">
       <!-- Item Details -->
       <section>
+        <div v-if="businessType !== 'Restaurant'">
+          <div class="flex flex-col items-center justify-center mb-4">
+            <p>{{ useLocalization('items.form.photo.label') }}</p>
+            <AppBaseImage :src="form.imagePreview" alt="Photo" class="w-64 h-64 object-cover rounded-lg border" />
+
+            <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
+
+            <div class="flex items-center justify-center gap-2 mt-4">
+              <PrimeVueButton
+                :label="useLocalization('items.form.photo.button')"
+                class="shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
+                variant="outlined"
+                @click="triggerFileInput"
+              >
+                <template #icon>
+                  <img :src="imageSVG" alt="" />
+                </template>
+              </PrimeVueButton>
+              <PrimeVueButton
+                v-if="form.imagePreview"
+                variant="text"
+                severity="danger"
+                :label="useLocalization('items.form.photo.delete')"
+                @click="removePhoto"
+              >
+                <template #icon>
+                  <AppBaseSvg name="delete" class="!w-5 !h-5" />
+                </template>
+              </PrimeVueButton>
+            </div>
+          </div>
+        </div>
         <h3 class="font-semibold text-lg text-primary mb-4">{{ useLocalization('items.form.details') }}</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Item Name -->
@@ -62,7 +119,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="item-name"
-                        :name="useLocalization('items.form.name')"
+            :name="useLocalization('items.form.name')"
             spacing-bottom="mb-0"
             :validators="itemFormValidation.name"
           >
@@ -71,7 +128,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
               v-model="form.name"
               class="w-full"
               :class="{ ...classes }"
-                            :placeholder="useLocalization('items.form.namePlaceholder')"
+              :placeholder="useLocalization('items.form.namePlaceholder')"
               required
             />
           </AppBaseFormGroup>
@@ -82,7 +139,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="brand"
-                        :name="useLocalization('items.form.brand')"
+            :name="useLocalization('items.form.brand')"
             spacing-bottom="mb-0"
             :validators="itemFormValidation.brand"
           >
@@ -94,7 +151,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
               option-value="id"
               filter
               show-clear
-                            :placeholder="useLocalization('items.form.brandPlaceholder')"
+              :placeholder="useLocalization('items.form.brandPlaceholder')"
               class="w-full"
               :class="{ ...classes }"
             />
@@ -106,14 +163,14 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="barcode"
-                        :name="useLocalization('items.form.barcode')"
+            :name="useLocalization('items.form.barcode')"
             spacing-bottom="mb-0"
           >
             <div class="relative w-full">
               <PrimeVueInputText
                 id="barcode"
                 v-model="form.barcode"
-                                :placeholder="useLocalization('items.form.barcodePlaceholder')"
+                :placeholder="useLocalization('items.form.barcodePlaceholder')"
                 class="w-full pr-8"
                 :class="{ ...classes }"
               />
@@ -133,7 +190,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="sku"
-                        :name="useLocalization('items.form.sku')"
+            :name="useLocalization('items.form.sku')"
             spacing-bottom="mb-0"
             :validators="itemFormValidation.sku"
           >
@@ -142,7 +199,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
               v-model="form.sku"
               class="w-full"
               :class="{ ...classes }"
-                            :placeholder="useLocalization('items.form.skuPlaceholder')"
+              :placeholder="useLocalization('items.form.skuPlaceholder')"
               required
             />
           </AppBaseFormGroup>
@@ -153,7 +210,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="category"
-                        :name="useLocalization('items.form.category')"
+            :name="useLocalization('items.form.category')"
             spacing-bottom="mb-0"
             :validators="itemFormValidation.categoryId"
           >
@@ -165,7 +222,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
               option-value="id"
               filter
               show-clear
-                            :placeholder="useLocalization('items.form.categoryPlaceholder')"
+              :placeholder="useLocalization('items.form.categoryPlaceholder')"
               class="w-full"
               :class="{ ...classes }"
             />
@@ -177,7 +234,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="unit"
-                        :name="useLocalization('items.form.unit')"
+            :name="useLocalization('items.form.unit')"
             spacing-bottom="mb-0"
             :validators="itemFormValidation.unit"
           >
@@ -186,7 +243,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
               v-model="form.unit"
               class="w-full"
               :class="{ ...classes }"
-                            :placeholder="useLocalization('items.form.unitPlaceholder')"
+              :placeholder="useLocalization('items.form.unitPlaceholder')"
             />
           </AppBaseFormGroup>
 
@@ -196,7 +253,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="notes"
-                        :name="useLocalization('items.form.notes')"
+            :name="useLocalization('items.form.notes')"
             spacing-bottom="mb-0"
             class="col-span-1 md:col-span-2"
           >
@@ -213,7 +270,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
             v-slot="{ classes }"
             class-label="block text-sm font-medium text-gray-700 mb-1"
             is-name-as-label
-                        :name="useLocalization('items.form.stockQuantity')"
+            :name="useLocalization('items.form.stockQuantity')"
             :validators="itemFormValidation.stockQuantity"
           >
             <PrimeVueInputNumber v-model="form.stockQuantity" class="w-full" :class="{ ...classes }" />
@@ -223,7 +280,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
             v-slot="{ classes }"
             class-label="block text-sm font-medium text-gray-700 mb-1"
             is-name-as-label
-                        :name="useLocalization('items.form.minStockQuantity')"
+            :name="useLocalization('items.form.minStockQuantity')"
             :validators="itemFormValidation.minimumStockQuantity"
           >
             <PrimeVueInputNumber v-model="form.minimumStockQuantity" class="w-full" :class="{ ...classes }" />
@@ -233,7 +290,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
             v-slot="{ classes }"
             class-label="block text-sm font-medium text-gray-700 mb-1"
             is-name-as-label
-                        :name="useLocalization('items.form.reorderLevel')"
+            :name="useLocalization('items.form.reorderLevel')"
             :validators="itemFormValidation.reorderLevel"
           >
             <PrimeVueInputNumber v-model="form.reorderLevel" class="w-full" :class="{ ...classes }" />
@@ -245,7 +302,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
             v-slot="{ classes }"
             class-label="block text-sm font-medium text-gray-700 mb-1"
             is-name-as-label
-                        :name="useLocalization('items.form.expiryDate')"
+            :name="useLocalization('items.form.expiryDate')"
             :validators="itemFormValidation.expiryDate"
           >
             <div class="p-input-icon-right w-full">
@@ -263,7 +320,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
             label-for="storage-location"
-                        :name="useLocalization('items.form.storageLocation')"
+            :name="useLocalization('items.form.storageLocation')"
             spacing-bottom="mb-0"
             :validators="itemFormValidation.storageLocation"
             :default-value="storageLocations[0] ?? ''"
@@ -276,7 +333,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
               option-value="id"
               filter
               show-clear
-                            :placeholder="useLocalization('items.form.storageLocationPlaceholder')"
+              :placeholder="useLocalization('items.form.storageLocationPlaceholder')"
               class="w-full"
               :class="{ ...classes }"
             />
@@ -286,13 +343,19 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
 
       <!-- Price & Supplier -->
       <section>
-        <h3 class="font-semibold text-lg text-primary mb-4">{{ useLocalization('items.form.priceAndSupplier') }}</h3>
+        <h3 class="font-semibold text-lg text-primary mb-4">
+          {{ useLocalization('items.form.priceAndSupplier') }}
+        </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <AppBaseFormGroup
             v-slot="{ classes }"
             class-label="block text-sm font-medium text-gray-700 mb-1"
             is-name-as-label
-            :name="businessType === 'Restaurant' ? useLocalization('items.form.pricePerUnit') : useLocalization('items.form.priceRetail')"
+            :name="
+              businessType === 'Restaurant'
+                ? useLocalization('items.form.pricePerUnit')
+                : useLocalization('items.form.priceRetail')
+            "
             :validators="itemFormValidation.pricePerUnit"
           >
             <PrimeVueInputNumber
@@ -306,13 +369,13 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
           </AppBaseFormGroup>
 
           <AppBaseFormGroup
-               v-if="businessType !== 'Restaurant'"
-              v-slot="{ classes }"
-              class-label="block text-sm font-medium text-gray-700 mb-1"
-              is-name-as-label
-              :name="useLocalization('items.form.priceGrosir')"
-              :validators="itemFormValidation.priceGrosir"
-            >
+            v-if="businessType !== 'Restaurant'"
+            v-slot="{ classes }"
+            class-label="block text-sm font-medium text-gray-700 mb-1"
+            is-name-as-label
+            :name="useLocalization('items.form.priceGrosir')"
+            :validators="itemFormValidation.priceGrosir"
+          >
             <PrimeVueInputNumber
               v-model="form.priceGrosir"
               mode="currency"
@@ -327,7 +390,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
             v-slot="{ classes }"
             class-label="block text-sm font-medium text-gray-700 mb-1"
             is-name-as-label
-                        :name="useLocalization('items.form.supplier')"
+            :name="useLocalization('items.form.supplier')"
             :validators="itemFormValidation.supplierId"
           >
             <PrimeVueDropdown
@@ -337,7 +400,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
               option-value="id"
               filter
               show-clear
-                            :placeholder="useLocalization('items.form.supplierPlaceholder')"
+              :placeholder="useLocalization('items.form.supplierPlaceholder')"
               class="w-full"
               :class="{ ...classes }"
             />
@@ -348,13 +411,19 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
       <!-- Actions -->
       <div class="flex flex-col sm:flex-row sm:items-center gap-4 mt-6">
         <PrimeVueButton
-                    :label="useLocalization('items.form.buttons.cancel')"
+          :label="useLocalization('items.form.buttons.cancel')"
           variant="text"
           class="w-full sm:w-auto !px-6 border-2 border-primary"
           @click="onCancel"
         />
         <PrimeVueButton
-                    :label="useLocalization(inventoryItemsAction_formOnMode === 'create' ? 'items.form.buttons.add' : 'items.form.buttons.update')"
+          :label="
+            useLocalization(
+              inventoryItemsAction_formOnMode === 'create'
+                ? 'items.form.buttons.add'
+                : 'items.form.buttons.update',
+            )
+          "
           class="w-full sm:w-auto !px-6"
           :disabled="!inventoryItemsAction_isValid"
           @click="onSubmit"
@@ -363,7 +432,7 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
 
       <PrimeVueButton
         v-if="inventoryItemsAction_formOnMode !== 'create'"
-                :label="useLocalization('items.form.buttons.delete')"
+        :label="useLocalization('items.form.buttons.delete')"
         severity="danger"
         icon="pi pi-trash"
         class="mt-4 sm:absolute sm:bottom-6 sm:right-20 !px-6 bg-transparent border-none text-red-600"
@@ -378,7 +447,9 @@ const businessType = outletStore.outlet_currentOutlet?.businessType;
       <div class="w-full sm:w-[35rem] p-6 sm:p-8">
         <div class="flex flex-col items-center gap-4 text-center">
           <span><img :src="confirmationSVG" alt="confirmation" /></span>
-          <h1 class="text-xl sm:text-2xl font-semibold">{{ useLocalization('items.form.dialog.updateConfirmationTitle') }}</h1>
+          <h1 class="text-xl sm:text-2xl font-semibold">
+            {{ useLocalization('items.form.dialog.updateConfirmationTitle') }}
+          </h1>
           <p class="text-sm sm:text-base">{{ useLocalization('items.form.dialog.updateConfirmationMessage') }}</p>
           <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
             <PrimeVueButton
