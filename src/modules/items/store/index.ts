@@ -166,7 +166,7 @@ export const useInventoryItemsStore = defineStore('items', {
     ): Promise<IInventoryItemsActionResponse> {
       try {
         const formData = convertItemToFormData(data);
-        const response = await httpClient.patch<IInventoryItemsActionResponse>(
+        const response = await httpClient.put<IInventoryItemsActionResponse>(
           `${ITEMS_API_BASE_ENDPOINT}/${id}`,
           formData,
           {
