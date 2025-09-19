@@ -1,10 +1,15 @@
 <script setup lang="ts">
 // Constants
-import { OUTLET_CREATE_EDIT_BUSINESS_TYPES } from '../constants/outlet-create-edit.constant';
+import {
+  OUTLET_CREATE_EDIT_BUSINESS_TYPES,
+  OUTLET_CREATE_EDIT_BUSINESS_TYPES_NOT_ACCESS,
+} from '../constants/outlet-create-edit.constant';
 import { FILE_UPLOAD_LIMITS, FILE_UPLOAD_LIMITS_DISPLAY } from '@/app/constants/file-upload.constant';
 
 // Interfaces
 import type { IOutletCreateEditProvided } from '../interfaces/outlet-create-edit.interface';
+import { useAuthenticationStore } from '@/modules/authentication/store';
+import { IAuthenticationSignUpCountryInformations } from '@/modules/authentication/interfaces';
 
 /**
  * @description Inject all the data and methods what we need
@@ -15,6 +20,9 @@ const {
   outletCreateEdit_onRemovePhoto,
   outletCreateEdit_onUploadPhoto,
 } = inject<IOutletCreateEditProvided>('outletCreateEdit')!;
+
+const authenticationStore = useAuthenticationStore();
+const { authentication_userData } = storeToRefs(authenticationStore);
 </script>
 
 <template>
@@ -81,6 +89,11 @@ const {
                 v-model="outletCreateEdit_formData.phoneCode"
                 filter
                 :options="COUNTRY_INFORMATIONS"
+                :option-label="
+                  (value: IAuthenticationSignUpCountryInformations) => {
+                    return `${value.name} (${value.dialCodes})`;
+                  }
+                "
                 option-value="dialCodes"
                 placeholder="+62"
                 class="text-sm h-full min-h-9 w-full"
@@ -137,7 +150,9 @@ const {
         >
           <div class="flex items-center gap-4 pt-4">
             <template
-              v-for="(businessType, businessTypeIndex) in OUTLET_CREATE_EDIT_BUSINESS_TYPES"
+              v-for="(businessType, businessTypeIndex) in authentication_userData?.isAccessRetail
+                ? OUTLET_CREATE_EDIT_BUSINESS_TYPES
+                : OUTLET_CREATE_EDIT_BUSINESS_TYPES_NOT_ACCESS"
               :key="`business-type-${businessTypeIndex}`"
             >
               <PrimeVueRadioButton

@@ -19,17 +19,17 @@ export const useProductImportService = (): IProductImportProvided => {
   const uploadedFile = ref<File | null>(null);
 
   // Handler
-  const productImport_onSubmit = () => {
+  const productImport_onSubmit = async () => {
     try{
       const batchId = localStorage.getItem('inventory_batch_id')?.toString();
       if (batchId) {
-        void store.product_Import_execute(batchId, {
+        await store.product_Import_execute(batchId, {
           ...httpAbort_registerAbort('STORAGE_LIST_REQUEST_EXECUTE'),
         });
 
         localStorage.removeItem('inventory_batch_id');
 
-        void getAllProducts(1, 100, '');
+        await getAllProducts(1, 100, '');
       }
 
       productImport_onClose();
