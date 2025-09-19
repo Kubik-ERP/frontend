@@ -311,13 +311,13 @@ export const LIST_SIDEBAR_MENUS = [
           },
         ],
       },
-      // {
-      //   name: 'Integrations',
-      //   iconName: 'integrations',
-      //   path: '/integrations',
-      //   isHaveSubMenus: false,
-      //   subMenus: [],
-      // },
+      {
+        name: 'Integrations',
+        iconName: 'integrations',
+        path: '/integrations',
+        isHaveSubMenus: false,
+        subMenus: [],
+      },
     ],
   },
 ];
