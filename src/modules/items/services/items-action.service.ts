@@ -26,6 +26,25 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
   const router = useRouter();
 
   onMounted(async () => {
+<<<<<<< HEAD
+    await storeCategory.inventoryCategoryList_fetchList(
+      { pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null },
+      {},
+    );
+    await storeBrand.brandList_fetchList(
+      { pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null },
+      {},
+    );
+    await storeStorageLocation.storageLocation_fetchListData(
+      { pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null },
+      {},
+    );
+    await storeSupplier.supplier_list(
+      { pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null },
+      {},
+    );
+  });
+=======
   inventoryItems_isLoading.value = true;
 
   try {
@@ -39,6 +58,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     inventoryItems_isLoading.value = false;
   }
 });
+>>>>>>> 43b061033bbb9c5338c424e04a2dff84ce4a132a
 
   const inventoryItemsAction_formData = ref<IInventoryItemsPayload>({
     name: '',
@@ -125,15 +145,18 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     minimumStockQuantity: { required },
     supplierId: { required },
     pricePerUnit: { required },
-
   }));
 
   const inventoryItems_validModel = computed(() => inventoryItemsAction_formData.value);
 
-  const inventoryItemsAction_Validation = useVuelidate(inventoryItems_formValidationRules, inventoryItems_validModel, {
-    $autoDirty: true,
-    $lazy: true,
-  });
+  const inventoryItemsAction_Validation = useVuelidate(
+    inventoryItems_formValidationRules,
+    inventoryItems_validModel,
+    {
+      $autoDirty: true,
+      $lazy: true,
+    },
+  );
 
   const inventoryItemsAction_isValid = computed(() => !inventoryItemsAction_Validation.value.$invalid);
 
@@ -151,14 +174,14 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     }
 
     const formattedPayload = { ...payload };
-   if (formattedPayload.expiryDate instanceof Date) {
-        const date = formattedPayload.expiryDate;
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-        formattedPayload.expiryDate = `${year}-${month}-${day}`;
+    if (formattedPayload.expiryDate instanceof Date) {
+      const date = formattedPayload.expiryDate;
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      formattedPayload.expiryDate = `${year}-${month}-${day}`;
     } else if (formattedPayload.expiryDate === null) {
-        formattedPayload.expiryDate = '';
+      formattedPayload.expiryDate = '';
     }
 
     let result;
@@ -171,7 +194,8 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     const argsEventEmitter: IPropsToast = {
       isOpen: true,
       type: EToastType.SUCCESS,
-      message: result?.message || (mode === 'create' ? 'Item created successfully!' : 'Item updated successfully!'),
+      message:
+        result?.message || (mode === 'create' ? 'Item created successfully!' : 'Item updated successfully!'),
       position: EToastPosition.TOP_RIGHT,
     };
     await eventBus.emit('AppBaseToast', argsEventEmitter);
@@ -180,7 +204,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
   };
 
   const onCancel = () => {
-   router.push({ name: 'items.list'})
+    router.push({ name: 'items.list' });
   };
 
   const inventoryItems_handleBarcodeScanner = () => {
@@ -204,4 +228,3 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     inventoryItems_handleBarcodeScanner,
   };
 };
-

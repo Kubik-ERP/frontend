@@ -13,6 +13,7 @@ import {
   CASHIER_ENDPOINT_PAYMENT_METHOD,
   CASHIER_ENDPOINT_PAYMENT_PROCESS,
   CASHIER_ENDPOINT_PAYMENT_UNPAID,
+  CASHIER_ENDPOINT_PRODUCTS_BARCODE,
   CASHIER_ENDPOINT_SIMULATE_PAYMENT,
 } from '../constants/cashierApi.constant';
 
@@ -23,6 +24,7 @@ import {
   ICashierCategoriesHasProductResponseData,
   ICashierCategoriesResponse,
   ICashierCustomerResponse,
+  ICashierProductBarcodeResponse,
   ICashierResponseCalulateEstimation,
   ICashierResponseMidtransQrisPayment,
   ICashierResponseProcessCheckout,
@@ -107,6 +109,34 @@ export const useCashierStore = defineStore('cashier', {
               categoryId: categoryId,
               search: search,
             },
+          },
+        );
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
+
+    /**
+     * @description Handle fetch product by barcode
+     * @url /api/products/barcode/{barcode}
+     * @method GET
+     * @access public
+     */
+    async cashierProduct_fetchProductByBarcode(
+      barcode: string,
+      route: RouteLocationNormalizedLoadedGeneric,
+    ): Promise<ICashierProductBarcodeResponse> {
+      try {
+        const response = await httpClient.get<ICashierProductBarcodeResponse>(
+          (route.name === 'self-order' ? '/self-order' : '') + `${CASHIER_ENDPOINT_PRODUCTS_BARCODE}/${barcode}`,
+          {
+            ...withStoreHeader(route),
           },
         );
 
