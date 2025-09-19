@@ -38,6 +38,8 @@ export const useSettingPaymentMethodService = (): ISettingPaymentMethodProvided 
    */
   const settingPaymentMethod_formData = reactive<ISettingPaymentMethodFormData>({
     name: '',
+    type:'',
+    image:'',
     iconName: '',
     isAvailable: false,
     sortNo: 0,
@@ -49,6 +51,7 @@ export const useSettingPaymentMethodService = (): ISettingPaymentMethodProvided 
    */
   const settingPaymentMethod_formRules = computed(() => ({
     name: { required },
+    type: {required}
   }));
   const settingPaymentMethod_formValidations = useVuelidate(
     settingPaymentMethod_formRules,
@@ -159,7 +162,39 @@ export const useSettingPaymentMethodService = (): ISettingPaymentMethodProvided 
 
     eventBus.emit('AppBaseDialog', argsEventEmitter);
   };
+  /**
+   * @description Handle business logic for close dialog
+   */
+  const settingQris_onClose = (): void => {
+    const argsEventEmitter: IPropsDialog = {
+      id: 'setting-qris-create-edit-dialog',
+      isOpen: false,
+    };
 
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle business logic for event click button create or edit payment method
+   */
+  const settingQris_onCreateOrEdit = (selectedData?: ISettingPaymentMethod): void => {
+    if (selectedData) {
+      settingPaymentMethod_selectedId.value = selectedData.id;
+      settingPaymentMethod_formData.name = selectedData.name;
+      settingPaymentMethod_formData.iconName = selectedData.iconName;
+      settingPaymentMethod_formData.isAvailable = selectedData.isAvailable;
+    }
+
+    const argsEventEmitter: IPropsDialog = {
+      id: 'setting-qris-create-edit-dialog',
+      isOpen: true,
+      isUsingBackdrop: true,
+      isUsingClosableButton: false,
+      width: '586px',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
   /**
    * @description Handle business logic for event click button create or edit payment method
    */
@@ -272,7 +307,9 @@ export const useSettingPaymentMethodService = (): ISettingPaymentMethodProvided 
     settingPaymentMethod_listColumns: SETTING_PAYMENT_METHOD_LIST_COLUMNS,
     settingPaymentMethod_listValues: setting_paymentMethod,
     settingPaymentMethod_onClose,
+    settingQris_onClose,
     settingPaymentMethod_onCreateOrEdit,
+    settingQris_onCreateOrEdit,
     settingPaymentMethod_onDeactivate,
     settingPaymentMethod_onSubmit,
     settingPaymentMethod_toggleAvailability,

@@ -9,23 +9,15 @@ const {
   settingPaymentMethod_formData,
   settingPaymentMethod_formValidations,
   settingPaymentMethod_isLoading,
-  settingPaymentMethod_onClose,
+  settingQris_onClose,
   settingPaymentMethod_onSubmit,
   settingPaymentMethod_toggleAvailability,
 } = inject('settingPaymentMethod') as ISettingPaymentMethodProvided;
 
-const fileInput = ref();
-const triggerFileInput = () => {
-  (fileInput.value as HTMLInputElement)?.click();
-};
-
-const removePhoto = () => {
-  settingPaymentMethod_formData.image = undefined;
-}
 </script>
 
 <template>
-  <AppBaseDialog id="setting-payment-method-create-edit-dialog">
+  <AppBaseDialog id="setting-qris-create-edit-dialog">
     <template #header>
       <header class="flex flex-col gap-2 w-full">
         <h6 class="font-semibold text-black text-lg">Payment Method</h6>
@@ -34,30 +26,7 @@ const removePhoto = () => {
 
     <template #content>
       <form action="" class="flex flex-col gap-4 w-full">
-
-        <div v-if="settingPaymentMethod_formData.type === 'qris'" class="flex items-center flex-col">
-          <AppBaseImage :src="settingPaymentMethod_formData.image" alt="Photo" class="w-64 h-64 object-cover" />
-          <input ref="fileInput" type="file" accept="image/*" class="hidden" />
-
-          <!-- PrimeVue Button as file selector -->
-          <div class="flex items-center justify-center gap-2 mt-4">
-            <PrimeVueButton
-              :label="useLocalization('modal.selectImageButton')"
-              class="shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
-              variant="outlined"
-              @click="triggerFileInput"
-            >
-              <template #icon>
-                <AppBaseSvg name="image" class="!w-5 !h-5" />
-              </template>
-            </PrimeVueButton>
-            <PrimeVueButton v-if="settingPaymentMethod_formData.image" variant="text" @click="removePhoto">
-              <template #icon>
-                <AppBaseSvg name="delete" class="!w-5 !h-5" />
-              </template>
-            </PrimeVueButton>
-          </div>
-        </div>
+        
 
         <AppBaseFormGroup
           v-slot="{ classes }"
@@ -71,31 +40,6 @@ const removePhoto = () => {
           <PrimeVueInputText
             v-model="settingPaymentMethod_formData.name"
             placeholder=""
-            class="text-sm w-full"
-            :class="{ ...classes }"
-          />
-        </AppBaseFormGroup>
-
-        <AppBaseFormGroup
-          v-slot="{ classes }"
-          class-label="block text-sm font-normal leading-6 text-text-secondary w-full"
-          is-name-as-label
-          label-for="type"
-          name="Payment Method Type"
-          spacing-bottom="mb-0"
-          :validators="settingPaymentMethod_formValidations.type"
-        >
-          <PrimeVueSelect
-            v-model="settingPaymentMethod_formData.type"
-            :options="[
-              { value: 'qris', label: 'QRIS' },
-              { value: 'credit', label: 'Credit' },
-              { value: 'debit', label: 'Debit' },
-              { value: 'cash', label: 'Cash' },
-            ]"
-            option-label="label"
-            option-value="value"
-            placeholder="Select type"
             class="text-sm w-full"
             :class="{ ...classes }"
           />
@@ -120,7 +64,7 @@ const removePhoto = () => {
           label="Cancel"
           severity="secondary"
           variant="outlined"
-          @click="settingPaymentMethod_onClose"
+          @click="settingQris_onClose"
         />
 
         <PrimeVueButton
