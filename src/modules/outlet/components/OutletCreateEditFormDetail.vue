@@ -5,6 +5,7 @@ import { FILE_UPLOAD_LIMITS, FILE_UPLOAD_LIMITS_DISPLAY } from '@/app/constants/
 
 // Interfaces
 import type { IOutletCreateEditProvided } from '../interfaces/outlet-create-edit.interface';
+import { IAuthenticationSignUpCountryInformations } from '@/modules/authentication/interfaces';
 
 /**
  * @description Inject all the data and methods what we need
@@ -81,6 +82,11 @@ const {
                 v-model="outletCreateEdit_formData.phoneCode"
                 filter
                 :options="COUNTRY_INFORMATIONS"
+                :option-label="
+                  (value: IAuthenticationSignUpCountryInformations) => {
+                    return `${value.name} (${value.dialCodes})`;
+                  }
+                "
                 option-value="dialCodes"
                 placeholder="+62"
                 class="text-sm h-full min-h-9 w-full"

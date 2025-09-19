@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // Constants
+import { IAuthenticationSignUpCountryInformations } from '@/modules/authentication/interfaces';
 import { ACCOUNT_STORE_EDIT_BUSINESS_TYPES } from '../../constants';
 
 // Interfaces
@@ -80,6 +81,11 @@ const {
                 v-model="accountStoreEdit_formData.phoneCode"
                 filter
                 :options="COUNTRY_INFORMATIONS"
+                :option-label="
+                  (value: IAuthenticationSignUpCountryInformations) => {
+                    return `${value.name} (${value.dialCodes})`;
+                  }
+                "
                 option-value="dialCodes"
                 placeholder="+62"
                 class="text-sm h-full min-h-9 w-full"

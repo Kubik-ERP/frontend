@@ -15,6 +15,9 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { IProductItem } from '../interfaces/cashier-response';
 
+// Toast
+import eventBus from '@/plugins/mitt';
+
 /**
  * @description Closure function that returns everything what we need into an object
  */
@@ -144,13 +147,45 @@ export const useCashierProductService = (): ICashierProductProvided => {
     try {
       cashierProduct_productState.value.isLoadingProduct = true;
 
-      // Fetch product by barcode
-      const response = await store.cashierProduct_fetchProductByBarcode(barcode, route);
-      const product = response.data;
+      // First, trigger search to update the product list with debounce
+      await new Promise<void>((resolve) => {
+        const debouncedSearch = debounce(() => {
+          cashierProduct_onSearchData().then(() => resolve());
+        }, 300); // 300ms debounce for barcode search
 
-      if (product && product.variant && product.variant.length > 0) {
+        debouncedSearch();
+      });
+
+      let foundProduct: IProductItem | null = null;
+
+      // Look for the product in search results first
+      foundProduct = cashierProduct_productState.value.listProductSearch.find(
+        product => product.barcode === barcode
+      ) || null;
+
+      // If not found in search results, look in category products
+      if (!foundProduct) {
+        for (const category of cashierProduct_productState.value.listProductCategory) {
+          foundProduct = category.items.find(
+            product => product.barcode === barcode
+          ) || null;
+          if (foundProduct) break;
+        }
+      }
+
+      // If still not found, try the barcode API as fallback
+      if (!foundProduct) {
+        try {
+          const response = await store.cashierProduct_fetchProductByBarcode(barcode, route);
+          foundProduct = response.data;
+        } catch (barcodeError) {
+          console.warn('Barcode API also failed:', barcodeError);
+        }
+      }
+
+      if (foundProduct && foundProduct.variant && foundProduct.variant.length > 0) {
         // Get the first variant if available
-        const firstVariant = product.variant[0];
+        const firstVariant = foundProduct.variant[0];
 
         // Create item object for adding to cart
         const item: ICashierModalAddProductItem = {
@@ -163,17 +198,39 @@ export const useCashierProductService = (): ICashierProductProvided => {
           notes: '',
         };
 
-        // Add product to selected products
-        cashierProduct_handleSelectProduct(product, item);
+        // Add product to selected products (only from barcode scanner)
+        cashierProduct_handleSelectProduct(foundProduct, item);
 
-        // Show success message or feedback
-        console.log(`Product "${product.name}" added to cart via barcode scan`);
+        // Show success message
+        eventBus.emit('AppBaseToast', {
+          isOpen: true,
+          message: `Produk "${foundProduct.name}" berhasil ditambahkan ke keranjang`,
+          position: EToastPosition.TOP_RIGHT,
+          type: EToastType.SUCCESS,
+        });
+
+        console.log(`Product "${foundProduct.name}" added to cart via barcode scan`);
       } else {
-        console.warn(`Product with barcode "${barcode}" not found or has no variants`);
+        // Product not found, show error message
+        eventBus.emit('AppBaseToast', {
+          isOpen: true,
+          message: `Produk dengan barcode "${barcode}" tidak ditemukan`,
+          position: EToastPosition.TOP_RIGHT,
+          type: EToastType.DANGER,
+        });
+
+        console.warn(`Product with barcode "${barcode}" not found`);
       }
     } catch (error) {
       console.error('Error scanning barcode:', error);
-      // You can add toast notification here for better UX
+
+      // Show error toast
+      eventBus.emit('AppBaseToast', {
+        isOpen: true,
+        message: 'Terjadi kesalahan saat memproses barcode',
+        position: EToastPosition.TOP_RIGHT,
+        type: EToastType.DANGER,
+      });
     } finally {
       cashierProduct_productState.value.isLoadingProduct = false;
     }

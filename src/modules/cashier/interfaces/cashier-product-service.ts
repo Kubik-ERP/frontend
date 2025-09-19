@@ -26,7 +26,7 @@ export interface ICashierProductProvided {
   cashierProduct_handleSelectCategory: (category: string) => void;
   cashierProduct_handleSelectProduct: (product: IProductItem, item: ICashierModalAddProductItem) => void;
 
-  cashierProduct_onSearchData: (searchData: string) => Promise<void>;
+  cashierProduct_onSearchData: () => Promise<void>;
   cashierProduct_handleBarcodeScanned: (barcode: string) => Promise<void>;
 
   isProductActive: (product: IProductItem) => boolean;
