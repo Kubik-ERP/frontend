@@ -16,6 +16,13 @@ export const OUTLET_CREATE_EDIT_BUSINESS_TYPES: IDropdownItem[] = [
     value: 'Retail',
   },
 ];
+
+export const OUTLET_CREATE_EDIT_BUSINESS_TYPES_NOT_ACCESS: IDropdownItem[] = [
+  {
+    label: 'Restaurant (FnB)',
+    value: 'Restaurant',
+  },
+];
 export const OUTLET_CREATE_EDIT_BUSINESS_HOURS = [
   'Sunday',
   'Monday',

@@ -9,7 +9,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   store_management: ['/outlet/list', '/outlet/create', 'outlet/edit/:id'],
 
   // Sales operations
-  check_out_sales: ['/cashier', '/sales-order', '/invoice'],
+  check_out_sales: ['/cashier', '/sales-order', '/invoice', '/integrations'],
   cancel_invoice: ['/invoice'],
   refund_invoice: ['/invoice'],
   edit_invoice: ['/cashier/order-edit/:id'],
