@@ -190,6 +190,11 @@ export const LIST_SIDEBAR_MENUS = [
             path: '/inventory-category',
           },
           {
+            name: 'Purchase Order',
+            translationKey: 'app.menus.purchase-order',
+            path: '/purchase-order',
+          },
+          {
             name: 'Stock Opname',
             translationKey: 'app.menus.stock-opname',
             path: '/stock-opname',
@@ -202,20 +207,23 @@ export const LIST_SIDEBAR_MENUS = [
         ],
       },
       {
-        name: 'Purchase Order',
-        translationKey: 'app.menus.purchase-order',
-        iconName: 'receipt',
-        path: '/purchase-order',
-        isHaveSubMenus: false,
-        subMenus: [],
-      },
-      {
         name: 'Marketing',
         translationKey: 'app.menus.marketing',
         iconName: 'marketing',
-        path: '/voucher',
-        isHaveSubMenus: false,
-        subMenus: [],
+        path: '/marketing',
+        isHaveSubMenus: true,
+        subMenus: [
+          {
+            name: 'Voucher',
+            translationKey: 'app.menus.voucher',
+            path: '/marketing/voucher',
+          },
+          {
+            name: 'Discount',
+            translationKey: 'app.menus.discount',
+            path: '/marketing/discount',
+          },
+        ],
       },
       {
         name: 'Staff',
@@ -303,13 +311,13 @@ export const LIST_SIDEBAR_MENUS = [
           },
         ],
       },
-      // {
-      //   name: 'Integrations',
-      //   iconName: 'integrations',
-      //   path: '/integrations',
-      //   isHaveSubMenus: false,
-      //   subMenus: [],
-      // },
+      {
+        name: 'Integrations',
+        iconName: 'integrations',
+        path: '/integrations',
+        isHaveSubMenus: false,
+        subMenus: [],
+      },
     ],
   },
 ];

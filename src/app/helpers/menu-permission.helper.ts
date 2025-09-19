@@ -9,7 +9,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   store_management: ['/outlet/list', '/outlet/create', 'outlet/edit/:id'],
 
   // Sales operations
-  check_out_sales: ['/cashier', '/sales-order', '/invoice'],
+  check_out_sales: ['/cashier', '/sales-order', '/invoice', '/integrations'],
   cancel_invoice: ['/invoice'],
   refund_invoice: ['/invoice'],
   edit_invoice: ['/cashier/order-edit/:id'],
@@ -28,7 +28,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
 
   // Inventory management
   manage_item: ['/inventory', '/items', '/items/view/:id', '/items/create', '/items/edit/:id'],
-  category_management: ['/inventory',  '/inventory-category'],
+  category_management: ['/inventory', '/inventory-category'],
   supplier_management: ['/inventory', '/supplier', '/supplier/create', '/supplier/edit/:id', '/supplier/view/:id'],
   view_supplier_details: ['/inventory', '/supplier/view/:id'],
   stock_adjustment: ['/inventory', '/items', '/items/view/:id'],
@@ -58,9 +58,10 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   payment_method_configuration: ['/pos-setting', '/pos-setting/payment-method'],
   general_loyalty_point_configuration: ['/pos-setting', '/pos-setting/point-configuration'],
   tax_and_service_charge_configuration: ['/pos-setting', '/pos-setting/tax-service'],
+  payment_rounding_setting: ['/pos-setting', '/pos-setting/rounding'],
 
   // Marketing and vouchers
-  voucher: ['/marketing', '/voucher'],
+  voucher: ['/marketing', '/marketing/voucher', '/marketing/discount'],
 
   // Account management
   accounts: ['/account'],
@@ -74,6 +75,9 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
     '/report/voucher-report',
   ],
   invoice_templates: ['/pos-setting', '/pos-setting/invoice'],
+
+  // Integrations
+  integration: ['/integrations'],
 };
 
 /**
@@ -97,13 +101,24 @@ export const hasAccessAllStore = (userPermissions: string[]): boolean => {
 export const filterMenusByPermissions = (
   menuCategories: IMenuCategory[],
   userPermissions: string[],
+  businessType?: string,
 ): IMenuCategory[] => {
-//   if (hasAccessAllStore(userPermissions)) {
-//   return menuCategories;
-// }
+  //   if (hasAccessAllStore(userPermissions)) {
+  //   return menuCategories;
+  // }
   return menuCategories
     .map(category => {
       const filteredMenus = category.menus.filter((menu: IMenu) => {
+        // 🔹 Hide catalog menu if businessType is not 'Restaurant'
+        if (businessType !== 'Restaurant' && menu.path === '/catalog') {
+          return false;
+        }
+
+        // 🔹 Hide queue menu for Retail business type
+        if (businessType === 'Retail' && menu.path === '/queue') {
+          return false;
+        }
+
         // 🔹 Cek akses main menu
         console.log('🚀 ~ hasMenuPermission ~ menu.path:', menu);
         const hasMainMenuAccess = hasMenuPermission(menu.path, userPermissions);

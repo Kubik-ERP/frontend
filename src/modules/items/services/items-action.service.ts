@@ -8,6 +8,7 @@ import { useBrandStore } from '@/modules/brand/store';
 import { useStorageLocationStore } from '@/modules/storage-location/store';
 import eventBus from '@/plugins/mitt';
 import { useSupplierStore } from '@/modules/supplier/store';
+// import { useOutletStore } from '@/modules/outlet/store';
 
 export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided => {
   const store = useInventoryItemsStore();
@@ -25,10 +26,30 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
   const router = useRouter();
 
   onMounted(async () => {
-    await storeCategory.inventoryCategoryList_fetchList({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {});
-    await storeBrand.brandList_fetchList({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {});
-    await storeStorageLocation.storageLocation_fetchListData({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {});
-    await storeSupplier.supplier_list({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {});
+    inventoryItems_isLoading.value = true;
+
+    try {
+      await Promise.all([
+        storeCategory.inventoryCategoryList_fetchList(
+          { pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null },
+          {},
+        ),
+        storeBrand.brandList_fetchList(
+          { pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null },
+          {},
+        ),
+        storeStorageLocation.storageLocation_fetchListData(
+          { pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null },
+          {},
+        ),
+        storeSupplier.supplier_list(
+          { pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null },
+          {},
+        ),
+      ]);
+    } finally {
+      inventoryItems_isLoading.value = false;
+    }
   });
 
   const inventoryItemsAction_formData = ref<IInventoryItemsPayload>({
@@ -46,6 +67,9 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     storageLocationId: '',
     supplierId: '',
     pricePerUnit: 0,
+    priceGrosir: 0,
+    imagePreview: null,
+    imageFile: null,
   });
 
   const route = useRoute();
@@ -68,6 +92,9 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
           storageLocationId: item.storageLocationId,
           supplierId: item.supplierId,
           pricePerUnit: item.pricePerUnit,
+          priceGrosir: item.priceGrosir,
+          imagePreview: item.imageUrl ? `${import.meta.env.VITE_APP_BASE_API_URL}/${item.imageUrl}` : null,
+          imageFile: null,
         });
       } else if (route.params.id) {
         inventoryItemsFormMode.value = 'edit';
@@ -89,6 +116,9 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
           storageLocationId: '',
           supplierId: '',
           pricePerUnit: 0,
+          priceGrosir: 0,
+          imagePreview: null,
+          imageFile: null,
         };
       }
     },
@@ -109,10 +139,14 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
 
   const inventoryItems_validModel = computed(() => inventoryItemsAction_formData.value);
 
-  const inventoryItemsAction_Validation = useVuelidate(inventoryItems_formValidationRules, inventoryItems_validModel, {
-    $autoDirty: true,
-    $lazy: true,
-  });
+  const inventoryItemsAction_Validation = useVuelidate(
+    inventoryItems_formValidationRules,
+    inventoryItems_validModel,
+    {
+      $autoDirty: true,
+      $lazy: true,
+    },
+  );
 
   const inventoryItemsAction_isValid = computed(() => !inventoryItemsAction_Validation.value.$invalid);
 
@@ -129,17 +163,29 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
       return;
     }
 
+    const formattedPayload = { ...payload };
+    if (formattedPayload.expiryDate instanceof Date) {
+      const date = formattedPayload.expiryDate;
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      formattedPayload.expiryDate = `${year}-${month}-${day}`;
+    } else if (formattedPayload.expiryDate === null) {
+      formattedPayload.expiryDate = '';
+    }
+
     let result;
     if (mode === 'create') {
-      result = await store.inventoryItems_PostData({}, payload);
+      result = await store.inventoryItems_PostData({}, formattedPayload);
     } else if (mode === 'edit' && id) {
-      result = await store.inventoryItems_PutData({}, id, payload);
+      result = await store.inventoryItems_PutData({}, id, formattedPayload);
     }
 
     const argsEventEmitter: IPropsToast = {
       isOpen: true,
       type: EToastType.SUCCESS,
-      message: result?.message || (mode === 'create' ? 'Item created successfully!' : 'Item updated successfully!'),
+      message:
+        result?.message || (mode === 'create' ? 'Item created successfully!' : 'Item updated successfully!'),
       position: EToastPosition.TOP_RIGHT,
     };
     await eventBus.emit('AppBaseToast', argsEventEmitter);
@@ -172,4 +218,3 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     inventoryItems_handleBarcodeScanner,
   };
 };
-

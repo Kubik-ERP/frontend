@@ -85,7 +85,8 @@ export const useDashboardStore = defineStore('dashboard', {
         percentageChange: 0,
       },
       productSales: [],
-      paymentMethods:[
+      paymentMethods:{
+        paymentMethods:[
         {
           label: 'Cash',
           value: 0,
@@ -95,6 +96,7 @@ export const useDashboardStore = defineStore('dashboard', {
           value: 0,
         }
       ],
+      },
       stockStatus: {
         stockStatus: {
           available: 0,

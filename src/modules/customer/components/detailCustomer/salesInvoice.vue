@@ -2,6 +2,9 @@
 // Services
 import { useCustomerDetailService } from '../../services/customer-detail.service';
 
+// Stores
+import { useOutletStore } from '@/modules/outlet/store';
+
 const {
   customerDetail_columns,
   salesInvoice_paymentStatus,
@@ -14,6 +17,12 @@ const {
   customerDetails_onChangePage,
   customerDetails,
 } = useCustomerDetailService();
+
+/**
+ * @description Injected variables
+ */
+const outletStore = useOutletStore();
+const { outlet_currentOutlet } = storeToRefs(outletStore);
 </script>
 
 <template>
@@ -145,6 +154,7 @@ const {
                 />
 
                 <PrimeVueMultiSelect
+                  v-if="outlet_currentOutlet?.businessType !== 'Retail'"
                   v-model="customerDetails_queryParams.payment_status"
                   display="chip"
                   :options="salesInvoice_orderType"

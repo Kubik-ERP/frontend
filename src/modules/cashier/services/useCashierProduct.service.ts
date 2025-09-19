@@ -15,6 +15,9 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { IProductItem } from '../interfaces/cashier-response';
 
+// Toast
+import eventBus from '@/plugins/mitt';
+
 /**
  * @description Closure function that returns everything what we need into an object
  */
@@ -134,6 +137,106 @@ export const useCashierProductService = (): ICashierProductProvided => {
   };
 
   /**
+   * @description Handle barcode scanning from external device
+   * This function will search for product by barcode and automatically add it to selectedProduct
+   * @param {string} barcode - The scanned barcode
+   */
+  const cashierProduct_handleBarcodeScanned = async (barcode: string) => {
+    if (!barcode || barcode.length < 3) return;
+
+    try {
+      cashierProduct_productState.value.isLoadingProduct = true;
+
+      // First, trigger search to update the product list with debounce
+      await new Promise<void>((resolve) => {
+        const debouncedSearch = debounce(() => {
+          cashierProduct_onSearchData().then(() => resolve());
+        }, 300); // 300ms debounce for barcode search
+
+        debouncedSearch();
+      });
+
+      let foundProduct: IProductItem | null = null;
+
+      // Look for the product in search results first
+      foundProduct = cashierProduct_productState.value.listProductSearch.find(
+        product => product.barcode === barcode
+      ) || null;
+
+      // If not found in search results, look in category products
+      if (!foundProduct) {
+        for (const category of cashierProduct_productState.value.listProductCategory) {
+          foundProduct = category.items.find(
+            product => product.barcode === barcode
+          ) || null;
+          if (foundProduct) break;
+        }
+      }
+
+      // If still not found, try the barcode API as fallback
+      if (!foundProduct) {
+        try {
+          const response = await store.cashierProduct_fetchProductByBarcode(barcode, route);
+          foundProduct = response.data;
+        } catch (barcodeError) {
+          console.warn('Barcode API also failed:', barcodeError);
+        }
+      }
+
+      if (foundProduct && foundProduct.variant && foundProduct.variant.length > 0) {
+        // Get the first variant if available
+        const firstVariant = foundProduct.variant[0];
+
+        // Create item object for adding to cart
+        const item: ICashierModalAddProductItem = {
+          quantity: 1,
+          variant: {
+            id: firstVariant.id,
+            name: firstVariant.name,
+            price: firstVariant.price,
+          },
+          notes: '',
+        };
+
+        // Add product to selected products (only from barcode scanner)
+        cashierProduct_handleSelectProduct(foundProduct, item);
+
+        // Show success message
+        eventBus.emit('AppBaseToast', {
+          isOpen: true,
+          message: `Produk "${foundProduct.name}" berhasil ditambahkan ke keranjang`,
+          position: EToastPosition.TOP_RIGHT,
+          type: EToastType.SUCCESS,
+        });
+
+        console.log(`Product "${foundProduct.name}" added to cart via barcode scan`);
+      } else {
+        // Product not found, show error message
+        eventBus.emit('AppBaseToast', {
+          isOpen: true,
+          message: `Produk dengan barcode "${barcode}" tidak ditemukan`,
+          position: EToastPosition.TOP_RIGHT,
+          type: EToastType.DANGER,
+        });
+
+        console.warn(`Product with barcode "${barcode}" not found`);
+      }
+    } catch (error) {
+      console.error('Error scanning barcode:', error);
+
+      // Show error toast
+      eventBus.emit('AppBaseToast', {
+        isOpen: true,
+        message: 'Terjadi kesalahan saat memproses barcode',
+        position: EToastPosition.TOP_RIGHT,
+        type: EToastType.DANGER,
+      });
+    } finally {
+      cashierProduct_productState.value.isLoadingProduct = false;
+    }
+  };
+
+  /**
    * @description debounce function to handle search data
    */
   const debouncedSearch = debounce(() => cashierProduct_onSearchData(), 500);
@@ -172,7 +275,6 @@ export const useCashierProductService = (): ICashierProductProvided => {
       const existingProduct = cashierProduct_selectedProduct.value.find(
         val => val.product?.id === product?.id && item?.variant.id === val.variant?.id,
       );
-      
 
       if (existingProduct) {
         existingProduct.quantity = item.quantity;
@@ -316,6 +418,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
     cashierProduct_handleSelectProduct,
 
     cashierProduct_onSearchData,
+    cashierProduct_handleBarcodeScanned,
 
     isProductActive,
     cashierProduct_handleQuantity,

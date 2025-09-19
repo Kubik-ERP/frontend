@@ -66,7 +66,7 @@ const {
       >
         <template #default>
           <section class="flex gap-2 justify-center w-full items-center">
-            <span class="font-semibold text-xl text-white">{{
+            <span class="font-semibold text-base text-white">{{
               useLocalization('cashier.orderSummary.placeOrder')
             }}</span>
           </section>

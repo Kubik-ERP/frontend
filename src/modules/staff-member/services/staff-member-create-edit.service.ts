@@ -477,7 +477,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
 
     if (staffMemberCreateEdit_commisionType.value === 'PRODUCT') {
       // Set default comission
-      staffMemberCreateEdit_formData.defaultCommissionProduct = Number(data.defaultCommission);
+      staffMemberCreateEdit_formData.defaultCommissionProduct = Number.isNaN(Number(data.defaultCommission)) ? Number(0) : Number(data.defaultCommission)
       staffMemberCreateEdit_formData.defaultCommissionProductType = data.defaultCommissionType;
       staffMemberCreateEdit_formData.commissions.productCommission.isAllItemsHaveDefaultCommission =
         data.isAllItemsHaveDefaultComission === 'true';
@@ -513,7 +513,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
       staffMemberCreateEdit_formData.commissions.productCommission.productItems = productItems;
     } else {
       // Set default comission
-      staffMemberCreateEdit_formData.defaultCommissionVoucher = Number(data.defaultCommission);
+      staffMemberCreateEdit_formData.defaultCommissionVoucher = Number.isNaN(Number(data.defaultCommission)) ? Number(0) : Number(data.defaultCommission);
       staffMemberCreateEdit_formData.defaultCommissionVoucherType = data.defaultCommissionType;
       staffMemberCreateEdit_formData.commissions.voucherCommission.isAllVouchersHaveDefaultComission =
         data.isAllItemsHaveDefaultComission === 'true';

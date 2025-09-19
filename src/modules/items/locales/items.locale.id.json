@@ -12,7 +12,14 @@
         "create": "Tambah Item Baru",
         "edit": "Ubah Item"
       },
+      "priceRetail": "Harga Retail",
+      "priceGrosir": "Harga Grosir",
       "details": "Detail Item",
+      "photo": {
+        "label": "Foto (Opsional)",
+        "button": "Pilih Gambar",
+        "delete": "Hapus Gambar"
+      },
       "name": "Nama Item",
       "namePlaceholder": "Masukkan nama item",
       "brand": "Merek",

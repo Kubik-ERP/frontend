@@ -68,6 +68,8 @@
       "storage-location": "Storage Location",
       "purchase-order": "Purchase Order",
       "marketing": "Marketing",
+      "voucher": "Voucher",
+      "discount": "Discount",
       "staff": "Staff",
       "staff-members": "Staff Members",
       "working-hours": "Working Hours",

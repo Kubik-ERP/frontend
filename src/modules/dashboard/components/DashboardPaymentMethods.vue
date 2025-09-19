@@ -11,9 +11,13 @@ const { dashboard_values } = inject<IDashboardProvided>('dashboard')!;
     <h5 class="font-semibold text-lg text-grayscale-70">
       {{ useLocalization('dashboard.paymentMethods.title') }}
     </h5>
-    <section id="list-paymentMethod" class="flex flex-col w-full">
+    <section
+      v-if="dashboard_values.paymentMethods.paymentMethods.length !== 0"
+      id="list-paymentMethod"
+      class="flex flex-col w-full"
+    >
       <section
-        v-for="(paymentMethod, index) in dashboard_values.paymentMethods"
+        v-for="(paymentMethod, index) in dashboard_values.paymentMethods.paymentMethods"
         id="paymentMethod-item"
         :key="index"
         class="flex items-center border-b border-solid border-grayscale-10 py-2 w-full"

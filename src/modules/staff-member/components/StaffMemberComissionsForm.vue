@@ -4,6 +4,10 @@ import type { IStaffMemberCreateEditProvided } from '../interfaces';
 
 const { staffMemberCreateEdit_onOpenDialogCommission, staffMemberCreateEdit_formData } =
   inject<IStaffMemberCreateEditProvided>('staffMemberCreateEdit')!;
+
+const rbac = useRbac();
+const voucherPermission = rbac.hasPermission('voucher');
+const productPermission = rbac.hasPermission('product_management');
 </script>
 
 <template>
@@ -12,6 +16,7 @@ const { staffMemberCreateEdit_onOpenDialogCommission, staffMemberCreateEdit_form
 
     <section id="comission-types" class="grid-wrapper gap-4">
       <section
+        v-if="productPermission"
         id="product-comission"
         :class="
           staffMemberCreateEdit_formData.defaultCommissionProduct !== null
@@ -53,6 +58,7 @@ const { staffMemberCreateEdit_onOpenDialogCommission, staffMemberCreateEdit_form
       </section>
 
       <section
+      v-if="voucherPermission"
         id="voucher-comission"
         :class="
           staffMemberCreateEdit_formData.defaultCommissionVoucher !== null

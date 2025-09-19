@@ -106,7 +106,13 @@ const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetai
           @click="accountStoreDetail_onShowDialogDetailTable(table)"
         />
         <div class="font-bold text-sm">{{ table.name }}</div>
-        <div v-if="props.cashierPreview" class="text-[10px] lg:text-sm">{{ table.statusTable === 'occupied' ? useLocalization('account.occupied') : useLocalization('account.available') }}</div>
+        <div v-if="props.cashierPreview" class="text-[10px] lg:text-sm">
+          {{
+            table.statusTable === 'occupied'
+              ? useLocalization('account.occupied')
+              : useLocalization('account.available')
+          }}
+        </div>
         <div class="text-sm pb-2">{{ table.seats }} {{ useLocalization('account.seats') }}</div>
       </div>
     </section>
@@ -115,9 +121,9 @@ const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetai
 
 <style>
 /* Latar belakang titik-titik untuk container lantai */
-.floor-plan-container {
-  background-image: radial-gradient(#d1d5db 2px, transparent 2px);
-  background-size: 20px 20px;
+#account-store-table-layout {
+  background-image: url('@/app/assets/images/bg-layout-table.png');
+  background-size: 100% 100%;
   border: 1px solid #8cc8eb;
   border-radius: 4px;
 }

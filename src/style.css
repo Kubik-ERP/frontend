@@ -143,7 +143,7 @@
   }
 
   .default-wrapper-fullscreen {
-    @apply relative inset-0 z-0 h-full w-dvw min-h-dvh overflow-x-hidden;
+    @apply relative inset-0 z-0 h-full w-full min-h-dvh;
   }
 
   .grid-wrapper {
@@ -194,6 +194,7 @@
   --color-grayscale-30: #b4b4b4;
   --color-grayscale-70: #323232;
   --color-success: #80c684;
+  --color-success-hover: #367839;
   --color-success-background: #edf7ee;
   --color-warning-background: #fff5e6;
   --color-warning-main: #ffb84d;
@@ -216,6 +217,6 @@ span.p-datatable-column-title {
 
 /* Untuk IE, Edge, dan Firefox */
 .scrollbar-hidden::-webkit-scrollbar {
-  -ms-overflow-style: none;  /* IE dan Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none; /* IE dan Edge */
+  scrollbar-width: none; /* Firefox */
 }

@@ -1,4 +1,3 @@
-import { AxiosRequestConfig } from 'axios';
 import {
   IInventoryItems,
   IInventoryItemsPayload,
@@ -18,6 +17,41 @@ import {
   IInventoryItemImportResponse,
   inventoryItems_importFailedSuccessData,
 } from '../interfaces/item-import.interface';
+import { AxiosRequestConfig } from 'axios';
+
+function convertItemToFormData(payload: IInventoryItemsPayload): FormData {
+  const formData = new FormData();
+
+  const appendIfPresent = (key: string, value: string | null) => {
+    if (value !== null && value !== undefined && value !== '') {
+      formData.append(key, value);
+    }
+  };
+
+  appendIfPresent('name', payload.name);
+  appendIfPresent('brandId', payload.brandId);
+  appendIfPresent('barcode', payload.barcode ?? '');
+  appendIfPresent('sku', payload.sku);
+  appendIfPresent('categoryId', payload.categoryId);
+  appendIfPresent('unit', payload.unit);
+  appendIfPresent('notes', payload.notes);
+  appendIfPresent('stockQuantity', String(payload.stockQuantity));
+  appendIfPresent('reorderLevel', String(payload.reorderLevel));
+  appendIfPresent('minimumStockQuantity', String(payload.minimumStockQuantity));
+  appendIfPresent('expiryDate', payload.expiryDate as string);
+  appendIfPresent('storageLocationId', payload.storageLocationId);
+  appendIfPresent('pricePerUnit', String(payload.pricePerUnit));
+  appendIfPresent('supplierId', payload.supplierId);
+  appendIfPresent('priceGrosir', String(payload.priceGrosir));
+
+  if (payload.imageFile) {
+    formData.append('image', payload.imageFile);
+  } else if (payload.imagePreview === null) {
+    formData.append('image', '');
+  }
+
+  return formData;
+}
 
 export const useInventoryItemsStore = defineStore('items', {
   state: () => ({
@@ -109,8 +143,13 @@ export const useInventoryItemsStore = defineStore('items', {
       data: IInventoryItemsPayload,
     ): Promise<IInventoryItemsActionResponse> {
       try {
-        const response = await httpClient.post<IInventoryItemsActionResponse>(ITEMS_API_BASE_ENDPOINT, data, {
+        const formData = convertItemToFormData(data);
+        const response = await httpClient.post<IInventoryItemsActionResponse>(ITEMS_API_BASE_ENDPOINT, formData, {
           ...requestConfigurations,
+          headers: {
+            ...requestConfigurations.headers,
+            'Content-Type': 'multipart/form-data',
+          },
         });
         return Promise.resolve(response.data);
       } catch (error) {
@@ -126,11 +165,16 @@ export const useInventoryItemsStore = defineStore('items', {
       data: IInventoryItemsPayload,
     ): Promise<IInventoryItemsActionResponse> {
       try {
+        const formData = convertItemToFormData(data);
         const response = await httpClient.put<IInventoryItemsActionResponse>(
           `${ITEMS_API_BASE_ENDPOINT}/${id}`,
-          data,
+          formData,
           {
             ...requestConfigurations,
+            headers: {
+              ...requestConfigurations.headers,
+              'Content-Type': 'multipart/form-data',
+            },
           },
         );
         return Promise.resolve(response.data);

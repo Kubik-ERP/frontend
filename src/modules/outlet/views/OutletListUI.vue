@@ -15,6 +15,7 @@ const {
   outletList_fetchOutletLists,
   outletList_isLoading,
   outletList_lists,
+  outletList_onNavigateToCreateStore,
   outletList_onSelectOutlet,
   outletList_selectedOutlet,
 } = useOutletListService();
@@ -27,6 +28,7 @@ provide('outletList', {
   outletList_dynamicClassOfSelectedOutlet,
   outletList_isLoading,
   outletList_lists,
+  outletList_onNavigateToCreateStore,
   outletList_onSelectOutlet,
   outletList_selectedOutlet,
 });

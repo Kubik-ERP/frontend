@@ -14,12 +14,7 @@ const {
 </script>
 
 <template>
-  <AppBaseDialog
-    id="purchase-order-detail-confirm-po-dialog"
-    custom-body-class="px-6"
-    custom-footer-class="px-6 pb-6"
-    custom-header-class="px-6 pt-6"
-  >
+  <AppBaseDialog id="purchase-order-detail-confirm-po-dialog">
     <template #header>
       <header class="flex flex-col gap-2 w-full">
         <h6 class="font-semibold text-black text-lg">Confirm Purchase Order</h6>

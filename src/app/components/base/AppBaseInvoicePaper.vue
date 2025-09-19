@@ -6,6 +6,7 @@ interface IProps {
   companyLogo?: File | null;
   companyLogoUrl?: string | null;
   footerText?: string | null;
+  businessType?: string;
   isAutomaticallyPrintReceipt: boolean;
   isAutomaticallyPrintKitchen: boolean;
   isAutomaticallyPrintTable: boolean;
@@ -29,6 +30,7 @@ const props = withDefaults(defineProps<IProps>(), {
   companyLogo: null,
   companyLogoUrl: null,
   footerText: null,
+  businessType: 'Restaurant',
   isAutomaticallyPrintReceipt: false,
   isAutomaticallyPrintKitchen: false,
   isAutomaticallyPrintTable: false,
@@ -64,7 +66,11 @@ const URL = window.URL;
     </template>
 
     <h6 id="outlet-name" class="font-semibold text-black text-sm">Lawson Kaliurang</h6>
-    <p v-if="props.isShowStoreLocation" id="outlet-address" class="font-normal text-black text-center text-sm px-4">
+    <p
+      v-if="props.isShowStoreLocation"
+      id="outlet-address"
+      class="font-normal text-black text-center text-sm px-4"
+    >
       Lawson Kaliurang - Jl. Kaliurang KM 6, Blotan, Sukoharjo, Kec. Ngaglik, Kabupaten Sleman, Daerah Istimewa
       Yogyakarta
     </p>
@@ -76,7 +82,11 @@ const URL = window.URL;
       </div>
     </div>
 
-    <section v-if="!props.isHideCashierName" id="cashier-information" class="flex items-center justify-between w-full">
+    <section
+      v-if="!props.isHideCashierName"
+      id="cashier-information"
+      class="flex items-center justify-between w-full"
+    >
       <p id="label-cashier" class="font-normal text-black text-sm">Cashier</p>
       <p id="cashier-name" class="font-normal text-black text-sm">Samantha</p>
     </section>
@@ -86,17 +96,29 @@ const URL = window.URL;
       <p id="customer-name" class="font-normal text-black text-sm">George</p>
     </section>
 
-    <section v-if="!props.isHideOrderType" id="order-type" class="flex items-center justify-between w-full">
+    <section
+      v-if="!props.isHideOrderType && props.businessType !== 'Retail'"
+      id="order-type"
+      class="flex items-center justify-between w-full"
+    >
       <p id="label-order-type" class="font-normal text-black text-sm">Order Type</p>
       <p id="order-type-value" class="font-normal text-black text-sm">Dine In</p>
     </section>
 
-    <section v-if="!props.isHideQueueNumber" id="queue" class="flex items-center justify-between w-full">
+    <section
+      v-if="!props.isHideQueueNumber && props.businessType !== 'Retail'"
+      id="queue"
+      class="flex items-center justify-between w-full"
+    >
       <p id="label-queue" class="font-normal text-black text-sm">Queue</p>
       <p id="queue-value" class="font-normal text-black text-sm">39</p>
     </section>
 
-    <section v-if="props.isShowTableNumber" id="queue" class="flex items-center justify-between w-full">
+    <section
+      v-if="props.isShowTableNumber && props.businessType !== 'Retail'"
+      id="queue"
+      class="flex items-center justify-between w-full"
+    >
       <p id="label-table-no" class="font-normal text-black text-sm">Table No.</p>
       <p id="table-no-value" class="font-normal text-black text-sm">A1, A9, A10</p>
     </section>

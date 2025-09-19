@@ -196,6 +196,7 @@ export interface ICashierOrderSummaryProvided {
   cashierProduct_customerState: Ref<ICashierCustomerState>;
 
   hasCustomerManagementPermission: ComputedRef<boolean>;
+  useCashierOrderSummary_isRetailBusinessType: ComputedRef<boolean>;
 
   cashierOrderSummary_handleModalAddCustomer: (response: ICashierResponseAddCustomer | null) => void;
 
@@ -221,4 +222,12 @@ export interface ICashierOrderSummaryProvided {
   cashierProduct_onScrollFetchMoreCustomers: (event: VirtualScrollerLazyEvent) => void;
 
   cashierOrderSummary_handleEditOrder: () => void;
+
+  cashierOrderSummary_isShowQuickOverview: Ref<boolean>;
+  cashierOrderSummary_onCloseDialogCashDrawerOverview: () => void;
+  cashierOrderSummary_onCloseDialogQueueOverview: () => void;
+  cashierOrderSummary_onCloseDialogTableOverview: () => void;
+  cashierOrderSummary_onOpenDialogCashDrawerOverview: () => void;
+  cashierOrderSummary_onOpenDialogQueueOverview: () => void;
+  cashierOrderSummary_onOpenDialogTableOverview: () => void;
 }

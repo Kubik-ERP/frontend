@@ -37,11 +37,13 @@ watch(
   { immediate: true },
 );
 
+const rbac = useRbac();
+const voucherPermission = rbac.hasPermission('voucher');
 // Composables
 import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 </script>
 <template>
-  <section id="cashier-summary-modal-voucher">
+  <section v-if="voucherPermission" id="cashier-summary-modal-voucher" >
     <PrimeVueDialog
       v-model:visible="cashierOrderSummary_modalVoucher.show"
       modal

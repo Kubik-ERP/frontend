@@ -17,11 +17,6 @@ export const PRODUCT_LIST_COLUMNS_IMPORT :IColumnDataTable[] = [
     value: 'category',
   },
   {
-    label: 'Variant',
-    sortable: false,
-    value: 'variant',
-  },
-  {
     label: 'price',
     sortable: false,
     value: 'price',

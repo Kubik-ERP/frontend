@@ -20,8 +20,8 @@ const {
       <h5 class="font-semibold text-black text-lg">
         {{
           accountStoreTableConfiguration_isEditableMode
-            ? useLocalization('account.edit-floor')
-            : useLocalization('account.add-floor')
+            ? useLocalization('account.buttons.edit-floor')
+            : useLocalization('account.buttons.add-floor')
         }}
       </h5>
     </template>
