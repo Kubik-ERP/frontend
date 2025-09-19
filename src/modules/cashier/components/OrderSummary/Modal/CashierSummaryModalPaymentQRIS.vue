@@ -20,6 +20,8 @@ const emit = defineEmits<{
 // env
 const isDevelopmentMode = import.meta.env.VITE_APP_MODE === 'development';
 
+const bucketURL = import.meta.env.VITE_APP_BASE_BUCKET_URL;
+
 const router = useRouter();
 
 const route = useRoute();
@@ -54,20 +56,33 @@ const route = useRoute();
                     />
                     <span class="text-2xl font-semibold">Payment</span>
                   </div>
-
-                  <template v-for="(item, index) in props.modalPlaceOrderDetail.data.actions">
-                    <AppBaseImage
-                      v-if="index === 0"
-                      :key="index"
-                      :src="item.url"
-                      :alt="item.name"
-                      class="h-92 w-92 object-contain"
-                    />
-                  </template>
+                  <AppBaseImage
+                    v-if="props.modalPlaceOrderDetail.data.qrImage"
+                    :src="bucketURL + props.modalPlaceOrderDetail.data.qrImage"
+                    :alt="'qris-static'"
+                    class="h-92 w-92 object-contain"
+                  />
+                  <div v-else>
+                    <template v-for="(item, index) in props.modalPlaceOrderDetail.data.actions">
+                      <AppBaseImage
+                        v-if="index === 0"
+                        :key="index"
+                        :src="item.url"
+                        :alt="item.name"
+                        class="h-92 w-92 object-contain"
+                      />
+                    </template>
+                  </div>
                 </div>
               </div>
             </div>
 
+            <PrimeVueButton
+              class="w-full bg-primary text-white py-2.5 px-8"
+              type="button"
+              label="Make Payment"
+              @click="emit('simulate-payment', props.modalPlaceOrderDetail.data.orderId)"
+            />
             <PrimeVueButton
               v-if="isDevelopmentMode"
               class="w-full bg-primary text-white py-2.5 px-8"
