@@ -8,7 +8,7 @@ export const useProductImportStore = defineStore('product-import', {
     async product_generateTemplate(requestConfigurations: AxiosRequestConfig): Promise<void> {
       try {
         const response = await httpClient.post<Blob>(
-          `${PRODUCT_API_BASE_ENDPOINT}/import/generate-template`,
+          `${PRODUCT_API_BASE_ENDPOINT}/import/template`,
           requestConfigurations?.data || {},
           {
             ...requestConfigurations,
@@ -32,6 +32,7 @@ export const useProductImportStore = defineStore('product-import', {
         // Bersihkan
         a.remove();
         window.URL.revokeObjectURL(url);
+
       } catch (error) {
         return Promise.reject(error);
       }
