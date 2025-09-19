@@ -58,6 +58,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   payment_method_configuration: ['/pos-setting', '/pos-setting/payment-method'],
   general_loyalty_point_configuration: ['/pos-setting', '/pos-setting/point-configuration'],
   tax_and_service_charge_configuration: ['/pos-setting', '/pos-setting/tax-service'],
+  payment_rounding_setting: ['/pos-setting', '/pos-setting/rounding'],
 
   // Marketing and vouchers
   voucher: ['/marketing', '/marketing/voucher', '/marketing/discount'],
@@ -74,6 +75,9 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
     '/report/voucher-report',
   ],
   invoice_templates: ['/pos-setting', '/pos-setting/invoice'],
+
+  // Integrations
+  integration: ['/integrations'],
 };
 
 /**
