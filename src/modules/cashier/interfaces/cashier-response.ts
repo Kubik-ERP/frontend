@@ -56,6 +56,7 @@ export interface IMidtransQrisPaymentData {
   acquirer: string;
   qrString: string;
   expiryTime: string;
+  qrImage?: string | null;
 }
 
 export interface ICashierResponseMidtransQrisPayment {

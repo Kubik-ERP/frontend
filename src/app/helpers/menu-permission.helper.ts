@@ -60,7 +60,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   tax_and_service_charge_configuration: ['/pos-setting', '/pos-setting/tax-service'],
 
   // Marketing and vouchers
-  voucher: ['/marketing', '/voucher'],
+  voucher: ['/marketing', '/marketing/voucher', '/marketing/discount'],
 
   // Account management
   accounts: ['/account'],
@@ -105,6 +105,11 @@ export const filterMenusByPermissions = (
   return menuCategories
     .map(category => {
       const filteredMenus = category.menus.filter((menu: IMenu) => {
+        // 🔹 Hide catalog menu if businessType is not 'Restaurant'
+        if (businessType !== 'Restaurant' && menu.path === '/catalog') {
+          return false;
+        }
+
         // 🔹 Hide queue menu for Retail business type
         if (businessType === 'Retail' && menu.path === '/queue') {
           return false;

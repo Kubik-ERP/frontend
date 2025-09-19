@@ -26,10 +26,22 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
   const router = useRouter();
 
   onMounted(async () => {
-    await storeCategory.inventoryCategoryList_fetchList({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {});
-    await storeBrand.brandList_fetchList({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {});
-    await storeStorageLocation.storageLocation_fetchListData({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {});
-    await storeSupplier.supplier_list({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {});
+    await storeCategory.inventoryCategoryList_fetchList(
+      { pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null },
+      {},
+    );
+    await storeBrand.brandList_fetchList(
+      { pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null },
+      {},
+    );
+    await storeStorageLocation.storageLocation_fetchListData(
+      { pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null },
+      {},
+    );
+    await storeSupplier.supplier_list(
+      { pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null },
+      {},
+    );
   });
 
   const inventoryItemsAction_formData = ref<IInventoryItemsPayload>({
@@ -48,6 +60,8 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     supplierId: '',
     pricePerUnit: 0,
     priceGrosir: 0,
+    imagePreview: null,
+    imageFile: null,
   });
 
   const route = useRoute();
@@ -71,6 +85,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
           supplierId: item.supplierId,
           pricePerUnit: item.pricePerUnit,
           priceGrosir: item.priceGrosir,
+          imagePreview: item.imageUrl || null,
         });
       } else if (route.params.id) {
         inventoryItemsFormMode.value = 'edit';
@@ -93,6 +108,8 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
           supplierId: '',
           pricePerUnit: 0,
           priceGrosir: 0,
+          imagePreview: null,
+          imageFile: null,
         };
       }
     },
@@ -109,15 +126,18 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     minimumStockQuantity: { required },
     supplierId: { required },
     pricePerUnit: { required },
-
   }));
 
   const inventoryItems_validModel = computed(() => inventoryItemsAction_formData.value);
 
-  const inventoryItemsAction_Validation = useVuelidate(inventoryItems_formValidationRules, inventoryItems_validModel, {
-    $autoDirty: true,
-    $lazy: true,
-  });
+  const inventoryItemsAction_Validation = useVuelidate(
+    inventoryItems_formValidationRules,
+    inventoryItems_validModel,
+    {
+      $autoDirty: true,
+      $lazy: true,
+    },
+  );
 
   const inventoryItemsAction_isValid = computed(() => !inventoryItemsAction_Validation.value.$invalid);
 
@@ -135,14 +155,14 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     }
 
     const formattedPayload = { ...payload };
-   if (formattedPayload.expiryDate instanceof Date) {
-        const date = formattedPayload.expiryDate;
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-        formattedPayload.expiryDate = `${year}-${month}-${day}`;
+    if (formattedPayload.expiryDate instanceof Date) {
+      const date = formattedPayload.expiryDate;
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      formattedPayload.expiryDate = `${year}-${month}-${day}`;
     } else if (formattedPayload.expiryDate === null) {
-        formattedPayload.expiryDate = '';
+      formattedPayload.expiryDate = '';
     }
 
     let result;
@@ -155,7 +175,8 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     const argsEventEmitter: IPropsToast = {
       isOpen: true,
       type: EToastType.SUCCESS,
-      message: result?.message || (mode === 'create' ? 'Item created successfully!' : 'Item updated successfully!'),
+      message:
+        result?.message || (mode === 'create' ? 'Item created successfully!' : 'Item updated successfully!'),
       position: EToastPosition.TOP_RIGHT,
     };
     await eventBus.emit('AppBaseToast', argsEventEmitter);
@@ -164,7 +185,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
   };
 
   const onCancel = () => {
-   router.push({ name: 'items.list'})
+    router.push({ name: 'items.list' });
   };
 
   const inventoryItems_handleBarcodeScanner = () => {
@@ -188,4 +209,3 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     inventoryItems_handleBarcodeScanner,
   };
 };
-
