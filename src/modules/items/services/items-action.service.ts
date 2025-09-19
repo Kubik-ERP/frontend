@@ -26,11 +26,19 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
   const router = useRouter();
 
   onMounted(async () => {
-    await storeCategory.inventoryCategoryList_fetchList({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {});
-    await storeBrand.brandList_fetchList({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {});
-    await storeStorageLocation.storageLocation_fetchListData({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {});
-    await storeSupplier.supplier_list({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {});
-  });
+  inventoryItems_isLoading.value = true;
+
+  try {
+    await Promise.all([
+      storeCategory.inventoryCategoryList_fetchList({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {}),
+      storeBrand.brandList_fetchList({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {}),
+      storeStorageLocation.storageLocation_fetchListData({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {}),
+      storeSupplier.supplier_list({ pageSize: 100, page: 1, search: null, orderBy: null, orderDirection: null }, {}),
+    ]);
+  } finally {
+    inventoryItems_isLoading.value = false;
+  }
+});
 
   const inventoryItemsAction_formData = ref<IInventoryItemsPayload>({
     name: '',
@@ -73,7 +81,10 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
           supplierId: item.supplierId,
           pricePerUnit: item.pricePerUnit,
           priceGrosir: item.priceGrosir,
-          imagePreview: item.imageUrl || null,
+          imagePreview: item.imageUrl
+            ? `${import.meta.env.VITE_APP_BASE_API_URL}/${item.imageUrl}`
+            : null,
+          imageFile: null,
         });
       } else if (route.params.id) {
         inventoryItemsFormMode.value = 'edit';

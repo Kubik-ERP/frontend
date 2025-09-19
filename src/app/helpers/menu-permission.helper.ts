@@ -9,7 +9,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   store_management: ['/outlet/list', '/outlet/create', 'outlet/edit/:id'],
 
   // Sales operations
-  check_out_sales: ['/cashier', '/sales-order', '/invoice'],
+  check_out_sales: ['/cashier', '/sales-order', '/invoice', '/integrations'],
   cancel_invoice: ['/invoice'],
   refund_invoice: ['/invoice'],
   edit_invoice: ['/cashier/order-edit/:id'],
@@ -106,9 +106,9 @@ export const filterMenusByPermissions = (
     .map(category => {
       const filteredMenus = category.menus.filter((menu: IMenu) => {
         // 🔹 Hide catalog menu if businessType is not 'Restaurant'
-        if (businessType !== 'Restaurant' && menu.path === '/catalog') {
-          return false;
-        }
+        // if (businessType !== 'Restaurant' && menu.path === '/catalog') {
+        //   return false;
+        // }
 
         // 🔹 Hide queue menu for Retail business type
         if (businessType === 'Retail' && menu.path === '/queue') {

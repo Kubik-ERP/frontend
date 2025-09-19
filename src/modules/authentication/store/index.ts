@@ -39,7 +39,7 @@ export const useAuthenticationStore = defineStore('authentication', {
     authentication_isLoading: false,
     authentication_permissions: [],
     authentication_token: '',
-    authentication_userData: null,
+    authentication_userData: null as IAuthenticationProfile | null,
   }),
   getters: {
     /**
@@ -157,8 +157,10 @@ export const useAuthenticationStore = defineStore('authentication', {
         const response = await httpClient.get<{ data: IAuthenticationProfile }>(AUTHENTICATION_ENDPOINT_PROFILE, {
           ...requestConfigurations,
         });
-
-        this.authentication_userData = response.data.data;
+        this.authentication_userData = {
+          ...response.data.data,
+          isAccessRetail: response.data.data.isAccessRetail ?? true,
+        };
 
         return Promise.resolve(response.data.data);
       } catch (error: unknown) {
