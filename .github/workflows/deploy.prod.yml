@@ -28,6 +28,17 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV
 
+      - name: Create .env file
+        run: |
+          # belum ada yang literally rahasia, jadi aman untuk di hardcode
+          cat << EOF > .env
+          VITE_APP_MODE=production
+          VITE_APP_BASE_API_PREFIX=/api
+          VITE_APP_BASE_API_URL=https://api.kubikpos.id
+          VITE_APP_BASE_BUCKET_URL=https://wkgt-asset.online/
+          VITE_APP_BASE_URL=https://pos.kubikpos.id
+          EOF
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
