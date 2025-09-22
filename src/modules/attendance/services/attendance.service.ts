@@ -646,5 +646,5 @@ export const useAttendanceService = (): IAttendanceListProvided => {
     attendanceList_onShiftChange,
     attendanceList_popover,
     attendanceList_updateAvailableShifts,
-  } as IAttendanceListProvided;
+  };
 };
