@@ -6,17 +6,18 @@ import type { IWorkingHoursListProvided } from '../interfaces';
  * @description Inject all the data and methods what we need
  */
 const {
-  workingHoursList_computedColumns,
+  workingHoursList_columns,
   workingHoursList_getCurrentWeekDateString,
   workingHoursList_getWeekDateRange,
   workingHoursList_listValues,
   workingHoursList_listViewTypes,
-  workingHoursList_selectedViewType,
-  workingHoursList_selectedMonth,
   workingHoursList_onChangeSelectedMonth,
+  // workingHoursList_onDelete,
   workingHoursList_onNavigateNext,
   workingHoursList_onNavigatePrevious,
   workingHoursList_onOpenDialog,
+  workingHoursList_selectedMonth,
+  workingHoursList_selectedViewType,
 } = inject('workingHoursList') as IWorkingHoursListProvided;
 
 /**
@@ -87,7 +88,7 @@ const handleAbsentClick = (staffId: number, columnValue: string) => {
     <!-- Data Table -->
     <div class="w-full overflow-x-auto">
       <AppBaseDataTable
-        :columns="workingHoursList_computedColumns"
+        :columns="workingHoursList_columns"
         :data="workingHoursList_listValues"
         header-title="Working Hours"
         is-using-custom-body
@@ -97,7 +98,7 @@ const handleAbsentClick = (staffId: number, columnValue: string) => {
         search-placeholder="Search by Employee ID or Name"
       >
         <template #filter>
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-4 mt-4">
             <span class="font-semibold text-base text-gray-900"> View </span>
 
             <PrimeVueSelect

@@ -1,9 +1,3 @@
-// Key Http Request
-export const ATTENDANCE_LIST_REQUEST = 'ATTENDANCE_LIST_REQUEST';
-export const ATTENDANCE_CREATE_REQUEST = 'ATTENDANCE_CREATE_REQUEST';
-export const ATTENDANCE_EDIT_REQUEST = 'ATTENDANCE_EDIT_REQUEST';
-export const ATTENDANCE_DELETE_REQUEST = 'ATTENDANCE_DELETE_REQUEST';
-
 /**
  * @description Attendance list columns for datatable
  */
