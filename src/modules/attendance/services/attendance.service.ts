@@ -1,4 +1,11 @@
 // Constants
+import {
+  ATTENDANCE_CREATE_REQUEST,
+  ATTENDANCE_DELETE_REQUEST,
+  ATTENDANCE_DETAIL_REQUEST,
+  ATTENDANCE_LIST_REQUEST,
+  ATTENDANCE_UPDATE_REQUEST,
+} from '../constants/attendance-api.constant';
 import { ATTENDANCE_LIST_COLUMNS, ATTENDANCE_LIST_VALUES, ATTENDANCE_STAFF_LIST } from '../constants';
 
 // Interfaces
@@ -9,12 +16,20 @@ import type {
   IAttendanceListRequestQuery,
 } from '../interfaces';
 
+// Vue
+import { ref, reactive, computed, watch } from 'vue';
+import { storeToRefs } from 'pinia';
+
 // Plugins
 import eventBus from '@/plugins/mitt';
+import { useHttpAbort } from '@/app/composables';
+
+// Stores
+import { useAttendanceStore } from '../store';
 
 // Vuelidate
-import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
+import { useVuelidate } from '@vuelidate/core';
 
 // Interface for dropdown items
 interface IDropdownItem {
@@ -41,9 +56,16 @@ interface ISimpleWorkingHours {
  */
 export const useAttendanceService = (): IAttendanceListProvided => {
   /**
+   * @description Injected variables
+   */
+  const attendanceStore = useAttendanceStore();
+  const { attendance_isLoading } = storeToRefs(attendanceStore);
+  const { httpAbort_registerAbort } = useHttpAbort();
+
+  /**
    * @description Reactive data binding
    */
-  const attendance_listData = ref<IAttendanceListData>({
+  const attendanceList_listData = ref<IAttendanceListData>({
     items: ATTENDANCE_LIST_VALUES,
     meta: {
       total: ATTENDANCE_LIST_VALUES.length,
@@ -53,13 +75,14 @@ export const useAttendanceService = (): IAttendanceListProvided => {
     },
   });
 
-  const attendance_columns = ref(ATTENDANCE_LIST_COLUMNS);
-  const attendance_formMode = ref<'create' | 'edit'>('create');
+  const attendanceList_columns = ref(ATTENDANCE_LIST_COLUMNS);
+  const attendanceList_createEditFormMode = ref<'create' | 'edit'>('create');
+  const attendanceList_currentAttendanceId = ref<string>('');
 
   /**
    * @description Form data structure
    */
-  const attendance_formData = reactive<IAttendanceListFormData>({
+  const attendanceList_formData = reactive<IAttendanceListFormData>({
     id: null,
     date: '',
     staffId: null,
@@ -74,7 +97,7 @@ export const useAttendanceService = (): IAttendanceListProvided => {
   /**
    * @description Available shifts for selected staff and date
    */
-  const attendance_availableShifts = ref<IDropdownItem[]>([]);
+  const attendanceList_availableShifts = ref<IDropdownItem[]>([]);
 
   /**
    * @description Mock working hours data (in real app, this would come from API)
@@ -120,7 +143,7 @@ export const useAttendanceService = (): IAttendanceListProvided => {
   /**
    * @description Get available shifts for a staff member on a specific date
    */
-  const attendance_getAvailableShifts = (staffId: number, date: string): IDropdownItem[] => {
+  const attendanceList_getAvailableShifts = (staffId: number, date: string): IDropdownItem[] => {
     const staffWorkingHours = mockWorkingHours.value.find(wh => wh.staffId === staffId);
     if (!staffWorkingHours) return [];
 
@@ -140,67 +163,67 @@ export const useAttendanceService = (): IAttendanceListProvided => {
   /**
    * @description Update available shifts when staff or date changes
    */
-  const attendance_updateAvailableShifts = (): void => {
-    if (attendance_formData.staffId && attendance_formData.date) {
-      attendance_availableShifts.value = attendance_getAvailableShifts(
-        attendance_formData.staffId,
-        attendance_formData.date,
+  const attendanceList_updateAvailableShifts = (): void => {
+    if (attendanceList_formData.staffId && attendanceList_formData.date) {
+      attendanceList_availableShifts.value = attendanceList_getAvailableShifts(
+        attendanceList_formData.staffId,
+        attendanceList_formData.date,
       );
 
       // Clear shift selection if it's no longer available
       if (
-        attendance_formData.shift &&
-        !attendance_availableShifts.value.some(s => s.value === attendance_formData.shift)
+        attendanceList_formData.shift &&
+        !attendanceList_availableShifts.value.some(s => s.value === attendanceList_formData.shift)
       ) {
-        attendance_formData.shift = '';
-        attendance_formData.shiftStart = '';
-        attendance_formData.shiftEnd = '';
+        attendanceList_formData.shift = '';
+        attendanceList_formData.shiftStart = '';
+        attendanceList_formData.shiftEnd = '';
       }
     } else {
-      attendance_availableShifts.value = [];
+      attendanceList_availableShifts.value = [];
     }
   };
 
   /**
    * @description Handle shift selection
    */
-  const attendance_onShiftChange = (): void => {
-    if (attendance_formData.shift) {
-      const [startTime, endTime] = (attendance_formData.shift as string).split('-');
-      attendance_formData.shiftStart = startTime;
-      attendance_formData.shiftEnd = endTime;
+  const attendanceList_onShiftChange = (): void => {
+    if (attendanceList_formData.shift) {
+      const [startTime, endTime] = (attendanceList_formData.shift as string).split('-');
+      attendanceList_formData.shiftStart = startTime;
+      attendanceList_formData.shiftEnd = endTime;
     } else {
-      attendance_formData.shiftStart = '';
-      attendance_formData.shiftEnd = '';
+      attendanceList_formData.shiftStart = '';
+      attendanceList_formData.shiftEnd = '';
     }
   };
 
   /**
    * @description Computed properties for date and time formatting
    */
-  const attendance_minDate = computed(() => {
+  const attendanceList_minDate = computed(() => {
     const today = new Date();
     today.setMonth(today.getMonth() - 1);
     return today.toISOString().split('T')[0];
   });
 
-  const attendance_maxDate = computed(() => {
+  const attendanceList_maxDate = computed(() => {
     const today = new Date();
     return today.toISOString().split('T')[0];
   });
 
-  const attendance_formattedStartTime = computed(() => {
-    return attendance_formData.shiftStart ? `${attendance_formData.shiftStart}:00` : '';
+  const attendanceList_formattedStartTime = computed(() => {
+    return attendanceList_formData.shiftStart ? `${attendanceList_formData.shiftStart}:00` : '';
   });
 
-  const attendance_formattedEndTime = computed(() => {
-    return attendance_formData.shiftEnd ? `${attendance_formData.shiftEnd}:00` : '';
+  const attendanceList_formattedEndTime = computed(() => {
+    return attendanceList_formData.shiftEnd ? `${attendanceList_formData.shiftEnd}:00` : '';
   });
 
   /**
    * @description Validation rules
    */
-  const attendance_validationRules = computed(() => ({
+  const attendanceList_validationRules = computed(() => ({
     date: { required },
     staffId: { required },
     shift: { required },
@@ -209,20 +232,125 @@ export const useAttendanceService = (): IAttendanceListProvided => {
     notes: {}, // Optional field
   }));
 
-  const attendance_v$ = useVuelidate(attendance_validationRules, attendance_formData);
+  const attendanceList_formValidations = useVuelidate(attendanceList_validationRules, attendanceList_formData);
+
+  /**
+   * @description Handle fetch api attendance - create
+   */
+  const attendanceList_fetchCreate = async (): Promise<void> => {
+    try {
+      await attendanceStore.attendance_create(attendanceList_formData, {
+        ...httpAbort_registerAbort(ATTENDANCE_CREATE_REQUEST),
+      });
+
+      eventBus.emit('AppBaseToast', {
+        message: 'Attendance created successfully',
+        type: 'success',
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error creating attendance:', error);
+      } else {
+        console.error('Error creating attendance:', String(error));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api attendance - delete
+   */
+  const attendanceList_fetchDelete = async (attendanceId: string): Promise<void> => {
+    try {
+      await attendanceStore.attendance_delete(attendanceId, {
+        ...httpAbort_registerAbort(ATTENDANCE_DELETE_REQUEST),
+      });
+
+      eventBus.emit('AppBaseToast', {
+        message: 'Attendance deleted successfully',
+        type: 'success',
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error deleting attendance:', error);
+      } else {
+        console.error('Error deleting attendance:', String(error));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api attendance - detail
+   */
+  const attendanceList_fetchDetail = async (attendanceId: string): Promise<void> => {
+    try {
+      const response = await attendanceStore.attendance_detail(attendanceId, {
+        ...httpAbort_registerAbort(ATTENDANCE_DETAIL_REQUEST),
+      });
+
+      // Populate form data with fetched details
+      if (response) {
+        Object.assign(attendanceList_formData, response);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error fetching attendance detail:', error);
+      } else {
+        console.error('Error fetching attendance detail:', String(error));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api attendance - list
+   */
+  const attendanceList_fetchList = async (): Promise<void> => {
+    try {
+      await attendanceStore.attendance_list({
+        ...httpAbort_registerAbort(ATTENDANCE_LIST_REQUEST),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error fetching attendance list:', error);
+      } else {
+        console.error('Error fetching attendance list:', String(error));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api attendance - update
+   */
+  const attendanceList_fetchUpdate = async (attendanceId: string): Promise<void> => {
+    try {
+      await attendanceStore.attendance_update(attendanceId, attendanceList_formData, {
+        ...httpAbort_registerAbort(ATTENDANCE_UPDATE_REQUEST),
+      });
+
+      eventBus.emit('AppBaseToast', {
+        message: 'Attendance updated successfully',
+        type: 'success',
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error updating attendance:', error);
+      } else {
+        console.error('Error updating attendance:', String(error));
+      }
+    }
+  };
 
   /**
    * @description Popover ref for create dialog
    */
-  const attendance_popover = ref();
+  const attendanceList_popover = ref();
 
   /**
    * @description Watch for staff and date changes to update available shifts
    */
   watch(
-    [() => attendance_formData.staffId, () => attendance_formData.date],
+    [() => attendanceList_formData.staffId, () => attendanceList_formData.date],
     () => {
-      attendance_updateAvailableShifts();
+      attendanceList_updateAvailableShifts();
     },
     { immediate: true },
   );
@@ -230,7 +358,7 @@ export const useAttendanceService = (): IAttendanceListProvided => {
   /**
    * @description Format time display
    */
-  const attendance_formatTime = (time: string | null): string => {
+  const attendanceList_formatTime = (time: string | null): string => {
     if (!time) return '-';
     return time;
   };
@@ -238,7 +366,7 @@ export const useAttendanceService = (): IAttendanceListProvided => {
   /**
    * @description Get status color for late/early/overtime
    */
-  const attendance_getStatusColor = (value: string, type: 'early' | 'late' | 'overtime'): string => {
+  const attendanceList_getStatusColor = (value: string, type: 'early' | 'late' | 'overtime'): string => {
     if (value === '0m') return 'text-gray-500';
 
     switch (type) {
@@ -254,50 +382,17 @@ export const useAttendanceService = (): IAttendanceListProvided => {
   };
 
   /**
-   * @description Handle delete confirmation
-   */
-  const attendance_handleDelete = (id: number): void => {
-    const argsEventEmitter: IPropsDialogConfirmation = {
-      id: 'attendance-delete-dialog-confirmation',
-      description: `
-        <div class="flex items-center justify-center">
-          <p class="font-normal text-black-secondary text-sm text-center">
-            Are you sure you want to delete this attendance record? This action cannot be undone.
-          </p>
-        </div>`,
-      iconName: 'delete-polygon',
-      isOpen: true,
-      isUsingButtonSecondary: true,
-      isUsingHtmlTagOnDescription: true,
-      onClickButtonPrimary: () => {
-        eventBus.emit('AppBaseDialog', { id: 'attendance-delete-dialog-confirmation', isOpen: false });
-      },
-      onClickButtonSecondary: () => {
-        // Logic to delete the attendance record goes here
-        attendance_onDelete(id);
-        eventBus.emit('AppBaseDialog', { id: 'attendance-delete-dialog-confirmation', isOpen: false });
-      },
-      textButtonPrimary: 'Cancel',
-      textButtonSecondary: 'Delete Attendance',
-      title: 'Delete Attendance Record',
-      type: 'error',
-    };
-
-    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
-  };
-
-  /**
    * @description Add a new shift to attendance for a specific staff and date
    */
-  const attendance_addShift = (staffId: number, date: string): void => {
+  const attendanceList_addShift = (staffId: number, date: string): void => {
     // Find existing attendance record for this staff and date
-    const existingRecord = attendance_listData.value.items.find(
+    const existingRecord = attendanceList_listData.value.items.find(
       item => item.staffId === staffId && item.date === date,
     );
 
     if (existingRecord) {
       // Add a new shift to existing record
-      const availableShifts = attendance_getAvailableShifts(staffId, date);
+      const availableShifts = attendanceList_getAvailableShifts(staffId, date);
       if (availableShifts.length > 0) {
         const firstAvailableShift = availableShifts[0];
         const [startTime, endTime] = (firstAvailableShift.value as string).split('-');
@@ -320,7 +415,7 @@ export const useAttendanceService = (): IAttendanceListProvided => {
     } else {
       // Create new attendance record
       const staffData = ATTENDANCE_STAFF_LIST.find(staff => staff.value === staffId);
-      const availableShifts = attendance_getAvailableShifts(staffId, date);
+      const availableShifts = attendanceList_getAvailableShifts(staffId, date);
 
       if (availableShifts.length > 0 && staffData) {
         const firstAvailableShift = availableShifts[0];
@@ -349,8 +444,8 @@ export const useAttendanceService = (): IAttendanceListProvided => {
           createdBy: 'Manual Entry',
         };
 
-        attendance_listData.value.items.unshift(newRecord);
-        attendance_listData.value.meta.total += 1;
+        attendanceList_listData.value.items.unshift(newRecord);
+        attendanceList_listData.value.meta.total += 1;
       }
     }
   };
@@ -358,7 +453,7 @@ export const useAttendanceService = (): IAttendanceListProvided => {
   /**
    * @description Handle business logic for close dialog
    */
-  const attendance_onCloseDialog = (): void => {
+  const attendanceList_onCloseDialog = (): void => {
     const argsEventEmitter: IPropsDialog = {
       id: 'attendance-list-create-dialog',
       isOpen: false,
@@ -367,40 +462,17 @@ export const useAttendanceService = (): IAttendanceListProvided => {
     eventBus.emit('AppBaseDialog', argsEventEmitter);
 
     // Reset form data
-    Object.assign(attendance_formData, {
-      id: null,
-      date: '',
-      staffId: null,
-      shift: '',
-      shiftStart: '',
-      shiftEnd: '',
-      clockIn: '',
-      clockOut: '',
-      notes: '',
-    });
-
-    attendance_v$.value.$reset();
+    attendanceList_onReset();
   };
 
   /**
    * @description Handle business logic for create dialog
    */
-  const attendance_onCreate = (): void => {
-    attendance_formMode.value = 'create';
+  const attendanceList_onCreate = (): void => {
+    attendanceList_createEditFormMode.value = 'create';
 
     // Reset form data first
-    Object.assign(attendance_formData, {
-      id: null,
-      date: '',
-      staffId: null,
-      shift: '',
-      shiftStart: '',
-      shiftEnd: '',
-      clockIn: '',
-      clockOut: '',
-      notes: '',
-    });
-    attendance_v$.value.$reset();
+    attendanceList_onReset();
 
     const argsEventEmitter: IPropsDialog = {
       id: 'attendance-list-create-dialog',
@@ -416,30 +488,15 @@ export const useAttendanceService = (): IAttendanceListProvided => {
   /**
    * @description Handle business logic for edit dialog
    */
-  const attendance_onEdit = (id: number, shiftId?: string): void => {
-    const attendanceRecord = attendance_listData.value.items.find(item => item.id === id);
-    if (attendanceRecord) {
-      attendance_formMode.value = 'edit';
-      attendance_formData.id = id;
+  const attendanceList_onEdit = (id: number): void => {
+    attendanceList_createEditFormMode.value = 'edit';
+    attendanceList_currentAttendanceId.value = id.toString();
 
-      // Populate form with existing data
-      attendance_formData.date = attendanceRecord.date.split('/').reverse().join('-'); // Convert DD/MM/YYYY to YYYY-MM-DD
-      attendance_formData.staffId = attendanceRecord.staffId;
+    // Reset form data first
+    attendanceList_onReset();
 
-      // Handle multiple shifts structure
-      if (attendanceRecord.shifts && attendanceRecord.shifts.length > 0) {
-        const targetShift = shiftId
-          ? attendanceRecord.shifts.find(shift => shift.id === shiftId) || attendanceRecord.shifts[0]
-          : attendanceRecord.shifts[0];
-
-        attendance_formData.shift = `${targetShift.shiftStart}-${targetShift.shiftEnd}`;
-        attendance_formData.shiftStart = targetShift.shiftStart;
-        attendance_formData.shiftEnd = targetShift.shiftEnd;
-        attendance_formData.clockIn = targetShift.clockIn || '';
-        attendance_formData.clockOut = targetShift.clockOut || '';
-        attendance_formData.notes = targetShift.notes;
-      }
-
+    // Fetch detail and populate form
+    attendanceList_fetchDetail(id.toString()).then(() => {
       const argsEventEmitter: IPropsDialog = {
         id: 'attendance-list-create-dialog',
         isUsingClosableButton: false,
@@ -449,88 +506,85 @@ export const useAttendanceService = (): IAttendanceListProvided => {
       };
 
       eventBus.emit('AppBaseDialog', argsEventEmitter);
-    }
+    });
   };
 
   /**
    * @description Handle business logic for delete
    */
-  const attendance_onDelete = (id: number): void => {
-    const index = attendance_listData.value.items.findIndex(item => item.id === id);
-    if (index !== -1) {
-      attendance_listData.value.items.splice(index, 1);
-      attendance_listData.value.meta.total -= 1;
-      attendance_listData.value.meta.lastPage = Math.ceil(
-        attendance_listData.value.meta.total / attendance_listData.value.meta.perPage,
-      );
+  const attendanceList_onDelete = async (attendanceId: string): Promise<void> => {
+    try {
+      await attendanceList_fetchDelete(attendanceId);
+
+      // Refresh the list after successful deletion
+      await attendanceList_fetchList();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error deleting attendance:', error);
+      } else {
+        console.error('Error deleting attendance:', String(error));
+      }
     }
   };
 
   /**
    * @description Handle business logic for save (create/update)
    */
-  const attendance_onSave = async (): Promise<void> => {
-    const isValid = await attendance_v$.value.$validate();
-    if (!isValid) return;
+  const attendanceList_onSave = async (): Promise<void> => {
+    attendanceList_formValidations.value.$touch();
 
-    const formattedDate = attendance_formData.date.split('-').reverse().join('/'); // Convert YYYY-MM-DD to DD/MM/YYYY
-
-    if (attendance_formMode.value === 'create') {
-      // Create new record with shifts structure
-      const newRecord = {
-        id: Date.now(),
-        date: formattedDate,
-        staffId: attendance_formData.staffId!,
-        staffName: ATTENDANCE_STAFF_LIST.find(staff => staff.value === attendance_formData.staffId)?.label || '',
-        shifts: [
-          {
-            id: `shift_${Date.now()}`,
-            shiftStart: attendance_formData.shiftStart,
-            shiftEnd: attendance_formData.shiftEnd,
-            clockIn: attendance_formData.clockIn,
-            clockOut: attendance_formData.clockOut,
-            duration: '8h 0m', // Calculate based on clock in/out
-            early: '0m',
-            late: '0m',
-            overtime: '0m',
-            notes: attendance_formData.notes,
-          },
-        ],
-        createdAt: new Date().toLocaleString('en-GB'),
-        createdBy: 'System',
-      };
-
-      attendance_listData.value.items.unshift(newRecord);
-      attendance_listData.value.meta.total += 1;
-    } else {
-      // Update existing record
-      const existingRecord = attendance_listData.value.items.find(item => item.id === attendance_formData.id);
-      if (existingRecord && existingRecord.shifts.length > 0) {
-        // Update first shift (for now - in future could update specific shift)
-        const shift = existingRecord.shifts[0];
-        shift.shiftStart = attendance_formData.shiftStart;
-        shift.shiftEnd = attendance_formData.shiftEnd;
-        shift.clockIn = attendance_formData.clockIn;
-        shift.clockOut = attendance_formData.clockOut;
-        shift.notes = attendance_formData.notes;
-
-        existingRecord.date = formattedDate;
-        existingRecord.staffId = attendance_formData.staffId!;
-        existingRecord.staffName =
-          ATTENDANCE_STAFF_LIST.find(staff => staff.value === attendance_formData.staffId)?.label || '';
-      }
+    if (attendanceList_formValidations.value.$invalid) {
+      return;
     }
 
-    attendance_listData.value.meta.lastPage = Math.ceil(
-      attendance_listData.value.meta.total / attendance_listData.value.meta.perPage,
-    );
-    attendance_onCloseDialog();
+    try {
+      if (attendanceList_createEditFormMode.value === 'create') {
+        await attendanceList_fetchCreate();
+      } else {
+        // For update, use the stored attendanceId
+        await attendanceList_fetchUpdate(attendanceList_currentAttendanceId.value);
+      }
+
+      // Refresh the list
+      await attendanceList_fetchList();
+
+      // Close the dialog
+      attendanceList_onCloseDialog();
+
+      // Reset form
+      attendanceList_onReset();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error saving attendance:', error);
+      } else {
+        console.error('Error saving attendance:', String(error));
+      }
+    }
+  };
+
+  /**
+   * @description Reset form data to initial state
+   */
+  const attendanceList_onReset = (): void => {
+    Object.assign(attendanceList_formData, {
+      id: null,
+      date: '',
+      staffId: null,
+      shift: '',
+      shiftStart: '',
+      shiftEnd: '',
+      clockIn: '',
+      clockOut: '',
+      notes: '',
+    });
+    attendanceList_formValidations.value.$reset();
+    attendanceList_currentAttendanceId.value = '';
   };
 
   /**
    * @description Handle business logic for search/filter
    */
-  const attendance_onFilter = (query: IAttendanceListRequestQuery): void => {
+  const attendanceList_onFilter = (query: IAttendanceListRequestQuery): void => {
     // In a real application, this would make an API call
     // For now, we'll just filter the existing data
     let filteredItems = [...ATTENDANCE_LIST_VALUES];
@@ -542,7 +596,7 @@ export const useAttendanceService = (): IAttendanceListProvided => {
       );
     }
 
-    attendance_listData.value = {
+    attendanceList_listData.value = {
       items: filteredItems,
       meta: {
         total: filteredItems.length,
@@ -553,30 +607,44 @@ export const useAttendanceService = (): IAttendanceListProvided => {
     };
   };
 
+  /**
+   * @description Handle opening the attendance dialog
+   */
+  const attendanceList_onOpenDialog = (mode: 'create' | 'edit', attendanceId?: string) => {
+    if (mode === 'create') {
+      attendanceList_onCreate();
+    } else if (attendanceId) {
+      attendanceList_onEdit(parseInt(attendanceId));
+    }
+  };
+
   return {
-    attendance_availableShifts,
-    attendance_columns,
-    attendance_formData,
-    attendance_formMode,
-    attendance_formattedEndTime,
-    attendance_formattedStartTime,
-    attendance_listData,
-    attendance_maxDate,
-    attendance_minDate,
-    attendance_popover,
-    attendance_updateAvailableShifts,
-    attendance_v$,
-    attendance_formValidations: attendance_v$,
-    attendance_addShift,
-    attendance_formatTime,
-    attendance_getStatusColor,
-    attendance_handleDelete,
-    attendance_onCloseDialog,
-    attendance_onCreate,
-    attendance_onDelete,
-    attendance_onEdit,
-    attendance_onFilter,
-    attendance_onSave,
-    attendance_onShiftChange,
+    attendanceList_addShift,
+    attendanceList_availableShifts,
+    attendanceList_columns,
+    attendanceList_createEditFormMode,
+    attendanceList_currentAttendanceId,
+    attendanceList_fetchList,
+    attendanceList_formData,
+    attendanceList_formValidations,
+    attendanceList_formattedEndTime,
+    attendanceList_formattedStartTime,
+    attendanceList_formatTime,
+    attendanceList_getStatusColor,
+    attendanceList_isLoading: attendance_isLoading,
+    attendanceList_listData,
+    attendanceList_maxDate,
+    attendanceList_minDate,
+    attendanceList_onCloseDialog,
+    attendanceList_onCreate,
+    attendanceList_onDelete,
+    attendanceList_onEdit,
+    attendanceList_onFilter,
+    attendanceList_onOpenDialog,
+    attendanceList_onReset,
+    attendanceList_onSave,
+    attendanceList_onShiftChange,
+    attendanceList_popover,
+    attendanceList_updateAvailableShifts,
   };
 };
