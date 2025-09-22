@@ -1,96 +1,88 @@
 <script setup lang="ts">
-// Helpers
-import { debounce } from '@/app/helpers/debounce.helper';
-
-// interfaces
+// Interfaces
 import type { ICashierProductProvided } from '../interfaces/cashier-product-service';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierProduct_productState, cashierProduct_onSearchData, cashierProduct_handleBarcodeScanned } =
-  inject<ICashierProductProvided>('cashierProduct')!;
+const {
+  cashierProduct_productState,
+  cashierProduct_onSearchData,
+  cashierProduct_handleBarcodeScanned,
+  isRetailBusinessType,
+} = inject<ICashierProductProvided>('cashierProduct')!;
 
 /**
- * @description Handle barcode scanning for external device
+ * @description Handle form submission (when Enter is pressed in search field)
  */
-let barcodeBuffer = '';
-let barcodeTimeout: NodeJS.Timeout | null = null;
-let lastInputTime = 0;
+const handleFormSubmit = (event: Event) => {
+  event.preventDefault();
+  console.log('Form submitted!'); // Debug log
+
+  const searchValue = cashierProduct_productState.value.searchProduct;
+  console.log('Search value on form submit:', searchValue); // Debug log
+
+  if (searchValue && searchValue.length >= 3 && isRetailBusinessType.value) {
+    console.log('Triggering barcode scan from form submit with:', searchValue); // Debug log
+    debouncedBarcodeHandler(searchValue);
+  } else {
+    console.log('Regular search triggered'); // Debug log
+    cashierProduct_onSearchData();
+  }
+};
+
+/**
+ * @description Handle search input keydown events
+ */
+const handleSearchInputKeydown = (event: KeyboardEvent) => {
+  console.log('Search input keydown:', event.key); // Debug log
+
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    const searchValue = cashierProduct_productState.value.searchProduct;
+    console.log('Enter pressed in search input, value:', searchValue); // Debug log
+    console.log('isRetailBusinessType:', isRetailBusinessType.value); // Debug log
+
+    if (searchValue && searchValue.length >= 3 && isRetailBusinessType.value) {
+      console.log('Triggering barcode scan from search input with:', searchValue); // Debug log
+      // Call directly without debounce for testing
+      cashierProduct_handleBarcodeScanned(searchValue);
+    } else {
+      console.log('Conditions not met for barcode scanning:');
+      console.log('- searchValue:', searchValue);
+      console.log('- searchValue.length:', searchValue?.length);
+      console.log('- isRetailBusinessType:', isRetailBusinessType.value);
+    }
+  }
+};
 
 /**
  * @description Debounced barcode handler to prevent multiple rapid calls
  */
 const debouncedBarcodeHandler = debounce((barcode: string) => {
+  console.log('debouncedBarcodeHandler called with barcode:', barcode); // Debug log
   cashierProduct_handleBarcodeScanned(barcode);
-}, 200); // 200ms debounce for barcode processing
-
-const handleKeyPress = (event: KeyboardEvent) => {
-  const currentTime = Date.now();
-  const timeDiff = currentTime - lastInputTime;
-
-  // Skip jika sedang mengetik di input field yang sedang fokus
-  const activeElement = document.activeElement as HTMLElement;
-  if (activeElement &&
-      (activeElement.tagName === 'INPUT' ||
-       activeElement.tagName === 'TEXTAREA' ||
-       activeElement.contentEditable === 'true')) {
-    // Jika input terlalu cepat di input field, kemungkinan dari scanner
-    if (timeDiff > 50) {
-      return; // Skip jika input manual di field
-    }
-  }
-
-  // Reset buffer jika input terlalu lambat (kemungkinan input manual)
-  if (timeDiff > 150) {
-    barcodeBuffer = '';
-  }
-
-  lastInputTime = currentTime;
-
-  if (barcodeTimeout) {
-    clearTimeout(barcodeTimeout);
-  }
-
-  // Add character to buffer - perluas karakter yang diizinkan
-  if (/[a-zA-Z0-9\-_.*+]/.test(event.key)) {
-    barcodeBuffer += event.key;
-  }
-
-  // Handle Enter key (end of barcode scan)
-  if (event.key === 'Enter' && barcodeBuffer.length >= 4) {
-    event.preventDefault();
-
-    console.log('Barcode scanned:', barcodeBuffer); // Debug log
-
-    // Set barcode ke search input dan trigger search dengan debounce
-    cashierProduct_productState.value.searchProduct = barcodeBuffer;
-    debouncedBarcodeHandler(barcodeBuffer);
-    barcodeBuffer = '';
-    return;
-  }
-
-  // Clear buffer after delay if no more input
-  barcodeTimeout = setTimeout(() => {
-    barcodeBuffer = '';
-  }, 200);
-};
+}, 100); // Reduced debounce time for faster response
 
 onMounted(() => {
-  document.addEventListener('keypress', handleKeyPress);
+  console.log('CashierSearchProductCategory mounted');
+  console.log('isRetailBusinessType on mount:', isRetailBusinessType.value);
+  console.log('cashierProduct_handleBarcodeScanned function:', typeof cashierProduct_handleBarcodeScanned);
+
+  // Test the business type detection
+  setTimeout(() => {
+    console.log('isRetailBusinessType after timeout:', isRetailBusinessType.value);
+  }, 1000);
 });
 
 onUnmounted(() => {
-  document.removeEventListener('keypress', handleKeyPress);
-  if (barcodeTimeout) {
-    clearTimeout(barcodeTimeout);
-  }
+  console.log('CashierSearchProductCategory unmounted');
 });
 </script>
 
 <template>
   <section id="cashier-search-product-category">
-    <form @submit.prevent="cashierProduct_onSearchData()">
+    <form @submit="handleFormSubmit">
       <PrimeVueIconField>
         <PrimeVueInputIcon>
           <template #default>
@@ -103,6 +95,7 @@ onUnmounted(() => {
           :loading="cashierProduct_productState.isLoadingProduct"
           :placeholder="useLocalization('cashier.mainSection.searchProductPlaceholder')"
           class="text-sm w-full placeholder:text-sm placeholder:text-text-disabled"
+          @keydown="handleSearchInputKeydown"
         />
 
         <PrimeVueInputIcon>
