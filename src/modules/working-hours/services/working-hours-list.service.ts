@@ -927,5 +927,5 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
     workingHoursList_selectedStaffName,
     workingHoursList_selectedViewType,
     workingHoursList_showCustomRecurrence,
-  } as IWorkingHoursListProvided;
+  };
 };
