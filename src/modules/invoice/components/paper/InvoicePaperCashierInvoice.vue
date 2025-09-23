@@ -34,7 +34,7 @@ const orderTypeLabel = computed(() => {
       invoice_invoiceData.currentOutlet
     "
     id="invoice-paper"
-    class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4 text-xl"
+    class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4 text-xl min-w-[58mm] max-w-[100mm] h-fit"
   >
     <!-- class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4 md:max-w-xl max-w-[58mm]" -->
     <section

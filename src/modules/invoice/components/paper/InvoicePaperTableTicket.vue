@@ -11,7 +11,7 @@ import { IInvoiceProvided } from '../../interfaces';
 const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 </script>
 <template>
-  <section id="kitchen-invoice" class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4">
+  <section id="kitchen-invoice" class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4 min-w-[58mm] max-w-[100mm] h-fit">
     <div class="invoice-name">
       <span class="font-bold w-full flex justify-center text-sm">{{
         invoice_invoiceData.tableKitchenTicket?.customer?.name || ''
@@ -83,5 +83,3 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
     </table>
   </section>
 </template>
-
-<style scoped></style>
