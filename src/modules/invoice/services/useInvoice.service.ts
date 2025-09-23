@@ -100,9 +100,12 @@ export const useInvoiceService = (): IInvoiceProvided => {
 
       window.print();
 
-      setTimeout(() => {
-        ref.classList.add('hidden');
-      }, 1000);
+      return new Promise<void>(resolve => {
+        requestAnimationFrame(() => {
+          ref.classList.add('hidden');
+          resolve();
+        });
+      });
     };
 
     switch (type) {
@@ -134,35 +137,72 @@ export const useInvoiceService = (): IInvoiceProvided => {
     kitchenRef: HTMLElement | null = null,
     tableRef: HTMLElement | null = null,
   ) => {
-    const download = (ref: HTMLElement | null) => {
-      if (!ref) return;
+    // const download = (ref: HTMLElement | null) => {
+    //   if (!ref) return;
+
+    //   console.log(invoice_invoiceData.value.data?.invoiceNumber);
+
+    //   ref.classList.remove('hidden');
+    //   html2pdf()
+    //     .from(ref)
+    //     .set({
+    //       margin: 0,
+    //       filename: `${invoice_invoiceData.value.data?.invoiceNumber}.pdf`,
+    //       image: { type: 'jpeg', quality: 1 },
+    //       html2canvas: { scale: 2 },
+    //       jsPDF: {
+    //         unit: 'mm',
+    //         format: [80, (ref?.getBoundingClientRect().height * 25.4) / 83],
+    //         orientation: 'portrait',
+    //       },
+    //     })
+    //     .save()
+    //     .then(() => {
+    //       ref.classList.add('hidden');
+    //     });
+    // };
+
+    const openPdfInNewTab = async (ref: HTMLElement | null, type?: string) => {
+      if (!ref) {
+        console.error('Reference to the printable element not found.');
+        return;
+      }
 
       ref.classList.remove('hidden');
 
-      html2pdf()
-        .from(ref)
-        .set({
+      try {
+        await nextTick();
+
+        const options = {
           margin: 0,
-          filename: 'invoice.pdf',
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-        })
-        .save()
-        .then(() => {
-          ref.classList.add('hidden');
-        });
+          filename: `${type}-${invoice_invoiceData.value.data?.invoiceNumber}${useFormatDateLocal(new Date())}.pdf`,
+          image: { type: 'jpeg', quality: 1 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'mm', format: [80, 297], orientation: 'portrait' },
+        };
+
+        const pdfBlobUrl = await html2pdf().from(ref).set(options).output('bloburl');
+
+        window.open(pdfBlobUrl, '_blank');
+      } catch (error) {
+        console.error('PDF generation failed:', error);
+      } finally {
+        ref.classList.add('hidden');
+      }
     };
 
     switch (invoice_activeInvoice.value) {
       case 1:
-        download(invoiceRef);
+        // download(invoiceRef);
+        openPdfInNewTab(invoiceRef, 'invoice');
         break;
       case 2:
-        download(kitchenRef);
+        // download(kitchenRef);
+        openPdfInNewTab(kitchenRef, 'kitchen');
         break;
       case 3:
-        download(tableRef);
+        // download(tableRef);
+        openPdfInNewTab(tableRef, 'table');
         break;
       default:
         console.error('Unknown invoice type selected');

@@ -34,8 +34,8 @@ const orderTypeLabel = computed(() => {
       invoice_invoiceData.currentOutlet
     "
     id="invoice-paper"
-    class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4 pb-16 text-xl border-y"
-    >
+    class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4 text-xl"
+  >
     <!-- class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4 md:max-w-xl max-w-[58mm]" -->
     <section
       v-if="
@@ -155,11 +155,7 @@ const orderTypeLabel = computed(() => {
           </tr>
         </thead>
 
-        <tbody class="border-b border-solid border-black">
-          <!-- <pre>
-        {{ invoice_invoiceData.data.invoiceDetails }}
-      </pre
-          > -->
+        <tbody class="">
           <template v-for="item in invoice_invoiceData.data.invoiceDetails" :key="item.id">
             <tr>
               <td class="font-normal pr-0.5 text-black text-sm">{{ item.products.name }}</td>
@@ -216,8 +212,9 @@ const orderTypeLabel = computed(() => {
           </template>
         </tbody>
 
-        <tfoot class="border-b border-solid border-grayscale-10">
-          <tr>
+        <tfoot class="border-b border-solid border-black">
+          <tr class="h-2"></tr>
+          <tr class="border-t border-solid border-black">
             <td class="font-normal text-black text-sm py-1">Sub Total</td>
             <td class="font-normal text-black text-sm text-center py-1">
               {{
@@ -384,5 +381,4 @@ const orderTypeLabel = computed(() => {
   <section v-else></section>
 </template>
 
-<style lang="css" scoped>
-</style>
+<style lang="css" scoped></style>

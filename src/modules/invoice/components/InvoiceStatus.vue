@@ -237,6 +237,7 @@ const hasPermission = rbac.hasPermission('edit_invoice');
           </template>
         </PrimeVueButton>
 
+        <!-- change from print to download -->
         <PrimeVueButton
           class="w-full py-4"
           :class="{
@@ -244,7 +245,7 @@ const hasPermission = rbac.hasPermission('edit_invoice');
             'bg-white border-primary': invoice_invoiceData.data.paymentStatus === 'unpaid',
           }"
           severity="primary"
-          @click="emit('print', 'invoice')"
+          @click="emit('download', 'invoice')"
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
@@ -266,12 +267,14 @@ const hasPermission = rbac.hasPermission('edit_invoice');
         </PrimeVueButton>
       </section>
 
+        <!-- change from print to download -->
+
       <section id="print-buttons" class="flex flex-col items-center gap-4 w-full">
         <PrimeVueButton
           v-if="outlet_currentOutlet?.businessType !== 'Retail'"
           class="w-full py-4 bg-white border-primary"
           severity="primary"
-          @click="emit('print', 'kitchen')"
+          @click="emit('download', 'kitchen')"
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
