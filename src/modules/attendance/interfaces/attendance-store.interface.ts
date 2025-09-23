@@ -1,5 +1,5 @@
 export interface IAttendanceStateStore {
-  attendance_detail: unknown;
-  attendance_isLoading: boolean;
-  attendance_lists: unknown[] | null;
+  attendanceList_detail: unknown;
+  attendanceList_isLoading: boolean;
+  attendanceList_lists: unknown[] | null;
 }

@@ -1,5 +1,5 @@
 // Constants
-import { ATTENDANCE_BASE_ENDPOINT } from '../constants/attendance-api.constant';
+import { attendanceList_BASE_ENDPOINT } from '../constants/attendance-api.constant';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
@@ -10,9 +10,9 @@ import httpClient from '@/plugins/axios';
 
 export const useAttendanceStore = defineStore('attendance', {
   state: (): IAttendanceStateStore => ({
-    attendance_detail: null,
-    attendance_isLoading: false,
-    attendance_lists: null,
+    attendanceList_detail: null,
+    attendanceList_isLoading: false,
+    attendanceList_lists: null,
   }),
   getters: {
     /**
@@ -26,18 +26,18 @@ export const useAttendanceStore = defineStore('attendance', {
      * @method POST
      * @access private
      */
-    async attendance_create(
+    async attendanceList_create(
       payload: IAttendanceListFormData,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
-      this.attendance_isLoading = true;
+      this.attendanceList_isLoading = true;
 
       try {
-        const response = await httpClient.post<unknown>(ATTENDANCE_BASE_ENDPOINT, payload, {
+        const response = await httpClient.post<unknown>(attendanceList_BASE_ENDPOINT, payload, {
           ...requestConfigurations,
         });
 
-        this.attendance_isLoading = false;
+        this.attendanceList_isLoading = false;
 
         return Promise.resolve(response.data);
       } catch (error) {
@@ -47,7 +47,7 @@ export const useAttendanceStore = defineStore('attendance', {
           return Promise.reject(new Error(String(error)));
         }
       } finally {
-        this.attendance_isLoading = false;
+        this.attendanceList_isLoading = false;
       }
     },
 
@@ -57,11 +57,14 @@ export const useAttendanceStore = defineStore('attendance', {
      * @method DELETE
      * @access private
      */
-    async attendance_delete(attendanceId: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
-      this.attendance_isLoading = true;
+    async attendanceList_delete(
+      attendanceId: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.attendanceList_isLoading = true;
 
       try {
-        const response = await httpClient.delete<unknown>(`${ATTENDANCE_BASE_ENDPOINT}/${attendanceId}`, {
+        const response = await httpClient.delete<unknown>(`${attendanceList_BASE_ENDPOINT}/${attendanceId}`, {
           ...requestConfigurations,
         });
 
@@ -73,7 +76,7 @@ export const useAttendanceStore = defineStore('attendance', {
           return Promise.reject(new Error(String(error)));
         }
       } finally {
-        this.attendance_isLoading = false;
+        this.attendanceList_isLoading = false;
       }
     },
 
@@ -83,11 +86,14 @@ export const useAttendanceStore = defineStore('attendance', {
      * @method GET
      * @access private
      */
-    async attendance_detail(attendanceId: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
-      this.attendance_isLoading = true;
+    async attendanceList_detail(
+      attendanceId: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.attendanceList_isLoading = true;
 
       try {
-        const response = await httpClient.get<unknown>(`${ATTENDANCE_BASE_ENDPOINT}/${attendanceId}`, {
+        const response = await httpClient.get<unknown>(`${attendanceList_BASE_ENDPOINT}/${attendanceId}`, {
           ...requestConfigurations,
         });
 
@@ -99,7 +105,7 @@ export const useAttendanceStore = defineStore('attendance', {
           return Promise.reject(new Error(String(error)));
         }
       } finally {
-        this.attendance_isLoading = false;
+        this.attendanceList_isLoading = false;
       }
     },
 
@@ -109,11 +115,11 @@ export const useAttendanceStore = defineStore('attendance', {
      * @method GET
      * @access private
      */
-    async attendance_list(requestConfigurations: AxiosRequestConfig): Promise<unknown> {
-      this.attendance_isLoading = true;
+    async attendanceList_list(requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+      this.attendanceList_isLoading = true;
 
       try {
-        const response = await httpClient.get<unknown>(ATTENDANCE_BASE_ENDPOINT, {
+        const response = await httpClient.get<unknown>(attendanceList_BASE_ENDPOINT, {
           ...requestConfigurations,
         });
 
@@ -125,7 +131,7 @@ export const useAttendanceStore = defineStore('attendance', {
           return Promise.reject(new Error(String(error)));
         }
       } finally {
-        this.attendance_isLoading = false;
+        this.attendanceList_isLoading = false;
       }
     },
 
@@ -135,17 +141,21 @@ export const useAttendanceStore = defineStore('attendance', {
      * @method PUT
      * @access private
      */
-    async attendance_update(
+    async attendanceList_update(
       attendanceId: string,
       payload: IAttendanceListFormData,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
-      this.attendance_isLoading = true;
+      this.attendanceList_isLoading = true;
 
       try {
-        const response = await httpClient.put<unknown>(`${ATTENDANCE_BASE_ENDPOINT}/${attendanceId}`, payload, {
-          ...requestConfigurations,
-        });
+        const response = await httpClient.put<unknown>(
+          `${attendanceList_BASE_ENDPOINT}/${attendanceId}`,
+          payload,
+          {
+            ...requestConfigurations,
+          },
+        );
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -155,7 +165,7 @@ export const useAttendanceStore = defineStore('attendance', {
           return Promise.reject(new Error(String(error)));
         }
       } finally {
-        this.attendance_isLoading = false;
+        this.attendanceList_isLoading = false;
       }
     },
   },

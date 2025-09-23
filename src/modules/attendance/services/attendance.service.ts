@@ -1,12 +1,12 @@
 // Constants
 import {
-  ATTENDANCE_CREATE_REQUEST,
-  ATTENDANCE_DELETE_REQUEST,
-  ATTENDANCE_DETAIL_REQUEST,
-  ATTENDANCE_LIST_REQUEST,
-  ATTENDANCE_UPDATE_REQUEST,
+  attendanceList_CREATE_REQUEST,
+  attendanceList_DELETE_REQUEST,
+  attendanceList_DETAIL_REQUEST,
+  attendanceList_LIST_REQUEST,
+  attendanceList_UPDATE_REQUEST,
 } from '../constants/attendance-api.constant';
-import { ATTENDANCE_LIST_COLUMNS, ATTENDANCE_LIST_VALUES, ATTENDANCE_STAFF_LIST } from '../constants';
+import { attendanceList_LIST_COLUMNS, attendanceList_LIST_VALUES, attendanceList_STAFF_LIST } from '../constants';
 
 // Interfaces
 import type {
@@ -37,6 +37,15 @@ interface IDropdownItem {
   value: string;
 }
 
+// Interface for dialog props
+interface IPropsDialog {
+  id: string;
+  isOpen: boolean;
+  isUsingClosableButton?: boolean;
+  isUsingBackdrop?: boolean;
+  width?: string;
+}
+
 // Working Hours Interface (for shift data)
 interface ISimpleShift {
   id: string;
@@ -59,23 +68,23 @@ export const useAttendanceService = (): IAttendanceListProvided => {
    * @description Injected variables
    */
   const attendanceStore = useAttendanceStore();
-  const { attendance_isLoading } = storeToRefs(attendanceStore);
+  const { attendanceList_isLoading } = storeToRefs(attendanceStore);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
    * @description Reactive data binding
    */
   const attendanceList_listData = ref<IAttendanceListData>({
-    items: ATTENDANCE_LIST_VALUES,
+    items: attendanceList_LIST_VALUES,
     meta: {
-      total: ATTENDANCE_LIST_VALUES.length,
+      total: attendanceList_LIST_VALUES.length,
       perPage: 10,
       currentPage: 1,
-      lastPage: Math.ceil(ATTENDANCE_LIST_VALUES.length / 10),
+      lastPage: Math.ceil(attendanceList_LIST_VALUES.length / 10),
     },
   });
 
-  const attendanceList_columns = ref(ATTENDANCE_LIST_COLUMNS);
+  const attendanceList_columns = ref(attendanceList_LIST_COLUMNS);
   const attendanceList_createEditFormMode = ref<'create' | 'edit'>('create');
   const attendanceList_currentAttendanceId = ref<string>('');
 
@@ -239,8 +248,8 @@ export const useAttendanceService = (): IAttendanceListProvided => {
    */
   const attendanceList_fetchCreate = async (): Promise<void> => {
     try {
-      await attendanceStore.attendance_create(attendanceList_formData, {
-        ...httpAbort_registerAbort(ATTENDANCE_CREATE_REQUEST),
+      await attendanceStore.attendanceList_create(attendanceList_formData, {
+        ...httpAbort_registerAbort(attendanceList_CREATE_REQUEST),
       });
 
       eventBus.emit('AppBaseToast', {
@@ -261,8 +270,8 @@ export const useAttendanceService = (): IAttendanceListProvided => {
    */
   const attendanceList_fetchDelete = async (attendanceId: string): Promise<void> => {
     try {
-      await attendanceStore.attendance_delete(attendanceId, {
-        ...httpAbort_registerAbort(ATTENDANCE_DELETE_REQUEST),
+      await attendanceStore.attendanceList_delete(attendanceId, {
+        ...httpAbort_registerAbort(attendanceList_DELETE_REQUEST),
       });
 
       eventBus.emit('AppBaseToast', {
@@ -283,8 +292,8 @@ export const useAttendanceService = (): IAttendanceListProvided => {
    */
   const attendanceList_fetchDetail = async (attendanceId: string): Promise<void> => {
     try {
-      const response = await attendanceStore.attendance_detail(attendanceId, {
-        ...httpAbort_registerAbort(ATTENDANCE_DETAIL_REQUEST),
+      const response = await attendanceStore.attendanceList_detail(attendanceId, {
+        ...httpAbort_registerAbort(attendanceList_DETAIL_REQUEST),
       });
 
       // Populate form data with fetched details
@@ -305,8 +314,8 @@ export const useAttendanceService = (): IAttendanceListProvided => {
    */
   const attendanceList_fetchList = async (): Promise<void> => {
     try {
-      await attendanceStore.attendance_list({
-        ...httpAbort_registerAbort(ATTENDANCE_LIST_REQUEST),
+      await attendanceStore.attendanceList_list({
+        ...httpAbort_registerAbort(attendanceList_LIST_REQUEST),
       });
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -322,8 +331,8 @@ export const useAttendanceService = (): IAttendanceListProvided => {
    */
   const attendanceList_fetchUpdate = async (attendanceId: string): Promise<void> => {
     try {
-      await attendanceStore.attendance_update(attendanceId, attendanceList_formData, {
-        ...httpAbort_registerAbort(ATTENDANCE_UPDATE_REQUEST),
+      await attendanceStore.attendanceList_update(attendanceId, attendanceList_formData, {
+        ...httpAbort_registerAbort(attendanceList_UPDATE_REQUEST),
       });
 
       eventBus.emit('AppBaseToast', {
@@ -414,7 +423,7 @@ export const useAttendanceService = (): IAttendanceListProvided => {
       }
     } else {
       // Create new attendance record
-      const staffData = ATTENDANCE_STAFF_LIST.find(staff => staff.value === staffId);
+      const staffData = attendanceList_STAFF_LIST.find(staff => staff.value === staffId);
       const availableShifts = attendanceList_getAvailableShifts(staffId, date);
 
       if (availableShifts.length > 0 && staffData) {
@@ -587,7 +596,7 @@ export const useAttendanceService = (): IAttendanceListProvided => {
   const attendanceList_onFilter = (query: IAttendanceListRequestQuery): void => {
     // In a real application, this would make an API call
     // For now, we'll just filter the existing data
-    let filteredItems = [...ATTENDANCE_LIST_VALUES];
+    let filteredItems = [...attendanceList_LIST_VALUES];
 
     if (query.search) {
       const searchTerm = query.search.toLowerCase();
@@ -608,6 +617,21 @@ export const useAttendanceService = (): IAttendanceListProvided => {
   };
 
   /**
+   * @description Handle delete confirmation for attendance record
+   */
+  const attendanceList_handleDelete = (recordId: number): void => {
+    const argsEventEmitter = {
+      id: 'attendance-delete-dialog-confirmation',
+      isOpen: true,
+      title: 'Delete Attendance',
+      message: 'Are you sure you want to delete this attendance record?',
+      onConfirm: () => attendanceList_onDelete(recordId.toString()),
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
+  /**
    * @description Handle opening the attendance dialog
    */
   const attendanceList_onOpenDialog = (mode: 'create' | 'edit', attendanceId?: string) => {
@@ -618,6 +642,11 @@ export const useAttendanceService = (): IAttendanceListProvided => {
     }
   };
 
+  /**
+   * @description Alias for form mode for backward compatibility
+   */
+  const attendanceList_formMode = computed(() => attendanceList_createEditFormMode.value);
+
   return {
     attendanceList_addShift,
     attendanceList_availableShifts,
@@ -626,12 +655,14 @@ export const useAttendanceService = (): IAttendanceListProvided => {
     attendanceList_currentAttendanceId,
     attendanceList_fetchList,
     attendanceList_formData,
+    attendanceList_formMode,
     attendanceList_formValidations,
     attendanceList_formattedEndTime,
     attendanceList_formattedStartTime,
     attendanceList_formatTime,
     attendanceList_getStatusColor,
-    attendanceList_isLoading: attendance_isLoading,
+    attendanceList_handleDelete,
+    attendanceList_isLoading: attendanceList_isLoading,
     attendanceList_listData,
     attendanceList_maxDate,
     attendanceList_minDate,
@@ -646,5 +677,6 @@ export const useAttendanceService = (): IAttendanceListProvided => {
     attendanceList_onShiftChange,
     attendanceList_popover,
     attendanceList_updateAvailableShifts,
+    attendanceList_v$: attendanceList_formValidations,
   };
 };

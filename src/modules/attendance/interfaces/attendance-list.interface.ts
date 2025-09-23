@@ -2,6 +2,19 @@
 import type { Validation } from '@vuelidate/core';
 import type { IAttendanceListData } from './attendance-data.interface';
 
+// Base interfaces
+interface IDropdownItem {
+  label: string;
+  value: string | number;
+}
+
+interface IColumnDataTable {
+  label: string;
+  value: string;
+  isHideable?: boolean;
+  isSortable?: boolean;
+}
+
 // ===== REQUEST INTERFACES =====
 export interface IAttendanceListRequestQuery {
   page: number;
@@ -36,11 +49,13 @@ export interface IAttendanceListProvided {
   attendanceList_currentAttendanceId: globalThis.Ref<string>;
   attendanceList_fetchList: () => Promise<void>;
   attendanceList_formData: IAttendanceListFormData;
+  attendanceList_formMode: globalThis.Ref<'create' | 'edit'>;
   attendanceList_formValidations: globalThis.Ref<Validation>;
   attendanceList_formattedEndTime: globalThis.ComputedRef<string>;
   attendanceList_formattedStartTime: globalThis.ComputedRef<string>;
   attendanceList_formatTime: (time: string | null) => string;
   attendanceList_getStatusColor: (value: string, type: 'early' | 'late' | 'overtime') => string;
+  attendanceList_handleDelete: (recordId: number) => void;
   attendanceList_isLoading: globalThis.Ref<boolean>;
   attendanceList_listData: globalThis.Ref<IAttendanceListData>;
   attendanceList_maxDate: globalThis.ComputedRef<string>;
@@ -56,4 +71,5 @@ export interface IAttendanceListProvided {
   attendanceList_onShiftChange: () => void;
   attendanceList_popover: globalThis.Ref<unknown>;
   attendanceList_updateAvailableShifts: () => void;
+  attendanceList_v$: globalThis.Ref<Validation>;
 }
