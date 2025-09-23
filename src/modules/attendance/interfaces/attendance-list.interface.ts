@@ -2,6 +2,7 @@
 import type { Validation } from '@vuelidate/core';
 import type { IAttendanceListData } from './attendance-data.interface';
 
+// ===== REQUEST INTERFACES =====
 export interface IAttendanceListRequestQuery {
   page: number;
   limit: number;
@@ -13,6 +14,7 @@ export interface IAttendanceListRequestQuery {
   search?: string;
 }
 
+// ===== FORM INTERFACES =====
 export interface IAttendanceListFormData {
   id: number | null;
   date: string;
@@ -25,29 +27,33 @@ export interface IAttendanceListFormData {
   notes: string;
 }
 
+// ===== SERVICE INTERFACE =====
 export interface IAttendanceListProvided {
-  attendance_availableShifts: globalThis.Ref<IDropdownItem[]>;
-  attendance_columns: globalThis.Ref<IColumnDataTable[]>;
-  attendance_formData: IAttendanceListFormData;
-  attendance_formMode: globalThis.Ref<'create' | 'edit'>;
-  attendance_formattedEndTime: globalThis.ComputedRef<string>;
-  attendance_formattedStartTime: globalThis.ComputedRef<string>;
-  attendance_listData: globalThis.Ref<IAttendanceListData>;
-  attendance_maxDate: globalThis.ComputedRef<string>;
-  attendance_minDate: globalThis.ComputedRef<string>;
-  attendance_popover: globalThis.Ref<unknown>;
-  attendance_updateAvailableShifts: () => void;
-  attendance_v$: globalThis.Ref<Validation>;
-  attendance_formValidations: globalThis.Ref<Validation>;
-  attendance_addShift: (staffId: number, date: string) => void;
-  attendance_formatTime: (time: string | null) => string;
-  attendance_getStatusColor: (value: string, type: 'early' | 'late' | 'overtime') => string;
-  attendance_handleDelete: (id: number) => void;
-  attendance_onCloseDialog: () => void;
-  attendance_onCreate: () => void;
-  attendance_onDelete: (id: number) => void;
-  attendance_onEdit: (id: number, shiftId?: string) => void;
-  attendance_onFilter: (query: IAttendanceListRequestQuery) => void;
-  attendance_onSave: () => Promise<void>;
-  attendance_onShiftChange: () => void;
+  attendanceList_addShift: (staffId: number, date: string) => void;
+  attendanceList_availableShifts: globalThis.Ref<IDropdownItem[]>;
+  attendanceList_columns: globalThis.Ref<IColumnDataTable[]>;
+  attendanceList_createEditFormMode: globalThis.Ref<'create' | 'edit'>;
+  attendanceList_currentAttendanceId: globalThis.Ref<string>;
+  attendanceList_fetchList: () => Promise<void>;
+  attendanceList_formData: IAttendanceListFormData;
+  attendanceList_formValidations: globalThis.Ref<Validation>;
+  attendanceList_formattedEndTime: globalThis.ComputedRef<string>;
+  attendanceList_formattedStartTime: globalThis.ComputedRef<string>;
+  attendanceList_formatTime: (time: string | null) => string;
+  attendanceList_getStatusColor: (value: string, type: 'early' | 'late' | 'overtime') => string;
+  attendanceList_isLoading: globalThis.Ref<boolean>;
+  attendanceList_listData: globalThis.Ref<IAttendanceListData>;
+  attendanceList_maxDate: globalThis.ComputedRef<string>;
+  attendanceList_minDate: globalThis.ComputedRef<string>;
+  attendanceList_onCloseDialog: () => void;
+  attendanceList_onCreate: () => void;
+  attendanceList_onDelete: (attendanceId: string) => Promise<void>;
+  attendanceList_onEdit: (id: number) => void;
+  attendanceList_onFilter: (query: IAttendanceListRequestQuery) => void;
+  attendanceList_onOpenDialog: (mode: 'create' | 'edit', attendanceId?: string) => void;
+  attendanceList_onReset: () => void;
+  attendanceList_onSave: () => Promise<void>;
+  attendanceList_onShiftChange: () => void;
+  attendanceList_popover: globalThis.Ref<unknown>;
+  attendanceList_updateAvailableShifts: () => void;
 }

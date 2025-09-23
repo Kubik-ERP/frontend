@@ -6,24 +6,23 @@ import type { IWorkingHoursListProvided } from '../interfaces';
  * @description Inject all the data and methods what we need
  */
 const {
+  workingHoursList_calendarDate,
+  workingHoursList_createEditFormMode,
+  workingHoursList_createEditMaxDate,
+  workingHoursList_createEditMinDate,
+  workingHoursList_createEditRepeatOptions,
+  workingHoursList_createEditStaffList,
+  workingHoursList_customRecurrenceEndDate,
+  workingHoursList_customRecurrenceFrequencyOptions,
   workingHoursList_formData,
   workingHoursList_formValidations,
-  workingHoursList_createEditFormMode,
-  workingHoursList_createEditMinDate,
-  workingHoursList_createEditMaxDate,
-  workingHoursList_createEditStaffList,
-  workingHoursList_createEditRepeatOptions,
-  workingHoursList_customRecurrenceFrequencyOptions,
-  workingHoursList_onAddTimeSlot,
-  workingHoursList_onRemoveTimeSlot,
-  workingHoursList_onCloseDialog,
-  workingHoursList_onSave,
-  // Computed properties from service
-  workingHoursList_calendarDate,
   workingHoursList_formattedDate,
-  workingHoursList_selectedStaffName,
   workingHoursList_hasValidHeaderData,
-  workingHoursList_customRecurrenceEndDate,
+  workingHoursList_onAddTimeSlot,
+  workingHoursList_onCloseDialog,
+  workingHoursList_onRemoveTimeSlot,
+  workingHoursList_onSave,
+  workingHoursList_selectedStaffName,
 } = inject('workingHoursList') as IWorkingHoursListProvided;
 </script>
 
