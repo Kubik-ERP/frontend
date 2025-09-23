@@ -58,8 +58,7 @@ const handleImageUpload = (event: Event) => {
   const target = event.target as HTMLInputElement;
   const file = target.files?.[0];
   if (file) {
-    form.value.imageFile = file; // ✅ Save the file
-
+    form.value.imageFile = file;
     const reader = new FileReader();
     reader.onload = () => {
       form.value.imagePreview = reader.result as string;

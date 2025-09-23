@@ -22,8 +22,7 @@ export interface IInventoryItems {
   storageLocation: string;
   supplier: string;
   itemName: string;
-  imagePreview: string | null;
-  imageUrl?: string;
+  imageUrl?: string | null;
 }
 
 export interface IInventoryItemsStockAdjustment {
