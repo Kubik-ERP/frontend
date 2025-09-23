@@ -82,6 +82,7 @@ const {
   isProductActive,
   cashierProduct_handleQuantity,
   cashierProduct_handleOpenModalAddProduct,
+  isRetailBusinessType,
 } = useCashierProductService();
 
 const {
@@ -223,6 +224,8 @@ provide<ICashierProductProvided>('cashierProduct', {
   isProductActive,
   cashierProduct_handleQuantity,
   cashierProduct_handleOpenModalAddProduct,
+
+  isRetailBusinessType,
 });
 
 provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
