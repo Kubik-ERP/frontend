@@ -1,19 +1,12 @@
-// Helpers
-import { debounce } from '@/app/helpers/debounce.helper';
-
-// interfaces
+// Interfaces
 import type { ICashierProductProvided, ICashierProductState } from '../interfaces/cashier-product-service';
 import type { ICashierModalAddProduct, ICashierModalAddProductItem } from '../interfaces';
+import type { IProductItem } from '../interfaces/cashier-response';
 
 // Store / Pinia
 import { storeToRefs } from 'pinia';
 import { useCashierStore } from '../store';
-
-// Vue
-import { ref } from 'vue';
-
-import { useRoute } from 'vue-router';
-import { IProductItem } from '../interfaces/cashier-response';
+import { useOutletStore } from '@/modules/outlet/store';
 
 // Toast
 import eventBus from '@/plugins/mitt';
@@ -26,10 +19,16 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @description Injected variables
    */
   const store = useCashierStore();
+  const storeOutlet = useOutletStore();
 
   const route = useRoute();
 
   const { cashierProduct_selectedProduct } = storeToRefs(store);
+
+  /**
+   * @description Check if the current outlet business type is retail
+   */
+  const isRetailBusinessType = computed(() => storeOutlet.outlet_currentOutlet?.businessType === 'Retail');
 
   /**
    * @description Reactive data binding
@@ -139,37 +138,57 @@ export const useCashierProductService = (): ICashierProductProvided => {
   /**
    * @description Handle barcode scanning from external device
    * This function will search for product by barcode and automatically add it to selectedProduct
+   * Only works for 'Retail' business type stores
    * @param {string} barcode - The scanned barcode
    */
   const cashierProduct_handleBarcodeScanned = async (barcode: string) => {
-    if (!barcode || barcode.length < 3) return;
+    console.log('cashierProduct_handleBarcodeScanned called with barcode:', barcode); // Debug log
+
+    if (!barcode || barcode.length < 3) {
+      console.log('Barcode too short or empty, returning'); // Debug log
+      return;
+    }
+
+    // Only allow barcode scanning for Retail business type
+    if (!isRetailBusinessType.value) {
+      console.warn('Barcode scanning is only available for Retail business type');
+      return;
+    }
+
+    console.log('Starting barcode scan process for:', barcode); // Debug log
 
     try {
       cashierProduct_productState.value.isLoadingProduct = true;
 
-      // First, trigger search to update the product list with debounce
-      await new Promise<void>((resolve) => {
-        const debouncedSearch = debounce(() => {
-          cashierProduct_onSearchData().then(() => resolve());
-        }, 300); // 300ms debounce for barcode search
-
-        debouncedSearch();
-      });
+      // First, trigger search to update the product list if search term matches barcode
+      if (cashierProduct_productState.value.searchProduct === barcode) {
+        await cashierProduct_onSearchData();
+      }
 
       let foundProduct: IProductItem | null = null;
 
+      console.log(
+        'Current search results:',
+        cashierProduct_productState.value.listProductSearch,
+        'for barcode:',
+        barcode,
+      );
+
       // Look for the product in search results first
-      foundProduct = cashierProduct_productState.value.listProductSearch.find(
-        product => product.barcode === barcode
-      ) || null;
+      foundProduct =
+        cashierProduct_productState.value.listProductSearch.find(product => product.barcode === barcode) || null;
+
+      console.log('foundProduct from search results:', foundProduct);
 
       // If not found in search results, look in category products
       if (!foundProduct) {
+        console.log('Not found in search results, checking category products...');
         for (const category of cashierProduct_productState.value.listProductCategory) {
-          foundProduct = category.items.find(
-            product => product.barcode === barcode
-          ) || null;
-          if (foundProduct) break;
+          foundProduct = category.items.find(product => product.barcode === barcode) || null;
+          if (foundProduct) {
+            console.log('Found product in category:', category, foundProduct);
+            break;
+          }
         }
       }
 
@@ -183,20 +202,35 @@ export const useCashierProductService = (): ICashierProductProvided => {
         }
       }
 
-      if (foundProduct && foundProduct.variant && foundProduct.variant.length > 0) {
-        // Get the first variant if available
-        const firstVariant = foundProduct.variant[0];
+      if (foundProduct) {
+        let item: ICashierModalAddProductItem;
 
-        // Create item object for adding to cart
-        const item: ICashierModalAddProductItem = {
-          quantity: 1,
-          variant: {
-            id: firstVariant.id,
-            name: firstVariant.name,
-            price: firstVariant.price,
-          },
-          notes: '',
-        };
+        // Check if product has variants
+        if (foundProduct.variant && foundProduct.variant.length > 0) {
+          // Get the first variant if available
+          const firstVariant = foundProduct.variant[0];
+
+          item = {
+            quantity: 1,
+            variant: {
+              id: firstVariant.id,
+              name: firstVariant.name,
+              price: firstVariant.price,
+            },
+            notes: '',
+          };
+        } else {
+          // Handle products without variants
+          item = {
+            quantity: 1,
+            variant: {
+              id: '',
+              name: '',
+              price: 0,
+            },
+            notes: '',
+          };
+        }
 
         // Add product to selected products (only from barcode scanner)
         cashierProduct_handleSelectProduct(foundProduct, item);
@@ -423,5 +457,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
     isProductActive,
     cashierProduct_handleQuantity,
     cashierProduct_handleOpenModalAddProduct,
+
+    isRetailBusinessType,
   };
 };

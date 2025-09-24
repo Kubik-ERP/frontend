@@ -32,4 +32,7 @@ export interface ICashierProductProvided {
   isProductActive: (product: IProductItem) => boolean;
   cashierProduct_handleQuantity: (type: 'increase' | 'decrease') => void;
   cashierProduct_handleOpenModalAddProduct: (product: IProductItem) => void;
+
+  // Business type validation for barcode scanning
+  isRetailBusinessType: ComputedRef<boolean>;
 }
