@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import type { ComponentPublicInstance } from 'vue';
 
 // Components
@@ -89,7 +90,7 @@ const closeExpansionPopover = (recordId: number, shiftId: string) => {
 const handleEdit = (recordId: number) => {
   console.log('Edit clicked for record:', recordId);
   closeMainPopover(recordId);
-  attendance_onEdit(recordId);
+  attendanceList_onEdit(recordId);
 };
 
 /**
@@ -98,7 +99,7 @@ const handleEdit = (recordId: number) => {
 const handleDelete = (recordId: number) => {
   console.log('Delete clicked for record:', recordId);
   closeMainPopover(recordId);
-  attendance_handleDelete(recordId);
+  attendanceList_handleDelete(recordId);
 };
 
 /**
@@ -106,7 +107,7 @@ const handleDelete = (recordId: number) => {
  */
 const handleCreate = () => {
   console.log('Create attendance clicked');
-  attendance_onCreate();
+  attendanceList_onCreate();
 };
 
 /**
@@ -114,7 +115,7 @@ const handleCreate = () => {
  */
 const handleExpansionEdit = (recordId: number, shiftId: string) => {
   closeExpansionPopover(recordId, shiftId);
-  attendance_onEdit(recordId);
+  attendanceList_onEdit(recordId);
 };
 
 /**
@@ -122,7 +123,7 @@ const handleExpansionEdit = (recordId: number, shiftId: string) => {
  */
 const handleExpansionDelete = (recordId: number, shiftId: string) => {
   closeExpansionPopover(recordId, shiftId);
-  attendance_handleDelete(recordId);
+  attendanceList_handleDelete(recordId);
 };
 
 /**
@@ -134,13 +135,13 @@ const expandedRows = ref<Set<number>>(new Set());
  * @description Inject all the data and methods what we need
  */
 const {
-  attendance_columns,
-  attendance_listData,
-  attendance_onCreate,
-  attendance_onEdit,
-  attendance_formatTime,
-  attendance_getStatusColor,
-  attendance_handleDelete,
+  attendanceList_columns,
+  attendanceList_listData,
+  attendanceList_onCreate,
+  attendanceList_onEdit,
+  attendanceList_formatTime,
+  attendanceList_getStatusColor,
+  attendanceList_handleDelete,
 } = inject('attendance') as IAttendanceListProvided;
 
 /**
@@ -196,7 +197,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
         <thead class="bg-gray-50 border-b border-gray-200">
           <tr>
             <th
-              v-for="column in attendance_columns"
+              v-for="column in attendanceList_columns"
               :key="column.value"
               class="px-4 py-3 text-center text-sm font-medium text-gray-700"
             >
@@ -207,7 +208,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
 
         <!-- Table Body -->
         <tbody class="divide-y divide-gray-200">
-          <template v-for="record in attendance_listData.items" :key="record.id">
+          <template v-for="record in attendanceList_listData.items" :key="record.id">
             <!-- Main Row -->
             <tr class="hover:bg-gray-50">
               <!-- Date Column -->
@@ -258,7 +259,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
                     class="font-normal text-sm"
                     :class="getPrimaryShift(record.shifts)?.clockIn ? 'text-text-primary' : 'text-gray-400'"
                   >
-                    {{ attendance_formatTime(getPrimaryShift(record.shifts)?.clockIn || null) }}
+                    {{ attendanceList_formatTime(getPrimaryShift(record.shifts)?.clockIn || null) }}
                   </span>
                 </td>
 
@@ -268,7 +269,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
                     class="font-normal text-sm"
                     :class="getPrimaryShift(record.shifts)?.clockOut ? 'text-text-primary' : 'text-gray-400'"
                   >
-                    {{ attendance_formatTime(getPrimaryShift(record.shifts)?.clockOut || null) }}
+                    {{ attendanceList_formatTime(getPrimaryShift(record.shifts)?.clockOut || null) }}
                   </span>
                 </td>
 
@@ -283,7 +284,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
                 <td class="px-4 py-3 text-center">
                   <span
                     class="font-normal text-sm"
-                    :class="attendance_getStatusColor(getPrimaryShift(record.shifts)?.early || '', 'early')"
+                    :class="attendanceList_getStatusColor(getPrimaryShift(record.shifts)?.early || '', 'early')"
                   >
                     {{ getPrimaryShift(record.shifts)?.early }}
                   </span>
@@ -293,7 +294,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
                 <td class="px-4 py-3 text-center">
                   <span
                     class="font-normal text-sm"
-                    :class="attendance_getStatusColor(getPrimaryShift(record.shifts)?.late || '', 'late')"
+                    :class="attendanceList_getStatusColor(getPrimaryShift(record.shifts)?.late || '', 'late')"
                   >
                     {{ getPrimaryShift(record.shifts)?.late }}
                   </span>
@@ -303,7 +304,9 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
                 <td class="px-4 py-3 text-center">
                   <span
                     class="font-normal text-sm"
-                    :class="attendance_getStatusColor(getPrimaryShift(record.shifts)?.overtime || '', 'overtime')"
+                    :class="
+                      attendanceList_getStatusColor(getPrimaryShift(record.shifts)?.overtime || '', 'overtime')
+                    "
                   >
                     {{ getPrimaryShift(record.shifts)?.overtime }}
                   </span>
@@ -378,7 +381,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
                 <!-- Clock In -->
                 <td class="px-4 py-2 text-center">
                   <span class="font-normal text-sm" :class="shift.clockIn ? 'text-text-primary' : 'text-gray-400'">
-                    {{ attendance_formatTime(shift.clockIn) }}
+                    {{ attendanceList_formatTime(shift.clockIn) }}
                   </span>
                 </td>
 
@@ -388,7 +391,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
                     class="font-normal text-sm"
                     :class="shift.clockOut ? 'text-text-primary' : 'text-gray-400'"
                   >
-                    {{ attendance_formatTime(shift.clockOut) }}
+                    {{ attendanceList_formatTime(shift.clockOut) }}
                   </span>
                 </td>
 
@@ -401,21 +404,24 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
 
                 <!-- Early -->
                 <td class="px-4 py-2 text-center">
-                  <span class="font-normal text-sm" :class="attendance_getStatusColor(shift.early, 'early')">
+                  <span class="font-normal text-sm" :class="attendanceList_getStatusColor(shift.early, 'early')">
                     {{ shift.early }}
                   </span>
                 </td>
 
                 <!-- Late -->
                 <td class="px-4 py-2 text-center">
-                  <span class="font-normal text-sm" :class="attendance_getStatusColor(shift.late, 'late')">
+                  <span class="font-normal text-sm" :class="attendanceList_getStatusColor(shift.late, 'late')">
                     {{ shift.late }}
                   </span>
                 </td>
 
                 <!-- Overtime -->
                 <td class="px-4 py-2 text-center">
-                  <span class="font-normal text-sm" :class="attendance_getStatusColor(shift.overtime, 'overtime')">
+                  <span
+                    class="font-normal text-sm"
+                    :class="attendanceList_getStatusColor(shift.overtime, 'overtime')"
+                  >
                     {{ shift.overtime }}
                   </span>
                 </td>

@@ -37,6 +37,15 @@ interface IDropdownItem {
   value: string;
 }
 
+// Interface for dialog props
+interface IPropsDialog {
+  id: string;
+  isOpen: boolean;
+  isUsingClosableButton?: boolean;
+  isUsingBackdrop?: boolean;
+  width?: string;
+}
+
 // Working Hours Interface (for shift data)
 interface ISimpleShift {
   id: string;
@@ -608,6 +617,21 @@ export const useAttendanceService = (): IAttendanceListProvided => {
   };
 
   /**
+   * @description Handle delete confirmation for attendance record
+   */
+  const attendanceList_handleDelete = (recordId: number): void => {
+    const argsEventEmitter = {
+      id: 'attendance-delete-dialog-confirmation',
+      isOpen: true,
+      title: 'Delete Attendance',
+      message: 'Are you sure you want to delete this attendance record?',
+      onConfirm: () => attendanceList_onDelete(recordId.toString()),
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
+  /**
    * @description Handle opening the attendance dialog
    */
   const attendanceList_onOpenDialog = (mode: 'create' | 'edit', attendanceId?: string) => {
@@ -618,6 +642,11 @@ export const useAttendanceService = (): IAttendanceListProvided => {
     }
   };
 
+  /**
+   * @description Alias for form mode for backward compatibility
+   */
+  const attendanceList_formMode = computed(() => attendanceList_createEditFormMode.value);
+
   return {
     attendanceList_addShift,
     attendanceList_availableShifts,
@@ -626,11 +655,13 @@ export const useAttendanceService = (): IAttendanceListProvided => {
     attendanceList_currentAttendanceId,
     attendanceList_fetchList,
     attendanceList_formData,
+    attendanceList_formMode,
     attendanceList_formValidations,
     attendanceList_formattedEndTime,
     attendanceList_formattedStartTime,
     attendanceList_formatTime,
     attendanceList_getStatusColor,
+    attendanceList_handleDelete,
     attendanceList_isLoading: attendance_isLoading,
     attendanceList_listData,
     attendanceList_maxDate,
@@ -646,5 +677,6 @@ export const useAttendanceService = (): IAttendanceListProvided => {
     attendanceList_onShiftChange,
     attendanceList_popover,
     attendanceList_updateAvailableShifts,
+    attendanceList_v$: attendanceList_formValidations,
   };
 };

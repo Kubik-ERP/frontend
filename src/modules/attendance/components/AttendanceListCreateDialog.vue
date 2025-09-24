@@ -7,16 +7,16 @@ import type { IAttendanceListProvided } from '../interfaces';
  * @description Inject all the data and methods what we need
  */
 const {
-  attendance_formData,
-  attendance_formMode,
-  attendance_availableShifts,
-  attendance_minDate,
-  attendance_maxDate,
-  attendance_formValidations,
-  attendance_onCloseDialog,
-  attendance_onSave,
-  attendance_onShiftChange,
-  attendance_updateAvailableShifts,
+  attendanceList_formData,
+  attendanceList_formMode,
+  attendanceList_availableShifts,
+  attendanceList_minDate,
+  attendanceList_maxDate,
+  attendanceList_formValidations,
+  attendanceList_onCloseDialog,
+  attendanceList_onSave,
+  attendanceList_onShiftChange,
+  attendanceList_updateAvailableShifts,
 } = inject('attendance') as IAttendanceListProvided;
 
 /**
@@ -35,8 +35,8 @@ const staffList = [
  */
 const calendarDate = computed({
   get: () => {
-    if (!attendance_formData.date) return null;
-    return new Date(attendance_formData.date);
+    if (!attendanceList_formData.date) return null;
+    return new Date(attendanceList_formData.date);
   },
   set: (value: Date | null) => {
     if (value) {
@@ -44,9 +44,9 @@ const calendarDate = computed({
       const year = value.getFullYear();
       const month = String(value.getMonth() + 1).padStart(2, '0');
       const day = String(value.getDate()).padStart(2, '0');
-      attendance_formData.date = `${year}-${month}-${day}`;
+      attendanceList_formData.date = `${year}-${month}-${day}`;
     } else {
-      attendance_formData.date = '';
+      attendanceList_formData.date = '';
     }
   },
 });
@@ -56,8 +56,8 @@ const calendarDate = computed({
  */
 const clockInTime = computed({
   get: () => {
-    if (!attendance_formData.clockIn) return null;
-    const [hours, minutes] = attendance_formData.clockIn.split(':');
+    if (!attendanceList_formData.clockIn) return null;
+    const [hours, minutes] = attendanceList_formData.clockIn.split(':');
     const date = new Date();
     date.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
     return date;
@@ -66,9 +66,9 @@ const clockInTime = computed({
     if (value) {
       const hours = String(value.getHours()).padStart(2, '0');
       const minutes = String(value.getMinutes()).padStart(2, '0');
-      attendance_formData.clockIn = `${hours}:${minutes}`;
+      attendanceList_formData.clockIn = `${hours}:${minutes}`;
     } else {
-      attendance_formData.clockIn = '';
+      attendanceList_formData.clockIn = '';
     }
   },
 });
@@ -78,8 +78,8 @@ const clockInTime = computed({
  */
 const clockOutTime = computed({
   get: () => {
-    if (!attendance_formData.clockOut) return null;
-    const [hours, minutes] = attendance_formData.clockOut.split(':');
+    if (!attendanceList_formData.clockOut) return null;
+    const [hours, minutes] = attendanceList_formData.clockOut.split(':');
     const date = new Date();
     date.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
     return date;
@@ -88,9 +88,9 @@ const clockOutTime = computed({
     if (value) {
       const hours = String(value.getHours()).padStart(2, '0');
       const minutes = String(value.getMinutes()).padStart(2, '0');
-      attendance_formData.clockOut = `${hours}:${minutes}`;
+      attendanceList_formData.clockOut = `${hours}:${minutes}`;
     } else {
-      attendance_formData.clockOut = '';
+      attendanceList_formData.clockOut = '';
     }
   },
 });
@@ -101,7 +101,7 @@ const clockOutTime = computed({
     <template #header>
       <header class="flex flex-col gap-2 w-full">
         <h6 class="font-semibold text-black text-lg">
-          {{ attendance_formMode === 'create' ? 'Add New Attendance' : 'Edit Attendance' }}
+          {{ attendanceList_formMode === 'create' ? 'Add New Attendance' : 'Edit Attendance' }}
         </h6>
       </header>
     </template>
@@ -116,19 +116,19 @@ const clockOutTime = computed({
           label-for="date"
           name="Date"
           spacing-bottom="mb-0"
-          :validators="attendance_formValidations.date"
+          :validators="attendanceList_formValidations.date"
         >
           <PrimeVueCalendar
             v-model="calendarDate"
-            :min-date="new Date(attendance_minDate)"
-            :max-date="new Date(attendance_maxDate)"
+            :min-date="new Date(attendanceList_minDate)"
+            :max-date="new Date(attendanceList_maxDate)"
             date-format="dd/mm/yy"
             placeholder="Select date"
             show-icon
             input-id="date"
             class="text-sm w-full"
             :class="{ ...classes }"
-            @date-select="attendance_updateAvailableShifts"
+            @date-select="attendanceList_updateAvailableShifts"
           />
         </AppBaseFormGroup>
 
@@ -140,10 +140,10 @@ const clockOutTime = computed({
           label-for="staffId"
           name="Staff Member"
           spacing-bottom="mb-0"
-          :validators="attendance_formValidations.staffId"
+          :validators="attendanceList_formValidations.staffId"
         >
           <PrimeVueSelect
-            v-model="attendance_formData.staffId"
+            v-model="attendanceList_formData.staffId"
             :options="staffList"
             option-label="label"
             option-value="value"
@@ -151,7 +151,7 @@ const clockOutTime = computed({
             input-id="staffId"
             class="text-sm w-full"
             :class="{ ...classes }"
-            @change="attendance_updateAvailableShifts"
+            @change="attendanceList_updateAvailableShifts"
           >
             <template #option="{ option }">
               <div class="flex items-center gap-3">
@@ -179,19 +179,19 @@ const clockOutTime = computed({
           label-for="shift"
           name="Shift"
           spacing-bottom="mb-0"
-          :validators="attendance_formValidations.shift"
+          :validators="attendanceList_formValidations.shift"
         >
           <PrimeVueSelect
-            v-model="attendance_formData.shift"
-            :options="attendance_availableShifts"
+            v-model="attendanceList_formData.shift"
+            :options="attendanceList_availableShifts"
             option-label="label"
             option-value="value"
             placeholder="Select shift"
             input-id="shift"
             class="text-sm w-full"
             :class="{ ...classes }"
-            :disabled="!attendance_formData.staffId || !attendance_formData.date"
-            @change="attendance_onShiftChange"
+            :disabled="!attendanceList_formData.staffId || !attendanceList_formData.date"
+            @change="attendanceList_onShiftChange"
           >
             <template #option="{ option }">
               <div class="flex items-center gap-3">
@@ -210,7 +210,10 @@ const clockOutTime = computed({
         </AppBaseFormGroup>
 
         <!-- Shift Time Display -->
-        <div v-if="attendance_formData.shiftStart && attendance_formData.shiftEnd" class="grid grid-cols-2 gap-4">
+        <div
+          v-if="attendanceList_formData.shiftStart && attendanceList_formData.shiftEnd"
+          class="grid grid-cols-2 gap-4"
+        >
           <AppBaseFormGroup
             class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
             is-name-as-label
@@ -219,7 +222,7 @@ const clockOutTime = computed({
             spacing-bottom="mb-0"
           >
             <PrimeVueInputText
-              v-model="attendance_formData.shiftStart"
+              v-model="attendanceList_formData.shiftStart"
               placeholder="Shift start time"
               input-id="shiftStart"
               class="text-sm w-full"
@@ -235,7 +238,7 @@ const clockOutTime = computed({
             spacing-bottom="mb-0"
           >
             <PrimeVueInputText
-              v-model="attendance_formData.shiftEnd"
+              v-model="attendanceList_formData.shiftEnd"
               placeholder="Shift end time"
               input-id="shiftEnd"
               class="text-sm w-full"
@@ -253,7 +256,7 @@ const clockOutTime = computed({
             label-for="clockIn"
             name="Clock In"
             spacing-bottom="mb-0"
-            :validators="attendance_formValidations.clockIn"
+            :validators="attendanceList_formValidations.clockIn"
           >
             <PrimeVueInputGroup>
               <PrimeVueDatePicker
@@ -278,7 +281,7 @@ const clockOutTime = computed({
             label-for="clockOut"
             name="Clock Out"
             spacing-bottom="mb-0"
-            :validators="attendance_formValidations.clockOut"
+            :validators="attendanceList_formValidations.clockOut"
           >
             <PrimeVueInputGroup>
               <PrimeVueDatePicker
@@ -305,11 +308,11 @@ const clockOutTime = computed({
           label-for="notes"
           name="Notes"
           spacing-bottom="mb-0"
-          :validators="attendance_formValidations.notes"
+          :validators="attendanceList_formValidations.notes"
         >
           <PrimeVueIconField>
             <PrimeVueTextarea
-              v-model="attendance_formData.notes"
+              v-model="attendanceList_formData.notes"
               placeholder="Add notes (optional)"
               input-id="notes"
               class="text-sm w-full"
@@ -328,15 +331,15 @@ const clockOutTime = computed({
           label="Cancel"
           severity="secondary"
           variant="outlined"
-          @click="attendance_onCloseDialog"
+          @click="attendanceList_onCloseDialog"
         />
 
         <PrimeVueButton
           class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
-          :label="attendance_formMode === 'create' ? 'Save' : 'Update'"
+          :label="attendanceList_formMode === 'create' ? 'Save' : 'Update'"
           type="button"
-          :disabled="attendance_formValidations.$invalid"
-          @click="attendance_onSave"
+          :disabled="attendanceList_formValidations.$invalid"
+          @click="attendanceList_onSave"
         />
       </footer>
     </template>
