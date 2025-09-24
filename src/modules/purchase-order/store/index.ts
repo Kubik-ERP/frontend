@@ -24,6 +24,7 @@ import type {
 
 // Plugins
 import httpClient from '@/plugins/axios';
+import {  IPurchaseOrderReceivedPaylaod } from '../interfaces/purchase-order-received.interface';
 
 export const usePurchaseOrderStore = defineStore('purchase-order', {
   state: (): IPurchaseOrderStateStore => ({
@@ -245,14 +246,14 @@ export const usePurchaseOrderStore = defineStore('purchase-order', {
      */
     async purchaseOrder_receive(
       purchaseOrderId: string,
+      payload: IPurchaseOrderReceivedPaylaod,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<IPurchaseOrderActionResponse> {
       this.purchaseOrder_isLoading = true;
-
       try {
         const response = await httpClient.post<IPurchaseOrderActionResponse>(
           PURCHASE_ORDER_RECEIVE_ENDPOINT.replace('{id}', purchaseOrderId),
-          null,
+          payload,
           {
             ...requestConfigurations,
           },

@@ -108,7 +108,7 @@ const {
                   <span class="text-gray-700">{{ data.name }}</span>
                 </template>
                 <template v-else-if="column.value === 'category'">
-                  <span class="text-gray-500">{{ data.category }}</span>
+                  <span class="text-gray-500">{{ data.category.name }}</span>
                 </template>
                 <template v-else-if="column.value === 'variant'">
                   <span class="text-gray-500">{{ data.variant }}</span>

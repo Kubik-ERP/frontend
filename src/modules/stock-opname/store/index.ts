@@ -30,6 +30,7 @@ export const useStockOpnameStore = defineStore('stock-opname', {
             id: '5054bd41-cc1a-4d9e-9942-e9d4cba1bcbe',
             name: 'Baju',
             sku: 'B0001',
+            barcode: '1234567890123',
           },
           expectedQuantity: 50,
           actualQuantity: 40,

@@ -8,6 +8,7 @@ import type {
   IStaffMemberDetailsResponse,
   IStaffMemberStore,
   IStaffMemberListRequestQuery,
+  IStaffMemberGetWithOwnerResponse,
 } from '../interfaces';
 
 // Plugins
@@ -257,5 +258,22 @@ export const useStaffMemberStore = defineStore('staff-member', {
         }
       }
     },
+
+    async staffMember_getOwnerWithStaff(requestConfigurations: AxiosRequestConfig): Promise<IStaffMemberGetWithOwnerResponse> {
+      try {
+        const response = await httpClient.get<IStaffMemberGetWithOwnerResponse>(`/users/staffs`, {
+          ...requestConfigurations,
+        });
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.staffMember_isLoading = false;
+      }
+    }
   },
 });
