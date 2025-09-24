@@ -93,27 +93,62 @@ export const useInvoiceService = (): IInvoiceProvided => {
     kitchenRef: HTMLElement | null = null,
     tableRef: HTMLElement | null = null,
   ) => {
-    const print = (ref: HTMLElement | null) => {
-      if (!ref) return;
+    // const print = (ref: HTMLElement | null) => {
+    //   if (!ref) return;
+
+    //   ref.classList.remove('hidden');
+
+    //   window.print();
+
+    //   return new Promise<void>(resolve => {
+    //     requestAnimationFrame(() => {
+    //       ref.classList.add('hidden');
+    //       resolve();
+    //     });
+    //   });
+    // };
+
+    const openPdfInNewTab = async (ref: HTMLElement | null, type?: string) => {
+      if (!ref) {
+        console.error('Reference to the printable element not found.');
+        return;
+      }
 
       ref.classList.remove('hidden');
 
-      window.print();
+      try {
+        await nextTick();
 
-      setTimeout(() => {
+        const options = {
+          margin: 0,
+          filename: `${type}-${invoice_invoiceData.value.data?.invoiceNumber}${useFormatDateLocal(new Date())}.pdf`,
+          image: { type: 'jpeg', quality: 1 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'mm', format: [80, 297], orientation: 'portrait' },
+        };
+
+        const pdfBlobUrl = await html2pdf().from(ref).set(options).output('bloburl');
+
+        window.open(pdfBlobUrl, '_blank');
+      } catch (error) {
+        console.error('PDF generation failed:', error);
+      } finally {
         ref.classList.add('hidden');
-      }, 1000);
+      }
     };
 
     switch (type) {
       case 'invoice':
-        print(invoiceRef);
+        // print(invoiceRef);
+        openPdfInNewTab(invoiceRef, 'invoice');
         break;
       case 'kitchen':
-        print(kitchenRef);
+        // print(kitchenRef);
+        openPdfInNewTab(kitchenRef, 'kitchen');
         break;
       case 'table':
-        print(tableRef);
+        // print(tableRef);
+        openPdfInNewTab(tableRef, 'table');
         break;
       default:
         console.error('Unknown invoice type selected');
@@ -134,19 +169,24 @@ export const useInvoiceService = (): IInvoiceProvided => {
     kitchenRef: HTMLElement | null = null,
     tableRef: HTMLElement | null = null,
   ) => {
-    const download = (ref: HTMLElement | null) => {
+    const download = (ref: HTMLElement | null, type?: string) => {
       if (!ref) return;
 
-      ref.classList.remove('hidden');
+      console.log(invoice_invoiceData.value.data?.invoiceNumber);
 
+      ref.classList.remove('hidden');
       html2pdf()
         .from(ref)
         .set({
           margin: 0,
-          filename: 'invoice.pdf',
-          image: { type: 'jpeg', quality: 0.98 },
+          filename: `${type}-${invoice_invoiceData.value.data?.invoiceNumber}${useFormatDateLocal(new Date())}.pdf`,
+          image: { type: 'jpeg', quality: 1 },
           html2canvas: { scale: 2 },
-          jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+          jsPDF: {
+            unit: 'mm',
+            format: [80, (ref?.getBoundingClientRect().height * 25.4) / 83],
+            orientation: 'portrait',
+          },
         })
         .save()
         .then(() => {
@@ -154,15 +194,47 @@ export const useInvoiceService = (): IInvoiceProvided => {
         });
     };
 
+    // const openPdfInNewTab = async (ref: HTMLElement | null, type?: string) => {
+    //   if (!ref) {
+    //     console.error('Reference to the printable element not found.');
+    //     return;
+    //   }
+
+    //   ref.classList.remove('hidden');
+
+    //   try {
+    //     await nextTick();
+
+    //     const options = {
+    //       margin: 0,
+    //       filename: `${type}-${invoice_invoiceData.value.data?.invoiceNumber}${useFormatDateLocal(new Date())}.pdf`,
+    //       image: { type: 'jpeg', quality: 1 },
+    //       html2canvas: { scale: 2, useCORS: true },
+    //       jsPDF: { unit: 'mm', format: [80, 297], orientation: 'portrait' },
+    //     };
+
+    //     const pdfBlobUrl = await html2pdf().from(ref).set(options).output('bloburl');
+
+    //     window.open(pdfBlobUrl, '_blank');
+    //   } catch (error) {
+    //     console.error('PDF generation failed:', error);
+    //   } finally {
+    //     ref.classList.add('hidden');
+    //   }
+    // };
+
     switch (invoice_activeInvoice.value) {
       case 1:
-        download(invoiceRef);
+        download(invoiceRef, 'invoice');
+        // openPdfInNewTab(invoiceRef, 'invoice');
         break;
       case 2:
-        download(kitchenRef);
+        download(kitchenRef, 'kitchen');
+        // openPdfInNewTab(kitchenRef, 'kitchen');
         break;
       case 3:
-        download(tableRef);
+        download(tableRef, 'table');
+        // openPdfInNewTab(tableRef, 'table');
         break;
       default:
         console.error('Unknown invoice type selected');
