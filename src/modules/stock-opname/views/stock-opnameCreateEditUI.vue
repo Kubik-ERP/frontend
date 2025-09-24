@@ -37,8 +37,31 @@ provide('stockOpname', {
   stockOpname_onCloseNotesDialog,
 });
 
+import eventBus from '@/plugins/mitt';
+
 // 1. A ref to hold the text from your search input
 const search = ref('');
+
+const handleBarcodeScan = () => {
+  const barcode = search.value.trim();
+  if (!barcode) return;
+
+  const foundItem = stockOpname_detail.value.stockOpnameItems.find(
+    item => item.masterInventoryItems?.barcode === barcode
+  );
+
+  if (foundItem) {
+    foundItem.actualQuantity = (foundItem.actualQuantity || 0) + 1;
+    search.value = '';
+  } else {
+    eventBus.emit('AppBaseToast', {
+      isOpen: true,
+      type: EToastType.WARNING,
+      message: 'Invalid barcode and do nothing',
+      position: EToastPosition.TOP_RIGHT,
+    });
+  }
+};
 
 // 2. A computed property that creates the filtered list
 const filteredItems = computed(() => {
@@ -54,7 +77,8 @@ const filteredItems = computed(() => {
     // Check for a match in either the SKU or the name (case-insensitive)
     const sku = item.masterInventoryItems?.sku?.toLowerCase() || '';
     const name = item.masterInventoryItems?.name?.toLowerCase() || '';
-    return sku.includes(searchTerm) || name.includes(searchTerm);
+    const barcode = item.masterInventoryItems?.barcode?.toLowerCase() || '';
+    return sku.includes(searchTerm) || name.includes(searchTerm) || barcode.includes(searchTerm);
   });
 });
 
@@ -103,7 +127,7 @@ onMounted(async () => {
           <PrimeVueInputIcon>
             <AppBaseSvg name="search" class="!w-4 !h-4" />
           </PrimeVueInputIcon>
-          <PrimeVueInputText v-model="search" :placeholder="useLocalization('stockOpname.createEditPage.searchPlaceholder')" />
+          <PrimeVueInputText v-model="search" :placeholder="useLocalization('stockOpname.createEditPage.searchPlaceholder')" @keydown.enter.prevent="handleBarcodeScan" />
         </PrimeVueIconField>
       </div>
     </template>

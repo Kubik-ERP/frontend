@@ -12,9 +12,7 @@
       "performedByLabel": "Dilakukan Oleh",
       "statusLabel": "Status",
       "verifiedDateLabel": "Tanggal Diverifikasi",
-      "itemListTitle": "Daftar Barang",
-      "searchPlaceholder": "Cari SKU atau Nama Barang",
-      "recalculateButton": "Hitung Ulang",
+      "searchPlaceholder": "Cari berdasarkan SKU/Nama Barang atau Pindai Barcode",
       "issueRecordButton": "Keluarkan Catatan Stok Opname",
       "verifyReportButton": "Verifikasi Laporan",
       "cancelButton": "Batalkan Stok Opname"
@@ -25,7 +23,7 @@
       "issueDateLabel": "Tanggal Dibuat",
       "performedByLabel": "Dilakukan Oleh",
       "itemListTitle": "Daftar Barang",
-      "searchPlaceholder": "Cari SKU atau Nama Barang",
+      "searchPlaceholder": "Cari berdasarkan SKU/Nama Barang atau Pindai Barcode",
       "addNotesButton": "Tambah Catatan",
       "saveDraftButton": "Simpan sebagai Draf",
       "issueButton": "Buat Stok Opname",
@@ -40,4 +38,3 @@
     }
   }
 }
-

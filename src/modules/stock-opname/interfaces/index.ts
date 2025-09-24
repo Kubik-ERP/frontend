@@ -43,6 +43,7 @@ export interface IStockOpname_detailItems {
     id: string;
     name: string;
     sku: string;
+    barcode?: string;
   };
   expectedQuantity: number;
   actualQuantity: number;

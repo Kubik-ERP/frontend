@@ -65,6 +65,17 @@ const routes: RouteRecordRaw[] = [
           requiresAuthorization: true,
         },
       },
+      {
+        path: ':id/received',
+        name: 'purchase-order.received',
+        component: () => import('../views/PurchaseOrderReceivedUI.vue'),
+        meta: {
+          breadcrumb: 'Received Purchase Order',
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          requiresAuthorization: true,
+          title: 'Received Purchase Order',
+        },
+      }
     ],
     meta: {
       breadcrumb: 'Purchase Order',
