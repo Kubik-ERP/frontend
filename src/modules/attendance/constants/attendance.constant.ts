@@ -1,20 +1,7 @@
-// Interfaces
-interface IColumnDataTable {
-  label: string;
-  value: string;
-  sortable?: boolean;
-  width?: string;
-}
-
-interface IDropdownItem {
-  label: string;
-  value: string | number;
-}
-
 /**
  * @description Attendance list columns for datatable
  */
-export const attendanceList_LIST_COLUMNS: IColumnDataTable[] = [
+export const ATTENDANCE_LIST_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Date',
     value: 'date',
@@ -77,7 +64,7 @@ export const attendanceList_LIST_COLUMNS: IColumnDataTable[] = [
   },
 ];
 
-export const attendanceList_LIST_VALUES = [
+export const ATTENDANCE_LIST_VALUES = [
   {
     id: 1,
     date: '20/08/2025',
@@ -170,7 +157,7 @@ export const attendanceList_LIST_VALUES = [
   },
 ];
 
-export const attendanceList_STAFF_LIST: IDropdownItem[] = [
+export const ATTENDANCE_STAFF_LIST: IDropdownItem[] = [
   {
     label: 'Bessie Cooper #001',
     value: 1,

@@ -4,6 +4,10 @@ export interface IProductImportFailedSuccessData {
   description?: string;
   imageUrl?: string;
   status: string;
+  category: {
+    id: string;
+    name: string;
+  }
   errorMessages?: string;
 }
 

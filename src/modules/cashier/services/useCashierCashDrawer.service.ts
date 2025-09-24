@@ -1,0 +1,177 @@
+// Constants
+import {
+  CASH_DRAWER_LIST_REQUEST,
+  CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE,
+} from '@/modules/cash-drawer/constants/cash-drawer.constant';
+
+// Interfaces
+import type {
+  ICashDrawerListOpenRegisterFormData,
+} from '@/modules/cash-drawer/interfaces/cash-drawer-list.interface';
+
+// Plugins
+import eventBus from '@/plugins/mitt';
+
+// Stores
+import { useCashDrawerStore } from '@/modules/cash-drawer/store';
+import { useOutletStore } from '@/modules/outlet/store';
+
+// Vuelidate
+import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
+
+/**
+ * @description Cashier specific cash drawer service that doesn't redirect after opening register
+ */
+export const useCashierCashDrawerService = () => {
+  /**
+   * @description Injected variables
+   */
+  const outletStore = useOutletStore();
+  const store = useCashDrawerStore();
+  const { cashDrawer_isLoading, cashDrawer_todayStatus } = storeToRefs(store);
+  const { outlet_currentOutlet } = storeToRefs(outletStore);
+  const { httpAbort_registerAbort } = useHttpAbort();
+
+  /**
+   * @description Reactive data binding
+   */
+  const cashierCashDrawer_formDataOfOpenRegister = reactive<ICashDrawerListOpenRegisterFormData>({
+    balance: null,
+    userId: null,
+    notes: null,
+  });
+
+  /**
+   * @description Form validations
+   */
+  const cashierCashDrawer_formRulesOfOpenRegister = computed(() => ({
+    balance: { required },
+    userId: { required },
+  }));
+  const cashierCashDrawer_formValidationsOfOpenRegister = useVuelidate(
+    cashierCashDrawer_formRulesOfOpenRegister,
+    cashierCashDrawer_formDataOfOpenRegister,
+  );
+
+  /**
+   * @description Handle fetch api cash drawer status
+   */
+  const cashierCashDrawer_fetchTodayStatus = async (): Promise<unknown> => {
+    try {
+      const result = await store.cashDrawer_status(outlet_currentOutlet.value!.id, {
+        ...httpAbort_registerAbort('CASH_DRAWER_STATUS_REQUEST'),
+      });
+
+      return Promise.resolve(result);
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api open cash drawer - cashier version (no redirect)
+   */
+  const cashierCashDrawer_fetchOpenRegister = async (): Promise<unknown> => {
+    try {
+      const result = await store.cashDrawer_open(
+        outlet_currentOutlet.value!.id,
+        cashierCashDrawer_formDataOfOpenRegister,
+        {
+          ...httpAbort_registerAbort(CASH_DRAWER_LIST_REQUEST),
+        },
+      );
+
+      cashierCashDrawer_onCloseOpenRegisterDialog();
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Cash drawer opened successfully',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      // Refresh the cash drawer status after opening
+      await cashierCashDrawer_fetchTodayStatus();
+
+      return Promise.resolve(result);
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      cashierCashDrawer_formValidationsOfOpenRegister.value.$reset();
+      cashierCashDrawer_formDataOfOpenRegister.balance = null;
+      cashierCashDrawer_formDataOfOpenRegister.userId = null;
+      cashierCashDrawer_formDataOfOpenRegister.notes = null;
+    }
+  };
+
+  /**
+   * @description Handle business logic for close dialog open register
+   */
+  const cashierCashDrawer_onCloseOpenRegisterDialog = (): void => {
+    const argsEventEmitter: IPropsDialog = {
+      id: 'cash-drawer-list-open-register-dialog',
+      isOpen: false,
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle business logic for show dialog open register
+   */
+  const cashierCashDrawer_onShowOpenRegisterDialog = (): void => {
+    const argsEventEmitter: IPropsDialog = {
+      id: 'cash-drawer-list-open-register-dialog',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: '600px',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle business logic on submit open register form
+   */
+  const cashierCashDrawer_onSubmitOpenRegisterForm = async (): Promise<void> => {
+    cashierCashDrawer_formValidationsOfOpenRegister.value.$touch();
+
+    if (cashierCashDrawer_formValidationsOfOpenRegister.value.$invalid) {
+      return;
+    }
+
+    try {
+      await cashierCashDrawer_fetchOpenRegister();
+    } catch (error) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  return {
+    cashierCashDrawer_fetchTodayStatus,
+    cashierCashDrawer_formDataOfOpenRegister,
+    cashierCashDrawer_formValidationsOfOpenRegister,
+    cashierCashDrawer_isLoading: cashDrawer_isLoading,
+    cashierCashDrawer_onCloseOpenRegisterDialog,
+    cashierCashDrawer_onShowOpenRegisterDialog,
+    cashierCashDrawer_onSubmitOpenRegisterForm,
+    cashierCashDrawer_suggestionRegisterBalance: CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE,
+    cashierCashDrawer_todayStatus: cashDrawer_todayStatus,
+  };
+};

@@ -8,6 +8,7 @@ import type {
   IStaffMemberDetailsResponse,
   IStaffMemberStore,
   IStaffMemberListRequestQuery,
+  IStaffMemberGetWithOwnerResponse,
 } from '../interfaces';
 
 // Plugins
@@ -18,23 +19,7 @@ export const useStaffMemberStore = defineStore('staff-member', {
   state: (): IStaffMemberStore => ({
     staffMember_isLoading: false,
     staffMember_lists: {
-      employees: [
-        {
-          id: 'example-staff-member-id',
-          name: 'example staff member',
-          email: 'example@kubik.com',
-          phoneNumber: '+1234567890',
-          profileUrl: null,
-          startDate: null,
-          endDate: null,
-          gender: null,
-          title: null,
-          employeesHasSocialMedia: [],
-          employeesShift: [],
-          productCommissions: [],
-          voucherCommissions: [],
-        },
-      ],
+      employees: [],
       meta: {
         limit: 10,
         page: 1,
@@ -257,5 +242,22 @@ export const useStaffMemberStore = defineStore('staff-member', {
         }
       }
     },
+
+    async staffMember_getOwnerWithStaff(requestConfigurations: AxiosRequestConfig): Promise<IStaffMemberGetWithOwnerResponse> {
+      try {
+        const response = await httpClient.get<IStaffMemberGetWithOwnerResponse>(`/users/staffs`, {
+          ...requestConfigurations,
+        });
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.staffMember_isLoading = false;
+      }
+    }
   },
 });

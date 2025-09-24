@@ -13,7 +13,7 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 <template>
   <section
     id="kitchen-invoice"
-    class="invoice-paper bg-white flex text-xs flex-col items-center gap-2 w-full p-4 pb-16 border-y"
+    class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4 min-w-[58mm] max-w-[100mm] h-fit"
   >
     <div class="invoice-name">
       <span class="font-bold w-full flex justify-center text-sm">{{
@@ -81,9 +81,8 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 
           <td class="font-bold text-right">{{ item.notes || '-' }}</td>
         </tr>
+        <tr class="h-2"></tr>
       </tbody>
     </table>
   </section>
 </template>
-
-<style scoped></style>

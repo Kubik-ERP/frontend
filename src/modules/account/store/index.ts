@@ -37,23 +37,7 @@ export const useAccountStore = defineStore('account', {
     account_storeFacilities_isLoading: false,
     account_storeStaffAssigned: {
      data:{
-       employees: [
-        {
-          id: 'example-staff-member-id',
-          name: 'example staff member',
-          email: 'example@kubik.com',
-          phoneNumber: '+1234567890',
-          profileUrl: null,
-          startDate: null,
-          endDate: null,
-          gender: null,
-          title: null,
-          employeesHasSocialMedia: [],
-          employeesShift: [],
-          productCommissions: [],
-          voucherCommissions: [],
-        },
-      ],
+       employees: [],
       meta: {
         limit: 10,
         page: 1,

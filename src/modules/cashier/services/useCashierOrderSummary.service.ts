@@ -514,13 +514,17 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_summary = computed(() => {
     const summary: ICashierOrderSummary = {
       provider: CASHIER_PROVIDER,
-      orderType: cashierOrderSummary_modalOrderType.value.selectedOrderType,
+      orderType: cashierOrderSummary_isRetailBusinessType.value 
+        ? 'take_away' // Default order type for retail business
+        : cashierOrderSummary_modalOrderType.value.selectedOrderType,
       invoiceDetail: {
         receivedBy: cashierOrderSummary_modalInvoiceDetail.value.form.received_by,
         notes: cashierOrderSummary_modalInvoiceDetail.value.form.notes,
       },
       paymentMethod: cashierOrderSummary_data.value.paymentMethod,
-      tableCode: cashierOrderSummary_modalSelectTable.value.selectedTable.toString(),
+      tableCode: cashierOrderSummary_isRetailBusinessType.value 
+        ? '' // No table code needed for retail business
+        : cashierOrderSummary_modalSelectTable.value.selectedTable.toString(),
       selectedVoucher: cashierOrderSummary_modalVoucher.value.form.voucherId,
       customerName: cashierProduct_customerState.value.selectedCustomer?.id || '',
       product: cashierProduct_selectedProduct.value,
@@ -578,6 +582,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         cashierProduct_customerState.value.selectedCustomer?.id === null ||
         cashierProduct_customerState.value.selectedCustomer?.id === undefined
       : false;
+
+    // For retail business type, skip order type and table validations
+    if (cashierOrderSummary_isRetailBusinessType.value) {
+      const isDisabled = customerValidation || cashierProduct_selectedProduct.value.length === 0;
+      return isDisabled;
+    }
 
     // If user doesn't have customer management permission, skip table validation for dine_in
     let tableValidation = false;
@@ -724,7 +734,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         provider: provider,
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
         customerId: cashierProduct_customerState.value.selectedCustomer?.id,
-        tableCode: cashierOrderSummary_summary.value.tableCode,
+        tableCode: cashierOrderSummary_isRetailBusinessType.value ? '' : cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
         paymentAmount: cashierOrderSummary_paymentForm.paymentAmount || null,
         voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId || null,
@@ -801,7 +811,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
         voucherId: cashierOrderSummary_summary.value.selectedVoucher,
         customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
-        tableCode: cashierOrderSummary_summary.value.tableCode,
+        tableCode: cashierOrderSummary_isRetailBusinessType.value ? '' : cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
         rounding_amount: cashierOrderSummary_calculateEstimation.value.data.roundingAdjustment || 0,
       };

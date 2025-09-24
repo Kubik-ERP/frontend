@@ -7,7 +7,7 @@ import {
   ICashierResponseMidtransQrisPayment,
 } from './cashier-response';
 import { Validation } from '@vuelidate/core';
-import { Reactive, ComputedRef } from 'vue';
+import { Reactive, ComputedRef, Ref } from 'vue';
 
 export interface ICashierOrderType {
   code: string;

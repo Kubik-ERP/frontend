@@ -58,8 +58,7 @@ const handleImageUpload = (event: Event) => {
   const target = event.target as HTMLInputElement;
   const file = target.files?.[0];
   if (file) {
-    form.value.imageFile = file; // ✅ Save the file
-
+    form.value.imageFile = file;
     const reader = new FileReader();
     reader.onload = () => {
       form.value.imagePreview = reader.result as string;
@@ -173,14 +172,15 @@ const removePhoto = () => {
                 :placeholder="useLocalization('items.form.barcodePlaceholder')"
                 class="w-full pr-8"
                 :class="{ ...classes }"
+                @keydown.enter.prevent="inventoryItems_handleBarcodeScanner"
               />
-              <PrimeVueButton
-                class="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 bg-transparent border-none text-gray-400"
+              <PrimeVueInputIcon
+                class="absolute right-2 top-7 -translate-y-1/2 w-5 h-5 bg-transparent border-none text-gray-400"
                 type="button"
                 @click="inventoryItems_handleBarcodeScanner"
               >
-                <i class="pi pi-camera"></i>
-              </PrimeVueButton>
+                <AppBaseSvg name="scan" class="h-5 w-5" />
+              </PrimeVueInputIcon>
             </div>
           </AppBaseFormGroup>
 

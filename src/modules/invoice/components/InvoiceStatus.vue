@@ -237,6 +237,7 @@ const hasPermission = rbac.hasPermission('edit_invoice');
           </template>
         </PrimeVueButton>
 
+        <!-- change from print to download -->
         <PrimeVueButton
           class="w-full py-4"
           :class="{
@@ -265,6 +266,8 @@ const hasPermission = rbac.hasPermission('edit_invoice');
           </template>
         </PrimeVueButton>
       </section>
+
+        <!-- change from print to download -->
 
       <section id="print-buttons" class="flex flex-col items-center gap-4 w-full">
         <PrimeVueButton
