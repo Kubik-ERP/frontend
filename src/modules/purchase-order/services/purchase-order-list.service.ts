@@ -178,7 +178,8 @@ export const usePurchaseOrderListService = (): IPurchaseOrderListProvided => {
    */
   const purchaseOrderList_fetchReceive = async (): Promise<unknown> => {
     try {
-      await store.purchaseOrder_receive(purchaseOrderList_selectedId.value, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await store.purchaseOrder_receive(purchaseOrderList_selectedId.value, null as any, {
         ...httpAbort_registerAbort(PURCHASE_ORDER_RECEIVE_REQUEST),
       });
 
