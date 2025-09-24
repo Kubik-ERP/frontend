@@ -46,10 +46,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'self-order',
-        component: () => import('../views/CashierUI.vue'),
+        component: () => import('../views/SelfOrderUI.vue'),
         meta: {
           requiresAuthorization: false,
-          layout: LAYOUT_OPTIONS.NAVBAR,
+          layout: LAYOUT_OPTIONS.EMPTY,
           title: 'Self Order',
         },
       },

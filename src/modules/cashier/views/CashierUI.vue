@@ -79,6 +79,8 @@ const {
   cashierProduct_handleSelectProduct,
   cashierProduct_onSearchData,
   cashierProduct_handleBarcodeScanned,
+  cashierProduct_handleFetchCategory,
+  cashierProduct_handleFetchProductCategory,
   isProductActive,
   cashierProduct_handleQuantity,
   cashierProduct_handleOpenModalAddProduct,
@@ -109,7 +111,7 @@ const {
   cashierOrderSummary_isLoadingUnpaidOrder,
   cashierProduct_customerState,
   hasCustomerManagementPermission,
-  useCashierOrderSummary_isRetailBusinessType,
+  cashierOrderSummary_isRetailBusinessType,
   cashierOrderSummary_paymentAmountFormValidation,
   cashierOrderSummary_handleModalAddCustomer,
   cashierOrderSummary_handleIsExpandedToggle,
@@ -135,6 +137,9 @@ const {
   cashierOrderSummary_onOpenDialogCashDrawerOverview,
   cashierOrderSummary_onOpenDialogQueueOverview,
   cashierOrderSummary_onOpenDialogTableOverview,
+
+  // Initialize functions
+  cashierOrderSummary_initializeRoute,
 } = useCashierOrderSummaryService();
 
 const {
@@ -220,6 +225,8 @@ provide<ICashierProductProvided>('cashierProduct', {
 
   cashierProduct_onSearchData,
   cashierProduct_handleBarcodeScanned,
+  cashierProduct_handleFetchCategory,
+  cashierProduct_handleFetchProductCategory,
 
   isProductActive,
   cashierProduct_handleQuantity,
@@ -252,7 +259,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_isLoadingUnpaidOrder,
   cashierProduct_customerState,
   hasCustomerManagementPermission,
-  useCashierOrderSummary_isRetailBusinessType,
+  cashierOrderSummary_isRetailBusinessType,
   cashierOrderSummary_paymentAmountFormValidation,
   cashierOrderSummary_handleModalAddCustomer,
   cashierOrderSummary_handleIsExpandedToggle,
@@ -278,6 +285,10 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_onOpenDialogCashDrawerOverview,
   cashierOrderSummary_onOpenDialogTableOverview,
   cashierOrderSummary_onOpenDialogQueueOverview,
+
+  // Initialize functions
+  cashierOrderSummary_initializeSelfOrder: () => Promise.resolve(), // Empty implementation for cashier
+  cashierOrderSummary_initializeRoute,
 });
 
 provide('dailySalesList', {
@@ -300,17 +311,29 @@ provide('invoice', {
   invoice_handleFetchInvoiceById,
 });
 
-const route = useRoute();
+// Route is not needed in cashier since self-order is handled separately
 
 onMounted(async () => {
-  dailySalesList_queryParams.createdAtFrom = new Date();
-  dailySalesList_queryParams.createdAtTo = new Date();
-  await dailySalesList_fetchListInvoices();
-  await cashDrawerList_fetchTodayStatus();
+  // Initialize product data (only for cashier, not self-order)
+  await cashierProduct_handleFetchCategory();
+  await cashierProduct_handleFetchProductCategory();
 
-  if (route.name !== 'self-order') {
-    accountStoreDetail_fetchOutletStoreTable();
+  // Initialize order summary based on route (cashier only)
+  cashierOrderSummary_initializeRoute();
+
+  // Initialize daily sales data
+  if (cashierOrderSummary_isRetailBusinessType) {
+    // Do Something for fetch table summary
+  } else {
+    dailySalesList_queryParams.createdAtFrom = new Date();
+    dailySalesList_queryParams.createdAtTo = new Date();
+
+    await dailySalesList_fetchListInvoices();
+    await cashDrawerList_fetchTodayStatus();
   }
+
+  // Fetch outlet store table data for cashier
+  accountStoreDetail_fetchOutletStoreTable();
 });
 </script>
 

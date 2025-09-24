@@ -91,7 +91,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   /**
    * @description Check if the current outlet business type is retail
    */
-  const useCashierOrderSummary_isRetailBusinessType = computed(() => storeOutlet.outlet_currentOutlet?.businessType === 'Retail');
+  const cashierOrderSummary_isRetailBusinessType = computed(
+    () => storeOutlet.outlet_currentOutlet?.businessType === 'Retail',
+  );
 
   /**
    * @description Injected variables
@@ -554,69 +556,16 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     },
   );
 
-  const cashierOrderSummary_storeId = ref('');
+  // const cashierOrderSummary_storeId = ref('');
 
-  onMounted(async () => {
-    if (route.name === 'self-order') {
-      cashierOrderSummary_modalOrderType.value.selectedOrderType = 'self_order';
-      cashierOrderSummary_modalSelectTable.value.selectedTable = [
-        typeof route.query.tablesName === 'string' ? route.query.tablesName : '',
-      ];
-      cashierOrderSummary_storeId.value = typeof route.query.storeId === 'string' ? route.query.storeId : '';
-      cashierProduct_customerState.value.selectedCustomer = JSON.parse(
-        localStorage.getItem('userinfo') ?? '{}',
-      ) as ICashierCustomer;
-
-      const account = localStorage.getItem('userinfo');
-
-      if (!account || account === '{}') {
-        router.push({
-          name: 'login-self-order',
-          query: {
-            ...route.query,
-          },
-        });
-
-        eventBus.emit('AppBaseToast', {
-          isOpen: true,
-          message: 'Unauthorized',
-          position: EToastPosition.TOP_RIGHT,
-          type: EToastType.DANGER,
-        });
-
-        return;
-      }
-
-      try {
-        await store.cashierSelfOrder_handleVerify({
-          storeId: route.query.storeId as string,
-          tablesName: route.query.tablesName as string,
-        });
-      } catch (error) {
-        router.push({
-          name: 'self-order.not-valid',
-        });
-
-        console.error(error);
-        return;
-      }
-
-      const shoppingCart = localStorage.getItem('shoppingCart');
-
-      try {
-        store.cashierProduct_selectedProduct =
-          shoppingCart && shoppingCart.trim() !== '' ? JSON.parse(shoppingCart) : [];
-
-        if (!Array.isArray(store.cashierProduct_selectedProduct)) {
-          store.cashierProduct_selectedProduct = [];
-        }
-      } catch (e) {
-        store.cashierProduct_selectedProduct = [];
-
-        console.error('Error parsing shopping cart:', e);
-      }
-    }
-  });
+  /**
+   * @description Initialize self-order setup (deprecated - moved to SelfOrderUI)
+   * @deprecated This function is no longer used as self-order now has its own component
+   */
+  const cashierOrderSummary_initializeSelfOrder = async () => {
+    // This function is deprecated - self-order logic moved to SelfOrderUI.vue
+    console.warn('cashierOrderSummary_initializeSelfOrder is deprecated. Use SelfOrderUI.vue instead.');
+  };
 
   /**
    * @description Check if the "Place Order" button should be disabled
@@ -1166,7 +1115,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     eventBus.emit('AppBaseDialog', argsEventEmitter);
   };
 
-  onMounted(() => {
+  /**
+   * @description Initialize route-based setup
+   */
+  const cashierOrderSummary_initializeRoute = () => {
     if (route.name === 'cashier-order-edit') {
       const invoiceId = route.params.invoiceId as string;
       if (invoiceId) {
@@ -1183,7 +1135,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod = '';
       cashierProduct_customerState.value.selectedCustomer = null;
     }
-  });
+  };
 
   /**
    * @description Unsubscribe from payment events
@@ -1247,7 +1199,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierProduct_customerState,
 
     hasCustomerManagementPermission,
-    useCashierOrderSummary_isRetailBusinessType,
+    cashierOrderSummary_isRetailBusinessType,
 
     cashierOrderSummary_handleModalAddCustomer,
 
@@ -1278,5 +1230,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_onOpenDialogCashDrawerOverview,
     cashierOrderSummary_onOpenDialogQueueOverview,
     cashierOrderSummary_onOpenDialogTableOverview,
+
+    // Initialize functions
+    cashierOrderSummary_initializeSelfOrder,
+    cashierOrderSummary_initializeRoute,
   };
 };

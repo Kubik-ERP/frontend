@@ -91,7 +91,7 @@ const dummySummaryData = computed(() => {
 
   return {
     storeName: outlet_currentOutlet.value?.name ?? 'KUBIK',
-    staffName: detail?.employees.name ?? 'Samantha',
+    staffName: detail?.employees?.name ?? 'Samantha',
     openRegisterDate: useFormatDate(detail?.createdAt ?? '2025-07-24T09:00:00', dateFormat),
     openRegisterTime: useFormatDate(detail?.createdAt ?? '2025-07-24T09:00:00', timeFormat),
     closeRegisterDate: useFormatDate(detail?.closedAt ?? '2025-07-24T12:00:00', dateFormat),
@@ -298,7 +298,7 @@ function handleExport() {
                     <td class="font-normal text-grayscale-70 text-xs p-1">
                       {{ useFormatDate(cashDrawerCashRegister_detail?.createdAt ?? 0) }}
                       by
-                      {{ cashDrawerCashRegister_detail?.employees.name ?? '-' }}
+                      {{ cashDrawerCashRegister_detail?.employees?.name ?? '-' }}
                     </td>
                   </tr>
 

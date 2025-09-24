@@ -81,8 +81,6 @@ export const useCashierProductService = (): ICashierProductProvided => {
     }
   };
 
-  cashierProduct_handleFetchCategory();
-
   /**
     @description Handle fetch product category
     @param {string} category
@@ -107,8 +105,6 @@ export const useCashierProductService = (): ICashierProductProvided => {
       cashierProduct_productState.value.isLoadingProduct = false;
     }
   };
-
-  cashierProduct_handleFetchProductCategory();
 
   /**
    * @description watch selected category changes
@@ -453,6 +449,8 @@ export const useCashierProductService = (): ICashierProductProvided => {
 
     cashierProduct_onSearchData,
     cashierProduct_handleBarcodeScanned,
+    cashierProduct_handleFetchCategory,
+    cashierProduct_handleFetchProductCategory,
 
     isProductActive,
     cashierProduct_handleQuantity,

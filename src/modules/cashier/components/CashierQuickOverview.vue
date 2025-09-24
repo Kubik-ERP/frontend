@@ -12,6 +12,7 @@ import type { IDailySalesListProvided } from '@/modules/daily-sales/interfaces/d
  */
 const { cashDrawerList_todayStatus } = inject<ICashDrawerListProvided>('cashDrawerList')!;
 const {
+  cashierOrderSummary_isRetailBusinessType,
   cashierOrderSummary_isShowQuickOverview,
   cashierOrderSummary_onOpenDialogCashDrawerOverview,
   cashierOrderSummary_onOpenDialogQueueOverview,
@@ -74,6 +75,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
         class="grid grid-rows-1 grid-cols-12 gap-4"
       >
         <section
+          v-if="!cashierOrderSummary_isRetailBusinessType"
           id="customer-queue"
           class="border border-solid border-grayscale-10 col-span-full lg:col-span-4 flex flex-col gap-4 p-4 rounded-2xl"
         >
@@ -109,6 +111,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
         </section>
 
         <section
+          v-if="cashierOrderSummary_isRetailBusinessType"
           id="cash-drawer"
           class="border border-solid border-grayscale-10 col-span-full lg:col-span-4 flex flex-col gap-4 p-4 rounded-2xl"
         >
