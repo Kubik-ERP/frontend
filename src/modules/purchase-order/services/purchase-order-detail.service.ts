@@ -5,7 +5,6 @@ import {
   PURCHASE_ORDER_DETAIL_CONFIRM_REQUEST,
   PURCHASE_ORDER_DETAIL_CANCEL_REQUEST,
   PURCHASE_ORDER_DETAIL_SHIP_REQUEST,
-  PURCHASE_ORDER_DETAIL_RECEIVE_REQUEST,
   PURCHASE_ORDER_DETAIL_PAY_REQUEST,
 } from '../constants';
 
@@ -189,9 +188,10 @@ export const usePurchaseOrderDetailService = (): IPurchaseOrderDetailProvided =>
    */
   const purchaseOrderDetail_fetchReceive = async (id: string): Promise<unknown> => {
     try {
-      await store.purchaseOrder_receive(id, {
-        ...httpAbort_registerAbort(PURCHASE_ORDER_DETAIL_RECEIVE_REQUEST),
-      });
+      console.log('Receiving PO...', id);
+      // await store.purchaseOrder_receive(id, {
+      //   ...httpAbort_registerAbort(PURCHASE_ORDER_DETAIL_RECEIVE_REQUEST),
+      // });
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
@@ -402,6 +402,16 @@ export const usePurchaseOrderDetailService = (): IPurchaseOrderDetailProvided =>
   };
 
   /**
+   * @description Handle business logic for shipped action
+   */
+  const purchaseOrderDetail_onShipped = (): void => {
+    const currentId = purchaseOrder_detail.value?.id;
+    if (!currentId) return;
+
+    router.push({ name: 'purchase-order.received', params: { id: currentId } });
+  }
+
+  /**
    * @description Handle business logic for pay action
    */
   const purchaseOrderDetail_onPay = (): void => {
@@ -503,7 +513,7 @@ export const usePurchaseOrderDetailService = (): IPurchaseOrderDetailProvided =>
         purchaseOrderDetail_onShip();
         break;
       case 'SHIPPED':
-        purchaseOrderDetail_onReceive();
+        purchaseOrderDetail_onShipped();
         break;
       case 'RECEIVED':
         purchaseOrderDetail_onPay();

@@ -26,10 +26,9 @@ export const useProductImportService = (): IProductImportProvided => {
         await store.product_Import_execute(batchId, {
           ...httpAbort_registerAbort('STORAGE_LIST_REQUEST_EXECUTE'),
         });
+        await getAllProducts(1, 10, '');
 
         localStorage.removeItem('inventory_batch_id');
-
-        await getAllProducts(1, 100, '');
       }
 
       productImport_onClose();

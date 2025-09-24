@@ -93,8 +93,8 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
           supplierId: item.supplierId,
           pricePerUnit: item.pricePerUnit,
           priceGrosir: item.priceGrosir,
-          imagePreview: item.imageUrl ? `${import.meta.env.VITE_APP_BASE_API_URL}/${item.imageUrl}` : null,
-          imageFile: null,
+          imagePreview: item.imageUrl ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${item.imageUrl}` : null,
+          imageFile: item.imageUrl ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${item.imageUrl}` : null,
         });
       } else if (route.params.id) {
         inventoryItemsFormMode.value = 'edit';

@@ -35,7 +35,7 @@ const {
           <AppBaseSvg name="edit" class="w-4 h4" />
 
           <span class="font-semibold text-primary text-sm">
-            {{ useLocalization('account.edit-store-details') }}
+            Edit PO Detail
           </span>
         </router-link>
       </div>

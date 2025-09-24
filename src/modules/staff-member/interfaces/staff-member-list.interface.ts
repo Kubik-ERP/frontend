@@ -16,6 +16,14 @@ export interface IStaffMemberListResponse {
   };
 }
 
+export interface IStaffMemberGetWithOwnerResponse{
+  statusCode: number;
+  message: string;
+  data: {
+    id: string;
+    fullname: string;
+  }[];
+}
 export interface IStaffMemberListProvided {
   staffMemberList_columns: IColumnDataTable[];
   staffMemberList_dropdownItemStaff: globalThis.Ref<IDropdownItem[]>;
