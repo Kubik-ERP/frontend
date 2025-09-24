@@ -245,7 +245,7 @@ const hasPermission = rbac.hasPermission('edit_invoice');
             'bg-white border-primary': invoice_invoiceData.data.paymentStatus === 'unpaid',
           }"
           severity="primary"
-          @click="emit('download', 'invoice')"
+          @click="emit('print', 'invoice')"
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
@@ -274,7 +274,7 @@ const hasPermission = rbac.hasPermission('edit_invoice');
           v-if="outlet_currentOutlet?.businessType !== 'Retail'"
           class="w-full py-4 bg-white border-primary"
           severity="primary"
-          @click="emit('download', 'kitchen')"
+          @click="emit('print', 'kitchen')"
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
