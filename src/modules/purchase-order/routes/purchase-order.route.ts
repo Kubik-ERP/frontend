@@ -11,6 +11,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/purchase-order',
     component: AppBaseWrapper,
+    name: 'purchase-order',
     children: [
       {
         path: '',
