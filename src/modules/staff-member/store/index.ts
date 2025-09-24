@@ -18,23 +18,7 @@ export const useStaffMemberStore = defineStore('staff-member', {
   state: (): IStaffMemberStore => ({
     staffMember_isLoading: false,
     staffMember_lists: {
-      employees: [
-        {
-          id: 'example-staff-member-id',
-          name: 'example staff member',
-          email: 'example@kubik.com',
-          phoneNumber: '+1234567890',
-          profileUrl: null,
-          startDate: null,
-          endDate: null,
-          gender: null,
-          title: null,
-          employeesHasSocialMedia: [],
-          employeesShift: [],
-          productCommissions: [],
-          voucherCommissions: [],
-        },
-      ],
+      employees: [],
       meta: {
         limit: 10,
         page: 1,
