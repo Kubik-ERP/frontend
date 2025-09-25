@@ -5,7 +5,6 @@ import {
   PURCHASE_ORDER_CANCEL_REQUEST,
   PURCHASE_ORDER_CONFIRM_REQUEST,
   PURCHASE_ORDER_SHIP_REQUEST,
-  PURCHASE_ORDER_RECEIVE_REQUEST,
   PURCHASE_ORDER_PAY_REQUEST,
 } from '../constants';
 
@@ -178,11 +177,6 @@ export const usePurchaseOrderListService = (): IPurchaseOrderListProvided => {
    */
   const purchaseOrderList_fetchReceive = async (): Promise<unknown> => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await store.purchaseOrder_receive(purchaseOrderList_selectedId.value, null as any, {
-        ...httpAbort_registerAbort(PURCHASE_ORDER_RECEIVE_REQUEST),
-      });
-
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,

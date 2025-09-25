@@ -73,6 +73,7 @@ export const usePurchaseOrderReceivedService = (): IPurchaseOrderReceivedProvide
           orderedQuantity: item.quantity,
           actualQuantity: item.quantity,
           notes: '',
+          barcode: item.itemInfo.barcode,
         }));
       }
     },
@@ -105,27 +106,56 @@ export const usePurchaseOrderReceivedService = (): IPurchaseOrderReceivedProvide
       return;
     }
 
-    const payload = {
-      userId: purchaseOrderReceived_formData.value.userId ?? null,
-      productItems: purchaseOrderReceived_formData.value.productItems.map(item => ({
-        id: item.purchaseOrderItemId ?? '',
-        actualQuantity: item.actualQuantity,
-        notes: item.notes,
-      })),
+    const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'purchase-order-received-confirmation-dialog',
+      iconName: 'confirmation',
+      title: 'Are you sure you want to receive this purchase order?',
+      description: 'This action will update the inventory based on the received quantities. This action cannot be undone.',
+      type: 'info',
+      isOpen: true,
+      isUsingButtonSecondary: true,
+      textButtonPrimary: 'Receive PO',
+      textButtonSecondary: 'Cancel',
+      width: '460px',
+      onClickButtonPrimary: async () => {
+        const payload = {
+          userId: purchaseOrderReceived_formData.value.userId ?? null,
+          productItems: purchaseOrderReceived_formData.value.productItems.map(item => ({
+            id: item.purchaseOrderItemId ?? '',
+            actualQuantity: item.actualQuantity,
+            notes: item.notes,
+          })),
+        };
+
+        try {
+          await poStore.purchaseOrder_receive(purchaseOrderId.value, payload, {});
+          eventBus.emit('AppBaseToast', {
+            isOpen: true,
+            type: EToastType.SUCCESS,
+            message: 'Purchase order received successfully!',
+            position: EToastPosition.TOP_RIGHT,
+          });
+          router.push({ name: 'purchase-order.detail', params: { id: purchaseOrderId.value } });
+        } catch (error) {
+          console.error('Failed to receive purchase order:', error);
+        } finally {
+            const closeEventEmitter: IPropsDialogConfirmation = {
+                id: 'purchase-order-received-confirmation-dialog',
+                isOpen: false,
+            };
+            eventBus.emit('AppBaseDialogConfirmation', closeEventEmitter);
+        }
+      },
+      onClickButtonSecondary: () => {
+        const closeEventEmitter: IPropsDialogConfirmation = {
+          id: 'purchase-order-received-confirmation-dialog',
+          isOpen: false,
+        };
+        eventBus.emit('AppBaseDialogConfirmation', closeEventEmitter);
+      },
     };
 
-    try {
-      await poStore.purchaseOrder_receive(purchaseOrderId.value, payload, {});
-      eventBus.emit('AppBaseToast', {
-        isOpen: true,
-        type: EToastType.SUCCESS,
-        message: 'Purchase order received successfully!',
-        position: EToastPosition.TOP_RIGHT,
-      });
-      router.push({ name: 'purchase-order.detail', params: { id: purchaseOrderId.value } });
-    } catch (error) {
-      console.error('Failed to receive purchase order:', error);
-    }
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
   };
 
   const purchaseOrderReceived_onBack = () => {
