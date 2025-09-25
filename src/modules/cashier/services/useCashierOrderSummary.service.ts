@@ -66,6 +66,7 @@ import eventBus from '@/plugins/mitt';
 import { useCashDrawerCashRegisterService } from '@/modules/cash-drawer/services/cash-drawer-cash-register.service';
 import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
 import { useCashDrawerListService } from '@/modules/cash-drawer/services/cash-drawer-list.service';
+import { useInventoryItemsListService } from '@/modules/items/services/items-list.service';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   /**
@@ -75,6 +76,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     useCashDrawerCashRegisterService();
   const { cashDrawerList_todayStatus } = useCashDrawerListService();
   const { dailySalesList_fetchListInvoices, dailySalesList_queryParams } = useDailySalesListService();
+  const { inventoryItems_fetchData } = useInventoryItemsListService();
 
   // Router
   const router = useRouter();
@@ -386,9 +388,11 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    */
   const debouncedHandleWatchChanges = debounce(() => {
     // If user doesn't have customer management permission, only check order type
-    const customerCheck = hasCustomerManagementPermission.value
-      ? cashierProduct_customerState.value.selectedCustomer?.id
-      : true; // Skip customer validation if no permission
+    // For retail business type, skip customer validation as it's not required
+    const customerCheck =
+      hasCustomerManagementPermission.value && !cashierOrderSummary_isRetailBusinessType.value
+        ? cashierProduct_customerState.value.selectedCustomer?.id
+        : true; // Skip customer validation if no permission or retail business type
 
     const tableCheck = hasCustomerManagementPermission.value
       ? cashierOrderSummary_modalSelectTable.value.selectedTable.length > 0
@@ -514,7 +518,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_summary = computed(() => {
     const summary: ICashierOrderSummary = {
       provider: CASHIER_PROVIDER,
-      orderType: cashierOrderSummary_isRetailBusinessType.value 
+      orderType: cashierOrderSummary_isRetailBusinessType.value
         ? 'take_away' // Default order type for retail business
         : cashierOrderSummary_modalOrderType.value.selectedOrderType,
       invoiceDetail: {
@@ -522,7 +526,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         notes: cashierOrderSummary_modalInvoiceDetail.value.form.notes,
       },
       paymentMethod: cashierOrderSummary_data.value.paymentMethod,
-      tableCode: cashierOrderSummary_isRetailBusinessType.value 
+      tableCode: cashierOrderSummary_isRetailBusinessType.value
         ? '' // No table code needed for retail business
         : cashierOrderSummary_modalSelectTable.value.selectedTable.toString(),
       selectedVoucher: cashierOrderSummary_modalVoucher.value.form.voucherId,
@@ -576,12 +580,13 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @returns boolean
    */
   const cashierOrderSummary_isButtonPlaceOrderDisabled = computed(() => {
-    // If user doesn't have customer management permission, skip customer validation
-    const customerValidation = hasCustomerManagementPermission.value
-      ? cashierProduct_customerState.value.selectedCustomer?.id === '' ||
-        cashierProduct_customerState.value.selectedCustomer?.id === null ||
-        cashierProduct_customerState.value.selectedCustomer?.id === undefined
-      : false;
+    // If user doesn't have customer management permission or business type is retail, skip customer validation
+    const customerValidation =
+      hasCustomerManagementPermission.value && !cashierOrderSummary_isRetailBusinessType.value
+        ? cashierProduct_customerState.value.selectedCustomer?.id === '' ||
+          cashierProduct_customerState.value.selectedCustomer?.id === null ||
+          cashierProduct_customerState.value.selectedCustomer?.id === undefined
+        : false;
 
     // For retail business type, skip order type and table validations
     if (cashierOrderSummary_isRetailBusinessType.value) {
@@ -733,8 +738,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         orderType: cashierOrderSummary_summary.value.orderType,
         provider: provider,
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
-        customerId: cashierProduct_customerState.value.selectedCustomer?.id,
-        tableCode: cashierOrderSummary_isRetailBusinessType.value ? '' : cashierOrderSummary_summary.value.tableCode,
+        customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
+        tableCode: cashierOrderSummary_isRetailBusinessType.value
+          ? ''
+          : cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
         paymentAmount: cashierOrderSummary_paymentForm.paymentAmount || null,
         voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId || null,
@@ -811,7 +818,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
         voucherId: cashierOrderSummary_summary.value.selectedVoucher,
         customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
-        tableCode: cashierOrderSummary_isRetailBusinessType.value ? '' : cashierOrderSummary_summary.value.tableCode,
+        tableCode: cashierOrderSummary_isRetailBusinessType.value
+          ? ''
+          : cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
         rounding_amount: cashierOrderSummary_calculateEstimation.value.data.roundingAdjustment || 0,
       };
@@ -1126,6 +1135,39 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   };
 
   /**
+   * @description Handle business logic for showing dialog stock overview
+   */
+  const cashierOrderSummary_onOpenDialogStockOverview = async () => {
+    // Fetch latest inventory data before showing dialog
+    await inventoryItems_fetchData();
+
+    const argsEventEmitter: IPropsDialog = {
+      id: 'cashier-stock-overview-dialog',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: 'w-[1200px]',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle business logic for closing dialog stock overview
+   */
+  const cashierOrderSummary_onCloseDialogStockOverview = () => {
+    const argsEventEmitter: IPropsDialog = {
+      id: 'cashier-stock-overview-dialog',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: false,
+      width: 'w-[1200px]',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
    * @description Initialize route-based setup
    */
   const cashierOrderSummary_initializeRoute = () => {
@@ -1240,6 +1282,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_onOpenDialogCashDrawerOverview,
     cashierOrderSummary_onOpenDialogQueueOverview,
     cashierOrderSummary_onOpenDialogTableOverview,
+    cashierOrderSummary_onOpenDialogStockOverview,
+    cashierOrderSummary_onCloseDialogStockOverview,
 
     // Initialize functions
     cashierOrderSummary_initializeSelfOrder,

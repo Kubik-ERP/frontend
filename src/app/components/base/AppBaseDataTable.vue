@@ -10,6 +10,8 @@ import { useMobileStore } from '@/app/store/mobile.store';
  */
 interface IProps {
   btnCtaCreateTitle?: string;
+  btnCtaCreateVariant?: 'default' | 'danger';
+  btnCtaCreateIcon?: string;
   columns: IColumnDataTable[];
   data: Array<unknown>;
   headerTitle?: string;
@@ -51,6 +53,8 @@ interface IProps {
  */
 const props = withDefaults(defineProps<IProps>(), {
   btnCtaCreateTitle: 'Create',
+  btnCtaCreateVariant: 'default',
+  btnCtaCreateIcon: 'plus-line-white',
   columns: () => [],
   data: () => [],
   headerTitle: '',
@@ -225,6 +229,33 @@ const getColumnHeader = (column: IColumnDataTable) => {
   }
   return column.label;
 };
+
+/**
+ * @description Get button class based on variant
+ */
+const getButtonClass = computed(() => {
+  if (props.btnCtaCreateVariant === 'danger') {
+    return 'bg-error-main border-none w-full sm:w-fit px-4 py-2 rounded-lg basic-smooth-animation';
+  }
+  return 'bg-primary border-none w-full sm:w-fit px-5';
+});
+
+/**
+ * @description Get text class based on variant
+ */
+const getTextClass = computed(() => {
+  return 'font-semibold text-sm lg:text-base text-white';
+});
+
+/**
+ * @description Get icon class based on variant
+ */
+const getIconClass = computed(() => {
+  if (props.btnCtaCreateVariant === 'danger') {
+    return '!w-5 !h-5';
+  }
+  return 'w-4 h-4';
+});
 </script>
 
 <template>
@@ -286,14 +317,15 @@ const getColumnHeader = (column: IColumnDataTable) => {
                   <!-- CTA Button -->
                   <template v-if="props.isUsingBtnCtaCreate">
                     <PrimeVueButton
-                      class="bg-primary border-none w-full sm:w-fit px-5"
+                      :class="getButtonClass"
                       severity="secondary"
+                      variant="outlined"
                       @click="emits('clickBtnCtaCreate')"
                     >
                       <template #default>
                         <section id="content" class="flex items-center justify-center gap-2">
-                          <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
-                          <span class="font-semibold text-sm lg:text-base text-white">
+                          <AppBaseSvg :name="props.btnCtaCreateIcon" :class="getIconClass" />
+                          <span :class="getTextClass">
                             {{ props.btnCtaCreateTitle }}
                           </span>
                         </section>
@@ -616,14 +648,15 @@ const getColumnHeader = (column: IColumnDataTable) => {
                       <!-- CTA Button -->
                       <template v-if="props.isUsingBtnCtaCreate">
                         <PrimeVueButton
-                          class="bg-primary border-none w-full sm:w-fit px-5"
+                          :class="getButtonClass"
                           severity="secondary"
+                          variant="outlined"
                           @click="emits('clickBtnCtaCreate')"
                         >
                           <template #default>
                             <section id="content" class="flex items-center justify-center gap-2">
-                              <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
-                              <span class="font-semibold text-sm lg:text-base text-white">
+                              <AppBaseSvg :name="props.btnCtaCreateIcon" :class="getIconClass" />
+                              <span :class="getTextClass">
                                 {{ props.btnCtaCreateTitle }}
                               </span>
                             </section>

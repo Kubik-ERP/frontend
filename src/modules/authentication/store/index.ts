@@ -37,6 +37,7 @@ import httpClient from '@/plugins/axios';
 export const useAuthenticationStore = defineStore('authentication', {
   state: (): IAuthenticationStateStore => ({
     authentication_isLoading: false,
+    authentication_isStaff: false,
     authentication_permissions: [],
     authentication_token: '',
     authentication_userData: null as IAuthenticationProfile | null,
@@ -359,6 +360,7 @@ export const useAuthenticationStore = defineStore('authentication', {
         // Store the token and user data if successful
         if (response.data.data?.accessToken) {
           this.authentication_token = response.data.data.accessToken;
+          this.authentication_isStaff = true;
         }
 
         return Promise.resolve(response.data);
@@ -484,7 +486,12 @@ export const useAuthenticationStore = defineStore('authentication', {
   },
   persist: {
     key: 'authentication',
-    pick: ['authentication_permissions', 'authentication_token', 'authentication_userData'],
+    pick: [
+      'authentication_isStaff',
+      'authentication_permissions',
+      'authentication_token',
+      'authentication_userData',
+    ],
     storage: localStorage,
   },
 });

@@ -32,4 +32,8 @@ export interface ICashDrawerListProvided {
   cashDrawerList_suggestionRegisterBalance: number[];
   cashDrawerList_todayStatus: globalThis.Ref<ICashDrawerTodayStatus | null>;
   cashDrawerList_values: globalThis.Ref<ICashDrawerData | null>;
+  // New functions for dynamic button behavior
+  cashDrawerList_hasOpenCashDrawerToday: globalThis.ComputedRef<boolean>;
+  cashDrawerList_getButtonTitle: globalThis.ComputedRef<string>;
+  cashDrawerList_onClickMainButton: () => void;
 }
