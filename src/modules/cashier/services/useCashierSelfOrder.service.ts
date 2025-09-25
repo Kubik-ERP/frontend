@@ -1,4 +1,5 @@
 import { useCashierStore } from '../store';
+import { storeToRefs } from 'pinia';
 
 import { useRouter, useRoute } from 'vue-router';
 

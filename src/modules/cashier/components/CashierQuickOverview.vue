@@ -10,8 +10,10 @@ import type { IDailySalesListProvided } from '@/modules/daily-sales/interfaces/d
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashDrawerList_todayStatus } = inject<ICashDrawerListProvided>('cashDrawerList')!;
+const { cashDrawerList_todayStatus, cashDrawerList_onShowOpenRegisterDialog } =
+  inject<ICashDrawerListProvided>('cashDrawerList')!;
 const {
+  cashierOrderSummary_isRetailBusinessType,
   cashierOrderSummary_isShowQuickOverview,
   cashierOrderSummary_onOpenDialogCashDrawerOverview,
   cashierOrderSummary_onOpenDialogQueueOverview,
@@ -74,6 +76,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
         class="grid grid-rows-1 grid-cols-12 gap-4"
       >
         <section
+          v-if="!cashierOrderSummary_isRetailBusinessType"
           id="customer-queue"
           class="border border-solid border-grayscale-10 col-span-full lg:col-span-4 flex flex-col gap-4 p-4 rounded-2xl"
         >
@@ -109,6 +112,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
         </section>
 
         <section
+          v-if="cashierOrderSummary_isRetailBusinessType"
           id="cash-drawer"
           class="border border-solid border-grayscale-10 col-span-full lg:col-span-4 flex flex-col gap-4 p-4 rounded-2xl"
         >
@@ -135,10 +139,10 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
             </section>
           </header>
 
-          <section id="content" class="flex items-center gap-2">
+          <section id="content" class="flex items-center gap-3">
             <section
               id="custom-chip"
-              class="flex items-center gap-2 p-2 rounded-full"
+              class="flex items-center gap-2 p-2 rounded-full w-fit"
               :class="[!!cashDrawerList_todayStatus ? 'bg-success-background' : 'bg-error-background']"
             >
               <section
@@ -156,10 +160,19 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
                 {{ !!cashDrawerList_todayStatus ? 'Open' : 'Closed' }}
               </span>
             </section>
+
+            <PrimeVueButton
+              v-if="!cashDrawerList_todayStatus"
+              class="flex items-center gap-2 font-semibold text-primary bg-white border border-solid border-primary py-2 rounded-full text-xs hover:bg-gray-50 w-full"
+              @click="cashDrawerList_onShowOpenRegisterDialog"
+            >
+              Open Cash Register
+            </PrimeVueButton>
           </section>
         </section>
 
         <section
+          v-if="!cashierOrderSummary_isRetailBusinessType"
           id="table-summary"
           class="border border-solid border-grayscale-10 col-span-full lg:col-span-4 flex flex-col gap-4 p-4 rounded-2xl"
         >

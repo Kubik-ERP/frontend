@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import type { ComponentPublicInstance } from 'vue';
 
 // Interfaces
@@ -85,7 +86,7 @@ const closeExpansionPopover = (recordId: number, shiftId: string) => {
 const handleEdit = (recordId: number) => {
   console.log('Edit clicked for record:', recordId);
   closeMainPopover(recordId);
-  attendance_onEdit(recordId);
+  attendanceList_onEdit(recordId);
 };
 
 /**
@@ -94,7 +95,7 @@ const handleEdit = (recordId: number) => {
 const handleDelete = (recordId: number) => {
   console.log('Delete clicked for record:', recordId);
   closeMainPopover(recordId);
-  attendance_handleDelete(recordId);
+  attendanceList_handleDelete(recordId);
 };
 
 /**
@@ -102,7 +103,7 @@ const handleDelete = (recordId: number) => {
  */
 const handleExpansionEdit = (recordId: number, shiftId: string) => {
   closeExpansionPopover(recordId, shiftId);
-  attendance_onEdit(recordId);
+  attendanceList_onEdit(recordId);
 };
 
 /**
@@ -110,31 +111,31 @@ const handleExpansionEdit = (recordId: number, shiftId: string) => {
  */
 const handleExpansionDelete = (recordId: number, shiftId: string) => {
   closeExpansionPopover(recordId, shiftId);
-  attendance_handleDelete(recordId);
+  attendanceList_handleDelete(recordId);
 };
 
 /**
  * @description Inject all the data and methods what we need
  */
 const {
-  attendance_columns,
-  attendance_listData,
-  attendance_onCreate,
-  attendance_onEdit,
-  attendance_formatTime,
-  attendance_getStatusColor,
-  attendance_handleDelete,
+  attendanceList_columns,
+  attendanceList_listData,
+  attendanceList_onCreate,
+  attendanceList_onEdit,
+  attendanceList_formatTime,
+  attendanceList_getStatusColor,
+  attendanceList_handleDelete,
 } = inject('attendance') as IAttendanceListProvided;
 </script>
 
 <template>
   <section id="attendance-table" class="flex flex-col gap-4 w-full">
     <AppBaseDataTable
-      :columns="attendance_columns"
-      :data="attendance_listData.items"
-      :total-records="attendance_listData.meta.total"
-      :rows-per-page="attendance_listData.meta.perPage"
-      :first="(attendance_listData.meta.currentPage - 1) * attendance_listData.meta.perPage"
+      :columns="attendanceList_columns"
+      :data="attendanceList_listData.items"
+      :total-records="attendanceList_listData.meta.total"
+      :rows-per-page="attendanceList_listData.meta.perPage"
+      :first="(attendanceList_listData.meta.currentPage - 1) * attendanceList_listData.meta.perPage"
       header-title="Attendance Records"
       btn-cta-create-title="Add Attendance"
       :is-using-custom-table="true"
@@ -144,7 +145,7 @@ const {
       :is-using-filter="false"
       expandable-rows-field="shifts"
       expandable-rows-id-field="id"
-      @click-btn-cta-create="attendance_onCreate"
+      @click-btn-cta-create="attendanceList_onCreate"
     >
       <!-- Custom body slot for main rows -->
       <template #body="{ column, data, isExpandable, isExpanded, toggleExpansion, primaryItem }">
@@ -152,17 +153,9 @@ const {
         <template v-if="column.value === 'date'">
           <div class="flex items-center gap-2">
             <!-- Collapse/Expand Button -->
-            <PrimeVueButton
-              v-if="isExpandable"
-              variant="text"
-              size="small"
-              @click="toggleExpansion"
-            >
+            <PrimeVueButton v-if="isExpandable" variant="text" size="small" @click="toggleExpansion">
               <template #icon>
-                <AppBaseSvg
-                  :name="isExpanded ? 'chevron-down' : 'chevron-right'"
-                  class="!w-4 !h-4"
-                />
+                <AppBaseSvg :name="isExpanded ? 'chevron-down' : 'chevron-right'" class="!w-4 !h-4" />
               </template>
             </PrimeVueButton>
 
@@ -188,20 +181,14 @@ const {
         </template>
 
         <template v-else-if="primaryItem && column.value === 'clockIn'">
-          <span
-            class="font-normal text-sm"
-            :class="primaryItem.clockIn ? 'text-text-primary' : 'text-gray-400'"
-          >
-            {{ attendance_formatTime(primaryItem.clockIn || null) }}
+          <span class="font-normal text-sm" :class="primaryItem.clockIn ? 'text-text-primary' : 'text-gray-400'">
+            {{ attendanceList_formatTime(primaryItem.clockIn || null) }}
           </span>
         </template>
 
         <template v-else-if="primaryItem && column.value === 'clockOut'">
-          <span
-            class="font-normal text-sm"
-            :class="primaryItem.clockOut ? 'text-text-primary' : 'text-gray-400'"
-          >
-            {{ attendance_formatTime(primaryItem.clockOut || null) }}
+          <span class="font-normal text-sm" :class="primaryItem.clockOut ? 'text-text-primary' : 'text-gray-400'">
+            {{ attendanceList_formatTime(primaryItem.clockOut || null) }}
           </span>
         </template>
 
@@ -214,17 +201,14 @@ const {
         <template v-else-if="primaryItem && column.value === 'early'">
           <span
             class="font-normal text-sm"
-            :class="attendance_getStatusColor(primaryItem.early || '', 'early')"
+            :class="attendanceList_getStatusColor(primaryItem.early || '', 'early')"
           >
             {{ primaryItem.early }}
           </span>
         </template>
 
         <template v-else-if="primaryItem && column.value === 'late'">
-          <span
-            class="font-normal text-sm"
-            :class="attendance_getStatusColor(primaryItem.late || '', 'late')"
-          >
+          <span class="font-normal text-sm" :class="attendanceList_getStatusColor(primaryItem.late || '', 'late')">
             {{ primaryItem.late }}
           </span>
         </template>
@@ -232,7 +216,7 @@ const {
         <template v-else-if="primaryItem && column.value === 'overtime'">
           <span
             class="font-normal text-sm"
-            :class="attendance_getStatusColor(primaryItem.overtime || '', 'overtime')"
+            :class="attendanceList_getStatusColor(primaryItem.overtime || '', 'overtime')"
           >
             {{ primaryItem.overtime }}
           </span>
@@ -297,20 +281,18 @@ const {
 
         <!-- Shift data for expanded rows -->
         <template v-else-if="column.value === 'shift'">
-          <span class="font-normal text-sm text-text-primary">
-            {{ item.shiftStart }} - {{ item.shiftEnd }}
-          </span>
+          <span class="font-normal text-sm text-text-primary"> {{ item.shiftStart }} - {{ item.shiftEnd }} </span>
         </template>
 
         <template v-else-if="column.value === 'clockIn'">
           <span class="font-normal text-sm" :class="item.clockIn ? 'text-text-primary' : 'text-gray-400'">
-            {{ attendance_formatTime(item.clockIn || null) }}
+            {{ attendanceList_formatTime(item.clockIn || null) }}
           </span>
         </template>
 
         <template v-else-if="column.value === 'clockOut'">
           <span class="font-normal text-sm" :class="item.clockOut ? 'text-text-primary' : 'text-gray-400'">
-            {{ attendance_formatTime(item.clockOut || null) }}
+            {{ attendanceList_formatTime(item.clockOut || null) }}
           </span>
         </template>
 
@@ -321,19 +303,19 @@ const {
         </template>
 
         <template v-else-if="column.value === 'early'">
-          <span class="font-normal text-sm" :class="attendance_getStatusColor(item.early, 'early')">
+          <span class="font-normal text-sm" :class="attendanceList_getStatusColor(item.early, 'early')">
             {{ item.early }}
           </span>
         </template>
 
         <template v-else-if="column.value === 'late'">
-          <span class="font-normal text-sm" :class="attendance_getStatusColor(item.late, 'late')">
+          <span class="font-normal text-sm" :class="attendanceList_getStatusColor(item.late, 'late')">
             {{ item.late }}
           </span>
         </template>
 
         <template v-else-if="column.value === 'overtime'">
-          <span class="font-normal text-sm" :class="attendance_getStatusColor(item.overtime, 'overtime')">
+          <span class="font-normal text-sm" :class="attendanceList_getStatusColor(item.overtime, 'overtime')">
             {{ item.overtime }}
           </span>
         </template>
@@ -359,7 +341,11 @@ const {
             }"
           >
             <section id="popover-content" class="flex flex-col">
-              <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleExpansionEdit(data.id, item.id)">
+              <PrimeVueButton
+                class="w-full px-4 py-3"
+                variant="text"
+                @click="handleExpansionEdit(data.id, item.id)"
+              >
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="edit" class="!w-4 !h-4" />
@@ -368,7 +354,11 @@ const {
                 </template>
               </PrimeVueButton>
 
-              <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="handleExpansionDelete(data.id, item.id)">
+              <PrimeVueButton
+                class="w-full px-4 py-3"
+                variant="text"
+                @click="handleExpansionDelete(data.id, item.id)"
+              >
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="delete" class="!w-4 !h-4" />

@@ -81,8 +81,6 @@ export const useCashierProductService = (): ICashierProductProvided => {
     }
   };
 
-  cashierProduct_handleFetchCategory();
-
   /**
     @description Handle fetch product category
     @param {string} category
@@ -107,8 +105,6 @@ export const useCashierProductService = (): ICashierProductProvided => {
       cashierProduct_productState.value.isLoadingProduct = false;
     }
   };
-
-  cashierProduct_handleFetchProductCategory();
 
   /**
    * @description watch selected category changes
@@ -204,46 +200,65 @@ export const useCashierProductService = (): ICashierProductProvided => {
 
       if (foundProduct) {
         let item: ICashierModalAddProductItem;
+        let variantToUse: { id: string; name: string; price: number };
 
         // Check if product has variants
         if (foundProduct.variant && foundProduct.variant.length > 0) {
           // Get the first variant if available
           const firstVariant = foundProduct.variant[0];
-
-          item = {
-            quantity: 1,
-            variant: {
-              id: firstVariant.id,
-              name: firstVariant.name,
-              price: firstVariant.price,
-            },
-            notes: '',
+          variantToUse = {
+            id: firstVariant.id,
+            name: firstVariant.name,
+            price: firstVariant.price,
           };
         } else {
           // Handle products without variants
-          item = {
-            quantity: 1,
-            variant: {
-              id: '',
-              name: '',
-              price: 0,
-            },
-            notes: '',
+          variantToUse = {
+            id: '',
+            name: '',
+            price: 0,
           };
         }
 
-        // Add product to selected products (only from barcode scanner)
-        cashierProduct_handleSelectProduct(foundProduct, item);
+        // Check if product with same variant already exists in selectedProduct
+        const existingProduct = cashierProduct_selectedProduct.value.find(
+          val => val.product?.id === foundProduct?.id && variantToUse.id === val.variant?.id,
+        );
 
-        // Show success message
-        eventBus.emit('AppBaseToast', {
-          isOpen: true,
-          message: `Produk "${foundProduct.name}" berhasil ditambahkan ke keranjang`,
-          position: EToastPosition.TOP_RIGHT,
-          type: EToastType.SUCCESS,
-        });
+        if (existingProduct) {
+          // Product already exists, increment the quantity
+          existingProduct.quantity += 1;
 
-        console.log(`Product "${foundProduct.name}" added to cart via barcode scan`);
+          // Show increment message
+          eventBus.emit('AppBaseToast', {
+            isOpen: true,
+            message: `Quantity produk "${foundProduct.name}" ditambah menjadi ${existingProduct.quantity}`,
+            position: EToastPosition.TOP_RIGHT,
+            type: EToastType.SUCCESS,
+          });
+
+          console.log(`Product "${foundProduct.name}" quantity incremented to ${existingProduct.quantity}`);
+        } else {
+          // Product doesn't exist, add new product with quantity 1
+          item = {
+            quantity: 1,
+            variant: variantToUse,
+            notes: '',
+          };
+
+          // Add product to selected products (only from barcode scanner)
+          cashierProduct_handleSelectProduct(foundProduct, item);
+
+          // Show success message
+          eventBus.emit('AppBaseToast', {
+            isOpen: true,
+            message: `Produk "${foundProduct.name}" berhasil ditambahkan ke keranjang`,
+            position: EToastPosition.TOP_RIGHT,
+            type: EToastType.SUCCESS,
+          });
+
+          console.log(`Product "${foundProduct.name}" added to cart via barcode scan`);
+        }
       } else {
         // Product not found, show error message
         eventBus.emit('AppBaseToast', {
@@ -453,6 +468,8 @@ export const useCashierProductService = (): ICashierProductProvided => {
 
     cashierProduct_onSearchData,
     cashierProduct_handleBarcodeScanned,
+    cashierProduct_handleFetchCategory,
+    cashierProduct_handleFetchProductCategory,
 
     isProductActive,
     cashierProduct_handleQuantity,
