@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { usePurchaseOrderReceivedService } from '../services/purchase-order-received.service';
 import PurchaseOrderReceivedNotesDialog from '../components/PurchaseOrderReceivedNotesDialog.vue';
+import eventBus from '@/plugins/mitt';
 
 const {
   purchaseOrderReceived_data,
@@ -22,6 +23,44 @@ provide('purchaseOrderReceived', {
   notesBuffer,
   onCloseNotesDialog,
   onSubmitNotesDialog,
+});
+
+const search = ref('');
+
+const handleBarcodeScan = () => {
+  const barcode = search.value.trim();
+  if (!barcode) return;
+
+  const foundItem = purchaseOrderReceived_formData.value.productItems.find(
+    item => item.barcode === barcode || item.sku === barcode
+  );
+
+  if (foundItem) {
+    foundItem.actualQuantity = (foundItem.actualQuantity || 0) + 1;
+    search.value = '';
+  } else {
+    eventBus.emit('AppBaseToast', {
+      isOpen: true,
+      type: EToastType.WARNING,
+      message: 'Invalid barcode and do nothing',
+      position: EToastPosition.TOP_RIGHT,
+    });
+  }
+};
+
+const filteredItems = computed(() => {
+  if (!search.value) {
+    return purchaseOrderReceived_formData.value.productItems;
+  }
+
+  const searchTerm = search.value.toLowerCase();
+
+  return purchaseOrderReceived_formData.value.productItems.filter(item => {
+    const sku = item.sku?.toLowerCase() || '';
+    const name = item.name?.toLowerCase() || '';
+    const barcode = item.barcode?.toLowerCase() || '';
+    return sku.includes(searchTerm) || name.includes(searchTerm) || barcode.includes(searchTerm);
+  });
 });
 </script>
 
@@ -72,16 +111,27 @@ provide('purchaseOrderReceived', {
     </div>
 
     <AppBaseDataTable
-      :data="purchaseOrderReceived_formData.productItems"
+      :data="filteredItems"
       :columns="purchaseOrderReceived_listColumns"
       :is-using-filter="false"
       :is-loading="purchaseOrderReceived_isLoading"
       is-using-custom-body
       :is-using-custom-footer="true"
       is-using-custom-header-prefix
+      is-using-custom-header-suffix
     >
       <template #header-prefix>
         <h1 class="font-bold text-2xl text-text-primary">Item List</h1>
+      </template>
+      <template #header-suffix>
+        <div class="flex items-center gap-2">
+          <PrimeVueIconField>
+            <PrimeVueInputIcon>
+              <AppBaseSvg name="search" class="!w-4 !h-4" />
+            </PrimeVueInputIcon>
+            <PrimeVueInputText v-model="search" placeholder="Search by SKU/Item Name or Scan Barcode" @keydown.enter.prevent="handleBarcodeScan" />
+          </PrimeVueIconField>
+        </div>
       </template>
       <template #body="{ column, data }">
         <template v-if="column.value === 'orderedQuantity'">
@@ -164,5 +214,7 @@ provide('purchaseOrderReceived', {
     </footer>
 
     <PurchaseOrderReceivedNotesDialog />
+
+    <AppBaseDialogConfirmation id="purchase-order-received-confirmation-dialog" />
   </section>
 </template>
