@@ -230,6 +230,8 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_onOpenDialogCashDrawerOverview: () => void;
   cashierOrderSummary_onOpenDialogQueueOverview: () => void;
   cashierOrderSummary_onOpenDialogTableOverview: () => void;
+  cashierOrderSummary_onOpenDialogStockOverview: () => Promise<void>;
+  cashierOrderSummary_onCloseDialogStockOverview: () => void;
 
   // Initialize functions
   cashierOrderSummary_initializeSelfOrder: () => Promise<void>;

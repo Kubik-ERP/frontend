@@ -29,6 +29,9 @@ const handleFormSubmit = (event: Event) => {
     console.log('Regular search triggered'); // Debug log
     cashierProduct_onSearchData();
   }
+
+  // Reset search input value after form submission
+  cashierProduct_productState.value.searchProduct = '';
 };
 
 /**
@@ -53,6 +56,9 @@ const handleSearchInputKeydown = (event: KeyboardEvent) => {
       console.log('- searchValue.length:', searchValue?.length);
       console.log('- isRetailBusinessType:', isRetailBusinessType.value);
     }
+
+    // Reset search input value after Enter is pressed
+    cashierProduct_productState.value.searchProduct = '';
   }
 };
 

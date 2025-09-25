@@ -17,8 +17,10 @@ import type {
 import eventBus from '@/plugins/mitt';
 
 // Stores
+import { storeToRefs } from 'pinia';
 import { useCashDrawerStore } from '../store';
 import { useOutletStore } from '@/modules/outlet/store';
+import { useAuthenticationStore } from '@/modules/authentication/store';
 
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
@@ -32,10 +34,12 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
    * @description Injected variables
    */
   const outletStore = useOutletStore(); // Instance of the outlet store
+  const authenticationStore = useAuthenticationStore(); // Instance of the authentication store
   const router = useRouter();
   const store = useCashDrawerStore(); // Instance of the store
   const { cashDrawer_isLoading, cashDrawer_lists, cashDrawer_todayStatus } = storeToRefs(store);
   const { outlet_currentOutlet } = storeToRefs(outletStore);
+  const { authentication_isStaff, authentication_userData } = storeToRefs(authenticationStore);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
@@ -55,15 +59,28 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
   });
 
   /**
-   * @description Form validations
+   * @description Form validations - userId is only required if user is not staff
    */
   const cashDrawerList_formRulesOfOpenRegister = computed(() => ({
     balance: { required },
-    userId: { required },
+    userId: authentication_isStaff.value ? {} : { required },
   }));
   const cashDrawerList_formValidationsOfOpenRegister = useVuelidate(
     cashDrawerList_formRulesOfOpenRegister,
     cashDrawerList_formDataOfOpenRegister,
+  );
+
+  /**
+   * @description Auto-fill userId when user is staff
+   */
+  watch(
+    () => authentication_isStaff.value,
+    isStaff => {
+      if (isStaff && authentication_userData.value?.id) {
+        cashDrawerList_formDataOfOpenRegister.userId = authentication_userData.value.id;
+      }
+    },
+    { immediate: true },
   );
 
   /**
@@ -197,6 +214,38 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
   };
 
   /**
+   * @description Check if there's an open cash drawer today
+   */
+  const cashDrawerList_hasOpenCashDrawerToday = computed(() => {
+    return cashDrawer_todayStatus.value?.status?.toUpperCase() === 'OPEN';
+  });
+
+  /**
+   * @description Get the button title based on cash drawer status
+   */
+  const cashDrawerList_getButtonTitle = computed(() => {
+    return cashDrawerList_hasOpenCashDrawerToday.value ? 'Close Cash Drawer' : 'Open Register';
+  });
+
+  /**
+   * @description Handle business logic for button click (open register or close cash drawer)
+   */
+  const cashDrawerList_onClickMainButton = (): void => {
+    if (cashDrawerList_hasOpenCashDrawerToday.value) {
+      // Redirect to cash drawer detail page
+      router.push({
+        name: 'cash-drawer.cash-register',
+        params: {
+          id: cashDrawer_todayStatus.value!.id,
+        },
+      });
+    } else {
+      // Show open register dialog
+      cashDrawerList_onShowOpenRegisterDialog();
+    }
+  };
+
+  /**
    * @description Handle business logic on submit open register form
    */
   const cashDrawerList_onSubmitOpenRegisterForm = async (): Promise<void> => {
@@ -244,5 +293,9 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
     cashDrawerList_suggestionRegisterBalance: CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE,
     cashDrawerList_todayStatus: cashDrawer_todayStatus,
     cashDrawerList_values: cashDrawer_lists,
+    // New functions for dynamic button behavior
+    cashDrawerList_hasOpenCashDrawerToday,
+    cashDrawerList_getButtonTitle,
+    cashDrawerList_onClickMainButton,
   };
 };
