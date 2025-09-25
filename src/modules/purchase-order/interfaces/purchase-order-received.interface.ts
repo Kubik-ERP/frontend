@@ -32,6 +32,7 @@ export interface IPurchaseOrderReceivedProductItem {
   orderedQuantity?: number;
   actualQuantity: number;
   notes?: string;
+  barcode?: string;
 }
 
 export interface IPurchaseOrderReceivedPaylaod {

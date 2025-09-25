@@ -55,6 +55,7 @@ export interface IPurchaseOrderDetail {
       name: string;
       unit: string;
       brandName: string;
+      barcode?: string;
     };
   }>;
 }
