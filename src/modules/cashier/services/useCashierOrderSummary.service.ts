@@ -66,6 +66,7 @@ import eventBus from '@/plugins/mitt';
 import { useCashDrawerCashRegisterService } from '@/modules/cash-drawer/services/cash-drawer-cash-register.service';
 import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
 import { useCashDrawerListService } from '@/modules/cash-drawer/services/cash-drawer-list.service';
+import { useInventoryItemsListService } from '@/modules/items/services/items-list.service';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   /**
@@ -75,6 +76,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     useCashDrawerCashRegisterService();
   const { cashDrawerList_todayStatus } = useCashDrawerListService();
   const { dailySalesList_fetchListInvoices, dailySalesList_queryParams } = useDailySalesListService();
+  const { inventoryItems_fetchData } = useInventoryItemsListService();
 
   // Router
   const router = useRouter();
@@ -91,7 +93,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   /**
    * @description Check if the current outlet business type is retail
    */
-  const useCashierOrderSummary_isRetailBusinessType = computed(() => storeOutlet.outlet_currentOutlet?.businessType === 'Retail');
+  const cashierOrderSummary_isRetailBusinessType = computed(
+    () => storeOutlet.outlet_currentOutlet?.businessType === 'Retail',
+  );
 
   /**
    * @description Injected variables
@@ -384,9 +388,11 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    */
   const debouncedHandleWatchChanges = debounce(() => {
     // If user doesn't have customer management permission, only check order type
-    const customerCheck = hasCustomerManagementPermission.value
-      ? cashierProduct_customerState.value.selectedCustomer?.id
-      : true; // Skip customer validation if no permission
+    // For retail business type, skip customer validation as it's not required
+    const customerCheck =
+      hasCustomerManagementPermission.value && !cashierOrderSummary_isRetailBusinessType.value
+        ? cashierProduct_customerState.value.selectedCustomer?.id
+        : true; // Skip customer validation if no permission or retail business type
 
     const tableCheck = hasCustomerManagementPermission.value
       ? cashierOrderSummary_modalSelectTable.value.selectedTable.length > 0
@@ -512,13 +518,17 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_summary = computed(() => {
     const summary: ICashierOrderSummary = {
       provider: CASHIER_PROVIDER,
-      orderType: cashierOrderSummary_modalOrderType.value.selectedOrderType,
+      orderType: cashierOrderSummary_isRetailBusinessType.value
+        ? 'take_away' // Default order type for retail business
+        : cashierOrderSummary_modalOrderType.value.selectedOrderType,
       invoiceDetail: {
         receivedBy: cashierOrderSummary_modalInvoiceDetail.value.form.received_by,
         notes: cashierOrderSummary_modalInvoiceDetail.value.form.notes,
       },
       paymentMethod: cashierOrderSummary_data.value.paymentMethod,
-      tableCode: cashierOrderSummary_modalSelectTable.value.selectedTable.toString(),
+      tableCode: cashierOrderSummary_isRetailBusinessType.value
+        ? '' // No table code needed for retail business
+        : cashierOrderSummary_modalSelectTable.value.selectedTable.toString(),
       selectedVoucher: cashierOrderSummary_modalVoucher.value.form.voucherId,
       customerName: cashierProduct_customerState.value.selectedCustomer?.id || '',
       product: cashierProduct_selectedProduct.value,
@@ -554,81 +564,35 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     },
   );
 
-  const cashierOrderSummary_storeId = ref('');
+  // const cashierOrderSummary_storeId = ref('');
 
-  onMounted(async () => {
-    if (route.name === 'self-order') {
-      cashierOrderSummary_modalOrderType.value.selectedOrderType = 'self_order';
-      cashierOrderSummary_modalSelectTable.value.selectedTable = [
-        typeof route.query.tablesName === 'string' ? route.query.tablesName : '',
-      ];
-      cashierOrderSummary_storeId.value = typeof route.query.storeId === 'string' ? route.query.storeId : '';
-      cashierProduct_customerState.value.selectedCustomer = JSON.parse(
-        localStorage.getItem('userinfo') ?? '{}',
-      ) as ICashierCustomer;
-
-      const account = localStorage.getItem('userinfo');
-
-      if (!account || account === '{}') {
-        router.push({
-          name: 'login-self-order',
-          query: {
-            ...route.query,
-          },
-        });
-
-        eventBus.emit('AppBaseToast', {
-          isOpen: true,
-          message: 'Unauthorized',
-          position: EToastPosition.TOP_RIGHT,
-          type: EToastType.DANGER,
-        });
-
-        return;
-      }
-
-      try {
-        await store.cashierSelfOrder_handleVerify({
-          storeId: route.query.storeId as string,
-          tablesName: route.query.tablesName as string,
-        });
-      } catch (error) {
-        router.push({
-          name: 'self-order.not-valid',
-        });
-
-        console.error(error);
-        return;
-      }
-
-      const shoppingCart = localStorage.getItem('shoppingCart');
-
-      try {
-        store.cashierProduct_selectedProduct =
-          shoppingCart && shoppingCart.trim() !== '' ? JSON.parse(shoppingCart) : [];
-
-        if (!Array.isArray(store.cashierProduct_selectedProduct)) {
-          store.cashierProduct_selectedProduct = [];
-        }
-      } catch (e) {
-        store.cashierProduct_selectedProduct = [];
-
-        console.error('Error parsing shopping cart:', e);
-      }
-    }
-  });
+  /**
+   * @description Initialize self-order setup (deprecated - moved to SelfOrderUI)
+   * @deprecated This function is no longer used as self-order now has its own component
+   */
+  const cashierOrderSummary_initializeSelfOrder = async () => {
+    // This function is deprecated - self-order logic moved to SelfOrderUI.vue
+    console.warn('cashierOrderSummary_initializeSelfOrder is deprecated. Use SelfOrderUI.vue instead.');
+  };
 
   /**
    * @description Check if the "Place Order" button should be disabled
    * @returns boolean
    */
   const cashierOrderSummary_isButtonPlaceOrderDisabled = computed(() => {
-    // If user doesn't have customer management permission, skip customer validation
-    const customerValidation = hasCustomerManagementPermission.value
-      ? cashierProduct_customerState.value.selectedCustomer?.id === '' ||
-        cashierProduct_customerState.value.selectedCustomer?.id === null ||
-        cashierProduct_customerState.value.selectedCustomer?.id === undefined
-      : false;
+    // If user doesn't have customer management permission or business type is retail, skip customer validation
+    const customerValidation =
+      hasCustomerManagementPermission.value && !cashierOrderSummary_isRetailBusinessType.value
+        ? cashierProduct_customerState.value.selectedCustomer?.id === '' ||
+          cashierProduct_customerState.value.selectedCustomer?.id === null ||
+          cashierProduct_customerState.value.selectedCustomer?.id === undefined
+        : false;
+
+    // For retail business type, skip order type and table validations
+    if (cashierOrderSummary_isRetailBusinessType.value) {
+      const isDisabled = customerValidation || cashierProduct_selectedProduct.value.length === 0;
+      return isDisabled;
+    }
 
     // If user doesn't have customer management permission, skip table validation for dine_in
     let tableValidation = false;
@@ -774,8 +738,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         orderType: cashierOrderSummary_summary.value.orderType,
         provider: provider,
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
-        customerId: cashierProduct_customerState.value.selectedCustomer?.id,
-        tableCode: cashierOrderSummary_summary.value.tableCode,
+        customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
+        tableCode: cashierOrderSummary_isRetailBusinessType.value
+          ? ''
+          : cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
         paymentAmount: cashierOrderSummary_paymentForm.paymentAmount || null,
         voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId || null,
@@ -852,7 +818,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
         voucherId: cashierOrderSummary_summary.value.selectedVoucher,
         customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
-        tableCode: cashierOrderSummary_summary.value.tableCode,
+        tableCode: cashierOrderSummary_isRetailBusinessType.value
+          ? ''
+          : cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
         rounding_amount: cashierOrderSummary_calculateEstimation.value.data.roundingAdjustment || 0,
       };
@@ -1166,7 +1134,43 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     eventBus.emit('AppBaseDialog', argsEventEmitter);
   };
 
-  onMounted(() => {
+  /**
+   * @description Handle business logic for showing dialog stock overview
+   */
+  const cashierOrderSummary_onOpenDialogStockOverview = async () => {
+    // Fetch latest inventory data before showing dialog
+    await inventoryItems_fetchData();
+
+    const argsEventEmitter: IPropsDialog = {
+      id: 'cashier-stock-overview-dialog',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: true,
+      width: 'w-[1200px]',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle business logic for closing dialog stock overview
+   */
+  const cashierOrderSummary_onCloseDialogStockOverview = () => {
+    const argsEventEmitter: IPropsDialog = {
+      id: 'cashier-stock-overview-dialog',
+      isUsingClosableButton: false,
+      isUsingBackdrop: true,
+      isOpen: false,
+      width: 'w-[1200px]',
+    };
+
+    eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Initialize route-based setup
+   */
+  const cashierOrderSummary_initializeRoute = () => {
     if (route.name === 'cashier-order-edit') {
       const invoiceId = route.params.invoiceId as string;
       if (invoiceId) {
@@ -1183,7 +1187,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod = '';
       cashierProduct_customerState.value.selectedCustomer = null;
     }
-  });
+  };
 
   /**
    * @description Unsubscribe from payment events
@@ -1247,7 +1251,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierProduct_customerState,
 
     hasCustomerManagementPermission,
-    useCashierOrderSummary_isRetailBusinessType,
+    cashierOrderSummary_isRetailBusinessType,
 
     cashierOrderSummary_handleModalAddCustomer,
 
@@ -1278,5 +1282,11 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_onOpenDialogCashDrawerOverview,
     cashierOrderSummary_onOpenDialogQueueOverview,
     cashierOrderSummary_onOpenDialogTableOverview,
+    cashierOrderSummary_onOpenDialogStockOverview,
+    cashierOrderSummary_onCloseDialogStockOverview,
+
+    // Initialize functions
+    cashierOrderSummary_initializeSelfOrder,
+    cashierOrderSummary_initializeRoute,
   };
 };

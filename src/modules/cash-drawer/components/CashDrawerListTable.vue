@@ -11,13 +11,17 @@ const {
   cashDrawerList_getClassOfStatus,
   cashDrawerList_onChangePage,
   cashDrawerList_values,
-  cashDrawerList_onShowOpenRegisterDialog,
+  cashDrawerList_getButtonTitle,
+  cashDrawerList_onClickMainButton,
+  cashDrawerList_hasOpenCashDrawerToday,
 } = inject('cashDrawerList') as ICashDrawerListProvided;
 </script>
 
 <template>
   <AppBaseDataTable
-    btn-cta-create-title="Open Register"
+    :btn-cta-create-title="cashDrawerList_getButtonTitle"
+    :btn-cta-create-variant="cashDrawerList_hasOpenCashDrawerToday ? 'danger' : 'default'"
+    :btn-cta-create-icon="cashDrawerList_hasOpenCashDrawerToday ? 'close-circle' : 'plus-line-white'"
     :columns="cashDrawerList_columns"
     :data="cashDrawerList_values?.items"
     header-title="Cash Drawer"
@@ -31,7 +35,7 @@ const {
       Number(cashDrawerList_values?.meta?.perPage ?? 0)
     "
     is-using-server-side-pagination
-    @click-btn-cta-create="cashDrawerList_onShowOpenRegisterDialog"
+    @click-btn-cta-create="cashDrawerList_onClickMainButton"
     @update:currentPage="cashDrawerList_onChangePage"
   >
     <template #body="{ column, data }">

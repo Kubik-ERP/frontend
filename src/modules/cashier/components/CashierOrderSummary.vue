@@ -27,7 +27,7 @@ import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashi
 const {
   cashierOrderSummary_modalPlaceOrderDetail,
   cashierOrderSummary_handleSimulatePayment,
-  useCashierOrderSummary_isRetailBusinessType,
+  cashierOrderSummary_isRetailBusinessType,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 
 import { useRoute } from 'vue-router';
@@ -40,7 +40,7 @@ const voucherPermission = rbac.hasPermission('voucher');
 <template>
   <section
     id="order-summary"
-    class="hidden sticky inset-0 z-10 xl:col-span-4 lg:col-span-6 pb-4 overflow-y-auto bg-white w-full h-full lg:flex flex-col min-h-[100dvh]"
+    class="hidden sticky inset-0 z-10 xl:col-span-4 lg:col-span-6 pb-4 overflow-y-auto bg-white w-full lg:flex flex-col h-screen"
   >
     <CashierSummarySection />
     <CashierSummaryProductList />
@@ -52,9 +52,9 @@ const voucherPermission = rbac.hasPermission('voucher');
       <CashierSummaryModalCancelOrder />
       <CashierSummaryModalInvoiceDetail />
 
-      <CashierSummaryModalOrderType v-if="!useCashierOrderSummary_isRetailBusinessType" />
+      <CashierSummaryModalOrderType v-if="!cashierOrderSummary_isRetailBusinessType" />
       <CashierSummaryModalSelectTable
-        v-if="route.name !== 'self-order' && !useCashierOrderSummary_isRetailBusinessType"
+        v-if="route.name !== 'self-order' && !cashierOrderSummary_isRetailBusinessType"
       />
 
       <CashierSummaryModalMoreOptionsMobile />

@@ -30,6 +30,7 @@ const {
     </template>
 
     <template #content>
+      <!-- Restaurant Mode: Table Layout -->
       <div
         class="col-span-12 lg:col-span-7 xl:col-span-9 border border-grayscale-10 flex flex-col gap-4 rounded-xs p-2 flex-1 min-h-0 min-w-6xl"
       >

@@ -29,6 +29,7 @@ const {
   cashierProduct_onSearchCustomer,
   cashierOrderSummary_handleIsExpandedToggle,
   hasCustomerManagementPermission,
+  cashierOrderSummary_isRetailBusinessType,
 
   cashierOrderSummary_handleModalAddCustomer,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
@@ -66,7 +67,11 @@ const {
       class="flex flex-col gap-2"
     >
       <div v-if="hasCustomerManagementPermission" class="flex flex-col gap-2 w-full">
-        <label for="username" class="text-sm">{{ useLocalization('cashier.mainSection.username') }}</label>
+        <label for="username" class="text-sm">
+          {{ useLocalization('cashier.mainSection.username') }}
+          <span v-if="!cashierOrderSummary_isRetailBusinessType" class="text-red-500">*</span>
+          <span v-if="cashierOrderSummary_isRetailBusinessType" class="text-text-disabled">(Optional)</span>
+        </label>
 
         <PrimeVueIconField class="flex w-full">
           <PrimeVueInputIcon class="pi pi-user" />
@@ -83,7 +88,11 @@ const {
             :loading="cashierProduct_customerState.isLoading"
             :dropdown="true"
             class="w-full text-sm placeholder:text-sm"
-            placeholder="Please select Customer Name"
+            :placeholder="
+              cashierOrderSummary_isRetailBusinessType
+                ? 'Select Customer Name (Optional)'
+                : 'Please select Customer Name'
+            "
             :disabled="route.name === 'cashier-order-edit'"
             :virtual-scroller-options="{
               itemSize: 50,

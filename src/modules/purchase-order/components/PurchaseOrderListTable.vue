@@ -149,18 +149,24 @@ watch(searchValue, newValue => {
               </template>
             </PrimeVueButton>
 
-            <PrimeVueButton
+            <router-link
               v-if="purchaseOrderList_onShowButtonDeliveryOrderDocument(data.orderStatus)"
-              class="w-full px-4 py-3"
-              variant="text"
+              :to="{ name: 'purchase-order.delivery-order-document', params: { id: data.id } }"
+              target="_blank"
             >
-              <template #default>
-                <section id="content" class="flex items-center gap-2 w-full">
-                  <AppBaseSvg name="document" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Delivery Order Document</span>
-                </section>
-              </template>
-            </PrimeVueButton>
+              <PrimeVueButton
+                v-if="purchaseOrderList_onShowButtonDeliveryOrderDocument(data.orderStatus)"
+                class="w-full px-4 py-3"
+                variant="text"
+              >
+                <template #default>
+                  <section id="content" class="flex items-center gap-2 w-full">
+                    <AppBaseSvg name="document" class="!w-4 !h-4" />
+                    <span class="font-normal text-sm text-text-primary">Delivery Order Document</span>
+                  </section>
+                </template>
+              </PrimeVueButton>
+            </router-link>
 
             <PrimeVueButton
               v-if="purchaseOrderList_onShowButtonCancelPO(data.orderStatus)"
