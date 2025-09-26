@@ -8,7 +8,7 @@ import { useProductBundlingService } from '../services/product-bundling.service'
 const route = useRoute();
 const {
   price_type_option,
-  // productBundling_grandTotal,
+  productBundling_grandTotal,
   productBundling_formData,
   productBundling_formValidations,
   productBundling_productList,
@@ -174,6 +174,7 @@ onMounted(async () => {
             :max="productBundling_formData.type === 'DISCOUNT' ? 100 : undefined"
             class="w-full"
             :class="{ ...classes }"
+            @value-change="calculateTotalPrice"
           />
         </div>
       </AppBaseFormGroup>
@@ -302,7 +303,7 @@ onMounted(async () => {
                   <span class="text-right">{{ useLocalization('productBundling.form.bundlingPriceLabel') }}</span>
                   <span class="text-right font-semibold">{{
                     useCurrencyFormat({
-                      data: productBundling_formData.price,
+                      data: productBundling_grandTotal,
                     })
                   }}</span>
                 </div>

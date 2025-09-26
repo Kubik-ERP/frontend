@@ -135,11 +135,11 @@ const orderTypeLabel = computed(() => {
     </section>
 
     <section class="flex flex-col w-full">
-      <table id="product-items" class="">
+      <table id="product-items" class="text-lg">
         <thead>
           <tr class="border-y border-dashed border-black py-2">
             <th class="font-normal pr-0.5 text-black text-left py-2">Deskripsi</th>
-            <th class="font-normal pr-0.5 text-black text-center w-10 py-2">Qty</th>
+            <th class="font-normal pr-0.5 text-black text-center py-2">Qty</th>
             <th
               v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
               class="font-normal pr-0.5 text-black text-center py-2"
@@ -340,8 +340,8 @@ const orderTypeLabel = computed(() => {
           </tr>
 
           <tr>
-            <td colspan="2" class="font-semibold text-black text-left py-1">Total</td>
-            <td colspan="2" class="font-semibold text-black text-right py-1">
+            <td colspan="2" class="font-semibold text-lg text-black text-left py-1">Total</td>
+            <td colspan="2" class="font-semibold text-lg text-black text-right py-1">
               {{
                 useCurrencyFormat({
                   data:
@@ -354,8 +354,8 @@ const orderTypeLabel = computed(() => {
           </tr>
 
           <tr v-if="invoice_invoiceData.data.paymentStatus === 'paid'">
-            <td colspan="2" class="font-semibold text-black text-left py-1">Payment Method</td>
-            <td colspan="2" class="font-semibold text-black text-right py-1">
+            <td colspan="2" class="font-semibold text-black text-lg text-left py-1">Payment Method</td>
+            <td colspan="2" class="font-semibold text-black text-lg text-right py-1">
               {{ useCapitalize(invoice_invoiceData?.data?.paymentMethods?.name || '') }}
             </td>
           </tr>
