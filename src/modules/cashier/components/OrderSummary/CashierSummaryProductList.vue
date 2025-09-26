@@ -21,7 +21,7 @@ const showImageUrl = (picture: string | null) => {
 <template>
   <section
     id="cashier-summary-product-list"
-    class="flex flex-col overflow-y-auto flex-grow border-b-grayscale-10 border-b-2 p-4 border-t-grayscale-10 justify-center items-center h-![5000px]"
+    class="flex flex-col overflow-y-scroll flex-grow border-b-grayscale-10 border-b-2 p-4 border-t-grayscale-10 justify-center items-center h-![5000px]"
     :class="cashierProduct_selectedProduct.length === 0 ? 'justify-center' : 'justify-start'"
   >
     <div v-if="cashierProduct_selectedProduct.length === 0" class="">

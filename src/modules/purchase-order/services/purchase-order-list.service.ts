@@ -177,7 +177,6 @@ export const usePurchaseOrderListService = (): IPurchaseOrderListProvided => {
    */
   const purchaseOrderList_fetchReceive = async (): Promise<unknown> => {
     try {
-
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,

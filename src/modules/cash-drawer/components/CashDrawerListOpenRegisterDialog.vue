@@ -3,6 +3,9 @@
 import type { ICashDrawerListProvided } from '../interfaces/cash-drawer-list.interface';
 import type { IStaffMemberListProvided } from '@/modules/staff-member/interfaces';
 
+// Stores
+import { useAuthenticationStore } from '@/modules/authentication/store';
+
 /**
  * @description Inject all the data and methods what we need
  */
@@ -16,6 +19,32 @@ const {
 } = inject('cashDrawerList') as ICashDrawerListProvided;
 
 const { staffMemberList_dropdownItemStaff } = inject('staffMemberList') as IStaffMemberListProvided;
+
+/**
+ * @description Authentication store
+ */
+const authenticationStore = useAuthenticationStore();
+const { authentication_isStaff, authentication_userData } = storeToRefs(authenticationStore);
+
+/**
+ * @description Check if current user is staff and auto-fill userId
+ */
+watch(
+  () => authentication_isStaff.value,
+  isStaff => {
+    if (isStaff && authentication_userData.value?.id) {
+      cashDrawerList_formDataOfOpenRegister.userId = authentication_userData.value.id;
+    }
+  },
+  { immediate: true },
+);
+
+/**
+ * @description Get staff name for display
+ */
+const staffDisplayName = computed(() => {
+  return authentication_userData.value?.fullname || 'Current Staff';
+});
 </script>
 
 <template>
@@ -79,28 +108,43 @@ const { staffMemberList_dropdownItemStaff } = inject('staffMemberList') as IStaf
         </section>
 
         <section id="form-group" class="col-span-full lg:col-span-6">
-          <AppBaseFormGroup
-            v-slot="{ classes }"
-            class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-            is-name-as-label
-            label-for="staff"
-            name="Staff"
-            spacing-bottom="mb-0"
-            :validators="cashDrawerList_formValidationsOfOpenRegister.userId"
-          >
-            <PrimeVueSelect
-              id="staff"
-              v-model="cashDrawerList_formDataOfOpenRegister.userId"
-              filter
-              :options="staffMemberList_dropdownItemStaff"
-              option-label="label"
-              option-value="value"
-              placeholder="Select Staff"
-              class="text-base text-text-primary w-full"
-              :class="{ ...classes }"
-              v-on="useListenerForm(cashDrawerList_formValidationsOfOpenRegister, 'userId')"
-            />
-          </AppBaseFormGroup>
+          <!-- Display staff name as text if current user is staff -->
+          <template v-if="authentication_isStaff">
+            <div class="flex flex-col gap-2">
+              <label class="block text-sm font-medium leading-6 text-gray-900 w-full">Staff</label>
+              <div class="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md bg-gray-50">
+                <AppBaseSvg name="user" class="w-4 h-4 text-gray-500" />
+                <span class="text-base text-text-primary font-medium">{{ staffDisplayName }}</span>
+                <PrimeVueChip class="bg-green-100 text-green-800" label="Current Staff" />
+              </div>
+            </div>
+          </template>
+
+          <!-- Display dropdown select if current user is not staff -->
+          <template v-else>
+            <AppBaseFormGroup
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+              is-name-as-label
+              label-for="staff"
+              name="Staff"
+              spacing-bottom="mb-0"
+              :validators="cashDrawerList_formValidationsOfOpenRegister.userId"
+            >
+              <PrimeVueSelect
+                id="staff"
+                v-model="cashDrawerList_formDataOfOpenRegister.userId"
+                filter
+                :options="staffMemberList_dropdownItemStaff"
+                option-label="label"
+                option-value="value"
+                placeholder="Select Staff"
+                class="text-base text-text-primary w-full"
+                :class="{ ...classes }"
+                v-on="useListenerForm(cashDrawerList_formValidationsOfOpenRegister, 'userId')"
+              />
+            </AppBaseFormGroup>
+          </template>
         </section>
 
         <section id="form-group" class="flex flex-col col-span-full gap-2">

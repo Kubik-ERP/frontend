@@ -23,6 +23,11 @@ const {
   cashDrawerList_suggestionRegisterBalance,
   cashDrawerList_onSubmitOpenRegisterForm,
   cashDrawerList_values,
+  cashDrawerList_fetchTodayStatus,
+  // New functions for dynamic button behavior
+  cashDrawerList_hasOpenCashDrawerToday,
+  cashDrawerList_getButtonTitle,
+  cashDrawerList_onClickMainButton,
 } = useCashDrawerListService();
 const { staffMemberList_dropdownItemStaff } = useStaffMemberListService();
 
@@ -42,6 +47,21 @@ provide('cashDrawerList', {
   cashDrawerList_suggestionRegisterBalance,
   cashDrawerList_onSubmitOpenRegisterForm,
   cashDrawerList_values,
+  // New functions for dynamic button behavior
+  cashDrawerList_hasOpenCashDrawerToday,
+  cashDrawerList_getButtonTitle,
+  cashDrawerList_onClickMainButton,
+});
+
+/**
+ * @description Load today status when component is mounted
+ */
+onMounted(async () => {
+  try {
+    await cashDrawerList_fetchTodayStatus();
+  } catch (error) {
+    console.error('Failed to fetch today status:', error);
+  }
 });
 
 provide('staffMemberList', {

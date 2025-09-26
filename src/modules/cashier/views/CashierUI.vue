@@ -7,6 +7,7 @@ import CashierCashDrawerOverviewDialog from '../components/CashierCashDrawerOver
 import CashierMainSection from '../components/CashierMainSection.vue';
 import CashierOrderSummary from '../components/CashierOrderSummary.vue';
 import CashierQueueOverviewDialog from '../components/CashierQueueOverviewDialog.vue';
+import CashierStockOverviewDialog from '../components/CashierStockOverviewDialog.vue';
 import CashierTableOverviewDialog from '../components/CashierTableOverviewDialog.vue';
 
 // Interfaces
@@ -152,6 +153,8 @@ const {
   cashierOrderSummary_onOpenDialogCashDrawerOverview,
   cashierOrderSummary_onOpenDialogQueueOverview,
   cashierOrderSummary_onOpenDialogTableOverview,
+  cashierOrderSummary_onOpenDialogStockOverview,
+  cashierOrderSummary_onCloseDialogStockOverview,
 
   // Initialize functions
   cashierOrderSummary_initializeRoute,
@@ -321,6 +324,8 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_onOpenDialogCashDrawerOverview,
   cashierOrderSummary_onOpenDialogTableOverview,
   cashierOrderSummary_onOpenDialogQueueOverview,
+  cashierOrderSummary_onOpenDialogStockOverview,
+  cashierOrderSummary_onCloseDialogStockOverview,
 
   // Initialize functions
   cashierOrderSummary_initializeSelfOrder: () => Promise.resolve(), // Empty implementation for cashier
@@ -390,6 +395,7 @@ onMounted(async () => {
 
     <CashierCashDrawerOverviewDialog />
     <CashierQueueOverviewDialog />
+    <CashierStockOverviewDialog />
     <CashierTableOverviewDialog />
     <CashDrawerAddTransactionDialog />
     <CashDrawerCloseTransactionDialog />

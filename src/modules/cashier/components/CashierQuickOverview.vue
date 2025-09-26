@@ -18,6 +18,7 @@ const {
   cashierOrderSummary_onOpenDialogCashDrawerOverview,
   cashierOrderSummary_onOpenDialogQueueOverview,
   cashierOrderSummary_onOpenDialogTableOverview,
+  cashierOrderSummary_onOpenDialogStockOverview,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesList')!;
 </script>
@@ -114,7 +115,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
         <section
           v-if="cashierOrderSummary_isRetailBusinessType"
           id="cash-drawer"
-          class="border border-solid border-grayscale-10 col-span-full lg:col-span-4 flex flex-col gap-4 p-4 rounded-2xl"
+          class="border border-solid border-grayscale-10 col-span-full lg:col-span-6 flex flex-col gap-4 p-4 rounded-2xl"
         >
           <header class="flex items-center justify-between">
             <section id="left-content" class="flex items-center gap-2">
@@ -167,6 +168,29 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
               @click="cashDrawerList_onShowOpenRegisterDialog"
             >
               Open Cash Register
+            </PrimeVueButton>
+          </section>
+        </section>
+
+        <section
+          v-if="cashierOrderSummary_isRetailBusinessType"
+          id="current-stock"
+          class="border border-solid border-grayscale-10 col-span-full lg:col-span-6 flex flex-col gap-4 p-4 rounded-2xl"
+        >
+          <header class="flex items-center justify-between">
+            <section id="left-content" class="flex items-center gap-2">
+              <AppBaseSvg name="inventory" class="w-5 h-5" />
+              <span class="font-semibold text-sm text-grayscale-70"> Current Stock </span>
+            </section>
+          </header>
+
+          <section id="content" class="flex items-center gap-1">
+            <PrimeVueButton
+              class="flex items-center gap-2 font-semibold text-primary bg-white border border-solid border-primary py-2 rounded-md text-sm hover:bg-gray-50 w-full"
+              @click="cashierOrderSummary_onOpenDialogStockOverview"
+            >
+              <AppBaseSvg name="eye-visible" class="!w-4 !h-4" color="primary" />
+              View Stock Items
             </PrimeVueButton>
           </section>
         </section>
