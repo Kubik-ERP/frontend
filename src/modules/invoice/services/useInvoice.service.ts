@@ -123,7 +123,11 @@ export const useInvoiceService = (): IInvoiceProvided => {
           margin: 0,
           filename: `${type}-${invoice_invoiceData.value.data?.invoiceNumber}${useFormatDateLocal(new Date())}.pdf`,
           image: { type: 'jpeg', quality: 1 },
-          html2canvas: { scale: 2, useCORS: true },
+          html2canvas: {
+            scale: 3,
+            useCORS: true,
+            fontScale: 1000, 
+          },
           jsPDF: { unit: 'px', format: [ref.clientWidth, ref.clientHeight], orientation: 'portrait' },
         };
 
