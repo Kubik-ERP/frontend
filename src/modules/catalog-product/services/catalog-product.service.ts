@@ -104,6 +104,7 @@ export const useProductService = () => {
       const response = await axios.get(`${API_URL}/?page=${page}&limit=${limit}&search=${search}`, {
         headers: headers,
       });
+      
       const products: IProduct[] = response.data.data.products.map((item: IProduct) => ({
         id: item.id,
         name: item.name,
