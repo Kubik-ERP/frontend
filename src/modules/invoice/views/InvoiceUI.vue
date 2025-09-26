@@ -67,16 +67,12 @@ const handleDownload = () => {
     <template v-if="route.name === 'invoice'">
       <InvoiceHeader />
 
-      <InvoiceStatusMobile />
-      <!-- <pre>
-          {{ invoice_invoiceData.data?.customer. }}
-        </pre
-      > -->
+      <InvoiceStatusMobile translate="no" />
       <section id="content" class="relative grid grid-rows-1 grid-cols-12 h-[calc(100dvh-5rem)]">
-        <InvoicePaper ref="invoicePaperRef" />
-        <InvoiceStatus @download="handleDownload" @print="handlePrint" />
-        <InvoiceMobileButtonAction @download="handleDownload" @print="handlePrint" />
-        <InvoiceModalPay />
+        <InvoicePaper ref="invoicePaperRef" translate="no" />
+        <InvoiceStatus translate="no" @download="handleDownload" @print="handlePrint"  />
+        <InvoiceMobileButtonAction translate="no" @download="handleDownload" @print="handlePrint" />
+        <InvoiceModalPay translate="no" />
 
         <CashierSummaryModalPaymentQRIS
           :modal-place-order-detail="{
