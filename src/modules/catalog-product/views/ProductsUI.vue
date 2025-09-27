@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import ProductVariantPill from '../components/ProductVariantPill.vue';
 import { useCategoryService } from '@/modules/catalog/services/Category/CategoryService';
 import { useProductService } from '../services/catalog-product.service';
@@ -12,6 +12,7 @@ import searchSVG from '@/app/assets/icons/search.svg';
 import chevronDownSVG from '@/app/assets/icons/chevron-down.svg';
 import chevronLeftSVG from '@/app/assets/icons/chevron-left.svg';
 import chevronRightSVG from '@/app/assets/icons/chevron-right.svg';
+import eventBus from '@/plugins/mitt';
 
 const { getAllProducts, deleteProduct, getProductByCategories } = useProductService();
 
@@ -31,7 +32,6 @@ const loadProductByCategories = async () => {
   loading.value = true;
   try {
     const response = await getProductByCategories(page.value, limit.value, search.value, selectedCategories.value);
-    // console.log("🚀 ~ loadProductByCategories ~ response:", response)
     products.value = response.products;
     lastPage.value = response.lastPage;
   } catch (err) {
@@ -46,9 +46,7 @@ const loadCategories = async () => {
   try {
     const response = await getAllCategories(page.value, limit.value, search.value);
     categories.value = response.categories;
-    // console.log('🚀 ~ loadCategories ~ categories.value:', categories.value);
     lastPage.value = response.lastPage;
-    // console.log('🚀 ~ loadCategories ~ lastPage.value:', lastPage.value);
   } catch (err) {
     console.error('Failed to fetch categories:', err);
   } finally {
@@ -82,7 +80,6 @@ const selectedProduct = ref(null);
 
 const EditProducts = () => {
   router.push({ name: 'catalog.products.edit', params: { id: selectedProduct.value.id } });
-  // console.log('product id :' + selectedProduct.value.id);
 };
 
 const op = ref();
@@ -92,7 +89,6 @@ const isDeleteOpen = ref(false);
 const displayPopover = (event, product) => {
   selectedProduct.value = product;
   op.value.show(event);
-  // console.log('product', product);
 };
 
 const selectedProducts = ref([]);
@@ -105,8 +101,6 @@ const loadProducts = async () => {
     const response = await getAllProducts(page.value, limit.value, search.value);
     products.value = response.products;
     lastPage.value = response.lastPage;
-    // console.log('🚀 ~ loadProducts ~ lastPage.value:', lastPage.value);
-    // console.log('products', products.value);
   } catch (err) {
     console.error('Failed to fetch products:', err);
   } finally {
@@ -117,14 +111,11 @@ const loadProducts = async () => {
 const handleDelete = async () => {
   try {
     loading.value = true;
-    // console.log('product id', selectedProduct.value.id);
     await deleteProduct(selectedProduct.value.id);
     isDeleteOpen.value = false;
     if (selectedCategories.value.length > 0) {
-      // console.log('multiple');
       loadProductByCategories();
     } else {
-      // console.log('get all');
       loadProducts();
     }
   } catch (error) {
@@ -135,12 +126,10 @@ const handleDelete = async () => {
 };
 
 const onPageChange = event => {
-  page.value = event.page + 1; // event.page is 0-based
+  page.value = event.page + 1;
   if (selectedCategories.value.length > 0) {
-    // console.log('multiple');
     loadProductByCategories();
   } else {
-    console.log('get all');
     loadProducts();
   }
 };
@@ -149,10 +138,8 @@ const handleSearch = () => {
   router.push({ query: { page: '1' } });
   page.value = 1;
   if (selectedCategories.value.length > 0) {
-    // console.log('multiple');
     loadProductByCategories();
   } else {
-    // console.log('get all');
     loadProducts();
   }
 };
@@ -167,10 +154,8 @@ function goToPage(p) {
   router.push({ query: { page: p.toString() } });
   page.value = p;
   if (selectedCategories.value.length > 0) {
-    // console.log('multiple');
     loadProductByCategories();
   } else {
-    // console.log('get all');
     loadProducts();
   }
 }
@@ -180,10 +165,8 @@ const nextPage = () => {
     page.value = page.value + 1;
     router.push({ query: { page: page.value.toString() } });
     if (selectedCategories.value.length > 0) {
-      // console.log('multiple');
       loadProductByCategories();
     } else {
-      // console.log('get all');
       loadProducts();
     }
   }
@@ -194,10 +177,8 @@ const prevPage = () => {
     page.value = page.value - 1;
     router.push({ query: { page: page.value.toString() } });
     if (selectedCategories.value.length > 0) {
-      // console.log('multiple');
       loadProductByCategories();
     } else {
-      // console.log('get all');
       loadProducts();
     }
   }
@@ -210,14 +191,17 @@ onMounted(() => {
   if (!route.query.page) {
     router.push({ query: { page: '1' } });
   }
+  eventBus.on('product-imported', loadProducts);
+});
+
+onUnmounted(() => {
+  eventBus.off('product-imported', loadProducts);
 });
 
 import { useRbac } from '@/app/composables/useRbac';
 import ProductImportModal from '../components/ProductImportModal.vue';
-import eventBus from '@/plugins/mitt';
 const rbac = useRbac();
 const hasPermission = rbac.hasPermission('product_management');
-// v-if="hasPermission"
 </script>
 
 <template>

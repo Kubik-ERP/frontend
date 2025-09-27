@@ -1,24 +1,19 @@
 import { ref } from 'vue';
 import eventBus from '@/plugins/mitt';
 import { PRODUCT_LIST_COLUMNS_IMPORT } from '../constants';
-import { useProductService } from './catalog-product.service';
 import { IProductImportFailedSuccessData, IProductImportProvided, IProductImportResponse } from '../interfaces/product-import.interface';
 import { useProductImportStore } from '../store';
+
 export const useProductImportService = (): IProductImportProvided => {
   const store = useProductImportStore();
   const { httpAbort_registerAbort } = useHttpAbort();
-  const {
-    getAllProducts
-  } = useProductService();
-  // State
+
   const productImport_step = ref<number>(1);
   const productImport_isLoading = ref<boolean>(false);
   const productImport_values = ref<IProductImportResponse>();
 
-  // Simpan file sementara
   const uploadedFile = ref<File | null>(null);
 
-  // Handler
   const productImport_onSubmit = async () => {
     try{
       const batchId = localStorage.getItem('inventory_batch_id')?.toString();
@@ -26,8 +21,8 @@ export const useProductImportService = (): IProductImportProvided => {
         await store.product_Import_execute(batchId, {
           ...httpAbort_registerAbort('STORAGE_LIST_REQUEST_EXECUTE'),
         });
-        await getAllProducts(1, 10, '');
 
+        eventBus.emit('product-imported');
         localStorage.removeItem('inventory_batch_id');
       }
 
@@ -74,15 +69,11 @@ export const useProductImportService = (): IProductImportProvided => {
   const productImport_handleDropFile = (acceptedFiles: File[]) => {
     if (acceptedFiles && acceptedFiles.length > 0) {
       uploadedFile.value = acceptedFiles[0];
-      console.log('File dropped:', uploadedFile.value);
-
-      // langsung proses upload setelah file diterima
       void productImport_handleUpload();
     }
   };
 
   const productImport_triggerUpload = () => {
-    // Membuat input file secara dinamis
     const input: HTMLInputElement = document.createElement('input');
     input.type = 'file';
     input.accept = '.xlsx,.csv';
@@ -125,8 +116,6 @@ export const useProductImportService = (): IProductImportProvided => {
         status: 'failed',
         errorMessage: row.errorMessages,
       }));
-
-      console.log(' Failed data: ', failedData);
 
       if (response?.data.batchId) {
         localStorage.setItem('inventory_batch_id', response.data.batchId);

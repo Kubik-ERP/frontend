@@ -8,6 +8,7 @@ import searchSVG from '@/app/assets/icons/search.svg';
 import chevronLeftSVG from '@/app/assets/icons/chevron-left.svg';
 import chevronRightSVG from '@/app/assets/icons/chevron-right.svg';
 import imageSVG from '@/app/assets/icons/image.svg';
+import { onMounted, onUnmounted } from 'vue';
 
 const {
   createCategory,
@@ -35,8 +36,6 @@ const limit = ref<number>(10);
 const search = ref<string>('');
 const lastPage = ref<number>(0);
 
-// const category = ref('');
-// const description = ref('');
 const op = ref();
 
 const fileInput = ref();
@@ -47,7 +46,7 @@ const triggerFileInput = () => {
 const handleImageUpload = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0];
   if (file) {
-    category_formData.imageFile = file; // ✅ Save the file
+    category_formData.imageFile = file;
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -62,9 +61,7 @@ const loadCategories = async () => {
   try {
     const response = await getAllCategories(page.value, limit.value, search.value);
     categories.value = response.categories;
-    // console.log('🚀 ~ loadCategories ~ categories.value:', categories.value);
     lastPage.value = response.lastPage;
-    // console.log('🚀 ~ loadCategories ~ lastPage.value:', lastPage.value);
   } catch (err) {
     console.error('Failed to fetch categories:', err);
   } finally {
@@ -128,7 +125,6 @@ const displayPopover = (event: Event, category: ICategory) => {
 
 const displayEdit = (id: string) => {
   if (selected.value) {
-    // console.log("🚀 ~ displayEdit ~ selected.value:", selected.value.id)
     loadCategoryByID(id);
     isEditOpen.value = true;
     op.value?.hide();
@@ -160,7 +156,6 @@ const handleDeleteCategory = async (id: string) => {
     if (selected.value) {
       const deleteCat = await deleteCategory(selected.value.id);
       if (deleteCat === 200) {
-        // alert('Category deleted successfully.');
         categories.value = categories.value.filter(cat => cat.id !== id);
       } else {
         alert('Something went wrong while deleting the category.');
@@ -185,7 +180,7 @@ const handleSearch = () => {
     router.push({ query: { page: '1' } });
     page.value = 1;
     loadCategories();
-  }, 300); // Debounce search input
+  }, 300);
 };
 
 function goToPage(p: number) {
@@ -237,6 +232,11 @@ onMounted(() => {
   if (!route.query.page) {
     router.push({ query: { page: '1' } });
   }
+  eventBus.on('category-imported', loadCategories);
+});
+
+onUnmounted(() => {
+  eventBus.off('category-imported', loadCategories);
 });
 
 import { useRbac } from '@/app/composables/useRbac';

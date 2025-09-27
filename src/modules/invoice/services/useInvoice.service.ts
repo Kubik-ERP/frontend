@@ -123,8 +123,12 @@ export const useInvoiceService = (): IInvoiceProvided => {
           margin: 0,
           filename: `${type}-${invoice_invoiceData.value.data?.invoiceNumber}${useFormatDateLocal(new Date())}.pdf`,
           image: { type: 'jpeg', quality: 1 },
-          html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: 'mm', format: [80, 297], orientation: 'portrait' },
+          html2canvas: {
+            scale: 3,
+            useCORS: true,
+            fontScale: 1000, 
+          },
+          jsPDF: { unit: 'px', format: [ref.clientWidth, ref.clientHeight], orientation: 'portrait' },
         };
 
         const pdfBlobUrl = await html2pdf().from(ref).set(options).output('bloburl');
@@ -183,8 +187,8 @@ export const useInvoiceService = (): IInvoiceProvided => {
           image: { type: 'jpeg', quality: 1 },
           html2canvas: { scale: 2 },
           jsPDF: {
-            unit: 'mm',
-            format: [80, (ref?.getBoundingClientRect().height * 25.4) / 83],
+            unit: 'px',
+            format: [ref.clientWidth, ref.clientHeight],
             orientation: 'portrait',
           },
         })
