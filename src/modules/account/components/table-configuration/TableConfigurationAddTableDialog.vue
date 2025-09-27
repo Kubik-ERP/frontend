@@ -130,7 +130,7 @@ const {
 
             <div class="flex items-center gap-2">
               <Qrcode
-                :value="`${APP_BASE_URL}/self-order?storeId=${outlet_selectedOutletOnAccountPage?.id}&floorName=${accountStoreTableConfiguration_formDataOfAddTable.floorName}&tablesName=${accountStoreTableConfiguration_formDataOfAddTable.name}`"
+                :value="`${APP_BASE_URL}/self-order/login?storeId=${outlet_selectedOutletOnAccountPage?.id}&floorName=${accountStoreTableConfiguration_formDataOfAddTable.floorName}&tablesName=${accountStoreTableConfiguration_formDataOfAddTable.name}`"
               />
 
               <PrimeVueButton

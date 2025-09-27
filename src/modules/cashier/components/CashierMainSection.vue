@@ -18,7 +18,7 @@ import CashierQuickOverview from './CashierQuickOverview.vue';
   >
     <CashierQuickOverview />
 
-    <section id="content-container" class="px-10 pb-6">
+    <section id="content-container" class="px-6 lg:px-10 pb-6">
       <CashierFilterByCategory />
       <CashierChangeView />
 
@@ -29,9 +29,10 @@ import CashierQuickOverview from './CashierQuickOverview.vue';
       <CashierModalAddEditProduct />
       <CashierModalCategory />
       <CashierSummaryModalOrderSummary />
-      <CashierMobileButtonCategory />
-      <CashierMobileButtonCheckout />
     </section>
+
+    <CashierMobileButtonCategory />
+    <CashierMobileButtonCheckout />
   </section>
 </template>
 

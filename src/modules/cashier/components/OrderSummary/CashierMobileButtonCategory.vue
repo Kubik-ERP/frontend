@@ -10,7 +10,7 @@ const { cashierProduct_modalCategory } = inject<ICashierProductProvided>('cashie
 <template>
   <section
     id="cashier-main-section-background-category"
-    class="lg:hidden absolute z-10 inset-x-0 bottom-20 flex items-center justify-center"
+    class="lg:hidden sticky z-10 inset-x-0 bottom-20 -my-6 flex items-center justify-center"
   >
     <PrimeVueButton
       variant="outlined"
