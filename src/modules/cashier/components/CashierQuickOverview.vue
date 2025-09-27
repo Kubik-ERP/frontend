@@ -113,9 +113,9 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
         </section>
 
         <section
-          v-if="cashierOrderSummary_isRetailBusinessType"
           id="cash-drawer"
-          class="border border-solid border-grayscale-10 col-span-full lg:col-span-6 flex flex-col gap-4 p-4 rounded-2xl"
+          class="border border-solid border-grayscale-10 col-span-full flex flex-col gap-4 p-4 rounded-2xl"
+          :class="[cashierOrderSummary_isRetailBusinessType ? 'lg:col-span-6' : 'lg:col-span-4']"
         >
           <header class="flex items-center justify-between">
             <section id="left-content" class="flex items-center gap-2">

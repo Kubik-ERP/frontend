@@ -66,7 +66,6 @@ import eventBus from '@/plugins/mitt';
 import { useCashDrawerCashRegisterService } from '@/modules/cash-drawer/services/cash-drawer-cash-register.service';
 import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
 import { useCashDrawerListService } from '@/modules/cash-drawer/services/cash-drawer-list.service';
-import { useInventoryItemsListService } from '@/modules/items/services/items-list.service';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   /**
@@ -76,7 +75,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     useCashDrawerCashRegisterService();
   const { cashDrawerList_todayStatus } = useCashDrawerListService();
   const { dailySalesList_fetchListInvoices, dailySalesList_queryParams } = useDailySalesListService();
-  const { inventoryItems_fetchData } = useInventoryItemsListService();
 
   // Router
   const router = useRouter();
@@ -1138,6 +1136,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description Handle business logic for showing dialog stock overview
    */
   const cashierOrderSummary_onOpenDialogStockOverview = async () => {
+    // Lazy import inventory service only when needed
+    const { useInventoryItemsListService } = await import('@/modules/items/services/items-list.service');
+    const { inventoryItems_fetchData } = useInventoryItemsListService();
+    
     // Fetch latest inventory data before showing dialog
     await inventoryItems_fetchData();
 

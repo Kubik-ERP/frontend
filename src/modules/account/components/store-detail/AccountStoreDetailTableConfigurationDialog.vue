@@ -73,10 +73,9 @@ const {
           <div class="flex items-center gap-2">
             <Qrcode
               id="account-store-table-qr-code"
-              :value="`${APP_BASE_URL}/self-order?storeId=${outlet_selectedOutletOnAccountPage?.id}&floorName=${accountStoreDetail_selectedTable?.floorName ?? ''}&tablesName=${accountStoreDetail_selectedTable?.name ?? ''}`"
+              :value="`${APP_BASE_URL}/self-order/login?storeId=${outlet_selectedOutletOnAccountPage?.id}&floorName=${accountStoreDetail_selectedTable?.floorName ?? ''}&tablesName=${accountStoreDetail_selectedTable?.name ?? ''}`"
             />
 
-            Test
             <PrimeVueButton
               class="bg-transparent border-none basic-smooth-animation w-fit p-4"
               severity="secondary"

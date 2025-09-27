@@ -49,6 +49,7 @@
     "havenot-added-bank-account-description": "To receive or make payments through the system, please set up your company's bank account.",
     "setup-bank-information": "Set Up Bank Information",
     "edit-bank-information": "Edit Bank Information",
+    "please-create-floor-before-tables": "Please create a floor before adding tables.",
     "store-details": "Store Details",
     "store-facilities": "Store Facilities",
     "title": "Account",
@@ -155,6 +156,7 @@
     "basicInformation": "Basic Information",
     "assignedStaff": "Assigned Staff",
     "operationalHours": "Operational Hours",
+
     "buttons": {
       "cancel": "Cancel",
       "update": "Update",
