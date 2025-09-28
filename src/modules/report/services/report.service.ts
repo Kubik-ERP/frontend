@@ -13,6 +13,9 @@ import {
   SALESREPORT_SALESBYITEM_COLUMNS,
   SALESREPORT_SALESBYORDERTYPE_COLUMNS,
   SALESREPORT_COLUMNS,
+
+  CUSTOMERREPORT_COLUMNS,
+
 } from '../constants';
 // type
 import { IReportProvided, IReportQueryParams } from '../interfaces';
@@ -40,6 +43,8 @@ export const useReportService = (): IReportProvided => {
     inventoryReport_stockMovement_values,
     // voucher
     voucherReport_values,
+    // customer
+    customerReport_values,
   } = storeToRefs(store);
 
   const { httpAbort_registerAbort } = useHttpAbort();
@@ -52,8 +57,9 @@ export const useReportService = (): IReportProvided => {
   const formatQueryParamsDate = (params: IReportQueryParams, type?: string): IReportQueryParams => {
     // console.log('before: ', JSON.stringify(params, null, 2));
     Object.assign(report_queryParams, {
-      startDate: (params.startDate),
-      endDate: (params.endDate)
+
+      startDate: params.startDate,
+      endDate: params.endDate,
     });
     const newParams = {
       startDate: (new Date(params.startDate).toISOString().split('T')[0] + 'T00:00:00.000Z') as unknown as Date,
@@ -123,6 +129,20 @@ export const useReportService = (): IReportProvided => {
     }
   };
 
+  const report_getCustomerReport = async () => {
+    try {
+      await store.getCustomerReport(formatQueryParamsDate(report_queryParams), {
+        ...httpAbort_registerAbort('CUSTOMERREPORT_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
+
   return {
     // constants
     financialReport_profitAndLost_columns: FINANCIALREPORT_PROFITANDLOST_COLUMNS,
@@ -136,6 +156,7 @@ export const useReportService = (): IReportProvided => {
     inventoryReport_stock_columns: INVENTORYREPORT_STOCK_COLUMNS,
     inventoryReport_stockMovement_columns: INVENTORYREPORT_STOCKMOVEMENT_COLUMNS,
     voucherReport_columns: MARKETINGREPORT_COLUMNS,
+    customerReport_columns: CUSTOMERREPORT_COLUMNS,
     // params
     report_queryParams,
     // methods
@@ -143,6 +164,7 @@ export const useReportService = (): IReportProvided => {
     report_getSalesReport,
     report_getInventoryReport,
     report_getVoucherReport,
+    report_getCustomerReport,
     // store
     report_isLoading,
     // financial
@@ -164,5 +186,7 @@ export const useReportService = (): IReportProvided => {
     inventoryReport_stockMovement_values,
     // voucher
     voucherReport_values,
+    // customer
+    customerReport_values,
   };
 };

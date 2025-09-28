@@ -21,28 +21,32 @@ const props = defineProps({
       <table class="w-full">
         <tbody>
           <tr class="bg-primary-background">
-            <th class="text-left">Qty Sold</th>
-            <td class="text-right">{{ props.summary?.jumlahTerjual }}</td>
+            <th class="text-left p-1.5">Qty Sold</th>
+            <td class="text-right p-1.5">
+              {{ useCurrencyFormat({ data: props.summary?.jumlahTerjual, hidePrefix: true }) }}
+            </td>
           </tr>
           <tr>
-            <th class="text-left">Gross Sales</th>
-            <td class="text-right">{{ useCurrencyFormat({ data: props.summary?.kotor }) }}</td>
+            <th class="text-left p-1.5">Gross Sales</th>
+            <td class="text-right p-1.5">{{ useCurrencyFormat({ data: props.summary?.kotor }) }}</td>
           </tr>
           <tr class="bg-primary-background">
-            <th class="text-left">Tax</th>
-            <td class="text-right">{{ useCurrencyFormat({ data: props.summary?.pajak }) }}</td>
+            <th class="text-left p-1.5">Tax</th>
+            <td class="text-right p-1.5">{{ useCurrencyFormat({ data: props.summary?.pajak }) }}</td>
           </tr>
           <tr>
-            <th class="text-left">Discount</th>
-            <td class="text-right">{{ useCurrencyFormat({ data: props.summary?.diskonItem }) }}</td>
+            <th class="text-left p-1.5">Discount</th>
+            <td class="text-right p-1.5">{{ useCurrencyFormat({ data: props.summary?.diskonItem }) }}</td>
           </tr>
           <tr class="bg-primary-background">
-            <th class="text-left">Nett Sales</th>
-            <td class="text-right">{{ useCurrencyFormat({ data: props.summary?.totalPenjualan }) }}</td>
+            <th class="text-left p-1.5">Nett Sales</th>
+            <td class="text-right p-1.5">{{ useCurrencyFormat({ data: props.summary?.totalPenjualan }) }}</td>
           </tr>
           <tr>
-            <th class="text-left">Voucher Used</th>
-            <td class="text-right">{{ props.summary?.countPenggunaanVoucher }}</td>
+            <th class="text-left p-1.5">Voucher Used</th>
+            <td class="text-right p-1.5">
+              {{ useCurrencyFormat({ data: props.summary?.countPenggunaanVoucher, hidePrefix: true }) }}
+            </td>
           </tr>
         </tbody>
       </table>
