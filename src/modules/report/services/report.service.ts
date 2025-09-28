@@ -12,6 +12,7 @@ import {
   MARKETINGREPORT_COLUMNS,
   SALESREPORT_SALESBYITEM_COLUMNS,
   SALESREPORT_SALESBYORDERTYPE_COLUMNS,
+  SALESREPORT_COLUMNS,
 } from '../constants';
 // type
 import { IReportProvided, IReportQueryParams } from '../interfaces';
@@ -27,7 +28,13 @@ export const useReportService = (): IReportProvided => {
     report_taxAndServiceCharge_values,
     // sales
     salesReport_salesByItem_values,
-    salesReport_salesByOrderType_values,
+    salesReport_salesByCategory_values,
+    salesReport_salesByCustomer_values,
+    salesReport_salesByStaff_values,
+    salesReport_salesByDay_values,
+    salesReport_salesByMonth_values,
+    salesReport_salesByQuarter_values,
+    salesReport_salesByYear_values,
     // inventory
     inventoryReport_stock_values,
     inventoryReport_stockMovement_values,
@@ -38,18 +45,22 @@ export const useReportService = (): IReportProvided => {
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const report_queryParams = reactive<IReportQueryParams>({
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+    endDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
   });
 
   const formatQueryParamsDate = (params: IReportQueryParams, type?: string): IReportQueryParams => {
-    console.log('before: ', JSON.stringify(params, null, 2));
+    // console.log('before: ', JSON.stringify(params, null, 2));
+    Object.assign(report_queryParams, {
+      startDate: (params.startDate),
+      endDate: (params.endDate)
+    });
     const newParams = {
       startDate: (new Date(params.startDate).toISOString().split('T')[0] + 'T00:00:00.000Z') as unknown as Date,
       endDate: (new Date(params.endDate).toISOString().split('T')[0] + 'T23:59:59.999Z') as unknown as Date,
       type: type,
     };
-    console.log('after: ', JSON.stringify(newParams, null, 2));
+    // console.log('after: ', JSON.stringify(newParams, null, 2));
 
     return {
       ...newParams,
@@ -121,6 +132,7 @@ export const useReportService = (): IReportProvided => {
     lossReport_columns: LOSSREPORT_COLUMNS,
     salesReport_salesByItem_columns: SALESREPORT_SALESBYITEM_COLUMNS,
     salesReport_salesByOrderType_columns: SALESREPORT_SALESBYORDERTYPE_COLUMNS,
+    salesReport_columns: SALESREPORT_COLUMNS,
     inventoryReport_stock_columns: INVENTORYREPORT_STOCK_COLUMNS,
     inventoryReport_stockMovement_columns: INVENTORYREPORT_STOCKMOVEMENT_COLUMNS,
     voucherReport_columns: MARKETINGREPORT_COLUMNS,
@@ -140,7 +152,13 @@ export const useReportService = (): IReportProvided => {
     report_taxAndServiceCharge_values,
     // sales
     salesReport_salesByItem_values,
-    salesReport_salesByOrderType_values,
+    salesReport_salesByCategory_values,
+    salesReport_salesByCustomer_values,
+    salesReport_salesByStaff_values,
+    salesReport_salesByDay_values,
+    salesReport_salesByMonth_values,
+    salesReport_salesByQuarter_values,
+    salesReport_salesByYear_values,
     // inventory
     inventoryReport_stock_values,
     inventoryReport_stockMovement_values,

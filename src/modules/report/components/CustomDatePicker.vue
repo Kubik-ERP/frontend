@@ -29,25 +29,30 @@ const localDateRange = ref<[Date, Date] | null>([props.startDate, props.endDate]
 const type = ref<string | null>(props.type);
 
 // Watch props to update the local state
-watch(
-  () => [props.startDate, props.endDate],
-  ([newStart, newEnd]) => {
-    localDateRange.value = [newStart, newEnd];
-  },
-  { immediate: true },
-);
+// watch(
+//   () => [props.startDate, props.endDate],
+//   ([newStart, newEnd]) => {
+//     localDateRange.value = [newStart, newEnd];
+//   },
+//   { immediate: true },
+// );
 
 // The "Apply" button now emits the changes from the range array
 const applyDateChange = () => {
   if (localDateRange.value && localDateRange.value[0]) {
     // Create a new Date object for 'start' to work with
-    const start = localDateRange.value[0];
+    const start = new Date(localDateRange.value[0].getTime() + 7 * 60 * 60 * 1000);
 
     // If an end date exists, create a new object from it.
     // If not, create a new object by COPYING the start date.
-    const end = localDateRange.value[1] ? localDateRange.value[1] : start; // This creates a copy, not a reference
+    if(localDateRange.value[1]){
+      console.log('localDateRange.value[1] ADA', localDateRange.value[1]);
+    }
+    else{
+      console.log('localDateRange.value[1] TIDAK ADA', localDateRange.value[1]);
+    }
+    const end = localDateRange.value[1] ? new Date(localDateRange.value[1].getTime() + 7 * 60 * 60 * 1000) : start; // This creates a copy, not a reference
 
-    
     emit('update:startDate', start);
     emit('update:endDate', end);
 
@@ -67,14 +72,14 @@ const cancelDateChange = () => {
 };
 
 const onClickShortcut = (label: string) => {
-  let today = new Date();
-  let start = new Date();
-  let end = new Date();
+  let today = new Date(Date.now() + 7 * 60 * 60 * 1000);
+  let start = new Date(Date.now() + 7 * 60 * 60 * 1000);
+  let end = new Date(Date.now() + 7 * 60 * 60 * 1000);
   let newType = '';
 
   switch (label) {
     case 'Today': {
-      today = new Date();
+      today = new Date(Date.now() + 7 * 60 * 60 * 1000);
       start = today;
 
       end = today;
@@ -85,16 +90,18 @@ const onClickShortcut = (label: string) => {
     }
 
     case 'Yesterday': {
-      today = new Date();
-      start = new Date(today.setDate(today.getDate() - 1));
+      const yesterday = new Date(Date.now() - (24 - 7) * 60 * 60 * 1000);
+      start = yesterday;
 
-      end = start;
+      end = yesterday;
+
       newType = 'time';
+
       break;
     }
 
     case 'This Week': {
-      today = new Date();
+      today = new Date(Date.now() + 7 * 60 * 60 * 1000);
 
       const firstDayOfWeek = new Date(today);
       // Assuming Sunday is the first day of the week (day 0)
@@ -108,33 +115,38 @@ const onClickShortcut = (label: string) => {
     }
 
     case 'This Month': {
-      today = new Date();
+      today = new Date(Date.now() + 7 * 60 * 60 * 1000);
 
-      start = new Date(today.getFullYear(), today.getMonth(), 1);
+      // start = new Date(today.getFullYear(), today.getMonth(), 1);
+      start = new Date(today.setDate(1));
       end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      end.setHours(end.getHours() + 7);
 
       newType = 'days';
       break;
     }
 
     case 'Last 30 Days': {
-      today = new Date();
+      today = new Date(Date.now() + 7 * 60 * 60 * 1000);
 
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(today.getDate() - 30);
+      thirtyDaysAgo.setHours(thirtyDaysAgo.getHours() + 7);
 
       start = thirtyDaysAgo;
-      end = new Date();
+      end = today;
 
       newType = 'days';
       break;
     }
 
     case 'Last Month': {
-      today = new Date();
+      today = new Date(Date.now() + 7 * 60 * 60 * 1000);
 
       const firstDayOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      firstDayOfLastMonth.setHours(firstDayOfLastMonth.getHours() + 7);
       const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+      lastDayOfLastMonth.setHours(lastDayOfLastMonth.getHours() + 7);
 
       start = firstDayOfLastMonth;
       end = lastDayOfLastMonth;

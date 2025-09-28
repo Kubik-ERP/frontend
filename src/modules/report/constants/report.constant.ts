@@ -204,6 +204,43 @@ export const SALESREPORT_SALESBYORDERTYPE_COLUMNS: IColumnDataTable[] = [
   },
 ];
 
+export const SALESREPORT_COLUMNS: IColumnDataTable[] = [
+  {
+    label: 'Name',
+    sortable: true,
+    value: 'group',
+  },{
+    label: 'Qty Sold',
+    sortable: true,
+    value: 'jumlahTerjual',
+  },
+  {
+    label: 'Gross Sales',
+    sortable: true,
+    value: 'kotor',
+  },
+  {
+    label: 'Tax',
+    sortable: true,
+    value: 'pajak',
+  },
+  {
+    label: 'Discount',
+    sortable: true,
+    value: 'diskonItem',
+  },
+  {
+    label: 'Nett Sales',
+    sortable: true,
+    value: 'totalPenjualan',
+  },
+  {
+    label: 'Voucher Used',
+    sortable: true,
+    value: 'countPenggunaanVoucher',
+  },
+]
+
 export const INVENTORYREPORT_STOCK_COLUMNS: IColumnDataTable[] = [
   {
     label: 'SKU',

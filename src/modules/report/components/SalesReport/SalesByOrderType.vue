@@ -1,61 +1,62 @@
 <script setup lang="ts">
 // components
-import CustomDatePicker from '../../components/CustomDatePicker.vue';
-// service
-import { useReportService } from '../../services/report.service';
-const {
-  salesReport_salesByOrderType_columns,
-  report_queryParams,
-  report_getSalesReport,
-  salesReport_salesByOrderType_values,
-} = useReportService();
-// composables for export pdf
-import { useReportExporter } from '../../composables/useReportExporter';
-const { exportToPdf, exportToCsv } = useReportExporter();
-const popover = ref();
-const handleExportToPdf = () => {
-  exportToPdf({
-    reportName: 'Sales Report - Sales By Order Type Report',
-    period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: salesReport_salesByOrderType_columns,
-    tableData: formattedDataTable(),
-  });
-};
-const handleExportToCsv = () => {
-  exportToCsv({
-    reportName: 'Sales Report - Sales By Order Type Report',
-    period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: salesReport_salesByOrderType_columns,
-    tableData: formattedDataTable(),
-  });
-};
+// import CustomDatePicker from '../../components/CustomDatePicker.vue';
+// // service
+// import { useReportService } from '../../services/report.service';
+// const {
+//   salesReport_columns,
+//   report_queryParams,
+//   report_getSalesReport,
+// } = useReportService();
+// // composables for export pdf
+// import { useReportExporter } from '../../composables/useReportExporter';
+// const { exportToPdf, exportToCsv } = useReportExporter();
+// const popover = ref();
+// const handleExportToPdf = () => {
+//   exportToPdf({
+//     reportName: 'Sales Report - Sales By Order Type Report',
+//     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
+//     columns: salesReport_columns,
+//     tableData: formattedDataTable(),
+//   });
+// };
+// const handleExportToCsv = () => {
+//   exportToCsv({
+//     reportName: 'Sales Report - Sales By Order Type Report',
+//     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
+//     columns: salesReport_columns,
+//     tableData: formattedDataTable(),
+//   });
+// };
 
-const formattedDataTable = () => {
-  const newData = salesReport_salesByOrderType_values.value.map(item => {
-    return {
-      invoiceId: item.invoiceId,
-      orderType: useTitleCaseWithSpaces(item.orderType),
-      grossSales: useCurrencyFormat({ data: item.grossSales }),
-      tax: useCurrencyFormat({ data: item.tax }),
-      discount: useCurrencyFormat({ data: item.discount }),
-      netSales: useCurrencyFormat({ data: item.netSales }),
-    };
-  });
+// const formattedDataTable = () => {
+//   const newData = salesReport_salesByOrderType_values.value.groupedSummary.map(item => {
+//     return {
+//       group: item.group,
+//       jumlahTerjual: item.jumlahTerjual,
+//       kotor: item.kotor,
+//       diskonItem: item.diskonItem,
+//       refund: item.refund,
+//       pajak: item.pajak,
+//       totalPenjualan: item.totalPenjualan,
+//       countPenggunaanVoucher: item.countPenggunaanVoucher,
+//     };
+//   });
 
-  return newData || [];
-};
+//   return newData || [];
+// };
 
-const page = ref<number>(1);
-const limit = ref<number>(10);
-const onChangePage = (newPage: number) => {
-  page.value = newPage;
-};
+// const page = ref<number>(1);
+// const limit = ref<number>(10);
+// const onChangePage = (newPage: number) => {
+//   page.value = newPage;
+// };
 </script>
 <template>
   <section>
-    <AppBaseDataTable
+    <!-- <AppBaseDataTable
       :data="formattedDataTable()"
-      :columns="salesReport_salesByOrderType_columns"
+      :columns="salesReport_columns"
       :first="(page - 1) * limit"
       :rows-per-page="limit"
       :total-records="formattedDataTable().length"
@@ -116,6 +117,6 @@ const onChangePage = (newPage: number) => {
           <span class="text-sm text-text-primary">{{ data[column.value] }}</span>
         </template>
       </template>
-    </AppBaseDataTable>
+    </AppBaseDataTable> -->
   </section>
 </template>
