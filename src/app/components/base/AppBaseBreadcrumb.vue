@@ -94,13 +94,13 @@ onMounted(() => {
         </template>
 
         <template v-else>
-          <RouterLink
-            :to="item.to"
+          <a
+            :href="item.url"
             class="font-normal text-sm text-text-disabled"
             :class="[item.icon ? 'inline-block w-6 h-6' : 'truncate']"
           >
             {{ item.label }}
-          </RouterLink>
+          </a>
         </template>
       </template>
 

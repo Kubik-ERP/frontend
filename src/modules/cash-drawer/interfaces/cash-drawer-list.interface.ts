@@ -12,7 +12,7 @@ export interface ICashDrawerListRequestQuery {
 
 export interface ICashDrawerListOpenRegisterFormData {
   balance: number | null;
-  userId: number | null;
+  userId: string | null;
   notes?: string | null;
 }
 
