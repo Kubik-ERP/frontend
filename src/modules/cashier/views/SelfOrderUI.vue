@@ -78,6 +78,8 @@ const {
   cashierProduct_onSearchCustomer,
   cashierProduct_onScrollFetchMoreCustomers,
   cashierOrderSummary_handleEditOrder,
+  cashierOrderSummary_onOpenDialogStockOverview,
+  cashierOrderSummary_onCloseDialogStockOverview,
 
   // Initialize functions for self-order
   cashierOrderSummary_initializeSelfOrder,
@@ -160,6 +162,8 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_onOpenDialogCashDrawerOverview: () => Promise.resolve(),
   cashierOrderSummary_onOpenDialogQueueOverview: () => Promise.resolve(),
   cashierOrderSummary_onOpenDialogTableOverview: () => {},
+  cashierOrderSummary_onOpenDialogStockOverview,
+  cashierOrderSummary_onCloseDialogStockOverview,
 });
 
 onMounted(async () => {

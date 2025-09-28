@@ -2,34 +2,29 @@ import { ref } from 'vue';
 import { CATEGORIES_COLUMNS_IMPORT } from '../../constants';
 import { useCategoryImportStore } from '../../store/categories.store';
 import { ICategoryImportFailedSuccessData, ICategoryImportProvided, ICategoryImportResponse } from '../../interfaces/Category/category-import.interface';
-import { useCategoryService } from './CategoryService';
 import eventBus from '@/plugins/mitt';
+
 export const usecategoryImportService = (): ICategoryImportProvided => {
   const store = useCategoryImportStore();
   const { httpAbort_registerAbort } = useHttpAbort();
-  const {
-    getAllCategories
-  } = useCategoryService();
-  // State
+
   const categoryImport_step = ref<number>(1);
   const categoryImport_isLoading = ref<boolean>(false);
   const categoryImport_values = ref<ICategoryImportResponse>();
 
-  // Simpan file sementara
   const uploadedFile = ref<File | null>(null);
 
-  // Handler
-  const categoryImport_onSubmit = () => {
+  const categoryImport_onSubmit = async () => {
     try{
       const batchId = localStorage.getItem('inventory_batch_id')?.toString();
       if (batchId) {
-        void store.category_Import_execute(batchId, {
+        await store.category_Import_execute(batchId, {
           ...httpAbort_registerAbort('STORAGE_LIST_REQUEST_EXECUTE'),
         });
 
         localStorage.removeItem('inventory_batch_id');
 
-        void getAllCategories(1, 100, '');
+        await eventBus.emit('category-imported');
       }
 
       categoryImport_onClose();
@@ -75,15 +70,11 @@ export const usecategoryImportService = (): ICategoryImportProvided => {
   const categoryImport_handleDropFile = (acceptedFiles: File[]) => {
     if (acceptedFiles && acceptedFiles.length > 0) {
       uploadedFile.value = acceptedFiles[0];
-      console.log('File dropped:', uploadedFile.value);
-
-      // langsung proses upload setelah file diterima
       void categoryImport_handleUpload();
     }
   };
 
   const categoryImport_triggerUpload = () => {
-    // Membuat input file secara dinamis
     const input: HTMLInputElement = document.createElement('input');
     input.type = 'file';
     input.accept = '.xlsx,.csv';
@@ -126,8 +117,6 @@ export const usecategoryImportService = (): ICategoryImportProvided => {
         status: 'failed',
         errorMessage: row.errorMessages,
       }));
-
-      console.log(' Failed data: ', failedData);
 
       if (response?.data.batchId) {
         localStorage.setItem('inventory_batch_id', response.data.batchId);

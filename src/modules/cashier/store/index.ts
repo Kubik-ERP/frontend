@@ -40,7 +40,7 @@ function withStoreHeader(
   route: RouteLocationNormalizedLoadedGeneric,
   extra: AxiosRequestConfig = {},
 ): AxiosRequestConfig {
-  if (route.name === 'self-order') {
+  if (route.path.includes('self-order')) {
     return {
       ...extra,
       headers: {
@@ -75,7 +75,7 @@ export const useCashierStore = defineStore('cashier', {
     ): Promise<ICashierCategoriesResponse> {
       try {
         const response = await httpClient.get<ICashierCategoriesResponse>(
-          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_CATEGORIES,
+          (route.path.includes('self-order') ? '/self-order' : '') + CASHIER_ENDPOINT_CATEGORIES,
           withStoreHeader(route),
         );
 
@@ -102,7 +102,7 @@ export const useCashierStore = defineStore('cashier', {
     ): Promise<ICashierCategoriesHasProductResponseData> {
       try {
         const response = await httpClient.get<ICashierCategoriesHasProductResponseData>(
-          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_CATEGORIES_PRODUCT,
+          (route.path.includes('self-order') ? '/self-order' : '') + CASHIER_ENDPOINT_CATEGORIES_PRODUCT,
           {
             ...withStoreHeader(route),
             params: {
@@ -134,7 +134,8 @@ export const useCashierStore = defineStore('cashier', {
     ): Promise<ICashierProductBarcodeResponse> {
       try {
         const response = await httpClient.get<ICashierProductBarcodeResponse>(
-          (route.name === 'self-order' ? '/self-order' : '') + `${CASHIER_ENDPOINT_PRODUCTS_BARCODE}/${barcode}`,
+          (route.path.includes('self-order') ? '/self-order' : '') +
+            `${CASHIER_ENDPOINT_PRODUCTS_BARCODE}/${barcode}`,
           {
             ...withStoreHeader(route),
           },
@@ -206,7 +207,7 @@ export const useCashierStore = defineStore('cashier', {
     ): Promise<ICashierResponseProcessCheckout> {
       try {
         const response = await httpClient.post<ICashierResponseProcessCheckout>(
-          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_PROCESS,
+          (route.path.includes('self-order') ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_PROCESS,
           payload,
           withStoreHeader(route, requestConfigurations),
         );
@@ -244,7 +245,7 @@ export const useCashierStore = defineStore('cashier', {
     ): Promise<ICashierResponseMidtransQrisPayment> {
       try {
         const response = await httpClient.post<ICashierResponseMidtransQrisPayment>(
-          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_INSTANT,
+          (route.path.includes('self-order') ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_INSTANT,
           payload,
 
           withStoreHeader(route, requestConfigurations),
@@ -304,7 +305,7 @@ export const useCashierStore = defineStore('cashier', {
     ): Promise<ICashierOrderSummaryPaymentMethodResponse> {
       try {
         const response = await httpClient.get<ICashierOrderSummaryPaymentMethodResponse>(
-          (route.name === 'self-order' ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_METHOD,
+          (route.path.includes('self-order') ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_METHOD,
           {
             ...withStoreHeader(route, requestConfigurations),
 
