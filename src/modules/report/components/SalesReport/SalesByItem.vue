@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // components
 import CustomDatePicker from '../../components/CustomDatePicker.vue';
+import SummaryReport from '../SummaryReport.vue';
 // service
 import { useReportService } from '../../services/report.service';
 const { salesReport_columns, report_queryParams, report_getSalesReport, salesReport_salesByItem_values } =
@@ -51,7 +52,8 @@ const onChangePage = (newPage: number) => {
 };
 </script>
 <template>
-  <section>
+  <section class="flex flex-col gap-4">
+    <SummaryReport />
     <AppBaseDataTable
       :data="formattedDataTable()"
       :columns="salesReport_columns"
