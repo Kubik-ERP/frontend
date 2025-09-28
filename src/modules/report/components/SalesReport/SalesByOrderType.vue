@@ -4,7 +4,7 @@ import CustomDatePicker from '../../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../../services/report.service';
 const {
-  salesReport_salesByOrderType_columns,
+  salesReport_columns,
   report_queryParams,
   report_getSalesReport,
   salesReport_salesByOrderType_values,
@@ -17,7 +17,7 @@ const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Sales Report - Sales By Order Type Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: salesReport_salesByOrderType_columns,
+    columns: salesReport_columns,
     tableData: formattedDataTable(),
   });
 };
@@ -25,20 +25,22 @@ const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Sales Report - Sales By Order Type Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: salesReport_salesByOrderType_columns,
+    columns: salesReport_columns,
     tableData: formattedDataTable(),
   });
 };
 
 const formattedDataTable = () => {
-  const newData = salesReport_salesByOrderType_values.value.map(item => {
+  const newData = salesReport_salesByOrderType_values.value.groupedSummary.map(item => {
     return {
-      invoiceId: item.invoiceId,
-      orderType: useTitleCaseWithSpaces(item.orderType),
-      grossSales: useCurrencyFormat({ data: item.grossSales }),
-      tax: useCurrencyFormat({ data: item.tax }),
-      discount: useCurrencyFormat({ data: item.discount }),
-      netSales: useCurrencyFormat({ data: item.netSales }),
+      group: item.group,
+      jumlahTerjual: item.jumlahTerjual,
+      kotor: item.kotor,
+      diskonItem: item.diskonItem,
+      refund: item.refund,
+      pajak: item.pajak,
+      totalPenjualan: item.totalPenjualan,
+      countPenggunaanVoucher: item.countPenggunaanVoucher,
     };
   });
 
@@ -55,7 +57,7 @@ const onChangePage = (newPage: number) => {
   <section>
     <AppBaseDataTable
       :data="formattedDataTable()"
-      :columns="salesReport_salesByOrderType_columns"
+      :columns="salesReport_columns"
       :first="(page - 1) * limit"
       :rows-per-page="limit"
       :total-records="formattedDataTable().length"

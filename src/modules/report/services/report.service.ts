@@ -12,6 +12,7 @@ import {
   MARKETINGREPORT_COLUMNS,
   SALESREPORT_SALESBYITEM_COLUMNS,
   SALESREPORT_SALESBYORDERTYPE_COLUMNS,
+  SALESREPORT_COLUMNS,
 } from '../constants';
 // type
 import { IReportProvided, IReportQueryParams } from '../interfaces';
@@ -121,6 +122,7 @@ export const useReportService = (): IReportProvided => {
     lossReport_columns: LOSSREPORT_COLUMNS,
     salesReport_salesByItem_columns: SALESREPORT_SALESBYITEM_COLUMNS,
     salesReport_salesByOrderType_columns: SALESREPORT_SALESBYORDERTYPE_COLUMNS,
+    salesReport_columns:SALESREPORT_COLUMNS,
     inventoryReport_stock_columns: INVENTORYREPORT_STOCK_COLUMNS,
     inventoryReport_stockMovement_columns: INVENTORYREPORT_STOCKMOVEMENT_COLUMNS,
     voucherReport_columns: MARKETINGREPORT_COLUMNS,

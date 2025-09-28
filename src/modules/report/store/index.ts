@@ -1,5 +1,5 @@
 // constants
-// import { REPORT_BASE_ENDPOINT } from '../constants';
+import { REPORT_SALES_ENDPOINT } from '../constants';
 // Plugins
 import httpClient from '@/plugins/axios';
 // type
@@ -11,11 +11,11 @@ import type {
   IFinancialReport_paymentMethod,
   IFinancialReport_profitAndLost,
   IFinancialReport_taxServiceCharge,
-  ISalesReport_salesByItem,
-  ISalesReport_salesByOrderType,
   IInventoryReport_stock,
   IInventoryReport_stockMovement,
   IVoucherReport,
+
+  ISalesReport
 } from '../interfaces';
 export const useReportStore = defineStore('report', {
   state: (): IReportStore => ({
@@ -27,8 +27,8 @@ export const useReportStore = defineStore('report', {
       totals: {} as IFinancialReport_paymentMethod['totals'],
     } as IFinancialReport_paymentMethod,
     report_taxAndServiceCharge_values: [] as IFinancialReport_taxServiceCharge[],
-    salesReport_salesByItem_values: [] as ISalesReport_salesByItem[],
-    salesReport_salesByOrderType_values: [] as ISalesReport_salesByOrderType[],
+    salesReport_salesByItem_values: {} as ISalesReport,
+    salesReport_salesByOrderType_values: {} as ISalesReport,
     inventoryReport_stock_values: [] as IInventoryReport_stock[],
     inventoryReport_stockMovement_values: [] as IInventoryReport_stockMovement[],
     voucherReport_values: [] as IVoucherReport[],
@@ -78,7 +78,7 @@ export const useReportStore = defineStore('report', {
     async getSalesReport(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
       this.report_isLoading = true;
       try {
-        const response = await httpClient.get(`dashboard/sales-report`, {
+        const response = await httpClient.get(`${REPORT_SALES_ENDPOINT}`, {
           params,
           ...requestConfigurations,
         });
@@ -86,10 +86,11 @@ export const useReportStore = defineStore('report', {
         switch (params.type) {
           case 'item': {
             this.salesReport_salesByItem_values = response.data.data;
+            console.log('this.salesReport_salesByItem_values', this.salesReport_salesByItem_values);
             break;
           }
           case 'order': {
-            this.salesReport_salesByOrderType_values = response.data.data;
+            this.salesReport_salesByOrderType_values = response.data;
             break;
           }
           default: {

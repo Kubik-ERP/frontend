@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // components
 import SalesByItem from '../components/SalesReport/SalesByItem.vue';
-import SalesByOrderType from '../components/SalesReport/SalesByOrderType.vue';
+// import SalesByOrderType from '../components/SalesReport/SalesByOrderType.vue';
 
 // types
 
@@ -13,10 +13,45 @@ const salesReport_listTabs = ref<ITabs[]>([
     value: 'sales-by-item',
   },
   {
-    component: SalesByOrderType,
-    label: 'Sales by Order Type',
-    value: 'sales-by-order-type',
+    component: SalesByItem,
+    label: 'Sales by Category',
+    value: 'sales-by-category',
   },
+  {
+    component: SalesByItem,
+    label: 'Sales by Customer',
+    value: 'sales-by-customer',
+  },
+  {
+    component: SalesByItem,
+    label: 'Sales by Staff',
+    value: 'sales-by-staff',
+  },
+  {
+    component: SalesByItem,
+    label: 'Sales by Day',
+    value: 'sales-by-day',
+  },
+  {
+    component: SalesByItem,
+    label: 'Sales by Month',
+    value: 'sales-by-month',
+  },
+  {
+    component: SalesByItem,
+    label: 'Sales by Quarter',
+    value: 'sales-by-quarter',
+  },
+  {
+    component: SalesByItem,
+    label: 'Sales by Year',
+    value: 'sales-by-year',
+  },
+  // {
+  //   component: SalesByOrderType,
+  //   label: 'Sales by Order Type',
+  //   value: 'sales-by-order-type',
+  // },
 ]);
 
 // service
