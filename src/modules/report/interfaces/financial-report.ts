@@ -1,9 +1,19 @@
 export interface IFinancialReport_profitAndLost {
-  totalPenjualan: number;
-  costOfGoodsSold: number;
-  grossProfit: number;
-  operatingExpense: number;
-  netProfit: number;
+  sales: {
+    penjualanKotor: number;
+    diskon: number;
+    refund: number;
+    penjualanBersih: number;
+    pajak: number;
+    pembulatan: number;
+    penggunaanVoucher: number;
+    nettTotal: number;
+  };
+  paymentType: {
+    total: number;
+    refund: number;
+    outstanding: number;
+  };
 }
 export interface IFinancialReport_cashInOut {
   id: string;

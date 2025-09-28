@@ -1,5 +1,5 @@
 // constants
-import { REPORT_SALES_ENDPOINT } from '../constants';
+import { REPORT_SALES_ENDPOINT, REPORT_FINANCIAL_ENDPOINT, REPORT_VOUCHER_ENDPOINT } from '../constants';
 // Plugins
 import httpClient from '@/plugins/axios';
 // type
@@ -44,7 +44,7 @@ export const useReportStore = defineStore('report', {
     async getFinancialReport_profitAndLost(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
       this.report_isLoading = true;
       try {
-        const response = await httpClient.get(`dashboard/financial-report`, {
+        const response = await httpClient.get(`${REPORT_FINANCIAL_ENDPOINT}`, {
           params,
           ...requestConfigurations,
         });
@@ -175,7 +175,7 @@ export const useReportStore = defineStore('report', {
     async getVoucherReport(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
       this.report_isLoading = true;
       try {
-        const response = await httpClient.get(`dashboard/voucher-report`, {
+        const response = await httpClient.get(`${REPORT_VOUCHER_ENDPOINT}`, {
           params,
           ...requestConfigurations,
         });
