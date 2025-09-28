@@ -47,6 +47,13 @@ const props = withDefaults(defineProps<IProps>(), {
   startingNumber: 1,
 });
 const URL = window.URL;
+
+import { useOutletStore } from '@/modules/outlet/store';
+import { useAuthenticationStore } from '@/modules/authentication/store';
+const outletStore = useOutletStore();
+const authenticationStore = useAuthenticationStore();
+const { outlet_currentOutlet } = storeToRefs(outletStore);
+const { authentication_userData } = storeToRefs(authenticationStore);
 </script>
 
 <template>
@@ -65,14 +72,14 @@ const URL = window.URL;
       </template>
     </template>
 
-    <h6 id="outlet-name" class="font-semibold text-black text-sm">Lawson Kaliurang</h6>
+    <h6 id="outlet-name" class="font-semibold text-black text-sm">{{ outlet_currentOutlet?.name }}</h6>
     <p
       v-if="props.isShowStoreLocation"
       id="outlet-address"
       class="font-normal text-black text-center text-sm px-4"
     >
-      Lawson Kaliurang - Jl. Kaliurang KM 6, Blotan, Sukoharjo, Kec. Ngaglik, Kabupaten Sleman, Daerah Istimewa
-      Yogyakarta
+      {{ outlet_currentOutlet?.address }}, {{ outlet_currentOutlet?.building }}, {{ outlet_currentOutlet?.city }},
+      {{ outlet_currentOutlet?.postalCode }}
     </p>
 
     <div class="invoice-datetime-or-status">
@@ -88,12 +95,12 @@ const URL = window.URL;
       class="flex items-center justify-between w-full"
     >
       <p id="label-cashier" class="font-normal text-black text-sm">Cashier</p>
-      <p id="cashier-name" class="font-normal text-black text-sm">Samantha</p>
+      <p id="cashier-name" class="font-normal text-black text-sm">{{ authentication_userData?.fullname }}</p>
     </section>
 
     <section id="customer-information" class="flex items-center justify-between w-full">
       <p id="label-customer" class="font-normal text-black text-sm">Cust. Name</p>
-      <p id="customer-name" class="font-normal text-black text-sm">George</p>
+      <p id="customer-name" class="font-normal text-black text-sm">{{ authentication_userData?.fullname }}</p>
     </section>
 
     <section
