@@ -50,8 +50,6 @@ const limit = ref<number>(10);
 const onChangePage = (newPage: number) => {
   page.value = newPage;
 };
-
-
 </script>
 <template>
   <section class="flex flex-col gap-4">
@@ -105,6 +103,9 @@ const onChangePage = (newPage: number) => {
       </template>
 
       <template #filter>
+        <pre>
+          query params : {{ report_queryParams }}
+        </pre>
         <CustomDatePicker
           v-model:start-date="report_queryParams.startDate"
           v-model:end-date="report_queryParams.endDate"
