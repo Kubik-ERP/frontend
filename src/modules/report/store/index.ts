@@ -1,5 +1,10 @@
 // constants
-import { REPORT_SALES_ENDPOINT } from '../constants';
+import {
+  REPORT_SALES_ENDPOINT,
+  REPORT_FINANCIAL_ENDPOINT,
+  REPORT_VOUCHER_ENDPOINT,
+  REPORT_CUSTOMER_ENDPOINT,
+} from '../constants';
 // Plugins
 import httpClient from '@/plugins/axios';
 // type
@@ -15,6 +20,7 @@ import type {
   IInventoryReport_stockMovement,
   IVoucherReport,
   ISalesReport,
+  ICustomerReport,
 } from '../interfaces';
 export const useReportStore = defineStore('report', {
   state: (): IReportStore => ({
@@ -39,12 +45,14 @@ export const useReportStore = defineStore('report', {
     inventoryReport_stock_values: [] as IInventoryReport_stock[],
     inventoryReport_stockMovement_values: [] as IInventoryReport_stockMovement[],
     voucherReport_values: [] as IVoucherReport[],
+    // customer
+    customerReport_values: [] as ICustomerReport[],
   }),
   actions: {
     async getFinancialReport_profitAndLost(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
       this.report_isLoading = true;
       try {
-        const response = await httpClient.get(`dashboard/financial-report`, {
+        const response = await httpClient.get(`${REPORT_FINANCIAL_ENDPOINT}`, {
           params,
           ...requestConfigurations,
         });
@@ -175,12 +183,33 @@ export const useReportStore = defineStore('report', {
     async getVoucherReport(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
       this.report_isLoading = true;
       try {
-        const response = await httpClient.get(`dashboard/voucher-report`, {
+        const response = await httpClient.get(`${REPORT_VOUCHER_ENDPOINT}`, {
           params,
           ...requestConfigurations,
         });
         // console.log('response', response.data);
         this.voucherReport_values = response.data.data;
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.report_isLoading = false;
+      }
+    },
+
+    async getCustomerReport(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
+      this.report_isLoading = true;
+      try {
+        const response = await httpClient.get(`${REPORT_CUSTOMER_ENDPOINT}`, {
+          params,
+          ...requestConfigurations,
+        });
+        // console.log('response', response.data);
+        this.customerReport_values = response.data.data;
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

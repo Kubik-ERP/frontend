@@ -82,11 +82,11 @@ export const LIST_SIDEBAR_MENUS = [
         path: '/report',
         isHaveSubMenus: true,
         subMenus: [
-          {
-            name: 'Financial Report',
-            translationKey: 'app.menus.financial-report',
-            path: '/report/financial-report',
-          },
+          // {
+          //   name: 'Financial Report',
+          //   translationKey: 'app.menus.financial-report',
+          //   path: '/report/financial-report',
+          // },
           // {
           //   name: 'Loss Report',
           //   path: '/report/loss-report',
@@ -96,11 +96,11 @@ export const LIST_SIDEBAR_MENUS = [
             translationKey: 'app.menus.sales-report',
             path: '/report/sales-report',
           },
-          {
-            name: 'Inventory Report',
-            translationKey: 'app.menus.inventory-report',
-            path: '/report/inventory-report',
-          },
+          // {
+          //   name: 'Inventory Report',
+          //   translationKey: 'app.menus.inventory-report',
+          //   path: '/report/inventory-report',
+          // },
           // {
           //   name: 'Raw Material Report',
           //   path: '/report/raw-material-report',
@@ -114,10 +114,10 @@ export const LIST_SIDEBAR_MENUS = [
           //   name: 'Staff Report',
           //   path: '/report/staff-report',
           // },
-          // {
-          //   name: 'Customer Report',
-          //   path: '/report/customer-report',
-          // },
+          {
+            name: 'Customer Report',
+            path: '/report/customer-report',
+          },
           // {
           //   name: 'Commision Report',
           //   path: '/report/commision-report',

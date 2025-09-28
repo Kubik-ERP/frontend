@@ -11,6 +11,10 @@ export * from './sales-report';
 
 import type { IInventoryReport_stock, IInventoryReport_stockMovement } from './inventory-report';
 export * from './inventory-report';
+
+// customer
+import type { ICustomerReport } from './customer-report';
+export * from './customer-report';
 export interface IReportQueryParams {
   startDate: Date;
   endDate: Date;
@@ -41,6 +45,8 @@ export interface IReportStore {
   inventoryReport_stockMovement_values: IInventoryReport_stockMovement[];
   // voucher report
   voucherReport_values: IVoucherReport[];
+  // customer report
+  customerReport_values: ICustomerReport[];
 }
 
 export interface IReportProvided {
@@ -55,11 +61,13 @@ export interface IReportProvided {
   inventoryReport_stock_columns: IColumnDataTable[];
   inventoryReport_stockMovement_columns: IColumnDataTable[];
   voucherReport_columns: IColumnDataTable[];
+  customerReport_columns: IColumnDataTable[];
   // methods
   report_getFinancialReport: (type: string) => Promise<void>;
   report_getSalesReport: (type: string) => Promise<void>;
   report_getInventoryReport: (type: string) => Promise<void>;
   report_getVoucherReport: () => Promise<void>;
+  report_getCustomerReport: () => Promise<void>;
   // params
   report_queryParams: IReportQueryParams;
   // store
@@ -83,4 +91,6 @@ export interface IReportProvided {
   inventoryReport_stockMovement_values: globalThis.Ref<IInventoryReport_stockMovement[]>;
   // voucher report
   voucherReport_values: globalThis.Ref<IVoucherReport[]>;
+  // customer report
+  customerReport_values: globalThis.Ref<ICustomerReport[]>;
 }
