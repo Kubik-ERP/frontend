@@ -114,10 +114,10 @@ export const LIST_SIDEBAR_MENUS = [
           //   name: 'Staff Report',
           //   path: '/report/staff-report',
           // },
-          // {
-          //   name: 'Customer Report',
-          //   path: '/report/customer-report',
-          // },
+          {
+            name: 'Customer Report',
+            path: '/report/customer-report',
+          },
           // {
           //   name: 'Commision Report',
           //   path: '/report/commision-report',
