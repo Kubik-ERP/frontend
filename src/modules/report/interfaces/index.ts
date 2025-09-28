@@ -29,7 +29,13 @@ export interface IReportStore {
   report_taxAndServiceCharge_values: IFinancialReport_taxServiceCharge[];
   // sales report
   salesReport_salesByItem_values: ISalesReport;
-  salesReport_salesByOrderType_values: ISalesReport;
+  salesReport_salesByCategory_values: ISalesReport;
+  salesReport_salesByCustomer_values: ISalesReport;
+  salesReport_salesByStaff_values: ISalesReport;
+  salesReport_salesByDay_values: ISalesReport;
+  salesReport_salesByMonth_values: ISalesReport;
+  salesReport_salesByQuarter_values: ISalesReport;
+  salesReport_salesByYear_values: ISalesReport;
   // inventory report
   inventoryReport_stock_values: IInventoryReport_stock[];
   inventoryReport_stockMovement_values: IInventoryReport_stockMovement[];
@@ -65,7 +71,13 @@ export interface IReportProvided {
   report_taxAndServiceCharge_values: globalThis.Ref<IFinancialReport_taxServiceCharge[]>;
   // sales report
   salesReport_salesByItem_values: globalThis.Ref<ISalesReport>;
-  salesReport_salesByOrderType_values: globalThis.Ref<ISalesReport>;
+  salesReport_salesByCategory_values: globalThis.Ref<ISalesReport>;
+  salesReport_salesByCustomer_values: globalThis.Ref<ISalesReport>;
+  salesReport_salesByStaff_values: globalThis.Ref<ISalesReport>;
+  salesReport_salesByDay_values: globalThis.Ref<ISalesReport>;
+  salesReport_salesByMonth_values: globalThis.Ref<ISalesReport>;
+  salesReport_salesByQuarter_values: globalThis.Ref<ISalesReport>;
+  salesReport_salesByYear_values: globalThis.Ref<ISalesReport>;
   // inventory report
   inventoryReport_stock_values: globalThis.Ref<IInventoryReport_stock[]>;
   inventoryReport_stockMovement_values: globalThis.Ref<IInventoryReport_stockMovement[]>;

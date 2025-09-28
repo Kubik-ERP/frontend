@@ -28,7 +28,13 @@ export const useReportService = (): IReportProvided => {
     report_taxAndServiceCharge_values,
     // sales
     salesReport_salesByItem_values,
-    salesReport_salesByOrderType_values,
+    salesReport_salesByCategory_values,
+    salesReport_salesByCustomer_values,
+    salesReport_salesByStaff_values,
+    salesReport_salesByDay_values,
+    salesReport_salesByMonth_values,
+    salesReport_salesByQuarter_values,
+    salesReport_salesByYear_values,
     // inventory
     inventoryReport_stock_values,
     inventoryReport_stockMovement_values,
@@ -142,7 +148,13 @@ export const useReportService = (): IReportProvided => {
     report_taxAndServiceCharge_values,
     // sales
     salesReport_salesByItem_values,
-    salesReport_salesByOrderType_values,
+    salesReport_salesByCategory_values,
+    salesReport_salesByCustomer_values,
+    salesReport_salesByStaff_values,
+    salesReport_salesByDay_values,
+    salesReport_salesByMonth_values,
+    salesReport_salesByQuarter_values,
+    salesReport_salesByYear_values,
     // inventory
     inventoryReport_stock_values,
     inventoryReport_stockMovement_values,

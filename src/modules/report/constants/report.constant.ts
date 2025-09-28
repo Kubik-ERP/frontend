@@ -235,7 +235,7 @@ export const SALESREPORT_COLUMNS: IColumnDataTable[] = [
     value: 'totalPenjualan',
   },
   {
-    label: 'Vouvcher Used',
+    label: 'Voucher Used',
     sortable: true,
     value: 'countPenggunaanVoucher',
   },

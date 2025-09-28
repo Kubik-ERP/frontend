@@ -1,73 +1,96 @@
 <script setup lang="ts">
 // components
 import SalesByItem from '../components/SalesReport/SalesByItem.vue';
-// import SalesByOrderType from '../components/SalesReport/SalesByOrderType.vue';
-
-// types
-
-const salesReport_activeTab = ref<string>('sales-by-item');
-const salesReport_listTabs = ref<ITabs[]>([
-  {
-    component: SalesByItem,
-    label: 'Sales by Item',
-    value: 'sales-by-item',
-  },
-  {
-    component: SalesByItem,
-    label: 'Sales by Category',
-    value: 'sales-by-category',
-  },
-  {
-    component: SalesByItem,
-    label: 'Sales by Customer',
-    value: 'sales-by-customer',
-  },
-  {
-    component: SalesByItem,
-    label: 'Sales by Staff',
-    value: 'sales-by-staff',
-  },
-  {
-    component: SalesByItem,
-    label: 'Sales by Day',
-    value: 'sales-by-day',
-  },
-  {
-    component: SalesByItem,
-    label: 'Sales by Month',
-    value: 'sales-by-month',
-  },
-  {
-    component: SalesByItem,
-    label: 'Sales by Quarter',
-    value: 'sales-by-quarter',
-  },
-  {
-    component: SalesByItem,
-    label: 'Sales by Year',
-    value: 'sales-by-year',
-  },
-  // {
-  //   component: SalesByOrderType,
-  //   label: 'Sales by Order Type',
-  //   value: 'sales-by-order-type',
-  // },
-]);
+import SalesByCategory from '../components/SalesReport/SalesByCategory.vue';
+import SalesByCustomer from '../components/SalesReport/SalesByCustomer.vue';
+import SalesByStaff from '../components/SalesReport/SalesByStaff.vue';
+import SalesByDay from '../components/SalesReport/SalesByDay.vue';
+import SalesByMonth from '../components/SalesReport/SalesByMonth.vue';
+import SalesByQuarter from '../components/SalesReport/SalesByQuarter.vue';
+import SalesByYear from '../components/SalesReport/SalesByYear.vue';
 
 // service
 import { useReportService } from '../services/report.service';
 const { report_getSalesReport } = useReportService();
 
+const salesReport_activeTab = ref<string>('item');
+const salesReport_listTabs = ref<ITabs[]>([
+  {
+    component: markRaw(SalesByItem),
+    label: 'Item',
+    value: 'item',
+  },
+  {
+    component: markRaw(SalesByCategory),
+    label: 'Category',
+    value: 'category',
+  },
+  {
+    component: markRaw(SalesByCustomer),
+    label: 'Customer',
+    value: 'customer',
+  },
+  {
+    component: markRaw(SalesByStaff),
+    label: 'Staff',
+    value: 'staff',
+  },
+  {
+    component: markRaw(SalesByDay),
+    label: 'Day',
+    value: 'day',
+  },
+  {
+    component: markRaw(SalesByMonth),
+    label: 'Month',
+    value: 'month',
+  },
+  {
+    component: markRaw(SalesByQuarter),
+    label: 'Quarter',
+    value: 'quarter',
+  },
+  {
+    component: markRaw(SalesByYear),
+    label: 'Year',
+    value: 'year',
+  },
+]);
+
 watch(
   salesReport_activeTab,
   async newTab => {
     switch (newTab.toUpperCase()) {
-      case 'SALES-BY-ITEM': {
+      case 'ITEM': {
         await report_getSalesReport('item');
         break;
       }
-      case 'SALES-BY-ORDER-TYPE': {
-        await report_getSalesReport('order');
+      case 'CATEGORY': {
+        await report_getSalesReport('category');
+        break;
+      }
+      case 'CUSTOMER': {
+        await report_getSalesReport('customer');
+        break;
+      }
+      case 'STAFF': {
+        await report_getSalesReport('staff');
+        break;
+      }
+      case 'DAY': {
+        await report_getSalesReport('day');
+        break;
+      }
+      case 'MONTH': {
+        await report_getSalesReport('month');
+        break;
+      }
+      case 'QUARTER': {
+        await report_getSalesReport('quarter');
+        break;
+      }
+      case 'YEAR': {
+        await report_getSalesReport('year');
         break;
       }
       default: {
@@ -79,7 +102,6 @@ watch(
     immediate: true,
   },
 );
-
 </script>
 <template>
   <section id="point-configuration" class="flex flex-col relative inset-0 z-0">
