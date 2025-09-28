@@ -4,7 +4,7 @@ import CustomDatePicker from '../../components/CustomDatePicker.vue';
 import SummaryReport from '../SummaryReport.vue';
 // service
 import { useReportService } from '../../services/report.service';
-const { salesReport_columns, report_queryParams, report_getSalesReport, salesReport_salesByItem_values } =
+const { salesReport_columns, report_queryParams, report_getSalesReport, salesReport_salesByStaff_values } =
   useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
@@ -12,7 +12,7 @@ const { exportToPdf, exportToCsv } = useReportExporter();
 const popover = ref();
 const handleExportToPdf = () => {
   exportToPdf({
-    reportName: 'Sales Report - Sales By Items Report',
+    reportName: 'Sales Report - Sales By Staff Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: salesReport_columns,
     tableData: formattedDataTable(),
@@ -20,7 +20,7 @@ const handleExportToPdf = () => {
 };
 const handleExportToCsv = () => {
   exportToCsv({
-    reportName: 'Sales Report - Sales By Items Report',
+    reportName: 'Sales Report - Sales By Staff Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: salesReport_columns,
     tableData: formattedDataTable(),
@@ -29,7 +29,7 @@ const handleExportToCsv = () => {
 
 const formattedDataTable = () => {
   const newData =
-    salesReport_salesByItem_values.value?.groupedSummary?.map(item => {
+    salesReport_salesByStaff_values.value?.groupedSummary?.map(item => {
       return {
         group: item.group,
         jumlahTerjual: item.jumlahTerjual,
@@ -53,7 +53,7 @@ const onChangePage = (newPage: number) => {
 </script>
 <template>
   <section class="flex flex-col gap-4">
-    <SummaryReport :summary="salesReport_salesByItem_values?.overallSummary" />
+    <SummaryReport :summary="salesReport_salesByStaff_values?.overallSummary" />
     <AppBaseDataTable
       :data="formattedDataTable()"
       :columns="salesReport_columns"
@@ -66,7 +66,7 @@ const onChangePage = (newPage: number) => {
       @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Sales By Item</h1>
+        <h1 class="font-bold text-2xl text-text-primary">Sales By Staff</h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
@@ -103,14 +103,11 @@ const onChangePage = (newPage: number) => {
       </template>
 
       <template #filter>
-        <pre>
-          query params : {{ report_queryParams }}
-        </pre>
         <CustomDatePicker
           v-model:start-date="report_queryParams.startDate"
           v-model:end-date="report_queryParams.endDate"
           :should-update-type="false"
-          @update:start-date="report_getSalesReport('item')"
+          @update:start-date="report_getSalesReport('staff')"
         />
       </template>
     </AppBaseDataTable>

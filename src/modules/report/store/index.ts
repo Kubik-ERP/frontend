@@ -1,5 +1,5 @@
 // constants
-// import { REPORT_BASE_ENDPOINT } from '../constants';
+import { REPORT_SALES_ENDPOINT } from '../constants';
 // Plugins
 import httpClient from '@/plugins/axios';
 // type
@@ -11,11 +11,10 @@ import type {
   IFinancialReport_paymentMethod,
   IFinancialReport_profitAndLost,
   IFinancialReport_taxServiceCharge,
-  ISalesReport_salesByItem,
-  ISalesReport_salesByOrderType,
   IInventoryReport_stock,
   IInventoryReport_stockMovement,
   IVoucherReport,
+  ISalesReport,
 } from '../interfaces';
 export const useReportStore = defineStore('report', {
   state: (): IReportStore => ({
@@ -27,8 +26,16 @@ export const useReportStore = defineStore('report', {
       totals: {} as IFinancialReport_paymentMethod['totals'],
     } as IFinancialReport_paymentMethod,
     report_taxAndServiceCharge_values: [] as IFinancialReport_taxServiceCharge[],
-    salesReport_salesByItem_values: [] as ISalesReport_salesByItem[],
-    salesReport_salesByOrderType_values: [] as ISalesReport_salesByOrderType[],
+    // sales
+    salesReport_salesByItem_values: {} as ISalesReport,
+    salesReport_salesByCategory_values: {} as ISalesReport,
+    salesReport_salesByCustomer_values: {} as ISalesReport,
+    salesReport_salesByStaff_values: {} as ISalesReport,
+    salesReport_salesByDay_values: {} as ISalesReport,
+    salesReport_salesByMonth_values: {} as ISalesReport,
+    salesReport_salesByQuarter_values: {} as ISalesReport,
+    salesReport_salesByYear_values: {} as ISalesReport,
+    // inventory
     inventoryReport_stock_values: [] as IInventoryReport_stock[],
     inventoryReport_stockMovement_values: [] as IInventoryReport_stockMovement[],
     voucherReport_values: [] as IVoucherReport[],
@@ -78,7 +85,7 @@ export const useReportStore = defineStore('report', {
     async getSalesReport(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
       this.report_isLoading = true;
       try {
-        const response = await httpClient.get(`dashboard/sales-report`, {
+        const response = await httpClient.get(`${REPORT_SALES_ENDPOINT}`, {
           params,
           ...requestConfigurations,
         });
@@ -88,8 +95,32 @@ export const useReportStore = defineStore('report', {
             this.salesReport_salesByItem_values = response.data.data;
             break;
           }
-          case 'order': {
-            this.salesReport_salesByOrderType_values = response.data.data;
+          case 'category': {
+            this.salesReport_salesByCategory_values = response.data.data;
+            break;
+          }
+          case 'customer': {
+            this.salesReport_salesByCustomer_values = response.data.data;
+            break;
+          }
+          case 'staff': {
+            this.salesReport_salesByStaff_values = response.data.data;
+            break;
+          }
+          case 'day': {
+            this.salesReport_salesByDay_values = response.data.data;
+            break;
+          }
+          case 'month': {
+            this.salesReport_salesByMonth_values = response.data.data;
+            break;
+          }
+          case 'quarter': {
+            this.salesReport_salesByQuarter_values = response.data.data;
+            break;
+          }
+          case 'year': {
+            this.salesReport_salesByYear_values = response.data.data;
             break;
           }
           default: {
