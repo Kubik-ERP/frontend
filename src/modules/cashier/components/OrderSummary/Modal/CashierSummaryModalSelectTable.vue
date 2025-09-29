@@ -135,7 +135,7 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
                   <section
                     v-for="(storeTable, storeTableIndex) in accountStoreDetail_storeTables.filter(
                       (f: IOutletTable) => {
-                        return f.floorName === accountStoreDetail_selectedFloor;
+                        return f.id === accountStoreDetail_selectedFloor;
                       },
                     )"
                     :key="`store-table-${storeTableIndex}`"
@@ -161,7 +161,7 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
 
               <template
                 v-for="(item, key) in accountStoreDetail_storeTables?.filter((f: IOutletTable) => {
-                  return f.floorName === accountStoreDetail_selectedFloor;
+                  return f.id === accountStoreDetail_selectedFloor;
                 })"
                 :key="key"
               >
