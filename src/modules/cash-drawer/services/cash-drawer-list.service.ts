@@ -76,8 +76,8 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
   watch(
     () => authentication_isStaff.value,
     isStaff => {
-      if (isStaff && authentication_userData.value?.id) {
-        cashDrawerList_formDataOfOpenRegister.userId = authentication_userData.value.id;
+      if (isStaff && authentication_userData.value?.staffId) {
+        cashDrawerList_formDataOfOpenRegister.userId = authentication_userData.value.staffId;
       }
     },
     { immediate: true },
