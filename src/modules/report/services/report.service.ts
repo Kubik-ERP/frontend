@@ -13,9 +13,7 @@ import {
   SALESREPORT_SALESBYITEM_COLUMNS,
   SALESREPORT_SALESBYORDERTYPE_COLUMNS,
   SALESREPORT_COLUMNS,
-
   CUSTOMERREPORT_COLUMNS,
-
 } from '../constants';
 // type
 import { IReportProvided, IReportQueryParams } from '../interfaces';
@@ -57,7 +55,6 @@ export const useReportService = (): IReportProvided => {
   const formatQueryParamsDate = (params: IReportQueryParams, type?: string): IReportQueryParams => {
     // console.log('before: ', JSON.stringify(params, null, 2));
     Object.assign(report_queryParams, {
-
       startDate: params.startDate,
       endDate: params.endDate,
     });

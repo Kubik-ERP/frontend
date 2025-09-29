@@ -209,10 +209,8 @@ export const SALESREPORT_COLUMNS: IColumnDataTable[] = [
     label: 'Name',
     sortable: true,
     value: 'group',
-
   },
   {
-
     label: 'Qty Sold',
     sortable: true,
     value: 'jumlahTerjual',
@@ -242,9 +240,7 @@ export const SALESREPORT_COLUMNS: IColumnDataTable[] = [
     sortable: true,
     value: 'countPenggunaanVoucher',
   },
-
 ];
-
 
 export const INVENTORYREPORT_STOCK_COLUMNS: IColumnDataTable[] = [
   {

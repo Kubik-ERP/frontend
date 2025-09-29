@@ -1,12 +1,10 @@
 // constants
-
 import {
   REPORT_SALES_ENDPOINT,
   REPORT_FINANCIAL_ENDPOINT,
   REPORT_VOUCHER_ENDPOINT,
   REPORT_CUSTOMER_ENDPOINT,
 } from '../constants';
-
 // Plugins
 import httpClient from '@/plugins/axios';
 // type
