@@ -48,13 +48,12 @@ export const useOutletStore = defineStore('outlet', {
         return [];
       }
 
-      const sortedTables = [...state.outlet_tables].sort((a, b) => a.floorName.localeCompare(b.floorName));
-      const uniqueFloors = Array.from(new Set(sortedTables.map(table => table.floorName)));
-
-      return uniqueFloors.map(floor => ({
-        label: floor,
-        value: floor,
-      }));
+      return [...state.outlet_tables]
+        .sort((a, b) => a.floorName.localeCompare(b.floorName))
+        .map(floor => ({
+          label: floor.floorName,
+          value: floor.id,
+        }));
     },
   },
   actions: {

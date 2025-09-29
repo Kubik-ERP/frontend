@@ -3,6 +3,7 @@ import eventBus from '@/plugins/mitt';
 import { PRODUCT_LIST_COLUMNS_IMPORT } from '../constants';
 import { IProductImportFailedSuccessData, IProductImportProvided, IProductImportResponse } from '../interfaces/product-import.interface';
 import { useProductImportStore } from '../store';
+import { EToastPosition, EToastType } from '@/app/constants/toast.constant';
 
 export const useProductImportService = (): IProductImportProvided => {
   const store = useProductImportStore();
@@ -18,12 +19,20 @@ export const useProductImportService = (): IProductImportProvided => {
     try{
       const batchId = localStorage.getItem('inventory_batch_id')?.toString();
       if (batchId) {
-        await store.product_Import_execute(batchId, {
+        const res = await store.product_Import_execute(batchId, {
           ...httpAbort_registerAbort('STORAGE_LIST_REQUEST_EXECUTE'),
         });
 
         eventBus.emit('product-imported');
         localStorage.removeItem('inventory_batch_id');
+
+        const argsEventEmitter: IPropsToast = {
+          isOpen: true,
+          type: EToastType.SUCCESS,
+          message: res.message || 'Product imported successfully!',
+          position: EToastPosition.TOP_RIGHT,
+        };
+        eventBus.emit('AppBaseToast', argsEventEmitter);
       }
 
       productImport_onClose();
