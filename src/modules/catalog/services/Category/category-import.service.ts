@@ -3,6 +3,7 @@ import { CATEGORIES_COLUMNS_IMPORT } from '../../constants';
 import { useCategoryImportStore } from '../../store/categories.store';
 import { ICategoryImportFailedSuccessData, ICategoryImportProvided, ICategoryImportResponse } from '../../interfaces/Category/category-import.interface';
 import eventBus from '@/plugins/mitt';
+import { EToastPosition, EToastType } from '@/app/constants/toast.constant';
 
 export const usecategoryImportService = (): ICategoryImportProvided => {
   const store = useCategoryImportStore();
@@ -18,13 +19,21 @@ export const usecategoryImportService = (): ICategoryImportProvided => {
     try{
       const batchId = localStorage.getItem('inventory_batch_id')?.toString();
       if (batchId) {
-        await store.category_Import_execute(batchId, {
+        const res = await store.category_Import_execute(batchId, {
           ...httpAbort_registerAbort('STORAGE_LIST_REQUEST_EXECUTE'),
         });
 
         localStorage.removeItem('inventory_batch_id');
 
-        await eventBus.emit('category-imported');
+        eventBus.emit('category-imported');
+
+        const argsEventEmitter: IPropsToast = {
+          isOpen: true,
+          type: EToastType.SUCCESS,
+          message: res.message || 'Category imported successfully!',
+          position: EToastPosition.TOP_RIGHT,
+        };
+        eventBus.emit('AppBaseToast', argsEventEmitter);
       }
 
       categoryImport_onClose();
