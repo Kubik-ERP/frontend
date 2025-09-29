@@ -204,6 +204,48 @@ export const SALESREPORT_SALESBYORDERTYPE_COLUMNS: IColumnDataTable[] = [
   },
 ];
 
+export const SALESREPORT_COLUMNS: IColumnDataTable[] = [
+  {
+    label: 'Name',
+    sortable: true,
+    value: 'group',
+
+  },
+  {
+
+    label: 'Qty Sold',
+    sortable: true,
+    value: 'jumlahTerjual',
+  },
+  {
+    label: 'Gross Sales',
+    sortable: true,
+    value: 'kotor',
+  },
+  {
+    label: 'Tax',
+    sortable: true,
+    value: 'pajak',
+  },
+  {
+    label: 'Discount',
+    sortable: true,
+    value: 'diskonItem',
+  },
+  {
+    label: 'Nett Sales',
+    sortable: true,
+    value: 'totalPenjualan',
+  },
+  {
+    label: 'Voucher Used',
+    sortable: true,
+    value: 'countPenggunaanVoucher',
+  },
+
+];
+
+
 export const INVENTORYREPORT_STOCK_COLUMNS: IColumnDataTable[] = [
   {
     label: 'SKU',
@@ -296,18 +338,66 @@ export const MARKETINGREPORT_COLUMNS: IColumnDataTable[] = [
     value: 'voucherName',
   },
   {
+    label: 'Promo Code',
+    sortable: false,
+    value: 'promoCode',
+  },
+  {
     label: 'Validity Period',
     sortable: true,
     value: 'validityPeriod',
   },
   {
-    label: 'Usage',
-    sortable: false,
-    value: 'usage',
+    label: 'Status',
+    sortable: true,
+    value: 'status',
   },
   {
-    label: 'Quota',
+    label: 'Total Usage',
     sortable: false,
-    value: 'quota',
+    value: 'totalUsage',
+  },
+  {
+    label: 'Total Quota',
+    sortable: false,
+    value: 'totalQuota',
+  },
+  {
+    label: 'Remaining Quota',
+    sortable: false,
+    value: 'remainingQuota',
   },
 ];
+
+export const CUSTOMERREPORT_COLUMNS: IColumnDataTable[] = [
+  {
+    label: 'Name',
+    sortable: true,
+    value: 'nama',
+  },
+  {
+    label: 'Gender',
+    sortable: true,
+    value: 'gender',
+  },
+  {
+    label: 'Total Sales',
+    sortable: true,
+    value: 'totalSales',
+  },
+  {
+    label: 'Date Added',
+    sortable: true,
+    value: 'dateAdded',
+  },
+  {
+    label: 'Outstanding',
+    sortable: true,
+    value: 'outstanding',
+  },
+  {
+    label: 'Loyalty Points',
+    sortable: true,
+    value: 'loyaltyPoints',
+  },  
+]

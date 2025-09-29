@@ -35,6 +35,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
     products: [],
     type: 'TOTAL_ITEMS',
     price: 0,
+    grandTotal: 0,
   });
 
   const productBundling_formRules = computed(() => ({
@@ -52,7 +53,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
       productBundling_grandTotal.value = productBundling_formData.price;
 
       // productBundling_formData.price = productBundling_formData.products.reduce(
-      //   (total, item) => total + item.discountPrice * item.quantity,
+      //   (total, item) => total + item.price * item.quantity,
       //   0,
       // );
       productBundling_grandTotal.value = productBundling_formData.price;
@@ -60,8 +61,8 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
       productBundling_grandTotal.value = productBundling_formData.products.reduce(
         (total, item) =>
           total +
-          item.discountPrice * item.quantity -
-          (item.discountPrice * item.quantity * productBundling_formData.price) / 100,
+          item.price * item.quantity -
+          (item.price * item.quantity * productBundling_formData.price) / 100,
         0,
       );
     }
@@ -73,7 +74,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
   const setPricingType = () => {
     if (productBundling_formData.type === 'TOTAL_ITEMS') {
       productBundling_formData.price = productBundling_formData.products.reduce(
-        (total, item) => total + item.discountPrice * item.quantity,
+        (total, item) => total + item.price * item.quantity,
         0,
       );
     } else if (productBundling_formData.type === 'DISCOUNT') {
@@ -81,7 +82,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
     }
     // else if (productBundling_formData.type === 'CUSTOM') {
     //   productBundling_formData.price = productBundling_formData.products.reduce(
-    //     (total, item) => total + item.discountPrice * item.quantity,
+    //     (total, item) => total + item.price * item.quantity,
     //     0,
     //   );
     // }

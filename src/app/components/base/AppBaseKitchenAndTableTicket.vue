@@ -23,6 +23,10 @@ interface IProps {
   }>;
 }
 
+import { useAuthenticationStore } from '@/modules/authentication/store';
+const authenticationStore = useAuthenticationStore();
+const { authentication_userData } = storeToRefs(authenticationStore);
+
 /**
  * @description Define props with default values and interfaces
  */
@@ -59,7 +63,7 @@ const props = withDefaults(defineProps<IProps>(), {
   <section id="kitchen-table-ticket" class="bg-white flex flex-col items-center gap-3 w-full p-4">
     <!-- Customer Name -->
     <h2 id="customer-name" class="font-semibold text-black text-base text-center">
-      {{ props.customerName }}
+      {{ authentication_userData?.fullname }}
     </h2>
 
     <!-- Top Separator -->
@@ -79,7 +83,7 @@ const props = withDefaults(defineProps<IProps>(), {
 
       <div class="flex items-center justify-between w-full">
         <span class="font-normal text-black text-sm">Staff</span>
-        <span class="font-normal text-black text-sm">{{ props.staffName }}</span>
+        <span class="font-normal text-black text-sm">{{ authentication_userData?.fullname }}</span>
       </div>
 
       <div class="flex items-center justify-between w-full">

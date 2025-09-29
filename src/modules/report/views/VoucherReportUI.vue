@@ -30,12 +30,15 @@ const formattedDataTable = () => {
   const newData = voucherReport_values.value.map(item => {
     return {
       voucherName: item.voucherName,
+      promoCode: item.promoCode,
       validityPeriod:
         useFormatDate(item.validityPeriod.split(' - ')[0], 'dd/MMM/yyyy') +
         ' - ' +
         useFormatDate(item.validityPeriod.split(' - ')[1], 'dd/MMM/yyyy'),
-      usage: item.usage,
-      quota: item.quota,
+      status: item.status,
+      totalUsage: item.totalUsage,
+      totalQuota: item.totalQuota,
+      remainingQuota: item.remainingQuota,
     };
   });
 

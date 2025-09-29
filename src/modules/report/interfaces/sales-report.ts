@@ -19,3 +19,19 @@ export interface ISalesReport_salesByOrderType {
   discount: number;
   netSales: number;
 }
+
+interface ISummary {
+  group: string;
+  jumlahTerjual: number;
+  kotor: number;
+  diskonItem: number;
+  refund: number;
+  pajak: number;
+  totalPenjualan: number;
+  countPenggunaanVoucher: number;
+}
+
+export interface ISalesReport {
+  overallSummary: ISummary;
+  groupedSummary: ISummary[];
+}

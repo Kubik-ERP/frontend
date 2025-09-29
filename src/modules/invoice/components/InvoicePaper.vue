@@ -66,7 +66,7 @@ defineExpose({ invoiceRef, kitchenRef, tableRef, print, download });
     <section id="invoice-change-paper" class="max-w-screen md:max-w-xl">
       <PrimeVueTabs
         v-model:value="invoice_activeInvoice"
-        class="flex items-center justify-center max-w-screen md:max-w-xl"
+        class="flex items-center justify-center max-w-screen md:max-w-xl overflow-x-scroll"
       >
         <PrimeVueTabList
           unstyled

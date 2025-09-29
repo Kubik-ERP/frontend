@@ -14,7 +14,7 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
 <template>
   <section
     id="cashier-main-section-order-summary"
-    class="block lg:hidden absolute z-10 inset-x-0 bottom-0 bg-white p-4"
+    class="block lg:hidden sticky z-10 inset-x-0 bottom-0 bg-white p-4"
   >
     <PrimeVueButton
       class="border-none w-full text-white py-2.5 px-8"

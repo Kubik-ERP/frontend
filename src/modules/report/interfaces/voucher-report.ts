@@ -1,6 +1,9 @@
 export interface IVoucherReport {
   voucherName: string;
+  promoCode: string;
   validityPeriod: string;
-  usage: string;
-  quota: string;
+  status: 'Aktif' | 'Kedaluwarsa';
+  totalQuota: number;
+  totalUsage: number;
+  remainingQuota: number;
 }

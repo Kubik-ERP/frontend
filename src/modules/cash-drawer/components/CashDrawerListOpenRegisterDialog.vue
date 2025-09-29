@@ -32,8 +32,8 @@ const { authentication_isStaff, authentication_userData } = storeToRefs(authenti
 watch(
   () => authentication_isStaff.value,
   isStaff => {
-    if (isStaff && authentication_userData.value?.id) {
-      cashDrawerList_formDataOfOpenRegister.userId = authentication_userData.value.id;
+    if (isStaff && authentication_userData.value?.staffId) {
+      cashDrawerList_formDataOfOpenRegister.userId = authentication_userData.value.staffId;
     }
   },
   { immediate: true },
@@ -110,12 +110,11 @@ const staffDisplayName = computed(() => {
         <section id="form-group" class="col-span-full lg:col-span-6">
           <!-- Display staff name as text if current user is staff -->
           <template v-if="authentication_isStaff">
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col">
               <label class="block text-sm font-medium leading-6 text-gray-900 w-full">Staff</label>
               <div class="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md bg-gray-50">
                 <AppBaseSvg name="user" class="w-4 h-4 text-gray-500" />
                 <span class="text-base text-text-primary font-medium">{{ staffDisplayName }}</span>
-                <PrimeVueChip class="bg-green-100 text-green-800" label="Current Staff" />
               </div>
             </div>
           </template>

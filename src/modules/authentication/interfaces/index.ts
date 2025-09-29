@@ -17,6 +17,7 @@ export interface IAuthenticationProfile {
     name: string;
   };
   isAccessRetail: boolean | null;
+  staffId: string | null;
 }
 
 export interface IAuthenticationPermissionResponse extends IDefaultResponseFetch {

@@ -6,6 +6,7 @@ export interface IProductBundlingCreateEditFormData {
   products: IProductList;
   type: string;
   price: number;
+  grandTotal: number;
 }
 
 export type IProduct = {

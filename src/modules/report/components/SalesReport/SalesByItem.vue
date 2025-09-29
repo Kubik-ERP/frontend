@@ -1,14 +1,11 @@
 <script setup lang="ts">
 // components
 import CustomDatePicker from '../../components/CustomDatePicker.vue';
+import SummaryReport from '../SummaryReport.vue';
 // service
 import { useReportService } from '../../services/report.service';
-const {
-  salesReport_salesByItem_columns,
-  report_queryParams,
-  report_getSalesReport,
-  salesReport_salesByItem_values,
-} = useReportService();
+const { salesReport_columns, report_queryParams, report_getSalesReport, salesReport_salesByItem_values } =
+  useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
 const { exportToPdf, exportToCsv } = useReportExporter();
@@ -17,7 +14,7 @@ const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Sales Report - Sales By Items Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: salesReport_salesByItem_columns,
+    columns: salesReport_columns,
     tableData: formattedDataTable(),
   });
 };
@@ -25,26 +22,25 @@ const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Sales Report - Sales By Items Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: salesReport_salesByItem_columns,
+    columns: salesReport_columns,
     tableData: formattedDataTable(),
   });
 };
 
 const formattedDataTable = () => {
-  const newData = salesReport_salesByItem_values.value.map(item => {
-    return {
-      productId: item.productId,
-      itemName: item.itemName,
-      category: item.category,
-      qtySold: item.qtySold,
-      unitPrice: useCurrencyFormat({ data: item.unitPrice }),
-      grossSales: useCurrencyFormat({ data: item.grossSales }),
-      discount: useCurrencyFormat({ data: item.discount }),
-      netSales: useCurrencyFormat({ data: item.netSales }),
-      tax: useCurrencyFormat({ data: item.tax }),
-      totalSales: useCurrencyFormat({ data: item.totalSales }),
-    };
-  });
+  const newData =
+    salesReport_salesByItem_values.value?.groupedSummary?.map(item => {
+      return {
+        group: item.group,
+        jumlahTerjual: item.jumlahTerjual,
+        kotor: useCurrencyFormat({ data: item.kotor }),
+        diskonItem: useCurrencyFormat({ data: item.diskonItem }),
+        refund: useCurrencyFormat({ data: item.refund }),
+        pajak: useCurrencyFormat({ data: item.pajak }),
+        totalPenjualan: useCurrencyFormat({ data: item.totalPenjualan }),
+        countPenggunaanVoucher: item.countPenggunaanVoucher,
+      };
+    }) || [];
 
   return newData || [];
 };
@@ -56,10 +52,11 @@ const onChangePage = (newPage: number) => {
 };
 </script>
 <template>
-  <section>
+  <section class="flex flex-col gap-4">
+    <SummaryReport :summary="salesReport_salesByItem_values?.overallSummary" />
     <AppBaseDataTable
       :data="formattedDataTable()"
-      :columns="salesReport_salesByItem_columns"
+      :columns="salesReport_columns"
       :first="(page - 1) * limit"
       :rows-per-page="limit"
       :total-records="formattedDataTable().length"
@@ -106,6 +103,9 @@ const onChangePage = (newPage: number) => {
       </template>
 
       <template #filter>
+        <pre>
+          query params : {{ report_queryParams }}
+        </pre>
         <CustomDatePicker
           v-model:start-date="report_queryParams.startDate"
           v-model:end-date="report_queryParams.endDate"
