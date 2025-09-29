@@ -103,6 +103,9 @@ const onChangePage = (newPage: number) => {
       </template>
 
       <template #filter>
+        <pre>
+          query params : {{ report_queryParams }}
+        </pre>
         <CustomDatePicker
           v-model:start-date="report_queryParams.startDate"
           v-model:end-date="report_queryParams.endDate"

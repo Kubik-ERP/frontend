@@ -69,7 +69,6 @@ const routes: RouteRecordRaw[] = [
           },
         ],
         meta: {
-          breadcrumb: 'Store Details',
           requiresAuthorization: true,
         },
       },
