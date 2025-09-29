@@ -18,12 +18,8 @@ const emit = defineEmits<{
 }>();
 
 // env
-const isDevelopmentMode = import.meta.env.VITE_APP_MODE === 'development';
-
 const bucketURL = import.meta.env.VITE_APP_BASE_BUCKET_URL;
-
 const router = useRouter();
-
 const route = useRoute();
 </script>
 
@@ -83,13 +79,7 @@ const route = useRoute();
               label="Make Payment"
               @click="emit('simulate-payment', props.modalPlaceOrderDetail.data.orderId)"
             />
-            <PrimeVueButton
-              v-if="isDevelopmentMode"
-              class="w-full bg-primary text-white py-2.5 px-8"
-              type="button"
-              label="Simulate Payment"
-              @click="emit('simulate-payment', props.modalPlaceOrderDetail.data.orderId)"
-            />
+            
 
             <PrimeVueButton
               class="w-full bg-primary text-white py-2.5 px-8"
