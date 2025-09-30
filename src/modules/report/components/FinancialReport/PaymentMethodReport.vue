@@ -54,7 +54,7 @@ const formattedDataTable = () => {
 };
 </script>
 <template>
-  <section>
+  <section class="flex flex-col gap-4">
     <PrimeVueCard>
       <template #content>
         <table class="w-full">

@@ -15,12 +15,17 @@ export interface IFinancialReport_profitAndLost {
     outstanding: number;
   };
 }
-export interface IFinancialReport_cashInOut {
-  id: string;
-  date: string;
-  type: 'Cash In' | 'Cash Out';
-  notes: string;
-  nominal: number;
+export interface IFinancialReport_discount {
+  simpleWidget: {
+    totalJumlahDiskon: number;
+    totalItemValue: number;
+    totalItemWithDiscount: number;
+  };
+  discountList: Array<{
+    nama: string;
+    nilaiBarang: number;
+    jumlahDiskon: number;
+  }>;
 }
 export interface IFinancialReport_paymentMethod {
   simpleWidget: {

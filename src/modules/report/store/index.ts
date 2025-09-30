@@ -12,7 +12,7 @@ import type { AxiosRequestConfig } from 'axios';
 import type {
   IReportStore,
   IReportQueryParams,
-  IFinancialReport_cashInOut,
+  IFinancialReport_discount,
   IFinancialReport_paymentMethod,
   IFinancialReport_profitAndLost,
   IFinancialReport_taxServiceCharge,
@@ -26,7 +26,7 @@ export const useReportStore = defineStore('report', {
   state: (): IReportStore => ({
     report_isLoading: false,
     report_profitAndLost_values: {} as IFinancialReport_profitAndLost,
-    report_cashInOut_values: [] as IFinancialReport_cashInOut[],
+    report_discount_values: {} as IFinancialReport_discount,
     report_paymentMethod_values: {} as IFinancialReport_paymentMethod,
     report_taxAndServiceCharge_values: [] as IFinancialReport_taxServiceCharge[],
     // sales
@@ -59,8 +59,8 @@ export const useReportStore = defineStore('report', {
             this.report_profitAndLost_values = response.data.data;
             break;
           }
-          case 'cashin-out': {
-            this.report_cashInOut_values = response.data.data;
+          case 'discount-summary': {
+            this.report_discount_values = response.data.data;
             break;
           }
           case 'payment-summary': {
