@@ -144,7 +144,7 @@ const handleExportToCsv = () => {
             v-model:start-date="report_queryParams.startDate"
             v-model:end-date="report_queryParams.endDate"
             :should-update-type="false"
-            @update:start-date="report_getFinancialReport('discount-summary')"
+            @update:end-date="report_getFinancialReport('discount-summary')"
           />
           <PrimeVueSelect
             v-model="report_queryParams.store_ids"

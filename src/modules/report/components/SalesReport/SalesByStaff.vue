@@ -113,7 +113,7 @@ const onChangePage = (newPage: number) => {
             v-model:start-date="report_queryParams.startDate"
             v-model:end-date="report_queryParams.endDate"
             :should-update-type="false"
-            @update:start-date="report_getSalesReport('staff')"
+            @update:end-date="report_getSalesReport('staff')"
           />
           <PrimeVueSelect
             v-model="report_queryParams.store_ids"
