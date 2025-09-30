@@ -92,7 +92,7 @@ const popover = ref();
       </template>
 
       <template #filter>
-        <section class="flex items-center gap-4">
+        <section class="flex items-center gap-4 pt-4">
           <CustomDatePicker
             v-model:start-date="report_queryParams.startDate"
             v-model:end-date="report_queryParams.endDate"
@@ -105,11 +105,14 @@ const popover = ref();
             option-label="label"
             option-value="value"
             placeholder="Select Outlet"
-            class="min-w-64"
+            class="min-w-80"
             filter
             show-clear
             @change="report_getFinancialReport('tax-and-service-summary')"
-          />
+            ><template #dropdownicon>
+              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+            </template>
+          </PrimeVueSelect>
         </section>
       </template>
 

@@ -51,7 +51,7 @@ export const useReportService = (): IReportProvided => {
   const outlet_lists_options = computed(() => {
     return [
       {
-        label: 'All',
+        label: 'All Store',
         value: outlet_lists_values.value.map(item => item.id).join(','),
       },
       ...outlet_lists_values.value.map((item) => {

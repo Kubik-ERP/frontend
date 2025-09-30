@@ -138,7 +138,7 @@ const handleExportToCsv = () => {
         </PrimeVuePopover>
       </template>
 
-      <template #filter >
+      <template #filter>
         <section class="flex items-center justify-start gap-4 pt-4">
           <CustomDatePicker
             v-model:start-date="report_queryParams.startDate"
@@ -156,7 +156,10 @@ const handleExportToCsv = () => {
             filter
             show-clear
             @change="report_getFinancialReport('discount-summary')"
-          />
+            ><template #dropdownicon>
+              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+            </template>
+          </PrimeVueSelect>
         </section>
       </template>
 

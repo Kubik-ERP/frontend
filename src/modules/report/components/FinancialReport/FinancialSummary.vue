@@ -137,7 +137,11 @@ const formattedDataTable = () => {
             filter
             show-clear
             @change="report_getFinancialReport('financial-summary')"
-          />
+          >
+            <template #dropdownicon>
+              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+            </template>
+          </PrimeVueSelect>
         </section>
       </template>
       <template #body="{ data, column }">
