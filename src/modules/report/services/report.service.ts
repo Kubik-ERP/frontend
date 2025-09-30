@@ -1,5 +1,6 @@
 // store
 import { useReportStore } from '../store';
+import { useOutletStore } from '@/modules/outlet/store';
 // constant
 import {
   FINANCIALREPORT_DISCOUNT_COLUMNS,
@@ -43,31 +44,65 @@ export const useReportService = (): IReportProvided => {
     voucherReport_values,
     // customer
     customerReport_values,
+    // outlet
+    outlet_lists_values,
   } = storeToRefs(store);
+
+  const outlet_lists_options = computed(() => {
+    return [
+      {
+        label: 'All',
+        value: outlet_lists_values.value.map(item => item.id).join(','),
+      },
+      ...outlet_lists_values.value.map((item) => {
+        return {
+          label: item.name,
+          value: item.id,
+        };
+      }),
+    ];
+  });
+
+  const outletStore = useOutletStore();
+  const { outlet_currentOutlet } = storeToRefs(outletStore);
 
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const report_queryParams = reactive<IReportQueryParams>({
     startDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
     endDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+    store_ids: outlet_currentOutlet.value?.id,
   });
 
   const formatQueryParamsDate = (params: IReportQueryParams, type?: string): IReportQueryParams => {
-    // console.log('before: ', JSON.stringify(params, null, 2));
     Object.assign(report_queryParams, {
       startDate: params.startDate,
       endDate: params.endDate,
+      store_ids: params.store_ids,
     });
     const newParams = {
       startDate: (new Date(params.startDate).toISOString().split('T')[0] + 'T00:00:00.000Z') as unknown as Date,
       endDate: (new Date(params.endDate).toISOString().split('T')[0] + 'T23:59:59.999Z') as unknown as Date,
       type: type,
+      store_ids: params.store_ids,
     };
-    // console.log('after: ', JSON.stringify(newParams, null, 2));
-
     return {
       ...newParams,
     };
+  };
+
+  const fetchOutlet_lists = async () => {
+    try {
+      await store.fetchOutlet_lists({
+        ...httpAbort_registerAbort('OUTLET_LIST_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
   };
 
   const report_getFinancialReport = async (type?: string) => {
@@ -157,6 +192,7 @@ export const useReportService = (): IReportProvided => {
     // params
     report_queryParams,
     // methods
+    fetchOutlet_lists,
     report_getFinancialReport,
     report_getSalesReport,
     report_getInventoryReport,
@@ -185,5 +221,7 @@ export const useReportService = (): IReportProvided => {
     voucherReport_values,
     // customer
     customerReport_values,
+    // outlet
+    outlet_lists_options,
   };
 };

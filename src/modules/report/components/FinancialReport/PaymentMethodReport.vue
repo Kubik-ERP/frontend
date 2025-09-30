@@ -8,6 +8,7 @@ const {
   report_queryParams,
   report_getFinancialReport,
   report_paymentMethod_values,
+  outlet_lists_options,
 } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
@@ -84,11 +85,15 @@ const formattedDataTable = () => {
             </tr>
             <tr>
               <th class="text-left p-1.5">Voucher Used</th>
-              <td class="text-right p-1.5">{{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.totalPenggunaanVoucher }) }}</td>
+              <td class="text-right p-1.5">
+                {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.totalPenggunaanVoucher }) }}
+              </td>
             </tr>
             <tr class="bg-primary-background">
               <th class="text-left p-1.5">Nett Sales</th>
-              <td class="text-right p-1.5">{{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.nettSummary }) }}</td>
+              <td class="text-right p-1.5">
+                {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.nettSummary }) }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -136,12 +141,25 @@ const formattedDataTable = () => {
       </template>
 
       <template #filter>
-        <CustomDatePicker
-          v-model:start-date="report_queryParams.startDate"
-          v-model:end-date="report_queryParams.endDate"
-          :should-update-type="false"
-          @update:start-date="report_getFinancialReport('payment-summary')"
-        />
+        <section class="flex items-center gap-4">
+          <CustomDatePicker
+            v-model:start-date="report_queryParams.startDate"
+            v-model:end-date="report_queryParams.endDate"
+            :should-update-type="false"
+            @update:start-date="report_getFinancialReport('payment-summary')"
+          />
+          <PrimeVueSelect
+            v-model="report_queryParams.store_ids"
+            :options="outlet_lists_options"
+            option-label="label"
+            option-value="value"
+            placeholder="Select Outlet"
+            class="min-w-64"
+            filter
+            show-clear
+            @change="report_getFinancialReport('payment-summary')"
+          />
+        </section>
       </template>
       <template #body="{ data, column }">
         <template v-if="data.paymentMethod === 'Total'">

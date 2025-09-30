@@ -8,6 +8,7 @@ const {
   report_queryParams,
   report_getFinancialReport,
   report_profitAndLost_values,
+  outlet_lists_options,
 } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
@@ -75,6 +76,7 @@ const formattedDataTable = () => {
   <section>
     <!-- <pre class="p-4 my-4 bg-gray-100 rounded-lg break-all" style="white-space: pre-wrap; word-wrap: break-word">
       {{ report_profitAndLost_values }}
+      {{ outlet_lists_values }}
     </pre> -->
     <AppBaseDataTable
       :data="formattedDataTable()"
@@ -118,12 +120,25 @@ const formattedDataTable = () => {
       </template>
 
       <template #filter>
-        <CustomDatePicker
-          v-model:start-date="report_queryParams.startDate"
-          v-model:end-date="report_queryParams.endDate"
-          :should-update-type="false"
-          @update:start-date="report_getFinancialReport('financial-summary')"
-        />
+        <section class="flex items-center gap-4 pt-4">
+          <CustomDatePicker
+            v-model:start-date="report_queryParams.startDate"
+            v-model:end-date="report_queryParams.endDate"
+            :should-update-type="false"
+            @update:start-date="report_getFinancialReport('financial-summary')"
+          />
+          <PrimeVueSelect
+            v-model="report_queryParams.store_ids"
+            :options="outlet_lists_options"
+            option-label="label"
+            option-value="value"
+            placeholder="Select Outlet"
+            class="min-w-64"
+            filter
+            show-clear
+            @change="report_getFinancialReport('financial-summary')"
+          />
+        </section>
       </template>
       <template #body="{ data, column }">
         <template v-if="column.value === 'description'">

@@ -5,6 +5,7 @@ import {
   REPORT_VOUCHER_ENDPOINT,
   REPORT_CUSTOMER_ENDPOINT,
 } from '../constants';
+import { OUTLET_BASE_ENDPOINT } from '@/modules/outlet/constants';
 // Plugins
 import httpClient from '@/plugins/axios';
 // type
@@ -22,9 +23,12 @@ import type {
   ISalesReport,
   ICustomerReport,
 } from '../interfaces';
+import { IOutlet } from '@/modules/outlet/interfaces';
 export const useReportStore = defineStore('report', {
   state: (): IReportStore => ({
     report_isLoading: false,
+    outlet_lists_values: [] as IOutlet[],
+    // financial
     report_profitAndLost_values: {} as IFinancialReport_profitAndLost,
     report_discount_values: {} as IFinancialReport_discount,
     report_paymentMethod_values: {} as IFinancialReport_paymentMethod,
@@ -46,6 +50,32 @@ export const useReportStore = defineStore('report', {
     customerReport_values: [] as ICustomerReport[],
   }),
   actions: {
+    /**
+     * @description Handle fetch api outlet get list outlet
+     * @url /store
+     * @method GET
+     * @access private
+     */
+    async fetchOutlet_lists(requestConfigurations: AxiosRequestConfig) {
+      this.report_isLoading = true;
+      try {
+        const response = await httpClient.get(OUTLET_BASE_ENDPOINT, {
+          ...requestConfigurations,
+        });
+
+        this.outlet_lists_values = response.data.data.items;
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.report_isLoading = false;
+      }
+    },
     async getFinancialReport_profitAndLost(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
       this.report_isLoading = true;
       try {

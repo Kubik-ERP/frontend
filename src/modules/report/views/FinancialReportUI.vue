@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // components
-import ProfitandLostReport from '../components/FinancialReport/ProfitandLostReport.vue';
+import FinancialSummary from '../components/FinancialReport/FinancialSummary.vue';
 import DiscountReport from '../components/FinancialReport/Discount.vue';
 import PaymentMethodReport from '../components/FinancialReport/PaymentMethodReport.vue';
 import TaxandServiceChargeReport from '../components/FinancialReport/TaxandServiceChargeReport.vue';
@@ -9,22 +9,22 @@ import TaxandServiceChargeReport from '../components/FinancialReport/TaxandServi
 const financialReport_activeTab = ref<string>('financial-summary-report');
 const financialReport_listTabs = ref<ITabs[]>([
   {
-    component: ProfitandLostReport,
+    component: markRaw(FinancialSummary),
     label: 'Financial Summary',
     value: 'financial-summary-report',
   },
   {
-    component: DiscountReport,
+    component: markRaw(DiscountReport),
     label: 'Discount Report',
     value: 'DISCOUNT-REPORT',
   },
   {
-    component: PaymentMethodReport,
+    component: markRaw(PaymentMethodReport),
     label: 'Payment Method Report',
     value: 'payment-method-report',
   },
   {
-    component: TaxandServiceChargeReport,
+    component: markRaw(TaxandServiceChargeReport),
     label: 'Tax & Service Charge Report',
     value: 'tax-and-service-charge-report',
   },
@@ -32,11 +32,12 @@ const financialReport_listTabs = ref<ITabs[]>([
 
 // service
 import { useReportService } from '../services/report.service';
-const { report_getFinancialReport } = useReportService();
+const { report_getFinancialReport, fetchOutlet_lists } = useReportService();
 
 watch(
   financialReport_activeTab,
   async newTab => {
+    await fetchOutlet_lists();
     switch (newTab.toUpperCase()) {
       case 'FINANCIAL-SUMMARY-REPORT': {
         await report_getFinancialReport('financial-summary');

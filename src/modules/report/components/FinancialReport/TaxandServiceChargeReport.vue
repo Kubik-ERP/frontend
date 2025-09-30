@@ -8,6 +8,7 @@ const {
   report_queryParams,
   report_getFinancialReport,
   report_taxAndServiceCharge_values,
+  outlet_lists_options,
 } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
@@ -91,12 +92,25 @@ const popover = ref();
       </template>
 
       <template #filter>
-        <CustomDatePicker
-          v-model:start-date="report_queryParams.startDate"
-          v-model:end-date="report_queryParams.endDate"
-          :should-update-type="false"
-          @update:start-date="report_getFinancialReport('tax-and-service-summary')"
-        />
+        <section class="flex items-center gap-4">
+          <CustomDatePicker
+            v-model:start-date="report_queryParams.startDate"
+            v-model:end-date="report_queryParams.endDate"
+            :should-update-type="false"
+            @update:start-date="report_getFinancialReport('tax-and-service-summary')"
+          />
+          <PrimeVueSelect
+            v-model="report_queryParams.store_ids"
+            :options="outlet_lists_options"
+            option-label="label"
+            option-value="value"
+            placeholder="Select Outlet"
+            class="min-w-64"
+            filter
+            show-clear
+            @change="report_getFinancialReport('tax-and-service-summary')"
+          />
+        </section>
       </template>
 
       <template #body="{ data, column }">

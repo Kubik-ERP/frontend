@@ -167,7 +167,7 @@ const onClickShortcut = (label: string) => {
 };
 </script>
 <template>
-  <section class="pt-4">
+  <section>
     <PrimeVueButton
       variant="text"
       class="px-3 py-2 border border-solid border-grayscale-20"

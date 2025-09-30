@@ -19,13 +19,22 @@ export interface IReportQueryParams {
   startDate: Date;
   endDate: Date;
   type?: string | null;
+  store_ids?: string | null;
 }
 
 import type { IVoucherReport } from './voucher-report';
 export * from './voucher-report';
 
+import { IOutlet } from '@/modules/outlet/interfaces';
+
+interface IOutletListOptions {
+  value: string;
+  label: string;
+}
+
 export interface IReportStore {
   report_isLoading: boolean;
+  outlet_lists_values: IOutlet[];
   // financial report
   report_profitAndLost_values: IFinancialReport_profitAndLost;
   report_discount_values: IFinancialReport_discount;
@@ -63,6 +72,7 @@ export interface IReportProvided {
   voucherReport_columns: IColumnDataTable[];
   customerReport_columns: IColumnDataTable[];
   // methods
+  fetchOutlet_lists: () => Promise<void>;
   report_getFinancialReport: (type: string) => Promise<void>;
   report_getSalesReport: (type: string) => Promise<void>;
   report_getInventoryReport: (type: string) => Promise<void>;
@@ -93,4 +103,6 @@ export interface IReportProvided {
   voucherReport_values: globalThis.Ref<IVoucherReport[]>;
   // customer report
   customerReport_values: globalThis.Ref<ICustomerReport[]>;
+  // outlet_list
+  outlet_lists_options: globalThis.Ref<IOutletListOptions[]>;
 }
