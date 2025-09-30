@@ -11,7 +11,7 @@ import SalesByYear from '../components/SalesReport/SalesByYear.vue';
 
 // service
 import { useReportService } from '../services/report.service';
-const { report_getSalesReport } = useReportService();
+const { report_getSalesReport, fetchOutlet_lists, fetchStaff_lists } = useReportService();
 
 const salesReport_activeTab = ref<string>('item');
 const salesReport_listTabs = ref<ITabs[]>([
@@ -60,6 +60,8 @@ const salesReport_listTabs = ref<ITabs[]>([
 watch(
   salesReport_activeTab,
   async newTab => {
+    await fetchOutlet_lists();
+    await fetchStaff_lists();
     switch (newTab.toUpperCase()) {
       case 'ITEM': {
         await report_getSalesReport('item');

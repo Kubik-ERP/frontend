@@ -46,15 +46,19 @@ export const useReportService = (): IReportProvided => {
     customerReport_values,
     // outlet
     outlet_lists_values,
+    // staff
+    staff_lists_values,
   } = storeToRefs(store);
 
+  const outletStore = useOutletStore();
+  const { outlet_currentOutlet } = storeToRefs(outletStore);
   const outlet_lists_options = computed(() => {
     return [
       {
         label: 'All Store',
         value: outlet_lists_values.value.map(item => item.id).join(','),
       },
-      ...outlet_lists_values.value.map((item) => {
+      ...outlet_lists_values.value.map(item => {
         return {
           label: item.name,
           value: item.id,
@@ -63,15 +67,13 @@ export const useReportService = (): IReportProvided => {
     ];
   });
 
-  const outletStore = useOutletStore();
-  const { outlet_currentOutlet } = storeToRefs(outletStore);
-
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const report_queryParams = reactive<IReportQueryParams>({
     startDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
     endDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
     store_ids: outlet_currentOutlet.value?.id,
+    staff_ids: 'all',
   });
 
   const formatQueryParamsDate = (params: IReportQueryParams, type?: string): IReportQueryParams => {
@@ -79,12 +81,14 @@ export const useReportService = (): IReportProvided => {
       startDate: params.startDate,
       endDate: params.endDate,
       store_ids: params.store_ids,
+      staff_ids: params.staff_ids,
     });
     const newParams = {
       startDate: (new Date(params.startDate).toISOString().split('T')[0] + 'T00:00:00.000Z') as unknown as Date,
       endDate: (new Date(params.endDate).toISOString().split('T')[0] + 'T23:59:59.999Z') as unknown as Date,
       type: type,
       store_ids: params.store_ids,
+      staff_ids: params.staff_ids,
     };
     return {
       ...newParams,
@@ -104,6 +108,35 @@ export const useReportService = (): IReportProvided => {
       }
     }
   };
+
+  const fetchStaff_lists = async () => {
+    try {
+      await store.fetchStaffMember_lists({
+        ...httpAbort_registerAbort('STAFF_LIST_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
+
+  const staff_lists_options = computed(() => {
+    return [
+      {
+        label: 'All Staff',
+        value: 'all',
+      },
+      ...staff_lists_values.value.map(item => {
+        return {
+          label: item.name,
+          value: item.id,
+        };
+      }),
+    ];
+  });
 
   const report_getFinancialReport = async (type?: string) => {
     try {
@@ -192,6 +225,7 @@ export const useReportService = (): IReportProvided => {
     // params
     report_queryParams,
     // methods
+    fetchStaff_lists,
     fetchOutlet_lists,
     report_getFinancialReport,
     report_getSalesReport,
@@ -223,5 +257,7 @@ export const useReportService = (): IReportProvided => {
     customerReport_values,
     // outlet
     outlet_lists_options,
+    // staff
+    staff_lists_options,
   };
 };

@@ -20,21 +20,33 @@ export interface IReportQueryParams {
   endDate: Date;
   type?: string | null;
   store_ids?: string | null;
+  staff_ids?: string | null;
 }
 
 import type { IVoucherReport } from './voucher-report';
 export * from './voucher-report';
 
 import { IOutlet } from '@/modules/outlet/interfaces';
+export type { IOutlet };
+
+import { IStaffMember } from '@/modules/staff-member/interfaces';
+export type { IStaffMember };
 
 interface IOutletListOptions {
   value: string;
   label: string;
 }
 
+interface IStaffMemberListOptions {
+  value: string;
+  label: string;
+}
+
 export interface IReportStore {
   report_isLoading: boolean;
+  // populate select
   outlet_lists_values: IOutlet[];
+  staff_lists_values: IStaffMember[];
   // financial report
   report_profitAndLost_values: IFinancialReport_profitAndLost;
   report_discount_values: IFinancialReport_discount;
@@ -72,6 +84,7 @@ export interface IReportProvided {
   voucherReport_columns: IColumnDataTable[];
   customerReport_columns: IColumnDataTable[];
   // methods
+  fetchStaff_lists: () => Promise<void>;
   fetchOutlet_lists: () => Promise<void>;
   report_getFinancialReport: (type: string) => Promise<void>;
   report_getSalesReport: (type: string) => Promise<void>;
@@ -105,4 +118,6 @@ export interface IReportProvided {
   customerReport_values: globalThis.Ref<ICustomerReport[]>;
   // outlet_list
   outlet_lists_options: globalThis.Ref<IOutletListOptions[]>;
+  // staff_list
+  staff_lists_options: globalThis.Ref<IStaffMemberListOptions[]>;
 }
