@@ -5,7 +5,7 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
 // Interface
 import type { IAccountStoreDetailProvided } from '@/modules/account/interfaces';
 import type { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
-import type { IOutletTable } from '@/modules/outlet/interfaces';
+// import type { IOutletTable } from '@/modules/outlet/interfaces';
 
 /**
  * @description Inject all the data and methods what we need
@@ -58,9 +58,7 @@ const {
         >
           <template v-if="accountStoreDetail_storeTables?.length">
             <section
-              v-for="(storeTable, storeTableIndex) in accountStoreDetail_storeTables.filter((f: IOutletTable) => {
-                return f.floorName === accountStoreDetail_selectedFloor;
-              })"
+              v-for="(storeTable, storeTableIndex) in accountStoreDetail_storeTables"
               :key="`store-table-${storeTableIndex}`"
             >
               <AccountStoreTableLayout
