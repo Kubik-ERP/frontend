@@ -3,7 +3,7 @@
 // import ProfitandLostReport from '../components/FinancialReport/ProfitandLostReport.vue';
 // import CashInOutReport from '../components/FinancialReport/CashInOutReport.vue';
 import PaymentMethodReport from '../components/FinancialReport/PaymentMethodReport.vue';
-// import TaxandServiceChargeReport from '../components/FinancialReport/TaxandServiceChargeReport.vue';
+import TaxandServiceChargeReport from '../components/FinancialReport/TaxandServiceChargeReport.vue';
 
 // types
 const financialReport_activeTab = ref<string>('payment-method-report');
@@ -23,11 +23,11 @@ const financialReport_listTabs = ref<ITabs[]>([
     label: 'Payment Method Report',
     value: 'payment-method-report',
   },
-  // {
-  //   component: TaxandServiceChargeReport,
-  //   label: 'Tax & Service Charge Report',
-  //   value: 'tax-and-service-charge-report',
-  // },
+  {
+    component: TaxandServiceChargeReport,
+    label: 'Tax & Service Charge Report',
+    value: 'tax-and-service-charge-report',
+  },
 ]);
 
 // service
@@ -51,7 +51,7 @@ watch(
         break;
       }
       case 'TAX-AND-SERVICE-CHARGE-REPORT': {
-        await report_getFinancialReport('tax-service');
+        await report_getFinancialReport('tax-and-service-summary');
         break;
       }
       default: {

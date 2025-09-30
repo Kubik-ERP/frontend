@@ -95,7 +95,7 @@ const popover = ref();
           v-model:start-date="report_queryParams.startDate"
           v-model:end-date="report_queryParams.endDate"
           :should-update-type="false"
-          @update:start-date="report_getFinancialReport('tax-service')"
+          @update:start-date="report_getFinancialReport('tax-and-service-summary')"
         />
       </template>
 
