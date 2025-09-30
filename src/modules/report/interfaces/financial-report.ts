@@ -13,14 +13,23 @@ export interface IFinancialReport_cashInOut {
   nominal: number;
 }
 export interface IFinancialReport_paymentMethod {
-  reportData: {
-    paymentMethod: string;
-    transaction: number;
-    nominal: number;
-  }[];
-  totals: {
-    transaction: number;
-    nominal: number;
+  simpleWidget: {
+    totalTransaksi: number;
+    pendapatanKotor: number;
+    totalRefund: number;
+    totalPenggunaanVoucher: number;
+    nettSummary: number;
+  };
+  paymentList: {
+    reportData: Array<{
+      paymentMethod: string;
+      transaction: number | string;
+      nominal: number;
+    }>;
+    totals: {
+      transaction: number | string;
+      nominal: number;
+    };
   };
 }
 export interface IFinancialReport_taxServiceCharge {

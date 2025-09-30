@@ -1,33 +1,33 @@
 <script setup lang="ts">
 // components
-import ProfitandLostReport from '../components/FinancialReport/ProfitandLostReport.vue';
-import CashInOutReport from '../components/FinancialReport/CashInOutReport.vue';
+// import ProfitandLostReport from '../components/FinancialReport/ProfitandLostReport.vue';
+// import CashInOutReport from '../components/FinancialReport/CashInOutReport.vue';
 import PaymentMethodReport from '../components/FinancialReport/PaymentMethodReport.vue';
-import TaxandServiceChargeReport from '../components/FinancialReport/TaxandServiceChargeReport.vue';
+// import TaxandServiceChargeReport from '../components/FinancialReport/TaxandServiceChargeReport.vue';
 
 // types
-const financialReport_activeTab = ref<string>('profit-and-lost-report');
+const financialReport_activeTab = ref<string>('payment-method-report');
 const financialReport_listTabs = ref<ITabs[]>([
-  {
-    component: ProfitandLostReport,
-    label: 'Profit & Loss Report',
-    value: 'profit-and-lost-report',
-  },
-  {
-    component: CashInOutReport,
-    label: 'Cash In/Out Report',
-    value: 'cash-in-out-report',
-  },
+  // {
+  //   component: ProfitandLostReport,
+  //   label: 'Profit & Loss Report',
+  //   value: 'profit-and-lost-report',
+  // },
+  // {
+  //   component: CashInOutReport,
+  //   label: 'Cash In/Out Report',
+  //   value: 'cash-in-out-report',
+  // },
   {
     component: PaymentMethodReport,
     label: 'Payment Method Report',
     value: 'payment-method-report',
   },
-  {
-    component: TaxandServiceChargeReport,
-    label: 'Tax & Service Charge Report',
-    value: 'tax-and-service-charge-report',
-  },
+  // {
+  //   component: TaxandServiceChargeReport,
+  //   label: 'Tax & Service Charge Report',
+  //   value: 'tax-and-service-charge-report',
+  // },
 ]);
 
 // service
@@ -47,7 +47,7 @@ watch(
         break;
       }
       case 'PAYMENT-METHOD-REPORT': {
-        await report_getFinancialReport('payment-method');
+        await report_getFinancialReport('payment-summary');
         break;
       }
       case 'TAX-AND-SERVICE-CHARGE-REPORT': {
