@@ -1,18 +1,18 @@
 <script setup lang="ts">
 // components
-// import ProfitandLostReport from '../components/FinancialReport/ProfitandLostReport.vue';
+import ProfitandLostReport from '../components/FinancialReport/ProfitandLostReport.vue';
 // import CashInOutReport from '../components/FinancialReport/CashInOutReport.vue';
 import PaymentMethodReport from '../components/FinancialReport/PaymentMethodReport.vue';
 import TaxandServiceChargeReport from '../components/FinancialReport/TaxandServiceChargeReport.vue';
 
 // types
-const financialReport_activeTab = ref<string>('payment-method-report');
+const financialReport_activeTab = ref<string>('profit-and-lost-report');
 const financialReport_listTabs = ref<ITabs[]>([
-  // {
-  //   component: ProfitandLostReport,
-  //   label: 'Profit & Loss Report',
-  //   value: 'profit-and-lost-report',
-  // },
+  {
+    component: ProfitandLostReport,
+    label: 'Financial Summary',
+    value: 'profit-and-lost-report',
+  },
   // {
   //   component: CashInOutReport,
   //   label: 'Cash In/Out Report',
@@ -39,7 +39,7 @@ watch(
   async newTab => {
     switch (newTab.toUpperCase()) {
       case 'PROFIT-AND-LOST-REPORT': {
-        await report_getFinancialReport('profit-loss');
+        await report_getFinancialReport('financial-summary');
         break;
       }
       case 'CASH-IN-OUT-REPORT': {

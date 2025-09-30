@@ -55,7 +55,7 @@ export const useReportStore = defineStore('report', {
         });
         // console.log('response', response.data);
         switch (params.type) {
-          case 'profit-loss': {
+          case 'financial-summary': {
             this.report_profitAndLost_values = response.data.data;
             break;
           }
