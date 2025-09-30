@@ -1,5 +1,5 @@
 import type {
-  IFinancialReport_cashInOut,
+  IFinancialReport_discount,
   IFinancialReport_paymentMethod,
   IFinancialReport_profitAndLost,
   IFinancialReport_taxServiceCharge,
@@ -28,7 +28,7 @@ export interface IReportStore {
   report_isLoading: boolean;
   // financial report
   report_profitAndLost_values: IFinancialReport_profitAndLost;
-  report_cashInOut_values: IFinancialReport_cashInOut[];
+  report_discount_values: IFinancialReport_discount;
   report_paymentMethod_values: IFinancialReport_paymentMethod;
   report_taxAndServiceCharge_values: IFinancialReport_taxServiceCharge[];
   // sales report
@@ -51,7 +51,7 @@ export interface IReportStore {
 
 export interface IReportProvided {
   financialReport_profitAndLost_columns: IColumnDataTable[];
-  financialReport_cashInOut_columns: IColumnDataTable[];
+  financialReport_discount_columns: IColumnDataTable[];
   financialReport_paymentMethod_columns: IColumnDataTable[];
   financialReport_taxAndServiceCharge_columns: IColumnDataTable[];
   lossReport_columns: IColumnDataTable[];
@@ -74,7 +74,7 @@ export interface IReportProvided {
   report_isLoading: globalThis.Ref<boolean>;
   // financial
   report_profitAndLost_values: globalThis.Ref<IFinancialReport_profitAndLost>;
-  report_cashInOut_values: globalThis.Ref<IFinancialReport_cashInOut[]>;
+  report_discount_values: globalThis.Ref<IFinancialReport_discount>;
   report_paymentMethod_values: globalThis.Ref<IFinancialReport_paymentMethod>;
   report_taxAndServiceCharge_values: globalThis.Ref<IFinancialReport_taxServiceCharge[]>;
   // sales report

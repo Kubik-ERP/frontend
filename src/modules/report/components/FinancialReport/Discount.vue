@@ -3,12 +3,8 @@
 import CustomDatePicker from '../../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../../services/report.service';
-const {
-  financialReport_cashInOut_columns,
-  report_queryParams,
-  report_getFinancialReport,
-  report_cashInOut_values,
-} = useReportService();
+const { financialReport_discount_columns, report_queryParams, report_getFinancialReport, report_discount_values } =
+  useReportService();
 
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
@@ -17,12 +13,11 @@ const { exportToPdf, exportToCsv } = useReportExporter();
 const popover = ref();
 
 const formattedDataTable = () => {
-  const newData = report_cashInOut_values.value.map(item => {
+  const newData = report_discount_values?.value?.discountList?.map(item => {
     return {
-      date: useFormatDate(item.date, 'dd/mm/yyyy'),
-      type: item.type,
-      notes: item.notes,
-      nominal: useCurrencyFormat({ data: item.nominal }),
+      name: item.nama,
+      price: useCurrencyFormat({ data: item.nilaiBarang }),
+      discount: useCurrencyFormat({ data: item.jumlahDiskon }),
     };
   });
   return newData;
@@ -30,36 +25,68 @@ const formattedDataTable = () => {
 
 const page = ref<number>(1);
 const limit = ref<number>(10);
-const totalRecords = ref<number>(formattedDataTable().length);
+const totalRecords = ref<number>(formattedDataTable.length);
 const onChangePage = (newPage: number) => {
   page.value = newPage;
 };
 
 const handleExportToPdf = () => {
   exportToPdf({
-    reportName: 'Financial Report - Cash In/Out Report',
+    reportName: 'Financial Report - Discount Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: financialReport_cashInOut_columns,
+    columns: financialReport_discount_columns,
     tableData: formattedDataTable(),
   });
 };
 const handleExportToCsv = () => {
   exportToCsv({
-    reportName: 'Financial Report - Cash In/Out Report',
+    reportName: 'Financial Report - Discount Report',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: financialReport_cashInOut_columns,
+    columns: financialReport_discount_columns,
     tableData: formattedDataTable(),
   });
 };
 </script>
 <template>
-  <section>
-    <!-- <pre class="p-4 my-4 bg-gray-100 rounded-lg break-all" style="white-space: pre-wrap; word-wrap: break-word">
-      {{ report_cashInOut_values }}
-    </pre> -->
+  <section class="flex flex-col gap-4">
+    <PrimeVueCard>
+      <template #content>
+        <table class="w-full">
+          <tbody>
+            <tr class="bg-primary-background">
+              <th class="text-left p-1.5">Total Discount</th>
+              <td class="text-right p-1.5">
+                {{
+                  useCurrencyFormat({
+                    data: report_discount_values.simpleWidget?.totalJumlahDiskon,
+                  })
+                }}
+              </td>
+            </tr>
+            <tr>
+              <th class="text-left p-1.5">Total Price</th>
+              <td class="text-right p-1.5">
+                {{ useCurrencyFormat({ data: report_discount_values.simpleWidget?.totalItemValue }) }}
+              </td>
+            </tr>
+            <tr class="bg-primary-background">
+              <th class="text-left p-1.5">Total Discounted Item</th>
+              <td class="text-right p-1.5">
+                {{
+                  useCurrencyFormat({
+                    data: report_discount_values.simpleWidget?.totalItemWithDiscount,
+                    hidePrefix: true,
+                  })
+                }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
+    </PrimeVueCard>
     <AppBaseDataTable
       :data="formattedDataTable()"
-      :columns="financialReport_cashInOut_columns"
+      :columns="financialReport_discount_columns"
       :first="(page - 1) * limit"
       :rows-per-page="limit"
       :total-records="totalRecords"
@@ -70,13 +97,13 @@ const handleExportToCsv = () => {
       @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Cash In/Out Report</h1>
+        <h1 class="font-bold text-2xl text-text-primary">Discount Report</h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
           variant="outlined"
           label="Export"
-          :disabled="formattedDataTable().length === 0"
+          :disabled="formattedDataTable()?.length === 0"
           @click="popover.toggle($event)"
         >
           <template #icon>
@@ -111,21 +138,13 @@ const handleExportToCsv = () => {
           v-model:start-date="report_queryParams.startDate"
           v-model:end-date="report_queryParams.endDate"
           :should-update-type="false"
-          @update:start-date="report_getFinancialReport('cashin-out')"
+          @update:start-date="report_getFinancialReport('discount-summary')"
         />
       </template>
 
       <template #body="{ data, column }">
-        <template v-if="column.value === 'notes'">
-          <span v-if="data.type === 'Cash In'" class="flex flex-col text-sm text-text-primary">
-            {{ data[column.value].split(' ')[0] }}
-            <router-link :to="`/invoice/${data[column.value].split(' ')[1]}`">
-              <span class="text-sm font-semibold text-sky-600 cursor-pointer">
-                #{{ data[column.value].split(' ')[1] }}
-              </span>
-            </router-link>
-          </span>
-          <span v-else class="text-sm text-text-primary">{{ data[column.value] }}</span>
+        <template v-if="column.value === 'name'">
+          <span class="text-sm text-text-primary">#{{ data[column.value] }}</span>
         </template>
         <template v-else>
           <span class="text-sm text-text-primary">{{ data[column.value] }}</span>

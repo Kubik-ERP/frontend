@@ -1,22 +1,22 @@
 <script setup lang="ts">
 // components
 import ProfitandLostReport from '../components/FinancialReport/ProfitandLostReport.vue';
-import CashInOutReport from '../components/FinancialReport/CashInOutReport.vue';
+import DiscountReport from '../components/FinancialReport/Discount.vue';
 import PaymentMethodReport from '../components/FinancialReport/PaymentMethodReport.vue';
 import TaxandServiceChargeReport from '../components/FinancialReport/TaxandServiceChargeReport.vue';
 
 // types
-const financialReport_activeTab = ref<string>('profit-and-lost-report');
+const financialReport_activeTab = ref<string>('financial-summary-report');
 const financialReport_listTabs = ref<ITabs[]>([
   {
     component: ProfitandLostReport,
-    label: 'Profit & Loss Report',
-    value: 'profit-and-lost-report',
+    label: 'Financial Summary',
+    value: 'financial-summary-report',
   },
   {
-    component: CashInOutReport,
-    label: 'Cash In/Out Report',
-    value: 'cash-in-out-report',
+    component: DiscountReport,
+    label: 'Discount Report',
+    value: 'DISCOUNT-REPORT',
   },
   {
     component: PaymentMethodReport,
@@ -38,20 +38,20 @@ watch(
   financialReport_activeTab,
   async newTab => {
     switch (newTab.toUpperCase()) {
-      case 'PROFIT-AND-LOST-REPORT': {
-        await report_getFinancialReport('profit-loss');
+      case 'FINANCIAL-SUMMARY-REPORT': {
+        await report_getFinancialReport('financial-summary');
         break;
       }
-      case 'CASH-IN-OUT-REPORT': {
-        await report_getFinancialReport('cashin-out');
+      case 'DISCOUNT-REPORT': {
+        await report_getFinancialReport('discount-summary');
         break;
       }
       case 'PAYMENT-METHOD-REPORT': {
-        await report_getFinancialReport('payment-method');
+        await report_getFinancialReport('payment-summary');
         break;
       }
       case 'TAX-AND-SERVICE-CHARGE-REPORT': {
-        await report_getFinancialReport('tax-service');
+        await report_getFinancialReport('tax-and-service-summary');
         break;
       }
       default: {
