@@ -45,13 +45,7 @@ const applyDateChange = () => {
     // Create a new Date object for 'start' to work with
     const start = new Date(localDateRange.value[0].getTime() + gmt * 60 * 60 * 1000);
 
-    // If an end date exists, create a new object from it.
-    // If not, create a new object by COPYING the start date.
-    if (localDateRange.value[1]) {
-      console.log('localDateRange.value[1] ADA', localDateRange.value[1]);
-    } else {
-      console.log('localDateRange.value[1] TIDAK ADA', localDateRange.value[1]);
-    }
+
     const end = localDateRange.value[1] ? new Date(localDateRange.value[1].getTime() + gmt * 60 * 60 * 1000) : start; // This creates a copy, not a reference
 
     emit('update:startDate', start);
@@ -109,7 +103,7 @@ const onClickShortcut = (label: string) => {
       firstDayOfWeek.setDate(today.getDate() - today.getDay());
 
       start = firstDayOfWeek;
-      end = new Date();
+      end = new Date(firstDayOfWeek.getTime() + 6 * 24 * 60 * 60 * 1000);
 
       newType = 'days';
       break;
@@ -122,6 +116,20 @@ const onClickShortcut = (label: string) => {
       start = new Date(today.setDate(1));
       end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
       end.setHours(end.getHours() + gmt);
+
+      newType = 'days';
+      break;
+    }
+
+    case 'Last Week': {
+      today = new Date(Date.now() + gmt * 60 * 60 * 1000);
+
+      const firstDayOfWeek = new Date(today);
+      // Assuming Sunday is the first day of the week (day 0)
+      firstDayOfWeek.setDate(today.getDate() - today.getDay() - 7);
+
+      start = firstDayOfWeek;
+      end = new Date(firstDayOfWeek.getTime() + 6 * 24 * 60 * 60 * 1000);
 
       newType = 'days';
       break;
@@ -164,6 +172,20 @@ const onClickShortcut = (label: string) => {
 
       start = sevenDaysAgo;
       end = today;
+      newType = 'days';
+      break;
+    }
+
+    case 'This Year': {
+      today = new Date(Date.now() + gmt * 60 * 60 * 1000);
+
+      const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+      firstDayOfYear.setHours(firstDayOfYear.getHours() + gmt);
+      const lastDayOfYear = new Date(today.getFullYear(), 11, 31);
+      lastDayOfYear.setHours(lastDayOfYear.getHours() + gmt);
+
+      start = firstDayOfYear;
+      end = lastDayOfYear;
       newType = 'days';
       break;
     }
@@ -255,9 +277,11 @@ const onClickShortcut = (label: string) => {
                   'This Month',
                   'Last Month',
                   'This Week',
+                  'Last Week',
+                  'This Year',
+                  'Last Year',
                   'Last 7 Days',
                   'Last 30 Days',
-                  'Last Year',
                 ]"
                 :key="label"
                 variant="text"
