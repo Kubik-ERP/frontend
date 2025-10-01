@@ -25,7 +25,7 @@ export const PRODUCT_LIST_COLUMNS: IColumnDataTable[] = [
     value: 'price',
   },
   {
-    label: 'Discount Price',
+    label: 'Final Discount Price',
     sortable: false,
     value: 'discountPrice',
   },
