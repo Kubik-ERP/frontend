@@ -198,7 +198,6 @@ const onClickShortcut = (label: string) => {
       const lastDayOfLastYear = new Date(today.getFullYear() - 1, 11, 31);
       lastDayOfLastYear.setHours(lastDayOfLastYear.getHours() + gmt);
 
-
       start = firstDayOfLastYear;
       end = lastDayOfLastYear;
       newType = 'days';
