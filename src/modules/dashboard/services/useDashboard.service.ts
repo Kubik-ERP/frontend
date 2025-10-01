@@ -14,8 +14,8 @@ export const useDashboardService = (): IDashboardProvided => {
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const dashboard_queryParams = reactive<IDashboardQueryParams>({
-    startDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-    endDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+    startDate: new Date(Date.now() + 0 * 60 * 60 * 1000),
+    endDate: new Date(Date.now() + 0 * 60 * 60 * 1000),
     type: 'time',
   });
 

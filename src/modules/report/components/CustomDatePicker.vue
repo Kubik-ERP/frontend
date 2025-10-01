@@ -45,6 +45,7 @@ const applyDateChange = () => {
     // Create a new Date object for 'start' to work with
     const start = new Date(localDateRange.value[0].getTime() + gmt * 60 * 60 * 1000);
 
+
     const end = localDateRange.value[1] ? new Date(localDateRange.value[1].getTime() + gmt * 60 * 60 * 1000) : start; // This creates a copy, not a reference
 
     emit('update:startDate', start);
@@ -196,6 +197,7 @@ const onClickShortcut = (label: string) => {
       firstDayOfLastYear.setHours(firstDayOfLastYear.getHours() + gmt);
       const lastDayOfLastYear = new Date(today.getFullYear() - 1, 11, 31);
       lastDayOfLastYear.setHours(lastDayOfLastYear.getHours() + gmt);
+
       start = firstDayOfLastYear;
       end = lastDayOfLastYear;
       newType = 'days';
