@@ -111,7 +111,7 @@ export const useReportService = (): IReportProvided => {
 
   const fetchStaff_lists = async () => {
     try {
-      await store.fetchStaffMember_lists({
+      await store.fetchStaffMember_lists(report_queryParams.store_ids, {
         ...httpAbort_registerAbort('STAFF_LIST_REQUEST'),
       });
     } catch (error: unknown) {
@@ -140,9 +140,12 @@ export const useReportService = (): IReportProvided => {
 
   const report_getFinancialReport = async (type?: string) => {
     try {
-      await store.getFinancialReport_profitAndLost(formatQueryParamsDate(report_queryParams, type), {
-        ...httpAbort_registerAbort('FINANCIALREPORT_REQUEST'),
-      });
+      Promise.all([
+        fetchOutlet_lists(),
+        await store.getFinancialReport_profitAndLost(formatQueryParamsDate(report_queryParams, type), {
+          ...httpAbort_registerAbort('FINANCIALREPORT_REQUEST'),
+        }),
+      ]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error);
@@ -154,9 +157,13 @@ export const useReportService = (): IReportProvided => {
 
   const report_getSalesReport = async (type?: string) => {
     try {
-      await store.getSalesReport(formatQueryParamsDate(report_queryParams, type), {
-        ...httpAbort_registerAbort('SALESREPORT_REQUEST'),
-      });
+      Promise.all([
+        fetchOutlet_lists(),
+        fetchStaff_lists(),
+        await store.getSalesReport(formatQueryParamsDate(report_queryParams, type), {
+          ...httpAbort_registerAbort('SALESREPORT_REQUEST'),
+        }),
+      ]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error);

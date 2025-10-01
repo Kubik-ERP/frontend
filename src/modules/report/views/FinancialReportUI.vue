@@ -32,12 +32,11 @@ const financialReport_listTabs = ref<ITabs[]>([
 
 // service
 import { useReportService } from '../services/report.service';
-const { report_getFinancialReport, fetchOutlet_lists } = useReportService();
+const { report_getFinancialReport } = useReportService();
 
 watch(
   financialReport_activeTab,
   async newTab => {
-    await fetchOutlet_lists();
     switch (newTab.toUpperCase()) {
       case 'FINANCIAL-SUMMARY-REPORT': {
         await report_getFinancialReport('financial-summary');

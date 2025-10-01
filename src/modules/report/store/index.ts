@@ -86,11 +86,12 @@ export const useReportStore = defineStore('report', {
       }
     },
 
-    async fetchStaffMember_lists(requestConfigurations: AxiosRequestConfig) {
+    async fetchStaffMember_lists(store_ids: string | null | undefined, requestConfigurations: AxiosRequestConfig) {
       this.report_isLoading = true;
       try {
         const response = await httpClient.get(`${STAFF_MEMBER_BASE_ENDPOINT}`, {
           params: {
+            store_ids,
             page: 1,
             limit: 100,
           },
