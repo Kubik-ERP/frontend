@@ -5,8 +5,10 @@ import {
   REPORT_VOUCHER_ENDPOINT,
   REPORT_CUSTOMER_ENDPOINT,
 } from '../constants';
+
 import { OUTLET_BASE_ENDPOINT } from '@/modules/outlet/constants';
 import { STAFF_MEMBER_BASE_ENDPOINT } from '@/modules/staff-member/constants';
+
 // Plugins
 import httpClient from '@/plugins/axios';
 // type
