@@ -45,10 +45,9 @@ const applyDateChange = () => {
 
     // If an end date exists, create a new object from it.
     // If not, create a new object by COPYING the start date.
-    if(localDateRange.value[1]){
+    if (localDateRange.value[1]) {
       console.log('localDateRange.value[1] ADA', localDateRange.value[1]);
-    }
-    else{
+    } else {
       console.log('localDateRange.value[1] TIDAK ADA', localDateRange.value[1]);
     }
     const end = localDateRange.value[1] ? new Date(localDateRange.value[1].getTime() + 7 * 60 * 60 * 1000) : start; // This creates a copy, not a reference
@@ -153,6 +152,33 @@ const onClickShortcut = (label: string) => {
       newType = 'days';
       break;
     }
+
+    case 'Last 7 Days': {
+      today = new Date(Date.now() + 7 * 60 * 60 * 1000);
+
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(today.getDate() - 7);
+      sevenDaysAgo.setHours(sevenDaysAgo.getHours() + 7);
+
+      start = sevenDaysAgo;
+      end = today;
+      newType = 'days';
+      break;
+    }
+
+    case 'Last Year': {
+      today = new Date(Date.now() + 7 * 60 * 60 * 1000);
+
+      const firstDayOfLastYear = new Date(today.getFullYear() - 1, 0, 1);
+      firstDayOfLastYear.setHours(firstDayOfLastYear.getHours() + 7);
+      const lastDayOfLastYear = new Date(today.getFullYear() - 1, 11, 31);
+      lastDayOfLastYear.setHours(lastDayOfLastYear.getHours() + 7);
+
+      start = firstDayOfLastYear;
+      end = lastDayOfLastYear;
+      newType = 'days';
+      break;
+    }
   }
   localDateRange.value = [start, end];
   type.value = newType;
@@ -167,7 +193,7 @@ const onClickShortcut = (label: string) => {
 };
 </script>
 <template>
-  <section class="pt-4">
+  <section>
     <PrimeVueButton
       variant="text"
       class="px-3 py-2 border border-solid border-grayscale-20"
@@ -221,7 +247,16 @@ const onClickShortcut = (label: string) => {
           <section id="shortcut-button">
             <div id="shortcut-button" class="grid grid-cols-1 md:grid-cols-2 gap-2">
               <PrimeVueButton
-                v-for="label in ['Today', 'Yesterday', 'This Month', 'This Week', 'Last 30 Days', 'Last Month']"
+                v-for="label in [
+                  'Today',
+                  'Yesterday',
+                  'This Month',
+                  'Last Month',
+                  'This Week',
+                  'Last 7 Days',
+                  'Last 30 Days',
+                  'Last Year',
+                ]"
                 :key="label"
                 variant="text"
                 class="w-full px-3 py-2 border border-solid border-grayscale-20"

@@ -3,8 +3,13 @@
 import CustomDatePicker from '../../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../../services/report.service';
-const { financialReport_discount_columns, report_queryParams, report_getFinancialReport, report_discount_values } =
-  useReportService();
+const {
+  financialReport_discount_columns,
+  report_queryParams,
+  report_getFinancialReport,
+  report_discount_values,
+  outlet_lists_options,
+} = useReportService();
 
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
@@ -134,12 +139,27 @@ const handleExportToCsv = () => {
       </template>
 
       <template #filter>
-        <CustomDatePicker
-          v-model:start-date="report_queryParams.startDate"
-          v-model:end-date="report_queryParams.endDate"
-          :should-update-type="false"
-          @update:start-date="report_getFinancialReport('discount-summary')"
-        />
+        <section class="flex items-center justify-start gap-4 pt-4">
+          <CustomDatePicker
+            v-model:start-date="report_queryParams.startDate"
+            v-model:end-date="report_queryParams.endDate"
+            :should-update-type="false"
+            @update:end-date="report_getFinancialReport('discount-summary')"
+          />
+          <PrimeVueSelect
+            v-model="report_queryParams.store_ids"
+            :options="outlet_lists_options"
+            option-label="label"
+            option-value="value"
+            placeholder="Select Outlet"
+            class="min-w-64"
+            filter
+            @change="report_getFinancialReport('discount-summary')"
+            ><template #dropdownicon>
+              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+            </template>
+          </PrimeVueSelect>
+        </section>
       </template>
 
       <template #body="{ data, column }">

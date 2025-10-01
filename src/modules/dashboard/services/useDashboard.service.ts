@@ -111,9 +111,7 @@ export const useDashboardService = (): IDashboardProvided => {
           'T23:59:59.999Z') as unknown as Date,
         type: dashboard_queryParams.type,
       };
-      console.log(formattedQueryParams);
       if (formattedQueryParams.type === 'custom') {
-        console.log('custom');
         // 1. Create a new Date object (a copy) from your original date.
         const newStartDate = new Date(dashboard_queryParams.startDate);
         const newEndDate = new Date(dashboard_queryParams.endDate);

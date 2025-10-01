@@ -101,12 +101,14 @@ onMounted(async () => {
       </template>
 
       <template #filter>
-        <CustomDatePicker
-          v-model:start-date="report_queryParams.startDate"
-          v-model:end-date="report_queryParams.endDate"
-          :should-update-type="false"
-          @update:start-date="report_getVoucherReport()"
-        />
+        <section class="flex items-center pt-4">
+          <CustomDatePicker
+            v-model:start-date="report_queryParams.startDate"
+            v-model:end-date="report_queryParams.endDate"
+            :should-update-type="false"
+            @update:end-date="report_getVoucherReport()"
+          />
+        </section>
       </template>
     </AppBaseDataTable>
   </section>
