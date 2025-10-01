@@ -2,7 +2,7 @@
 import { useReportStore } from '../store';
 // constant
 import {
-  FINANCIALREPORT_CASHINOUT_COLUMNS,
+  FINANCIALREPORT_DISCOUNT_COLUMNS,
   FINANCIALREPORT_PAYMENTMETHOD_COLUMNS,
   FINANCIALREPORT_PROFITANDLOST_COLUMNS,
   FINANCIALREPORT_TAXANDSERVICECHARGE_COLUMNS,
@@ -24,7 +24,7 @@ export const useReportService = (): IReportProvided => {
     report_isLoading,
     // financial
     report_profitAndLost_values,
-    report_cashInOut_values,
+    report_discount_values,
     report_paymentMethod_values,
     report_taxAndServiceCharge_values,
     // sales
@@ -143,7 +143,7 @@ export const useReportService = (): IReportProvided => {
   return {
     // constants
     financialReport_profitAndLost_columns: FINANCIALREPORT_PROFITANDLOST_COLUMNS,
-    financialReport_cashInOut_columns: FINANCIALREPORT_CASHINOUT_COLUMNS,
+    financialReport_discount_columns: FINANCIALREPORT_DISCOUNT_COLUMNS,
     financialReport_paymentMethod_columns: FINANCIALREPORT_PAYMENTMETHOD_COLUMNS,
     financialReport_taxAndServiceCharge_columns: FINANCIALREPORT_TAXANDSERVICECHARGE_COLUMNS,
     lossReport_columns: LOSSREPORT_COLUMNS,
@@ -166,7 +166,7 @@ export const useReportService = (): IReportProvided => {
     report_isLoading,
     // financial
     report_profitAndLost_values,
-    report_cashInOut_values,
+    report_discount_values,
     report_paymentMethod_values,
     report_taxAndServiceCharge_values,
     // sales
