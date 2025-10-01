@@ -70,8 +70,8 @@ export const useReportService = (): IReportProvided => {
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const report_queryParams = reactive<IReportQueryParams>({
-    startDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
-    endDate: new Date(Date.now() + 7 * 60 * 60 * 1000),
+    startDate: new Date(Date.now() + 0 * 60 * 60 * 1000),
+    endDate: new Date(Date.now() + 0 * 60 * 60 * 1000),
     store_ids: outlet_currentOutlet.value?.id,
     staff_ids: 'all',
   });
@@ -142,6 +142,7 @@ export const useReportService = (): IReportProvided => {
     try {
       Promise.all([
         fetchOutlet_lists(),
+        fetchStaff_lists(),
         await store.getFinancialReport_profitAndLost(formatQueryParamsDate(report_queryParams, type), {
           ...httpAbort_registerAbort('FINANCIALREPORT_REQUEST'),
         }),
@@ -215,6 +216,14 @@ export const useReportService = (): IReportProvided => {
     }
   };
 
+  const findOutletDetail = (id: string) => {
+    return outlet_lists_values.value.find(item => item.id === id);
+  };
+
+  const findStaffDetail = (id: string) => {
+    return staff_lists_values.value.find(item => item.id === id);
+  };
+
   return {
     // constants
     financialReport_profitAndLost_columns: FINANCIALREPORT_PROFITANDLOST_COLUMNS,
@@ -264,7 +273,9 @@ export const useReportService = (): IReportProvided => {
     customerReport_values,
     // outlet
     outlet_lists_options,
+    findOutletDetail,
     // staff
     staff_lists_options,
+    findStaffDetail,
   };
 };

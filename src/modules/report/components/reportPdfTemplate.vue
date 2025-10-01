@@ -14,6 +14,7 @@ interface ISummaryData {
   reportName: string;
   storeName: string;
   storeAddress: string;
+  staffMember: string;
   period: string;
   printDate: string;
   printTime: string;
@@ -30,6 +31,7 @@ const props = withDefaults(defineProps<IProps>(), {
     reportName: '',
     storeName: '',
     storeAddress: '',
+    staffMember: '',
     period: '',
     printDate: '',
     printTime: '',
@@ -48,7 +50,6 @@ const chunkedData = computed(() => {
   // const LINE_WRAP_HEIGHT = 15; // Extra height for wrapped lines
   // --- Configuration Constants (Adjust these to fine-tune your layout) ---
 
-  
   // const NAVBAR_HEIGHT = 118; // ✅ Approx. height of your blue navbar
   // const PAGE_HEIGHT_LIMIT = 1201 + NAVBAR_HEIGHT; // You may need to adjust this limit
   // const HEADER_HEIGHT = 201; // Approx. height of your main report header
@@ -130,6 +131,9 @@ const chunkedData = computed(() => {
             </h2>
             <h2 style="font-size: 16px; font-weight: bold; color: #333333">
               {{ reportData.storeAddress }}
+            </h2>
+            <h2 style="font-size: 16px; font-weight: bold; color: #333333">
+              Staff Member : {{ reportData.staffMember }}
             </h2>
             <h2 style="font-size: 16px; color: #333333">Period : {{ reportData.period }}</h2>
             <div style="font-size: 14px; color: #333333">
