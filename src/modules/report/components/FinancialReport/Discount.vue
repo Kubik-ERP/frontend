@@ -9,6 +9,9 @@ const {
   report_getFinancialReport,
   report_discount_values,
   outlet_lists_options,
+  staff_lists_options,
+  findOutletDetail,
+  findStaffDetail,
 } = useReportService();
 
 // composables for export pdf
@@ -38,6 +41,9 @@ const onChangePage = (newPage: number) => {
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Financial Report - Discount Report',
+    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
+    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_discount_columns,
     tableData: formattedDataTable(),
@@ -46,6 +52,9 @@ const handleExportToPdf = () => {
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Financial Report - Discount Report',
+    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
+    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_discount_columns,
     tableData: formattedDataTable(),
@@ -157,6 +166,19 @@ const handleExportToCsv = () => {
             @change="report_getFinancialReport('discount-summary')"
             ><template #dropdownicon>
               <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+            </template>
+          </PrimeVueSelect>
+          <PrimeVueSelect
+            v-model="report_queryParams.staff_ids"
+            :options="staff_lists_options"
+            option-label="label"
+            option-value="value"
+            placeholder="Select Staff"
+            filter
+            class="w-64"
+            @change="report_getFinancialReport('discount-summary')"
+            ><template #dropdownicon>
+              <AppBaseSvg name="staff" class="w-5 h-5 text-text-primary" />
             </template>
           </PrimeVueSelect>
         </section>

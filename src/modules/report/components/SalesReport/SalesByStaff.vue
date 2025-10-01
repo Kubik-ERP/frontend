@@ -10,6 +10,8 @@ const {
   report_getSalesReport,
   salesReport_salesByStaff_values,
   outlet_lists_options,
+  findOutletDetail,
+  findStaffDetail,
 } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
@@ -18,6 +20,9 @@ const popover = ref();
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Sales Report - Sales By Staff Report',
+    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
+    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: salesReport_columns,
     tableData: formattedDataTable(),
@@ -26,6 +31,9 @@ const handleExportToPdf = () => {
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Sales Report - Sales By Staff Report',
+    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
+    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: salesReport_columns,
     tableData: formattedDataTable(),

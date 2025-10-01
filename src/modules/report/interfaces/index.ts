@@ -118,6 +118,8 @@ export interface IReportProvided {
   customerReport_values: globalThis.Ref<ICustomerReport[]>;
   // outlet_list
   outlet_lists_options: globalThis.Ref<IOutletListOptions[]>;
+  findOutletDetail: (id: string) => IOutlet | null | undefined;
   // staff_list
   staff_lists_options: globalThis.Ref<IStaffMemberListOptions[]>;
+  findStaffDetail: (id: string) => IStaffMember | null | undefined;
 }
