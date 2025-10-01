@@ -123,7 +123,6 @@ const onChangePage = (newPage: number) => {
             option-value="value"
             placeholder="Select Outlet"
             filter
-            show-clear
             class="w-64"
             @change="report_getSalesReport('item')"
           >
@@ -138,7 +137,6 @@ const onChangePage = (newPage: number) => {
             option-value="value"
             placeholder="Select Staff"
             filter
-            show-clear
             class="w-64"
             @change="report_getSalesReport('item')"
             ><template #dropdownicon>

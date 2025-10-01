@@ -135,7 +135,6 @@ const formattedDataTable = () => {
             placeholder="Select Outlet"
             class="min-w-64"
             filter
-            show-clear
             @change="report_getFinancialReport('financial-summary')"
           >
             <template #dropdownicon>

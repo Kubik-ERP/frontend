@@ -156,7 +156,6 @@ const formattedDataTable = () => {
             placeholder="Select Outlet"
             class="min-w-64"
             filter
-            show-clear
             @change="report_getFinancialReport('payment-summary')"
           ><template #dropdownicon>
               <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
