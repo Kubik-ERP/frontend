@@ -3,8 +3,14 @@
 import CustomDatePicker from '../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../services/report.service';
-const { customerReport_columns, report_queryParams, report_getCustomerReport, customerReport_values } =
-  useReportService();
+const {
+  customerReport_columns,
+  report_queryParams,
+  report_getCustomerReport,
+  customerReport_values,
+  findOutletDetail,
+  findStaffDetail,
+} = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../composables/useReportExporter';
 const { exportToPdf, exportToCsv } = useReportExporter();
@@ -12,6 +18,9 @@ const popover = ref();
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Customer Report',
+    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
+    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: customerReport_columns,
     tableData: formattedDataTable(),
@@ -20,6 +29,9 @@ const handleExportToPdf = () => {
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Customer Report',
+    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
+    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: customerReport_columns,
     tableData: formattedDataTable(),

@@ -1,10 +1,18 @@
 <script setup lang="ts">
+// components
+import CustomDatePicker from '../components/CustomDatePicker.vue';
+// service
+import { useReportService } from '../services/report.service';
+const { lossReport_columns, report_queryParams, findOutletDetail, findStaffDetail } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../composables/useReportExporter';
 const { exportToPdf, exportToCsv } = useReportExporter();
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Loss Report',
+    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
+    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: lossReport_columns,
     tableData: TEMPORARY_DATA,
@@ -13,19 +21,16 @@ const handleExportToPdf = () => {
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Loss Report',
+    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
+    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: lossReport_columns,
     tableData: TEMPORARY_DATA,
   });
 };
-// components
-import CustomDatePicker from '../components/CustomDatePicker.vue';
-// service
-import { useReportService } from '../services/report.service';
-const { lossReport_columns, report_queryParams } = useReportService();
 
 const popover = ref();
-
 
 const TEMPORARY_DATA = reactive([
   {
