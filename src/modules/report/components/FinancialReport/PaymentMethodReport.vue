@@ -8,6 +8,7 @@ const {
   report_queryParams,
   report_getFinancialReport,
   report_paymentMethod_values,
+  outlet_lists_options,
 } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
@@ -33,28 +34,71 @@ const handleExportToCsv = () => {
 };
 
 const formattedDataTable = () => {
-  const newData = report_paymentMethod_values.value.reportData.map(item => {
+  // const newData = {}
+  const newData = report_paymentMethod_values.value?.paymentList?.reportData.map(item => {
     return {
       paymentMethod: item.paymentMethod,
       transaction: item.transaction,
       nominal: useCurrencyFormat({ data: item.nominal }),
     };
   });
-  newData.push({
+  newData?.push({
     paymentMethod: 'Total',
-    transaction: report_paymentMethod_values.value.totals.transaction,
-    nominal: useCurrencyFormat({ data: report_paymentMethod_values.value.totals.nominal }),
+    transaction: useCurrencyFormat({
+      data: report_paymentMethod_values.value?.paymentList?.totals?.transaction as number,
+      hidePrefix: true,
+    }),
+    nominal: useCurrencyFormat({ data: report_paymentMethod_values.value?.paymentList?.totals?.nominal }),
   });
 
   return newData || [];
 };
 </script>
 <template>
-  <section>
-    <!-- <pre class="p-4 my-4 bg-gray-100 rounded-lg break-all" style="white-space: pre-wrap; word-wrap: break-word">
-      {{ report_paymentMethod_values }}
-      {{ formattedDataTable() }}
-    </pre> -->
+  <section class="flex flex-col gap-4">
+    <PrimeVueCard>
+      <template #content>
+        <table class="w-full">
+          <tbody>
+            <tr class="bg-primary-background">
+              <th class="text-left p-1.5">Total Transaction</th>
+              <td class="text-right p-1.5">
+                {{
+                  useCurrencyFormat({
+                    data: report_paymentMethod_values.simpleWidget?.totalTransaksi,
+                    hidePrefix: true,
+                  })
+                }}
+              </td>
+            </tr>
+            <tr>
+              <th class="text-left p-1.5">Gross Sales</th>
+              <td class="text-right p-1.5">
+                {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.totalTransaksi }) }}
+              </td>
+            </tr>
+            <tr class="bg-primary-background">
+              <th class="text-left p-1.5">Total Refund</th>
+              <td class="text-right p-1.5">
+                {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.totalRefund }) }}
+              </td>
+            </tr>
+            <tr>
+              <th class="text-left p-1.5">Voucher Used</th>
+              <td class="text-right p-1.5">
+                {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.totalPenggunaanVoucher }) }}
+              </td>
+            </tr>
+            <tr class="bg-primary-background">
+              <th class="text-left p-1.5">Nett Sales</th>
+              <td class="text-right p-1.5">
+                {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.nettSummary }) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
+    </PrimeVueCard>
     <AppBaseDataTable
       :data="formattedDataTable()"
       :columns="financialReport_paymentMethod_columns"
@@ -68,12 +112,7 @@ const formattedDataTable = () => {
         <h1 class="font-bold text-2xl text-text-primary">Payment Method Report</h1>
       </template>
       <template #header-suffix>
-        <PrimeVueButton
-          variant="outlined"
-          label="Export"
-
-          @click="popover.toggle($event)"
-        >
+        <PrimeVueButton variant="outlined" label="Export" @click="popover.toggle($event)">
           <template #icon>
             <AppBaseSvg name="export" class="!w-5 !h-5" />
           </template>
@@ -102,12 +141,27 @@ const formattedDataTable = () => {
       </template>
 
       <template #filter>
-        <CustomDatePicker
-          v-model:start-date="report_queryParams.startDate"
-          v-model:end-date="report_queryParams.endDate"
-          :should-update-type="false"
-          @update:start-date="report_getFinancialReport('payment-method')"
-        />
+        <section class="flex items-center gap-4 pt-4">
+          <CustomDatePicker
+            v-model:start-date="report_queryParams.startDate"
+            v-model:end-date="report_queryParams.endDate"
+            :should-update-type="false"
+            @update:end-date="report_getFinancialReport('payment-summary')"
+          />
+          <PrimeVueSelect
+            v-model="report_queryParams.store_ids"
+            :options="outlet_lists_options"
+            option-label="label"
+            option-value="value"
+            placeholder="Select Outlet"
+            class="min-w-64"
+            filter
+            @change="report_getFinancialReport('payment-summary')"
+          ><template #dropdownicon>
+              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+            </template>
+          </PrimeVueSelect>
+        </section>
       </template>
       <template #body="{ data, column }">
         <template v-if="data.paymentMethod === 'Total'">
