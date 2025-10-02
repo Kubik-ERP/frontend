@@ -621,6 +621,82 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
   };
 
   /**
+   * @description Handle business logic for showing dialog confirmation delete floor
+   */
+  const accountStoreTableConfiguration_onShowDialogDeleteFloor = (floorName: string): void => {
+    const floor = accountStoreTableConfiguration_formData.configurations.find(
+      config => config.floorName === floorName,
+    );
+
+    const tablesCount = floor?.tables?.length || 0;
+    const hasTablesWarning = tablesCount > 0 
+      ? `<br><br><span class="font-medium text-error-main">Warning: This will also delete ${tablesCount} table${tablesCount > 1 ? 's' : ''} on this floor.</span>`
+      : '';
+
+    const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'account-store-floor-dialog-confirmation',
+      description: `
+        <span class="font-normal text-black-secondary text-center text-sm">
+          Are you sure you want to delete the floor
+          <strong>${floorName}</strong>?${hasTablesWarning}
+        </span>`,
+      iconName: 'delete-polygon',
+      isOpen: true,
+      isUsingButtonSecondary: true,
+      isUsingHtmlTagOnDescription: true,
+      onClickButtonPrimary: () => {
+        eventBus.emit('AppBaseDialog', { id: 'account-store-floor-dialog-confirmation', isOpen: false });
+      },
+      onClickButtonSecondary: () => {
+        accountStoreTableConfiguration_deleteFloor(floorName);
+        eventBus.emit('AppBaseDialog', { id: 'account-store-floor-dialog-confirmation', isOpen: false });
+      },
+      textButtonPrimary: 'Cancel',
+      textButtonSecondary: 'Delete',
+      title: 'Delete Floor',
+      type: 'error',
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle business logic for deleting a floor configuration
+   */
+  const accountStoreTableConfiguration_deleteFloor = (floorName: string): void => {
+    try {
+      const floorIndex = accountStoreTableConfiguration_formData.configurations.findIndex(
+        config => config.floorName === floorName,
+      );
+
+      if (floorIndex !== -1) {
+        // Remove the floor and all its tables
+        accountStoreTableConfiguration_formData.configurations.splice(floorIndex, 1);
+
+        const argsEventEmitter: IPropsToast = {
+          isOpen: true,
+          type: EToastType.SUCCESS,
+          message: `Floor "${floorName}" has been deleted successfully.`,
+          position: EToastPosition.TOP_RIGHT,
+        };
+
+        eventBus.emit('AppBaseToast', argsEventEmitter);
+      }
+    } catch (error) {
+      console.error('Error deleting floor configuration:', error);
+      
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Failed to delete floor. Please try again.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+    }
+  };
+
+  /**
    * @description Handle business logic for show dialog edit floor
    */
   const accountStoreTableConfiguration_onShowDialogEditFloor = (floorName: string): void => {
@@ -805,6 +881,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
     accountStoreTableConfiguration_onShowDialogAddTable,
     accountStoreTableConfiguration_onShowDialogEditFloor,
     accountStoreTableConfiguration_onShowDialogDeleteTable,
+    accountStoreTableConfiguration_onShowDialogDeleteFloor,
     accountStoreTableConfiguration_onShowDialogEditTable,
     accountStoreTableConfiguration_onShowDialogEnableQrCode,
     accountStoreTableConfiguration_onSubmit,

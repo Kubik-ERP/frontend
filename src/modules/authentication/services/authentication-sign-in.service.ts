@@ -45,6 +45,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     browser: '',
     city: '',
     country: '',
+    rememberMe: false,
   });
   const authenticationSignIn_isNotAuthenticated = ref<boolean>(false);
   const authenticationSignIn_selectedRole = ref<'OWNER' | 'EMPLOYEE'>('OWNER');

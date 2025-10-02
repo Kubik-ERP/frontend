@@ -22,6 +22,15 @@
 //   voucherAmount: number | null;
 // }
 
+export interface IDailySalesItem {
+  id: string;
+  name: string;
+  qty: number;
+  price: number;
+  discountAmount: number;
+  subtotal: number;
+}
+
 export interface IDailySales {
   id: string;
   paymentMethodsId: null;
@@ -54,6 +63,7 @@ export interface IDailySales {
   roundingAmount: null;
   customer: ICustomer;
   queue: number;
+  items?: IDailySalesItem[];
 }
 
 export interface ICustomer {
