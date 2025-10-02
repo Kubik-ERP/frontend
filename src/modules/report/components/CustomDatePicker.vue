@@ -45,9 +45,9 @@ const applyDateChange = () => {
     // Create a new Date object for 'start' to work with
     const start = new Date(localDateRange.value[0].getTime() + gmt * 60 * 60 * 1000);
 
-
-
-    const end = localDateRange.value[1] ? new Date(localDateRange.value[1].getTime() + gmt * 60 * 60 * 1000) : start; // This creates a copy, not a reference
+    const end = localDateRange.value[1]
+      ? new Date(localDateRange.value[1].getTime() + gmt * 60 * 60 * 1000)
+      : start; // This creates a copy, not a reference
 
     emit('update:startDate', start);
     emit('update:endDate', end);
@@ -199,7 +199,6 @@ const onClickShortcut = (label: string) => {
       const lastDayOfLastYear = new Date(today.getFullYear() - 1, 11, 31);
       lastDayOfLastYear.setHours(lastDayOfLastYear.getHours() + gmt);
 
-
       start = firstDayOfLastYear;
       end = lastDayOfLastYear;
       newType = 'days';
@@ -219,19 +218,22 @@ const onClickShortcut = (label: string) => {
 };
 </script>
 <template>
-  <section>
+  <section class="w-full">
     <PrimeVueButton
       variant="text"
-      class="px-3 py-2 border border-solid border-grayscale-20"
+      class="px-3 py-2 border w-full border-solid border-grayscale-20"
       @click="dialogVisible = true"
     >
       <template #default>
-        <span class="text-text-disabled">Real Time</span>
-        <span class="text-text-primary"
-          >{{ useFormatDate(startDate, 'dd/mm/yyyy') }} - {{ useFormatDate(endDate, 'dd/mm/yyyy') }}</span
-        >
-        <span class="text-text-disabled"> <AppBaseSvg name="calendarBlank" class="!w-4 !h-4" /> </span>
-      </template>
+        <section class="flex items-center justify-between gap-2 w-full">
+          <span class="text-text-disabled">Real Time</span>
+          <div class="flex items-center gap-2">
+            <span class="text-text-primary"
+              >{{ useFormatDate(startDate, 'dd/mm/yyyy') }} - {{ useFormatDate(endDate, 'dd/mm/yyyy') }}</span
+            >
+            <span class="text-text-disabled"> <AppBaseSvg name="calendarBlank" class="!w-5 !h-5" /> </span>
+          </div></section
+      ></template>
     </PrimeVueButton>
 
     <PrimeVueDialog
