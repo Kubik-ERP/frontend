@@ -79,11 +79,13 @@ const deliveryOrderData = computed(() => {
     orderNumber: detail.orderNumber || '',
     supplierInfo: {
       supplierName: detail.supplierInfo?.supplierName || '',
+      address: detail.supplierInfo?.address || '-',
     },
     orderDate: detail.orderDate || '',
     deliveryDate: detail.deliveryDate || '',
     purchaseOrderItems: detail.purchaseOrderItems || [],
     totalPrice: detail.totalPrice || 0,
+    receiver: detail.receiver || { id: '', fullname: '' },
   };
 });
 

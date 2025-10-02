@@ -20,6 +20,10 @@ export interface IPurchaseOrderCreateEditProductItem {
   expiryDate?: string;
   supplier?: string;
   storageLocation?: string;
+  reciver: {
+    id: string;
+    name: string;
+  }
 }
 
 // Interface for API payload (minimal structure)
