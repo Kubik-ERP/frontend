@@ -104,6 +104,7 @@ export const useDashboardService = (): IDashboardProvided => {
 
   const dashboard_getSummary = async () => {
     try {
+      console.log(dashboard_queryParams);
       const formattedQueryParams: IDashboardQueryParams = {
         startDate: (new Date(dashboard_queryParams.startDate).toISOString().split('T')[0] +
           'T00:00:00.000Z') as unknown as Date,
@@ -124,14 +125,14 @@ export const useDashboardService = (): IDashboardProvided => {
         // 3. Now, assign the new, correct date.
         formattedQueryParams.startDate = new Date(newStartDate.toISOString().split('T')[0] + 'T00:00:00.000Z');
         formattedQueryParams.endDate = new Date(newEndDate.toISOString().split('T')[0] + 'T23:59:59.999Z');
-      }
-      if (
-        dashboard_queryParams.startDate.toISOString().split('T')[0] ===
-        dashboard_queryParams.endDate.toISOString().split('T')[0]
-      ) {
-        formattedQueryParams.type = 'time';
-      } else {
-        formattedQueryParams.type = 'days';
+        if (
+          dashboard_queryParams.startDate.toISOString().split('T')[0] ===
+          dashboard_queryParams.endDate.toISOString().split('T')[0]
+        ) {
+          formattedQueryParams.type = 'time';
+        } else {
+          formattedQueryParams.type = 'days';
+        }
       }
       await store.getDashboardData(formattedQueryParams, {
         ...httpAbort_registerAbort('DASHBOARD_SUMMARY_REQUEST'),

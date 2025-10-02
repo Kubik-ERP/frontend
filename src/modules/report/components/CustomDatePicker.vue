@@ -187,7 +187,7 @@ const onClickShortcut = (label: string) => {
 
       start = firstDayOfYear;
       end = lastDayOfYear;
-      newType = 'days';
+      newType = 'month';
       break;
     }
 
@@ -201,7 +201,7 @@ const onClickShortcut = (label: string) => {
 
       start = firstDayOfLastYear;
       end = lastDayOfLastYear;
-      newType = 'days';
+      newType = 'month';
       break;
     }
   }
@@ -211,6 +211,7 @@ const onClickShortcut = (label: string) => {
   emit('update:startDate', start);
   emit('update:endDate', end);
   if (props.shouldUpdateType) {
+    console.log('newType:', newType);
     emit('update:type', newType);
   }
 
