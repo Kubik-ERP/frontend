@@ -214,13 +214,6 @@ const getPrimaryItem = (items: unknown[]) => {
 };
 
 /**
- * @description Get additional items (excluding first) for expanded rows
- */
-const getAdditionalItems = (items: unknown[]) => {
-  return items.slice(1);
-};
-
-/**
  * @description Get localized column header
  */
 const getColumnHeader = (column: IColumnDataTable) => {
@@ -421,7 +414,7 @@ const getIconClass = computed(() => {
               <template v-for="(record, recordIndex) in props.data" :key="(record as any)[props.expandableRowsIdField]">
                 <!-- Main Row -->
                 <tr class="hover:bg-gray-50">
-                  <template v-for="(column, columnIndex) in props.columns" :key="column.value">
+                  <template v-for="column in props.columns" :key="column.value">
                     <td class="px-4 py-3" :class="column.value === 'action' ? 'text-center' : ''">
                       <template v-if="props.isUsingCustomBody">
                         <slot
