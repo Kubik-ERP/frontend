@@ -82,11 +82,11 @@ export const LIST_SIDEBAR_MENUS = [
         path: '/report',
         isHaveSubMenus: true,
         subMenus: [
-          // {
-          //   name: 'Financial Report',
-          //   translationKey: 'app.menus.financial-report',
-          //   path: '/report/financial-report',
-          // },
+          {
+            name: 'Financial Report',
+            translationKey: 'app.menus.financial-report',
+            path: '/report/financial-report',
+          },
           // {
           //   name: 'Loss Report',
           //   path: '/report/loss-report',
