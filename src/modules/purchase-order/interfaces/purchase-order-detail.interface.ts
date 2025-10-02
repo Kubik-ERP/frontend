@@ -13,6 +13,10 @@ export interface IPurchaseOrderDetailData {
   deliveryDate?: string;
   totalPrice: number;
   productItems: IPurchaseOrderDetailProductItem[];
+  receiver: {
+    id: string;
+    name: string;
+  }
   createdAt: string;
   updatedAt: string;
 }

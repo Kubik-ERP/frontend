@@ -75,6 +75,17 @@ const {
               }}
             </span>
           </section>
+
+          <section id="order-date" class="col-span-4 lg:col-span-3 flex flex-col gap-1">
+            <span class="font-normal text-text-primary text-sm"> Shiped By </span>
+
+            <span class="font-normal text-text-primary text-base">
+              <template v-if="purchaseOrderDetail_data?.receivedAt">
+                {{  purchaseOrderDetail_data.receiver.fullname }}
+              </template>
+            </span>
+          </section>
+
         </div>
       </section>
     </header>
