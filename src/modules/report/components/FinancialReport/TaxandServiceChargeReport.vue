@@ -101,11 +101,12 @@ const popover = ref();
       </template>
 
       <template #filter>
-        <section class="flex items-center gap-4 pt-4">
+        <section class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4 pt-4">
           <CustomDatePicker
             v-model:start-date="report_queryParams.startDate"
             v-model:end-date="report_queryParams.endDate"
             :should-update-type="false"
+            class="col-span-1 xl:col-span-2 2xl:col-span-1"
             @update:end-date="report_getFinancialReport('tax-and-service-summary')"
           />
           <PrimeVueSelect
@@ -114,11 +115,11 @@ const popover = ref();
             option-label="label"
             option-value="value"
             placeholder="Select Outlet"
-            class="min-w-80"
+            class="col-span-1 w-full"
             filter
-            show-clear
             @change="report_getFinancialReport('tax-and-service-summary')"
-            ><template #dropdownicon>
+          >
+            <template #dropdownicon>
               <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
             </template>
           </PrimeVueSelect>
@@ -129,7 +130,7 @@ const popover = ref();
             option-value="value"
             placeholder="Select Staff"
             filter
-            class="w-64"
+            class="col-span-1 w-full"
             @change="report_getFinancialReport('tax-and-service-summary')"
             ><template #dropdownicon>
               <AppBaseSvg name="staff" class="w-5 h-5 text-text-primary" />
