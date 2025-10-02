@@ -29,6 +29,7 @@ const props = withDefaults(defineProps<IProps>(), {
 const {
   accountStoreTableConfiguration_onShowDialogAddTable,
   accountStoreTableConfiguration_onShowDialogEditFloor,
+  accountStoreTableConfiguration_onShowDialogDeleteFloor,
   accountStoreTableConfiguration_onShowDialogEditTable,
 } = inject<IAccountStoreTableConfigurationProvided>('accountStoreTableConfiguration')!;
 
@@ -155,6 +156,21 @@ function zoomOut() {
               <AppBaseSvg name="edit" class="w-4 h-4" />
               <span class="font-semibold text-sm text-primary">{{
                 useLocalization('account.edit-floor-name')
+              }}</span>
+            </section>
+          </template>
+        </PrimeVueButton>
+
+        <PrimeVueButton
+          class="w-fit px-2 py-3"
+          variant="text"
+          @click="accountStoreTableConfiguration_onShowDialogDeleteFloor(configuration.floorName)"
+        >
+          <template #default>
+            <section id="content" class="flex items-center gap-2 w-full">
+              <AppBaseSvg name="delete-polygon" class="w-7 h-7" />
+              <span class="font-semibold text-sm text-error-main">{{
+                useLocalization('account.delete-floor')
               }}</span>
             </section>
           </template>

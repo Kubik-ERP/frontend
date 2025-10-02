@@ -31,6 +31,87 @@ const {
 } = useDailySalesListService(outlet_currentOutlet.value?.businessType);
 
 const { staffMemberList_dropdownItemStaff } = useStaffMemberListService();
+
+/**
+ * @description Get mock items for demo (in real app, this would come from API)
+ */
+const getMockItems = (invoiceData: Record<string, unknown>) => {
+  // Mock data for demo purposes - use invoice ID to generate consistent mock data
+  const invoiceId = (invoiceData.id as string) || 'default';
+  const mockItemsData = [
+    [
+      {
+        id: `${invoiceId}-item-1`,
+        name: 'Nasi Goreng Spesial',
+        qty: 2,
+        price: 25000,
+        discountAmount: 2000,
+        subtotal: 48000
+      },
+      {
+        id: `${invoiceId}-item-2`,
+        name: 'Ayam Bakar',
+        qty: 1,
+        price: 30000,
+        discountAmount: 0,
+        subtotal: 30000
+      }
+    ],
+    [
+      {
+        id: `${invoiceId}-item-1`,
+        name: 'Gado-gado',
+        qty: 1,
+        price: 15000,
+        discountAmount: 1000,
+        subtotal: 14000
+      },
+      {
+        id: `${invoiceId}-item-2`,
+        name: 'Es Jeruk',
+        qty: 2,
+        price: 8000,
+        discountAmount: 0,
+        subtotal: 16000
+      },
+      {
+        id: `${invoiceId}-item-3`,
+        name: 'Kerupuk',
+        qty: 1,
+        price: 3000,
+        discountAmount: 0,
+        subtotal: 3000
+      }
+    ],
+    [
+      {
+        id: `${invoiceId}-item-1`,
+        name: 'Soto Ayam',
+        qty: 1,
+        price: 20000,
+        discountAmount: 0,
+        subtotal: 20000
+      }
+    ]
+  ];
+
+  // Return different mock data based on invoice ID hash
+  const hash = invoiceId.split('').reduce((acc: number, char: string) => {
+    return ((acc << 5) - acc) + char.charCodeAt(0);
+  }, 0);
+
+  return mockItemsData[Math.abs(hash) % mockItemsData.length] || [];
+};
+
+/**
+ * @description Computed data with mock items added
+ */
+const dailySalesDataWithItems = computed(() => {
+  return dailySalesList_values.data.items.map((invoice) => ({
+    ...invoice,
+    items: getMockItems(invoice as unknown as Record<string, unknown>)
+  }));
+});
 </script>
 
 <template>
@@ -38,7 +119,7 @@ const { staffMemberList_dropdownItemStaff } = useStaffMemberListService();
     <AppBaseDataTable
       btn-cta-create-title="Add Cash In/Out"
       :columns="dailySalesList_columns"
-      :data="dailySalesList_values.data.items"
+      :data="dailySalesDataWithItems"
       header-title="Daily Sales"
       :rows-per-page="dailySalesList_values.data.meta.pageSize"
       :total-records="dailySalesList_values.data.meta.total"
@@ -52,6 +133,10 @@ const { staffMemberList_dropdownItemStaff } = useStaffMemberListService();
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-header
+      is-using-custom-table
+      is-using-expandable-rows
+      expandable-rows-field="items"
+      expandable-rows-id-field="id"
       @update:currentPage="dailySalesList_onChangePage"
       @update:sort="dailySales_handleOnSortChange"
     >
@@ -189,8 +274,26 @@ const { staffMemberList_dropdownItemStaff } = useStaffMemberListService();
         </div>
       </template>
 
-      <template #body="{ column, data }">
-        <template v-if="column.value === 'createdAt'">
+      <template #body="{ column, data, isExpandable, isExpanded, toggleExpansion }">
+        <template v-if="column.value === 'expand'">
+          <div class="flex justify-center">
+            <PrimeVueButton
+              v-if="isExpandable"
+              variant="text"
+              size="small"
+              @click="toggleExpansion"
+            >
+              <template #icon>
+                <AppBaseSvg
+                  :name="isExpanded ? 'chevron-up' : 'chevron-down'"
+                  class="!w-4 !h-4"
+                />
+              </template>
+            </PrimeVueButton>
+          </div>
+        </template>
+
+        <template v-else-if="column.value === 'createdAt'">
           <span class="font-normal text-sm text-text-primary">{{
             useFormatDate(new Date(data[column.value]))
           }}</span>
@@ -203,7 +306,7 @@ const { staffMemberList_dropdownItemStaff } = useStaffMemberListService();
         </template>
 
         <template v-else-if="column.value === 'customer'">
-          <span class="font-normal text-sm text-text-primary">{{ data[column.value].name }}</span>
+          <span class="font-normal text-sm text-text-primary">{{ data[column.value]?.name ?? '-' }}</span>
         </template>
 
         <template v-else-if="column.value === 'grandTotal'">
@@ -273,6 +376,53 @@ const { staffMemberList_dropdownItemStaff } = useStaffMemberListService();
         <template v-else>
           <span class="font-normal text-sm text-text-primary">{{ data[column.value] ?? '-' }}</span>
         </template>
+      </template>
+
+      <!-- Expanded Rows for Item Details -->
+      <template #expanded-body="{ data }">
+        <td :colspan="dailySalesList_columns.length" class="px-0 py-0">
+          <div class="bg-gray-50 border-l-4 border-blue-200 p-4">
+            <h4 class="font-semibold text-sm text-gray-800 mb-3">Order Items</h4>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="bg-gray-100">
+                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase">Item Name</th>
+                    <th class="px-3 py-2 text-center text-xs font-medium text-gray-700 uppercase">Qty</th>
+                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Price</th>
+                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Discount</th>
+                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                  <tr v-for="mockItem in getMockItems(data as unknown as Record<string, unknown>)" :key="mockItem.id" class="hover:bg-gray-50">
+                    <td class="px-3 py-2">
+                      <span class="font-medium text-sm text-gray-900">{{ mockItem.name }}</span>
+                    </td>
+                    <td class="px-3 py-2 text-center">
+                      <span class="font-normal text-sm text-gray-700">{{ mockItem.qty }}</span>
+                    </td>
+                    <td class="px-3 py-2 text-right">
+                      <span class="font-normal text-sm text-gray-700">{{
+                        useCurrencyFormat({ data: mockItem.price })
+                      }}</span>
+                    </td>
+                    <td class="px-3 py-2 text-right">
+                      <span class="font-normal text-sm text-gray-700" :class="mockItem.discountAmount > 0 ? 'text-red-600' : ''">
+                        {{ mockItem.discountAmount > 0 ? '-' : '' }}{{ useCurrencyFormat({ data: mockItem.discountAmount }) }}
+                      </span>
+                    </td>
+                    <td class="px-3 py-2 text-right">
+                      <span class="font-semibold text-sm text-gray-900">{{
+                        useCurrencyFormat({ data: mockItem.subtotal })
+                      }}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </td>
       </template>
     </AppBaseDataTable>
   </section>

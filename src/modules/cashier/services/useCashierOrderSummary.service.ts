@@ -385,18 +385,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @description Debounce function to handle watch changes
    */
   const debouncedHandleWatchChanges = debounce(() => {
-    // If user doesn't have customer management permission, only check order type
-    // For retail business type, skip customer validation as it's not required
-    const customerCheck =
-      hasCustomerManagementPermission.value && !cashierOrderSummary_isRetailBusinessType.value
-        ? cashierProduct_customerState.value.selectedCustomer?.id
-        : true; // Skip customer validation if no permission or retail business type
-
-    const tableCheck = hasCustomerManagementPermission.value
-      ? cashierOrderSummary_modalSelectTable.value.selectedTable.length > 0
-      : true; // Skip table validation if no permission
-
-    if (customerCheck && cashierOrderSummary_modalOrderType.value.selectedOrderType && tableCheck) {
+    // Customer and table selections are now optional
+    // Only check if order type is selected to determine if form should be collapsed
+    if (cashierOrderSummary_modalOrderType.value.selectedOrderType) {
       cashierOrderSummary_data.value.isExpanded = false;
       cashierOrderSummary_data.value.isExpandedVisible = true;
     } else {
@@ -405,12 +396,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     }
   }, 500);
 
-  // watch for changes if customerName, orderType, and tableNumber are filled change isExpanded to false
+  // watch for changes if orderType is filled change isExpanded to false
   watch(
     () => [
-      cashierProduct_customerState.value.selectedCustomer?.id,
       cashierOrderSummary_modalOrderType.value.selectedOrderType,
-      cashierOrderSummary_modalSelectTable.value.selectedTable,
     ],
     () => {
       debouncedHandleWatchChanges();
@@ -578,34 +567,11 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    * @returns boolean
    */
   const cashierOrderSummary_isButtonPlaceOrderDisabled = computed(() => {
-    // If user doesn't have customer management permission or business type is retail, skip customer validation
-    const customerValidation =
-      hasCustomerManagementPermission.value && !cashierOrderSummary_isRetailBusinessType.value
-        ? cashierProduct_customerState.value.selectedCustomer?.id === '' ||
-          cashierProduct_customerState.value.selectedCustomer?.id === null ||
-          cashierProduct_customerState.value.selectedCustomer?.id === undefined
-        : false;
-
-    // For retail business type, skip order type and table validations
-    if (cashierOrderSummary_isRetailBusinessType.value) {
-      const isDisabled = customerValidation || cashierProduct_selectedProduct.value.length === 0;
-      return isDisabled;
-    }
-
-    // If user doesn't have customer management permission, skip table validation for dine_in
-    let tableValidation = false;
-    if (hasCustomerManagementPermission.value) {
-      if (cashierOrderSummary_modalOrderType.value.selectedOrderType === 'take_away') {
-        tableValidation = false;
-      } else {
-        tableValidation = cashierOrderSummary_modalSelectTable.value.selectedTable.length === 0;
-      }
-    }
-
-    const isDisabled =
-      customerValidation ||
+    // Customer selection is now optional for all business types
+    // Table selection is now optional for all order types
+    
+    const isDisabled = 
       cashierOrderSummary_modalOrderType.value.selectedOrderType === '' ||
-      tableValidation ||
       cashierProduct_selectedProduct.value.length === 0;
 
     return isDisabled;

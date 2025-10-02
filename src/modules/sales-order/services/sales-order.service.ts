@@ -37,7 +37,7 @@ export const useSalesOrderService = (): ISalesOrderProvided => {
         case 'DAILY-SALES': {
           await Promise.all([
             dailySalesList_fetchListInvoices(),
-            useStaffMemberListService()
+            staffMemberList_fetchListMembers()
           ])
 
           break;

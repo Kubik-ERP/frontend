@@ -40,7 +40,7 @@ httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   }
 
   // Get fresh outlet values directly from store state
-  if (outletStore?.$state?.outlet_selectedOutletOnAccountPage?.id) {
+  if (outletStore?.$state?.outlet_selectedOutletOnAccountPage?.id && window.location.pathname.includes('account')) {
     config.headers['X-STORE-ID'] = outletStore?.$state?.outlet_selectedOutletOnAccountPage?.id;
   } else if (outletStore?.$state?.outlet_currentOutlet?.id) {
     config.headers['X-STORE-ID'] = outletStore?.$state?.outlet_currentOutlet?.id;

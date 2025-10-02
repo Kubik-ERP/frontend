@@ -69,15 +69,11 @@ const selectedTableLabel = computed(() => {
           v-if="!props.isSelfOrder && hasCustomerManagementPermission"
           :class="[
             'flex w-1/2 border truncate rounded-sm p-2.5 text-sm justify-between items-center',
-            route.name === 'cashier-order-edit' ||
-            cashierOrderSummary_modalOrderType.selectedOrderType !== 'dine_in'
+            route.name === 'cashier-order-edit'
               ? 'cursor-not-allowed opacity-50 bg-transparent border-text-disabled'
               : 'cursor-pointer active:bg-text-disabled/10 hover:bg-text-disabled/5 border-text-disabled',
           ]"
-          :disabled="
-            route.name === 'cashier-order-edit' ||
-            cashierOrderSummary_modalOrderType.selectedOrderType !== 'dine_in'
-          "
+          :disabled="route.name === 'cashier-order-edit'"
           @click="cashierOrderSummary_modalSelectTable.show = true"
         >
           <span>

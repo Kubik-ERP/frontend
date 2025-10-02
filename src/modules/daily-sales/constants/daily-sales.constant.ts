@@ -3,6 +3,12 @@ export const DAILY_SALES_LIST_REQUEST = 'DAILY_SALES_LIST_REQUEST';
 
 export const DAILY_SALES_LIST_COLUMNS: IColumnDataTable[] = [
   {
+    label: '',
+    sortable: false,
+    value: 'expand',
+    width: '50px'
+  },
+  {
     label: 'Invoice ID',
     sortable: true,
     value: 'invoiceNumber',

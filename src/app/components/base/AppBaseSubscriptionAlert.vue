@@ -3,7 +3,8 @@
 import { useAuthenticationStore } from '@/modules/authentication/store';
 
 // Constants
-const ALERT_THRESHOLD_DAYS = 30; // Show alert when 30 days or less remaining
+import { APP_BASE_URL_RENEW_SUBSCRIPTION } from '@/app/constants';
+const ALERT_THRESHOLD_DAYS = 7; // Show alert when 7 days or less remaining
 
 /**
  * @description Injected variables
@@ -20,7 +21,10 @@ const isAlertVisible = ref<boolean>(true);
  * @description Computed values
  */
 const subscriptionData = computed(() => {
+  console.log('authentication_userData:', authentication_userData.value);
+
   if (!authentication_userData.value?.subExpiredAt) {
+    console.log('No subExpiredAt found in authentication_userData');
     return null;
   }
 
@@ -71,7 +75,10 @@ const subscriptionData = computed(() => {
   console.log('Debug Subscription Data:', {
     subExpiredAt: authentication_userData.value.subExpiredAt,
     expiryDate: expiryDate.toString(),
+    currentDate: currentDate.toString(),
     daysRemaining: daysRemaining,
+    ALERT_THRESHOLD_DAYS: ALERT_THRESHOLD_DAYS,
+    shouldShowAlert: daysRemaining <= ALERT_THRESHOLD_DAYS && daysRemaining > 0,
     locale: locale,
     formattedExpiryDate: formattedExpiryDate
   });
@@ -88,7 +95,14 @@ const subscriptionData = computed(() => {
  * @description Show alert when conditions are met
  */
 const shouldShowSubscriptionAlert = computed(() => {
-  return subscriptionData.value?.shouldShowAlert && isAlertVisible.value;
+  const result = subscriptionData.value?.shouldShowAlert && isAlertVisible.value;
+  console.log('shouldShowSubscriptionAlert Debug:', {
+    subscriptionDataExists: !!subscriptionData.value,
+    shouldShowAlert: subscriptionData.value?.shouldShowAlert,
+    isAlertVisible: isAlertVisible.value,
+    finalResult: result
+  });
+  return result;
 });
 
 /**
@@ -102,9 +116,7 @@ const handleCloseAlert = (): void => {
  * @description Handle renew action
  */
 const handleRenewNow = (): void => {
-  // TODO: Implement renew subscription logic
-  console.log('Renew subscription clicked');
-  // You can add navigation to subscription page or open modal here
+  window.open(APP_BASE_URL_RENEW_SUBSCRIPTION, '_blank');
 };
 
 /**
@@ -125,9 +137,9 @@ const messageSeverity = computed(() => {
  */
 const statusText = computed(() => {
   if (!subscriptionData.value) return '';
-  
+
   const daysRemaining = subscriptionData.value.daysRemaining;
-  
+
   if (daysRemaining <= 1) return useLocalization('app.subscription-alert.expires-today');
   if (daysRemaining <= 3) return useLocalization('app.subscription-alert.expires-soon');
   if (daysRemaining <= 7) return useLocalization('app.subscription-alert.expires-this-week');
@@ -147,31 +159,16 @@ const iconText = computed(() => {
  * @description Dynamic alert container classes
  */
 const alertClasses = computed(() => {
-  const base = 'border-l-4 bg-white/95';
-  
+  const base = 'border-l-4 bg-white shadow-lg border border-gray-200';
+
   if (messageSeverity.value === 'error') {
-    return `${base} border-red-500 shadow-red-500/20`;
+    return `${base} border-l-red-500`;
   }
   if (messageSeverity.value === 'warn') {
-    return `${base} border-amber-500 shadow-amber-500/20`;
+    return `${base} border-l-amber-500`;
   }
-  return `${base} border-blue-500 shadow-blue-500/20`;
-});
-
-/**
- * @description Dynamic gradient classes
- */
-const gradientClasses = computed(() => {
-  if (messageSeverity.value === 'error') {
-    return 'from-red-500 via-pink-500 to-red-500';
-  }
-  if (messageSeverity.value === 'warn') {
-    return 'from-amber-500 via-orange-500 to-amber-500';
-  }
-  return 'from-blue-500 via-indigo-500 to-blue-500';
-});
-
-/**
+  return `${base} border-l-blue-500`;
+});/**
  * @description Dynamic icon classes
  */
 const iconClasses = computed(() => {
@@ -202,7 +199,7 @@ const badgeClasses = computed(() => {
  */
 const buttonClasses = computed(() => {
   const base = 'text-white shadow-lg focus:ring-4';
-  
+
   if (messageSeverity.value === 'error') {
     return `${base} bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 focus:ring-red-500`;
   }
@@ -225,19 +222,14 @@ const buttonClasses = computed(() => {
   >
     <div
       v-if="shouldShowSubscriptionAlert"
-      class="sticky top-0 z-50 w-full"
+      class="sticky top-0 z-50 h-0 w-screen"
     >
       <div class="mx-auto px-3 sm:px-4 py-2 sm:py-3">
         <!-- Modern Minimalist Card -->
-        <div 
-          class="relative overflow-hidden rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl backdrop-blur-xl"
+        <div
+          class="relative overflow-hidden rounded-xl sm:rounded-2xl shadow-2xl"
           :class="alertClasses"
         >
-          <!-- Animated Background Gradient -->
-          <div class="absolute inset-0 opacity-20">
-            <div class="absolute inset-0 bg-gradient-to-r animate-gradient-x" :class="gradientClasses"></div>
-          </div>
-          
           <!-- Content Container -->
           <div class="relative p-4 sm:p-6">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
@@ -245,14 +237,14 @@ const buttonClasses = computed(() => {
               <div class="flex items-start sm:items-center gap-3 sm:gap-4 flex-1 min-w-0">
                 <!-- Icon with Pulse Effect -->
                 <div class="relative flex-shrink-0 mt-0.5 sm:mt-0">
-                  <div 
+                  <div
                     class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg shadow-lg"
                     :class="iconClasses"
                   >
                     {{ iconText }}
                   </div>
                   <!-- Pulse Ring for Critical -->
-                  <div 
+                  <div
                     v-if="messageSeverity === 'error'"
                     class="absolute inset-0 rounded-full animate-ping opacity-30"
                     :class="iconClasses"
@@ -263,7 +255,7 @@ const buttonClasses = computed(() => {
                 <div class="flex-1 min-w-0">
                   <!-- Status Badge - Mobile Stack -->
                   <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2">
-                    <span 
+                    <span
                       class="inline-flex items-center px-2.5 py-1 sm:px-3 rounded-full text-xs font-semibold tracking-wide uppercase w-fit"
                       :class="badgeClasses"
                     >
@@ -276,7 +268,7 @@ const buttonClasses = computed(() => {
                       }}
                     </span>
                   </div>
-                  
+
                   <!-- Main Message -->
                   <p class="text-sm sm:text-base text-gray-800 font-medium leading-relaxed mb-1 sm:mb-0">
                     {{
@@ -345,9 +337,9 @@ const buttonClasses = computed(() => {
   }
 }
 
-.animate-gradient-x {
+/* .animate-gradient-x {
   animation: gradient-x 4s ease-in-out infinite;
-}
+} */
 
 /* Pulse Animation for Critical Alerts */
 @keyframes urgentPulse {
@@ -363,10 +355,10 @@ const buttonClasses = computed(() => {
 
 /* Floating Animation */
 @keyframes floating {
-  0%, 100% { 
+  0%, 100% {
     transform: translateY(0px);
   }
-  50% { 
+  50% {
     transform: translateY(-4px);
   }
 }
@@ -391,7 +383,7 @@ const buttonClasses = computed(() => {
 
 /* Enhanced Shadows */
 .enhanced-shadow {
-  box-shadow: 
+  box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04),
     0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -403,30 +395,30 @@ const buttonClasses = computed(() => {
     font-size: 0.875rem;
     line-height: 1.25rem;
   }
-  
+
   /* Mobile-specific adjustments */
   .subscription-alert-enter-from,
   .subscription-alert-leave-to {
     transform: translateY(-100%) scale(0.98);
   }
-  
+
   /* Optimize mobile animations */
   .animate-gradient-x {
     animation: gradient-x 6s ease-in-out infinite;
   }
-  
+
   /* Mobile button improvements */
   .group:active {
     transform: scale(0.98);
   }
-  
+
   /* Reduce motion for mobile performance */
   @media (prefers-reduced-motion: reduce) {
     .animate-gradient-x,
     .animate-ping {
       animation: none;
     }
-    
+
     .group:hover {
       transform: none;
     }
@@ -438,17 +430,17 @@ const buttonClasses = computed(() => {
   .subscription-alert-container {
     margin: 0 0.5rem;
   }
-  
+
   /* Compact layout for very small screens */
   .mobile-compact .flex {
     gap: 0.5rem;
   }
-  
+
   .mobile-compact .px-4 {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
   }
-  
+
   .mobile-compact .py-2\.5 {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
@@ -464,17 +456,17 @@ const buttonClasses = computed(() => {
 }
 
 /* Large devices (1024px and up) */
-@media (min-width: 1024px) {
+/* @media (min-width: 1024px) { */
   /* Enhanced animations for larger screens */
-  .animate-gradient-x {
+  /* .animate-gradient-x {
     animation: gradient-x 3s ease-in-out infinite;
-  }
-  
+  } */
+
   /* Better hover effects on larger screens */
-  .group:hover {
+  /* .group:hover {
     transform: scale(1.05) translateY(-1px);
   }
-}
+} */
 
 /* Touch device optimizations */
 @media (hover: none) and (pointer: coarse) {
@@ -483,18 +475,18 @@ const buttonClasses = computed(() => {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   /* Remove hover animations on touch devices */
   .group:hover {
     transform: none;
   }
-  
+
   /* Enhanced touch feedback */
   .group:active {
     transform: scale(0.96);
     transition: transform 0.1s ease-out;
   }
-  
+
   /* Larger touch targets for close button */
   button:not(.group) {
     padding: 0.75rem;
@@ -510,10 +502,10 @@ const buttonClasses = computed(() => {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
+
   /* Enhanced shadow quality */
   .enhanced-shadow {
-    box-shadow: 
+    box-shadow:
       0 25px 30px -5px rgba(0, 0, 0, 0.15),
       0 15px 15px -5px rgba(0, 0, 0, 0.08),
       0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -526,7 +518,7 @@ const buttonClasses = computed(() => {
   .relative.p-4 {
     padding: 0.75rem 1rem;
   }
-  
+
   /* Smaller icon in landscape mobile */
   .w-10.h-10 {
     width: 2rem;
@@ -567,21 +559,21 @@ const buttonClasses = computed(() => {
   .shadow-2xl {
     box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15);
   }
-  
+
   /* Simplify backdrop blur on mobile for better performance */
   .backdrop-blur-xl {
     backdrop-filter: blur(4px);
   }
-  
+
   /* Reduce transform complexity */
   .transform {
     transform: none;
   }
-  
+
   /* Optimize gradient animations */
-  .animate-gradient-x {
+  /* .animate-gradient-x {
     animation-duration: 8s;
-  }
+  } */
 }
 
 /* Safe area adjustments for notched devices */
@@ -589,7 +581,7 @@ const buttonClasses = computed(() => {
   .sticky.top-0 {
     padding-top: max(env(safe-area-inset-top), 0);
   }
-  
+
   .mx-auto.px-3 {
     padding-left: max(env(safe-area-inset-left), 0.75rem);
     padding-right: max(env(safe-area-inset-right), 0.75rem);
@@ -602,12 +594,12 @@ const buttonClasses = computed(() => {
   .subscription-alert-leave-active {
     transition: opacity 0.3s ease;
   }
-  
+
   .subscription-alert-enter-from,
   .subscription-alert-leave-to {
     transform: none;
   }
-  
+
   .animate-gradient-x,
   .animate-ping {
     animation: none;
@@ -651,10 +643,10 @@ const buttonClasses = computed(() => {
 
 /* Subtle Border Animation */
 @keyframes borderGlow {
-  0%, 100% { 
+  0%, 100% {
     box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
   }
-  50% { 
+  50% {
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
   }
 }
@@ -688,9 +680,9 @@ const buttonClasses = computed(() => {
     background: rgba(17, 24, 39, 0.25);
     border: 1px solid rgba(75, 85, 99, 0.18);
   }
-  
+
   .enhanced-shadow {
-    box-shadow: 
+    box-shadow:
       0 20px 25px -5px rgba(0, 0, 0, 0.4),
       0 10px 10px -5px rgba(0, 0, 0, 0.2),
       0 0 0 1px rgba(255, 255, 255, 0.02);
