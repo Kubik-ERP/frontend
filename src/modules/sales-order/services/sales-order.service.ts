@@ -35,7 +35,11 @@ export const useSalesOrderService = (): ISalesOrderProvided => {
     async newTab => {
       switch (newTab.toUpperCase()) {
         case 'DAILY-SALES': {
-          await dailySalesList_fetchListInvoices();
+          await Promise.all([
+            dailySalesList_fetchListInvoices(),
+            staffMemberList_fetchListMembers()
+          ])
+
           break;
         }
         case 'CASH-DRAWER': {

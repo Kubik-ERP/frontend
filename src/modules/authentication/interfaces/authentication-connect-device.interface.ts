@@ -8,6 +8,7 @@ export interface IAuthenticationConnectDeviceFormData {
   browser: string;
   city: string;
   country: string;
+  rememberMe: boolean;
 }
 
 export interface IAuthenticationConnectDeviceResponse {

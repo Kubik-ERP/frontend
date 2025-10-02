@@ -4,6 +4,7 @@ import AppBaseBreadcrumb from '@/app/components/base/AppBaseBreadcrumb.vue';
 import AppBaseNavbar from '@/app/components/base/AppBaseNavbar.vue';
 import AppBaseSidebar from '@/app/components/base/AppBaseSidebar.vue';
 import AppBaseSkeletonWrapper from '@/app/components/base/AppBaseSkeletonWrapper.vue';
+import AppBaseSubscriptionAlert from '@/app/components/base/AppBaseSubscriptionAlert.vue';
 
 // Composables
 import { useGlobalLoading } from '@/app/composables/useGlobalLoading';
@@ -56,6 +57,9 @@ const mainLayoutClasses = computed(() => {
 
 <template>
   <section id="default-layout" class="default-wrapper-fullscreen relative inset-0 z-0">
+    <!-- Subscription Alert - Global sticky alert -->
+    <AppBaseSubscriptionAlert />
+    
     <!-- Mobile Sidebar - positioned absolutely outside of flex layout -->
     <AppBaseSidebar v-if="isCurrentlyMobile" />
     

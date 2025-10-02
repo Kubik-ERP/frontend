@@ -36,6 +36,7 @@ const {
   accountStoreTableConfiguration_onShowDialogAddFloor,
   accountStoreTableConfiguration_onShowDialogAddTable,
   accountStoreTableConfiguration_onShowDialogDeleteTable,
+  accountStoreTableConfiguration_onShowDialogDeleteFloor,
   accountStoreTableConfiguration_onShowDialogEditFloor,
   accountStoreTableConfiguration_onShowDialogEditTable,
   accountStoreTableConfiguration_onShowDialogEnableQrCode,
@@ -65,6 +66,7 @@ provide('accountStoreTableConfiguration', {
   accountStoreTableConfiguration_onShowDialogAddTable,
   accountStoreTableConfiguration_onShowDialogEditFloor,
   accountStoreTableConfiguration_onShowDialogDeleteTable,
+  accountStoreTableConfiguration_onShowDialogDeleteFloor,
   accountStoreTableConfiguration_onShowDialogEditTable,
   accountStoreTableConfiguration_onShowDialogEnableQrCode,
   accountStoreTableConfiguration_onSubmit,
@@ -179,6 +181,7 @@ onUnmounted(() => {
     <TableConfigurationAddFloorDialog />
     <TableConfigurationAddTableDialog />
     <AppBaseDialogConfirmation id="account-store-table-dialog-confirmation" />
+    <AppBaseDialogConfirmation id="account-store-floor-dialog-confirmation" />
 
     <AppBaseDialogExitConfirmation
       v-model:visible="accountStoreTableConfiguration_isShowDialogExitConfirmation"

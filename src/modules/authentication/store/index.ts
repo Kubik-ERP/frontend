@@ -163,6 +163,8 @@ export const useAuthenticationStore = defineStore('authentication', {
           isAccessRetail: response.data.data.isAccessRetail ?? true,
         };
 
+        this.authentication_userData.subExpiredAt = '2025-10-05T14:56:03.238Z';
+
         return Promise.resolve(response.data.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

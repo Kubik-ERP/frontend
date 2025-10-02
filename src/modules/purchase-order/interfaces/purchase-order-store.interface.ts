@@ -50,6 +50,7 @@ export interface IPurchaseOrderDetail {
     quantity: number;
     unitPrice: number;
     totalPrice: number;
+    actualQuantity?: number;
     itemInfo: {
       sku: string;
       name: string;
@@ -58,6 +59,10 @@ export interface IPurchaseOrderDetail {
       barcode?: string;
     };
   }>;
+  receiver: {
+    id: string;
+    fullname: string;
+  }
 }
 
 // Response interfaces
