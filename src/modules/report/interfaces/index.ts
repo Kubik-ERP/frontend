@@ -1,5 +1,5 @@
 import type {
-  IFinancialReport_cashInOut,
+  IFinancialReport_discount,
   IFinancialReport_paymentMethod,
   IFinancialReport_profitAndLost,
   IFinancialReport_taxServiceCharge,
@@ -19,16 +19,37 @@ export interface IReportQueryParams {
   startDate: Date;
   endDate: Date;
   type?: string | null;
+  store_ids?: string | null;
+  staff_ids?: string | null;
 }
 
 import type { IVoucherReport } from './voucher-report';
 export * from './voucher-report';
 
+import { IOutlet } from '@/modules/outlet/interfaces';
+export type { IOutlet };
+
+import { IStaffMember } from '@/modules/staff-member/interfaces';
+export type { IStaffMember };
+
+interface IOutletListOptions {
+  value: string;
+  label: string;
+}
+
+interface IStaffMemberListOptions {
+  value: string;
+  label: string;
+}
+
 export interface IReportStore {
   report_isLoading: boolean;
+  // populate select
+  outlet_lists_values: IOutlet[];
+  staff_lists_values: IStaffMember[];
   // financial report
   report_profitAndLost_values: IFinancialReport_profitAndLost;
-  report_cashInOut_values: IFinancialReport_cashInOut[];
+  report_discount_values: IFinancialReport_discount;
   report_paymentMethod_values: IFinancialReport_paymentMethod;
   report_taxAndServiceCharge_values: IFinancialReport_taxServiceCharge[];
   // sales report
@@ -51,7 +72,7 @@ export interface IReportStore {
 
 export interface IReportProvided {
   financialReport_profitAndLost_columns: IColumnDataTable[];
-  financialReport_cashInOut_columns: IColumnDataTable[];
+  financialReport_discount_columns: IColumnDataTable[];
   financialReport_paymentMethod_columns: IColumnDataTable[];
   financialReport_taxAndServiceCharge_columns: IColumnDataTable[];
   lossReport_columns: IColumnDataTable[];
@@ -63,6 +84,8 @@ export interface IReportProvided {
   voucherReport_columns: IColumnDataTable[];
   customerReport_columns: IColumnDataTable[];
   // methods
+  fetchStaff_lists: () => Promise<void>;
+  fetchOutlet_lists: () => Promise<void>;
   report_getFinancialReport: (type: string) => Promise<void>;
   report_getSalesReport: (type: string) => Promise<void>;
   report_getInventoryReport: (type: string) => Promise<void>;
@@ -74,7 +97,7 @@ export interface IReportProvided {
   report_isLoading: globalThis.Ref<boolean>;
   // financial
   report_profitAndLost_values: globalThis.Ref<IFinancialReport_profitAndLost>;
-  report_cashInOut_values: globalThis.Ref<IFinancialReport_cashInOut[]>;
+  report_discount_values: globalThis.Ref<IFinancialReport_discount>;
   report_paymentMethod_values: globalThis.Ref<IFinancialReport_paymentMethod>;
   report_taxAndServiceCharge_values: globalThis.Ref<IFinancialReport_taxServiceCharge[]>;
   // sales report
@@ -93,4 +116,10 @@ export interface IReportProvided {
   voucherReport_values: globalThis.Ref<IVoucherReport[]>;
   // customer report
   customerReport_values: globalThis.Ref<ICustomerReport[]>;
+  // outlet_list
+  outlet_lists_options: globalThis.Ref<IOutletListOptions[]>;
+  findOutletDetail: (id: string) => IOutlet | null | undefined;
+  // staff_list
+  staff_lists_options: globalThis.Ref<IStaffMemberListOptions[]>;
+  findStaffDetail: (id: string) => IStaffMember | null | undefined;
 }

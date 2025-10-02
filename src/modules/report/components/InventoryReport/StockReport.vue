@@ -8,6 +8,8 @@ const {
   report_queryParams,
   report_getInventoryReport,
   inventoryReport_stock_values,
+    findOutletDetail,
+  findStaffDetail,
 } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
@@ -16,6 +18,9 @@ const popover = ref();
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Inventory Report - Stock Report',
+    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
+    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: inventoryReport_stock_columns,
     tableData: formattedDataTable(),
@@ -24,6 +29,9 @@ const handleExportToPdf = () => {
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Inventory Report - Stock Report',
+    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
+    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: inventoryReport_stock_columns,
     tableData: formattedDataTable(),
@@ -103,7 +111,7 @@ const onChangePage = (newPage: number) => {
           v-model:start-date="report_queryParams.startDate"
           v-model:end-date="report_queryParams.endDate"
           :should-update-type="false"
-          @update:start-date="report_getInventoryReport('stock')"
+          @update:end-date="report_getInventoryReport('stock')"
         />
       </template>
     </AppBaseDataTable>

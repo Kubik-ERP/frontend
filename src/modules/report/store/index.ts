@@ -5,6 +5,8 @@ import {
   REPORT_VOUCHER_ENDPOINT,
   REPORT_CUSTOMER_ENDPOINT,
 } from '../constants';
+import { OUTLET_BASE_ENDPOINT } from '@/modules/outlet/constants';
+import { STAFF_MEMBER_BASE_ENDPOINT } from '@/modules/staff-member/constants';
 // Plugins
 import httpClient from '@/plugins/axios';
 // type
@@ -12,7 +14,7 @@ import type { AxiosRequestConfig } from 'axios';
 import type {
   IReportStore,
   IReportQueryParams,
-  IFinancialReport_cashInOut,
+  IFinancialReport_discount,
   IFinancialReport_paymentMethod,
   IFinancialReport_profitAndLost,
   IFinancialReport_taxServiceCharge,
@@ -21,16 +23,20 @@ import type {
   IVoucherReport,
   ISalesReport,
   ICustomerReport,
+  IOutlet,
+  IStaffMember,
 } from '../interfaces';
+
 export const useReportStore = defineStore('report', {
   state: (): IReportStore => ({
     report_isLoading: false,
+    // populate select
+    outlet_lists_values: [] as IOutlet[],
+    staff_lists_values: [] as IStaffMember[],
+    // financial
     report_profitAndLost_values: {} as IFinancialReport_profitAndLost,
-    report_cashInOut_values: [] as IFinancialReport_cashInOut[],
-    report_paymentMethod_values: {
-      reportData: [] as IFinancialReport_paymentMethod['reportData'],
-      totals: {} as IFinancialReport_paymentMethod['totals'],
-    } as IFinancialReport_paymentMethod,
+    report_discount_values: {} as IFinancialReport_discount,
+    report_paymentMethod_values: {} as IFinancialReport_paymentMethod,
     report_taxAndServiceCharge_values: [] as IFinancialReport_taxServiceCharge[],
     // sales
     salesReport_salesByItem_values: {} as ISalesReport,
@@ -49,6 +55,63 @@ export const useReportStore = defineStore('report', {
     customerReport_values: [] as ICustomerReport[],
   }),
   actions: {
+    /**
+     * @description Handle fetch api outlet get list outlet
+     * @url /store
+     * @method GET
+     * @access private
+     */
+    async fetchOutlet_lists(requestConfigurations: AxiosRequestConfig) {
+      this.report_isLoading = true;
+      try {
+        const response = await httpClient.get(OUTLET_BASE_ENDPOINT, {
+          params: {
+            page: 1,
+            limit: 100,
+          },
+          ...requestConfigurations,
+        });
+
+        this.outlet_lists_values = response.data.data.items;
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.report_isLoading = false;
+      }
+    },
+
+    async fetchStaffMember_lists(store_ids: string | null | undefined, requestConfigurations: AxiosRequestConfig) {
+      this.report_isLoading = true;
+      try {
+        const response = await httpClient.get(`${STAFF_MEMBER_BASE_ENDPOINT}`, {
+          params: {
+            store_ids,
+            page: 1,
+            limit: 100,
+          },
+          ...requestConfigurations,
+        });
+
+        this.staff_lists_values = response.data.data.employees;
+
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.report_isLoading = false;
+      }
+    },
+
     async getFinancialReport_profitAndLost(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
       this.report_isLoading = true;
       try {
@@ -58,19 +121,19 @@ export const useReportStore = defineStore('report', {
         });
         // console.log('response', response.data);
         switch (params.type) {
-          case 'profit-loss': {
+          case 'financial-summary': {
             this.report_profitAndLost_values = response.data.data;
             break;
           }
-          case 'cashin-out': {
-            this.report_cashInOut_values = response.data.data;
+          case 'discount-summary': {
+            this.report_discount_values = response.data.data;
             break;
           }
-          case 'payment-method': {
+          case 'payment-summary': {
             this.report_paymentMethod_values = response.data.data;
             break;
           }
-          case 'tax-service': {
+          case 'tax-and-service-summary': {
             this.report_taxAndServiceCharge_values = response.data.data;
             break;
           }
