@@ -12,6 +12,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  stock: {
+    type: Number,
+    required: false,
+  },
 });
 
 /**
@@ -45,6 +49,13 @@ const { cashierProduct_productState, cashierProduct_handleOpenModalAddProduct, i
               <p class="font-semibold text-sm">
                 {{ props.product.name }}
               </p>
+
+              <div class="flex items-center gap-2">
+                <PrimeVueChip
+                  class="bg-primary-background font-normal text-xs px-2 py-[6px] text-text-disabled"
+                  :label="`Stock: ${props.stock}`"
+                />
+              </div>
 
               <div class="bg-primary-background p-1 h-fit rounded-full w-max">
                 <span class="text-xs text-text-disabled">{{ props.category }}</span>

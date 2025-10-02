@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Services
 import { useDailySalesListService } from '../services/daily-sales-list.service';
+import { useStaffMemberListService } from '@/modules/staff-member/services/staff-member-list.service';
 
 // Stores
 import { useOutletStore } from '@/modules/outlet/store';
@@ -28,6 +29,8 @@ const {
   dailySalesList_typesOfPaymentStatus,
   dailySalesList_values,
 } = useDailySalesListService(outlet_currentOutlet.value?.businessType);
+
+const { staffMemberList_dropdownItemStaff } = useStaffMemberListService();
 </script>
 
 <template>
@@ -80,14 +83,14 @@ const {
       </template>
 
       <template #filter>
-        <div class="flex flex-col gap-1 w-full mt-1">
+        <div class="flex flex-col gap-1 w-full mt-4">
           <span class="hidden lg:inline-block font-semibold text-gray-900 text-base w-48">Filter by</span>
 
-          <section id="filter" class="grid grid-rows-1 grid-cols-10 gap-4">
-            <section id="createdAt" class="col-span-2 lg:col-span-auto">
+          <section id="filter" class="grid grid-rows-1 grid-cols-12 gap-4">
+            <section id="createdAt" class="col-span-4">
               <PrimeVueDatePicker
                 v-model="dailySalesList_queryParams.createdAtFrom"
-                class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-full lg:max-w-80"
+                class="[&>input]:!text-sm text-text-disabled [&>input]:placeholder:!text-sm placeholder:text-text-disabled w-full max-w-full"
                 placeholder="Purchase Date From"
                 show-on-focus
                 show-icon
@@ -95,14 +98,20 @@ const {
                 show-time
                 show-button-bar
                 hour-format="24"
+                :pt="{
+                  pcInputText: '!text-sm',
+                  dayCell: '!text-sm',
+                  title: '!text-sm',
+                  tableHeaderCell: '!text-sm',
+                }"
                 @clear-click="dailySalesList_queryParams.createdAtFrom = null"
               />
             </section>
 
-            <section id="createdTo" class="col-span-2 lg:col-span-auto">
+            <section id="createdTo" class="col-span-4">
               <PrimeVueDatePicker
                 v-model="dailySalesList_queryParams.createdAtTo"
-                class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-full lg:max-w-80"
+                class="[&>input]:!text-sm text-text-disabled [&>input]:placeholder:!text-sm placeholder:text-text-disabled w-full max-w-full"
                 placeholder="Purchase Date To"
                 show-on-focus
                 show-icon
@@ -110,6 +119,12 @@ const {
                 show-time
                 show-button-bar
                 hour-format="24"
+                :pt="{
+                  pcInputText: '!text-sm',
+                  dayCell: '!text-sm',
+                  title: '!text-sm',
+                  tableHeaderCell: '!text-sm',
+                }"
                 @clear-click="dailySalesList_queryParams.createdAtTo = null"
               />
             </section>
@@ -117,7 +132,7 @@ const {
             <section
               v-if="outlet_currentOutlet?.businessType !== 'Retail'"
               id="order-type"
-              class="col-span-2 lg:col-span-auto"
+              class="col-span-4"
             >
               <PrimeVueMultiSelect
                 v-model="dailySalesList_queryParams.orderType"
@@ -131,7 +146,20 @@ const {
               />
             </section>
 
-            <section id="payment-status" class="col-span-2 lg:col-span-auto">
+            <section id="staff" class="col-span-4">
+              <PrimeVueSelect
+                id="staff"
+                v-model="dailySalesList_queryParams.staffId"
+                filter
+                :options="staffMemberList_dropdownItemStaff"
+                option-label="label"
+                option-value="value"
+                placeholder="Select Staff"
+                class="text-sm text-text-primary w-full"
+              />
+            </section>
+
+            <section id="payment-status" class="col-span-4">
               <PrimeVueMultiSelect
                 v-model="dailySalesList_queryParams.paymentStatus"
                 display="chip"
@@ -145,7 +173,7 @@ const {
               />
             </section>
 
-            <section id="payment-status" class="col-span-2 lg:col-span-auto">
+            <section id="payment-status" class="col-span-4">
               <PrimeVueMultiSelect
                 v-model="dailySalesList_queryParams.orderStatus"
                 display="chip"
@@ -243,7 +271,7 @@ const {
         </template>
 
         <template v-else>
-          <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
+          <span class="font-normal text-sm text-text-primary">{{ data[column.value] ?? '-' }}</span>
         </template>
       </template>
     </AppBaseDataTable>

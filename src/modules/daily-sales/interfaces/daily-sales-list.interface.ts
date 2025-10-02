@@ -13,6 +13,7 @@ export interface IDailySalesListRequestQuery {
   paymentStatus: string | null;
   orderBy: string | null;
   orderDirection: 0 | 1 | -1 | string | undefined | null;
+  staffId: string | null
 }
 
 export interface IDailySalesListProvided {

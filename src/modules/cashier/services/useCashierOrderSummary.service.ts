@@ -1139,7 +1139,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     // Lazy import inventory service only when needed
     const { useInventoryItemsListService } = await import('@/modules/items/services/items-list.service');
     const { inventoryItems_fetchData } = useInventoryItemsListService();
-    
+
     // Fetch latest inventory data before showing dialog
     await inventoryItems_fetchData();
 

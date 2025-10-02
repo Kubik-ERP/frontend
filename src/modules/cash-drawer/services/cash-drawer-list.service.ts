@@ -16,6 +16,9 @@ import type {
 // Plugins
 import eventBus from '@/plugins/mitt';
 
+// Services
+import { useStaffMemberListService } from '@/modules/staff-member/services/staff-member-list.service';
+
 // Stores
 import { storeToRefs } from 'pinia';
 import { useCashDrawerStore } from '../store';
@@ -41,6 +44,7 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
   const { outlet_currentOutlet } = storeToRefs(outletStore);
   const { authentication_isStaff, authentication_userData } = storeToRefs(authenticationStore);
   const { httpAbort_registerAbort } = useHttpAbort();
+  const { staffMemberList_fetchListMembers } = useStaffMemberListService();
 
   /**
    * @description Reactive data binding
@@ -202,6 +206,10 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
    * @description Handle business logic for event click button open register
    */
   const cashDrawerList_onShowOpenRegisterDialog = (): void => {
+    if (!authentication_isStaff.value) {
+      staffMemberList_fetchListMembers();
+    }
+
     const argsEventEmitter: IPropsDialog = {
       id: 'cash-drawer-list-open-register-dialog',
       isUsingClosableButton: false,

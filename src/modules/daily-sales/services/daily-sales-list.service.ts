@@ -47,6 +47,7 @@ export const useDailySalesListService = (businessType?: string): IDailySalesList
     paymentStatus: null,
     orderBy: null,
     orderDirection: null,
+    staffId: null
   });
 
   /**
