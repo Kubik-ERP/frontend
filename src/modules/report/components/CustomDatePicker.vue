@@ -46,6 +46,7 @@ const applyDateChange = () => {
     const start = new Date(localDateRange.value[0].getTime() + gmt * 60 * 60 * 1000);
 
 
+
     const end = localDateRange.value[1] ? new Date(localDateRange.value[1].getTime() + gmt * 60 * 60 * 1000) : start; // This creates a copy, not a reference
 
     emit('update:startDate', start);
