@@ -11,26 +11,21 @@ export const FINANCIALREPORT_PROFITANDLOST_COLUMNS: IColumnDataTable[] = [
   },
 ];
 
-export const FINANCIALREPORT_CASHINOUT_COLUMNS: IColumnDataTable[] = [
+export const FINANCIALREPORT_DISCOUNT_COLUMNS: IColumnDataTable[] = [
   {
-    label: 'Date',
+    label: 'Invoice ID',
     sortable: true,
-    value: 'date',
+    value: 'name',
   },
   {
-    label: 'Type',
+    label: 'Price',
     sortable: false,
-    value: 'type',
+    value: 'price',
   },
   {
-    label: 'Notes',
+    label: 'Discount',
     sortable: false,
-    value: 'notes',
-  },
-  {
-    label: 'Nominal',
-    sortable: true,
-    value: 'nominal',
+    value: 'discount',
   },
 ];
 
@@ -209,10 +204,8 @@ export const SALESREPORT_COLUMNS: IColumnDataTable[] = [
     label: 'Name',
     sortable: true,
     value: 'group',
-
   },
   {
-
     label: 'Qty Sold',
     sortable: true,
     value: 'jumlahTerjual',
@@ -242,9 +235,7 @@ export const SALESREPORT_COLUMNS: IColumnDataTable[] = [
     sortable: true,
     value: 'countPenggunaanVoucher',
   },
-
 ];
-
 
 export const INVENTORYREPORT_STOCK_COLUMNS: IColumnDataTable[] = [
   {
@@ -399,5 +390,38 @@ export const CUSTOMERREPORT_COLUMNS: IColumnDataTable[] = [
     label: 'Loyalty Points',
     sortable: true,
     value: 'loyaltyPoints',
-  },  
-]
+  },
+];
+
+// export const CUSTOMERREPORT_COLUMNS: IColumnDataTable[] = [
+//   {
+//     label: 'Name',
+//     sortable: true,
+//     value: 'nama',
+//   },
+//   {
+//     label: 'Gender',
+//     sortable: true,
+//     value: 'gender',
+//   },
+//   {
+//     label: 'Total Sales',
+//     sortable: true,
+//     value: 'totalSales',
+//   },
+//   {
+//     label: 'Date Added',
+//     sortable: true,
+//     value: 'dateAdded',
+//   },
+//   {
+//     label: 'Outstanding',
+//     sortable: true,
+//     value: 'outstanding',
+//   },
+//   {
+//     label: 'Loyalty Points',
+//     sortable: true,
+//     value: 'loyaltyPoints',
+//   },
+// ]

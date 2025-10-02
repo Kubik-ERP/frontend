@@ -1,16 +1,15 @@
 <script setup lang="ts">
 // components
 import CustomDatePicker from '../../components/CustomDatePicker.vue';
-import SummaryReport from '../SummaryReport.vue';
 // service
 import { useReportService } from '../../services/report.service';
 const {
-  salesReport_columns,
+  financialReport_profitAndLost_columns,
   report_queryParams,
-  report_getSalesReport,
-  salesReport_salesByDay_values,
-  staff_lists_options,
+  report_getFinancialReport,
+  report_profitAndLost_values,
   outlet_lists_options,
+  staff_lists_options,
   findOutletDetail,
   findStaffDetail,
 } = useReportService();
@@ -18,77 +17,90 @@ const {
 import { useReportExporter } from '../../composables/useReportExporter';
 const { exportToPdf, exportToCsv } = useReportExporter();
 const popover = ref();
+
 const handleExportToPdf = () => {
   exportToPdf({
-    reportName: 'Sales Report - Sales By Day Report',
+    reportName: 'Financial Report - Financial Summary',
     storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
     storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: salesReport_columns,
+    columns: financialReport_profitAndLost_columns,
     tableData: formattedDataTable(),
   });
 };
 const handleExportToCsv = () => {
   exportToCsv({
-    reportName: 'Sales Report - Sales By Day Report',
+    reportName: 'Financial Report - Financial Summary',
     storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
     storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: salesReport_columns,
+    columns: financialReport_profitAndLost_columns,
     tableData: formattedDataTable(),
   });
 };
 
 const formattedDataTable = () => {
-  const newData =
-    salesReport_salesByDay_values.value?.groupedSummary?.map(item => {
-      return {
-        group: item.group,
-        jumlahTerjual: item.jumlahTerjual,
-        kotor: useCurrencyFormat({ data: item.kotor }),
-        diskonItem: useCurrencyFormat({ data: item.diskonItem }),
-        refund: useCurrencyFormat({ data: item.refund }),
-        pajak: useCurrencyFormat({ data: item.pajak }),
-        totalPenjualan: useCurrencyFormat({ data: item.totalPenjualan }),
-        countPenggunaanVoucher: item.countPenggunaanVoucher,
-      };
-    }) || [];
-
-  return newData || [];
-};
-
-const page = ref<number>(1);
-const limit = ref<number>(10);
-const onChangePage = (newPage: number) => {
-  page.value = newPage;
+  return [
+    {
+      description: 'Gross Sales',
+      nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.penjualanKotor }),
+    },
+    {
+      description: 'Discount',
+      nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.diskon }),
+    },
+    {
+      description: 'Refund',
+      nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.refund }),
+    },
+    {
+      description: 'Net Sales',
+      nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.penjualanBersih }),
+    },
+    {
+      description: 'Tax',
+      nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.pajak }),
+    },
+    {
+      description: 'Rounding',
+      nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.pembulatan }),
+    },
+    {
+      description: 'Voucher Used',
+      nominal: useCurrencyFormat({
+        data: report_profitAndLost_values.value?.sales?.penggunaanVoucher,
+        hidePrefix: true,
+      }),
+    },
+    {
+      description: 'Net Total',
+      nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.nettTotal }),
+    },
+  ];
 };
 </script>
 <template>
-  <section class="flex flex-col gap-4">
-    <SummaryReport :summary="salesReport_salesByDay_values?.overallSummary" />
+  <section>
+    <!-- <pre class="p-4 my-4 bg-gray-100 rounded-lg break-all" style="white-space: pre-wrap; word-wrap: break-word">
+      {{ report_profitAndLost_values }}
+      {{ outlet_lists_values }}
+    </pre> -->
     <AppBaseDataTable
       :data="formattedDataTable()"
-      :columns="salesReport_columns"
-      :first="(page - 1) * limit"
-      :rows-per-page="limit"
-      :total-records="formattedDataTable().length"
+      :columns="financialReport_profitAndLost_columns"
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-custom-filter
-      @update:currentPage="onChangePage"
+      is-using-custom-body
+      is-using-custom-footer
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Sales By Day</h1>
+        <h1 class="font-bold text-2xl text-text-primary">Financial Summary</h1>
       </template>
       <template #header-suffix>
-        <PrimeVueButton
-          :disabled="formattedDataTable().length === 0"
-          variant="outlined"
-          label="Export"
-          @click="popover.toggle($event)"
-        >
+        <PrimeVueButton variant="outlined" label="Export" @click="popover.toggle($event)">
           <template #icon>
             <AppBaseSvg name="export" class="!w-5 !h-5" />
           </template>
@@ -122,7 +134,7 @@ const onChangePage = (newPage: number) => {
             v-model:start-date="report_queryParams.startDate"
             v-model:end-date="report_queryParams.endDate"
             :should-update-type="false"
-            @update:end-date="report_getSalesReport('day')"
+            @update:end-date="report_getFinancialReport('financial-summary')"
           />
           <PrimeVueSelect
             v-model="report_queryParams.store_ids"
@@ -130,9 +142,9 @@ const onChangePage = (newPage: number) => {
             option-label="label"
             option-value="value"
             placeholder="Select Outlet"
+            class="min-w-64"
             filter
-            class="w-64"
-            @change="report_getSalesReport('day')"
+            @change="report_getFinancialReport('financial-summary')"
           >
             <template #dropdownicon>
               <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
@@ -146,12 +158,20 @@ const onChangePage = (newPage: number) => {
             placeholder="Select Staff"
             filter
             class="w-64"
-            @change="report_getSalesReport('day')"
+            @change="report_getFinancialReport('financial-summary')"
             ><template #dropdownicon>
               <AppBaseSvg name="staff" class="w-5 h-5 text-text-primary" />
             </template>
           </PrimeVueSelect>
         </section>
+      </template>
+      <template #body="{ data, column }">
+        <template v-if="column.value === 'description'">
+          <span class="font-semibold text-sm text-text-primary">{{ data[column.value] }}</span>
+        </template>
+        <template v-else>
+          <span class="text-sm text-text-primary">{{ data[column.value] }}</span>
+        </template>
       </template>
     </AppBaseDataTable>
   </section>

@@ -24,6 +24,8 @@ const emit = defineEmits(['update:startDate', 'update:endDate', 'update:type', '
 
 const dialogVisible = ref<boolean>(false);
 
+const gmt = 0;
+
 // ✅ 1. Use a single ref for the date range array
 const localDateRange = ref<[Date, Date] | null>([props.startDate, props.endDate]);
 const type = ref<string | null>(props.type);
@@ -41,17 +43,10 @@ const type = ref<string | null>(props.type);
 const applyDateChange = () => {
   if (localDateRange.value && localDateRange.value[0]) {
     // Create a new Date object for 'start' to work with
-    const start = new Date(localDateRange.value[0].getTime() + 7 * 60 * 60 * 1000);
+    const start = new Date(localDateRange.value[0].getTime() + gmt * 60 * 60 * 1000);
 
-    // If an end date exists, create a new object from it.
-    // If not, create a new object by COPYING the start date.
-    if(localDateRange.value[1]){
-      console.log('localDateRange.value[1] ADA', localDateRange.value[1]);
-    }
-    else{
-      console.log('localDateRange.value[1] TIDAK ADA', localDateRange.value[1]);
-    }
-    const end = localDateRange.value[1] ? new Date(localDateRange.value[1].getTime() + 7 * 60 * 60 * 1000) : start; // This creates a copy, not a reference
+
+    const end = localDateRange.value[1] ? new Date(localDateRange.value[1].getTime() + gmt * 60 * 60 * 1000) : start; // This creates a copy, not a reference
 
     emit('update:startDate', start);
     emit('update:endDate', end);
@@ -72,14 +67,14 @@ const cancelDateChange = () => {
 };
 
 const onClickShortcut = (label: string) => {
-  let today = new Date(Date.now() + 7 * 60 * 60 * 1000);
-  let start = new Date(Date.now() + 7 * 60 * 60 * 1000);
-  let end = new Date(Date.now() + 7 * 60 * 60 * 1000);
+  let today = new Date(Date.now() + gmt * 60 * 60 * 1000);
+  let start = new Date(Date.now() + gmt * 60 * 60 * 1000);
+  let end = new Date(Date.now() + gmt * 60 * 60 * 1000);
   let newType = '';
 
   switch (label) {
     case 'Today': {
-      today = new Date(Date.now() + 7 * 60 * 60 * 1000);
+      today = new Date(Date.now() + gmt * 60 * 60 * 1000);
       start = today;
 
       end = today;
@@ -90,7 +85,7 @@ const onClickShortcut = (label: string) => {
     }
 
     case 'Yesterday': {
-      const yesterday = new Date(Date.now() - (24 - 7) * 60 * 60 * 1000);
+      const yesterday = new Date(Date.now() - (24 - gmt) * 60 * 60 * 1000);
       start = yesterday;
 
       end = yesterday;
@@ -101,37 +96,51 @@ const onClickShortcut = (label: string) => {
     }
 
     case 'This Week': {
-      today = new Date(Date.now() + 7 * 60 * 60 * 1000);
+      today = new Date(Date.now() + gmt * 60 * 60 * 1000);
 
       const firstDayOfWeek = new Date(today);
       // Assuming Sunday is the first day of the week (day 0)
       firstDayOfWeek.setDate(today.getDate() - today.getDay());
 
       start = firstDayOfWeek;
-      end = new Date();
+      end = new Date(firstDayOfWeek.getTime() + 6 * 24 * 60 * 60 * 1000);
 
       newType = 'days';
       break;
     }
 
     case 'This Month': {
-      today = new Date(Date.now() + 7 * 60 * 60 * 1000);
+      today = new Date(Date.now() + gmt * 60 * 60 * 1000);
 
       // start = new Date(today.getFullYear(), today.getMonth(), 1);
       start = new Date(today.setDate(1));
       end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-      end.setHours(end.getHours() + 7);
+      end.setHours(end.getHours() + gmt);
+
+      newType = 'days';
+      break;
+    }
+
+    case 'Last Week': {
+      today = new Date(Date.now() + gmt * 60 * 60 * 1000);
+
+      const firstDayOfWeek = new Date(today);
+      // Assuming Sunday is the first day of the week (day 0)
+      firstDayOfWeek.setDate(today.getDate() - today.getDay() - 7);
+
+      start = firstDayOfWeek;
+      end = new Date(firstDayOfWeek.getTime() + 6 * 24 * 60 * 60 * 1000);
 
       newType = 'days';
       break;
     }
 
     case 'Last 30 Days': {
-      today = new Date(Date.now() + 7 * 60 * 60 * 1000);
+      today = new Date(Date.now() + gmt * 60 * 60 * 1000);
 
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(today.getDate() - 30);
-      thirtyDaysAgo.setHours(thirtyDaysAgo.getHours() + 7);
+      thirtyDaysAgo.setHours(thirtyDaysAgo.getHours() + gmt);
 
       start = thirtyDaysAgo;
       end = today;
@@ -141,15 +150,56 @@ const onClickShortcut = (label: string) => {
     }
 
     case 'Last Month': {
-      today = new Date(Date.now() + 7 * 60 * 60 * 1000);
+      today = new Date(Date.now() + gmt * 60 * 60 * 1000);
 
       const firstDayOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-      firstDayOfLastMonth.setHours(firstDayOfLastMonth.getHours() + 7);
+      firstDayOfLastMonth.setHours(firstDayOfLastMonth.getHours() + gmt);
       const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-      lastDayOfLastMonth.setHours(lastDayOfLastMonth.getHours() + 7);
+      lastDayOfLastMonth.setHours(lastDayOfLastMonth.getHours() + gmt);
 
       start = firstDayOfLastMonth;
       end = lastDayOfLastMonth;
+      newType = 'days';
+      break;
+    }
+
+    case 'Last 7 Days': {
+      today = new Date(Date.now() + gmt * 60 * 60 * 1000);
+
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(today.getDate() - 7);
+      sevenDaysAgo.setHours(sevenDaysAgo.getHours() + 7);
+
+      start = sevenDaysAgo;
+      end = today;
+      newType = 'days';
+      break;
+    }
+
+    case 'This Year': {
+      today = new Date(Date.now() + gmt * 60 * 60 * 1000);
+
+      const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+      firstDayOfYear.setHours(firstDayOfYear.getHours() + gmt);
+      const lastDayOfYear = new Date(today.getFullYear(), 11, 31);
+      lastDayOfYear.setHours(lastDayOfYear.getHours() + gmt);
+
+      start = firstDayOfYear;
+      end = lastDayOfYear;
+      newType = 'days';
+      break;
+    }
+
+    case 'Last Year': {
+      today = new Date(Date.now() + gmt * 60 * 60 * 1000);
+
+      const firstDayOfLastYear = new Date(today.getFullYear() - 1, 0, 1);
+      firstDayOfLastYear.setHours(firstDayOfLastYear.getHours() + gmt);
+      const lastDayOfLastYear = new Date(today.getFullYear() - 1, 11, 31);
+      lastDayOfLastYear.setHours(lastDayOfLastYear.getHours() + gmt);
+
+      start = firstDayOfLastYear;
+      end = lastDayOfLastYear;
       newType = 'days';
       break;
     }
@@ -167,7 +217,7 @@ const onClickShortcut = (label: string) => {
 };
 </script>
 <template>
-  <section class="pt-4">
+  <section>
     <PrimeVueButton
       variant="text"
       class="px-3 py-2 border border-solid border-grayscale-20"
@@ -221,7 +271,18 @@ const onClickShortcut = (label: string) => {
           <section id="shortcut-button">
             <div id="shortcut-button" class="grid grid-cols-1 md:grid-cols-2 gap-2">
               <PrimeVueButton
-                v-for="label in ['Today', 'Yesterday', 'This Month', 'This Week', 'Last 30 Days', 'Last Month']"
+                v-for="label in [
+                  'Today',
+                  'Yesterday',
+                  'This Month',
+                  'Last Month',
+                  'This Week',
+                  'Last Week',
+                  'This Year',
+                  'Last Year',
+                  'Last 7 Days',
+                  'Last 30 Days',
+                ]"
                 :key="label"
                 variant="text"
                 class="w-full px-3 py-2 border border-solid border-grayscale-20"

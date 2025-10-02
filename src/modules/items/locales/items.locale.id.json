@@ -12,8 +12,8 @@
         "create": "Tambah Item Baru",
         "edit": "Ubah Item"
       },
-      "priceRetail": "Harga Retail",
-      "priceGrosir": "Harga Grosir",
+      "priceRetail": "Harga Jual",
+      "priceGrosir": "Harga Beli",
       "details": "Detail Item",
       "photo": {
         "label": "Foto (Opsional)",
