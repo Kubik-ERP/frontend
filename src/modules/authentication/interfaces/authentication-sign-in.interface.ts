@@ -11,6 +11,7 @@ export interface IAuthenticationSignInFormData {
   browser: string;
   city: string;
   country: string;
+  rememberMe: boolean;
 }
 
 export interface IAuthenticationSignInResponse {

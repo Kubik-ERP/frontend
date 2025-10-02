@@ -12,6 +12,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  stock: {
+    type: Number,
+    required: false,
+  },
 });
 
 /**
@@ -52,9 +56,13 @@ const imageUrl = computed(() => {
             <span class="text-xs text-white font-semibold"> {{ useLocalization('cashier.selected') }} </span>
           </div>
 
-          <p class="font-semibold text-sm h-10 line-clamp-2">
-            {{ props.product.name }}
-          </p>
+          <div class="flex flex-col gap-1">
+            <p class="font-semibold text-sm h-fit line-clamp-2">
+              {{ props.product.name }}
+            </p>
+
+            <p class="font-normal text-xs text-text-disabled">Stock: {{ props.stock }}</p>
+          </div>
 
           <div class="flex w-full mt-2 justify-between items-end">
             <PrimeVueChip

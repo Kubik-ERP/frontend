@@ -4,6 +4,7 @@
     "business-type": "Business Type",
     "cancel": "Cancel",
     "create-store": "Create Store",
+    "current-locale": "en",
     "description": "Description",
     "edit-profile": "Edit Profile",
     "email": "Email",
@@ -104,6 +105,19 @@
     "street-address": "Street Address",
     "stores": "Stores",
     "submit": "Submit",
+
+    "subscription-alert": {
+      "message": "Your subscription will expire on [Expiry Date]. Renew now to keep using all features without interruption.",
+      "renew-now": "Renew Now",
+      "expires-today": "Expires Today",
+      "expires-soon": "Expires Soon",
+      "expires-this-week": "Expires This Week",
+      "expires-on": "Expires on",
+      "renewal-reminder": "Renewal Reminder",
+      "day-remaining": "1 day remaining",
+      "days-remaining": "[days] days remaining"
+    },
+
     "table-configuration": "Table Configuration",
     "welcome-back": "Welcome back 👋"
   }

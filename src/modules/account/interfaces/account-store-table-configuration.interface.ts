@@ -64,6 +64,7 @@ export interface IAccountStoreTableConfigurationProvided {
     configuration: IAccountStoreTableConfigurationFormDataOfAddFloor,
   ) => void;
   accountStoreTableConfiguration_onShowDialogDeleteTable: (floorName: string, tableName: string) => void;
+  accountStoreTableConfiguration_onShowDialogDeleteFloor: (floorName: string) => void;
   accountStoreTableConfiguration_onShowDialogEditFloor: (floorName: string) => void;
   accountStoreTableConfiguration_onShowDialogEditTable: (
     table: IAccountStoreTableConfigurationFormDataOfAddTable,

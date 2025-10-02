@@ -22,6 +22,10 @@ interface IDeliveryOrderData {
     totalPrice: number;
   }>;
   totalPrice: number;
+  receiver: {
+    id: string;
+    fullname: string;
+  };
 }
 
 interface IProps {
@@ -38,6 +42,10 @@ withDefaults(defineProps<IProps>(), {
     deliveryDate: '',
     purchaseOrderItems: [],
     totalPrice: 0,
+    receiver: {
+      id: '',
+      fullname: '',
+    },
   }),
 });
 </script>
@@ -122,12 +130,12 @@ withDefaults(defineProps<IProps>(), {
             <tr>
               <td style="font-weight: normal; padding: 4px 0">Receiver</td>
               <td style="text-align: center; padding: 4px 0">:</td>
-              <td style="padding: 4px 0">-</td>
+              <td style="padding: 4px 0">{{ deliveryOrderData.receiver.fullname || '-' }}</td>
             </tr>
             <tr>
               <td style="font-weight: normal; padding: 4px 0">Delivery Address</td>
               <td style="text-align: center; padding: 4px 0">:</td>
-              <td style="padding: 4px 0">-</td>
+              <td style="padding: 4px 0">{{ deliveryOrderData.supplierInfo.supplierName || '-' }}</td>
             </tr>
           </tbody>
         </table>
