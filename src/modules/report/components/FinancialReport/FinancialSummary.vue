@@ -8,6 +8,10 @@ const {
   report_queryParams,
   report_getFinancialReport,
   report_profitAndLost_values,
+  outlet_lists_options,
+  staff_lists_options,
+  findOutletDetail,
+  findStaffDetail,
 } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
@@ -17,6 +21,9 @@ const popover = ref();
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Financial Report - Financial Summary',
+    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
+    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_profitAndLost_columns,
     tableData: formattedDataTable(),
@@ -25,6 +32,9 @@ const handleExportToPdf = () => {
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Financial Report - Financial Summary',
+    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
+    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_profitAndLost_columns,
     tableData: formattedDataTable(),
@@ -75,6 +85,7 @@ const formattedDataTable = () => {
   <section>
     <!-- <pre class="p-4 my-4 bg-gray-100 rounded-lg break-all" style="white-space: pre-wrap; word-wrap: break-word">
       {{ report_profitAndLost_values }}
+      {{ outlet_lists_values }}
     </pre> -->
     <AppBaseDataTable
       :data="formattedDataTable()"
@@ -118,12 +129,41 @@ const formattedDataTable = () => {
       </template>
 
       <template #filter>
-        <CustomDatePicker
-          v-model:start-date="report_queryParams.startDate"
-          v-model:end-date="report_queryParams.endDate"
-          :should-update-type="false"
-          @update:start-date="report_getFinancialReport('financial-summary')"
-        />
+        <section class="flex items-center gap-4 pt-4">
+          <CustomDatePicker
+            v-model:start-date="report_queryParams.startDate"
+            v-model:end-date="report_queryParams.endDate"
+            :should-update-type="false"
+            @update:end-date="report_getFinancialReport('financial-summary')"
+          />
+          <PrimeVueSelect
+            v-model="report_queryParams.store_ids"
+            :options="outlet_lists_options"
+            option-label="label"
+            option-value="value"
+            placeholder="Select Outlet"
+            class="min-w-64"
+            filter
+            @change="report_getFinancialReport('financial-summary')"
+          >
+            <template #dropdownicon>
+              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+            </template>
+          </PrimeVueSelect>
+          <PrimeVueSelect
+            v-model="report_queryParams.staff_ids"
+            :options="staff_lists_options"
+            option-label="label"
+            option-value="value"
+            placeholder="Select Staff"
+            filter
+            class="w-64"
+            @change="report_getFinancialReport('financial-summary')"
+            ><template #dropdownicon>
+              <AppBaseSvg name="staff" class="w-5 h-5 text-text-primary" />
+            </template>
+          </PrimeVueSelect>
+        </section>
       </template>
       <template #body="{ data, column }">
         <template v-if="column.value === 'description'">

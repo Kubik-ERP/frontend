@@ -392,3 +392,36 @@ export const CUSTOMERREPORT_COLUMNS: IColumnDataTable[] = [
     value: 'loyaltyPoints',
   },
 ];
+
+// export const CUSTOMERREPORT_COLUMNS: IColumnDataTable[] = [
+//   {
+//     label: 'Name',
+//     sortable: true,
+//     value: 'nama',
+//   },
+//   {
+//     label: 'Gender',
+//     sortable: true,
+//     value: 'gender',
+//   },
+//   {
+//     label: 'Total Sales',
+//     sortable: true,
+//     value: 'totalSales',
+//   },
+//   {
+//     label: 'Date Added',
+//     sortable: true,
+//     value: 'dateAdded',
+//   },
+//   {
+//     label: 'Outstanding',
+//     sortable: true,
+//     value: 'outstanding',
+//   },
+//   {
+//     label: 'Loyalty Points',
+//     sortable: true,
+//     value: 'loyaltyPoints',
+//   },
+// ]

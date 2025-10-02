@@ -1,8 +1,5 @@
 import html2pdf from 'html2pdf.js';
 
-// store
-import { useOutletStore } from '@/modules/outlet/store';
-
 // Import your PDF template component directly
 import reportPdfTemplate from '../components/reportPdfTemplate.vue';
 import { App } from 'vue';
@@ -11,21 +8,23 @@ import { App } from 'vue';
 interface ReportConfig {
   reportName: string;
   period: string;
+  storeName: string;
+  storeAddress: string;
+  staffMember: string;
   columns: IColumnDataTable[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tableData: any[];
 }
 
 export function useReportExporter() {
-  const outletStore = useOutletStore();
-  const { outlet_currentOutlet } = storeToRefs(outletStore);
 
   const exportToCsv = (config: ReportConfig) => {
     const reportHeader = [
       // Each element in this array is a new row in the CSV
       `Report Name:,${config.reportName}`,
-      `Store Name:,${outlet_currentOutlet.value?.name || ''}`,
-      `Store Address:,${outlet_currentOutlet.value?.address || ''}`,
+      `Store Name:,${config.storeName}`,
+      `Store Address:,${config.storeAddress}`,
+      `Staff Member:,${config.staffMember}`,
       `Period:,${config.period}`,
       `Printed On:,${useFormatDate(new Date(), 'dd MMMM yyyy, hh:MM:ss am/pm')}`,
       '', // Adds a blank row for spacing before the table
@@ -87,8 +86,9 @@ export function useReportExporter() {
       // Data passed from the function call
       reportData: {
         reportName: config.reportName,
-        storeName: outlet_currentOutlet.value?.name || '',
-        storeAddress: outlet_currentOutlet.value?.address || '',
+        storeName: config.storeName,
+        storeAddress: config.storeAddress,
+        staffMember: config.staffMember,
         period: config.period,
         // Automatically generated data
         printDate: useFormatDate(new Date(), 'dd MMMM yyyy'),
