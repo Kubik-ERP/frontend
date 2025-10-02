@@ -17,8 +17,8 @@
         "create": "Add New Items",
         "edit": "Edit Items"
       },
-      "priceRetail": "Price Retail",
-      "priceGrosir": "Price Grosir",
+      "priceRetail": "Price Sell",
+      "priceGrosir": "Price Buy",
       "details": "Item Details",
       "photo": {
         "label": "Photo (Optional)",
