@@ -4,6 +4,7 @@
     "business-type": "Tipe Bisnis",
     "cancel": "Batalkan",
     "create-store": "Buat Toko",
+    "current-locale": "id",
     "description": "Deskripsi",
     "edit-profile": "Edit Profil",
     "email": "Email",
@@ -91,6 +92,19 @@
     "street-address": "Alamat Jalan",
     "stores": "Toko",
     "submit": "Kirim",
+
+    "subscription-alert": {
+      "message": "Langganan Anda akan berakhir pada [Expiry Date]. Perpanjang sekarang agar tetap bisa menggunakan semua fitur tanpa gangguan.",
+      "renew-now": "Perpanjang Sekarang",
+      "expires-today": "Berakhir Hari Ini",
+      "expires-soon": "Akan Berakhir",
+      "expires-this-week": "Berakhir Minggu Ini",
+      "expires-on": "Berakhir pada",
+      "renewal-reminder": "Pengingat Perpanjangan",
+      "day-remaining": "1 hari tersisa",
+      "days-remaining": "[days] hari tersisa"
+    },
+
     "table-configuration": "Konfigurasi Meja",
     "welcome-back": "Selamat datang kembali 👋"
   }

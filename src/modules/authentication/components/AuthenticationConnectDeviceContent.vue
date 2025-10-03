@@ -57,6 +57,18 @@ const {
         </div>
       </div>
 
+      <!-- Remember Me Checkbox -->
+      <div class="flex items-center gap-3 w-full">
+        <PrimeVueCheckbox
+          v-model="authenticationConnectDevice_formData.rememberMe"
+          :binary="true"
+          input-id="remember-me-device"
+        />
+        <label for="remember-me-device" class="text-sm font-medium text-gray-900 cursor-pointer">
+          {{ useLocalization('authentication.connect-device.form.remember-me') }}
+        </label>
+      </div>
+
       <!-- Error Message -->
       <div
         v-if="authenticationConnectDevice_isNotAuthenticated"

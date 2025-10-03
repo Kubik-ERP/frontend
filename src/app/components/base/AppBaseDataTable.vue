@@ -214,13 +214,6 @@ const getPrimaryItem = (items: unknown[]) => {
 };
 
 /**
- * @description Get additional items (excluding first) for expanded rows
- */
-const getAdditionalItems = (items: unknown[]) => {
-  return items.slice(1);
-};
-
-/**
  * @description Get localized column header
  */
 const getColumnHeader = (column: IColumnDataTable) => {
@@ -418,25 +411,23 @@ const getIconClass = computed(() => {
             </template>
 
             <template v-else>
-              <template v-for="record in props.data" :key="(record as any)[props.expandableRowsIdField]">
+              <template v-for="(record, recordIndex) in props.data" :key="(record as any)[props.expandableRowsIdField]">
                 <!-- Main Row -->
                 <tr class="hover:bg-gray-50">
-                  <template v-for="(column, columnIndex) in props.columns" :key="column.value">
+                  <template v-for="column in props.columns" :key="column.value">
                     <td class="px-4 py-3" :class="column.value === 'action' ? 'text-center' : ''">
                       <template v-if="props.isUsingCustomBody">
                         <slot
                           name="body"
                           :column="column"
                           :data="record"
-                          :index="columnIndex"
+                          :index="recordIndex"
                           :is-expandable="
                             props.isUsingExpandableRows &&
                             ((record as any)[props.expandableRowsField] || []).length > 1
                           "
-                          :is-expanded="isRowExpanded((record as any)[props.expandableRowsIdField])"
-                          :toggle-expansion="
-                            () => toggleRowExpansion((record as any)[props.expandableRowsIdField])
-                          "
+                          :is-expanded="isRowExpanded(recordIndex)"
+                          :toggle-expansion="() => toggleRowExpansion(recordIndex)"
                           :primary-item="
                             props.isUsingExpandableRows
                               ? getPrimaryItem((record as any)[props.expandableRowsField] || [])
@@ -455,37 +446,13 @@ const getIconClass = computed(() => {
                 </tr>
 
                 <!-- Expanded Rows for Additional Items -->
-                <template
-                  v-if="
-                    props.isUsingExpandableRows &&
-                    isRowExpanded((record as any)[props.expandableRowsIdField]) &&
-                    getAdditionalItems((record as any)[props.expandableRowsField] || []).length > 0
-                  "
-                >
-                  <tr
-                    v-for="item in getAdditionalItems((record as any)[props.expandableRowsField] || [])"
-                    :key="`${(record as any)[props.expandableRowsIdField]}-${(item as any).id}`"
-                    class="bg-gray-50 border-l-4 border-blue-200"
-                  >
-                    <template v-for="(column, columnIndex) in props.columns" :key="column.value">
-                      <td class="px-4 py-2" :class="column.value === 'action' ? 'text-center' : ''">
-                        <template v-if="props.isUsingCustomBody">
-                          <slot
-                            name="expanded-body"
-                            :column="column"
-                            :data="record"
-                            :item="item"
-                            :index="columnIndex"
-                          />
-                        </template>
-
-                        <template v-else>
-                          <span class="font-normal text-sm text-text-primary">{{
-                            (item as any)[column.value]
-                          }}</span>
-                        </template>
-                      </td>
-                    </template>
+                <template v-if="isRowExpanded(recordIndex)">
+                  <tr>
+                    <slot
+                      name="expanded-body"
+                      :data="record"
+                      :index="recordIndex"
+                    />
                   </tr>
                 </template>
               </template>

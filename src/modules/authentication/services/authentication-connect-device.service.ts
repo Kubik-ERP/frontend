@@ -37,6 +37,7 @@ export const useAuthenticationConnectDeviceService = (): IAuthenticationConnectD
     browser: '',
     city: '',
     country: '',
+    rememberMe: false,
   });
   const authenticationConnectDevice_isNotAuthenticated = ref<boolean>(false);
 

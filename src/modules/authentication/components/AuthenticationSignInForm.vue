@@ -114,6 +114,18 @@ const {
         </PrimeVueIconField>
       </AppBaseFormGroup>
 
+      <!-- Remember Me Checkbox -->
+      <div v-if="authenticationSignIn_selectedRole === 'OWNER'" class="flex items-center gap-3">
+        <PrimeVueCheckbox
+          v-model="authenticationSignIn_formData.rememberMe"
+          :binary="true"
+          input-id="remember-me"
+        />
+        <label for="remember-me" class="text-sm font-medium text-gray-900 cursor-pointer">
+          {{ useLocalization('authentication.sign-in.form.remember-me') }}
+        </label>
+      </div>
+
       <!-- Forgot Password -->
       <RouterLink :to="{ name: 'reset-password' }" class="font-semibold text-blue-primary text-sm text-end mt-2">
         {{ useLocalization('authentication.sign-in.reset-password') }}

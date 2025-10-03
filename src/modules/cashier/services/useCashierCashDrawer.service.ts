@@ -12,9 +12,13 @@ import type {
 // Plugins
 import eventBus from '@/plugins/mitt';
 
+// Services
+import { useStaffMemberListService } from '@/modules/staff-member/services/staff-member-list.service';
+
 // Stores
 import { useCashDrawerStore } from '@/modules/cash-drawer/store';
 import { useOutletStore } from '@/modules/outlet/store';
+import { useAuthenticationStore } from '@/modules/authentication/store';
 
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
@@ -27,11 +31,14 @@ export const useCashierCashDrawerService = () => {
   /**
    * @description Injected variables
    */
+  const authenticationStore = useAuthenticationStore();
   const outletStore = useOutletStore();
   const store = useCashDrawerStore();
   const { cashDrawer_isLoading, cashDrawer_todayStatus } = storeToRefs(store);
   const { outlet_currentOutlet } = storeToRefs(outletStore);
+  const { authentication_isStaff, authentication_userData } = storeToRefs(authenticationStore);
   const { httpAbort_registerAbort } = useHttpAbort();
+  const { staffMemberList_fetchListMembers } = useStaffMemberListService();
 
   /**
    * @description Reactive data binding
@@ -43,15 +50,28 @@ export const useCashierCashDrawerService = () => {
   });
 
   /**
-   * @description Form validations
+   * @description Form validations - userId is only required if user is not staff
    */
   const cashierCashDrawer_formRulesOfOpenRegister = computed(() => ({
     balance: { required },
-    userId: { required },
+    userId: authentication_isStaff.value ? {} : { required },
   }));
   const cashierCashDrawer_formValidationsOfOpenRegister = useVuelidate(
     cashierCashDrawer_formRulesOfOpenRegister,
     cashierCashDrawer_formDataOfOpenRegister,
+  );
+
+  /**
+   * @description Auto-fill userId when user is staff
+   */
+  watch(
+    () => authentication_isStaff.value,
+    isStaff => {
+      if (isStaff && authentication_userData.value?.staffId) {
+        cashierCashDrawer_formDataOfOpenRegister.userId = authentication_userData.value.staffId;
+      }
+    },
+    { immediate: true },
   );
 
   /**
@@ -131,6 +151,10 @@ export const useCashierCashDrawerService = () => {
    * @description Handle business logic for show dialog open register
    */
   const cashierCashDrawer_onShowOpenRegisterDialog = (): void => {
+    if (!authentication_isStaff.value) {
+      staffMemberList_fetchListMembers();
+    }
+
     const argsEventEmitter: IPropsDialog = {
       id: 'cash-drawer-list-open-register-dialog',
       isUsingClosableButton: false,

@@ -2,6 +2,7 @@
 // Components
 import AppBaseBreadcrumb from '../base/AppBaseBreadcrumb.vue';
 import AppBaseSvg from '../base/AppBaseSvg.vue';
+import AppBaseSubscriptionAlert from '@/app/components/base/AppBaseSubscriptionAlert.vue';
 
 // Injected variables
 const route = useRoute();
@@ -9,6 +10,9 @@ const route = useRoute();
 
 <template>
   <section id="app-layout-simple-navbar" class="default-wrapper-fullscreen flex flex-col">
+    <!-- Subscription Alert - Global sticky alert -->
+    <AppBaseSubscriptionAlert />
+    
     <nav class="flex items-center justify-between border-b border-solid border-grayscale-10 px-7 py-4">
       <section id="app-information" class="flex items-center gap-2">
         <PrimeVueButton

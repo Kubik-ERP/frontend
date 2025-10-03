@@ -12,6 +12,7 @@
       "form": {
         "email": "Email",
         "password": "Kata Sandi",
+        "remember-me": "Ingat Saya selama 30 hari",
 
         "placeholder": {
           "email": "Masukkan email terdaftar Anda",
@@ -21,6 +22,12 @@
 
       "reset-password": "Atur Ulang Kata Sandi",
       "title": "Masuk"
+    },
+
+    "connect-device": {
+      "form": {
+        "remember-me": "Ingat Saya selama 30 hari"
+      }
     }
   }
 }

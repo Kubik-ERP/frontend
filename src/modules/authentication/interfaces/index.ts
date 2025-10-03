@@ -18,6 +18,7 @@ export interface IAuthenticationProfile {
   };
   isAccessRetail: boolean | null;
   staffId: string | null;
+  subExpiredAt: string | null;
 }
 
 export interface IAuthenticationPermissionResponse extends IDefaultResponseFetch {
