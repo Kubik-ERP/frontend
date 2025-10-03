@@ -122,8 +122,10 @@ export const useDashboardService = (): IDashboardProvided => {
   const dashboard_getSummary = async () => {
     try {
       const formattedQueryParams: IDashboardQueryParams = {
+
         startDate: useFormatDateLocal(new Date(dashboard_queryParams.startDate)) as unknown as Date,
         endDate: useFormatDateLocal(new Date(dashboard_queryParams.endDate)) as unknown as Date,
+
         type: dashboard_queryParams.type,
       };
       if (formattedQueryParams.type === 'custom') {
