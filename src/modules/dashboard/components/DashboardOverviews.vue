@@ -11,7 +11,6 @@ const {
 </script>
 <template>
   <section id="dashboard-overview" class="flex flex-col gap-4">
-    <pre>{{ dashboard_queryParams }}</pre>
     <section id="filter" class="flex flex-col">
       <label for="" class="font-semibold text-black text-xs"> {{ useLocalization('dashboard.overview.dataPeriod') }} </label>
       <CustomDatePicker
