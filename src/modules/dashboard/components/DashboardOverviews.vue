@@ -17,6 +17,7 @@ const {
         v-model:start-date="dashboard_queryParams.startDate"
         v-model:end-date="dashboard_queryParams.endDate"
         v-model:type="dashboard_queryParams.type"
+        class="w-full max-w-96"
       />
     </section>
 

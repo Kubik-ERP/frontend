@@ -112,7 +112,7 @@ export const useRemoveSpace = (keywords: string) => {
  */
 export const useFormatDate = (
   dateInput: string | number | Date,
-  format: string = 'dd/mm/yyyy hh:MM am/pm',
+  format: string | Intl.DateTimeFormatOptions = 'dd/mm/yyyy hh:MM am/pm',
 ): string => {
   let date: Date;
 
@@ -120,7 +120,7 @@ export const useFormatDate = (
     // Unix timestamp in seconds
     date = new Date(dateInput * 1000); // Convert seconds to milliseconds
   } else if (typeof dateInput === 'string') {
-    // String date
+    // String date - assume UTC if it looks like an ISO string
     date = new Date(dateInput);
   } else if (dateInput instanceof Date) {
     // Date object
@@ -134,50 +134,108 @@ export const useFormatDate = (
     throw new Error('Invalid date');
   }
 
-  const hours = date.getHours();
-  const is12HourFormat = format.includes('am/pm');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  const hours12 = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+  // Check if format is a predefined style or Intl.DateTimeFormatOptions
+  if (typeof format === 'string' && ['short', 'medium', 'long', 'full'].includes(format)) {
+    // Use Intl.DateTimeFormat for predefined styles with proper timezone handling
+    const formatOptions: Intl.DateTimeFormatOptions = {
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      dateStyle: format as 'short' | 'medium' | 'long' | 'full',
+      timeStyle: format as 'short' | 'medium' | 'long' | 'full',
+    };
 
-  // Month names arrays
-  const shortMonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const fullMonthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
+    try {
+      return new Intl.DateTimeFormat('en-US', formatOptions).format(date);
+    } catch (error) {
+      console.warn('Intl.DateTimeFormat failed, falling back to custom format:', error);
+      // Fall back to custom format if Intl fails
+    }
+  }
 
-  const map: Record<string, string | number> = {
-    yyyy: date.getFullYear(),
-    MMMM: fullMonthNames[date.getMonth()],
-    MMM: shortMonthNames[date.getMonth()],
-    mm: String(date.getMonth() + 1).padStart(2, '0'),
-    dd: String(date.getDate()).padStart(2, '0'),
-    hh: is12HourFormat ? String(hours12).padStart(2, '0') : String(hours).padStart(2, '0'),
-    MM: String(date.getMinutes()).padStart(2, '0'),
-    ss: String(date.getSeconds()).padStart(2, '0'),
-    'am/pm': ampm,
-  };
+  // Handle custom format strings (existing logic)
+  if (typeof format === 'string') {
+    const hours = date.getHours();
+    const is12HourFormat = format.includes('am/pm');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const hours12 = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
 
-  // Replace patterns in order of specificity (longer patterns first)
-  return format.replace(/yyyy|MMMM|MMM|mm|dd|hh|MM|ss|am\/pm/g, matched => map[matched].toString());
+    // Month names arrays
+    const shortMonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const fullMonthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+
+    const map: Record<string, string | number> = {
+      yyyy: date.getFullYear(),
+      MMMM: fullMonthNames[date.getMonth()],
+      MMM: shortMonthNames[date.getMonth()],
+      mm: String(date.getMonth() + 1).padStart(2, '0'),
+      dd: String(date.getDate()).padStart(2, '0'),
+      hh: is12HourFormat ? String(hours12).padStart(2, '0') : String(hours).padStart(2, '0'),
+      MM: String(date.getMinutes()).padStart(2, '0'),
+      ss: String(date.getSeconds()).padStart(2, '0'),
+      'am/pm': ampm,
+    };
+
+    // Replace patterns in order of specificity (longer patterns first)
+    return format.replace(/yyyy|MMMM|MMM|mm|dd|hh|MM|ss|am\/pm/g, matched => map[matched].toString());
+  }
+
+  // Handle Intl.DateTimeFormatOptions object
+  if (typeof format === 'object' && format !== null) {
+    try {
+      // Ensure timezone is set for proper conversion
+      const optionsWithTimezone = {
+        ...format,
+        timeZone: format.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+      };
+      return new Intl.DateTimeFormat('en-US', optionsWithTimezone).format(date);
+    } catch (error) {
+      console.warn('Intl.DateTimeFormat with options failed, falling back to default format:', error);
+      // Fall back to default format if Intl fails
+      return new Intl.DateTimeFormat('en-US', {
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        dateStyle: 'medium',
+        timeStyle: 'medium',
+      }).format(date);
+    }
+  }
+
+  // Fallback to default format
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    dateStyle: 'medium',
+    timeStyle: 'medium',
+  }).format(date);
 };
 
-export const useFormatDateLocal = (date: string | Date | number) => {
+/**
+ * @description Format date with timezone conversion options
+ * @param date - Date to format
+ * @param useUTC - If true, converts to UTC+0; if false, uses local timezone (default: false for backward compatibility)
+ */
+export const useFormatDateLocal = (date: string | Date | number, useUTC: boolean = false) => {
   const d = new Date(date);
   const pad = (n: unknown) => String(n).padStart(2, '0');
   const ms = String(d.getMilliseconds()).padStart(3, '0');
 
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${ms}`;
+  if (useUTC) {
+    // Use UTC methods for API calls (UTC+0)
+    return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}.${ms}`;
+  } else {
+    // Use local methods for display (local timezone)
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${ms}`;
+  }
 };
 
 export const useTitleCaseWithSpaces = (inputString: string): string => {

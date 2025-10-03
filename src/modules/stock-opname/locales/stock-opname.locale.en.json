@@ -10,6 +10,8 @@
       "recordLabel": "Stock Opname record",
       "issueDateLabel": "Issue Date",
       "performedByLabel": "Performed By",
+      "itemListTitle": "Item List",
+      "verifiedDateLabel": "Verified Date",
       "statusLabel": "Status",
       "searchPlaceholder": "Search by SKU/Item Name or Scan Barcode",
       "recalculateButton": "Recalculate",
