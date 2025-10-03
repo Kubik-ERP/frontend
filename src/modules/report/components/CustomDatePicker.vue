@@ -208,8 +208,12 @@ const onClickShortcut = (label: string) => {
   localDateRange.value = [start, end];
   type.value = newType;
 
-  emit('update:startDate', start);
-  emit('update:endDate', end);
+  const startDateWithZeroTime = new Date(start.getTime());
+  startDateWithZeroTime.setHours(0, 0, 0, 0);
+  emit('update:startDate', startDateWithZeroTime);
+  const endDateWith2359Time = new Date(end.getTime());
+  endDateWith2359Time.setHours(23, 59, 59, 999);
+  emit('update:endDate', endDateWith2359Time);
   if (props.shouldUpdateType) {
     console.log('newType:', newType);
     emit('update:type', newType);
