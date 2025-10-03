@@ -67,19 +67,20 @@ export const useDashboardService = (): IDashboardProvided => {
               const endDate = new Date(dashboard_queryParams.endDate);
               const differenceInMs = endDate.getTime() - startDate.getTime();
               const oneDayInMs = 24 * 60 * 60 * 1000;
-
+              const thirtyOneDaysInMs = 31 * oneDayInMs;
               switch (dashboard_queryParams.type) {
                 case 'time':
                   return useFormatDate(date, 'hh:MM');
                 case 'days':
-                  return item.label;
+                  return useFormatDate(date, 'dd-MMM-yyyy');
                 case 'month':
                   return item.label;
                 case 'custom':
                   if (differenceInMs <= oneDayInMs) {
                     return useFormatDate(date, 'hh:MM');
-                  } 
-                  else {
+                  } else if (differenceInMs <= thirtyOneDaysInMs) {
+                    return useFormatDate(date, 'dd-MMM-yyyy');
+                  } else {
                     return item.label;
                   }
                 default:
