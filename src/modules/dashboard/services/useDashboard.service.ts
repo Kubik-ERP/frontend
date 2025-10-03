@@ -61,7 +61,19 @@ export const useDashboardService = (): IDashboardProvided => {
       labels:
         dashboard_values.value === null
           ? []
-          : dashboard_values.value.salesData.map(item => useFormatDate((item.label), 'hh:MM')),
+          : dashboard_values.value.salesData.map(item => {
+            const date = new Date(item.label);
+            switch (dashboard_queryParams.type) {
+              case 'time':
+                return useFormatDate(date, 'hh:MM');
+              case 'days':
+                return item.label;
+              case 'month':
+                return item.label;
+              default:
+                return '';
+            }
+          }),
       datasets: [
         {
           // label: useLocalization('dashboard.chart.label'),
