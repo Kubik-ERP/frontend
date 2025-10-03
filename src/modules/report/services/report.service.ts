@@ -84,12 +84,9 @@ export const useReportService = (): IReportProvided => {
       staff_ids: params.staff_ids,
     });
     const newParams = {
-      startDate: useFormatDateLocal(
-        new Date(params.startDate).toISOString().split('T')[0] + 'T00:00:00.000Z',
-      ) as unknown as Date,
-      endDate: useFormatDateLocal(
-        new Date(params.endDate).toISOString().split('T')[0] + 'T23:59:59.999Z',
-      ) as unknown as Date,
+      startDate: (useFormatDateLocal(new Date(params.startDate)).split(' ')[0] +
+        ' 00:00:00.000') as unknown as Date,
+      endDate: (useFormatDateLocal(new Date(params.endDate)).split(' ')[0] + ' 23:59:59.999') as unknown as Date,
       type: type,
       store_ids: params.store_ids,
       staff_ids: params.staff_ids,
