@@ -219,7 +219,6 @@ const onClickShortcut = (label: string) => {
   endDateWith2359Time.setHours(23, 59, 59, 999);
   emit('update:endDate', endDateWith2359Time);
   if (props.shouldUpdateType) {
-    console.log('newType:', newType);
     emit('update:type', newType);
   }
 
