@@ -32,51 +32,51 @@ export const useDashboardStore = defineStore('dashboard', {
       },
       salesData: [
         {
-          label: 'January',
+          label: '2025-10-02T10:00:00.000Z',
           value: 0,
         },
         {
-          label: 'February',
+          label: '2025-10-02T10:00:00.000Z',
           value: 0,
         },
         {
-          label: 'March',
+          label: '2025-10-02T10:00:00.000Z',
           value: 0,
         },
         {
-          label: 'April',
+          label: '2025-10-02T10:00:00.000Z',
           value: 0,
         },
         {
-          label: 'May',
+          label: '2025-10-02T10:00:00.000Z',
           value: 0,
         },
         {
-          label: 'June',
+          label: '2025-10-02T10:00:00.000Z',
           value: 0,
         },
         {
-          label: 'July',
+          label: '2025-10-02T10:00:00.000Z',
           value: 0,
         },
         {
-          label: 'August',
+          label: '2025-10-02T10:00:00.000Z',
           value: 0,
         },
         {
-          label: 'September',
+          label: '2025-10-02T10:00:00.000Z',
           value: 0,
         },
         {
-          label: 'October',
+          label: '2025-10-02T10:00:00.000Z',
           value: 0,
         },
         {
-          label: 'November',
+          label: '2025-10-02T10:00:00.000Z',
           value: 0,
         },
         {
-          label: 'December',
+          label: '2025-10-02T10:00:00.000Z',
           value: 0,
         },
       ],
@@ -85,17 +85,17 @@ export const useDashboardStore = defineStore('dashboard', {
         percentageChange: 0,
       },
       productSales: [],
-      paymentMethods:{
-        paymentMethods:[
-        {
-          label: 'Cash',
-          value: 0,
-        },
-        {
-          label: 'Qris',
-          value: 0,
-        }
-      ],
+      paymentMethods: {
+        paymentMethods: [
+          {
+            label: 'Cash',
+            value: 0,
+          },
+          {
+            label: 'Qris',
+            value: 0,
+          },
+        ],
       },
       stockStatus: {
         stockStatus: {
@@ -104,15 +104,11 @@ export const useDashboardStore = defineStore('dashboard', {
           lowStock: 0,
         },
         detailedLowStock: {
-          items: [
-            
-          ],
+          items: [],
           count: 0,
         },
         detailedOutOfStock: {
-          items: [
-            
-          ],
+          items: [],
           count: 0,
         },
       },
