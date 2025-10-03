@@ -11,6 +11,7 @@
       "issueDateLabel": "Tanggal Dibuat",
       "performedByLabel": "Dilakukan Oleh",
       "statusLabel": "Status",
+      "itemListTitle": "Daftar Barang",
       "verifiedDateLabel": "Tanggal Diverifikasi",
       "searchPlaceholder": "Cari berdasarkan SKU/Nama Barang atau Pindai Barcode",
       "issueRecordButton": "Keluarkan Catatan Stok Opname",

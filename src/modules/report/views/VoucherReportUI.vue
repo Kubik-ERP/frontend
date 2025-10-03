@@ -118,6 +118,7 @@ onMounted(async () => {
             v-model:start-date="report_queryParams.startDate"
             v-model:end-date="report_queryParams.endDate"
             :should-update-type="false"
+            class="max-w-96"
             @update:end-date="report_getVoucherReport()"
           />
         </section>

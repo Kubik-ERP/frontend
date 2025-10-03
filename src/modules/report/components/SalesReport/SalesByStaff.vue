@@ -116,11 +116,12 @@ const onChangePage = (newPage: number) => {
       </template>
 
       <template #filter>
-        <section class="flex items-center gap-4 pt-4">
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-4">
           <CustomDatePicker
             v-model:start-date="report_queryParams.startDate"
             v-model:end-date="report_queryParams.endDate"
             :should-update-type="false"
+            class="col-span-1"
             @update:end-date="report_getSalesReport('staff')"
           />
           <PrimeVueSelect
@@ -130,7 +131,7 @@ const onChangePage = (newPage: number) => {
             option-value="value"
             placeholder="Select Outlet"
             filter
-            class="w-64"
+            class="col-span-1 w-full"
             @change="report_getSalesReport('staff')"
           >
             <template #dropdownicon>

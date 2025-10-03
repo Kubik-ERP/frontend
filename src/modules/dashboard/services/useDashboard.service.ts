@@ -105,10 +105,10 @@ export const useDashboardService = (): IDashboardProvided => {
   const dashboard_getSummary = async () => {
     try {
       const formattedQueryParams: IDashboardQueryParams = {
-        startDate: (new Date(dashboard_queryParams.startDate).toISOString().split('T')[0] +
-          'T00:00:00.000Z') as unknown as Date,
-        endDate: (new Date(dashboard_queryParams.endDate).toISOString().split('T')[0] +
-          'T23:59:59.999Z') as unknown as Date,
+        startDate: useFormatDateLocal(new Date(dashboard_queryParams.startDate)).split(' ')[0] +
+          ' 00:00:00.000' as unknown as Date,
+        endDate: useFormatDateLocal(new Date(dashboard_queryParams.endDate)).split(' ')[0] +
+          ' 23:59:59.999' as unknown as Date,
         type: dashboard_queryParams.type,
       };
       if (formattedQueryParams.type === 'custom') {
@@ -124,14 +124,14 @@ export const useDashboardService = (): IDashboardProvided => {
         // 3. Now, assign the new, correct date.
         formattedQueryParams.startDate = new Date(newStartDate.toISOString().split('T')[0] + 'T00:00:00.000Z');
         formattedQueryParams.endDate = new Date(newEndDate.toISOString().split('T')[0] + 'T23:59:59.999Z');
-      }
-      if (
-        dashboard_queryParams.startDate.toISOString().split('T')[0] ===
-        dashboard_queryParams.endDate.toISOString().split('T')[0]
-      ) {
-        formattedQueryParams.type = 'time';
-      } else {
-        formattedQueryParams.type = 'days';
+        if (
+          dashboard_queryParams.startDate.toISOString().split('T')[0] ===
+          dashboard_queryParams.endDate.toISOString().split('T')[0]
+        ) {
+          formattedQueryParams.type = 'time';
+        } else {
+          formattedQueryParams.type = 'days';
+        }
       }
       await store.getDashboardData(formattedQueryParams, {
         ...httpAbort_registerAbort('DASHBOARD_SUMMARY_REQUEST'),
