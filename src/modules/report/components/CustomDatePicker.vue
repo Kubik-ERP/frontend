@@ -49,8 +49,12 @@ const applyDateChange = () => {
       ? new Date(localDateRange.value[1].getTime() + gmt * 60 * 60 * 1000)
       : start; // This creates a copy, not a reference
 
-    emit('update:startDate', start);
-    emit('update:endDate', end);
+    const startDateWithZeroTime = new Date(start.getTime());
+  startDateWithZeroTime.setHours(0, 0, 0, 0);
+  emit('update:startDate', startDateWithZeroTime);
+  const endDateWith2359Time = new Date(end.getTime());
+  endDateWith2359Time.setHours(23, 59, 59, 999);
+  emit('update:endDate', endDateWith2359Time);
 
     type.value = 'custom';
 
