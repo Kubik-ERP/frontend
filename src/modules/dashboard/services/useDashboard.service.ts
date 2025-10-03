@@ -123,8 +123,8 @@ export const useDashboardService = (): IDashboardProvided => {
     try {
       const formattedQueryParams: IDashboardQueryParams = {
 
-        startDate: useFormatDateLocal(new Date(dashboard_queryParams.startDate)) as unknown as Date,
-        endDate: useFormatDateLocal(new Date(dashboard_queryParams.endDate)) as unknown as Date,
+        startDate: useFormatDateLocal((dashboard_queryParams.startDate),true) as unknown as Date,
+        endDate: useFormatDateLocal((dashboard_queryParams.endDate),true) as unknown as Date,
 
         type: dashboard_queryParams.type,
       };

@@ -100,8 +100,8 @@ export const useReportService = (): IReportProvided => {
       staff_ids: params.staff_ids,
     });
     const newParams = {
-      startDate: useFormatDateLocal(new Date(params.startDate)) as unknown as Date,
-      endDate: useFormatDateLocal(new Date(params.endDate)) as unknown as Date,
+      startDate: useFormatDateLocal(params.startDate, true) as unknown as Date,
+      endDate: useFormatDateLocal(params.endDate, true) as unknown as Date,
       type: type,
       store_ids: params.store_ids,
       staff_ids: params.staff_ids,
