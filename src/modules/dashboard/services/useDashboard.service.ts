@@ -62,18 +62,30 @@ export const useDashboardService = (): IDashboardProvided => {
         dashboard_values.value === null
           ? []
           : dashboard_values.value.salesData.map(item => {
-            const date = new Date(item.label);
-            switch (dashboard_queryParams.type) {
-              case 'time':
-                return useFormatDate(date, 'hh:MM');
-              case 'days':
-                return item.label;
-              case 'month':
-                return item.label;
-              default:
-                return '';
-            }
-          }),
+              const date = new Date(item.label);
+              const startDate = new Date(dashboard_queryParams.startDate);
+              const endDate = new Date(dashboard_queryParams.endDate);
+              const differenceInMs = endDate.getTime() - startDate.getTime();
+              const oneDayInMs = 24 * 60 * 60 * 1000;
+
+              switch (dashboard_queryParams.type) {
+                case 'time':
+                  return useFormatDate(date, 'hh:MM');
+                case 'days':
+                  return item.label;
+                case 'month':
+                  return item.label;
+                case 'custom':
+                  if (differenceInMs <= oneDayInMs) {
+                    return useFormatDate(date, 'hh:MM');
+                  } 
+                  else {
+                    return item.label;
+                  }
+                default:
+                  return '';
+              }
+            }),
       datasets: [
         {
           // label: useLocalization('dashboard.chart.label'),
@@ -143,15 +155,24 @@ export const useDashboardService = (): IDashboardProvided => {
         type: dashboard_queryParams.type,
       };
       if (formattedQueryParams.type === 'custom') {
-        formattedQueryParams.startDate = useFormatDateLocal(dashboard_queryParams.startDate, true) as unknown as Date
-        formattedQueryParams.endDate = useFormatDateLocal(dashboard_queryParams.endDate, true) as unknown as Date
-        if (
-          dashboard_queryParams.startDate.toISOString().split('T')[0] ===
-          dashboard_queryParams.endDate.toISOString().split('T')[0]
-        ) {
+        // Ensure we are working with valid Date objects
+        const startDate = new Date(dashboard_queryParams.startDate);
+        const endDate = new Date(dashboard_queryParams.endDate);
+
+        // Calculate the difference between the two dates in milliseconds
+        const differenceInMs = endDate.getTime() - startDate.getTime();
+
+        // Define constants for clarity (in milliseconds)
+        const oneDayInMs = 24 * 60 * 60 * 1000;
+        const thirtyOneDaysInMs = 31 * oneDayInMs;
+
+        // Check the conditions in order from smallest to largest
+        if (differenceInMs <= oneDayInMs) {
           formattedQueryParams.type = 'time';
-        } else {
+        } else if (differenceInMs <= thirtyOneDaysInMs) {
           formattedQueryParams.type = 'days';
+        } else {
+          formattedQueryParams.type = 'month'; // Changed from 'month' to match plural 'days'
         }
       }
       await store.getDashboardData(formattedQueryParams, {
