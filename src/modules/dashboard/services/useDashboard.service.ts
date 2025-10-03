@@ -104,12 +104,13 @@ export const useDashboardService = (): IDashboardProvided => {
 
   const dashboard_getSummary = async () => {
     try {
-      console.log(dashboard_queryParams);
       const formattedQueryParams: IDashboardQueryParams = {
-        startDate: (new Date(dashboard_queryParams.startDate).toISOString().split('T')[0] +
-          'T00:00:00.000Z') as unknown as Date,
-        endDate: (new Date(dashboard_queryParams.endDate).toISOString().split('T')[0] +
-          'T23:59:59.999Z') as unknown as Date,
+        startDate: useFormatDateLocal(
+          new Date(dashboard_queryParams.startDate).toISOString().split('T')[0] + 'T00:00:00.000Z',
+        ) as unknown as Date,
+        endDate: useFormatDateLocal(
+          new Date(dashboard_queryParams.endDate).toISOString().split('T')[0] + 'T23:59:59.999Z',
+        ) as unknown as Date,
         type: dashboard_queryParams.type,
       };
       if (formattedQueryParams.type === 'custom') {
