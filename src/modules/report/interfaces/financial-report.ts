@@ -1,10 +1,11 @@
-export interface IFinancialReport_profitAndLost {
+export interface IFinancialReport_FinancialSummary {
   sales: {
     penjualanKotor: number;
     diskon: number;
     refund: number;
     penjualanBersih: number;
     pajak: number;
+    biayaLayanan: number;
     pembulatan: number;
     penggunaanVoucher: number;
     nettTotal: number;

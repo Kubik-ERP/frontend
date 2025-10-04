@@ -16,7 +16,7 @@ import type {
   IReportQueryParams,
   IFinancialReport_discount,
   IFinancialReport_paymentMethod,
-  IFinancialReport_profitAndLost,
+  IFinancialReport_FinancialSummary,
   IFinancialReport_taxServiceCharge,
   IInventoryReport_stock,
   IInventoryReport_stockMovement,
@@ -34,7 +34,7 @@ export const useReportStore = defineStore('report', {
     outlet_lists_values: [] as IOutlet[],
     staff_lists_values: [] as IStaffMember[],
     // financial
-    report_profitAndLost_values: {} as IFinancialReport_profitAndLost,
+    report_profitAndLost_values: {} as IFinancialReport_FinancialSummary,
     report_discount_values: {} as IFinancialReport_discount,
     report_paymentMethod_values: {} as IFinancialReport_paymentMethod,
     report_taxAndServiceCharge_values: [] as IFinancialReport_taxServiceCharge[],
