@@ -45,6 +45,23 @@ watch(
 const staffDisplayName = computed(() => {
   return authentication_userData.value?.fullname || 'Current Staff';
 });
+
+function handleSubmit() {
+  console.log('Save button clicked');
+  console.log('cashDrawerList_isLoading:', cashDrawerList_isLoading);
+  console.log(
+    'cashDrawerList_formValidationsOfOpenRegister.$invalid:',
+    cashDrawerList_formValidationsOfOpenRegister.value.$invalid,
+  );
+  console.log('Form data:', { ...cashDrawerList_formDataOfOpenRegister });
+
+  console.log('raw function:', cashDrawerList_onSubmitOpenRegisterForm);
+  console.log('isRef?', isRef(cashDrawerList_onSubmitOpenRegisterForm));
+
+  cashDrawerList_onSubmitOpenRegisterForm()
+    .then(() => console.log('Submit success!'))
+    .catch(err => console.error('Submit failed:', err));
+}
 </script>
 
 <template>
@@ -176,9 +193,10 @@ const staffDisplayName = computed(() => {
           class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
           label="Save"
           type="button"
-          :disabled="cashDrawerList_formValidationsOfOpenRegister.$invalid || cashDrawerList_isLoading"
-          @click="cashDrawerList_onSubmitOpenRegisterForm"
+          @click="handleSubmit"
         />
+
+        <!-- :disabled="cashDrawerList_formValidationsOfOpenRegister.$invalid || cashDrawerList_isLoading" -->
       </footer>
     </template>
   </AppBaseDialog>

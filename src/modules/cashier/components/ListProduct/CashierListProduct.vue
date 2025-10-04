@@ -1,15 +1,17 @@
 <script setup lang="ts">
 // interfaces
 import type { ICashierProductProvided } from '../../interfaces/cashier-product-service';
+import { useProductBundlingService } from '@/modules/product-bundling/services/product-bundling.service';
 
 // Component
 import CashierProductCard from './CashierProductCard.vue';
 import CashierProductGrid from './CashierProductGrid.vue';
 import CashierProductInline from './CashierProductInline.vue';
 import CashierListProductNotFound from './CashierListProductNotFound.vue';
+import CashierListBundleNotFound from './CashierListBundleNotFound.vue';
 
 // Vue
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import CashierCategoryNotFound from './CashierCategoryNotFound.vue';
 
 /**
@@ -17,6 +19,21 @@ import CashierCategoryNotFound from './CashierCategoryNotFound.vue';
  */
 const { cashierProduct_productState, cashierProduct_selectedView } =
   inject<ICashierProductProvided>('cashierProduct')!;
+
+/**
+ * @description Setup product bundling service
+ */
+const { productBundling_fetchProductBundlingList, productBundling_list } = useProductBundlingService();
+
+// Update query params to show all bundles
+// productBundling_queryParams.limit = 100;
+
+/**
+ * @description Load product bundles on mount
+ */
+onMounted(() => {
+  productBundling_fetchProductBundlingList();
+});
 
 /**
  * @description Computed properties to determine which component to use
@@ -45,7 +62,7 @@ const wrapperClass = computed(() => {
 
 <template>
   <template v-if="!cashierProduct_productState.isLoadingProduct">
-    <template v-if="cashierProduct_productState.listProductCategory.length > 0">
+    <template v-if="cashierProduct_productState.listProductCategory.length > 0 && cashierProduct_productState.selectedCategory !== 'bundle'">
       <section
         v-for="(item, index) in cashierProduct_productState.listProductCategory"
         id="cashier-list-featured-product"
@@ -71,9 +88,44 @@ const wrapperClass = computed(() => {
         </template>
       </section>
     </template>
-    <template v-else>
+    <template v-if="cashierProduct_productState.listProductCategory.length == 0 && cashierProduct_productState.selectedCategory !== 'bundle'">
       <CashierListProductNotFound />
     </template>
+
+      <!-- Product Bundles Section -->
+       <template         v-if="(cashierProduct_productState.selectedCategory === '' || cashierProduct_productState.selectedCategory === 'bundle') && Array.isArray(productBundling_list?.data) && productBundling_list.data.length > 0"
+        >
+      <section
+        id="cashier-list-product-bundles"
+        class="flex flex-col gap-4"
+      >
+        <h2 class="font-normal text-xs text-text-disabled">Product Bundles</h2>
+        <section id="cashier-list-wrapper-class" :class="wrapperClass">
+          <component
+            :is="selectedComponent"
+            v-for="bundle in productBundling_list.data"
+            :key="bundle.id"
+            :product="{
+              id: bundle.id,
+              name: bundle.name,
+              price: bundle.price,
+              discountPrice: bundle.price,
+              pictureUrl: '',
+              isPercent: false,
+              barcode: `BUNDLE-${bundle.id}`,
+              variant: [],
+            }"
+            :category="'Bundle'"
+          />
+        </section>
+      </section>
+    </template>
+
+    <template v-if="productBundling_list.data.length == 0 && cashierProduct_productState.selectedCategory === 'bundle'">
+      <CashierListProductNotFound />
+    </template>
+    
+    
   </template>
   <template v-else>
     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">

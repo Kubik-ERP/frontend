@@ -92,6 +92,11 @@ export const useCashierProductService = (): ICashierProductProvided => {
 
       const selectedCategoryId = cashierProduct_productState.value.selectedCategory;
 
+      if(selectedCategoryId == 'bundle') {
+        cashierProduct_productState.value.listProductCategory = [];
+        return;
+      }
+
       const response = await store.cashierProduct_fetchCategoryProducts(
         selectedCategoryId,
         cashierProduct_productState.value.searchProduct,

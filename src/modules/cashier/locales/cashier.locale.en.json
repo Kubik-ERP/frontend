@@ -4,6 +4,7 @@
     "selected": "Selected",
     "optional": "Optional",
     "category": "Category",
+    "categoryOrShowBundles": "Category or show bundles",
     "more": "More",
     "edit": "Edit",
     "close": "Close",
@@ -18,6 +19,7 @@
     "mainSection": {
       "searchProductPlaceholder": "Search product name or category",
       "filterByCategory": "Filter by category",
+      "filterByCategoryOrShowBundles": "Filter by category or show bundles",
       "addItem": "Add item",
       "variant": "Variant",
       "addNotes": "Add notes",
