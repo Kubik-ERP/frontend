@@ -180,13 +180,18 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
                           'cursor-pointer bg-primary-background border-primary-border border drop-shadow-xl drop-shadow-primary-background':
                             cashierOrderSummary_modalSelectTable.selectedTable.includes(childItem.name),
 
-                          'cursor-not-allowed bg-grayscale-20 text-text-disabled border border-grayscale-20': false,
+'cursor-not-allowed bg-grayscale-20 text-text-disabled border border-grayscale-20': childItem.statusTable === 'occupied',
 
                           'cursor-pointer hover:bg-grayscale-10/25 border border-grayscale-10 hover:border-primary-border':
                             false && !cashierOrderSummary_modalSelectTable.selectedTable.includes(childItem.name),
                         },
                       ]"
-                      @click="cashierOrderSummary_handleToggleSelectTable(childItem.name)"
+                      @click="() => {
+                               if(childItem.statusTable === 'occupied') {
+                              return;
+                               }
+                        cashierOrderSummary_handleToggleSelectTable(childItem.name)
+                      }"
                     >
                       <PrimeVueCheckbox
                         :model-value="cashierOrderSummary_modalSelectTable.selectedTable.includes(childItem.name)"

@@ -629,9 +629,10 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
     );
 
     const tablesCount = floor?.tables?.length || 0;
-    const hasTablesWarning = tablesCount > 0 
-      ? `<br><br><span class="font-medium text-error-main">Warning: This will also delete ${tablesCount} table${tablesCount > 1 ? 's' : ''} on this floor.</span>`
-      : '';
+    const hasTablesWarning =
+      tablesCount > 0
+        ? `<br><br><span class="font-medium text-error-main">Warning: This will also delete ${tablesCount} table${tablesCount > 1 ? 's' : ''} on this floor.</span>`
+        : '';
 
     const argsEventEmitter: IPropsDialogConfirmation = {
       id: 'account-store-floor-dialog-confirmation',
@@ -684,7 +685,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
       }
     } catch (error) {
       console.error('Error deleting floor configuration:', error);
-      
+
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.DANGER,

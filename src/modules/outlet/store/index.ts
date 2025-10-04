@@ -401,7 +401,7 @@ export const useOutletStore = defineStore('outlet', {
       this.outlet_isLoading = true;
 
       try {
-        const response = await httpClient.put<unknown>(`${OUTLET_TABLE_ENDPOINT}/${tableId}`, payload, {
+        const response = await httpClient.put<unknown>(`${OUTLET_TABLE_ENDPOINT}`, payload, {
           ...requestConfigurations,
         });
 
