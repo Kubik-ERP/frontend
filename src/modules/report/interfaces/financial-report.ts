@@ -5,6 +5,7 @@ export interface IFinancialReport_profitAndLost {
     refund: number;
     penjualanBersih: number;
     pajak: number;
+    biayaLayanan: number;
     pembulatan: number;
     penggunaanVoucher: number;
     nettTotal: number;
