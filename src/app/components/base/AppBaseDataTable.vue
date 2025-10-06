@@ -424,7 +424,7 @@ const getIconClass = computed(() => {
                           :index="recordIndex"
                           :is-expandable="
                             props.isUsingExpandableRows &&
-                            ((record as any)[props.expandableRowsField] || []).length > 1
+                            ((record as any)[props.expandableRowsField] || []).length > 0
                           "
                           :is-expanded="isRowExpanded(recordIndex)"
                           :toggle-expansion="() => toggleRowExpansion(recordIndex)"

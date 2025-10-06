@@ -46,7 +46,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
     '/user-permission/access-control/edit',
     '/user-permission/role',
   ],
-  manage_staff_attendance: ['/staff/attendance'],
+  manage_staff_attendance: ['/staff/attendance', '/staff/working-hours'],
 
   // Cash management
   set_up_cash_drawer: ['/cash-drawer'],

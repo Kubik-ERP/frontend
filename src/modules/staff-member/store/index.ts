@@ -38,6 +38,14 @@ export const useStaffMemberStore = defineStore('staff-member', {
         value: staffMember.id,
       }));
     },
+
+    staffMember_listDropdownItemStaffUsingUserId: (state): IDropdownItem[] => {
+      return state.staffMember_lists.employees.map(staffMember => ({
+        label: staffMember.name,
+        value: staffMember.userId,
+      }));
+    },
+
     /**
      * @description Handle business logic for mapping staff member title lists to options
      */

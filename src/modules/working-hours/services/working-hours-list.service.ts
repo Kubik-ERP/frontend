@@ -26,7 +26,7 @@ import eventBus from '@/plugins/mitt';
 import { useWorkingHoursStore } from '../store';
 
 // Vuelidate
-import { required, minValue, requiredIf } from '@vuelidate/validators';
+import { helpers, required, minValue, requiredIf } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 
 /**
@@ -180,15 +180,12 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
     staffId: { required },
     date: { required },
     timeSlots: {
-      required,
-      minValue: minValue(1),
-      $each: {
+      $each: helpers.forEach({
         openTime: { required },
         closeTime: { required },
-      },
+      })
     },
     repeatType: { required },
-    notes: {},
     customRecurrence: {
       frequency: {
         required: requiredIf(() => workingHoursList_formData.repeatType === 'custom'),
@@ -623,6 +620,8 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    */
   const workingHoursList_onSave = async (): Promise<void> => {
     workingHoursList_formValidations.value.$touch();
+
+    console.log('Form Validations:', workingHoursList_formValidations.value);
 
     if (workingHoursList_formValidations.value.$invalid) {
       return;
