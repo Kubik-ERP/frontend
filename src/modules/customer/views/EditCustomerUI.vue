@@ -150,7 +150,7 @@ onMounted(() => {
       <label for="gender" class="block text-sm font-medium leading-6 text-gray-900">Gender</label>
       <div class="flex flex-wrap gap-4">
         <div class="flex items-center gap-2">
-          <PrimeVueRadioButton v-model="customer_FormData.gender" input-id="gender1" name="gender" value="Male" />
+          <PrimeVueRadioButton v-model="customer_FormData.gender" input-id="gender1" name="gender" value="male" />
           <label for="gender1">Male</label>
         </div>
         <div class="flex items-center gap-2">
@@ -158,7 +158,7 @@ onMounted(() => {
             v-model="customer_FormData.gender"
             input-id="gender2"
             name="gender"
-            value="Female"
+            value="female"
           />
           <label for="gender2">Female</label>
         </div>

@@ -27,6 +27,7 @@ interface ISummary {
   diskonItem: number;
   refund: number;
   pajak: number;
+  biayaLayanan: number;
   totalPenjualan: number;
   countPenggunaanVoucher: number;
 }
