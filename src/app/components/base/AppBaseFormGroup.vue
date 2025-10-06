@@ -11,6 +11,7 @@ interface IProps {
   isNameAsLabel?: boolean;
   isNameAsPlaceholder?: boolean;
   isNotHaveSpacing?: boolean;
+  isRequired?: boolean; // Add explicit required prop for array validations
   labelFor?: string;
   name: string;
   spacingBottom?: string;
@@ -26,6 +27,7 @@ const props = withDefaults(defineProps<IProps>(), {
   isNameAsLabel: false,
   isNameAsPlaceholder: false,
   isNotHaveSpacing: false,
+  isRequired: false,
   name: '',
   spacingBottom: 'mb-4',
   validators: undefined,
@@ -64,6 +66,21 @@ const error: ComputedRef<ErrorObject | null> = computed(() => {
 });
 
 /**
+ * @description Check if field is required
+ */
+const isRequired = computed(() => {
+  // Use explicit isRequired prop if provided (for array validations)
+  if (props.isRequired) return true;
+
+  // Check if validators has required property (for regular validations)
+  if (props.validators && 'required' in props.validators) {
+    return !!props.validators.required;
+  }
+
+  return false;
+});
+
+/**
  * @description Handle format error message should same as on the consants, Then don't forget to replace special character {attribute} with the value from the form
  */
 const message: ComputedRef<string> = computed(() => {
@@ -83,7 +100,7 @@ const message: ComputedRef<string> = computed(() => {
     <label v-if="isNameAsLabel" :class="classLabel" :for="labelFor">
       {{ name
       }}<template v-if="validators">
-        <span v-if="'required' in validators ? validators.required : false" class="text-error-main">*</span>
+        <span v-if="isRequired" class="text-error-main">*</span>
       </template>
     </label>
     <slot

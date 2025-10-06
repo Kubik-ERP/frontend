@@ -29,22 +29,6 @@ const { account_isLoadingOfOutlet, account_listColumns, account_listStores, acco
         <h6 class="font-semibold text-black text-lg">
           {{ useLocalization('app.stores') }}
         </h6>
-
-        <PrimeVueButton
-          class="bg-primary border-none w-fit px-5"
-          severity="secondary"
-          @click="$router.push({ name: 'outlet.create' })"
-        >
-          <template #default>
-            <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
-
-              <span class="font-semibold text-sm lg:text-base text-white">
-                {{ useLocalization('app.create-store') }}
-              </span>
-            </section>
-          </template>
-        </PrimeVueButton>
       </header>
     </template>
 

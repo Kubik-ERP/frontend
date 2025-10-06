@@ -62,7 +62,7 @@ const wrapperClass = computed(() => {
               :key="product.id"
               :product="product"
               :category="item.category"
-              :stock="10"
+              :stock="product.stockQuantity"
             />
           </section>
         </template>
