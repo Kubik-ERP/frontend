@@ -51,6 +51,7 @@ const formattedDataTable = () => {
         diskonItem: useCurrencyFormat({ data: item.diskonItem }),
         refund: useCurrencyFormat({ data: item.refund }),
         pajak: useCurrencyFormat({ data: item.pajak }),
+        biayaLayanan: useCurrencyFormat({ data: item.biayaLayanan }),
         totalPenjualan: useCurrencyFormat({ data: item.totalPenjualan }),
         countPenggunaanVoucher: item.countPenggunaanVoucher,
       };
