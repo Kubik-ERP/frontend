@@ -39,6 +39,7 @@ export const useAuthenticationStore = defineStore('authentication', {
     authentication_isLoading: false,
     authentication_isStaff: false,
     authentication_permissions: [],
+    authentication_rememberMe: false,
     authentication_token: '',
     authentication_userData: null as IAuthenticationProfile | null,
   }),
@@ -90,10 +91,16 @@ export const useAuthenticationStore = defineStore('authentication', {
       this.authentication_isLoading = true;
 
       try {
+        // Add rememberMe to query params
+        const params = {
+          ...restQueryParams,
+          rememberMe: this.authentication_rememberMe,
+        };
+
         const response = await httpClient.get<IAuthenticationSignInResponse>(
           AUTHENTICATION_ENDPOINT_GOOGLE_REDIRECT,
           {
-            params: restQueryParams,
+            params,
             ...requestConfigurations,
           },
         );
@@ -483,12 +490,21 @@ export const useAuthenticationStore = defineStore('authentication', {
         window.location.href = '/authentication/sign-in';
       }
     },
+
+    /**
+     * @description Update remember me state for SSO authentication.
+     * @access public
+     */
+    updateRememberMe(rememberMe: boolean): void {
+      this.authentication_rememberMe = rememberMe;
+    },
   },
   persist: {
     key: 'authentication',
     pick: [
       'authentication_isStaff',
       'authentication_permissions',
+      'authentication_rememberMe',
       'authentication_token',
       'authentication_userData',
     ],

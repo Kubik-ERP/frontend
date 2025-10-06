@@ -22,13 +22,76 @@
 //   voucherAmount: number | null;
 // }
 
+export interface IProduct {
+  id:                    string;
+  name:                  string;
+  price:                 number;
+  discountPrice:         number;
+  pictureUrl:            string;
+  isPercent:             boolean;
+  storesId:              string;
+  masterInventoryItemId: null;
+  barcode:               null;
+  categoriesHasProducts: ICategoriesHasProduct[];
+}
+
+export interface ICategoriesHasProduct {
+  categoriesId: string;
+  productsId:   string;
+  categories:   ICategories;
+}
+
+export interface ICategories {
+  id:                        string;
+  category:                  string;
+  description:               string;
+  pictureUrl:                string;
+  storesId:                  string;
+  masterInventoryCategoryId: null;
+}
+
+export interface IProductVariant {
+  id:    string;
+  name:  string;
+  price: number;
+}
+
 export interface IDailySalesItem {
   id: string;
-  name: string;
+  products: IProduct;
+  productId: string;
+  productPrice: number;
+  variantId: string | null;
+  notes: string;
   qty: number;
-  price: number;
-  discountAmount: number;
-  subtotal: number;
+  invoiceId: string;
+  variant: null | IProductVariant;
+  variantPrice: number;
+  productDiscount: number | null;
+}
+
+export interface IDailySalesInvoiceDetail {
+  id: string;
+  productId: string;
+  productPrice: number;
+  variantId: string | null;
+  notes: string;
+  qty: number;
+  invoiceId: string;
+  variantPrice: number;
+  productDiscount: number | null;
+}
+
+export interface IDailySalesUser {
+  id: number;
+  username: string | null;
+  email: string;
+  fullname: string;
+  phone: string;
+  ext: number;
+  roleId: string;
+  pictureUrl: string | null;
+  isStaff: boolean;
 }
 
 export interface IDailySales {
@@ -62,6 +125,9 @@ export interface IDailySales {
   roundingSettingId: null;
   roundingAmount: null;
   customer: ICustomer;
+  users: IDailySalesUser;
+  invoiceDetails: IDailySalesInvoiceDetail[];
+  paymentMethods: null;
   queue: number;
   items?: IDailySalesItem[];
 }
