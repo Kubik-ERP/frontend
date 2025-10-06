@@ -83,7 +83,7 @@ const formattedDataTable = () => {
             <tr>
               <th class="text-left p-1.5">Gross Sales</th>
               <td class="text-right p-1.5">
-                {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.totalTransaksi }) }}
+                {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.pendapatanKotor }) }}
               </td>
             </tr>
             <tr class="bg-primary-background">

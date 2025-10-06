@@ -221,6 +221,11 @@ export const SALESREPORT_COLUMNS: IColumnDataTable[] = [
     value: 'pajak',
   },
   {
+    label: 'Service Charge',
+    sortable: true,
+    value: 'biayaLayanan',
+  },
+  {
     label: 'Discount',
     sortable: true,
     value: 'diskonItem',
