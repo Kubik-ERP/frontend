@@ -148,7 +148,16 @@ const onToggleTableStatus = async (table: any) => {
           v-if="!props.cashierPreview && props.isTableSummary"
           class="px-2 py-1 rounded-full text-xs font-semibold"
           :class="[table.statusTable === 'occupied' ? 'bg-red-500 text-white' : 'bg-green-500 text-white']"
-          @click="onToggleTableStatus(table)"
+          @click="() => {
+             if (table.statusTable === 'available' && (modelValue || []).includes(table.name)) {
+                const index = modelValue.indexOf(table.name);
+
+                if (index !== -1) {
+                  modelValue.splice(index, 1);
+                }
+              }
+            onToggleTableStatus(table);
+          }"
         >
           {{
             table.statusTable === 'occupied'
