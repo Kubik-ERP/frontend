@@ -241,7 +241,7 @@ const hasPermission = rbac.hasPermission('edit_invoice');
         <PrimeVueButton
           class="w-full py-4"
           :class="{
-            'bg-blue-primary border-none': invoice_invoiceData.data.paymentStatus !== 'unpaid',
+            'bg-primary border-none': invoice_invoiceData.data.paymentStatus !== 'unpaid',
             'bg-white border-primary': invoice_invoiceData.data.paymentStatus === 'unpaid',
           }"
           severity="primary"

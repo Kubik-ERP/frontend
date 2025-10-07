@@ -257,7 +257,7 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
 
           <template v-else>
             <PrimeVueButton
-              class="border-blue-primary bg-transparent font-semibold text-base text-blue-primary w-full basic-smooth-animation hover:bg-grayscale-10"
+              class="border-primary bg-transparent font-semibold text-base text-primary w-full basic-smooth-animation hover:bg-grayscale-10"
               :label="dialogConfirmation.textButtonSecondary"
               :loading="dialogConfirmation.isLoading"
               severity="secondary"
@@ -268,7 +268,7 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
         </section>
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-sm py-[10px] w-full"
+          class="bg-primary border-none text-sm py-[10px] w-full"
           :class="{ 'opacity-50 cursor-not-allowed': dialogConfirmation.isUsingForm && !isFormValid }"
           :label="dialogConfirmation.textButtonPrimary"
           type="button"

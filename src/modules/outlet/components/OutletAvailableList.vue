@@ -64,7 +64,7 @@ const {
         <template #default>
           <section id="content" class="flex items-center gap-2">
             <AppBaseSvg name="plus-line" class="w-4 h-4" />
-            <span class="font-semibold text-blue-primary text-sm">Add Store</span>
+            <span class="font-semibold text-primary text-sm">Add Store</span>
           </section>
         </template>
       </PrimeVueButton>

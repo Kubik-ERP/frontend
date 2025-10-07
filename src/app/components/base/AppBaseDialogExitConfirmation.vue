@@ -63,7 +63,7 @@ const handleCancel = (): void => {
             />
 
             <PrimeVueButton
-              class="border border-solid border-blue-primary bg-transparent text-base py-[10px] w-full text-primary basic-smooth-animation rounded-lg hover:bg-primary hover:text-white"
+              class="border border-solid border-primary bg-transparent text-base py-[10px] w-full text-primary basic-smooth-animation rounded-lg hover:bg-primary hover:text-white"
               :label="props.cancelButtonText"
               type="button"
               @click="handleCancel"

@@ -159,7 +159,8 @@ declare global {
     | 'manage_staff_attendance'
     | 'edit_invoice'
     | 'payment_rounding_setting'
-    | 'integration';
+    | 'integration'
+    | 'recipe_management';
 
   interface IPropsDialog {
     id: string;

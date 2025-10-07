@@ -86,7 +86,7 @@ const {
       </section>
 
       <PrimeVueButton
-        class="bg-blue-primary border-none text-sm lg:text-base py-3 px-5 w-full lg:w-fit"
+        class="bg-primary border-none text-sm lg:text-base py-3 px-5 w-full lg:w-fit"
         :label="useLocalization('account.set-up-table')"
         type="button"
         @click="$router.push({ name: 'account.store.table-configuration' })"

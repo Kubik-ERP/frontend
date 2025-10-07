@@ -50,7 +50,7 @@ const imageUrl = computed(() => {
 
           <div
             v-if="isProductActive(props.product)"
-            class="absolute py-1 px-1.5 border border-primary-border bg-blue-primary left-0 ml-1 mt-1 rounded-full flex gap-2"
+            class="absolute py-1 px-1.5 border border-primary-border bg-primary left-0 ml-1 mt-1 rounded-full flex gap-2"
           >
             <AppBaseSvg name="check" class="h-w-2.5 h-4 w-4" />
             <span class="text-xs text-white font-semibold"> {{ useLocalization('cashier.selected') }} </span>
@@ -116,7 +116,7 @@ const imageUrl = computed(() => {
           <PrimeVueSkeleton height="98px" class="w-full rounded-sm" />
 
           <div
-            class="absolute py-1 px-1.5 border border-primary-border bg-blue-primary left-0 ml-1 mt-1 rounded-full flex gap-2"
+            class="absolute py-1 px-1.5 border border-primary-border bg-primary left-0 ml-1 mt-1 rounded-full flex gap-2"
           >
             <PrimeVueSkeleton shape="circle" width="12px" height="12px" />
             <PrimeVueSkeleton width="40px" height="12px" />
