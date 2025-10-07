@@ -98,7 +98,7 @@ const {
         />
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base max-w-44 w-full"
+          class="bg-primary border-none text-base max-w-44 w-full"
           label="Edit Product"
           @click="loyaltyPointSettings_onSubmitDialogEditProduct()"
         />

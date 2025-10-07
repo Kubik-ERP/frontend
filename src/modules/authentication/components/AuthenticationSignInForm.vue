@@ -32,7 +32,7 @@ const {
 
       <div class="flex items-center gap-4 mt-2">
         <PrimeVueButton
-          class="bg-transparent border border-solid border-blue-primary p-2 basic-smooth-animation hover:bg-grayscale-10"
+          class="bg-transparent border border-solid border-primary p-2 basic-smooth-animation hover:bg-grayscale-10"
           @click="
             () => {
               authenticationSignIn_activeStep = 0;
@@ -127,7 +127,7 @@ const {
       </div>
 
       <!-- Forgot Password -->
-      <RouterLink :to="{ name: 'reset-password' }" class="font-semibold text-blue-primary text-sm text-end mt-2">
+      <RouterLink :to="{ name: 'reset-password' }" class="font-semibold text-primary text-sm text-end mt-2">
         {{ useLocalization('authentication.sign-in.reset-password') }}
       </RouterLink>
 
@@ -140,7 +140,7 @@ const {
     <section id="button-actions" class="flex flex-col items-center gap-2">
       <section id="main-buttons" class="flex flex-col w-full gap-2">
         <PrimeVueButton
-          class="bg-blue-primary border-none text-sm py-[10px]"
+          class="bg-primary border-none text-sm py-[10px]"
           :label="useLocalization('app.submit')"
           type="submit"
           :disabled="authenticationSignIn_formValidations.$invalid"
@@ -168,7 +168,7 @@ const {
 
       <span class="font-normal text-sm text-center sm:text-left">
         {{ useLocalization('authentication.sign-in.doesnt-have-account') }}
-        <RouterLink :to="{ name: 'sign-up' }" class="font-semibold text-blue-primary">
+        <RouterLink :to="{ name: 'sign-up' }" class="font-semibold text-primary">
           {{ useLocalization('authentication.sign-in.create-account') }}
         </RouterLink>
       </span> -->
