@@ -18,7 +18,7 @@ const {
     <section id="account-store-edit-primary-button-actions" class="flex items-center justify-between w-full">
       <section id="left-contents" class="flex items-center gap-4 w-fit">
         <PrimeVueButton
-          class="border-blue-primary bg-transparent font-semibold text-base text-blue-primary w-36 basic-smooth-animation hover:bg-grayscale-10"
+          class="border-primary bg-transparent font-semibold text-base text-primary w-36 basic-smooth-animation hover:bg-grayscale-10"
           :label="useLocalization('account.buttons.cancel')"
           severity="secondary"
           variant="outlined"
@@ -26,7 +26,7 @@ const {
         />
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-sm py-[10px] w-36"
+          class="bg-primary border-none text-sm py-[10px] w-36"
           :label="useLocalization('account.buttons.update')"
           type="submit"
           :loading="accountStoreEdit_isLoading"
