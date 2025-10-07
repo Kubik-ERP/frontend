@@ -29,6 +29,7 @@ export interface IAuthenticationStateStore {
   authentication_isLoading: boolean;
   authentication_isStaff: boolean;
   authentication_permissions: string[];
+  authentication_rememberMe: boolean;
   authentication_token: string;
   authentication_userData: IAuthenticationProfile | null;
 }

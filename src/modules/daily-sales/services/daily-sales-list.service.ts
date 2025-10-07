@@ -72,8 +72,8 @@ export const useDailySalesListService = (businessType?: string): IDailySalesList
 
       const filteredParams = {
         ...otherFilter,
-        createdAtFrom: createdAtFrom ? useFormatDateLocal(createdAtFrom) : null,
-        createdAtTo: createdAtTo ? useFormatDateLocal(createdAtTo) : null,
+        createdAtFrom: createdAtFrom ? useFormatDateLocal(createdAtFrom, true) : null,
+        createdAtTo: createdAtTo ? useFormatDateLocal(createdAtTo, true) : null,
       };
 
       const filteredSorting = {

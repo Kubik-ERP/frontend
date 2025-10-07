@@ -68,10 +68,26 @@ export const useReportService = (): IReportProvided => {
   });
 
   const { httpAbort_registerAbort } = useHttpAbort();
+  const currentDateTime = new Date();
+
+  const initialStartDate = new Date(
+    currentDateTime.getFullYear(),
+    currentDateTime.getMonth(),
+    currentDateTime.getDate(),
+  );
+  const initialEndDate = new Date(
+    currentDateTime.getFullYear(),
+    currentDateTime.getMonth(),
+    currentDateTime.getDate(),
+    23,
+    59,
+    59,
+    999,
+  );
 
   const report_queryParams = reactive<IReportQueryParams>({
-    startDate: new Date(Date.now() + 0 * 60 * 60 * 1000),
-    endDate: new Date(Date.now() + 0 * 60 * 60 * 1000),
+    startDate: initialStartDate,
+    endDate: initialEndDate,
     store_ids: outlet_currentOutlet.value?.id,
     staff_ids: 'all',
   });
@@ -84,8 +100,8 @@ export const useReportService = (): IReportProvided => {
       staff_ids: params.staff_ids,
     });
     const newParams = {
-      startDate: (new Date(params.startDate).toISOString().split('T')[0] + 'T00:00:00.000Z') as unknown as Date,
-      endDate: (new Date(params.endDate).toISOString().split('T')[0] + 'T23:59:59.999Z') as unknown as Date,
+      startDate: useFormatDateLocal(params.startDate, true) as unknown as Date,
+      endDate: useFormatDateLocal(params.endDate, true) as unknown as Date,
       type: type,
       store_ids: params.store_ids,
       staff_ids: params.staff_ids,

@@ -13,9 +13,26 @@ export const useDashboardService = (): IDashboardProvided => {
 
   const { httpAbort_registerAbort } = useHttpAbort();
 
+  const currentDateTime = new Date();
+
+  const initialStartDate = new Date(
+    currentDateTime.getFullYear(),
+    currentDateTime.getMonth(),
+    currentDateTime.getDate(),
+  );
+  const initialEndDate = new Date(
+    currentDateTime.getFullYear(),
+    currentDateTime.getMonth(),
+    currentDateTime.getDate(),
+    23,
+    59,
+    59,
+    999,
+  );
+
   const dashboard_queryParams = reactive<IDashboardQueryParams>({
-    startDate: new Date(Date.now() + 0 * 60 * 60 * 1000),
-    endDate: new Date(Date.now() + 0 * 60 * 60 * 1000),
+    startDate: initialStartDate,
+    endDate: initialEndDate,
     type: 'time',
   });
 
@@ -41,7 +58,35 @@ export const useDashboardService = (): IDashboardProvided => {
     const documentStyle = getComputedStyle(document.documentElement);
 
     return {
-      labels: dashboard_values.value === null ? [] : dashboard_values.value.salesData.map(item => item.label),
+      labels:
+        dashboard_values.value === null
+          ? []
+          : dashboard_values.value.salesData.map(item => {
+              const date = new Date(item.label);
+              const startDate = new Date(dashboard_queryParams.startDate);
+              const endDate = new Date(dashboard_queryParams.endDate);
+              const differenceInMs = endDate.getTime() - startDate.getTime();
+              const oneDayInMs = 24 * 60 * 60 * 1000;
+              const thirtyOneDaysInMs = 31 * oneDayInMs;
+              switch (dashboard_queryParams.type) {
+                case 'time':
+                  return useFormatDate(date, 'hh:MM');
+                case 'days':
+                  return useFormatDate(date, 'dd-MMM-yyyy');
+                case 'month':
+                  return item.label;
+                case 'custom':
+                  if (differenceInMs <= oneDayInMs) {
+                    return useFormatDate(date, 'hh:MM');
+                  } else if (differenceInMs <= thirtyOneDaysInMs) {
+                    return useFormatDate(date, 'dd-MMM-yyyy');
+                  } else {
+                    return item.label;
+                  }
+                default:
+                  return '';
+              }
+            }),
       datasets: [
         {
           // label: useLocalization('dashboard.chart.label'),
@@ -104,34 +149,31 @@ export const useDashboardService = (): IDashboardProvided => {
 
   const dashboard_getSummary = async () => {
     try {
-      console.log(dashboard_queryParams);
       const formattedQueryParams: IDashboardQueryParams = {
-        startDate: (new Date(dashboard_queryParams.startDate).toISOString().split('T')[0] +
-          'T00:00:00.000Z') as unknown as Date,
-        endDate: (new Date(dashboard_queryParams.endDate).toISOString().split('T')[0] +
-          'T23:59:59.999Z') as unknown as Date,
+        startDate: useFormatDateLocal(dashboard_queryParams.startDate, true) as unknown as Date,
+        endDate: useFormatDateLocal(dashboard_queryParams.endDate, true) as unknown as Date,
+
         type: dashboard_queryParams.type,
       };
       if (formattedQueryParams.type === 'custom') {
-        // 1. Create a new Date object (a copy) from your original date.
-        const newStartDate = new Date(dashboard_queryParams.startDate);
-        const newEndDate = new Date(dashboard_queryParams.endDate);
+        // Ensure we are working with valid Date objects
+        const startDate = new Date(dashboard_queryParams.startDate);
+        const endDate = new Date(dashboard_queryParams.endDate);
 
-        // 2. Use setDate() to add one day to the new object.
-        //    getDate() gets the day of the month (e.g., 11), we add 1 to it.
-        // newStartDate.setDate(newStartDate.getDate() + 1);
-        // newEndDate.setDate(newEndDate.getDate() + 1);
+        // Calculate the difference between the two dates in milliseconds
+        const differenceInMs = endDate.getTime() - startDate.getTime();
 
-        // 3. Now, assign the new, correct date.
-        formattedQueryParams.startDate = new Date(newStartDate.toISOString().split('T')[0] + 'T00:00:00.000Z');
-        formattedQueryParams.endDate = new Date(newEndDate.toISOString().split('T')[0] + 'T23:59:59.999Z');
-        if (
-          dashboard_queryParams.startDate.toISOString().split('T')[0] ===
-          dashboard_queryParams.endDate.toISOString().split('T')[0]
-        ) {
+        // Define constants for clarity (in milliseconds)
+        const oneDayInMs = 24 * 60 * 60 * 1000;
+        const thirtyOneDaysInMs = 31 * oneDayInMs;
+
+        // Check the conditions in order from smallest to largest
+        if (differenceInMs <= oneDayInMs) {
           formattedQueryParams.type = 'time';
-        } else {
+        } else if (differenceInMs <= thirtyOneDaysInMs) {
           formattedQueryParams.type = 'days';
+        } else {
+          formattedQueryParams.type = 'month'; // Changed from 'month' to match plural 'days'
         }
       }
       await store.getDashboardData(formattedQueryParams, {

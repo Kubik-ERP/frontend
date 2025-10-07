@@ -7,6 +7,7 @@ const props = defineProps({
       jumlahTerjual: 0,
       kotor: 0,
       pajak: 0,
+      biayaLayanan: 0,
       diskonItem: 0,
       refund: 0,
       totalPenjualan: 0,
@@ -35,14 +36,18 @@ const props = defineProps({
             <td class="text-right p-1.5">{{ useCurrencyFormat({ data: props.summary?.pajak }) }}</td>
           </tr>
           <tr>
+            <th class="text-left p-1.5">Service Charge</th>
+            <td class="text-right p-1.5">{{ useCurrencyFormat({ data: props.summary?.biayaLayanan }) }}</td>
+          </tr>
+          <tr class="bg-primary-background">
             <th class="text-left p-1.5">Discount</th>
             <td class="text-right p-1.5">{{ useCurrencyFormat({ data: props.summary?.diskonItem }) }}</td>
           </tr>
-          <tr class="bg-primary-background">
+          <tr>
             <th class="text-left p-1.5">Nett Sales</th>
             <td class="text-right p-1.5">{{ useCurrencyFormat({ data: props.summary?.totalPenjualan }) }}</td>
           </tr>
-          <tr>
+          <tr class="bg-primary-background">
             <th class="text-left p-1.5">Voucher Used</th>
             <td class="text-right p-1.5">
               {{ useCurrencyFormat({ data: props.summary?.countPenggunaanVoucher, hidePrefix: true }) }}
