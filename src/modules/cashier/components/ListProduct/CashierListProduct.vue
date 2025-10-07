@@ -62,7 +62,12 @@ const wrapperClass = computed(() => {
 
 <template>
   <template v-if="!cashierProduct_productState.isLoadingProduct">
-    <template v-if="cashierProduct_productState.listProductCategory.length > 0 && cashierProduct_productState.selectedCategory !== 'bundle'">
+    <template
+      v-if="
+        cashierProduct_productState.listProductCategory.length > 0 &&
+        cashierProduct_productState.selectedCategory !== 'bundle'
+      "
+    >
       <section
         v-for="(item, index) in cashierProduct_productState.listProductCategory"
         id="cashier-list-featured-product"
@@ -88,17 +93,25 @@ const wrapperClass = computed(() => {
         </template>
       </section>
     </template>
-    <template v-if="cashierProduct_productState.listProductCategory.length == 0 && cashierProduct_productState.selectedCategory !== 'bundle'">
+    <template
+      v-if="
+        cashierProduct_productState.listProductCategory.length == 0 &&
+        cashierProduct_productState.selectedCategory !== 'bundle'
+      "
+    >
       <CashierListProductNotFound />
     </template>
 
-      <!-- Product Bundles Section -->
-       <template         v-if="(cashierProduct_productState.selectedCategory === '' || cashierProduct_productState.selectedCategory === 'bundle') && Array.isArray(productBundling_list?.data) && productBundling_list.data.length > 0"
-        >
-      <section
-        id="cashier-list-product-bundles"
-        class="flex flex-col gap-4"
-      >
+    <!-- Product Bundles Section -->
+    <template
+      v-if="
+        (cashierProduct_productState.selectedCategory === '' ||
+          cashierProduct_productState.selectedCategory === 'bundle') &&
+        Array.isArray(productBundling_list?.data) &&
+        productBundling_list.data.length > 0
+      "
+    >
+      <section id="cashier-list-product-bundles" class="flex flex-col gap-4">
         <h2 class="font-normal text-xs text-text-disabled">Product Bundles</h2>
         <section id="cashier-list-wrapper-class" :class="wrapperClass">
           <component
@@ -121,11 +134,11 @@ const wrapperClass = computed(() => {
       </section>
     </template>
 
-    <template v-if="productBundling_list.data.length == 0 && cashierProduct_productState.selectedCategory === 'bundle'">
-      <CashierListProductNotFound />
+    <template
+      v-if="productBundling_list.data.length == 0 && cashierProduct_productState.selectedCategory === 'bundle'"
+    >
+      <CashierListBundleNotFound />
     </template>
-    
-    
   </template>
   <template v-else>
     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
