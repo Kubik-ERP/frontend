@@ -107,6 +107,12 @@ function formatDate(date: string) {
         {{ data.notes || '-' }}
       </template>
 
+      <!-- Adjusted By -->
+      <template v-else-if="column.value === 'username'">
+        {{ data.users?.username || '-' }}
+
+      </template>
+
       <!-- Action -->
       <template v-else-if="column.value === 'aksi'">
         <PrimeVueButton
