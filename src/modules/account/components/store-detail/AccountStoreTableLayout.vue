@@ -2,8 +2,13 @@
 <script setup lang="ts">
 // Interfaces
 import type { IOutletTable } from '@/modules/outlet/interfaces';
-// Interfaces
 import type { IAccountStoreDetailProvided } from '../../interfaces';
+
+// Composable service
+import { useAccountStoreDetailsService } from '../../services/account-store-detail.service';
+
+// Utilities
+// import { useLocalization } from '@/composables/useLocalization';
 
 const modelValue = defineModel<string[] | null>();
 
@@ -54,6 +59,28 @@ const props = withDefaults(defineProps<IProps>(), {
  * @description Inject all the data and methods what we need
  */
 const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
+
+/**
+ * @description Inject the table configuration service to change table status
+ */
+const { accountStoreDetail_fetchChangeTableStatus } = useAccountStoreDetailsService();
+
+/**
+ * @description Handles changing table status (UI + API)
+ */
+const onToggleTableStatus = async (table: any) => {
+  try {
+    // Locally toggle the table status first for instant feedback
+    table.statusTable = table.statusTable === 'occupied' ? 'available' : 'occupied';
+
+    // Send request to backend to persist change
+    await accountStoreDetail_fetchChangeTableStatus(table.id, table.statusTable);
+  } catch (error) {
+    console.error('Failed to change table status:', error);
+    // Revert the change on error
+    table.statusTable = table.statusTable === 'occupied' ? 'available' : 'occupied';
+  }
+};
 </script>
 
 <template>
@@ -93,12 +120,8 @@ const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetai
                   return;
                 }
                 const index = modelValue.indexOf(table.name);
-
-                if (index === -1) {
-                  modelValue.push(table.name);
-                } else {
-                  modelValue.splice(index, 1);
-                }
+                if (index === -1) modelValue.push(table.name);
+                else modelValue.splice(index, 1);
               }
             }
           }
@@ -119,23 +142,13 @@ const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetai
           }}
         </div>
         <div class="text-sm pb-2">{{ table.seats }} {{ useLocalization('account.seats') }}</div>
-        <!-- Badge toggle -->
+
+        <!-- ✅ Badge toggle now calls API -->
         <button
           v-if="!props.cashierPreview && props.isTableSummary"
           class="px-2 py-1 rounded-full text-xs font-semibold"
           :class="[table.statusTable === 'occupied' ? 'bg-red-500 text-white' : 'bg-green-500 text-white']"
-          @click="
-            () => {
-              if (table.statusTable === 'available' && (modelValue || []).includes(table.name)) {
-                const index = modelValue.indexOf(table.name);
-
-                if (index !== -1) {
-                  modelValue.splice(index, 1);
-                }
-              }
-              table.statusTable = table.statusTable === 'occupied' ? 'available' : 'occupied';
-            }
-          "
+          @click="onToggleTableStatus(table)"
         >
           {{
             table.statusTable === 'occupied'
@@ -149,7 +162,6 @@ const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetai
 </template>
 
 <style>
-/* Latar belakang titik-titik untuk container lantai */
 #account-store-table-layout {
   background-image: url('@/app/assets/images/bg-layout-table.png');
   background-size: 100% 100%;
@@ -157,14 +169,12 @@ const { accountStoreDetail_onShowDialogDetailTable } = inject<IAccountStoreDetai
   border-radius: 4px;
 }
 
-/* Styling dasar untuk setiap item meja */
 .table-item {
-  position: absolute; /* Penting untuk positioning */
-  box-sizing: border-box; /* Agar border dan padding termasuk dalam width/height */
-  user-select: none; /* Mencegah seleksi teks saat dragging */
+  position: absolute;
+  box-sizing: border-box;
+  user-select: none;
 }
 
-/* Mengatur agar transisi saat resize lebih mulus (opsional) */
 .table-item,
 .table-item .text {
   transition: all 0.05s ease-in-out;

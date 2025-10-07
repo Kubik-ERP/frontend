@@ -4,3 +4,4 @@ export const ACCOUNT_BANK_ATTACH_ENDPOINT = `${ACCOUNT_BANK_BASE_ENDPOINT}/attac
 export const ACCOUNT_USER_BANKS_ENDPOINT = `${ACCOUNT_BANK_BASE_ENDPOINT}/user-banks`;
 
 export const ACCOUNT_STORE_DETAIL_FACILITY_ENDPOINT = '/facilities';
+export const ACCOUNT_STORE_TABLE_CHANGE_STATUS_ENDPOINT = '/store-tables/change-table-status';
