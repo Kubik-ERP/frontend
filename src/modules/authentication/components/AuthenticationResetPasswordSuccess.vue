@@ -37,7 +37,7 @@ const formatTime = (seconds: number): string => {
 
       <template v-if="authenticationResetPassword_canResend">
         <span
-          class="font-semibold text-blue-primary cursor-pointer hover:underline"
+          class="font-semibold text-primary cursor-pointer hover:underline"
           :class="{ 'opacity-50 cursor-not-allowed': authenticationResetPassword_isLoading }"
           @click="authenticationResetPassword_onResendEmail"
         >

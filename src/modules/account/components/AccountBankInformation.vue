@@ -81,7 +81,7 @@ const { account_profile, account_onEditBankAccount, account_onSetUpBankAccount }
           </section>
 
           <PrimeVueButton
-            class="bg-blue-primary border-none text-sm lg:text-base py-[10px] px-[18px] w-fit"
+            class="bg-primary border-none text-sm lg:text-base py-[10px] px-[18px] w-fit"
             :label="useLocalization('account.setup-bank-information')"
             type="button"
             @click="account_onSetUpBankAccount"

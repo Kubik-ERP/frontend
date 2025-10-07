@@ -197,7 +197,7 @@ const { authentication_userData } = storeToRefs(authenticationStore);
           <template #header="{ chooseCallback }">
             <PrimeVueButton
               v-if="!outletCreateEdit_formData.photo"
-              class="bg-white button-shadow border-none font-semibold text-blue-primary text-sm py-[10px] w-full max-w-36"
+              class="bg-white button-shadow border-none font-semibold text-primary text-sm py-[10px] w-full max-w-36"
               @click="chooseCallback()"
             >
               <template #default>

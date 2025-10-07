@@ -107,7 +107,7 @@ const {
 
         <section id="right-content" class="flex items-center gap-4">
           <PrimeVueButton
-            class="bg-blue-primary border-none w-fit py-3 px-5 rounded-lg"
+            class="bg-primary border-none w-fit py-3 px-5 rounded-lg"
             @click="purchaseOrderDetail_onExportDeliveryOrderToPdf()"
           >
             <template #default>

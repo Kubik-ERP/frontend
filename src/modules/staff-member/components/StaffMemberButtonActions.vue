@@ -15,21 +15,21 @@ const {
   <section class="flex items-center justify-between mt-4">
     <div id="button-actions" class="flex items-center gap-4">
       <PrimeVueButton
-        class="border-blue-primary bg-transparent font-semibold text-sm text-blue-primary w-36 basic-smooth-animation hover:bg-grayscale-10"
+        class="border-primary bg-transparent font-semibold text-sm text-primary w-36 basic-smooth-animation hover:bg-grayscale-10"
         label="Cancel"
         severity="secondary"
         variant="outlined"
         @click="staffMemberCreateEdit_onCancel"
       />
-  
+
       <PrimeVueButton
-        class="bg-blue-primary border-none text-sm py-[10px] px-4 w-fit"
+        class="bg-primary border-none text-sm py-[10px] px-4 w-fit"
         :label="staffMemberCreateEdit_isEditable ? 'Save' : 'Add Staff Member'"
         type="submit"
         :loading="staffMemberCreateEdit_isLoading"
         @click="staffMemberCreateEdit_onSubmit"
       />
-  
+
     </div>
     <PrimeVueButton
       v-if="staffMemberCreateEdit_isEditable"

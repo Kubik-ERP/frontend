@@ -21,7 +21,7 @@ const {
       <section id="text-information" class="flex flex-col gap-2">
         <div class="flex items-center gap-4">
           <PrimeVueButton
-            class="bg-transparent border border-solid border-blue-primary p-2 basic-smooth-animation hover:bg-grayscale-10"
+            class="bg-transparent border border-solid border-primary p-2 basic-smooth-animation hover:bg-grayscale-10"
             @click="$router.back()"
           >
             <template #default>
@@ -57,7 +57,7 @@ const {
 
     <section id="form-buttons" class="flex flex-col gap-3">
       <PrimeVueButton
-        class="bg-blue-primary border-none text-sm py-[10px]"
+        class="bg-primary border-none text-sm py-[10px]"
         label="Create PIN"
         type="submit"
         :disabled="authenticationSignUp_formValidationsOfVerifyPin.$invalid"

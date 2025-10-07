@@ -119,7 +119,7 @@ const removeTag = tagToRemove => {
       <template #footer>
         <div v-if="search" class="mb-2">
           <PrimeVueButton
-            class="bg-blue-secondary-background/50 text-blue-primary font-semibold text-lg justify-start border-none rounded-none text-start w-full"
+            class="bg-blue-secondary-background/50 text-primary font-semibold text-lg justify-start border-none rounded-none text-start w-full"
             @click="createTag"
             >+ Add "{{ search }}"</PrimeVueButton
           >

@@ -71,7 +71,7 @@ const {
         />
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
+          class="bg-primary border-none text-base py-[10px] w-full max-w-40"
           :label="useLocalization('account.assign-staff')"
           type="button"
           :disabled="accountDetail_AssignedStaff_formValidations.$invalid"

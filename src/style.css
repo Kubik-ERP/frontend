@@ -169,7 +169,6 @@
   --color-primary-500: #18618b;
   --color-primary-600: #144e71;
   --color-primary-700: #103b57;
-  --color-blue-primary: #18618b;
   --color-green-primary: #64c9b1;
   --color-disabled: #9e9e9e;
   --color-error-hover: #981c1c;
@@ -178,7 +177,7 @@
   --color-error-main: #e57171;
   --color-error-background: #fbebeb;
   --color-primary-background: #edf6fc;
-  --color-primary-border: #8cc8eb;
+  --color-primary-border: var(--color-secondary);
   --color-primary-hover: #0f3c56;
   --color-secondary: #F5AA85;
   --color-secondary-background: #e9f7f4;
