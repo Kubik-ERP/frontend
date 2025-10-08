@@ -173,7 +173,7 @@ const staffDisplayName = computed(() => {
         />
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
+          class="bg-primary border-none text-base py-[10px] w-full max-w-40"
           label="Save"
           type="button"
           :disabled="cashDrawerList_formValidationsOfOpenRegister.$invalid || cashDrawerList_isLoading"

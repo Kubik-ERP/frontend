@@ -29,7 +29,7 @@ const {
       </section>
 
       <PrimeVueButton
-        class="w-fit px-4 py-2 border-blue-primary text-blue-primary text-sm font-bold min-w-20"
+        class="w-fit px-4 py-2 border-primary text-primary text-sm font-bold min-w-20"
         label="Sign In"
         severity="secondary"
         variant="outlined"
@@ -235,7 +235,7 @@ const {
     </section>
 
     <PrimeVueButton
-      class="bg-blue-primary border-none text-sm py-[10px]"
+      class="bg-primary border-none text-sm py-[10px]"
       label="Sign Up"
       type="submit"
       :disabled="authenticationSignUp_formValidations.$invalid"

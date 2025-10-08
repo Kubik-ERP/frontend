@@ -104,7 +104,7 @@ function handleSubmit() {
       staffMemberCreateEdit_formData.defaultCommissionProduct = 0
     }
   } else {
-    staffMemberCreateEdit_formData.defaultCommissionVoucher = 
+    staffMemberCreateEdit_formData.defaultCommissionVoucher =
     staffMemberCreateEdit_formData.defaultCommissionVoucher === null
     ? 0
     : defaultCommissionValue.value ?? 0;
@@ -305,7 +305,7 @@ const handleClose = () => {
           @click="handleClose"
         />
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base py-[10px] w-full sm:w-auto"
+          class="bg-primary border-none text-base py-[10px] w-full sm:w-auto"
           label="Save"
           type="button"
           @click="handleSubmit"
