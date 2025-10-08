@@ -78,7 +78,7 @@ export const INVENTORYREPORT_PORECEIVINGVARIANCE_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Variation Price',
     sortable: false,
-    value: 'var-price',
+    value: 'varPrice',
   },
 ];
 

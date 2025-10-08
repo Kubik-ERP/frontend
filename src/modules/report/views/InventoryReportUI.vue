@@ -2,6 +2,7 @@
 // components
 import MovementLedgerReport from '../components/InventoryReport/MovementLedgerReport.vue';
 import CurrentStockOverviewReport from '../components/InventoryReport/CurrentStockOverviewReport.vue';
+import PoReceivingVarianceReport from '../components/InventoryReport/PoReceivingVarianceReport.vue';
 
 // types
 const inventoryReport_activeTab = ref<string>('movement-ledger');
@@ -16,11 +17,11 @@ const inventoryReport_listTabs = ref<ITabs[]>([
     label: 'Current Stock Overview',
     value: 'current-stock-overview',
   },
-  // {
-  //   component: StockReport,
-  //   label: 'PO Receiving Variance',
-  //   value: 'po-receiving-variance',
-  // },
+  {
+    component: markRaw(PoReceivingVarianceReport),
+    label: 'PO Receiving Variance',
+    value: 'po-receiving-variance',
+  },
   // {
   //   component: StockReport,
   //   label: 'Slow Dead Stock',
