@@ -68,7 +68,7 @@ const { accountStoreDetail_fetchChangeTableStatus } = useAccountStoreDetailsServ
 /**
  * @description Handles changing table status (UI + API)
  */
-const onToggleTableStatus = async (table: any) => {
+const onToggleTableStatus = async (table: IOutletTable['storeTables'][number]) => {
   try {
     // Locally toggle the table status first for instant feedback
     table.statusTable = table.statusTable === 'occupied' ? 'available' : 'occupied';
