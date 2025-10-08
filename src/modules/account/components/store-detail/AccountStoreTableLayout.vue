@@ -150,10 +150,10 @@ const onToggleTableStatus = async (table: any) => {
           :class="[table.statusTable === 'occupied' ? 'bg-red-500 text-white' : 'bg-green-500 text-white']"
           @click="() => {
              if (table.statusTable === 'available' && (modelValue || []).includes(table.name)) {
-                const index = modelValue.indexOf(table.name);
+                const index = modelValue?.indexOf(table.name) ?? -1;
 
                 if (index !== -1) {
-                  modelValue.splice(index, 1);
+                  modelValue?.splice(index, 1);
                 }
               }
             onToggleTableStatus(table);
