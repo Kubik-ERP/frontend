@@ -7,8 +7,13 @@ import {
   FINANCIALREPORT_PAYMENTMETHOD_COLUMNS,
   FINANCIALREPORT_PROFITANDLOST_COLUMNS,
   FINANCIALREPORT_TAXANDSERVICECHARGE_COLUMNS,
-  INVENTORYREPORT_STOCKMOVEMENT_COLUMNS,
-  INVENTORYREPORT_STOCK_COLUMNS,
+  INVENTORYREPORT_MOVEMENTLEDGER_COLUMNS,
+  INVENTORYREPORT_CURRENTSTOCKOVERVIEW_COLUMNS,
+  INVENTORYREPORT_PORECEIVINGVARIANCE_COLUMNS,
+  INVENTORYREPORT_SLOWDEADSTOCK_COLUMNS,
+  INVENTORYREPORT_ITEMPERFORMANCE_COLUMNS,
+  INVENTORYREPORT_ITEMPERFORMANCEBYCATEGORY_COLUMNS,
+  INVENTORYREPORT_ITEMPERFORMANCEBYBRAND_COLUMNS,
   LOSSREPORT_COLUMNS,
   MARKETINGREPORT_COLUMNS,
   SALESREPORT_SALESBYITEM_COLUMNS,
@@ -38,8 +43,13 @@ export const useReportService = (): IReportProvided => {
     salesReport_salesByQuarter_values,
     salesReport_salesByYear_values,
     // inventory
-    inventoryReport_stock_values,
-    inventoryReport_stockMovement_values,
+    inventoryReport_movementLedger_values,
+    inventoryReport_currentStockOverview_values,
+    inventoryReport_poReceivingVariance_values,
+    inventoryReport_slowDeadStock_values,
+    inventoryReport_itemPerformance_values,
+    inventoryReport_itemPerformanceByCategory_values,
+    inventoryReport_itemPerformanceByBrand_values,
     // voucher
     voucherReport_values,
     // customer
@@ -192,9 +202,13 @@ export const useReportService = (): IReportProvided => {
 
   const report_getInventoryReport = async (type?: string) => {
     try {
-      await store.getInventoryReport(formatQueryParamsDate(report_queryParams, type), {
-        ...httpAbort_registerAbort('INVENTORYREPORT_REQUEST'),
-      });
+      Promise.all([
+        await fetchOutlet_lists(),
+        await fetchStaff_lists(),
+        await store.getInventoryReport(formatQueryParamsDate(report_queryParams, type), {
+          ...httpAbort_registerAbort('INVENTORYREPORT_REQUEST'),
+        }),
+      ]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error);
@@ -250,8 +264,13 @@ export const useReportService = (): IReportProvided => {
     salesReport_salesByItem_columns: SALESREPORT_SALESBYITEM_COLUMNS,
     salesReport_salesByOrderType_columns: SALESREPORT_SALESBYORDERTYPE_COLUMNS,
     salesReport_columns: SALESREPORT_COLUMNS,
-    inventoryReport_stock_columns: INVENTORYREPORT_STOCK_COLUMNS,
-    inventoryReport_stockMovement_columns: INVENTORYREPORT_STOCKMOVEMENT_COLUMNS,
+    inventoryReport_movementLedger_columns: INVENTORYREPORT_MOVEMENTLEDGER_COLUMNS,
+    inventoryReport_currentStockOverview_columns: INVENTORYREPORT_CURRENTSTOCKOVERVIEW_COLUMNS,
+    inventoryReport_poReceivingVariance_columns: INVENTORYREPORT_PORECEIVINGVARIANCE_COLUMNS,
+    inventoryReport_slowDeadStock_columns: INVENTORYREPORT_SLOWDEADSTOCK_COLUMNS,
+    inventoryReport_itemPerformance_columns: INVENTORYREPORT_ITEMPERFORMANCE_COLUMNS,
+    inventoryReport_itemPerformanceByCategory_columns: INVENTORYREPORT_ITEMPERFORMANCEBYCATEGORY_COLUMNS,
+    inventoryReport_itemPerformanceByBrand_columns: INVENTORYREPORT_ITEMPERFORMANCEBYBRAND_COLUMNS,
     voucherReport_columns: MARKETINGREPORT_COLUMNS,
     customerReport_columns: CUSTOMERREPORT_COLUMNS,
     // params
@@ -281,8 +300,13 @@ export const useReportService = (): IReportProvided => {
     salesReport_salesByQuarter_values,
     salesReport_salesByYear_values,
     // inventory
-    inventoryReport_stock_values,
-    inventoryReport_stockMovement_values,
+    inventoryReport_movementLedger_values,
+    inventoryReport_currentStockOverview_values,
+    inventoryReport_poReceivingVariance_values,
+    inventoryReport_slowDeadStock_values,
+    inventoryReport_itemPerformance_values,
+    inventoryReport_itemPerformanceByCategory_values,
+    inventoryReport_itemPerformanceByBrand_values,
     // voucher
     voucherReport_values,
     // customer
