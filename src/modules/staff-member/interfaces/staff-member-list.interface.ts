@@ -27,6 +27,7 @@ export interface IStaffMemberGetWithOwnerResponse{
 export interface IStaffMemberListProvided {
   staffMemberList_columns: IColumnDataTable[];
   staffMemberList_dropdownItemStaff: globalThis.Ref<IDropdownItem[]>;
+  staffMemberList_dropdownItemStaffUsingUserId: globalThis.Ref<IDropdownItem[]>;
   staffMemberList_dropdownItemTitles: globalThis.Ref<IDropdownItem[]>;
   staffMemberList_typesOfUserPermissions: globalThis.Ref<IStafPermission[]>;
   staffMemberList_fetchListMembers: () => Promise<unknown>;

@@ -91,6 +91,7 @@ export interface IProductItem {
   pictureUrl: string;
   isPercent: boolean;
   barcode?: string;
+  stockQuantity?: number;
   variant: IProductVariant[];
 }
 

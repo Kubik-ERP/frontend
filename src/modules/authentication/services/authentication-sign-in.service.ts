@@ -31,7 +31,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
   const store = useAuthenticationStore(); // Instance of the store
   const route = useRoute(); // Instance of the route
   const router = useRouter(); // Instance of the router
-  const { authentication_isLoading, authentication_userData } = storeToRefs(store);
+  const { authentication_isLoading, authentication_userData, authentication_rememberMe } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
@@ -45,7 +45,7 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     browser: '',
     city: '',
     country: '',
-    rememberMe: false,
+    rememberMe: authentication_rememberMe.value,
   });
   const authenticationSignIn_isNotAuthenticated = ref<boolean>(false);
   const authenticationSignIn_selectedRole = ref<'OWNER' | 'EMPLOYEE'>('OWNER');
@@ -215,6 +215,9 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
    * @description Handle business logic to direct user to the sso authentication
    */
   const authenticationSignIn_onSsoWithGoogle = async (): Promise<void> => {
+    // Update store with current rememberMe value before redirecting
+    store.updateRememberMe(authenticationSignIn_formData.rememberMe);
+
     window.location.href = `${import.meta.env.VITE_APP_BASE_API_URL}${import.meta.env.VITE_APP_BASE_API_PREFIX}/authentication/google`;
   };
 
@@ -275,6 +278,26 @@ export const useAuthenticationSignInService = (): IAuthenticationSignInProvided 
     },
     {
       deep: true,
+    },
+  );
+
+  /**
+   * @description Watch rememberMe changes and sync with store
+   */
+  watch(
+    () => authenticationSignIn_formData.rememberMe,
+    (newValue) => {
+      store.updateRememberMe(newValue);
+    },
+  );
+
+  /**
+   * @description Watch store rememberMe changes and sync with form
+   */
+  watch(
+    authentication_rememberMe,
+    (newValue) => {
+      authenticationSignIn_formData.rememberMe = newValue;
     },
   );
 

@@ -62,7 +62,7 @@ const wrapperClass = computed(() => {
               :key="product.id"
               :product="product"
               :category="item.category"
-              :stock="10"
+              :stock="product.stockQuantity"
             />
           </section>
         </template>
@@ -90,7 +90,7 @@ const wrapperClass = computed(() => {
             <PrimeVueSkeleton height="98px" class="w-full rounded-sm" />
 
             <div
-              class="absolute py-1 px-1.5 border border-primary-border bg-blue-primary left-0 ml-1 mt-1 rounded-full flex gap-2"
+              class="absolute py-1 px-1.5 border border-primary-border bg-primary left-0 ml-1 mt-1 rounded-full flex gap-2"
             >
               <PrimeVueSkeleton shape="circle" width="12px" height="12px" />
               <PrimeVueSkeleton width="40px" height="12px" />

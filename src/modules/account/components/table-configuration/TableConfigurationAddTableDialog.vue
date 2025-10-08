@@ -199,7 +199,7 @@ const {
         />
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base text-center py-3 w-full"
+          class="bg-primary border-none text-base text-center py-3 w-full"
           :label="
             accountStoreTableConfiguration_isEditableMode
               ? useLocalization('account.buttons.update')

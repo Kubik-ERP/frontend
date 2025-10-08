@@ -335,7 +335,7 @@ const clockOutTime = computed({
         />
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
+          class="bg-primary border-none text-base py-[10px] w-full max-w-40"
           :label="attendanceList_formMode === 'create' ? 'Save' : 'Update'"
           type="button"
           :disabled="attendanceList_formValidations.$invalid"

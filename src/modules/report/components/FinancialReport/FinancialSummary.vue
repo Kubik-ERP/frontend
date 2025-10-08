@@ -64,6 +64,10 @@ const formattedDataTable = () => {
       nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.pajak }),
     },
     {
+      description: 'Service Charge',
+      nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.biayaLayanan }),
+    },
+    {
       description: 'Rounding',
       nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.pembulatan }),
     },

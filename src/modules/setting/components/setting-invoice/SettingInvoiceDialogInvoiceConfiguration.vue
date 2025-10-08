@@ -114,7 +114,7 @@ const settingInvoice_onEditInvoiceNumberConfiguration = () => {
         />
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
+          class="bg-primary border-none text-base py-[10px] w-full max-w-40"
           label="Update"
           type="button"
           :disabled="invoiceNumberConfigurations_formValidations.$invalid"

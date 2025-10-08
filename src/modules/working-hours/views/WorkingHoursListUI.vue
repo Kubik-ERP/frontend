@@ -4,8 +4,10 @@ import WorkingHoursListTable from '../components/WorkingHoursListTable.vue';
 import WorkingHoursCreateEditDialog from '../components/WorkingHoursCreateEditDialog.vue';
 
 // Services
+import { useStaffMemberListService } from '@/modules/staff-member/services/staff-member-list.service';
 import { useWorkingHoursListService } from '../services/working-hours-list.service';
 
+const { staffMemberList_fetchListMembers, staffMemberList_dropdownItemStaffUsingUserId } = useStaffMemberListService();
 const {
   workingHoursList_addTimeSlot,
   workingHoursList_calendarDate,
@@ -14,7 +16,6 @@ const {
   workingHoursList_createEditMaxDate,
   workingHoursList_createEditMinDate,
   workingHoursList_createEditRepeatOptions,
-  workingHoursList_createEditStaffList,
   workingHoursList_customRecurrenceEndDate,
   workingHoursList_customRecurrenceFrequencyOptions,
   workingHoursList_fetchList,
@@ -56,7 +57,7 @@ provide('workingHoursList', {
   workingHoursList_createEditMaxDate,
   workingHoursList_createEditMinDate,
   workingHoursList_createEditRepeatOptions,
-  workingHoursList_createEditStaffList,
+  workingHoursList_createEditStaffList: staffMemberList_dropdownItemStaffUsingUserId,
   workingHoursList_customRecurrenceEndDate,
   workingHoursList_customRecurrenceFrequencyOptions,
   workingHoursList_fetchList,
@@ -92,7 +93,10 @@ provide('workingHoursList', {
  */
 onMounted(async () => {
   try {
-    await workingHoursList_fetchList();
+    await Promise.all([
+      staffMemberList_fetchListMembers(),
+      workingHoursList_fetchList()
+    ])
   } catch (error) {
     console.error('Error loading working hours list:', error);
   }

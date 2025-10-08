@@ -23,7 +23,7 @@ const {
     class="flex items-center justify-between w-full"
   >
     <PrimeVueButton
-      class="bg-blue-primary border-none text-base py-3 w-full max-w-40"
+      class="bg-primary border-none text-base py-3 w-full max-w-40"
       :label="purchaseOrderDetail_dynamicButtonLabel(purchaseOrderDetail_data?.orderStatus ?? '')"
       type="button"
       @click="purchaseOrderDetail_dynamicButtonAction(purchaseOrderDetail_data?.orderStatus ?? '')"

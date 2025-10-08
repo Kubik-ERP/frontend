@@ -102,7 +102,7 @@ const {
         />
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base py-[10px] rounded-lg w-full"
+          class="bg-primary border-none text-base py-[10px] rounded-lg w-full"
           label="Save"
           type="button"
           :disabled="cashDrawerCashRegister_isFormInvalid || cashDrawerCashRegister_isLoading"
