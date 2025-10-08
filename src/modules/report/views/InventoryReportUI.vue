@@ -6,6 +6,7 @@ import PoReceivingVarianceReport from '../components/InventoryReport/PoReceiving
 import SlowDeadStockReport from '../components/InventoryReport/SlowDeadStockReport.vue';
 import ItemPerformanceReport from '../components/InventoryReport/ItemPerformanceReport.vue';
 import ItemPerformanceByCategoryReport from '../components/InventoryReport/ItemPerformanceByCategoryReport.vue';
+import ItemPerformanceByBrandReport from '../components/InventoryReport/ItemPerformanceByBrandReport.vue';
 
 // types
 const inventoryReport_activeTab = ref<string>('movement-ledger');
@@ -40,11 +41,11 @@ const inventoryReport_listTabs = ref<ITabs[]>([
     label: 'Item Performance By Category',
     value: 'item-performance-by-category',
   },
-  // {
-  //   component: markRaw(ItemPerformanceByCategoryReport),
-  //   label: 'Item Performance By Brand',
-  //   value: 'item-performance-by-brand',
-  // },
+  {
+    component: markRaw(ItemPerformanceByBrandReport),
+    label: 'Item Performance By Brand',
+    value: 'item-performance-by-brand',
+  },
 ]);
 // service
 import { useReportService } from '../services/report.service';
