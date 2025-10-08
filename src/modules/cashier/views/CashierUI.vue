@@ -43,6 +43,7 @@ const {
   accountStoreDetail_operationalHours,
   accountStoreDetail_selectedFloor,
   accountStoreDetail_storeTables,
+  accountStoreDetail_fetchChangeTableStatus,
 } = useAccountStoreDetailsService();
 
 const {
@@ -204,6 +205,7 @@ provide('accountStoreDetail', {
   accountStoreDetail_operationalHours,
   accountStoreDetail_selectedFloor,
   accountStoreDetail_storeTables,
+  accountStoreDetail_fetchChangeTableStatus,
 });
 
 provide('cashDrawerCashRegister', {
