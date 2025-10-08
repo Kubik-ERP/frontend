@@ -182,6 +182,12 @@ export const ITEM_STOCK_ADJUSTMENT_LIST_COLUMNS: IColumnDataTable[] = [
     label: 'Notes',
     sortable: false,
     value: 'notes',
+
+  },
+  {
+    label: 'Adjusted By',
+    sortable: false,
+    value: 'username',
   },
   {
     label: '',

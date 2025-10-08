@@ -64,6 +64,8 @@ const {
               <AccountStoreTableLayout
                 v-model="cashierOrderSummary_modalSelectTable.selectedTable"
                 :store-table="storeTable"
+                               is-table-summary
+
               />
             </section>
           </template>

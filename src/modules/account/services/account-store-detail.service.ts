@@ -8,6 +8,7 @@ import {
   ACCOUNT_STORE_DETAIL_OPERATIONAL_HOURS_VALUES,
   ACCOUNT_STORE_LIST_OPERATIONAL_HOURS_REQUEST,
   ACCOUNT_STORE_TABLE_LIST_REQUEST,
+  ACCOUNT_STORE_TABLE_CHANGE_STATUS_REQUEST,
 } from '../constants';
 
 // Interfaces
@@ -124,6 +125,42 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     };
 
     eventBus.emit('AppBaseDialog', argsEventEmitter);
+  };
+
+  /**
+   * @description Handle API request to change a table's status (available / occupied)
+   */
+  const accountStoreDetail_fetchChangeTableStatus = async (
+    tableId: string,
+    newStatus: 'available' | 'occupied',
+  ): Promise<void> => {
+    try {
+      await store.fetchAccount_changeTableStatus(
+        { table_id: tableId, new_status: newStatus },
+        {
+          ...httpAbort_registerAbort(ACCOUNT_STORE_TABLE_CHANGE_STATUS_REQUEST),
+        },
+      );
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: `Table status changed to "${newStatus}" successfully.`,
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+    } catch (error) {
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Failed to change table status. Please try again.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+
+      if (error instanceof Error) return Promise.reject(error);
+      else return Promise.reject(new Error(String(error)));
+    }
   };
 
   /**
@@ -578,5 +615,6 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     accountDetail_AssignedStaff_isLoading,
     accountDetail_AssignedStaff_formValidations,
     accountDetail_AssignedStaff_onSubmit,
+    accountStoreDetail_fetchChangeTableStatus,
   };
 };
