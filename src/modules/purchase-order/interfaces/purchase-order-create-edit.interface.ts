@@ -20,7 +20,7 @@ export interface IPurchaseOrderCreateEditProductItem {
   expiryDate?: string;
   supplier?: string;
   storageLocation?: string;
-  reciver?: {
+  receiver?: {
     id: string;
     name: string;
   };

@@ -124,7 +124,7 @@ const {
         />
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base rounded-lg w-fit px-5 py-3"
+          class="bg-primary border-none text-base rounded-lg w-fit px-5 py-3"
           label="Confirm & Close Cash Register"
           type="button"
           :disabled="

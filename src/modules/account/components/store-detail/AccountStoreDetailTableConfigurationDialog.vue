@@ -107,7 +107,7 @@ const {
         />
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base text-center py-3 w-full h-full"
+          class="bg-primary border-none text-base text-center py-3 w-full h-full"
           severity="secondary"
           variant="outlined"
           @click="

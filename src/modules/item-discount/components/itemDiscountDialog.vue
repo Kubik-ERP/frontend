@@ -65,14 +65,14 @@ watch(
     </template>
     <template #footer>
       <PrimeVueButton
-        class="border-blue-primary bg-transparent font-semibold text-sm text-blue-primary basic-smooth-animation hover:bg-grayscale-10"
+        class="border-primary bg-transparent font-semibold text-sm text-primary basic-smooth-animation hover:bg-grayscale-10"
         label="Cancel"
         severity="secondary"
         variant="outlined"
         @click="itemDiscount_onCloseDialog"
       />
       <PrimeVueButton
-        class="bg-blue-primary border-none text-sm py-[10px]"
+        class="bg-primary border-none text-sm py-[10px]"
         label="Apply"
         type="button"
         :loading="productDiscount_isLoading"

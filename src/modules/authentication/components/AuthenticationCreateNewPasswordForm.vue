@@ -112,7 +112,7 @@ const {
     </section>
 
     <PrimeVueButton
-      class="bg-blue-primary border-none text-sm py-[10px]"
+      class="bg-primary border-none text-sm py-[10px]"
       label="Reset Password"
       type="submit"
       :disabled="authenticationCreateNewPassword_formValidations.$invalid"

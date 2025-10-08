@@ -45,7 +45,7 @@ const {
 
     <section id="form-buttons" class="flex flex-col gap-3">
       <PrimeVueButton
-        class="bg-blue-primary border-none text-sm py-[10px]"
+        class="bg-primary border-none text-sm py-[10px]"
         label="Create PIN"
         type="submit"
         :disabled="authenticationSignUp_formValidationsOfSetUpPin.$invalid"

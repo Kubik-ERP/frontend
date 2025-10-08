@@ -88,7 +88,7 @@ const {
           </section>
 
           <PrimeVueButton
-            class="bg-blue-primary border-none text-sm py-[10px] w-40 mt-2"
+            class="bg-primary border-none text-sm py-[10px] w-40 mt-2"
             label="Save"
             type="submit"
             :disabled="settingTaxService_formValidationsOfTax.$invalid || settingTaxService_isLoading"

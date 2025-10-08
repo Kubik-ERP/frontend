@@ -414,7 +414,7 @@ onMounted(async () => {
         </router-link>
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base max-w-44 w-full"
+          class="bg-primary border-none text-base max-w-44 w-full"
           label="Update"
           type="submit"
           :loading="loyaltyPointSettings_isLoading"

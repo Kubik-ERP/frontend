@@ -40,7 +40,7 @@ const { notesBuffer, notesBufferValidation, stockOpname_onSubmitNotesDialog, sto
         />
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
+          class="bg-primary border-none text-base py-[10px] w-full max-w-40"
           :label="useLocalization('stockOpname.notesDialog.saveButton')"
           type="button"
           :disabled="notesBufferValidation.$invalid"

@@ -569,8 +569,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_isButtonPlaceOrderDisabled = computed(() => {
     // Customer selection is now optional for all business types
     // Table selection is now optional for all order types
-    
-    const isDisabled = 
+
+    const isDisabled =
       cashierOrderSummary_modalOrderType.value.selectedOrderType === '' ||
       cashierProduct_selectedProduct.value.length === 0;
 

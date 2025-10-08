@@ -86,7 +86,7 @@ const hasPermission = rbac.hasPermission('manage_staff_member');
 
         <PrimeVueButton
           v-if="hasPermission"
-          class="w-fit"
+          class="bg-primary border-none w-fit"
           label="Add Staff Member"
           @click="$router.push({ name: 'staff-member.create' })"
         >

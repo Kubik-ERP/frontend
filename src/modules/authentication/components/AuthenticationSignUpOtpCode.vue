@@ -54,7 +54,7 @@ const {
         Didn’t get verification code?
 
         <template v-if="authenticationSignUp_durationOtpFormatted === '00:00'">
-          <span class="font-semibold text-blue-primary cursor-pointer" @click="authenticationSignUp_onResendOtp"
+          <span class="font-semibold text-primary cursor-pointer" @click="authenticationSignUp_onResendOtp"
             >Send a new code</span
           >
         </template>
@@ -68,7 +68,7 @@ const {
     </section>
 
     <PrimeVueButton
-      class="bg-blue-primary border-none text-sm py-[10px]"
+      class="bg-primary border-none text-sm py-[10px]"
       label="Continue"
       type="submit"
       :disabled="authenticationSignUp_formValidationsOfVerifyOtp.$invalid"
