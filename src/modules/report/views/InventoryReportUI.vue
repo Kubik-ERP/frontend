@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // components
 import MovementLedgerReport from '../components/InventoryReport/MovementLedgerReport.vue';
+import CurrentStockOverviewReport from '../components/InventoryReport/CurrentStockOverviewReport.vue';
 
 // types
 const inventoryReport_activeTab = ref<string>('movement-ledger');
@@ -10,16 +11,11 @@ const inventoryReport_listTabs = ref<ITabs[]>([
     label: 'Movement Ledger',
     value: 'movement-ledger',
   },
-  // {
-  //   component: StockMovementReport,
-  //   label: 'Stock Movement Report',
-  //   value: 'movement-ledger',
-  // },
-  // {
-  //   component: StockReport,
-  //   label: 'Current Stock Overview',
-  //   value: 'current-stock-overview',
-  // },
+  {
+    component: markRaw(CurrentStockOverviewReport),
+    label: 'Current Stock Overview',
+    value: 'current-stock-overview',
+  },
   // {
   //   component: StockReport,
   //   label: 'PO Receiving Variance',

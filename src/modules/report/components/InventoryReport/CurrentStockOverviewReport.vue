@@ -4,10 +4,10 @@ import CustomDatePicker from '../../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../../services/report.service';
 const {
-  inventoryReport_movementLedger_columns,
+  inventoryReport_currentStockOverview_columns,
   report_queryParams,
   report_getInventoryReport,
-  inventoryReport_movementLedger_values,
+  inventoryReport_currentStockOverview_values,
   outlet_lists_options,
   staff_lists_options,
   findOutletDetail,
@@ -21,17 +21,24 @@ const { exportToPdf, exportToCsv } = useReportExporter();
 const popover = ref();
 
 const formattedDataTable = () => {
-  const newData = inventoryReport_movementLedger_values?.value?.map(item => {
-    return {
-      tanggal: useFormatDate(item.tanggal, 'dd/MMM/yyyy'),
-      itemName: item.itemName,
-      adjustmentType: useTitleCaseWithSpaces(item.adjustmentType),
-      adjustmentQuantity: useCurrencyFormat({ data: item.adjustmentQuantity, hidePrefix: true }),
-      newStockQuantity: useCurrencyFormat({ data: item.newStockQuantity, hidePrefix: true }),
-      notes: item.notes || '-',
-    };
-  });
-  return newData;
+  return [
+    {
+      description: 'Total On Hand',
+      value: useCurrencyFormat({ data: inventoryReport_currentStockOverview_values.value.totalOnHand }),
+    },
+    {
+      description: 'Total Stock Cost',
+      value: useCurrencyFormat({ data: inventoryReport_currentStockOverview_values.value.totalStockCost }),
+    },
+    {
+      description: 'Average Stock Cost',
+      value: useCurrencyFormat({ data: inventoryReport_currentStockOverview_values.value.averageStockCost }),
+    },
+    {
+      description: 'Total Retail Price',
+      value: useCurrencyFormat({ data: inventoryReport_currentStockOverview_values.value.totalRetailPrice }),
+    },
+  ];
 };
 
 const page = ref<number>(1);
@@ -43,23 +50,23 @@ const onChangePage = (newPage: number) => {
 
 const handleExportToPdf = () => {
   exportToPdf({
-    reportName: 'Inventory Report - Movement Ledger Report',
+    reportName: 'Inventory Report - Current Stock Overview Report',
     storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
     storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: inventoryReport_movementLedger_columns,
+    columns: inventoryReport_currentStockOverview_columns,
     tableData: formattedDataTable(),
   });
 };
 const handleExportToCsv = () => {
   exportToCsv({
-    reportName: 'Inventory Report - Movement Ledger Report',
+    reportName: 'Inventory Report - Current Stock Overview Report',
     storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
     storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: inventoryReport_movementLedger_columns,
+    columns: inventoryReport_currentStockOverview_columns,
     tableData: formattedDataTable(),
   });
 };
@@ -68,7 +75,7 @@ const handleExportToCsv = () => {
   <section>
     <AppBaseDataTable
       :data="formattedDataTable()"
-      :columns="inventoryReport_movementLedger_columns"
+      :columns="inventoryReport_currentStockOverview_columns"
       :first="(page - 1) * limit"
       :rows-per-page="limit"
       :total-records="totalRecords"
@@ -78,7 +85,7 @@ const handleExportToCsv = () => {
       @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Movement Ledger Report</h1>
+        <h1 class="font-bold text-2xl text-text-primary">Current Stock Overview Report</h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
@@ -121,7 +128,7 @@ const handleExportToCsv = () => {
             v-model:end-date="report_queryParams.endDate"
             :should-update-type="false"
             class="col-span-1 xl:col-span-2 2xl:col-span-1"
-            @update:end-date="report_getInventoryReport('movement-ledger')"
+            @update:end-date="report_getInventoryReport('current-stock-overview')"
           />
           <PrimeVueSelect
             v-model="report_queryParams.store_ids"
@@ -131,7 +138,7 @@ const handleExportToCsv = () => {
             placeholder="Select Outlet"
             class="col-span-1 w-full"
             filter
-            @change="report_getInventoryReport('movement-ledger')"
+            @change="report_getInventoryReport('current-stock-overview')"
           >
             <template #dropdownicon>
               <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
@@ -145,7 +152,7 @@ const handleExportToCsv = () => {
             placeholder="Select Staff"
             filter
             class="col-span-1 w-full"
-            @change="report_getInventoryReport('movement-ledger')"
+            @change="report_getInventoryReport('current-stock-overview')"
             ><template #dropdownicon>
               <AppBaseSvg name="staff" class="w-5 h-5 text-text-primary" />
             </template>

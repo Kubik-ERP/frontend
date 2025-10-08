@@ -30,9 +30,9 @@ export interface IInventoryReport_movementLedger {
 }
 
 export interface IInventoryReport_currentStockOverview {
-  totalStock: number;
+  totalOnHand: number;
   totalStockCost: number;
-  averageStockCostPerUnit: number;
+  averageStockCost: number;
   totalRetailPrice: number;
 }
 

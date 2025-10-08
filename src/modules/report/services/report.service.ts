@@ -203,8 +203,8 @@ export const useReportService = (): IReportProvided => {
   const report_getInventoryReport = async (type?: string) => {
     try {
       Promise.all([
-        await fetchOutlet_lists(),
-        await fetchStaff_lists(),
+        fetchOutlet_lists(),
+        fetchStaff_lists(),
         await store.getInventoryReport(formatQueryParamsDate(report_queryParams, type), {
           ...httpAbort_registerAbort('INVENTORYREPORT_REQUEST'),
         }),
