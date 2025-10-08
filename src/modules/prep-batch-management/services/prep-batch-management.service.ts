@@ -1,5 +1,10 @@
 // constant
-import { BATCH_LIST_COLUMNS, BATCH_LIST_VALUES } from '../constants';
+import {
+  BATCH_LIST_COLUMNS,
+  BATCH_LIST_VALUES,
+  BATCH_DETAILS_INGRIDIENTS_COLUMNS,
+  BATCH_DETAILS_VALUES,
+} from '../constants';
 
 // type
 import type { IBatchListProvided } from '../interfaces';
@@ -29,8 +34,13 @@ export const useBatchService = (): IBatchListProvided => {
     }
   };
   return {
-    batchList_values: BATCH_LIST_VALUES,
+    // columns
     batchList_columns: BATCH_LIST_COLUMNS,
+    batchDetailsIngridient_columns: BATCH_DETAILS_INGRIDIENTS_COLUMNS,
+    // values
+    batchList_values: BATCH_LIST_VALUES,
+    batchDetails_values: BATCH_DETAILS_VALUES,
+    // method
     batchList_getClassOfBatchStatus,
   };
 };
