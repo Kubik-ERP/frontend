@@ -1,0 +1,1 @@
+export const BATCH_BASE_ENDPOINT = '/batch';
