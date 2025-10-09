@@ -3,7 +3,14 @@
 import CustomDatePicker from '../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../services/report.service';
-const { lossReport_columns, report_queryParams, findOutletDetail, findStaffDetail } = useReportService();
+const {
+  lossReport_columns,
+  report_queryParams,
+  findOutletDetail,
+  findStaffDetail,
+  hasAccessAllStorePermission,
+  outlet_currentOutlet,
+} = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../composables/useReportExporter';
 const { exportToPdf, exportToCsv } = useReportExporter();
