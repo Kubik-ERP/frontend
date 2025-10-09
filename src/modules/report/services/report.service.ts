@@ -140,9 +140,11 @@ export const useReportService = (): IReportProvided => {
 
   const fetchStaff_lists = async () => {
     try {
-      await store.fetchStaffMember_lists(report_queryParams.store_ids, {
-        ...httpAbort_registerAbort('STAFF_LIST_REQUEST'),
-      });
+      if (hasManageStaffMemberPermission) {
+        await store.fetchStaffMember_lists(report_queryParams.store_ids, {
+          ...httpAbort_registerAbort('STAFF_LIST_REQUEST'),
+        });
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error);
