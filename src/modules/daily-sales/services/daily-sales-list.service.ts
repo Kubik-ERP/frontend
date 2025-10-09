@@ -20,6 +20,7 @@ import type {
 import { DataTableSortEvent } from 'primevue';
 
 // Stores
+import { useAuthenticationStore } from '@/modules/authentication/store'
 import { useDailySalesStore } from '../store';
 
 /**
@@ -29,7 +30,9 @@ export const useDailySalesListService = (businessType?: string): IDailySalesList
   /**
    * @description Injected variables
    */
+  const authenticationStore = useAuthenticationStore();
   const store = useDailySalesStore(); // Instance of the store
+  const { authentication_permissions } = storeToRefs(authenticationStore);
   const { dailySales_isLoading, dailySales_invoiceLists } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
@@ -108,6 +111,13 @@ export const useDailySalesListService = (businessType?: string): IDailySalesList
     if (val === -1) return 'desc';
     return null;
   };
+
+  /**
+   * @description Handle business logic for checking if user has permission to manage_staff_member
+   */
+  const dailySalesList_isUserHasPermissionForManageStaff = computed(() => authentication_permissions.value?.some(
+    permission => permission === 'manage_staff_member'
+  ));
 
   /**
    * @description Handle business logic to render dynamic class of order status
@@ -211,6 +221,7 @@ export const useDailySalesListService = (businessType?: string): IDailySalesList
     dailySalesList_getClassOfOrderType,
     dailySalesList_getClassOfPaymentStatus,
     dailySalesList_isLoading: dailySales_isLoading,
+    dailySalesList_isUserHasPermissionForManageStaff,
     dailySalesList_onChangePage,
     dailySales_handleOnSortChange,
     dailySalesList_queryParams,
