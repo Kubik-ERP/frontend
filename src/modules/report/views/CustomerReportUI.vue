@@ -41,7 +41,7 @@ const handleExportToCsv = () => {
 const formattedDataTable = () => {
   const newData = customerReport_values.value.map(item => ({
     nama: item.nama,
-    gender: item.gender || '-',
+    gender: useTitleCaseWithSpaces(item.gender || '') || '-',
     totalSales: useCurrencyFormat({ data: item.totalSales }),
     dateAdded: useFormatDate(item.dateAdded, 'dd/MMM/yyyy'),
     outstanding: useCurrencyFormat({ data: item.outstanding || 0, hidePrefix: true }),

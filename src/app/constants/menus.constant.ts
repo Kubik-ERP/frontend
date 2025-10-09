@@ -96,11 +96,11 @@ export const LIST_SIDEBAR_MENUS = [
             translationKey: 'app.menus.sales-report',
             path: '/report/sales-report',
           },
-          // {
-          //   name: 'Inventory Report',
-          //   translationKey: 'app.menus.inventory-report',
-          //   path: '/report/inventory-report',
-          // },
+          {
+            name: 'Inventory Report',
+            translationKey: 'app.menus.inventory-report',
+            path: '/report/inventory-report',
+          },
           // {
           //   name: 'Raw Material Report',
           //   path: '/report/raw-material-report',
