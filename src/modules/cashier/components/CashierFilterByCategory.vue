@@ -116,7 +116,7 @@ const imageUrl = (image: string) => {
         class="h-8 w-8 rounded-full object-cover pointer-events-none"
       />
       <p class="font-semibold text-sm text-grayscale-70 line-clamp-2 text-center">
-        Bundles
+        Product Bundles
       </p>
     </section>
   </template>
