@@ -7,6 +7,7 @@ const {
   financialReport_paymentMethod_columns,
   report_queryParams,
   report_getFinancialReport,
+  hasManageStaffMemberPermission,
   report_paymentMethod_values,
   outlet_lists_options,
   staff_lists_options,
@@ -184,6 +185,7 @@ const formattedDataTable = () => {
             </template>
           </PrimeVueSelect>
           <PrimeVueSelect
+            v-if="hasManageStaffMemberPermission"
             v-model="report_queryParams.staff_ids"
             :options="staff_lists_options"
             option-label="label"

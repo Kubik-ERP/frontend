@@ -4,10 +4,10 @@ import CustomDatePicker from '../../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../../services/report.service';
 const {
-
   financialReport_discount_columns,
   report_queryParams,
   report_getFinancialReport,
+hasManageStaffMemberPermission,
   report_discount_values,
   outlet_lists_options,
   staff_lists_options,
@@ -183,6 +183,7 @@ const handleExportToCsv = () => {
             </template>
           </PrimeVueSelect>
           <PrimeVueSelect
+            v-if="hasManageStaffMemberPermission"
             v-model="report_queryParams.staff_ids"
             :options="staff_lists_options"
             option-label="label"

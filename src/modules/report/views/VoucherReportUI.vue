@@ -84,6 +84,7 @@ onMounted(async () => {
       :first="(page - 1) * limit"
       :rows-per-page="limit"
       :total-records="formattedDataTable().length"
+      :is-using-filter="false"
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-custom-filter
