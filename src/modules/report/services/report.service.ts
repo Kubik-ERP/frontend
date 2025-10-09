@@ -268,11 +268,13 @@ export const useReportService = (): IReportProvided => {
   const rbac = useRbac();
   const hasAccessAllStorePermission = rbac.hasPermission('access_all_store');
   const hasStoreManagementPermission = rbac.hasPermission('store_management');
+  const hasManageStaffMemberPermission = rbac.hasPermission('manage_staff_member');
 
   return {
     // rbac
     hasAccessAllStorePermission,
     hasStoreManagementPermission,
+    hasManageStaffMemberPermission,
     // constants
     financialReport_profitAndLost_columns: FINANCIALREPORT_PROFITANDLOST_COLUMNS,
     financialReport_discount_columns: FINANCIALREPORT_DISCOUNT_COLUMNS,
