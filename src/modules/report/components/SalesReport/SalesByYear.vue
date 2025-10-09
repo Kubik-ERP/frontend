@@ -136,7 +136,7 @@ const onChangePage = (newPage: number) => {
             class="col-span-1 xl:col-span-2 2xl:col-span-1"
             @update:end-date="report_getSalesReport('year')"
           />
-          <PrimeVueSelect
+         <PrimeVueSelect
             v-if="hasAccessAllStorePermission"
             v-model="report_queryParams.store_ids"
             :options="outlet_lists_options"
