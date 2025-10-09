@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// components
-import CustomDatePicker from '../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../services/report.service';
 const {
@@ -8,6 +6,7 @@ const {
   report_queryParams,
   report_getCustomerReport,
   customerReport_values,
+  outlet_lists_options,
   findOutletDetail,
   findStaffDetail,
   hasAccessAllStorePermission,
@@ -116,14 +115,22 @@ onMounted(async () => {
       </template>
 
       <template #filter>
-        <section class="flex items-center pt-4">
-          <CustomDatePicker
-            v-model:start-date="report_queryParams.startDate"
-            v-model:end-date="report_queryParams.endDate"
-            :should-update-type="false"
-            class="max-w-96"
-            @update:end-date="report_getCustomerReport()"
-          />
+        <section class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4 pt-4">
+          <PrimeVueSelect
+            v-if="hasAccessAllStorePermission"
+            v-model="report_queryParams.store_ids"
+            :options="outlet_lists_options"
+            option-label="label"
+            option-value="value"
+            placeholder="Select Outlet"
+            filter
+            class="col-span-1 w-full"
+            @change="report_getCustomerReport()"
+          >
+            <template #dropdownicon>
+              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+            </template>
+          </PrimeVueSelect>
         </section>
       </template>
     </AppBaseDataTable>

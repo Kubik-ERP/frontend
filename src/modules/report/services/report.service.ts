@@ -241,9 +241,13 @@ export const useReportService = (): IReportProvided => {
 
   const report_getCustomerReport = async () => {
     try {
-      await store.getCustomerReport(formatQueryParamsDate(report_queryParams), {
-        ...httpAbort_registerAbort('CUSTOMERREPORT_REQUEST'),
-      });
+      Promise.all([
+        fetchOutlet_lists(),
+        // fetchStaff_lists(),
+        await store.getCustomerReport(formatQueryParamsDate(report_queryParams), {
+          ...httpAbort_registerAbort('CUSTOMERREPORT_REQUEST'),
+        }),
+      ]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error);
