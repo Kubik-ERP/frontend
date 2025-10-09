@@ -7,6 +7,7 @@ const {
   financialReport_profitAndLost_columns,
   report_queryParams,
   report_getFinancialReport,
+  hasManageStaffMemberPermission,
   report_profitAndLost_values,
   outlet_lists_options,
   staff_lists_options,
@@ -97,10 +98,6 @@ const formattedDataTable = () => {
 </script>
 <template>
   <section>
-    <!-- <pre class="p-4 my-4 bg-gray-100 rounded-lg break-all" style="white-space: pre-wrap; word-wrap: break-word">
-      {{ report_profitAndLost_values }}
-      {{ outlet_lists_values }}
-    </pre> -->
     <AppBaseDataTable
       :data="formattedDataTable()"
       :columns="financialReport_profitAndLost_columns"
@@ -167,6 +164,7 @@ const formattedDataTable = () => {
             </template>
           </PrimeVueSelect>
           <PrimeVueSelect
+            v-if="hasManageStaffMemberPermission"
             v-model="report_queryParams.staff_ids"
             :options="staff_lists_options"
             option-label="label"

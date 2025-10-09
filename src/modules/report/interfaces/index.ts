@@ -90,6 +90,8 @@ export interface IReportStore {
 export interface IReportProvided {
   hasAccessAllStorePermission: boolean;
   hasStoreManagementPermission: boolean;
+  hasManageStaffMemberPermission: boolean;
+  // columns
   financialReport_profitAndLost_columns: IColumnDataTable[];
   financialReport_discount_columns: IColumnDataTable[];
   financialReport_paymentMethod_columns: IColumnDataTable[];
