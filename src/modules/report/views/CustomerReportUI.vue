@@ -53,7 +53,7 @@ const formattedDataTable = () => {
     gender: useTitleCaseWithSpaces(item.gender || '') || '-',
     totalSales: useCurrencyFormat({ data: item.totalSales }),
     dateAdded: useFormatDate(item.dateAdded, 'dd/MMM/yyyy'),
-    outstanding: useCurrencyFormat({ data: item.outstanding || 0, hidePrefix: true }),
+    outstanding: useCurrencyFormat({ data: item.outstanding || 0 }),
     loyaltyPoints: useCurrencyFormat({ data: item.loyaltyPoints || 0, hidePrefix: true }),
   }));
 
