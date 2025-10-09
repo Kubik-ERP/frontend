@@ -172,6 +172,27 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
       }
     },
 
+    async loyaltyPointBenefit_deleteBenefit(
+      id: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.loyaltyPointBenefit_isLoading = true;
+      try {
+        const response = await httpClient.delete(`${LOYALTY_POINT_BENEFIT_BASE_ENDPOINT}/${id}`, {
+          ...requestConfigurations,
+        });
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.loyaltyPointBenefit_isLoading = false;
+      }
+    },
+
     async loyaltyPointBenefit_fetchProductList(
       params: IProductListRequestQuery,
       requestConfigurations: AxiosRequestConfig,
@@ -249,6 +270,24 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
       }
     },
 
+    async loyaltyBenefit_deleteFreeItems(id: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+      this.loyaltyPointBenefit_isLoading = true;
+      try {
+        const response = await httpClient.delete(`${LOYALTY_POINT_BENEFIT_BASE_ENDPOINT}/${id}`, {
+          ...requestConfigurations,
+        });
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.loyaltyPointBenefit_isLoading = false;
+      }
+    },
+
     async loyaltySettings_fetchDetails(requestConfigurations: AxiosRequestConfig): Promise<unknown> {
       this.loyaltyPointBenefit_isLoading = true;
       try {
@@ -280,6 +319,29 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
           },
         );
         this.loyaltyPointSettingsProduct_value = response.data.data;
+        console.log(this.loyaltyPointSettingsProduct_value);
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.productList_isLoading = false;
+      }
+    },
+
+    async loyaltySettings_deleteProductList(
+      id: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.productList_isLoading = true;
+      try {
+        const response = await httpClient.delete(
+          `${LOYALTY_POINT_SETTINGS_BASE_ENDPOINT}/${this.loyaltyPointSettings_value.id}/product/${id}`,
+          requestConfigurations,
+        );
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
