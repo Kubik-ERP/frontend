@@ -36,6 +36,8 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
     type: 'TOTAL_ITEMS',
     price: 0,
     grandTotal: 0,
+    imagePreview: '',
+    imageFile: undefined,
   });
 
   const productBundling_formRules = computed(() => ({

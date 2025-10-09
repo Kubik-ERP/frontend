@@ -7,6 +7,8 @@ export interface IProductBundlingCreateEditFormData {
   type: string;
   price: number;
   grandTotal: number;
+  imagePreview?: string;
+  imageFile?: File;
 }
 
 export type IProduct = {
