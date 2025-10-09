@@ -6,6 +6,7 @@ import type {
   IProductListRequestQuery,
   IProductListResponse,
   IProductBundlingPayload,
+//   IProductBundling,
 } from '../interfaces';
 import type { AxiosRequestConfig } from 'axios';
 // Plugins
@@ -87,7 +88,7 @@ export const useProductBundlingStore = defineStore('product-bundling', {
         } else {
           return Promise.reject(new Error(String(error)));
         }
-      }finally {
+      } finally {
         this.productBundling_isLoading = false;
       }
     },

@@ -125,6 +125,17 @@ const wrapperClass = computed(() => {
               discountPrice: bundle.price,
               pictureUrl: '',
               isPercent: false,
+              discount: bundle.discount,
+              type: 'bundling',
+              products:
+                bundle.products?.map(p => ({
+                  product_id: p.product_id ?? 0,
+                  quantity: p.quantity ?? 0,
+                  name: p.product_name ?? '',
+                  price: p.product_price ?? 0,
+                })) ?? [],
+              description: bundle.description,
+              bundlingType: bundle.type,
               barcode: `BUNDLE-${bundle.id}`,
               variant: [],
             }"

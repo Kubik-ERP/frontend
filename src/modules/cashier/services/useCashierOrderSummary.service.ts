@@ -356,7 +356,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         debouncedCalculateEstimation();
         await getVoucherActive(
           cashierOrderSummary_modalVoucher.value.search,
-          cashierProduct_selectedProduct.value.map(p => p.productId),
+          cashierProduct_selectedProduct.value.map(p => p.productId ?? p.bundlingId ?? ''),
         );
       }
 
@@ -599,7 +599,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       if (!recalculating) {
         await getVoucherActive(
           cashierOrderSummary_modalVoucher.value.search,
-          cashierProduct_selectedProduct.value.map(p => p.productId),
+          cashierProduct_selectedProduct.value.map(p => p.productId ?? p.bundlingId ?? ''),
         );
 
         const availableVouchers = voucherData.value.filter(v => v.available);
@@ -996,6 +996,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
             variantId: item.variant?.id || '',
             quantity: item.qty,
             notes: item.notes,
+            type: 'product',
           };
         });
       } else {

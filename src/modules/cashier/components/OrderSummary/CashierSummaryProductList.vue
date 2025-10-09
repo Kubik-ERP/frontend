@@ -44,25 +44,25 @@ const showImageUrl = (picture: string | null) => {
         <div class="col-span-6 xl:col-span-7 flex flex-col gap-4">
           <div class="flex gap-4">
             <AppBaseImage
-              :src="showImageUrl(item.product.pictureUrl)"
+              :src="item.product?.pictureUrl == null ? null : showImageUrl(item.product?.pictureUrl)"
               alt="product"
               class="w-10 h-10 object-cover"
             />
 
             <div class="flex flex-col">
-              <span class="text-sm font-semibold">{{ item.product.name }}</span>
+              <span class="text-sm font-semibold">{{ item.product?.name }}</span>
               <div class="flex flex-col w-fit">
                 <span class="text-xs">{{
                   useCurrencyFormat({
-                    data: item.product.discountPrice ?? item.product.price,
+                    data: item.product?.discountPrice ?? item.product?.price ?? 0,
                   })
                 }}</span>
                 <span
-                  v-if="item.product.discountPrice && item.product.discountPrice < item.product.price"
+                  v-if="item.product?.discountPrice && item.product?.discountPrice < item.product?.price"
                   class="text-text-disabled text-[10px] line-through text-right"
                   >{{
                     useCurrencyFormat({
-                      data: item.product.price,
+                      data: item.product?.price,
                     })
                   }}</span
                 >

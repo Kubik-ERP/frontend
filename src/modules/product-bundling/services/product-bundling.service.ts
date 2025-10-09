@@ -60,9 +60,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
     } else if (productBundling_formData.type === 'DISCOUNT') {
       productBundling_grandTotal.value = productBundling_formData.products.reduce(
         (total, item) =>
-          total +
-          item.price * item.quantity -
-          (item.price * item.quantity * productBundling_formData.price) / 100,
+          total + item.price * item.quantity - (item.price * item.quantity * productBundling_formData.price) / 100,
         0,
       );
     }
@@ -123,6 +121,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
   const productBundling_queryParams = reactive<IProductBundlingListRequestQuery>({
     page: 1,
     limit: 10,
+    search: '',
   });
 
   const productBundling_onChangePage = (page: number): void => {
@@ -131,6 +130,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
 
   const productBundling_fetchProductBundlingList = async (): Promise<void> => {
     try {
+      console.log('productBundling_queryParams:', productBundling_queryParams);
       await store.productBundling_fetchProductBundlingList(productBundling_queryParams, {
         ...httpAbort_registerAbort('LOYALTY_POINT_BENEFIT_PRODUCT_LIST'),
       });
@@ -401,5 +401,6 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
     // function
     setPricingType,
     calculateTotalPrice,
+    productBundling_queryParams,
   };
 };
