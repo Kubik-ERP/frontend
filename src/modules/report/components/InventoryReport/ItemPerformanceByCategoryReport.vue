@@ -12,6 +12,8 @@ const {
   staff_lists_options,
   findOutletDetail,
   findStaffDetail,
+  hasAccessAllStorePermission,
+  outlet_currentOutlet,
 } = useReportService();
 
 // composables for export pdf
@@ -43,8 +45,12 @@ const onChangePage = (newPage: number) => {
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Inventory Report - Item Performance By Category Report',
-    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
-    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    storeName: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      : outlet_currentOutlet.value!.name,
+    storeAddress: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: inventoryReport_itemPerformanceByCategory_columns,
@@ -54,8 +60,12 @@ const handleExportToPdf = () => {
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Inventory Report - Item Performance By Category Report',
-    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
-    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    storeName: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      : outlet_currentOutlet.value!.name,
+    storeAddress: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: inventoryReport_itemPerformanceByCategory_columns,
@@ -123,6 +133,7 @@ const handleExportToCsv = () => {
             @update:end-date="report_getInventoryReport('item-performance-by-category')"
           />
           <PrimeVueSelect
+            v-if="hasAccessAllStorePermission"
             v-model="report_queryParams.store_ids"
             :options="outlet_lists_options"
             option-label="label"

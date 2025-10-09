@@ -88,6 +88,8 @@ export interface IReportStore {
 }
 
 export interface IReportProvided {
+  hasAccessAllStorePermission: boolean;
+  hasStoreManagementPermission: boolean;
   financialReport_profitAndLost_columns: IColumnDataTable[];
   financialReport_discount_columns: IColumnDataTable[];
   financialReport_paymentMethod_columns: IColumnDataTable[];
@@ -149,4 +151,6 @@ export interface IReportProvided {
   // staff_list
   staff_lists_options: globalThis.Ref<IStaffMemberListOptions[]>;
   findStaffDetail: (id: string) => IStaffMember | null | undefined;
+  // misc
+  outlet_currentOutlet: globalThis.Ref<IOutlet | null>;
 }
