@@ -47,7 +47,7 @@ const {
         @click="cashierOrderSummary_handleSaveUnpaidOrder()"
       >
         <section class="flex gap-2 justify-center w-full items-center">
-          <AppBaseSvg name="order-primary" class="!h-5 !w-5" />
+          <AppBaseSvg name="order-primary" class="h-5 w-5 tinted-by-css" />
           <span class="font-semibold text-primary truncate">{{
             useLocalization('cashier.mainSection.saveUnpaidOrder')
           }}</span>

@@ -38,7 +38,7 @@ const voucherPermission = rbac.hasPermission('voucher');
 
 <template>
   <section id="cashier-summary-promo-payment" class="border-b-2 border-b-grayscale-10 p-2">
-    <div class="flex flex-col lg:flex-row w-full p-2 gap-4 bg-primary-background">
+    <div class="flex flex-col lg:flex-row w-full gap-4">
       <PrimeVueButton
         v-if="voucherPermission"
         class="w-full lg:w-1/2 py-2 border border-primary-border text-primary "
@@ -50,7 +50,7 @@ const voucherPermission = rbac.hasPermission('voucher');
         <template #default>
           <section class="flex justify-between px-5 w-full items-center">
             <div v-if="cashierOrderSummary_modalVoucher.form.voucher_code" class="flex gap-2 items-center">
-              <AppBaseSvg name="tag" class="!h-5 !w-5" />
+              <AppBaseSvg name="tag" class="h-5 w-5 tinted-by-css" />
 
               <span class="font-semibold text-sm truncate">
                 {{ selectedVoucherLabel }}
@@ -61,7 +61,7 @@ const voucherPermission = rbac.hasPermission('voucher');
                 {{ useLocalization('cashier.orderSummary.promoVoucher') }}
               </span>
 
-              <AppBaseSvg name="voucher" class="!h-5 !w-5" />
+              <AppBaseSvg name="voucher" class="h-5 w-5 tinted-by-css" />
             </div>
           </section>
         </template>
@@ -79,7 +79,7 @@ const voucherPermission = rbac.hasPermission('voucher');
               v-if="cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod"
               class="flex gap-2 items-center"
             >
-              <AppBaseSvg :name="selectedPaymentIcon" class="!h-5 !w-5" />
+              <AppBaseSvg :name="selectedPaymentIcon" class="h-5 w-5 tinted-by-css" />
 
               <span class="font-semibold text-sm truncate">
                 {{ selectedPaymentName }}

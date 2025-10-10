@@ -103,7 +103,7 @@ const showImageUrl = (picture: string | null) => {
                 cashierOrderSummary_modalAddEditNotes.tempValue = item.notes;
               "
             >
-              <AppBaseSvg name="add-notes" class="h-4 w-4" />
+              <AppBaseSvg name="add-notes" class="h-4 w-4 tinted-by-css" />
 
               <span class="font-semibold text-primary text-sm">{{
                 item.notes ? useLocalization('cashier.edit') : useLocalization('cashier.mainSection.addNotes')
