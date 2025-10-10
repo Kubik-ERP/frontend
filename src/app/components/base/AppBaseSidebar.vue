@@ -210,7 +210,7 @@ const handleLogout = async () => {
         :class="[isCollapsed && !isCurrentlyMobile ? 'justify-center' : 'gap-2']"
         @click="() => $router.push({ name: 'outlet.list' })"
       >
-        <AppBaseSvg name="store" class="!w-5 !h-5 flex-shrink-0" />
+        <AppBaseSvg name="store" class="!w-5 !h-5 flex-shrink-0 tinted-by-css" />
         <section
           v-show="!isCollapsed || isCurrentlyMobile"
           id="outlet-information"
@@ -263,8 +263,8 @@ const handleLogout = async () => {
                   >
                     <AppBaseSvg
                       :name="menu.iconName"
-                      class="!w-5 !h-5"
-                      :class="[isAnySubMenuActive(menu) ? 'filter-white' : '']"
+                      class="w-5 h-5"
+                      :class="[isAnySubMenuActive(menu) ? 'filter-white' : 'tinted-by-css']"
                     />
                     <span
                       class="font-normal text-base whitespace-nowrap"
@@ -291,7 +291,7 @@ const handleLogout = async () => {
                       <RouterLink
                         v-ripple
                         :to="subMenu.path"
-                        class="inline-block w-full h-fit bg-grayscale-10 px-1"
+                        class="inline-block w-full h-fit bg-grayscale-10"
                         :class="[subMenuIndex === menu.subMenus.length - 1 ? 'pb-1' : '']"
                       >
                         <div
@@ -320,8 +320,8 @@ const handleLogout = async () => {
                   >
                     <AppBaseSvg
                       :name="menu.iconName"
-                      class="!w-5 !h-5"
-                      :class="[isAnySubMenuActive(menu) ? 'filter-white' : '']"
+                      class="w-5 h-5"
+                      :class="[isAnySubMenuActive(menu) ? 'filter-white' : 'tinted-by-css']"
                     />
                   </div>
                 </template>
@@ -346,8 +346,8 @@ const handleLogout = async () => {
                   >
                     <AppBaseSvg
                       :name="menu.iconName"
-                      class="!w-5 !h-5 flex-shrink-0"
-                      :class="[route.path === menu.path ? 'filter-white' : '']"
+                      class="w-5 h-5 flex-shrink-0"
+                      :class="[route.path === menu.path ? 'filter-white' : 'tinted-by-css']"
                     />
                     <p
                       v-show="!isCollapsed || isCurrentlyMobile"

@@ -220,3 +220,8 @@ span.p-datatable-column-title {
   -ms-overflow-style: none; /* IE dan Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+/* aproksimasi warna #F3631D lewat chain filter (nilai perkiraan) */
+.tinted-by-css {
+  filter: invert(48%) sepia(64%) saturate(530%) hue-rotate(333deg) brightness(94%) contrast(95%);
+}
