@@ -105,7 +105,11 @@ const {
         </PrimeVueButton>
 
         <PrimeVuePopover
-            :ref="el => popovers.value[`popover-${data.id}`] = el"
+            :ref="
+            (el: unknown) => {
+              if (el) popovers[`popover-${data.id}`] = el;
+            }
+          "
             :pt="{
               content: 'p-0',
             }"
@@ -118,7 +122,7 @@ const {
               >
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
-                    <AppBaseSvg name="detail" class="w-4 h-4" />
+                    <AppBaseSvg name="eye-visible" class="w-4 h-4" />
                     <span class="font-normal text-sm text-text-primary">Detail</span>
                   </section>
                 </template>
