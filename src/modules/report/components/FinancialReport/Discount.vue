@@ -4,14 +4,18 @@ import CustomDatePicker from '../../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../../services/report.service';
 const {
+
   financialReport_discount_columns,
   report_queryParams,
   report_getFinancialReport,
+hasManageStaffMemberPermission,
   report_discount_values,
   outlet_lists_options,
   staff_lists_options,
   findOutletDetail,
   findStaffDetail,
+  hasAccessAllStorePermission,
+  outlet_currentOutlet,
 } = useReportService();
 
 // composables for export pdf
@@ -41,8 +45,12 @@ const onChangePage = (newPage: number) => {
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Financial Report - Discount Report',
-    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
-    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    storeName: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      : outlet_currentOutlet.value!.name,
+    storeAddress: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_discount_columns,
@@ -52,8 +60,12 @@ const handleExportToPdf = () => {
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Financial Report - Discount Report',
-    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
-    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    storeName: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      : outlet_currentOutlet.value!.name,
+    storeAddress: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_discount_columns,
@@ -157,6 +169,7 @@ const handleExportToCsv = () => {
             @update:end-date="report_getFinancialReport('discount-summary')"
           />
           <PrimeVueSelect
+            v-if="hasAccessAllStorePermission"
             v-model="report_queryParams.store_ids"
             :options="outlet_lists_options"
             option-label="label"
@@ -171,6 +184,7 @@ const handleExportToCsv = () => {
             </template>
           </PrimeVueSelect>
           <PrimeVueSelect
+            v-if="hasManageStaffMemberPermission"
             v-model="report_queryParams.staff_ids"
             :options="staff_lists_options"
             option-label="label"

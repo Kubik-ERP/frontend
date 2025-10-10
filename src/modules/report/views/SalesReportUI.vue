@@ -11,51 +11,63 @@ import SalesByYear from '../components/SalesReport/SalesByYear.vue';
 
 // service
 import { useReportService } from '../services/report.service';
-const { report_getSalesReport } = useReportService();
+const { report_getSalesReport, hasManageStaffMemberPermission } = useReportService();
 
 const salesReport_activeTab = ref<string>('item');
-const salesReport_listTabs = ref<ITabs[]>([
-  {
-    component: markRaw(SalesByItem),
-    label: 'Item',
-    value: 'item',
-  },
-  {
-    component: markRaw(SalesByCategory),
-    label: 'Category',
-    value: 'category',
-  },
-  {
-    component: markRaw(SalesByCustomer),
-    label: 'Customer',
-    value: 'customer',
-  },
-  {
-    component: markRaw(SalesByStaff),
-    label: 'Staff',
-    value: 'staff',
-  },
-  {
-    component: markRaw(SalesByDay),
-    label: 'Day',
-    value: 'day',
-  },
-  {
-    component: markRaw(SalesByMonth),
-    label: 'Month',
-    value: 'month',
-  },
-  {
-    component: markRaw(SalesByQuarter),
-    label: 'Quarter',
-    value: 'quarter',
-  },
-  {
-    component: markRaw(SalesByYear),
-    label: 'Year',
-    value: 'year',
-  },
-]);
+const salesReport_listTabs = computed(() => {
+  const allTabs = [
+    {
+      component: markRaw(SalesByItem),
+      label: 'Item',
+      value: 'item',
+    },
+    {
+      component: markRaw(SalesByCategory),
+      label: 'Category',
+      value: 'category',
+    },
+    {
+      component: markRaw(SalesByCustomer),
+      label: 'Customer',
+      value: 'customer',
+    },
+    {
+      component: markRaw(SalesByStaff),
+      label: 'Staff',
+      value: 'staff',
+    },
+    {
+      component: markRaw(SalesByDay),
+      label: 'Day',
+      value: 'day',
+    },
+    {
+      component: markRaw(SalesByMonth),
+      label: 'Month',
+      value: 'month',
+    },
+    {
+      component: markRaw(SalesByQuarter),
+      label: 'Quarter',
+      value: 'quarter',
+    },
+    {
+      component: markRaw(SalesByYear),
+      label: 'Year',
+      value: 'year',
+    },
+  ];
+
+  // 4. Filter array berdasarkan izin
+  return allTabs.filter(tab => {
+    // Jika tab adalah 'staff', hanya sertakan jika pengguna memiliki izin.
+    if (tab.value === 'staff') {
+      return hasManageStaffMemberPermission;
+    }
+    // Untuk semua tab lainnya, selalu sertakan.
+    return true;
+  });
+});
 
 watch(
   salesReport_activeTab,
