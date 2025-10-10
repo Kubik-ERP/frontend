@@ -105,7 +105,7 @@ const {
         </PrimeVueButton>
 
         <PrimeVuePopover
-            ref="popover"
+            :ref="el => popovers.value[`popover-${data.id}`] = el"
             :pt="{
               content: 'p-0',
             }"
