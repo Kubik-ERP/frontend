@@ -98,6 +98,7 @@ export const useCashierProductService = (): ICashierProductProvided => {
 
             if (selectedCategoryId == 'bundle') {
                 cashierProduct_productState.value.listProductCategory = [];
+                productBundling_queryParams.search = cashierProduct_productState.value.searchProduct;
                 return;
             }
 

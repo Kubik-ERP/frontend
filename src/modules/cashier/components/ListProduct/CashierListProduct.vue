@@ -123,7 +123,7 @@ const wrapperClass = computed(() => {
               name: bundle.name,
               price: bundle.price,
               discountPrice: bundle.price,
-              pictureUrl: '',
+              pictureUrl: bundle.picture_url ?? '',
               isPercent: false,
               discount: bundle.discount,
               type: 'bundling',

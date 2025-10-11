@@ -168,6 +168,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
           type: productBundling_formData.type,
           price: null,
           discount: null,
+          imageFile: productBundling_formData.imageFile,
         };
       } else {
         payload = {
@@ -178,6 +179,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
           type: 'CUSTOM',
           price: productBundling_formData.price,
           discount: null,
+          imageFile: productBundling_formData.imageFile,
         };
       }
     } else if (productBundling_formData.type === 'DISCOUNT') {
@@ -189,6 +191,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
         type: productBundling_formData.type,
         price: null,
         discount: productBundling_formData.price,
+        imageFile: productBundling_formData.imageFile,
       };
     }
     // else if (productBundling_formData.type === 'CUSTOM') {
@@ -211,6 +214,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
         type: '',
         price: null,
         discount: null,
+        imageFile: undefined,
       };
     }
     return payload;
@@ -334,7 +338,10 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
           price: p.product_price,
           discountPrice: p.product_discount_price,
         })) || [];
-
+      const pictureUrl = data.picture_url
+        ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${data.picture_url}`
+        : 'https://placehold.co/250';
+      productBundling_formData.imagePreview = pictureUrl;
       // calculateTotalPrice();
     } catch (error: unknown) {
       if (error instanceof Error) {

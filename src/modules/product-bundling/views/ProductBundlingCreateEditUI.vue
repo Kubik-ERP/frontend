@@ -93,7 +93,7 @@ const onResetButtonClick = () => {
   );
 };
 
-const handleImageUpload = (event: { target: { files: any[] } }) => {
+const handleImageUpload = (event) => {
   const file = event.target.files?.[0];
   if (file) {
     productBundling_formData.imageFile = file; // ✅ Save the file

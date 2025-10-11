@@ -58,6 +58,7 @@ export type IProductBundling = {
     product_name?: string;
     product_price?: number;
   }[];
+  picture_url?: string;
 };
 
 export type IProductBundlingList = {
@@ -97,6 +98,7 @@ export interface IProductBundlingPayload {
     productId: string;
     quantity: number;
   }[];
+  imageFile?: File;
 }
 
 export interface IProductBundlingStore {
@@ -123,6 +125,7 @@ export interface IProductBundlingDetailsResponse {
     product_discount_price: number;
     quantity: number;
   }[];
+  picture_url?: string;
 }
 
 export interface IProductBundlingProvided {
