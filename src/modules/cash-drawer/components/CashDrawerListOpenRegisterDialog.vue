@@ -86,14 +86,14 @@ const staffDisplayName = computed(() => {
             <PrimeVueChip
               v-for="suggestionPrice in cashDrawerList_suggestionRegisterBalance"
               :key="suggestionPrice"
-              class="bg-secondary-background cursor-pointer hover:bg-secondary basic-smooth-animation"
+              class="bg-primary cursor-pointer hover:bg-secondary basic-smooth-animation"
               @click="cashDrawerList_formDataOfOpenRegister.balance = suggestionPrice"
             >
               <template #default>
                 <div class="flex items-center gap-2">
-                  <AppBaseSvg name="plus-line" class="!w-[10px] !h-[10px]" />
+                  <AppBaseSvg name="plus-line" class="w-3 h-3 filter-white-color" />
 
-                  <span class="font-semibold text-green-primary text-xs">
+                  <span class="font-semibold text-white text-xs">
                     {{
                       useCurrencyFormat({
                         data: suggestionPrice,

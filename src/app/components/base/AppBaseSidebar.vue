@@ -210,7 +210,7 @@ const handleLogout = async () => {
         :class="[isCollapsed && !isCurrentlyMobile ? 'justify-center' : 'gap-2']"
         @click="() => $router.push({ name: 'outlet.list' })"
       >
-        <AppBaseSvg name="store" class="!w-5 !h-5 flex-shrink-0 tinted-by-css" />
+        <AppBaseSvg name="store" class="!w-5 !h-5 flex-shrink-0 filter-primary-color" />
         <section
           v-show="!isCollapsed || isCurrentlyMobile"
           id="outlet-information"
@@ -264,7 +264,7 @@ const handleLogout = async () => {
                     <AppBaseSvg
                       :name="menu.iconName"
                       class="w-5 h-5"
-                      :class="[isAnySubMenuActive(menu) ? 'filter-white' : 'tinted-by-css']"
+                      :class="[isAnySubMenuActive(menu) ? 'filter-white' : 'filter-primary-color']"
                     />
                     <span
                       class="font-normal text-base whitespace-nowrap"
@@ -321,7 +321,7 @@ const handleLogout = async () => {
                     <AppBaseSvg
                       :name="menu.iconName"
                       class="w-5 h-5"
-                      :class="[isAnySubMenuActive(menu) ? 'filter-white' : 'tinted-by-css']"
+                      :class="[isAnySubMenuActive(menu) ? 'filter-white' : 'filter-primary-color']"
                     />
                   </div>
                 </template>
@@ -347,7 +347,7 @@ const handleLogout = async () => {
                     <AppBaseSvg
                       :name="menu.iconName"
                       class="w-5 h-5 flex-shrink-0"
-                      :class="[route.path === menu.path ? 'filter-white' : 'tinted-by-css']"
+                      :class="[route.path === menu.path ? 'filter-white' : 'filter-primary-color']"
                     />
                     <p
                       v-show="!isCollapsed || isCurrentlyMobile"
