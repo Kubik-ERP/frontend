@@ -30,7 +30,7 @@ const { cashierProduct_selectedView } = inject<ICashierProductProvided>('cashier
       v-for="item in listView"
       :key="item"
       class="!h-6 !w-6 cursor-pointer hover:opacity-90 active:opacity-75"
-      :class="cashierProduct_selectedView === item.value ? 'tinted-by-css' : ''"
+      :class="cashierProduct_selectedView === item.value ? 'filter-primary-color' : ''"
       :name="cashierProduct_selectedView === item.value ? item.name + '-active' : item.name"
       @click="cashierProduct_selectedView = item.value"
     />

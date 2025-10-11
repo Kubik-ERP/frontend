@@ -59,7 +59,7 @@ const retailInventoryColumns = computed(() => [
     <AppBaseDialog id="cashier-stock-overview-dialog">
       <template #header>
         <header class="flex items-center gap-2">
-          <AppBaseSvg name="inventory" class="w-6 h-6" />
+          <AppBaseSvg name="inventory" class="w-6 h-6 filter-primary-color" />
           <h5 class="font-semibold text-black text-lg">Current Stock Overview</h5>
         </header>
       </template>
@@ -86,7 +86,7 @@ const retailInventoryColumns = computed(() => [
             <!-- Refresh Button -->
             <PrimeVueButton
               :loading="inventoryItems_isLoading"
-              class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-hover"
+              class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary basic-smooth-animation"
               @click="handleRefreshStockData"
             >
               <!-- <AppBaseSvg name="refresh" class="w-4 h-4" color="white" /> -->

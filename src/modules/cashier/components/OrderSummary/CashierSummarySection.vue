@@ -146,7 +146,7 @@ const {
     <div v-else>
       <div class="flex gap-2 mb-2">
         <div class="flex items-center gap-1">
-          <AppBaseSvg name="order-primary" class="h-4 w-4 text-primary tinted-by-css" />
+          <AppBaseSvg name="order-primary" class="h-4 w-4 text-primary filter-primary-color" />
 
           <span class="text-primary text-sm font-semibold">
             {{
@@ -158,7 +158,7 @@ const {
         </div>
 
         <div v-if="hasCustomerManagementPermission" class="flex items-center gap-1 ">
-          <AppBaseSvg name="table-primary" class="h-4 w-4 text-primary tinted-by-css" />
+          <AppBaseSvg name="table-primary" class="h-4 w-4 text-primary filter-primary-color" />
 
           <span
             v-if="cashierOrderSummary_modalSelectTable.selectedTable.length > 0"
@@ -176,7 +176,7 @@ const {
         <div class="absolute top-full rounded-full p-1 bg-white -translate-y-1/2 px-1">
           <AppBaseSvg
             :name="cashierOrderSummary_data.isExpanded ? 'chevron-up' : 'chevron-down'"
-            class="h-4 w-4 tinted-by-css"
+            class="h-4 w-4 filter-primary-color"
           />
         </div>
       </div>

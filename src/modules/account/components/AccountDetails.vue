@@ -16,7 +16,7 @@ const { account_profile } = inject<IAccountProvided>('account')!;
       </h6>
 
       <router-link id="edit-profile" :to="{ name: 'account.edit' }" class="flex items-center gap-2">
-        <AppBaseSvg name="edit" class="w-4 h-4" />
+        <AppBaseSvg name="edit" class="w-4 h-4 filter-primary-color" />
 
         <span class="font-semibold text-primary text-sm">
           {{ useLocalization('app.edit-profile') }}
@@ -81,7 +81,7 @@ const { account_profile } = inject<IAccountProvided>('account')!;
           >
             <template #default>
               <section class="cash-out-button flex items-center gap-2">
-                <AppBaseSvg name="password" class="w-4 h-4" />
+                <AppBaseSvg name="password" class="w-4 h-4 filter-primary-color" />
                 <span class="font-semibold text-sm text-primary">{{
                   useLocalization('account.reset-password')
                 }}</span>

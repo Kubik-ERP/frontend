@@ -38,7 +38,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
           >
             <template #default>
               <section id="content" class="flex items-center gap-2">
-                <AppBaseSvg name="chevron-left" class="w-4 h-4 cursor-pointer tinted-by-css" />
+                <AppBaseSvg name="chevron-left" class="w-4 h-4 cursor-pointer filter-primary-color" />
               </section>
             </template>
           </PrimeVueButton>
@@ -60,7 +60,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
               <section id="content" class="flex items-center gap-2 w-full">
                 <AppBaseSvg
                   :name="cashierOrderSummary_isShowQuickOverview ? 'eye-invisible-primary' : 'eye-visible-primary'"
-                  class="w-5 h-5 tinted-by-css"
+                  class="w-5 h-5 filter-primary-color"
                 />
                 <span class="font-semibold text-sm text-primary">
                   {{ cashierOrderSummary_isShowQuickOverview ? 'Hide' : 'Show' }} Quick Overview
@@ -83,7 +83,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
         >
           <header class="flex items-center justify-between">
             <section id="left-content" class="flex items-center gap-2">
-              <AppBaseSvg name="customer-queue" class="w-5 h-5 tinted-by-css" />
+              <AppBaseSvg name="customer-queue" class="w-5 h-5 filter-primary-color" />
               <span class="font-semibold text-sm text-grayscale-70"> Customer Queue </span>
             </section>
 
@@ -96,7 +96,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
                     <span class="font-semibold text-xs text-primary">View All</span>
-                    <AppBaseSvg name="arrow-right" class="w-4 h-4 tinted-by-css" />
+                    <AppBaseSvg name="arrow-right" class="w-4 h-4 filter-primary-color" />
                   </section>
                 </template>
               </PrimeVueButton>
@@ -119,7 +119,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
         >
           <header class="flex items-center justify-between">
             <section id="left-content" class="flex items-center gap-2">
-              <AppBaseSvg name="cashier" class="w-5 h-5 tinted-by-css" />
+              <AppBaseSvg name="cashier" class="w-5 h-5 filter-primary-color" />
               <span class="font-semibold text-sm text-grayscale-70"> Cash Drawer </span>
             </section>
 
@@ -133,7 +133,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
                     <span class="font-semibold text-xs text-primary">View Details</span>
-                    <AppBaseSvg name="arrow-right" class="w-4 h-4 tinted-by-css" />
+                    <AppBaseSvg name="arrow-right" class="w-4 h-4 filter-primary-color" />
                   </section>
                 </template>
               </PrimeVueButton>
@@ -179,7 +179,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
         >
           <header class="flex items-center justify-between">
             <section id="left-content" class="flex items-center gap-2">
-              <AppBaseSvg name="inventory" class="w-5 h-5 tinted-by-css" />
+              <AppBaseSvg name="inventory" class="w-5 h-5 filter-primary-color" />
               <span class="font-semibold text-sm text-grayscale-70"> Current Stock </span>
             </section>
           </header>
@@ -189,7 +189,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
               class="flex items-center gap-2 font-semibold text-primary bg-white border border-solid border-primary py-2 rounded-md text-sm hover:bg-gray-50 w-full"
               @click="cashierOrderSummary_onOpenDialogStockOverview"
             >
-              <AppBaseSvg name="eye-visible" class="w-4 h-4 tinted-by-css" color="primary" />
+              <AppBaseSvg name="eye-visible" class="w-4 h-4 filter-primary-color" color="primary" />
               View Stock Items
             </PrimeVueButton>
           </section>
@@ -202,7 +202,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
         >
           <header class="flex items-center justify-between">
             <section id="left-content" class="flex items-center gap-2">
-              <AppBaseSvg name="table" class="w-5 h-5 tinted-by-css" />
+              <AppBaseSvg name="table" class="w-5 h-5 filter-primary-color" />
               <span class="font-semibold text-sm text-grayscale-70"> Table Summary </span>
             </section>
           </header>
@@ -212,7 +212,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
               class="flex items-center gap-2 font-semibold text-primary bg-white border border-solid border-primary py-2 rounded-md text-sm hover:bg-gray-50 w-full"
               @click="cashierOrderSummary_onOpenDialogTableOverview"
             >
-              <AppBaseSvg name="eye-visible" class="w-4 h-4 tinted-by-css" color="primary" />
+              <AppBaseSvg name="eye-visible" class="w-4 h-4 filter-primary-color" color="primary" />
               View Table Summary
             </PrimeVueButton>
           </section>
