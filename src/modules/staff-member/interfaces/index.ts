@@ -32,6 +32,7 @@ export interface IStaffMember {
   endDate?: Date | null;
   gender?: string | null;
   title?: string | null;
+  userId: number;
   employeesShift: IStaffMemberEmployeesShift[] | [];
   employeesHasSocialMedia: IStaffMemberSocialMedia[] | [];
   productCommissions: productCommissions[];

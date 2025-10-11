@@ -102,7 +102,7 @@ const {
         type="submit"
         :loading="authenticationConnectDevice_isLoading"
         :disabled="authenticationConnectDevice_isLoading"
-        class="bg-blue-primary border-none font-semibold text-base py-3 w-full mt-6"
+        class="bg-primary border-none font-semibold text-base py-3 w-full mt-6"
         label="Connect Device"
       />
     </section>

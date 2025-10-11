@@ -157,9 +157,10 @@
 
 @theme {
   --color-background-success: #edf7ee;
+  --color-black: #070707;
   --color-black-secondary: #434343;
   --color-border-error: #f0afaf;
-  --color-primary: #18618b;
+  --color-primary: #F3631D;
   --color-primary-50: #e5f1f7;
   --color-primary-100: #b8d9e9;
   --color-primary-200: #8ac0da;
@@ -168,18 +169,17 @@
   --color-primary-500: #18618b;
   --color-primary-600: #144e71;
   --color-primary-700: #103b57;
-  --color-blue-primary: #18618b;
   --color-green-primary: #64c9b1;
-  --color-disabled: #8e8e8e;
+  --color-disabled: #9e9e9e;
   --color-error-hover: #981c1c;
   --color-text-action-error: #e57171;
   --color-gray: #434343;
   --color-error-main: #e57171;
   --color-error-background: #fbebeb;
   --color-primary-background: #edf6fc;
-  --color-primary-border: #8cc8eb;
+  --color-primary-border: var(--color-secondary);
   --color-primary-hover: #0f3c56;
-  --color-secondary: #a8e0d3;
+  --color-secondary: #F5AA85;
   --color-secondary-background: #e9f7f4;
   --color-secondary-hover: #2a7866;
   --color-blue-secondary-background: #d6ebf8;
@@ -219,4 +219,9 @@ span.p-datatable-column-title {
 .scrollbar-hidden::-webkit-scrollbar {
   -ms-overflow-style: none; /* IE dan Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+/* aproksimasi warna #F3631D lewat chain filter (nilai perkiraan) */
+.tinted-by-css {
+  filter: invert(48%) sepia(64%) saturate(530%) hue-rotate(333deg) brightness(94%) contrast(95%);
 }

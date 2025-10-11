@@ -34,6 +34,11 @@ export interface IInventoryItemsStockAdjustment {
   notes: string;
   masterInventoryItemsId: string;
   storesId: string;
+  users: {
+    id: string;
+    username: string;
+    email: string;
+  };
   createdAt: string;
   updatedAt: string;
 }

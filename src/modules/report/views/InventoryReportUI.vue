@@ -1,22 +1,52 @@
 <script setup lang="ts">
 // components
-import StockReport from '../components/InventoryReport/StockReport.vue';
-// import StockMovementReport from '../components/InventoryReport/StockMovementReport.vue';
+import MovementLedgerReport from '../components/InventoryReport/MovementLedgerReport.vue';
+import CurrentStockOverviewReport from '../components/InventoryReport/CurrentStockOverviewReport.vue';
+import PoReceivingVarianceReport from '../components/InventoryReport/PoReceivingVarianceReport.vue';
+import SlowDeadStockReport from '../components/InventoryReport/SlowDeadStockReport.vue';
+import ItemPerformanceReport from '../components/InventoryReport/ItemPerformanceReport.vue';
+import ItemPerformanceByCategoryReport from '../components/InventoryReport/ItemPerformanceByCategoryReport.vue';
+import ItemPerformanceByBrandReport from '../components/InventoryReport/ItemPerformanceByBrandReport.vue';
 
 // types
-const inventoryReport_activeTab = ref<string>('stock-report');
-// const inventoryReport_listTabs = ref<ITabs[]>([
-//   {
-//     component: StockReport,
-//     label: 'Stock Report',
-//     value: 'stock-report',
-//   },
-//   {
-//     component: StockMovementReport,
-//     label: 'Stock Movement Report',
-//     value: 'stock-movement-report',
-//   },
-// ]);
+const inventoryReport_activeTab = ref<string>('movement-ledger');
+const inventoryReport_listTabs = ref<ITabs[]>([
+  {
+    component: markRaw(MovementLedgerReport),
+    label: 'Movement Ledger',
+    value: 'movement-ledger',
+  },
+  {
+    component: markRaw(CurrentStockOverviewReport),
+    label: 'Current Stock Overview',
+    value: 'current-stock-overview',
+  },
+  {
+    component: markRaw(PoReceivingVarianceReport),
+    label: 'PO Receiving Variance',
+    value: 'po-receiving-variance',
+  },
+  {
+    component: markRaw(SlowDeadStockReport),
+    label: 'Slow Dead Stock',
+    value: 'slow-dead-stock',
+  },
+  {
+    component: markRaw(ItemPerformanceReport),
+    label: 'Item Performance',
+    value: 'item-performance',
+  },
+  {
+    component: markRaw(ItemPerformanceByCategoryReport),
+    label: 'Item Performance By Category',
+    value: 'item-performance-by-category',
+  },
+  {
+    component: markRaw(ItemPerformanceByBrandReport),
+    label: 'Item Performance By Brand',
+    value: 'item-performance-by-brand',
+  },
+]);
 // service
 import { useReportService } from '../services/report.service';
 const { report_getInventoryReport } = useReportService();
@@ -24,13 +54,33 @@ const { report_getInventoryReport } = useReportService();
 watch(
   inventoryReport_activeTab,
   async newTab => {
-    switch (newTab.toUpperCase()) {
-      case 'STOCK-REPORT': {
-        await report_getInventoryReport('stock');
+    switch (newTab) {
+      case 'movement-ledger': {
+        await report_getInventoryReport('movement-ledger');
         break;
       }
-      case 'STOCK-MOVEMENT-REPORT': {
-        await report_getInventoryReport('movement');
+      case 'current-stock-overview': {
+        await report_getInventoryReport('current-stock-overview');
+        break;
+      }
+      case 'po-receiving-variance': {
+        await report_getInventoryReport('po-receiving-variance');
+        break;
+      }
+      case 'slow-dead-stock': {
+        await report_getInventoryReport('slow-dead-stock');
+        break;
+      }
+      case 'item-performance': {
+        await report_getInventoryReport('item-performance');
+        break;
+      }
+      case 'item-performance-by-category': {
+        await report_getInventoryReport('item-performance-by-category');
+        break;
+      }
+      case 'item-performance-by-brand': {
+        await report_getInventoryReport('item-performance-by-brand');
         break;
       }
       default: {
@@ -45,7 +95,7 @@ watch(
 </script>
 <template>
   <section id="point-configuration" class="flex flex-col relative inset-0 z-0">
-    <!-- <AppBaseTabs v-model:value="inventoryReport_activeTab" :items="inventoryReport_listTabs"  /> -->
-    <StockReport />
+    <AppBaseTabs v-model:value="inventoryReport_activeTab" :items="inventoryReport_listTabs" />
+    <!-- <StockReport /> -->
   </section>
 </template>

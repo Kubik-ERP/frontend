@@ -18,6 +18,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
   const {
     staffMember_isLoading,
     staffMember_listDropdownItemStaff,
+    staffMember_listDropdownItemStaffUsingUserId,
     staffMember_listDropdownItemTitles,
     staffMember_lists,
   } = storeToRefs(store);
@@ -46,6 +47,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
   return {
     staffMemberList_columns: STAFF_MEMBER_LIST_COLUMNS,
     staffMemberList_dropdownItemStaff: staffMember_listDropdownItemStaff,
+    staffMemberList_dropdownItemStaffUsingUserId: staffMember_listDropdownItemStaffUsingUserId,
     staffMemberList_fetchListMembers,
     staffMemberList_isLoading: staffMember_isLoading,
     staffMemberList_values: staffMember_lists,

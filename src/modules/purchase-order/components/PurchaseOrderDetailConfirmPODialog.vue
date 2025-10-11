@@ -56,7 +56,7 @@ const {
         />
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base py-3 w-full max-w-40"
+          class="bg-primary border-none text-base py-3 w-full max-w-40"
           label="Save"
           type="button"
           @click="purchaseOrderDetail_onConfirm"

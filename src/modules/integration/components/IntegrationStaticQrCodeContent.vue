@@ -38,8 +38,8 @@ const {
 
             <!-- File Upload Area -->
             <div
-              class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-primary transition-colors"
-              :class="{ 'border-blue-primary bg-blue-50': integration_isLoading }"
+              class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-primary transition-colors"
+              :class="{ 'border-primary bg-blue-50': integration_isLoading }"
               @click="integration_triggerFileInput"
               @drop="integration_onDrop"
               @dragover="integration_onDragOver"
@@ -83,7 +83,7 @@ const {
                   </button>
                 </div>
                 <p class="text-sm font-medium text-gray-900">QR Code uploaded successfully</p>
-                <p class="text-xs text-gray-500 cursor-pointer hover:text-blue-primary">Click to change</p>
+                <p class="text-xs text-gray-500 cursor-pointer hover:text-primary">Click to change</p>
               </div>
             </div>
 
@@ -120,7 +120,7 @@ const {
 
           <!-- Save Button -->
           <PrimeVueButton
-            class="bg-blue-primary border-none text-sm py-[10px] w-40 mt-2"
+            class="bg-primary border-none text-sm py-[10px] w-40 mt-2"
             label="Save"
             type="submit"
             :disabled="integration_formValidations.$invalid || integration_isLoading"

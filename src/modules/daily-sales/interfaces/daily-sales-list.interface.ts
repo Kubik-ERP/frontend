@@ -23,6 +23,7 @@ export interface IDailySalesListProvided {
   dailySalesList_getClassOfOrderType: (orderType: string) => string;
   dailySalesList_getClassOfPaymentStatus: (paymentStatus: string) => string;
   dailySalesList_isLoading: globalThis.Ref<boolean>;
+  dailySalesList_isUserHasPermissionForManageStaff: ComputedRef<boolean>;
   dailySalesList_onChangePage: (page: number) => void;
   dailySales_handleOnSortChange: (event: DataTableSortEvent) => void;
   dailySalesList_queryParams: IDailySalesListRequestQuery;

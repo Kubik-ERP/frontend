@@ -14,7 +14,7 @@ import {
 import { DAY_NAMES_SHORT } from '@/app/constants';
 
 // Interfaces
-import type { IWorkingHoursListProvided, IStaffWorkingHours, IWorkingHoursFormData } from '../interfaces';
+import type { IWorkingHoursListProvided, IStaffWorkingHours, IWorkingHoursFormData, IWorkingHour } from '../interfaces';
 
 // Helpers
 import { WorkingHoursDataHelper } from '../helpers';
@@ -26,7 +26,7 @@ import eventBus from '@/plugins/mitt';
 import { useWorkingHoursStore } from '../store';
 
 // Vuelidate
-import { required, minValue, requiredIf } from '@vuelidate/validators';
+import { helpers, required, minValue, requiredIf } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 
 /**
@@ -37,7 +37,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    * @description Injected variables
    */
   const workingHoursStore = useWorkingHoursStore();
-  const { workingHours_isLoading } = storeToRefs(workingHoursStore);
+  const { workingHours_isLoading, workingHours_lists } = storeToRefs(workingHoursStore);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
@@ -180,15 +180,12 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
     staffId: { required },
     date: { required },
     timeSlots: {
-      required,
-      minValue: minValue(1),
-      $each: {
+      $each: helpers.forEach({
         openTime: { required },
         closeTime: { required },
-      },
+      })
     },
     repeatType: { required },
-    notes: {},
     customRecurrence: {
       frequency: {
         required: requiredIf(() => workingHoursList_formData.repeatType === 'custom'),
@@ -355,10 +352,13 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    * @description Computed property that transforms raw data into table format
    */
   const workingHoursList_listValues = computed(() => {
-    return workingHoursList_rawData.value.map(staffMember => {
+    console.log(workingHours_lists, 'lists state')
+
+    return workingHours_lists.value.map((workingHour: IWorkingHour) => {
+      // Map working hour details to the desired format
       const tableRow: Record<string, string | number> = {
-        id: staffMember.id,
-        staff: staffMember.staff,
+        id: workingHour.id,
+        staff: `Staff #${workingHour.staff_id}`, // Placeholder, replace with actual staff name if available
       };
 
       if (workingHoursList_selectedMonth.value) {
@@ -372,32 +372,85 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
             const currentMonth = currentDate.getMonth() + 1;
             const currentYear = currentDate.getFullYear();
 
-            const monthData = staffMember.monthlyData.find(
-              m => m.year === currentYear && m.month === currentMonth,
-            );
-            const dayData = monthData?.workingHours.find(wh => wh.day === currentDay);
+            if (currentYear === year && currentMonth === month) {
+              const dayData = workingHour.working_hour_time_slots.filter(slot => {
+                const slotDate = new Date(slot.open_time);
+                return slotDate.getDate() === currentDay && slotDate.getMonth() + 1 === currentMonth && slotDate.getFullYear() === currentYear;
+              });
 
-            if (dayData && dayData.timeSlots.length > 0) {
-              const timeSlots = dayData.timeSlots.map(slot => `${slot.startTime}-${slot.endTime}`).join('\n');
-              tableRow[`week_day_${dayOfWeek}`] = timeSlots;
-            } else {
-              tableRow[`week_day_${dayOfWeek}`] = '';
+              if (dayData.length > 0) {
+                const timeSlots = dayData.map(slot => {
+                  const slotStart = new Date(slot.open_time);
+                  const slotEnd = new Date(slot.close_time);
+                  return `${slotStart.getHours()}:${slotStart.getMinutes()} - ${slotEnd.getHours()}:${slotEnd.getMinutes()}`;
+                });
+
+                tableRow[`week_day_${dayOfWeek}`] = timeSlots.join('\n');
+              } else {
+                tableRow[`week_day_${dayOfWeek}`] = '';
+              }
             }
           }
         } else {
           // Month view: show Present/Absent for each day
           const daysInMonth = new Date(year, month, 0).getDate();
-          const monthData = staffMember.monthlyData.find(m => m.year === year && m.month === month);
-
           for (let day = 1; day <= daysInMonth; day++) {
-            const dayData = monthData?.workingHours.find(wh => wh.day === day);
-            tableRow[`day_${day}`] = dayData && dayData.timeSlots.length > 0 ? 'Present' : 'Absent';
+            const dayData = workingHour.working_hour_time_slots.filter(slot => {
+              const slotDate = new Date(slot.open_time);
+              return slotDate.getDate() === day && slotDate.getMonth() + 1 === month && slotDate.getFullYear() === year;
+            });
+
+            tableRow[`day_${day}`] = dayData.length > 0 ? 'Present' : 'Absent';
           }
         }
       }
 
       return tableRow;
-    });
+    })
+
+    // return workingHoursList_rawData.value.map(staffMember => {
+    //   const tableRow: Record<string, string | number> = {
+    //     id: staffMember.id,
+    //     staff: staffMember.staff,
+    //   };
+
+    //   if (workingHoursList_selectedMonth.value) {
+    //     const [year, month] = workingHoursList_selectedMonth.value.split('-').map(Number);
+
+    //     if (workingHoursList_selectedViewType.value === 'Week') {
+    //       // Week view: show time slots for each day of the current week
+    //       for (let dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
+    //         const currentDate = getCurrentWeekDate(dayOfWeek);
+    //         const currentDay = currentDate.getDate();
+    //         const currentMonth = currentDate.getMonth() + 1;
+    //         const currentYear = currentDate.getFullYear();
+
+    //         const monthData = staffMember.monthlyData.find(
+    //           m => m.year === currentYear && m.month === currentMonth,
+    //         );
+    //         const dayData = monthData?.workingHours.find(wh => wh.day === currentDay);
+
+    //         if (dayData && dayData.timeSlots.length > 0) {
+    //           const timeSlots = dayData.timeSlots.map(slot => `${slot.startTime}-${slot.endTime}`).join('\n');
+    //           tableRow[`week_day_${dayOfWeek}`] = timeSlots;
+    //         } else {
+    //           tableRow[`week_day_${dayOfWeek}`] = '';
+    //         }
+    //       }
+    //     } else {
+    //       // Month view: show Present/Absent for each day
+    //       const daysInMonth = new Date(year, month, 0).getDate();
+    //       const monthData = staffMember.monthlyData.find(m => m.year === year && m.month === month);
+
+    //       for (let day = 1; day <= daysInMonth; day++) {
+    //         const dayData = monthData?.workingHours.find(wh => wh.day === day);
+    //         tableRow[`day_${day}`] = dayData && dayData.timeSlots.length > 0 ? 'Present' : 'Absent';
+    //       }
+    //     }
+    //   }
+
+    //   return tableRow;
+    // });
   });
 
   /**
@@ -623,6 +676,8 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    */
   const workingHoursList_onSave = async (): Promise<void> => {
     workingHoursList_formValidations.value.$touch();
+
+    console.log('Form Validations:', workingHoursList_formValidations.value);
 
     if (workingHoursList_formValidations.value.$invalid) {
       return;

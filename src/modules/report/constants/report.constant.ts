@@ -221,6 +221,11 @@ export const SALESREPORT_COLUMNS: IColumnDataTable[] = [
     value: 'pajak',
   },
   {
+    label: 'Service Charge',
+    sortable: true,
+    value: 'biayaLayanan',
+  },
+  {
     label: 'Discount',
     sortable: true,
     value: 'diskonItem',
@@ -234,91 +239,6 @@ export const SALESREPORT_COLUMNS: IColumnDataTable[] = [
     label: 'Voucher Used',
     sortable: true,
     value: 'countPenggunaanVoucher',
-  },
-];
-
-export const INVENTORYREPORT_STOCK_COLUMNS: IColumnDataTable[] = [
-  {
-    label: 'SKU',
-    sortable: true,
-    value: 'sku',
-  },
-  {
-    label: 'Item Name',
-    sortable: false,
-    value: 'itemName',
-  },
-  {
-    label: 'Category',
-    sortable: false,
-    value: 'category',
-  },
-  {
-    label: 'Stock on Hand',
-    sortable: true,
-    value: 'stock',
-  },
-  {
-    label: 'Reorder Level',
-    sortable: true,
-    value: 'reorderLevel',
-  },
-  {
-    label: 'Minimum Stock',
-    sortable: true,
-    value: 'minimumStock',
-  },
-  {
-    label: 'Unit',
-    sortable: false,
-    value: 'unit',
-  },
-  {
-    label: 'Storage Location',
-    sortable: false,
-    value: 'storageLocation',
-  },
-];
-export const INVENTORYREPORT_STOCKMOVEMENT_COLUMNS: IColumnDataTable[] = [
-  {
-    label: 'SKU',
-    sortable: true,
-    value: 'sku',
-  },
-  {
-    label: 'Item Name',
-    sortable: false,
-    value: 'itemName',
-  },
-  {
-    label: 'Movement Type',
-    sortable: false,
-    value: 'movementType',
-  },
-  {
-    label: 'Qty',
-    sortable: true,
-    value: 'qty',
-  },
-  {
-    label: 'Stock Before',
-    sortable: true,
-    value: 'stockBefore',
-  },
-  {
-    label: 'Stock After',
-    sortable: true,
-    value: 'stockAfter',
-  },
-  {
-    label: 'Notes',
-    sortable: true,
-    value: 'notes',
-  },
-  {
-    label: 'Storage Location',
-    sortable: false,
-    value: 'storageLocation',
   },
 ];
 

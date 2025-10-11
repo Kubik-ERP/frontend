@@ -38,7 +38,7 @@ const { outletCreateEdit_onCloseDialogVerifyPIN, outletCreateEdit_onSubmitDialog
         />
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base py-[10px] w-fit px-4"
+          class="bg-primary border-none text-base py-[10px] w-fit px-4"
           label="Create Store"
           type="button"
           @click="outletCreateEdit_onSubmitDialogVerifyPIN"
