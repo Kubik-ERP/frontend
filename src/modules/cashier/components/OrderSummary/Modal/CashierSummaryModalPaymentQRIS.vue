@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { IMidtransQrisPaymentData } from '@/modules/cashier/interfaces/cashier-response';
 
-// Router
-import { useRouter, useRoute } from 'vue-router';
-
 // Props
 const props = defineProps<{
   modalPlaceOrderDetail: {
@@ -14,13 +11,32 @@ const props = defineProps<{
 
 // Emit
 const emit = defineEmits<{
-  (e: 'simulate-payment', orderId: string): void;
+  (e: 'simulate-payment', invoiceId: string): void;
+  (e: 'close'): void;
 }>();
 
 // env
 const bucketURL = import.meta.env.VITE_APP_BASE_BUCKET_URL;
 const router = useRouter();
 const route = useRoute();
+
+const handleClose = () => {
+  if (route.name === 'invoice') {
+    // If on the 'invoice' page, just emit an event to close the modal
+    emit('close');
+  } else {
+    // Otherwise, perform the original navigation logic
+    router.push({
+      name:
+        route.name === 'cashier' || route.name === 'cashier-order-edit'
+          ? 'invoice'
+          : 'self-order-invoice',
+      params: {
+        invoiceId: props.modalPlaceOrderDetail.data.invoiceId,
+      },
+    });
+  }
+}
 </script>
 
 <template>
@@ -37,7 +53,7 @@ const route = useRoute();
     >
       <template #container="{ closeCallback }">
         <section
-          v-if="props.modalPlaceOrderDetail.data.orderId"
+          v-if="props.modalPlaceOrderDetail.data.invoiceId"
           class="flex flex-col gap-6 p-6 h-full w-full max-w-3xl"
         >
           <section class="items-center justify-center flex flex-col gap-4 flex-grow overflow-y-auto">
@@ -77,24 +93,15 @@ const route = useRoute();
               class="w-full bg-primary text-white py-2.5 px-8"
               type="button"
               label="Make Payment"
-              @click="emit('simulate-payment', props.modalPlaceOrderDetail.data.orderId)"
+              @click="emit('simulate-payment', props.modalPlaceOrderDetail.data.invoiceId)"
             />
-            
 
             <PrimeVueButton
               class="w-full bg-primary text-white py-2.5 px-8"
               type="button"
               label="Close"
               @click="
-                router.push({
-                  name:
-                    route.name === 'cashier' || route.name === 'cashier-order-edit'
-                      ? 'invoice'
-                      : 'self-order-invoice',
-                  params: {
-                    invoiceId: props.modalPlaceOrderDetail.data.orderId,
-                  },
-                })
+                handleClose()
               "
             />
           </section>
