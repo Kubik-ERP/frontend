@@ -21,7 +21,7 @@ const { cashierProduct_modalCategory } = inject<ICashierProductProvided>('cashie
       <div class="flex gap-2 items-center">
         <AppBaseSvg name="catalog" class="!h-4 !w-5" />
 
-        <span class="font-semibold text-sm text-primary">{{ useLocalization('cashier.category') }}</span>
+        <span class="font-semibold text-sm text-primary">{{ useLocalization('cashier.categoryOrShowBundles') }}</span>
       </div>
     </PrimeVueButton>
   </section>
