@@ -258,11 +258,11 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
    * @description Handle business logic on submit open register form
    */
   const cashDrawerList_onSubmitOpenRegisterForm = async (): Promise<void> => {
-    // cashDrawerList_formValidationsOfOpenRegister.value.$touch();
+    cashDrawerList_formValidationsOfOpenRegister.value.$touch();
 
-    // if (cashDrawerList_formValidationsOfOpenRegister.value.$invalid) {
-    //   return;
-    // }
+    if (cashDrawerList_formValidationsOfOpenRegister.value.$invalid) {
+      return;
+    }
 
     console.log('cashDrawerList_onSubmitOpenRegisterForm, here');
 
