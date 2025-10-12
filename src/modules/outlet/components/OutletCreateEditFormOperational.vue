@@ -20,7 +20,7 @@ const { outletCreateEdit_formData } = inject<IOutletCreateEditProvided>('outletC
         v-for="(day, dayIndex) in outletCreateEdit_formData.businessHours"
         :id="`working-hours-day-${dayIndex}`"
         :key="`day-${dayIndex}`"
-        class="col-span-full lg:col-span-6 flex flex-col border border-solid border-primary-border gap-4 p-4 rounded-lg"
+        class="col-span-full lg:col-span-6 flex flex-col border border-solid border-secondary gap-4 p-4 rounded-lg"
       >
         <header class="flex items-center justify-between">
           <div class="flex items-center gap-4">
@@ -31,7 +31,7 @@ const { outletCreateEdit_formData } = inject<IOutletCreateEditProvided>('outletC
           </div>
 
           <PrimeVueButton
-            class="border border-solid border-primary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
+            class="border border-solid border-secondary basic-smooth-animation w-fit px-3 py-2 rounded-lg hover:bg-grayscale-10"
             severity="secondary"
             variant="outlined"
             @click="
@@ -42,7 +42,7 @@ const { outletCreateEdit_formData } = inject<IOutletCreateEditProvided>('outletC
           >
             <template #default>
               <section id="content" class="flex items-center gap-2">
-                <AppBaseSvg name="plus-line" class="w-4 h-4" />
+                <AppBaseSvg name="plus-line" class="w-4 h-4 filter-primary-color" />
               </section>
             </template>
           </PrimeVueButton>
@@ -63,7 +63,7 @@ const { outletCreateEdit_formData } = inject<IOutletCreateEditProvided>('outletC
                 />
 
                 <PrimeVueInputGroupAddon>
-                  <AppBaseSvg name="clock" class="!w-5 !h-6" />
+                  <AppBaseSvg name="clock" class="w-5 h-6 filter-primary-color" />
                 </PrimeVueInputGroupAddon>
               </PrimeVueInputGroup>
             </section>
@@ -81,7 +81,7 @@ const { outletCreateEdit_formData } = inject<IOutletCreateEditProvided>('outletC
                 />
 
                 <PrimeVueInputGroupAddon>
-                  <AppBaseSvg name="clock" class="!w-5 !h-6" />
+                  <AppBaseSvg name="clock" class="w-5 h-6 filter-primary-color" />
                 </PrimeVueInputGroupAddon>
               </PrimeVueInputGroup>
             </section>

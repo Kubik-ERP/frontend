@@ -140,9 +140,11 @@ export const useReportService = (): IReportProvided => {
 
   const fetchStaff_lists = async () => {
     try {
-      await store.fetchStaffMember_lists(report_queryParams.store_ids, {
-        ...httpAbort_registerAbort('STAFF_LIST_REQUEST'),
-      });
+      if (hasManageStaffMemberPermission) {
+        await store.fetchStaffMember_lists(report_queryParams.store_ids, {
+          ...httpAbort_registerAbort('STAFF_LIST_REQUEST'),
+        });
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error);
@@ -268,11 +270,13 @@ export const useReportService = (): IReportProvided => {
   const rbac = useRbac();
   const hasAccessAllStorePermission = rbac.hasPermission('access_all_store');
   const hasStoreManagementPermission = rbac.hasPermission('store_management');
+  const hasManageStaffMemberPermission = rbac.hasPermission('manage_staff_member');
 
   return {
     // rbac
     hasAccessAllStorePermission,
     hasStoreManagementPermission,
+    hasManageStaffMemberPermission,
     // constants
     financialReport_profitAndLost_columns: FINANCIALREPORT_PROFITANDLOST_COLUMNS,
     financialReport_discount_columns: FINANCIALREPORT_DISCOUNT_COLUMNS,

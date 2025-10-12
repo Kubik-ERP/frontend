@@ -8,6 +8,7 @@ const {
   salesReport_columns,
   report_queryParams,
   report_getSalesReport,
+  hasManageStaffMemberPermission,
   salesReport_salesByMonth_values,
   staff_lists_options,
   outlet_lists_options,
@@ -151,6 +152,7 @@ const onChangePage = (newPage: number) => {
             </template>
           </PrimeVueSelect>
           <PrimeVueSelect
+            v-if="hasManageStaffMemberPermission"
             v-model="report_queryParams.staff_ids"
             :options="staff_lists_options"
             option-label="label"

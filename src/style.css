@@ -220,3 +220,29 @@ span.p-datatable-column-title {
   -ms-overflow-style: none; /* IE dan Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+/* aproksimasi warna #F3631D lewat chain filter (nilai perkiraan) */
+.filter-primary-color {
+  filter: invert(48%) sepia(64%) saturate(530%) hue-rotate(333deg) brightness(94%) contrast(95%);
+}
+
+.filter-white-color {
+  filter: brightness(0) invert(1);
+}
+
+.p-select:focus, .p-select:focus-within,
+.p-multiselect:focus, .p-multiselect:focus-within,
+.p-dropdown:focus, .p-dropdown:focus-within,
+.p-inputtext:focus,
+.p-inputnumber:focus, .p-inputnumber:focus-within,
+.p-datepicker-dropdown:focus, .p-datepicker-dropdown:focus-within,
+.p-textarea:focus,
+.p-inputgroupaddon:focus-within,
+.p-checkbox:focus-within .p-checkbox-box,
+.p-radiobutton:focus-within .p-radiobutton-box {
+  @apply border-secondary;
+}
+
+.p-radiobutton-box[data-p="checked"], .p-checkbox-box[data-p="checked"], .p-toggleswitch-slider[data-p="checked"] {
+  @apply bg-primary border-primary;
+}
