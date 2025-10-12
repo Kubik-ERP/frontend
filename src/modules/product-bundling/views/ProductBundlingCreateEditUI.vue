@@ -93,8 +93,10 @@ const onResetButtonClick = () => {
   );
 };
 
-const handleImageUpload = (event) => {
-  const file = event.target.files?.[0];
+// ✅ Added proper typing for `event`
+const handleImageUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
   if (file) {
     productBundling_formData.imageFile = file; // ✅ Save the file
 
@@ -108,7 +110,9 @@ const handleImageUpload = (event) => {
   }
 };
 
-const fileInput = ref(null);
+// ✅ Added proper typing for `fileInput`
+const fileInput = ref<HTMLInputElement | null>(null);
+
 const triggerFileInput = () => {
   fileInput.value?.click();
 };
@@ -125,6 +129,7 @@ onMounted(async () => {
   await productBundling_fetchProductList();
 });
 </script>
+
 <template>
   <div class="flex flex-col justify-center items-center">
     <p>{{ useLocalization('productDetail.photo.label') }}</p>
