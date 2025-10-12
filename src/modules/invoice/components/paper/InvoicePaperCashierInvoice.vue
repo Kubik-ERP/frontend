@@ -12,7 +12,7 @@ import { useFormatDate } from '@/app/composables';
 import { IInvoiceProvided } from '../../interfaces';
 
 /**
- * @description Inject all the data and methods what we need
+ * @description Inject all the data and methods we need
  */
 const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 
@@ -25,6 +25,7 @@ const orderTypeLabel = computed(() => {
   return type?.label ?? '';
 });
 </script>
+
 <template>
   <section
     v-if="
@@ -36,20 +37,22 @@ const orderTypeLabel = computed(() => {
     id="invoice-paper"
     class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4 text-xl min-w-[58mm] max-w-[100mm] h-fit"
   >
-    <!-- class="invoice-paper bg-white flex flex-col items-center gap-2 w-full p-4 md:max-w-xl max-w-[58mm]" -->
+    <!-- Logo -->
     <section
       v-if="
         invoice_invoiceData.configInvoice.isShowCompanyLogo && invoice_invoiceData.configInvoice.companyLogoUrl
       "
       id="logo"
     >
-      <!-- <pre>
-        {{ invoice_invoiceData.configInvoice.companyLogoUrl }}
-      </pre> -->
       <AppBaseImage :src="imageUrl" :alt="invoice_invoiceData.currentOutlet.name" class="w-16 h-16" />
     </section>
-    <h6 id="outlet-name" class="font-semibold text-black text-[12pt]">{{ invoice_invoiceData.currentOutlet.name }}</h6>
 
+    <!-- Store name -->
+    <h6 id="outlet-name" class="font-semibold text-black text-[12pt]">
+      {{ invoice_invoiceData.currentOutlet.name }}
+    </h6>
+
+    <!-- Store address -->
     <p
       v-if="invoice_invoiceData.configInvoice.isShowStoreLocation"
       id="outlet-address"
@@ -58,6 +61,7 @@ const orderTypeLabel = computed(() => {
       {{ invoice_invoiceData.currentOutlet.address }}
     </p>
 
+    <!-- Header info -->
     <div class="flex flex-col text-xs gap-2 border-y border-dashed border-black py-2 w-full">
       <div class="flex justify-between">
         <span class="text-left">{{ useFormatDate(new Date(invoice_invoiceData.data.createdAt)) }}</span>
@@ -65,14 +69,14 @@ const orderTypeLabel = computed(() => {
       </div>
     </div>
 
+    <!-- Cashier -->
     <section
       v-if="!invoice_invoiceData.configInvoice?.isHideCashierName || false"
       id="cashier-information"
       class="flex items-center justify-between w-full"
     >
-      <p id="label-cashier" class="font-normal text-black text-[12pt]">Cashier</p>
-      <!-- TODO: add cashier name -->
-      <p id="cashier-name" class="font-normal text-black text-[12pt]">
+      <p class="font-normal text-black text-[12pt]">Cashier</p>
+      <p class="font-normal text-black text-[12pt]">
         {{
           invoice_invoiceData.data.paymentStatus === 'unpaid'
             ? invoice_invoiceData.currentUser?.fullname || '-'
@@ -81,59 +85,59 @@ const orderTypeLabel = computed(() => {
       </p>
     </section>
 
+    <!-- Customer -->
     <section
       v-if="invoice_invoiceData.data.customer"
       id="customer-information"
       class="flex items-center justify-between w-full"
     >
-      <p id="label-customer" class="font-normal text-black text-[12pt]">Cust. Name</p>
-      <p id="customer-name" class="font-normal text-black text-[12pt]">
-        {{ invoice_invoiceData.data.customer.name }}
-      </p>
+      <p class="font-normal text-black text-[12pt]">Cust. Name</p>
+      <p class="font-normal text-black text-[12pt]">{{ invoice_invoiceData.data.customer.name }}</p>
     </section>
 
+    <!-- Order Type -->
     <section
       v-if="!invoice_invoiceData.configInvoice.isHideOrderType"
       id="order-type"
       class="flex items-center justify-between w-full"
     >
-      <p id="label-order-type" class="font-normal text-black text-[12pt]">Order Type</p>
-      <p id="order-type-value" class="font-normal text-black text-[12pt]">
-        {{ orderTypeLabel }}
-      </p>
+      <p class="font-normal text-black text-[12pt]">Order Type</p>
+      <p class="font-normal text-black text-[12pt]">{{ orderTypeLabel }}</p>
     </section>
 
+    <!-- Queue -->
     <section
       v-if="!invoice_invoiceData.configInvoice.isHideQueueNumber"
       id="queue"
       class="flex items-center justify-between w-full"
     >
-      <p id="label-queue" class="font-normal text-black text-[12pt]">Queue</p>
-      <p id="queue-value" class="font-normal text-black text-[12pt]">{{ invoice_invoiceData.data.queue }}</p>
+      <p class="font-normal text-black text-[12pt]">Queue</p>
+      <p class="font-normal text-black text-[12pt]">{{ invoice_invoiceData.data.queue }}</p>
     </section>
 
+    <!-- Table -->
     <section
       v-if="invoice_invoiceData.configInvoice.isShowTableNumber"
       id="table"
       class="flex items-center justify-between w-full"
     >
-      <p id="label-table" class="font-normal text-black text-[12pt]">Table No.</p>
-      <p id="table-value" class="font-normal text-black text-[12pt]">
-        {{ invoice_invoiceData.data?.tableCode || '-' }}
-      </p>
+      <p class="font-normal text-black text-[12pt]">Table No.</p>
+      <p class="font-normal text-black text-[12pt]">{{ invoice_invoiceData.data?.tableCode || '-' }}</p>
     </section>
 
+    <!-- Status -->
     <section
       v-if="invoice_invoiceData.data.paymentStatus === 'paid'"
-      id="table"
+      id="status"
       class="flex items-center justify-between w-full"
     >
-      <p id="label-table" class="font-normal text-black text-[12pt]">Status</p>
-      <p id="table-value" class="font-normal text-black text-[12pt]">
+      <p class="font-normal text-black text-[12pt]">Status</p>
+      <p class="font-normal text-black text-[12pt]">
         {{ useCapitalize(invoice_invoiceData.data.paymentStatus) }}
       </p>
     </section>
 
+    <!-- Product Table -->
     <section class="flex flex-col w-full">
       <table id="product-items" class="text-lg">
         <thead>
@@ -155,63 +159,83 @@ const orderTypeLabel = computed(() => {
           </tr>
         </thead>
 
-        <tbody class="">
+        <tbody>
           <template v-for="item in invoice_invoiceData.data.invoiceDetails" :key="item.id">
+            <!-- Main Product -->
             <tr>
-              <td class="font-normal pr-0.5 text-black text-[12pt]">{{ item.products.name }}</td>
-              <td class="font-normal pr-0.5 text-black text-[12pt] text-center">{{ item.qty }}</td>
+              <td class="font-normal pr-0.5 text-black text-[12pt]">
+                {{ item.products?.name ?? item.catalogBundling?.name }}
+              </td>
+              <td class="font-normal pr-0.5 text-black text-[12pt] text-center">
+                {{ item.qty }}
+              </td>
               <td
                 v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
                 class="font-normal pr-0.5 text-black text-[12pt] text-center"
               >
-                {{
-                  useCurrencyFormat({
-                    data: item.productPrice,
-                  })
-                }}
+                {{ useCurrencyFormat({ data: item.productPrice }) }}
               </td>
               <td
                 v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
                 class="font-normal pr-0.5 text-black text-[12pt] text-right"
               >
-                {{
-                  useCurrencyFormat({
-                    data: item.productPrice * item.qty,
-                  })
-                }}
+                {{ useCurrencyFormat({ data: item.productPrice * item.qty }) }}
               </td>
             </tr>
+
+            <!-- Bundling Products (Sub-items) -->
+            <template v-for="bundlingItem in item.invoiceBundlingItems" :key="bundlingItem.id">
+              <tr>
+                <td class="pl-6 font-normal pr-0.5 text-black text-[12pt] italic">
+                  {{ bundlingItem.products?.name }}
+                </td>
+                <td class="font-normal pr-0.5 text-black text-[12pt] text-center"></td>
+                <td
+                  
+                  class="font-normal pr-0.5 text-black text-[12pt] text-center"
+                >
+                  {{ useCurrencyFormat({ data: bundlingItem.products?.price ?? 0 }) }}
+                </td>
+                <td
+                  
+                  class="font-normal pr-0.5 text-black text-[12pt] text-right"
+                >
+                 
+                </td>
+              </tr>
+            </template>
+
+            <!-- Variant -->
             <tr v-if="item.variant">
-              <td class="pl-4 font-normal pr-0.5 text-black text-[12pt] italic">{{ item.variant.name }}</td>
+              <td class="pl-6 font-normal pr-0.5 text-black text-[12pt] italic">
+                {{ item.variant.name }}
+              </td>
               <td class="font-normal pr-0.5 text-black text-[12pt] text-center"></td>
               <td
                 v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
                 class="font-normal pr-0.5 text-black text-[12pt] text-center"
               >
-                {{
-                  useCurrencyFormat({
-                    data: item.variant.price,
-                  })
-                }}
+                {{ useCurrencyFormat({ data: item.variant.price }) }}
               </td>
               <td
                 v-if="!invoice_invoiceData.configInvoice.isHideItemPrices"
                 class="font-normal pr-0.5 text-black text-[12pt] text-right"
               >
-                {{
-                  useCurrencyFormat({
-                    data: item.variant.price * item.qty,
-                  })
-                }}
+                {{ useCurrencyFormat({ data: item.variant.price * item.qty }) }}
               </td>
             </tr>
+
+            <!-- Notes -->
             <tr v-if="item.notes">
-              <td colspan="1" class="pl-4 font-normal pr-0.5 text-black text-[12pt] italic">notes</td>
-              <td colspan="3" class="text-right font-normal pr-0.5 text-black text-[12pt] italic">{{ item.notes }}</td>
+              <td colspan="1" class="pl-6 font-normal pr-0.5 text-black text-[12pt] italic">Notes</td>
+              <td colspan="3" class="text-right font-normal pr-0.5 text-black text-[12pt] italic">
+                {{ item.notes }}
+              </td>
             </tr>
           </template>
         </tbody>
 
+        <!-- Footer / Totals -->
         <tfoot class="border-b border-solid border-black">
           <tr class="h-2"></tr>
           <tr class="border-t border-solid border-black">
@@ -219,7 +243,7 @@ const orderTypeLabel = computed(() => {
             <td class="font-normal text-black text-[12pt] text-center py-1">
               {{
                 (invoice_invoiceData.data.invoiceDetails as Array<{ qty: number }>).reduce(
-                  (sum: number, item) => sum + item.qty,
+                  (sum, item) => sum + item.qty,
                   0,
                 )
               }}
@@ -254,11 +278,7 @@ const orderTypeLabel = computed(() => {
           <tr>
             <td class="font-normal text-black text-[12pt] py-1">Rounding</td>
             <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
-              {{
-                useCurrencyFormat({
-                  data: invoice_invoiceData.data.roundingAmount || 0,
-                })
-              }}
+              {{ useCurrencyFormat({ data: invoice_invoiceData.data.roundingAmount || 0 }) }}
             </td>
           </tr>
 
@@ -281,7 +301,6 @@ const orderTypeLabel = computed(() => {
             <td class="font-normal text-black text-[12pt] py-1">
               {{ invoice_invoiceData?.data?.paymentMethods?.name || '' }}
             </td>
-
             <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
               {{ useCurrencyFormat({ data: invoice_invoiceData.data.paymentAmount || 0 }) }}
             </td>
@@ -297,7 +316,6 @@ const orderTypeLabel = computed(() => {
           <tr>
             <td colspan="2" class="items-center font-normal text-black text-[12pt] py-1">
               Tax
-
               <span
                 v-if="invoice_invoiceData.data.paymentStatus === 'unpaid'"
                 class="ml-0.5 text-[10px] italic text-text-disabled"
@@ -316,10 +334,10 @@ const orderTypeLabel = computed(() => {
               }}
             </td>
           </tr>
+
           <tr class="border-b border-solid border-black">
             <td colspan="2" class="items-center font-normal text-black text-[12pt] py-1">
               Service
-
               <span
                 v-if="invoice_invoiceData.data.paymentStatus === 'unpaid'"
                 class="ml-0.5 text-[12pt] italic text-text-disabled"
@@ -363,6 +381,7 @@ const orderTypeLabel = computed(() => {
       </table>
     </section>
 
+    <!-- Footer -->
     <section
       v-if="invoice_invoiceData.configInvoice.isShowFooter"
       id="closing"
@@ -375,9 +394,12 @@ const orderTypeLabel = computed(() => {
       ></p>
     </section>
   </section>
+
+  <!-- Loading State -->
   <section v-else-if="invoice_invoiceData.isLoading">
     <InvoicePaperCashierInvoiceLoading />
   </section>
+
   <section v-else></section>
 </template>
 

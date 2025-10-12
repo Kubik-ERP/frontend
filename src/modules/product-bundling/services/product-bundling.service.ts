@@ -36,6 +36,8 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
     type: 'TOTAL_ITEMS',
     price: 0,
     grandTotal: 0,
+    imagePreview: '',
+    imageFile: undefined,
   });
 
   const productBundling_formRules = computed(() => ({
@@ -60,9 +62,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
     } else if (productBundling_formData.type === 'DISCOUNT') {
       productBundling_grandTotal.value = productBundling_formData.products.reduce(
         (total, item) =>
-          total +
-          item.price * item.quantity -
-          (item.price * item.quantity * productBundling_formData.price) / 100,
+          total + item.price * item.quantity - (item.price * item.quantity * productBundling_formData.price) / 100,
         0,
       );
     }
@@ -123,6 +123,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
   const productBundling_queryParams = reactive<IProductBundlingListRequestQuery>({
     page: 1,
     limit: 10,
+    search: '',
   });
 
   const productBundling_onChangePage = (page: number): void => {
@@ -131,6 +132,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
 
   const productBundling_fetchProductBundlingList = async (): Promise<void> => {
     try {
+      console.log('productBundling_queryParams:', productBundling_queryParams);
       await store.productBundling_fetchProductBundlingList(productBundling_queryParams, {
         ...httpAbort_registerAbort('LOYALTY_POINT_BENEFIT_PRODUCT_LIST'),
       });
@@ -166,6 +168,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
           type: productBundling_formData.type,
           price: null,
           discount: null,
+          imageFile: productBundling_formData.imageFile,
         };
       } else {
         payload = {
@@ -176,6 +179,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
           type: 'CUSTOM',
           price: productBundling_formData.price,
           discount: null,
+          imageFile: productBundling_formData.imageFile,
         };
       }
     } else if (productBundling_formData.type === 'DISCOUNT') {
@@ -187,6 +191,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
         type: productBundling_formData.type,
         price: null,
         discount: productBundling_formData.price,
+        imageFile: productBundling_formData.imageFile,
       };
     }
     // else if (productBundling_formData.type === 'CUSTOM') {
@@ -209,6 +214,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
         type: '',
         price: null,
         discount: null,
+        imageFile: undefined,
       };
     }
     return payload;
@@ -332,7 +338,10 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
           price: p.product_price,
           discountPrice: p.product_discount_price,
         })) || [];
-
+      const pictureUrl = data.picture_url
+        ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${data.picture_url}`
+        : 'https://placehold.co/250';
+      productBundling_formData.imagePreview = pictureUrl;
       // calculateTotalPrice();
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -401,5 +410,6 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
     // function
     setPricingType,
     calculateTotalPrice,
+    productBundling_queryParams,
   };
 };
