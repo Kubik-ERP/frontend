@@ -12,6 +12,11 @@ import { ICashierOrderType } from '../../interfaces';
 
 // Route
 import { useRoute } from 'vue-router';
+import { useLoyaltyPointBenefitService } from '@/modules/point-configuration/services/loyalty-point-benefit.service';
+import { IDiscount, IFreeItems } from '@/modules/point-configuration/interfaces';
+import { usePointConfigurationService } from '@/modules/point-configuration/services/point-configuration.service';
+import { useCustomerDetailService } from '@/modules/customer/services/customer-detail.service';
+import { useCustomerDetailsStore } from '@/modules/customer/store';
 
 const route = useRoute();
 
@@ -32,6 +37,27 @@ const {
 
   cashierOrderSummary_handleModalAddCustomer,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+
+const { loyaltyPointBenefit_fetchList, loyaltyPointBenefit_list } = useLoyaltyPointBenefitService();
+
+const { loyaltyPointSettings_value, loyaltyPointSettingsDetail } = usePointConfigurationService();
+const { loyaltyPoints_list, customerDetails_fetchLoyaltyPointByCustomerId } = useCustomerDetailService();
+
+const showLoyaltyModal = ref(false);
+
+const openLoyaltyModal = async () => {
+  showLoyaltyModal.value = true;
+  await loyaltyPointSettingsDetail();
+  loyaltyPointBenefit_fetchList();
+  await customerDetails_fetchLoyaltyPointByCustomerId(cashierProduct_customerState.value.selectedCustomer!.id, {
+    page: 1,
+    limit: 1,
+  });
+};
+
+const closeLoyaltyModal = () => {
+  showLoyaltyModal.value = false;
+};
 </script>
 
 <template>
@@ -134,6 +160,171 @@ const {
             </template>
           </PrimeVueAutoComplete>
         </PrimeVueIconField>
+      </div>
+
+      <button
+        v-if="cashierProduct_customerState.selectedCustomer != null"
+        type="button"
+        @click="openLoyaltyModal"
+        class="flex items-center justify-between w-full h-10 px-4 bg-[#EDF6FC] border border-[#8CC8EB] rounded-lg shadow-sm hover:bg-[#D9EEF9] transition"
+      >
+        <div class="flex items-center gap-2">
+          <i class="pi pi-star text-[#0F3C56] text-[16px]"></i>
+          <span class="text-[#18618B] font-semibold text-base leading-5">Redeem Loyalty Point</span>
+        </div>
+        <i class="pi pi-chevron-right text-[#0F3C56] text-[16px]"></i>
+      </button>
+
+      <!-- Modal -->
+      <div v-if="showLoyaltyModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div
+          class="flex flex-col w-[604px] max-h-[720px] bg-white rounded-lg shadow-[0_0_10px_5px_rgba(0,0,0,0.15)] p-6 gap-5"
+        >
+          <!-- Title -->
+          <h2 class="text-[18px] font-semibold text-black">Redeem Loyalty Point</h2>
+
+          <!-- Customer Info Card -->
+          <div class="flex flex-col items-center border border-[#8CC8EB] rounded-lg p-4 w-full">
+            <span class="text-lg font-semibold text-[#070707]">{{
+              cashierProduct_customerState.selectedCustomer?.name
+            }}</span>
+            <div class="flex items-center gap-1 text-[#18618B] text-xs font-semibold">
+              <i class="pi pi-star-fill text-[#0F3C56]"></i>
+              {{ loyaltyPoints_list?.total }} pts
+            </div>
+            <span class="text-[#323232] text-sm mt-1">{{
+              cashierProduct_customerState.selectedCustomer?.code +
+              ' ' +
+              cashierProduct_customerState.selectedCustomer?.number
+            }}</span>
+          </div>
+
+          <!-- Promo List -->
+          <div
+            class="flex flex-col border border-[#EDEDED] rounded-md p-3 space-y-3 overflow-y-auto max-h-[420px]"
+            v-if="loyaltyPointBenefit_list.loyaltyBenefits.items.length > 0"
+          >
+            <!-- Disabled Promo -->
+            <div class="flex justify-between items-center border border-[#D9D9D9] rounded-md bg-[#EDEDED] p-3">
+              <div>
+                <div class="text-[#8E8E8E] font-semibold text-base">
+                  Discount Rp 10.000
+                  <span class="text-xs font-normal ml-2">This benefit not applicable for this transaction</span>
+                </div>
+                <div class="text-xs text-[#8E8E8E] mt-1">
+                  Minimum Transaction : Rp 100.000 <span class="mx-2">|</span> Point Needs : 10 pts
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-[#8E8E8E]">Discount</div>
+                <div class="text-base font-semibold text-[#8E8E8E]">Rp 10.000</div>
+              </div>
+            </div>
+
+            <!-- Active Discount -->
+            <div
+              class="flex justify-between items-center border border-[#D9D9D9] rounded-md p-3"
+              v-for="benefit in loyaltyPointBenefit_list.loyaltyBenefits.items"
+              :key="benefit.id ?? ''"
+            >
+              <div>
+                <div class="text-[#434343] font-semibold text-base">
+                  {{ benefit.benefitName }}
+
+                  <span class="text-xs font-normal ml-2" v-if="benefit.pointNeeds > loyaltyPoints_list?.total"
+                    >This benefit not applicable for this transaction</span
+                  >
+                </div>
+                <div class="text-xs text-[#8E8E8E] mt-1">
+                  Minimum Transaction :
+                  {{
+                    loyaltyPointSettings_value?.minimumTransaction == null
+                      ? 'Rp 0'
+                      : useCurrencyFormat({
+                          data: loyaltyPointSettings_value?.minimumTransaction,
+                          addSuffix: true,
+                        })
+                  }}
+                  <span class="mx-2">|</span> Point Needs : {{ benefit.pointNeeds }} pts
+                </div>
+              </div>
+              <div class="text-right" v-if="benefit.type === 'discount'">
+                <div class="text-xs text-[#8E8E8E]">Discount</div>
+                <div
+                  class="text-base font-semibold text-[#434343]"
+                  v-if="(benefit.discountFreeItems as IDiscount).isPercent"
+                >
+                  {{ (benefit.discountFreeItems as IDiscount).value }}%
+                </div>
+                <div class="text-base font-semibold text-[#434343]" v-else>
+                  {{
+                    useCurrencyFormat({
+                      data: (benefit.discountFreeItems as IDiscount).value,
+                      addSuffix: true,
+                    })
+                  }}
+                </div>
+              </div>
+              <div class="flex flex-col items-end" v-if="benefit.type === 'free_items'">
+                <span class="text-xs text-[#8E8E8E]">Free Product</span>
+                <div
+                  class="bg-[#EDF6FC] rounded-full px-2 py-0.5"
+                  v-for="item in benefit.discountFreeItems as IFreeItems[]"
+                >
+                  <span class="text-[#18618B] text-xs font-medium"> ({{ item.quantity }}) {{ item.name }} </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Free Product -->
+            <!-- <div class="flex justify-between items-center border border-[#D9D9D9] rounded-md p-3">
+              <div>
+                <div class="text-[#434343] font-semibold text-base">Free Product Deals</div>
+                <div class="text-xs text-[#8E8E8E] mt-1">
+                  Minimum Transaction : Rp 100.000 <span class="mx-2">|</span> Point Needs : 10 pts
+                </div>
+              </div>
+              <div class="flex flex-col items-end">
+                <span class="text-xs text-[#8E8E8E]">Free Product</span>
+                <div class="bg-[#EDF6FC] rounded-full px-2 py-0.5">
+                  <span class="text-[#18618B] text-xs font-medium">(1) Spaghetti Aglio Olio</span>
+                </div>
+              </div>
+            </div> -->
+
+            <!-- Birthday Promo -->
+            <!-- <div class="flex justify-between items-center border border-[#D9D9D9] rounded-md p-3">
+              <div>
+                <div class="text-[#434343] font-semibold text-base">Birthday Promo</div>
+                <div class="text-xs text-[#8E8E8E] mt-1">
+                  Minimum Transaction : Rp 100.000 <span class="mx-2">|</span> Point Needs : 10 pts
+                </div>
+              </div>
+              <div class="flex flex-col items-end">
+                <span class="text-xs text-[#8E8E8E]">Free Product</span>
+                <div class="bg-[#EDF6FC] rounded-full px-2 py-0.5">
+                  <span class="text-[#18618B] text-xs font-medium">(1) Spaghetti Aglio Olio</span>
+                </div>
+              </div>
+            </div> -->
+          </div>
+
+          <!-- CTA Buttons -->
+          <div class="flex justify-end gap-4 mt-4">
+            <button
+              @click="closeLoyaltyModal"
+              class="border border-[#18618B] text-[#18618B] font-semibold text-base px-5 py-2 rounded-lg shadow-sm hover:bg-[#EDF6FC]"
+            >
+              Cancel
+            </button>
+            <button
+              disabled
+              class="bg-[#D9D9D9] text-white font-semibold text-base px-5 py-2 rounded-lg shadow-sm cursor-not-allowed"
+            >
+              Redeem Point
+            </button>
+          </div>
+        </div>
       </div>
 
       <CashierSummaryButtonOrderTable />
