@@ -3,7 +3,7 @@ import { WORKING_HOURS_BASE_ENDPOINT } from '../constants/working-hours-api.cons
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import type { IWorkingHoursFormData, IWorkingHoursStateStore } from '../interfaces';
+import type { IWorkingHoursFormData, IWorkingHoursListResponse, IWorkingHoursStateStore } from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
@@ -12,7 +12,7 @@ export const useWorkingHoursStore = defineStore('working-hours', {
   state: (): IWorkingHoursStateStore => ({
     workingHours_detail: null,
     workingHours_isLoading: false,
-    workingHours_lists: null,
+    workingHours_lists: [],
   }),
   getters: {
     /**
@@ -117,13 +117,17 @@ export const useWorkingHoursStore = defineStore('working-hours', {
      * @method GET
      * @access private
      */
-    async workingHours_list(requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async workingHours_list(requestConfigurations: AxiosRequestConfig): Promise<IWorkingHoursListResponse> {
       this.workingHours_isLoading = true;
 
       try {
-        const response = await httpClient.get<unknown>(WORKING_HOURS_BASE_ENDPOINT, {
+        const response = await httpClient.get<IWorkingHoursListResponse>(WORKING_HOURS_BASE_ENDPOINT, {
           ...requestConfigurations,
         });
+
+        if (Array.isArray(response.data.data)) {
+          this.workingHours_lists = response.data.data;
+        }
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {

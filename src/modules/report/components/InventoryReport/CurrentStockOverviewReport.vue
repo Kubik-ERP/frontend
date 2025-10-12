@@ -1,24 +1,57 @@
 <script setup lang="ts">
+// components
+import CustomDatePicker from '../../components/CustomDatePicker.vue';
 // service
-import { useReportService } from '../services/report.service';
+import { useReportService } from '../../services/report.service';
 const {
-  customerReport_columns,
+  inventoryReport_currentStockOverview_columns,
   report_queryParams,
-  report_getCustomerReport,
-  customerReport_values,
+  report_getInventoryReport,
+  inventoryReport_currentStockOverview_values,
   outlet_lists_options,
   findOutletDetail,
   findStaffDetail,
   hasAccessAllStorePermission,
   outlet_currentOutlet,
 } = useReportService();
+
 // composables for export pdf
-import { useReportExporter } from '../composables/useReportExporter';
+import { useReportExporter } from '../../composables/useReportExporter';
 const { exportToPdf, exportToCsv } = useReportExporter();
+
 const popover = ref();
+
+const formattedDataTable = () => {
+  return [
+    {
+      description: 'Total On Hand',
+      value: useCurrencyFormat({ data: inventoryReport_currentStockOverview_values.value.totalOnHand }),
+    },
+    {
+      description: 'Total Stock Cost',
+      value: useCurrencyFormat({ data: inventoryReport_currentStockOverview_values.value.totalStockCost }),
+    },
+    {
+      description: 'Average Stock Cost',
+      value: useCurrencyFormat({ data: inventoryReport_currentStockOverview_values.value.averageStockCost }),
+    },
+    {
+      description: 'Total Retail Price',
+      value: useCurrencyFormat({ data: inventoryReport_currentStockOverview_values.value.totalRetailPrice }),
+    },
+  ];
+};
+
+const page = ref<number>(1);
+const limit = ref<number>(10);
+const totalRecords = ref<number>(formattedDataTable.length);
+const onChangePage = (newPage: number) => {
+  page.value = newPage;
+};
+
 const handleExportToPdf = () => {
   exportToPdf({
-    reportName: 'Customer Report',
+    reportName: 'Inventory Report - Current Stock Overview Report',
     storeName: hasAccessAllStorePermission
       ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
       : outlet_currentOutlet.value!.name,
@@ -27,13 +60,13 @@ const handleExportToPdf = () => {
       : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: customerReport_columns,
+    columns: inventoryReport_currentStockOverview_columns,
     tableData: formattedDataTable(),
   });
 };
 const handleExportToCsv = () => {
   exportToCsv({
-    reportName: 'Customer Report',
+    reportName: 'Inventory Report - Current Stock Overview Report',
     storeName: hasAccessAllStorePermission
       ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
       : outlet_currentOutlet.value!.name,
@@ -42,51 +75,34 @@ const handleExportToCsv = () => {
       : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: customerReport_columns,
+    columns: inventoryReport_currentStockOverview_columns,
     tableData: formattedDataTable(),
   });
 };
-
-const formattedDataTable = () => {
-  const newData = customerReport_values.value.map(item => ({
-    nama: item.nama,
-    gender: useTitleCaseWithSpaces(item.gender || '') || '-',
-    totalSales: useCurrencyFormat({ data: item.totalSales }),
-    dateAdded: useFormatDate(item.dateAdded, 'dd/MMM/yyyy'),
-    outstanding: useCurrencyFormat({ data: item.outstanding || 0 }),
-    loyaltyPoints: useCurrencyFormat({ data: item.loyaltyPoints || 0, hidePrefix: true }),
-  }));
-
-  return newData || [];
-};
-const page = ref<number>(1);
-const limit = ref<number>(10);
-const onChangePage = (newPage: number) => {
-  page.value = newPage;
-};
-
-onMounted(async () => {
-  await report_getCustomerReport();
-});
 </script>
 <template>
   <section>
     <AppBaseDataTable
       :data="formattedDataTable()"
-      :columns="customerReport_columns"
+      :columns="inventoryReport_currentStockOverview_columns"
       :first="(page - 1) * limit"
       :rows-per-page="limit"
-      :total-records="formattedDataTable().length"
+      :total-records="totalRecords"
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-custom-filter
       @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Customer Report</h1>
+        <h1 class="font-bold text-2xl text-text-primary">Current Stock Overview Report</h1>
       </template>
       <template #header-suffix>
-        <PrimeVueButton variant="outlined" label="Export" @click="popover.toggle($event)">
+        <PrimeVueButton
+          variant="outlined"
+          label="Export"
+          :disabled="formattedDataTable()?.length === 0"
+          @click="popover.toggle($event)"
+        >
           <template #icon>
             <AppBaseSvg name="export" class="!w-5 !h-5" />
           </template>
@@ -116,6 +132,13 @@ onMounted(async () => {
 
       <template #filter>
         <section class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4 pt-4">
+          <CustomDatePicker
+            v-model:start-date="report_queryParams.startDate"
+            v-model:end-date="report_queryParams.endDate"
+            :should-update-type="false"
+            class="col-span-1 xl:col-span-2 2xl:col-span-1"
+            @update:end-date="report_getInventoryReport('current-stock-overview')"
+          />
           <PrimeVueSelect
             v-if="hasAccessAllStorePermission"
             v-model="report_queryParams.store_ids"
@@ -123,9 +146,9 @@ onMounted(async () => {
             option-label="label"
             option-value="value"
             placeholder="Select Outlet"
-            filter
             class="col-span-1 w-full"
-            @change="report_getCustomerReport()"
+            filter
+            @change="report_getInventoryReport('current-stock-overview')"
           >
             <template #dropdownicon>
               <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
