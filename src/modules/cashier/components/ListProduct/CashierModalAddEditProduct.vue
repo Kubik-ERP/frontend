@@ -108,6 +108,28 @@ const imageUrl = computed(() => {
           </div>
         </section>
 
+        <section v-if="(cashierProduct_modalAddEditItem?.product?.products?.length || 0) > 0" id="list-variant">
+          <span class="font-semibold">{{ useLocalization('cashier.mainSection.products') }}</span>
+
+          <div class="border rounded-md border-grayscale-10 overflow-auto flex flex-col max-h-48 flex-grow">
+            <div
+              v-for="product in cashierProduct_modalAddEditItem.product.products"
+              :key="product.product_id"
+              class="flex justify-between w-full p-2"
+            >
+              <div class="flex items-center gap-2">
+             
+
+                <label :for="product.product_id">{{ product.name }}</label>
+              </div>
+
+              <span class="text-sm text-text-disabled">{{
+                product.price == 0 ? 'Free' : `Rp ${product.price}`
+              }}</span>
+            </div>
+          </div>
+        </section>
+
         <PrimeVueButton
           v-if="!cashierProduct_modalAddEditItem.isAddNotesActive"
           variant="text"

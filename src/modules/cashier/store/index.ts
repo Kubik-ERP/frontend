@@ -208,7 +208,33 @@ export const useCashierStore = defineStore('cashier', {
       try {
         const response = await httpClient.post<ICashierResponseProcessCheckout>(
           (route.path.includes('self-order') ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_PROCESS,
-          payload,
+          // payload,
+
+          {
+            ...payload,
+            products: payload.products.map(product => {
+              if ((product.type ?? 'single') === 'single') {
+                return product;
+              } else if ((product.type ?? 'single') === 'bundling') {
+                return {
+                  quantity: product.quantity,
+                  notes: product.notes,
+                  bundling: {
+                    id: product.bundling?.id,
+                    name: product.bundling?.name,
+                    description: product.bundling?.description,
+                    price: product.bundling?.price,
+                    discount: product.bundling?.discount,
+                    type: product.bundling?.bundlingType,
+                    products: product.bundling?.products,
+                  },
+                  bundlingId: product.bundlingId,
+                  type: product.type,
+                };
+              }
+              return product;
+            }),
+          },
           withStoreHeader(route, requestConfigurations),
         );
         return Promise.resolve(response.data);
@@ -246,7 +272,31 @@ export const useCashierStore = defineStore('cashier', {
       try {
         const response = await httpClient.post<ICashierResponseMidtransQrisPayment>(
           (route.path.includes('self-order') ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_INSTANT,
-          payload,
+          {
+            ...payload,
+            products: payload.products.map(product => {
+              if ((product.type ?? 'single') === 'single') {
+                return product;
+              } else if ((product.type ?? 'single') === 'bundling') {
+                return {
+                  quantity: product.quantity,
+                  notes: product.notes,
+                  bundling: {
+                    id: product.bundling?.id,
+                    name: product.bundling?.name,
+                    description: product.bundling?.description,
+                    price: product.bundling?.price,
+                    discount: product.bundling?.discount,
+                    type: product.bundling?.bundlingType,
+                    products: product.bundling?.products,
+                  },
+                  bundlingId: product.bundlingId,
+                  type: product.type,
+                };
+              }
+              return product;
+            }),
+          },
 
           withStoreHeader(route, requestConfigurations),
         );

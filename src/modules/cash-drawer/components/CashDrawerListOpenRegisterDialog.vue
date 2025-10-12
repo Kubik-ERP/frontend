@@ -45,6 +45,10 @@ watch(
 const staffDisplayName = computed(() => {
   return authentication_userData.value?.fullname || 'Current Staff';
 });
+
+const handleSubmit = () => {
+  cashDrawerList_onSubmitOpenRegisterForm()
+}
 </script>
 
 <template>
@@ -175,10 +179,12 @@ const staffDisplayName = computed(() => {
         <PrimeVueButton
           class="bg-primary border-none text-base py-[10px] w-full max-w-40"
           label="Save"
+          :disabled="cashDrawerList_formValidationsOfOpenRegister.$invalid || cashDrawerList_isLoading" 
           type="button"
-          :disabled="cashDrawerList_formValidationsOfOpenRegister.$invalid || cashDrawerList_isLoading"
-          @click="cashDrawerList_onSubmitOpenRegisterForm"
+          @click="handleSubmit"
         />
+
+       
       </footer>
     </template>
   </AppBaseDialog>
