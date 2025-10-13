@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// components
-import CustomDatePicker from '../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../services/report.service';
 const {
@@ -8,8 +6,11 @@ const {
   report_queryParams,
   report_getCustomerReport,
   customerReport_values,
+  outlet_lists_options,
   findOutletDetail,
   findStaffDetail,
+  hasAccessAllStorePermission,
+  outlet_currentOutlet,
 } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../composables/useReportExporter';
@@ -18,8 +19,12 @@ const popover = ref();
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Customer Report',
-    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
-    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    storeName: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      : outlet_currentOutlet.value!.name,
+    storeAddress: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: customerReport_columns,
@@ -29,8 +34,12 @@ const handleExportToPdf = () => {
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Customer Report',
-    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
-    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    storeName: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      : outlet_currentOutlet.value!.name,
+    storeAddress: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: customerReport_columns,
@@ -41,10 +50,10 @@ const handleExportToCsv = () => {
 const formattedDataTable = () => {
   const newData = customerReport_values.value.map(item => ({
     nama: item.nama,
-    gender: item.gender || '-',
+    gender: useTitleCaseWithSpaces(item.gender || '') || '-',
     totalSales: useCurrencyFormat({ data: item.totalSales }),
     dateAdded: useFormatDate(item.dateAdded, 'dd/MMM/yyyy'),
-    outstanding: useCurrencyFormat({ data: item.outstanding || 0, hidePrefix: true }),
+    outstanding: useCurrencyFormat({ data: item.outstanding || 0 }),
     loyaltyPoints: useCurrencyFormat({ data: item.loyaltyPoints || 0, hidePrefix: true }),
   }));
 
@@ -68,6 +77,7 @@ onMounted(async () => {
       :first="(page - 1) * limit"
       :rows-per-page="limit"
       :total-records="formattedDataTable().length"
+      :is-using-filter="false"
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-custom-filter
@@ -106,14 +116,22 @@ onMounted(async () => {
       </template>
 
       <template #filter>
-        <section class="flex items-center pt-4">
-          <CustomDatePicker
-            v-model:start-date="report_queryParams.startDate"
-            v-model:end-date="report_queryParams.endDate"
-            :should-update-type="false"
-            class="max-w-96"
-            @update:end-date="report_getCustomerReport()"
-          />
+        <section class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4 pt-4">
+          <PrimeVueSelect
+            v-if="hasAccessAllStorePermission"
+            v-model="report_queryParams.store_ids"
+            :options="outlet_lists_options"
+            option-label="label"
+            option-value="value"
+            placeholder="Select Outlet"
+            filter
+            class="col-span-1 w-full"
+            @change="report_getCustomerReport()"
+          >
+            <template #dropdownicon>
+              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+            </template>
+          </PrimeVueSelect>
         </section>
       </template>
     </AppBaseDataTable>

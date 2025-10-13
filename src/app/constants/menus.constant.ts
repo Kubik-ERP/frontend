@@ -96,11 +96,11 @@ export const LIST_SIDEBAR_MENUS = [
             translationKey: 'app.menus.sales-report',
             path: '/report/sales-report',
           },
-          // {
-          //   name: 'Inventory Report',
-          //   translationKey: 'app.menus.inventory-report',
-          //   path: '/report/inventory-report',
-          // },
+          {
+            name: 'Inventory Report',
+            translationKey: 'app.menus.inventory-report',
+            path: '/report/inventory-report',
+          },
           // {
           //   name: 'Raw Material Report',
           //   path: '/report/raw-material-report',
@@ -209,24 +209,24 @@ export const LIST_SIDEBAR_MENUS = [
       {
         name: 'Recipe',
         translationKey: 'app.menus.recipe',
-        iconName: 'inventory',
+        iconName: 'recipe',
         path: '/recipe',
         isHaveSubMenus: true,
         subMenus: [
           {
             name: 'Menu Recipe',
             translationKey: 'app.menus.menu-recipe',
-            path: '/menu-recipe',
+            path: '/recipe/menu-recipe',
           },
           {
             name: 'Prep & Batch Management',
             translationKey: 'app.menus.prep-batch-management',
-            path: '/prep-batch-management',
+            path: '/recipe/prep-batch-management',
           },
           {
             name: 'Waste Log',
             translationKey: 'app.menus.waste-log',
-            path: '/waste-log',
+            path: '/recipe/waste-log',
           }
         ],
       },

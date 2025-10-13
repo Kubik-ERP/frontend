@@ -117,5 +117,6 @@ export interface IAccountStoreDetailProvided {
   accountDetail_AssignedStaff_formData: globalThis.Ref<IStoreAssignedStaffFormData>;
   accountDetail_AssignedStaff_formValidations: globalThis.Ref<Validation>;
   accountDetail_AssignedStaff_onSubmit: () => Promise<void>;
+  accountStoreDetail_fetchChangeTableStatus: (tableId: string, newStatus: 'available' | 'occupied') => Promise<void>;
   // accountDetail_listAvailableStaff: globalThis.Ref<IStaffMember[]>;
 }

@@ -7,6 +7,8 @@ export interface IProductBundlingCreateEditFormData {
   type: string;
   price: number;
   grandTotal: number;
+  imagePreview?: string;
+  imageFile?: File;
 }
 
 export type IProduct = {
@@ -53,7 +55,10 @@ export type IProductBundling = {
   products?: {
     product_id: string;
     quantity: number;
+    product_name?: string;
+    product_price?: number;
   }[];
+  picture_url?: string;
 };
 
 export type IProductBundlingList = {
@@ -69,6 +74,7 @@ export type IProductBundlingList = {
 export interface IProductBundlingListRequestQuery {
   page: number;
   limit: number;
+  search?: string | null;
 }
 
 export interface IProductBundling_list {
@@ -92,6 +98,7 @@ export interface IProductBundlingPayload {
     productId: string;
     quantity: number;
   }[];
+  imageFile?: File;
 }
 
 export interface IProductBundlingStore {
@@ -118,6 +125,7 @@ export interface IProductBundlingDetailsResponse {
     product_discount_price: number;
     quantity: number;
   }[];
+  picture_url?: string;
 }
 
 export interface IProductBundlingProvided {
@@ -147,4 +155,9 @@ export interface IProductBundlingProvided {
   // function
   setPricingType: () => void;
   calculateTotalPrice: () => void;
+  productBundling_queryParams: {
+    page: number;
+    limit: number;
+    search?: string | null | undefined;
+  };
 }

@@ -21,6 +21,7 @@ const {
   dailySalesList_getClassOfOrderType,
   dailySalesList_getClassOfPaymentStatus,
   dailySalesList_isLoading,
+  dailySalesList_isUserHasPermissionForManageStaff,
   dailySalesList_onChangePage,
   dailySales_handleOnSortChange,
   dailySalesList_queryParams,
@@ -162,6 +163,7 @@ const dailySalesDataWithItems = computed(() => {
 
             <section id="staff" class="col-span-4">
               <PrimeVueSelect
+                v-if="dailySalesList_isUserHasPermissionForManageStaff"
                 id="staff"
                 v-model="dailySalesList_queryParams.staffId"
                 filter
