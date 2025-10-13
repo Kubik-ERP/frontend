@@ -48,7 +48,7 @@ function formatDate(date: string) {
     <template #header-suffix>
       <div class="flex items-center space-x-2 sm:absolute sm:right-4 sm:top-3">
         <PrimeVueButton
-          class="bg-primary hover:bg-primary-600 text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"
+          class="bg-primary text-white px-4 py-2 h-10 rounded-md flex items-center gap-2"
           @click="stockadjustment_onCreate"
         >
           <i class="pi pi-plus text-sm"></i>
@@ -109,7 +109,7 @@ function formatDate(date: string) {
 
       <!-- Adjusted By -->
       <template v-else-if="column.value === 'username'">
-        {{ data.users?.username || '-' }}
+        {{ data.users?.fullname || '-' }}
 
       </template>
 
