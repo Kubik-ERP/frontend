@@ -197,3 +197,26 @@ export const ITEM_STOCK_ADJUSTMENT_LIST_COLUMNS: IColumnDataTable[] = [
 ]
 
 
+export const ITEM_UNIT_DROPDOWN: IDropdownItem[] = [
+  { label: "Kilogram (Kg)", value: "kg" },
+  { label: "Gram (g)", value: "g" },
+  { label: "Miligram (mg)", value: "mg" },
+  { label: "Liter (L)", value: "l" },
+  { label: "Mililiter (ml)", value: "ml" },
+  { label: "Piece (pcs)", value: "pcs" },
+  { label: "Pack (pck)", value: "pck" },
+  { label: "Bottle", value: "bottle" },
+  { label: "Can", value: "can" },
+  { label: "Sachet", value: "sachet" },
+  { label: "Box", value: "box" },
+  { label: "Dozen", value: "dozen" },
+  { label: "Portion", value: "portion" },
+  { label: "Slice", value: "slice" },
+  { label: "Cup", value: "cup" },
+  { label: "Table Spoon (Tbsp)", value: "tbsp" },
+  { label: "Tea Spoon (Tsp)", value: "tsp" },
+  { label: "Serving", value: "serving" },
+  { label: "Batch", value: "batch" },
+];
+
+
