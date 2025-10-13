@@ -482,7 +482,7 @@ const getIconClass = computed(() => {
             >
               <template #default>
                 <section id="content" class="flex items-center gap-1 lg:gap-2">
-                  <AppBaseSvg name="arrow-left" class="!w-4 !h-4" />
+                  <AppBaseSvg name="arrow-left" class="w-4 h-4 filter-primary-color" />
                   <span v-if="!isCurrentlyMobile" class="font-normal text-sm text-primary">Previous</span>
                 </section>
               </template>
@@ -500,7 +500,7 @@ const getIconClass = computed(() => {
                     class="border-none aspect-square p-2 lg:p-4"
                     :class="
                       currentPage === Number(p)
-                        ? 'bg-blue-secondary-background text-primary'
+                        ? 'bg-primary text-white'
                         : 'bg-transparent text-grayscale-20'
                     "
                     @click="emits('update:currentPage', Number(p) + 1)"
@@ -520,7 +520,7 @@ const getIconClass = computed(() => {
               <template #default>
                 <section id="content" class="flex items-center gap-1 lg:gap-2">
                   <span v-if="!isCurrentlyMobile" class="font-normal text-sm text-primary">Next</span>
-                  <AppBaseSvg name="arrow-right" class="!w-4 !h-4" />
+                  <AppBaseSvg name="arrow-right" class="w-4 h-4 filter-primary-color" />
                 </section>
               </template>
             </PrimeVueButton>
@@ -698,7 +698,7 @@ const getIconClass = computed(() => {
             >
               <template #default>
                 <section id="content" class="flex items-center gap-1 lg:gap-2">
-                  <AppBaseSvg name="arrow-left" class="!w-4 !h-4" />
+                  <AppBaseSvg name="arrow-left" class="w-4 h-4 filter-primary-color" />
                   <span v-if="!isCurrentlyMobile" class="font-normal text-sm text-primary">Previous</span>
                 </section>
               </template>
@@ -716,7 +716,7 @@ const getIconClass = computed(() => {
                     class="border-none aspect-square p-2 lg:p-4"
                     :class="
                       currentPage === Number(p)
-                        ? 'bg-blue-secondary-background text-primary'
+                        ? 'bg-secondary text-white'
                         : 'bg-transparent text-grayscale-20'
                     "
                     @click="emits('update:currentPage', Number(p) + 1)"
@@ -736,7 +736,7 @@ const getIconClass = computed(() => {
               <template #default>
                 <section id="content" class="flex items-center gap-1 lg:gap-2">
                   <span v-if="!isCurrentlyMobile" class="font-normal text-sm text-primary">Next</span>
-                  <AppBaseSvg name="arrow-right" class="!w-4 !h-4" />
+                  <AppBaseSvg name="arrow-right" class="w-4 h-4 filter-primary-color" />
                 </section>
               </template>
             </PrimeVueButton>

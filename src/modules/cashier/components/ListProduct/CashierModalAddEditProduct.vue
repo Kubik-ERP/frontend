@@ -136,7 +136,7 @@ const imageUrl = computed(() => {
           class="w-fit hidden lg:flex"
           @click="cashierProduct_modalAddEditItem.isAddNotesActive = true"
         >
-          <AppBaseSvg name="add-notes" class="h-4 w-4" />
+          <AppBaseSvg name="add-notes" class="h-4 w-4 filter-primary-color" />
 
           <span class="font-semibold text-primary">{{ useLocalization('cashier.mainSection.addNotes') }}</span>
         </PrimeVueButton>

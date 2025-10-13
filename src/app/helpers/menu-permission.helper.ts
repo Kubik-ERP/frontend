@@ -38,7 +38,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   manage_purchase_order: ['/purchase-order'],
 
   // Recipe and kitchen management
-  recipe_management: ['/recipe', '/menu-recipe', '/prep-batch-management', '/waste-log'],
+  recipe_management: ['/recipe', '/recipe/menu-recipe', '/recipe/prep-batch-management', '/recipe/waste-log'],
 
   // Staff management
   manage_staff_member: [

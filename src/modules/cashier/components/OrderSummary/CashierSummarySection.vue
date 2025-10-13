@@ -336,8 +336,8 @@ const closeLoyaltyModal = () => {
     ></div>
     <div v-else>
       <div class="flex gap-2 mb-2">
-        <div class="flex items-center gap-1 p-1 bg-primary-background">
-          <AppBaseSvg name="order-primary" class="!h-4 !w-4 text-primary" />
+        <div class="flex items-center gap-1">
+          <AppBaseSvg name="order-primary" class="h-4 w-4 text-primary filter-primary-color" />
 
           <span class="text-primary text-sm font-semibold">
             {{
@@ -348,8 +348,8 @@ const closeLoyaltyModal = () => {
           </span>
         </div>
 
-        <div v-if="hasCustomerManagementPermission" class="flex items-center gap-1 p-1 bg-primary-background">
-          <AppBaseSvg name="table-primary" class="!h-4 !w-4 text-primary" />
+        <div v-if="hasCustomerManagementPermission" class="flex items-center gap-1 ">
+          <AppBaseSvg name="table-primary" class="h-4 w-4 text-primary filter-primary-color" />
 
           <span
             v-if="cashierOrderSummary_modalSelectTable.selectedTable.length > 0"
@@ -364,10 +364,10 @@ const closeLoyaltyModal = () => {
         class="relative flex justify-center items-center w-full border-b-2 border-b-grayscale-10 cursor-pointer"
         @click="cashierOrderSummary_handleIsExpandedToggle"
       >
-        <div class="absolute top-full rounded-full p-1 bg-primary-background -translate-y-1/2 px-1">
+        <div class="absolute top-full rounded-full p-1 bg-white -translate-y-1/2 px-1">
           <AppBaseSvg
             :name="cashierOrderSummary_data.isExpanded ? 'chevron-up' : 'chevron-down'"
-            class="!h-4 !w-4 text-text-disabled"
+            class="h-4 w-4 filter-primary-color"
           />
         </div>
       </div>

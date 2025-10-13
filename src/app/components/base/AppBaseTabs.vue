@@ -61,7 +61,7 @@ const tabClasses = computed(() => {
 
 // Tab list responsive classes
 const tabListClasses = computed(() => {
-  const baseClasses = 'bg-secondary-background border-none rounded-lg';
+  const baseClasses = 'bg-secondary border-none rounded-lg';
   const paddingClasses = isCurrentlyMobile.value ? 'p-1' : 'p-2';
 
   return `${baseClasses} ${paddingClasses}`;
@@ -100,8 +100,8 @@ const onChange = (value: string | number) => {
         :pt="{
           root: `${tabClasses} ${
             localValue === tab.value
-              ? 'bg-green-primary text-white font-semibold'
-              : 'bg-transparent font-normal text-secondary-hover'
+              ? 'bg-primary text-white font-semibold'
+              : 'bg-transparent font-normal text-white'
           }`,
         }"
       >
