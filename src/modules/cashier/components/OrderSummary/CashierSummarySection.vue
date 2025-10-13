@@ -16,7 +16,7 @@ import { useLoyaltyPointBenefitService } from '@/modules/point-configuration/ser
 import { IDiscount, IFreeItems } from '@/modules/point-configuration/interfaces';
 import { usePointConfigurationService } from '@/modules/point-configuration/services/point-configuration.service';
 import { useCustomerDetailService } from '@/modules/customer/services/customer-detail.service';
-import { useCustomerDetailsStore } from '@/modules/customer/store';
+// import { useCustomerDetailsStore } from '@/modules/customer/store';
 
 const route = useRoute();
 
@@ -165,8 +165,8 @@ const closeLoyaltyModal = () => {
       <button
         v-if="cashierProduct_customerState.selectedCustomer != null"
         type="button"
-        @click="openLoyaltyModal"
         class="flex items-center justify-between w-full h-10 px-4 bg-[#EDF6FC] border border-[#8CC8EB] rounded-lg shadow-sm hover:bg-[#D9EEF9] transition"
+        @click="openLoyaltyModal"
       >
         <div class="flex items-center gap-2">
           <i class="pi pi-star text-[#0F3C56] text-[16px]"></i>
@@ -201,11 +201,11 @@ const closeLoyaltyModal = () => {
 
           <!-- Promo List -->
           <div
-            class="flex flex-col border border-[#EDEDED] rounded-md p-3 space-y-3 overflow-y-auto max-h-[420px]"
             v-if="loyaltyPointBenefit_list.loyaltyBenefits.items.length > 0"
+            class="flex flex-col border border-[#EDEDED] rounded-md p-3 space-y-3 overflow-y-auto max-h-[420px]"
           >
             <!-- Disabled Promo -->
-            <div class="flex justify-between items-center border border-[#D9D9D9] rounded-md bg-[#EDEDED] p-3">
+            <!-- <div class="flex justify-between items-center border border-[#D9D9D9] rounded-md bg-[#EDEDED] p-3">
               <div>
                 <div class="text-[#8E8E8E] font-semibold text-base">
                   Discount Rp 10.000
@@ -219,19 +219,23 @@ const closeLoyaltyModal = () => {
                 <div class="text-xs text-[#8E8E8E]">Discount</div>
                 <div class="text-base font-semibold text-[#8E8E8E]">Rp 10.000</div>
               </div>
-            </div>
+            </div> -->
 
             <!-- Active Discount -->
             <div
-              class="flex justify-between items-center border border-[#D9D9D9] rounded-md p-3"
               v-for="benefit in loyaltyPointBenefit_list.loyaltyBenefits.items"
               :key="benefit.id ?? ''"
+              class="flex justify-between items-center border border-[#D9D9D9] rounded-md p-3"
+              :class="{ 'bg-[#EDEDED]': benefit.pointNeeds > loyaltyPoints_list?.total }"
             >
               <div>
-                <div class="text-[#434343] font-semibold text-base">
+                <div
+                  class="font-semibold text-base"
+                  :class="benefit.pointNeeds > loyaltyPoints_list?.total ? 'text-[#8E8E8E]' : 'text-[#434343]'"
+                >
                   {{ benefit.benefitName }}
 
-                  <span class="text-xs font-normal ml-2" v-if="benefit.pointNeeds > loyaltyPoints_list?.total"
+                  <span v-if="benefit.pointNeeds > loyaltyPoints_list?.total" class="text-xs font-normal ml-2"
                     >This benefit not applicable for this transaction</span
                   >
                 </div>
@@ -248,15 +252,20 @@ const closeLoyaltyModal = () => {
                   <span class="mx-2">|</span> Point Needs : {{ benefit.pointNeeds }} pts
                 </div>
               </div>
-              <div class="text-right" v-if="benefit.type === 'discount'">
+              <div v-if="benefit.type === 'discount'" class="text-right">
                 <div class="text-xs text-[#8E8E8E]">Discount</div>
                 <div
-                  class="text-base font-semibold text-[#434343]"
                   v-if="(benefit.discountFreeItems as IDiscount).isPercent"
+                  class="text-base font-semibold"
+                  :class="benefit.pointNeeds > loyaltyPoints_list?.total ? 'text-[#8E8E8E]' : 'text-[#434343]'"
                 >
                   {{ (benefit.discountFreeItems as IDiscount).value }}%
                 </div>
-                <div class="text-base font-semibold text-[#434343]" v-else>
+                <div
+                  v-else
+                  class="text-base font-semibold"
+                  :class="benefit.pointNeeds > loyaltyPoints_list?.total ? 'text-[#8E8E8E]' : 'text-[#434343]'"
+                >
                   {{
                     useCurrencyFormat({
                       data: (benefit.discountFreeItems as IDiscount).value,
@@ -265,11 +274,12 @@ const closeLoyaltyModal = () => {
                   }}
                 </div>
               </div>
-              <div class="flex flex-col items-end" v-if="benefit.type === 'free_items'">
+              <div v-if="benefit.type === 'free_items'" class="flex flex-col items-end">
                 <span class="text-xs text-[#8E8E8E]">Free Product</span>
                 <div
-                  class="bg-[#EDF6FC] rounded-full px-2 py-0.5"
                   v-for="item in benefit.discountFreeItems as IFreeItems[]"
+                  :key="item.id"
+                  class="bg-[#EDF6FC] rounded-full px-2 py-0.5"
                 >
                   <span class="text-[#18618B] text-xs font-medium"> ({{ item.quantity }}) {{ item.name }} </span>
                 </div>
@@ -312,8 +322,8 @@ const closeLoyaltyModal = () => {
           <!-- CTA Buttons -->
           <div class="flex justify-end gap-4 mt-4">
             <button
-              @click="closeLoyaltyModal"
               class="border border-[#18618B] text-[#18618B] font-semibold text-base px-5 py-2 rounded-lg shadow-sm hover:bg-[#EDF6FC]"
+              @click="closeLoyaltyModal"
             >
               Cancel
             </button>
@@ -348,7 +358,7 @@ const closeLoyaltyModal = () => {
           </span>
         </div>
 
-        <div v-if="hasCustomerManagementPermission" class="flex items-center gap-1 ">
+        <div v-if="hasCustomerManagementPermission" class="flex items-center gap-1">
           <AppBaseSvg name="table-primary" class="h-4 w-4 text-primary filter-primary-color" />
 
           <span
