@@ -364,7 +364,6 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
       await store.loyaltyPointBenefit_deleteBenefit(id, {
         ...httpAbort_registerAbort('LOYALTY_POINT_BENEFIT_DELETE_BENEFIT_REQUEST'),
       });
-      await loyaltyPointBenefit_fetchList();
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.SUCCESS,
@@ -378,6 +377,8 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
       } else {
         console.error(new Error(String(error)));
       }
+    } finally {
+      await loyaltyPointBenefit_fetchList();
     }
   };
 
