@@ -59,6 +59,7 @@ export interface ILoyaltyPointBenefitProvided {
   loyaltyPointBenefit_onSubmitEditDialogDiscount: () => Promise<void>;
   loyaltyPointBenefit_onCloseDialogDiscount: () => void;
   loyaltyPointBenefit_fetchList: () => Promise<void>;
+  loyaltyPointBenefit_onDelete: (id: string) => Promise<void>;
 
   loyaltyPointBenefit_queryParams: IPointConfigurationListRequestQuery;
   loyaltyPointBenefit_list: globalThis.Ref<IPointConfigurationListResponse>;
