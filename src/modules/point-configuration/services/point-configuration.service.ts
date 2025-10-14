@@ -435,16 +435,26 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
 
   const loyaltyPointSettings_fetchDeleteProduct = async (productId: string): Promise<void> => {
     try {
-      await store.loyaltySettings_deleteProductList(productId, {
-        ...httpAbort_registerAbort('LOYALTY_POINT_SETTINGS_DELETE_PRODUCT_REQUEST'),
-      });
-      await loyaltyPointSettings_fetchAllProduct();
+      loyaltyPointSettings_formData.productBasedItems = loyaltyPointSettings_formData.productBasedItems.filter(
+        item => item.productId !== productId,
+      );
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Product has been Removed successfully.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
       } else {
         return Promise.reject(new Error(String(error)));
       }
+    } finally {
+      await loyaltyPointSettings_fetchAllProduct();
     }
   };
 
