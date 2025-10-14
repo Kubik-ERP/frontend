@@ -31,6 +31,7 @@ const {
   loyaltyPointSettingsProduct,
   loyaltyPointSettings_onShowDialogEditProduct,
   loyaltyPointSettings_onCloseDialogEditProduct,
+  loyaltyPointSettings_onDeleteProduct,
 
   isProductSelected,
   getSelectedProductData,
@@ -62,6 +63,12 @@ provide('loyaltyPointSettings', {
   loyaltyPointSettings_EditProduct,
   loyaltyPointSettings_onSubmitDialogEditProduct,
 });
+
+const loyaltyPointBenefit_popover = ref<Record<string, unknown>>({});
+const togglePopover = (id: string, event: Event) => {
+  const popover = loyaltyPointBenefit_popover.value[`popover-${id}`] as { toggle?: (event: Event) => void } | null;
+  popover?.toggle?.(event);
+};
 
 onMounted(async () => {
   await loyaltyPointSettingsDetail();
@@ -274,7 +281,7 @@ onMounted(async () => {
           </template>
           <template #header-suffix>
             <PrimeVueButton
-              class="w-fit"
+              class="w-fit border-primary bg-primary"
               label="Select Product"
               :disabled="!loyaltyPointSettings_formData.productBased"
               @click="loyaltyPointSettings_onShowDialog()"
@@ -306,23 +313,54 @@ onMounted(async () => {
             </template>
             <template v-else-if="column.value === 'action'">
               <PrimeVueButton
-                unstyled
-                :disabled="!loyaltyPointSettings_formData.productBased"
-                class="flex items-center justify-center cursor-pointer"
-                @click="loyaltyPointSettings_onShowDialogEditProduct(data)"
-              >
-                <AppBaseSvg name="edit" class="!w-5 !h-5" />
-              </PrimeVueButton>
-              <!-- <PrimeVueButton
-                unstyled
-                :disabled="!loyaltyPointSettings_formData.productBased"
-                class="flex items-center justify-center cursor-pointer"
-                @click="loyaltyPointSettings_onShowDialogEditProduct(data.id)"
+                variant="text"
+                rounded
+                aria-label="action"
+                @click="(event: Event) => togglePopover(data.productId, event)"
               >
                 <template #icon>
-                  <AppBaseSvg name="edit" class="!w-5 !h-5" />
+                  <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
                 </template>
-              </PrimeVueButton> -->
+              </PrimeVueButton>
+              <PrimeVuePopover
+                :ref="
+                  (el: unknown) => {
+                    if (el) loyaltyPointBenefit_popover[`popover-${data.productId}`] = el;
+                  }
+                "
+                :pt="{
+                  content: 'p-0',
+                }"
+              >
+                <section id="addBenefit_popover-content" class="flex flex-col">
+                  <PrimeVueButton
+                    variant="text"
+                    aria-label="edit"
+                    label="Edit"
+                    @click="loyaltyPointSettings_onShowDialogEditProduct(data)"
+                  >
+                    <template #default>
+                      <section class="flex items-center gap-2 w-full">
+                        <AppBaseSvg name="edit" class="!w-4 !h-4" />
+                        <span class="font-normal text-sm text-text-primary">Edit</span>
+                      </section>
+                    </template>
+                  </PrimeVueButton>
+                  <PrimeVueButton
+                    variant="text"
+                    aria-label="delete"
+                    label="Delete"
+                    @click="loyaltyPointSettings_onDeleteProduct(data.productId)"
+                  >
+                    <template #default>
+                      <section class="flex items-center gap-2 w-full">
+                        <AppBaseSvg name="delete" class="!w-4 !h-4" />
+                        <span class="font-normal text-sm text-text-primary">Delete</span>
+                      </section>
+                    </template>
+                  </PrimeVueButton>
+                </section>
+              </PrimeVuePopover>
             </template>
             <template v-else>
               <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
@@ -406,7 +444,7 @@ onMounted(async () => {
       <footer class="col-span-2 flex items-center w-full gap-4 pb-8">
         <router-link :to="{ name: 'point-configuration.index' }">
           <PrimeVueButton
-            class="bg-transparent border-primary w-full max-w-44"
+            class="bg-transparent border-primary w-full max-w-44 text-primary"
             label="Cancel"
             severity="secondary"
             variant="outlined"
@@ -425,4 +463,5 @@ onMounted(async () => {
   </section>
   <DialogSelectItems />
   <DialogEditSelectedItems />
+  <AppBaseDialogConfirmation id="loyalty-point-setting-delete-dialog-confirmation" />
 </template>
