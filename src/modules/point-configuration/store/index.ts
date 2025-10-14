@@ -339,7 +339,7 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
       this.productList_isLoading = true;
       try {
         const response = await httpClient.delete(
-          `${LOYALTY_POINT_SETTINGS_BASE_ENDPOINT}/${this.loyaltyPointSettings_value.id}/product/${id}`,
+          `${LOYALTY_POINT_SETTINGS_BASE_ENDPOINT}/${id}`,
           requestConfigurations,
         );
         return Promise.resolve(response.data);
