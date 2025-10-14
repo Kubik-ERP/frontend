@@ -70,6 +70,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     priceGrosir: 0,
     imagePreview: null,
     imageFile: null,
+    conversions: [],
   });
 
   const route = useRoute();
@@ -95,6 +96,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
           priceGrosir: item.priceGrosir,
           imagePreview: item.imageUrl ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${item.imageUrl}` : null,
           imageFile: item.imageUrl ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${item.imageUrl}` : null,
+          conversions: item.conversions || [],
         });
       } else if (route.params.id) {
         inventoryItemsFormMode.value = 'edit';
@@ -119,6 +121,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
           priceGrosir: 0,
           imagePreview: null,
           imageFile: null,
+          conversions: [],
         };
       }
     },
@@ -150,7 +153,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
 
   const inventoryItemsAction_isValid = computed(() => !inventoryItemsAction_Validation.value.$invalid);
 
-  const onSubmit = async (payload: IInventoryItemsPayload, mode: 'create' | 'edit', id?: string) => {
+  const onSubmit = async (mode: 'create' | 'edit', id?: string) => {
     const isFormCorrect = await inventoryItemsAction_Validation.value.$validate();
     if (!isFormCorrect) {
       const argsEventEmitter: IPropsToast = {
@@ -163,7 +166,7 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
       return;
     }
 
-    const formattedPayload = { ...payload };
+    const formattedPayload = { ...inventoryItemsAction_formData.value };
     if (formattedPayload.expiryDate instanceof Date) {
       const date = formattedPayload.expiryDate;
       const year = date.getFullYear();
