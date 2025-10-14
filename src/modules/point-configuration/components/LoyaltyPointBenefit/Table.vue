@@ -66,7 +66,7 @@ const hasPermission = rbac.hasPermission('general_loyalty_point_configuration');
       <template #header-suffix>
         <PrimeVueButton
           v-if="hasPermission"
-          class="w-fit"
+          class="w-fit border-primary-border bg-primary"
           label="Add Benefit"
           :disabled="!loyaltyPointBenefit_list.loyaltySettingsStatus"
           @click="addBenefit_popover.toggle($event)"
