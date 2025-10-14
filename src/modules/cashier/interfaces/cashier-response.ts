@@ -93,6 +93,19 @@ export interface IProductItem {
   barcode?: string;
   stockQuantity?: number;
   variant: IProductVariant[];
+
+  // product bundling props, i merge it because time constraints
+  description?: string;
+  discount?: number | null;
+  type?: string;
+  bundlingType?: string;
+
+  products?: {
+    product_id: string;
+    quantity: number;
+    name: string;
+    price: number;
+  }[];
 }
 
 export interface ICashierCategoriesHasProductResponse {

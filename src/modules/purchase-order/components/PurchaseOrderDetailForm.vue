@@ -32,7 +32,7 @@ const {
           :to="{ name: 'purchase-order.edit', params: { id: purchaseOrderDetail_data?.id } }"
           class="inline-flex items-center gap-2 basic-smooth-animation hover:bg-grayscale-10 max-h-10 p-4 rounded-lg"
         >
-          <AppBaseSvg name="edit" class="w-4 h4" />
+          <AppBaseSvg name="edit" class="w-4 h-4 filter-primary-color" />
 
           <span class="font-semibold text-primary text-sm">
             Edit PO Detail

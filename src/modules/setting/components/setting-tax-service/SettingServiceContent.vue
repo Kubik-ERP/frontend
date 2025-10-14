@@ -47,7 +47,7 @@ const {
           </AppBaseFormGroup>
 
           <section id="tax-configuration" class="flex flex-col gap-2">
-            <h6 class="font-semibold text-sm text-black">Tax Configuration</h6>
+            <h6 class="font-semibold text-sm text-black">Service Charge Configuration</h6>
 
             <section id="tax-product-price" class="flex flex-col gap-2">
               <p class="font-normal text-sm text-black">Product price includes service charge</p>

@@ -66,7 +66,7 @@ const imageUrl = computed(() => {
 
           <div class="flex w-full mt-2 justify-between items-end">
             <PrimeVueChip
-              class="bg-primary-background font-normal text-xs px-2 py-[6px] text-text-disabled"
+              class="bg-primary text-white font-normal text-xs px-2 py-[6px]"
               :label="props.category"
             />
 

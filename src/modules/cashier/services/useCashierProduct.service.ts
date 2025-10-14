@@ -11,6 +11,10 @@ import { useOutletStore } from '@/modules/outlet/store';
 // Toast
 import eventBus from '@/plugins/mitt';
 
+import { useProductBundlingService } from '@/modules/product-bundling/services/product-bundling.service';
+
+const { productBundling_queryParams } = useProductBundlingService();
+
 /**
  * @description Closure function that returns everything what we need into an object
  */
@@ -65,9 +69,9 @@ export const useCashierProductService = (): ICashierProductProvided => {
   });
 
   /**
-    @description Handle fetch category
-    @param {string} category
-  */
+      @description Handle fetch category
+      @param {string} category
+    */
   const cashierProduct_handleFetchCategory = async () => {
     cashierProduct_productState.value.isLoadingProduct = true;
     try {
@@ -82,9 +86,9 @@ export const useCashierProductService = (): ICashierProductProvided => {
   };
 
   /**
-    @description Handle fetch product category
-    @param {string} category
-  */
+      @description Handle fetch product category
+      @param {string} category
+    */
   const cashierProduct_handleFetchProductCategory = async () => {
     cashierProduct_productState.value.isLoadingProduct = true;
     try {
@@ -92,11 +96,19 @@ export const useCashierProductService = (): ICashierProductProvided => {
 
       const selectedCategoryId = cashierProduct_productState.value.selectedCategory;
 
+      if (selectedCategoryId == 'bundle') {
+        cashierProduct_productState.value.listProductCategory = [];
+        productBundling_queryParams.search = cashierProduct_productState.value.searchProduct;
+        return;
+      }
+
       const response = await store.cashierProduct_fetchCategoryProducts(
         selectedCategoryId,
         cashierProduct_productState.value.searchProduct,
         route,
       );
+
+      productBundling_queryParams.search = cashierProduct_productState.value.searchProduct;
 
       cashierProduct_productState.value.listProductCategory = response.data;
     } catch (error) {
@@ -320,20 +332,43 @@ export const useCashierProductService = (): ICashierProductProvided => {
    * @param {ICashierVariant} variant
    */
   const cashierProduct_handleSelectProduct = (product?: IProductItem, item?: ICashierModalAddProductItem) => {
+    console.log(
+      'cashierProduct_handleSelectProduct called with product:',
+      product,
+      'and item:',
+      item,
+      ' and product.type: ',
+      product?.type,
+    );
     if (product && item) {
       const existingProduct = cashierProduct_selectedProduct.value.find(
-        val => val.product?.id === product?.id && item?.variant.id === val.variant?.id,
+        val =>
+          (val.product?.id === product?.id && item?.variant.id === val.variant?.id) ||
+          val.bundling?.id === product?.id,
       );
 
       if (existingProduct) {
         existingProduct.quantity = item.quantity;
         existingProduct.notes = item.notes;
-      } else {
+      } else if ((product.type ?? 'single') === 'single') {
         cashierProduct_selectedProduct.value.push({
           product,
           variantId: item.variant.id,
           productId: product.id,
           ...item,
+          type: product.type ?? 'single',
+        });
+      } else if ((product.type ?? 'single') === 'bundling') {
+        cashierProduct_selectedProduct.value.push({
+          ...item,
+          bundling: product,
+          bundlingId: product.id,
+          type: product.type ?? 'single',
+
+          //! product props, please remove later
+          product,
+          variantId: item.variant.id,
+          productId: product.id,
         });
       }
     }
