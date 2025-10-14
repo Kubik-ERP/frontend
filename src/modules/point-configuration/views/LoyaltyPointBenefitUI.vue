@@ -26,6 +26,7 @@ const {
   loyaltyPointBenefit_onSubmitEditDialogDiscount,
   loyaltyPointBenefit_onCloseDialogDiscount,
   loyaltyPointBenefit_fetchList,
+  loyaltyPointBenefit_onDelete,
 
   loyaltyPointBenefit_queryParams,
   loyaltyPointBenefit_list,
@@ -61,6 +62,7 @@ provide('loyaltyPointBenefit', {
   loyaltyPointBenefit_onSubmitEditDialogDiscount,
   loyaltyPointBenefit_onCloseDialogDiscount,
   loyaltyPointBenefit_fetchList,
+  loyaltyPointBenefit_onDelete,
 
   loyaltyPointBenefit_queryParams,
   loyaltyPointBenefit_list,
@@ -104,5 +106,6 @@ onMounted(async () => {
       <DialogDiscount />
       <DialogFreeItems />
     </section>
+    <AppBaseDialogConfirmation id="loyalty-point-benefit-delete-dialog-confirmation" />
   </section>
 </template>
