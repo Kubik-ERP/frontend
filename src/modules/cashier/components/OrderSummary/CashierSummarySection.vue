@@ -13,9 +13,10 @@ import { ICashierOrderType } from '../../interfaces';
 // Route
 import { useRoute } from 'vue-router';
 import { useLoyaltyPointBenefitService } from '@/modules/point-configuration/services/loyalty-point-benefit.service';
-import { IDiscount, IFreeItems } from '@/modules/point-configuration/interfaces';
+import { IDiscount, IFreeItems, ILoyaltyPointBenefit } from '@/modules/point-configuration/interfaces';
 import { usePointConfigurationService } from '@/modules/point-configuration/services/point-configuration.service';
 import { useCustomerDetailService } from '@/modules/customer/services/customer-detail.service';
+import { computed, inject, onMounted, provide, ref, watch } from 'vue';
 // import { useCustomerDetailsStore } from '@/modules/customer/store';
 
 const route = useRoute();
@@ -30,12 +31,14 @@ const {
   cashierOrderSummary_modalOrderType,
   cashierOrderSummary_modalSelectTable,
   cashierProduct_customerState,
+  cashierOrderSummary_selectedLoyaltyBenefitId,
+  cashierOrderSummary_selectedLoyaltyBenefit,
   cashierProduct_onScrollFetchMoreCustomers,
   cashierProduct_onSearchCustomer,
   cashierOrderSummary_handleIsExpandedToggle,
   hasCustomerManagementPermission,
-
   cashierOrderSummary_handleModalAddCustomer,
+  cashierOrderSummary_setSelectedLoyaltyBenefit,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
 
 const { loyaltyPointBenefit_fetchList, loyaltyPointBenefit_list } = useLoyaltyPointBenefitService();
@@ -45,18 +48,117 @@ const { loyaltyPoints_list, customerDetails_fetchLoyaltyPointByCustomerId } = us
 
 const showLoyaltyModal = ref(false);
 
-const openLoyaltyModal = async () => {
-  showLoyaltyModal.value = true;
-  await loyaltyPointSettingsDetail();
-  loyaltyPointBenefit_fetchList();
-  await customerDetails_fetchLoyaltyPointByCustomerId(cashierProduct_customerState.value.selectedCustomer!.id, {
+// State for selected loyalty benefit
+const selectedBenefit = ref<ILoyaltyPointBenefit | null>(null);
+
+// Computed property for button text
+const loyaltyButtonText = computed(() => {
+  if (selectedBenefit.value) {
+    return `${selectedBenefit.value.benefitName} (${selectedBenefit.value.pointNeeds} pts)`;
+  }
+  return 'Redeem Loyalty Point';
+});
+
+// const selectedBenefitDiscount = computed<IDiscount | null>(() => {
+//   if (selectedBenefit.value?.type === 'discount') {
+//     return selectedBenefit.value.discountFreeItems as IDiscount;
+//   }
+
+//   return null;
+// });
+
+// const selectedBenefitFreeItems = computed<IFreeItems[]>(() => {
+//   if (selectedBenefit.value?.type === 'free_items') {
+//     return (selectedBenefit.value.discountFreeItems as IFreeItems[]) ?? [];
+//   }
+
+//   return [];
+// });
+
+// Provide the selected benefit to parent components
+provide('selectedLoyaltyBenefit', {
+  benefit: selectedBenefit,
+  pointsUsed: computed(() => (selectedBenefit.value ? selectedBenefit.value.pointNeeds : 0)),
+});
+
+const requestCustomerLoyaltyPoint = (customerId: string) => {
+  return customerDetails_fetchLoyaltyPointByCustomerId(customerId, {
     page: 1,
     limit: 1,
   });
 };
 
+const openLoyaltyModal = async () => {
+  await loyaltyPointSettingsDetail();
+  loyaltyPointBenefit_fetchList();
+  requestCustomerLoyaltyPoint(cashierProduct_customerState.value.selectedCustomer!.id);
+
+  showLoyaltyModal.value = true;
+};
+
 const closeLoyaltyModal = () => {
   showLoyaltyModal.value = false;
+};
+
+onMounted(() => {
+  loyaltyPointSettingsDetail();
+  loyaltyPointBenefit_fetchList();
+});
+
+watch(
+  () => cashierProduct_customerState.value.selectedCustomer?.id,
+  newCustomerId => {
+    if (!newCustomerId) {
+      cashierOrderSummary_setSelectedLoyaltyBenefit(null);
+      selectedBenefit.value = null;
+      return;
+    }
+
+    selectedBenefit.value = null;
+
+    if (loyaltyPoints_list.value) {
+      loyaltyPoints_list.value.total = 0;
+    }
+
+    requestCustomerLoyaltyPoint(newCustomerId);
+  },
+  { immediate: true },
+);
+
+watch(
+  () => selectedBenefit.value,
+  benefit => {
+    cashierOrderSummary_setSelectedLoyaltyBenefit(benefit ?? null);
+  },
+  { immediate: true },
+);
+
+watch(
+  () => cashierOrderSummary_selectedLoyaltyBenefitId.value,
+  benefitId => {
+    if (!benefitId) {
+      selectedBenefit.value = null;
+      return;
+    }
+
+    if (cashierOrderSummary_selectedLoyaltyBenefit?.value?.id === benefitId) {
+      selectedBenefit.value = cashierOrderSummary_selectedLoyaltyBenefit.value;
+    }
+  },
+);
+
+const selectBenefit = (benefit: ILoyaltyPointBenefit) => {
+  // Only allow selection if user has enough points
+  if (benefit.pointNeeds <= (loyaltyPoints_list.value?.total || 0)) {
+    selectedBenefit.value = benefit.id === selectedBenefit.value?.id ? null : benefit;
+  }
+};
+
+const redeemPoints = () => {
+  if (selectedBenefit.value) {
+    closeLoyaltyModal();
+    // After closing modal, the button text will be updated to show the selected benefit
+  }
 };
 </script>
 
@@ -128,6 +230,19 @@ const closeLoyaltyModal = () => {
             }"
             @complete="(event: AutoCompleteCompleteEvent) => cashierProduct_onSearchCustomer(event.query)"
           >
+            <template #value="slotProps">
+              <div v-if="slotProps.value" class="flex items-center gap-2">
+                <span class="text-sm">{{ slotProps.value.name }}</span>
+                <span
+                  v-if="loyaltyPoints_list?.total != null"
+                  class="flex items-center gap-1 text-xs font-semibold text-[#18618B]"
+                >
+                  <i class="pi pi-star text-[#0F3C56] text-[12px]"></i>
+                  <span>{{ loyaltyPoints_list?.total }} pts</span>
+                </span>
+              </div>
+              <span v-else>{{ slotProps.placeholder ?? 'Select Customer Name (Optional)' }}</span>
+            </template>
             <template #option="slotProps">
               <div class="flex gap-1 text-xs w-full items-center">
                 <div class="flex flex-col w-full">
@@ -154,7 +269,11 @@ const closeLoyaltyModal = () => {
                   size="small"
                   icon="pi pi-plus"
                   class="text-sm"
-                  @click="cashierOrderSummary_handleModalAddCustomer(null)"
+                  @click="
+                    async () => {
+                      cashierOrderSummary_handleModalAddCustomer(null);
+                    }
+                  "
                 />
               </div>
             </template>
@@ -170,7 +289,37 @@ const closeLoyaltyModal = () => {
       >
         <div class="flex items-center gap-2">
           <i class="pi pi-star text-[#0F3C56] text-[16px]"></i>
-          <span class="text-[#18618B] font-semibold text-base leading-5">Redeem Loyalty Point</span>
+          <div class="flex flex-col gap-1">
+            <span class="text-[#18618B] font-semibold text-base leading-5">
+              {{ selectedBenefit ? loyaltyButtonText : 'Redeem Loyalty Point' }}
+            </span>
+            <!-- <span v-if="selectedBenefitDiscount" class="text-[#18618B] text-xs font-medium">
+              <template v-if="selectedBenefitDiscount.isPercent">
+                {{ selectedBenefitDiscount.value }}% discount
+              </template>
+              <template v-else>
+                {{
+                  useCurrencyFormat({
+                    data: selectedBenefitDiscount.value,
+                    addSuffix: true,
+                  })
+                }}
+                discount
+              </template>
+            </span>
+            <div
+              v-else-if="selectedBenefitFreeItems.length"
+              class="flex flex-wrap gap-1 text-[#18618B] text-xs font-medium"
+            >
+              <span
+                v-for="item in selectedBenefitFreeItems"
+                :key="item.id ?? item.name"
+                class="bg-[#EDF6FC] rounded-full px-2 py-0.5"
+              >
+                ({{ item.quantity }}) {{ item.name }}
+              </span>
+            </div> -->
+          </div>
         </div>
         <i class="pi pi-chevron-right text-[#0F3C56] text-[16px]"></i>
       </button>
@@ -225,8 +374,14 @@ const closeLoyaltyModal = () => {
             <div
               v-for="benefit in loyaltyPointBenefit_list.loyaltyBenefits.items"
               :key="benefit.id ?? ''"
-              class="flex justify-between items-center border border-[#D9D9D9] rounded-md p-3"
-              :class="{ 'bg-[#EDEDED]': benefit.pointNeeds > loyaltyPoints_list?.total }"
+              class="flex justify-between items-center border rounded-md p-3 cursor-pointer"
+              :class="{
+                'bg-[#EDEDED]': benefit.pointNeeds > loyaltyPoints_list?.total,
+                'border-[#D9D9D9]': selectedBenefit?.id !== benefit.id,
+                'border-[#18618B] border-2':
+                  selectedBenefit?.id === benefit.id && benefit.pointNeeds <= loyaltyPoints_list?.total,
+              }"
+              @click="selectBenefit(benefit)"
             >
               <div>
                 <div
@@ -284,6 +439,12 @@ const closeLoyaltyModal = () => {
                   <span class="text-[#18618B] text-xs font-medium"> ({{ item.quantity }}) {{ item.name }} </span>
                 </div>
               </div>
+              <div
+                v-if="selectedBenefit?.id === benefit.id && benefit.pointNeeds <= loyaltyPoints_list?.total"
+                class="absolute right-8 top-1/2 -translate-y-1/2"
+              >
+                <i class="pi pi-check-circle text-[#18618B] text-lg"></i>
+              </div>
             </div>
 
             <!-- Free Product -->
@@ -328,8 +489,19 @@ const closeLoyaltyModal = () => {
               Cancel
             </button>
             <button
-              disabled
-              class="bg-[#D9D9D9] text-white font-semibold text-base px-5 py-2 rounded-lg shadow-sm cursor-not-allowed"
+              :disabled="
+                !selectedBenefit ||
+                (selectedBenefit && selectedBenefit.pointNeeds > (loyaltyPoints_list?.total || 0))
+              "
+              :class="{
+                'bg-[#18618B] text-white hover:bg-[#0F3C56]':
+                  selectedBenefit && selectedBenefit.pointNeeds <= (loyaltyPoints_list?.total || 0),
+                'bg-[#D9D9D9] text-white cursor-not-allowed':
+                  !selectedBenefit ||
+                  (selectedBenefit && selectedBenefit.pointNeeds > (loyaltyPoints_list?.total || 0)),
+              }"
+              class="font-semibold text-base px-5 py-2 rounded-lg shadow-sm transition"
+              @click="redeemPoints"
             >
               Redeem Point
             </button>
