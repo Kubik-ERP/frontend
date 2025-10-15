@@ -196,7 +196,7 @@ const orderTypeLabel = computed(() => {
                   {{ bundlingItem.products?.name }}
                 </td>
                 <td class="font-normal pr-0.5 text-black text-[12pt] text-center">
-                  {{ bundlingItem.qty }}x
+                  
                 </td>
                 <td
                   
