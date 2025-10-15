@@ -284,13 +284,13 @@ const redeemPoints = () => {
       <button
         v-if="cashierProduct_customerState.selectedCustomer != null"
         type="button"
-        class="flex items-center justify-between w-full h-10 px-4 bg-[#EDF6FC] border border-[#8CC8EB] rounded-lg shadow-sm hover:bg-[#D9EEF9] transition"
+        class="flex items-center justify-between w-full h-10 px-4 bg-primary-background border border-primary-border rounded-lg shadow-sm hover:bg-primary-background transition"
         @click="openLoyaltyModal"
       >
         <div class="flex items-center gap-2">
-          <i class="pi pi-star text-[#0F3C56] text-[16px]"></i>
+          <i class="pi pi-star text-primary text-[16px]"></i>
           <div class="flex flex-col gap-1">
-            <span class="text-[#18618B] font-semibold text-base leading-5">
+            <span class="text-primary font-semibold text-base leading-5">
               {{ selectedBenefit ? loyaltyButtonText : 'Redeem Loyalty Point' }}
             </span>
             <!-- <span v-if="selectedBenefitDiscount" class="text-[#18618B] text-xs font-medium">
@@ -309,19 +309,19 @@ const redeemPoints = () => {
             </span>
             <div
               v-else-if="selectedBenefitFreeItems.length"
-              class="flex flex-wrap gap-1 text-[#18618B] text-xs font-medium"
+              class="flex flex-wrap gap-1 text-primary text-xs font-medium"
             >
               <span
                 v-for="item in selectedBenefitFreeItems"
                 :key="item.id ?? item.name"
-                class="bg-[#EDF6FC] rounded-full px-2 py-0.5"
+                class="bg-primary-background rounded-full px-2 py-0.5"
               >
                 ({{ item.quantity }}) {{ item.name }}
               </span>
             </div> -->
           </div>
         </div>
-        <i class="pi pi-chevron-right text-[#0F3C56] text-[16px]"></i>
+        <i class="pi pi-chevron-right text-primary text-[16px]"></i>
       </button>
 
       <!-- Modal -->
@@ -333,12 +333,12 @@ const redeemPoints = () => {
           <h2 class="text-[18px] font-semibold text-black">Redeem Loyalty Point</h2>
 
           <!-- Customer Info Card -->
-          <div class="flex flex-col items-center border border-[#8CC8EB] rounded-lg p-4 w-full">
+          <div class="flex flex-col items-center border border-primary-border rounded-lg p-4 w-full">
             <span class="text-lg font-semibold text-[#070707]">{{
               cashierProduct_customerState.selectedCustomer?.name
             }}</span>
-            <div class="flex items-center gap-1 text-[#18618B] text-xs font-semibold">
-              <i class="pi pi-star-fill text-[#0F3C56]"></i>
+            <div class="flex items-center gap-1 text-primary text-xs font-semibold">
+              <i class="pi pi-star-fill text-primary"></i>
               {{ loyaltyPoints_list?.total }} pts
             </div>
             <span class="text-[#323232] text-sm mt-1">{{
@@ -376,9 +376,9 @@ const redeemPoints = () => {
               :key="benefit.id ?? ''"
               class="flex justify-between items-center border rounded-md p-3 cursor-pointer"
               :class="{
-                'bg-[#EDEDED]': benefit.pointNeeds > loyaltyPoints_list?.total,
-                'border-[#D9D9D9]': selectedBenefit?.id !== benefit.id,
-                'border-[#18618B] border-2':
+                'bg-grayscale-10': benefit.pointNeeds > loyaltyPoints_list?.total,
+                'border-grayscale-20': selectedBenefit?.id !== benefit.id,
+                'border-primary border-2':
                   selectedBenefit?.id === benefit.id && benefit.pointNeeds <= loyaltyPoints_list?.total,
               }"
               @click="selectBenefit(benefit)"
@@ -434,16 +434,16 @@ const redeemPoints = () => {
                 <div
                   v-for="item in benefit.discountFreeItems as IFreeItems[]"
                   :key="item.id"
-                  class="bg-[#EDF6FC] rounded-full px-2 py-0.5"
+                  class="bg-primary-background rounded-full px-2 py-0.5"
                 >
-                  <span class="text-[#18618B] text-xs font-medium"> ({{ item.quantity }}) {{ item.name }} </span>
+                  <span class="text-primary text-xs font-medium"> ({{ item.quantity }}) {{ item.name }} </span>
                 </div>
               </div>
               <div
                 v-if="selectedBenefit?.id === benefit.id && benefit.pointNeeds <= loyaltyPoints_list?.total"
                 class="absolute right-8 top-1/2 -translate-y-1/2"
               >
-                <i class="pi pi-check-circle text-[#18618B] text-lg"></i>
+                <i class="pi pi-check-circle text-primary text-lg"></i>
               </div>
             </div>
 
@@ -483,7 +483,7 @@ const redeemPoints = () => {
           <!-- CTA Buttons -->
           <div class="flex justify-end gap-4 mt-4">
             <button
-              class="border border-[#18618B] text-[#18618B] font-semibold text-base px-5 py-2 rounded-lg shadow-sm hover:bg-[#EDF6FC]"
+              class="border border-primary text-primary font-semibold text-base px-5 py-2 rounded-lg shadow-sm hover:bg-primary-background"
               @click="closeLoyaltyModal"
             >
               Cancel
@@ -494,7 +494,7 @@ const redeemPoints = () => {
                 (selectedBenefit && selectedBenefit.pointNeeds > (loyaltyPoints_list?.total || 0))
               "
               :class="{
-                'bg-[#18618B] text-white hover:bg-[#0F3C56]':
+                'bg-primary text-white hover:bg-primary':
                   selectedBenefit && selectedBenefit.pointNeeds <= (loyaltyPoints_list?.total || 0),
                 'bg-[#D9D9D9] text-white cursor-not-allowed':
                   !selectedBenefit ||
