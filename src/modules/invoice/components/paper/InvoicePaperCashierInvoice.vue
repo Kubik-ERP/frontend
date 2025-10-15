@@ -183,13 +183,21 @@ const orderTypeLabel = computed(() => {
               </td>
             </tr>
 
+            <tr v-if="item.invoiceBundlingItems.length > 0">
+                <td class="font-normal pr-0.5 text-black text-[12pt]">
+                  Bundling Items:
+                </td>
+            </tr>
+
             <!-- Bundling Products (Sub-items) -->
             <template v-for="bundlingItem in item.invoiceBundlingItems" :key="bundlingItem.id">
               <tr>
                 <td class="pl-6 font-normal pr-0.5 text-black text-[12pt] italic">
                   {{ bundlingItem.products?.name }}
                 </td>
-                <td class="font-normal pr-0.5 text-black text-[12pt] text-center"></td>
+                <td class="font-normal pr-0.5 text-black text-[12pt] text-center">
+                  {{ bundlingItem.qty }}x
+                </td>
                 <td
                   
                   class="font-normal pr-0.5 text-black text-[12pt] text-center"
@@ -294,6 +302,23 @@ const orderTypeLabel = computed(() => {
                       : invoice_invoiceData.data.voucherAmount || 0,
                 })
               }}
+            </td>
+          </tr>
+
+           <tr v-if="invoice_invoiceData.data.loyaltyDiscount && invoice_invoiceData.data.loyaltyDiscount > 0">
+            <td class="font-normal text-black text-[12pt] py-1">Loyalty Point Discount</td>
+            <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
+              -
+              {{useCurrencyFormat({data: invoice_invoiceData.data.loyaltyDiscount || 0})}}
+            </td>
+          </tr>
+
+           <tr v-if="invoice_invoiceData.data.loyaltyPointsBenefit && invoice_invoiceData.data.loyaltyPointsBenefit?.pointsNeeds > 0">
+            <td class="font-normal text-black text-[12pt] py-1">Loyalty Point</td>
+            <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
+              -{{
+               invoice_invoiceData.data.loyaltyPointsBenefit?.pointsNeeds || 0
+              }} pts
             </td>
           </tr>
 

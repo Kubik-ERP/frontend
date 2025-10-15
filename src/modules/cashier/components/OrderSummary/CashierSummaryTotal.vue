@@ -1,11 +1,19 @@
 <script setup lang="ts">
+// Vue
+import { computed, inject } from 'vue';
+
 // Interfaces
 import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-summary';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierOrderSummary_calculateEstimation, cashierOrderSummary_selectedLoyaltyBenefit } =
+  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+
+const loyaltyRedeemAmount = computed(() => cashierOrderSummary_calculateEstimation.value?.data?.totalRedeemDiscount ?? 0);
+
+const loyaltyPointUsage = computed(() => cashierOrderSummary_selectedLoyaltyBenefit.value?.pointNeeds ?? 0);
 </script>
 
 <template>
@@ -115,6 +123,32 @@ const { cashierOrderSummary_calculateEstimation } = inject<ICashierOrderSummaryP
           }}</span
         >
         <PrimeVueSkeleton v-else width="6rem" />
+      </div>
+      
+      <!-- Loyalty Point Discount -->
+      <div
+        v-if="loyaltyRedeemAmount > 0"
+        class="flex justify-between text-sm text-text-disabled"
+      >
+        <span>Loyalty Point</span>
+        <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
+          -
+          {{
+            useCurrencyFormat({
+              data: loyaltyRedeemAmount,
+            })
+          }}
+        </span>
+        <PrimeVueSkeleton v-else width="6rem" />
+      </div>
+
+      <!-- Loyalty Point Usage -->
+      <div
+        v-if="loyaltyPointUsage > 0"
+        class="flex justify-between text-sm text-text-disabled"
+      >
+        <span>Point Usage</span>
+        <span>-{{ loyaltyPointUsage }}</span>
       </div>
     </div>
 
