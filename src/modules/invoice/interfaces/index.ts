@@ -112,6 +112,41 @@ export interface IInvoicePaymentMethod {
   isAvailable: boolean;
 }
 
+export interface IInvoiceLoyaltyBenefitProduct {
+  id: string;
+  name: string;
+  price: number;
+  discountPrice: number | null;
+  pictureUrl: string | null;
+  isPercent: boolean;
+  storesId: string;
+  masterInventoryItemId: string | null;
+  barcode: string | null;
+}
+
+export interface IInvoiceLoyaltyBenefitFreeItem {
+  id: string;
+  loyaltyPointBenefitId: string;
+  productId: string;
+  quantity: number;
+  createdAt: string;
+  updatedAt: string;
+  products: IInvoiceLoyaltyBenefitProduct | null;
+}
+
+export interface IInvoiceLoyaltyPointsBenefit {
+  id: string;
+  loyaltyPointSettingId: string;
+  type: string;
+  benefitName: string;
+  pointsNeeds: number;
+  discountValue: number;
+  isPercent: boolean;
+  createdAt: string;
+  updatedAt: string;
+  benefitFreeItems: IInvoiceLoyaltyBenefitFreeItem[];
+}
+
 export interface IInvoiceData {
   id: string;
   paymentMethodsId: string | null;
@@ -147,6 +182,8 @@ export interface IInvoiceData {
     fullname: string;
     id: number;
   } | null;
+  loyaltyDiscount?: number | null;
+  loyaltyPointsBenefit?: IInvoiceLoyaltyPointsBenefit | null;
 }
 
 export interface IInvoiceResponseInvoice {

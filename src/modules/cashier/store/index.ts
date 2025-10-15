@@ -160,8 +160,12 @@ export const useCashierStore = defineStore('cashier', {
     async cashierProduct_calculateEstimation(
       payload: {
         voucherId?: string | null;
+        customerId?: string | null;
         products: unknown;
         orderType?: string;
+        redeemLoyalty?: {
+          loyalty_points_benefit_id: string;
+        };
       },
       route?: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},
@@ -197,10 +201,13 @@ export const useCashierStore = defineStore('cashier', {
         orderType: string;
         paymentMethodId: string;
         voucherId: string;
-        customerId: string;
+        customerId: string | null;
         tableCode: string;
         storeId: string;
         rounding_amount: number;
+        redeemLoyalty?: {
+          loyalty_points_benefit_id: string;
+        };
       },
       route: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},
@@ -259,12 +266,15 @@ export const useCashierStore = defineStore('cashier', {
         orderType: string;
         provider: string;
         paymentMethodId: string;
-        customerId: string | undefined;
+        customerId: string | null;
         tableCode: string;
         storeId: string;
         paymentAmount: number | null;
         voucherId: string | null;
         rounding_amount: number;
+        redeemLoyalty?: {
+          loyalty_points_benefit_id: string;
+        };
       },
       route: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},
