@@ -130,7 +130,7 @@ const loyaltyPointUsage = computed(() => cashierOrderSummary_selectedLoyaltyBene
         v-if="loyaltyRedeemAmount > 0"
         class="flex justify-between text-sm text-text-disabled"
       >
-        <span>Loyalty Point</span>
+        <span>Loyalty Point Discount</span>
         <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
           -
           {{
