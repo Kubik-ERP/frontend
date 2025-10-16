@@ -115,7 +115,7 @@ const chunkedData = computed(() => {
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border: 1px solid #8cc8eb;
+            border: 1px solid #f3631d;
             border-radius: 4px;
             padding: 16px;
             margin: 32px auto 0 auto;

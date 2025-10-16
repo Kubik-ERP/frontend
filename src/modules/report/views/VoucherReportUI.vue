@@ -52,11 +52,11 @@ const formattedDataTable = () => {
     return {
       voucherName: item.voucherName,
       promoCode: item.promoCode,
-      validityPeriod: item.validityPeriod,
-      // validityPeriod:
-      //   useFormatDate(item.validityPeriod.split(' - ')[0], 'dd/MMM/yyyy') +
-      //   ' - ' +
-      //   useFormatDate(item.validityPeriod.split(' - ')[1], 'dd/MMM/yyyy'),
+      // validityPeriod: item.validityPeriod,
+      validityPeriod:
+        useFormatDate(item.validityPeriod.split(' - ')[0], 'dd/MMM/yyyy') +
+        ' - ' +
+        useFormatDate(item.validityPeriod.split(' - ')[1], 'dd/MMM/yyyy'),
       status: item.status,
       totalUsage: item.totalUsage,
       totalQuota: item.totalQuota,
