@@ -40,7 +40,7 @@ const {
           <h6 class="font-semibold text-gray-900 text-xl">Products</h6>
 
           <PrimeVueChip
-            class="text-xs font-normal bg-secondary-background text-green-primary px-1.5 py-0.5"
+            class="text-xs font-normal text-primary px-1.5 py-0.5"
             :label="`${productList_values.total} Products`"
           />
         </div>
@@ -64,8 +64,8 @@ const {
 
           <PrimeVueButton
             v-if="hasPermission"
-            class="w-fit"
             label="Add Discount"
+            class="bg-primary border-primary text-white"
             @click="itemDiscount_onShowDialog()"
           >
             <template #icon>
@@ -91,7 +91,7 @@ const {
               :key="item"
               class="font-normal text-xs text-text-primary"
             >
-              <PrimeVueChip class="px-2 py-1">{{ item.categories.category }}</PrimeVueChip>
+              <PrimeVueChip class="px-2 py-1 bg-secondary text-white">{{ item.categories.category }}</PrimeVueChip>
             </span>
           </div>
         </template>
@@ -103,7 +103,7 @@ const {
               :key="item"
               class="font-normal text-xs text-text-primary"
             >
-              <PrimeVueChip class="px-2 py-1">{{ item.variant.name }}</PrimeVueChip>
+              <PrimeVueChip class="px-2 py-1 bg-secondary text-white">{{ item.variant.name }}</PrimeVueChip>
             </span>
           </div>
         </template>

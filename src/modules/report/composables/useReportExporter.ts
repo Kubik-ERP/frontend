@@ -103,7 +103,7 @@ export function useReportExporter() {
       filename: `[Backoffice]_${config.reportName}_${useFormatDate(new Date(), 'dd_mm_yyyy')}_${useFormatDate(new Date(), 'hh_MM_ss_am/pm')}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
     };
 
     // --- 2. THE RENDERING LOGIC REMAINS THE SAME ---
