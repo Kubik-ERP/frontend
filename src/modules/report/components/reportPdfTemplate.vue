@@ -64,7 +64,7 @@ const chunkedData = computed(() => {
   }
 
   // --- Calculate for Subsequent Pages ---
-  const subsequentPagesContentHeight = PAGE_HEIGHT_PX - NAVBAR_HEIGHT - FOOTER_HEIGHT - TABLE_HEADER_HEIGHT + 200;
+  const subsequentPagesContentHeight = PAGE_HEIGHT_PX - NAVBAR_HEIGHT - FOOTER_HEIGHT - TABLE_HEADER_HEIGHT + 160;
   const rowsOnSubsequentPages = Math.floor(subsequentPagesContentHeight / ROW_HEIGHT);
 
   let currentIndex = rowsOnFirstPage;
