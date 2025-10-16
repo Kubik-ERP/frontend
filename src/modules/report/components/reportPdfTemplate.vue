@@ -40,59 +40,40 @@ const props = withDefaults(defineProps<IProps>(), {
   tableData: () => [],
 });
 
+// --- Smart Page Chunking Logic ---
 const chunkedData = computed(() => {
-  // // --- Configuration Constants (Adjust these to fine-tune your layout) ---
-  // const PAGE_HEIGHT_LIMIT = 800; // You may need to adjust this limit
-  // const NAVBAR_HEIGHT = 80; // ✅ Approx. height of your blue navbar
-  // const HEADER_HEIGHT = 150; // Approx. height of your main report header
-  // const ROW_BASE_HEIGHT = 30; // The height of a single-line row
-  // const CHARS_PER_LINE = 40; // Approx. characters per line in a cell
-  // const LINE_WRAP_HEIGHT = 15; // Extra height for wrapped lines
-  // --- Configuration Constants (Adjust these to fine-tune your layout) ---
+  // --- Configuration Constants (Based on A4 paper dimensions) ---
+  const PAGE_HEIGHT_PX = 1123; // Approx. height of an A4 page.
+  const NAVBAR_HEIGHT = 95;
+  const HEADER_HEIGHT = 233; // Height of the main report summary.
+  const FOOTER_HEIGHT = 80;
+  const TABLE_HEADER_HEIGHT = 40;
+  const ROW_HEIGHT = 40; // Estimated height of a single table row.
 
-  // const NAVBAR_HEIGHT = 118; // ✅ Approx. height of your blue navbar
-  // const PAGE_HEIGHT_LIMIT = 1201 + NAVBAR_HEIGHT; // You may need to adjust this limit
-  // const HEADER_HEIGHT = 201; // Approx. height of your main report header
-  // const ROW_BASE_HEIGHT = 30; // The height of a single-line row
-  // const CHARS_PER_LINE = 40; // Approx. characters per line in a cell
-  // const LINE_WRAP_HEIGHT = 15; // Extra height for wrapped lines
-
-  const NAVBAR_HEIGHT = 118; // ✅ Approx. height of your blue navbar
-  const PAGE_HEIGHT_LIMIT = 1201 + NAVBAR_HEIGHT; // You may need to adjust this limit
-  const HEADER_HEIGHT = 201; // Approx. height of your main report header
-  const ROW_BASE_HEIGHT = 55; // The height of a single-line row
-  const CHARS_PER_LINE = 40; // Approx. characters per line in a cell
-  const LINE_WRAP_HEIGHT = 15; // Extra height for wrapped lines
-
-  const chunks = [];
+  const chunks: any[][] = [];
   if (!props.tableData || props.tableData.length === 0) return [];
 
-  let currentPageRows: any[] = [];
-  // ✅ Start with the height of the navbar AND the main header for page 1
-  let currentPageHeight = NAVBAR_HEIGHT + HEADER_HEIGHT;
+  // --- Calculate for Page 1 ---
+  const firstPageContentHeight =
+    PAGE_HEIGHT_PX - NAVBAR_HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT - TABLE_HEADER_HEIGHT + 100;
+  const rowsOnFirstPage = Math.floor(firstPageContentHeight / ROW_HEIGHT);
 
-  props.tableData.forEach(item => {
-    let rowHeight = ROW_BASE_HEIGHT;
-    props.columns.forEach(column => {
-      const cellContent = String(item[column.value] || '');
-      if (cellContent.length > CHARS_PER_LINE) {
-        rowHeight += Math.floor(cellContent.length / CHARS_PER_LINE) * LINE_WRAP_HEIGHT;
-      }
-    });
+  if (props.tableData.length > 0) {
+    const firstChunk = props.tableData.slice(0, rowsOnFirstPage);
+    chunks.push(firstChunk);
+  }
 
-    if (currentPageHeight + rowHeight > PAGE_HEIGHT_LIMIT && currentPageRows.length > 0) {
-      chunks.push(currentPageRows);
-      currentPageRows = [];
-      // ✅ Subsequent pages start with only the navbar's height
-      currentPageHeight = NAVBAR_HEIGHT;
+  // --- Calculate for Subsequent Pages ---
+  const subsequentPagesContentHeight = PAGE_HEIGHT_PX - NAVBAR_HEIGHT - FOOTER_HEIGHT - TABLE_HEADER_HEIGHT + 200;
+  const rowsOnSubsequentPages = Math.floor(subsequentPagesContentHeight / ROW_HEIGHT);
+
+  let currentIndex = rowsOnFirstPage;
+  if (rowsOnSubsequentPages > 0) {
+    while (currentIndex < props.tableData.length) {
+      const nextChunk = props.tableData.slice(currentIndex, currentIndex + rowsOnSubsequentPages);
+      chunks.push(nextChunk);
+      currentIndex += rowsOnSubsequentPages;
     }
-
-    currentPageRows.push(item);
-    currentPageHeight += rowHeight;
-  });
-
-  if (currentPageRows.length > 0) {
-    chunks.push(currentPageRows);
   }
 
   return chunks;
@@ -101,48 +82,46 @@ const chunkedData = computed(() => {
 
 <template>
   <div id="pdf-template">
-    <div v-for="(chunk, index) in chunkedData" :key="index">
-      <div id="navbar" style="background-color: #18618b; padding: 24px 32px">
+    <!-- 
+      This is the main loop. Each iteration represents a full page.
+      The v-for is now on the container that has the page-break style.
+    -->
+    <div
+      v-for="(chunk, index) in chunkedData"
+      :key="index"
+      class="page-container"
+      style="position: relative; height: 1123px; display: flex; flex-direction: column; justify-content: space-between"
+    >
+      <!-- Navbar (Repeats on every page) -->
+      <div id="navbar" style="background-color: #ffefe8; padding: 24px 32px; border-bottom: 1px solid #f3631d">
         <img :src="APP_LOGO_BASE64" alt="KUBIXPOS Logo" style="width: 200px" />
       </div>
 
-      <div id="content" style="padding: 0px 32px; /* ... other content styles ... */">
+      <!-- Main Content Area -->
+      <div id="content" style="padding: 0px 32px; flex-grow: 1; overflow: hidden"> <!-- Added overflow to prevent overflow issues -->
+        <!-- Report Header (First page only) -->
         <div
           v-if="index === 0"
           class="main-header-container"
-          style="
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #f3631d;
-            border-radius: 4px;
-            padding: 16px;
-            margin: 32px auto 0 auto;
-            background-color: #ffffff;
-          "
+          style="border-bottom: 1px solid #f3631d; padding: 16px; margin: 32px auto 0 auto; min-height: 201px"
         >
-          <div style="text-align: center">
-            <div style="font-size: 24px; font-weight: bolder; color: #333333">
-              {{ reportData.reportName }}
-            </div>
-            <h2 style="font-size: 16px; font-weight: bold; color: #333333">
-              {{ reportData.storeName }}
-            </h2>
-            <h2 style="font-size: 16px; font-weight: bold; color: #333333">
-              {{ reportData.storeAddress }}
-            </h2>
-            <h2 style="font-size: 16px; font-weight: bold; color: #333333">
+          <div
+            style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px"
+          >
+            <div style="font-size: 16pt; font-weight: bold; color: #333333">{{ reportData.reportName }}</div>
+            <h2 style="font-size: 12pt; font-weight: bold; color: #b7b7b7">{{ reportData.storeName }}</h2>
+            <h2 style="font-size: 12pt; font-weight: bold; color: #333333">{{ reportData.storeAddress }}</h2>
+            <h2 style="font-size: 12pt; font-weight: bold; color: #333333">
               Staff Member : {{ reportData.staffMember }}
             </h2>
-            <h2 style="font-size: 16px; color: #333333">Period : {{ reportData.period }}</h2>
-            <div style="font-size: 14px; color: #333333">
-              Printed on {{ reportData.printDate }}, {{ reportData.printTime }}
-            </div>
+            <h2 style="font-size: 10pt; color: #b7b7b7">
+              Period : {{ reportData.period }} | Printed on {{ reportData.printDate }}, {{ reportData.printTime }}
+            </h2>
           </div>
         </div>
 
-        <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 8pt">
+        <!-- Table for the current page/chunk -->
+        <table style="width: 100%; border-collapse: collapse; font-size: 8pt; margin-top: 20px">
           <thead>
             <tr>
               <th
@@ -174,7 +153,23 @@ const chunkedData = computed(() => {
         </table>
       </div>
 
-      <div v-if="index < chunkedData.length - 1" style="page-break-after: always"></div>
+      <!-- Footer (Now part of the flow) -->
+      <footer
+        style="
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          padding: 20px 32px;
+          font-size: 8pt;
+          color: #888;
+          border-top: 1px solid #eee;
+          background-color: #fff; /* Optional: Ensure it stands out */
+        "
+      >
+        <p style="margin: 0; margin-right: 5px">Powered by</p>
+        <img :src="APP_LOGO_BASE64" alt="KUBIXPOS Logo" style="height: 20px; vertical-align: middle" />
+      </footer>
     </div>
   </div>
 </template>
