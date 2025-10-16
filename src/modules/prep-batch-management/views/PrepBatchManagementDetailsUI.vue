@@ -100,13 +100,15 @@ const { batchList_getClassOfBatchStatus, batchDetailsIngridient_columns, batchDe
       />
     </section>
 
-    <footer class="flex items-center justify-between">
+    <footer class="flex items-center justify-between pb-8 pt-4">
       <div class="flex items-center gap-2">
-        <PrimeVueButton variant="outlined" label="Edit Batch">
-          <template #icon>
-            <AppBaseSvg name="edit" class="!w-4 !h-4" />
-          </template>
-        </PrimeVueButton>
+        <router-link :to="{ name: 'prep-batch-management.edit', params: { id: batchDetails_values.recipe.batchName } }">
+          <PrimeVueButton variant="outlined" label="Edit Batch">
+            <template #icon>
+              <AppBaseSvg name="edit" class="!w-4 !h-4" />
+            </template>
+          </PrimeVueButton>
+        </router-link>
 
         <PrimeVueButton label="Complete Batch" />
       </div>

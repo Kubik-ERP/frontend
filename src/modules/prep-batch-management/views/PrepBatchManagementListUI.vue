@@ -2,7 +2,8 @@
 // services
 import { useBatchService } from '../services/prep-batch-management.service';
 
-const { batchList_columns, batchList_values, batchList_getClassOfBatchStatus } = useBatchService();
+const { batchList_columns, batchList_values, batchList_getClassOfBatchStatus, menuRecipeList_onShowDialogDelete } =
+  useBatchService();
 
 const popoverRefs = ref<Record<string, ComponentPublicInstance | null>>({});
 const setPopoverRef = (recordId: number, el: Element | ComponentPublicInstance | null) => {
@@ -39,25 +40,27 @@ const togglePopover = (event: Event, recordId: number) => {
     </template>
     <template #header-suffix>
       <div class="flex items-center gap-2">
-        <PrimeVueButton class="bg-primary border-none w-fit px-5">
-          <template #default>
-            <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
+        <router-link :to="{ name: 'prep-batch-management.create' }">
+          <PrimeVueButton class="bg-primary border-none w-fit px-5">
+            <template #default>
+              <section id="content" class="flex items-center gap-2">
+                <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
 
-              <span class="font-semibold text-base text-white">
-                <!-- {{ useLocalization('account.add-store-facility') }} -->
-                Add New Batch
-              </span>
-            </section>
-          </template>
-        </PrimeVueButton>
+                <span class="font-semibold text-base text-white">
+                  <!-- {{ useLocalization('account.add-store-facility') }} -->
+                  Add New Batch
+                </span>
+              </section>
+            </template>
+          </PrimeVueButton>
+        </router-link>
       </div>
     </template>
     <template #body="{ column, data }">
       <template v-if="column.value === 'action'">
         <PrimeVueButton variant="text" rounded aria-label="detail" @click="togglePopover($event, data.batch)">
           <template #icon>
-            <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
+            <AppBaseSvg name="three-dots" class="!w-5 !h-5 filter-primary-color" />
           </template>
         </PrimeVueButton>
         <PrimeVuePopover
@@ -67,47 +70,47 @@ const togglePopover = (event: Event, recordId: number) => {
           }"
         >
           <section id="popover-content" class="flex flex-col">
-            <PrimeVueButton
-              class="w-full px-4 py-3"
-              variant="text"
-              @click="
-                () => {
-                  console.log(data);
-                }
-              "
-            >
-              <template #default>
-                <section id="content" class="flex items-center gap-2 w-full">
-                  <AppBaseSvg name="eye-visible" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Preview</span>
-                </section>
-              </template>
-            </PrimeVueButton>
-            <PrimeVueButton
-              class="w-full px-4 py-3"
-              variant="text"
-              @click="
-                () => {
-                  console.log(data);
-                }
-              "
-            >
-              <template #default>
-                <section id="content" class="flex items-center gap-2 w-full">
-                  <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Edit</span>
-                </section>
-              </template>
-            </PrimeVueButton>
+            <router-link :to="{ name: 'prep-batch-management.details', params: { id: data.batch } }">
+              <PrimeVueButton
+                class="w-full px-4 py-3"
+                variant="text"
+                @click="
+                  () => {
+                    console.log(data);
+                  }
+                "
+              >
+                <template #default>
+                  <section id="content" class="flex items-center gap-2 w-full">
+                    <AppBaseSvg name="eye-visible" class="!w-4 !h-4" />
+                    <span class="font-normal text-sm text-text-primary">Preview</span>
+                  </section>
+                </template>
+              </PrimeVueButton>
+            </router-link>
+            <router-link :to="{ name: 'prep-batch-management.edit', params: { id: data.batch } }">
+              <PrimeVueButton
+                class="w-full px-4 py-3"
+                variant="text"
+                @click="
+                  () => {
+                    console.log(data);
+                  }
+                "
+              >
+                <template #default>
+                  <section id="content" class="flex items-center gap-2 w-full">
+                    <AppBaseSvg name="edit" class="!w-4 !h-4" />
+                    <span class="font-normal text-sm text-text-primary">Edit</span>
+                  </section>
+                </template>
+              </PrimeVueButton>
+            </router-link>
 
             <PrimeVueButton
               class="w-full px-4 py-3"
               variant="text"
-              @click="
-                () => {
-                  console.log(data);
-                }
-              "
+              @click="menuRecipeList_onShowDialogDelete(data.batch)"
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2 w-full">
@@ -155,4 +158,6 @@ const togglePopover = (event: Event, recordId: number) => {
       </template>
     </template>
   </AppBaseDataTable>
+
+  <AppBaseDialogConfirmation id="batch-list-dialog-delete" />
 </template>

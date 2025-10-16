@@ -48,4 +48,5 @@ export type IBatchListProvided = {
   batchDetails_values: IBatchDetails;
   // method
   batchList_getClassOfBatchStatus: (batchStatus: string) => string;
+  menuRecipeList_onShowDialogDelete: (id: string) => void;
 };
