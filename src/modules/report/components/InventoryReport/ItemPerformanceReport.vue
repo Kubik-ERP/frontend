@@ -93,10 +93,11 @@ const handleExportToCsv = () => {
           variant="outlined"
           label="Export"
           :disabled="formattedDataTable()?.length === 0"
+class="border border-primary-border text-primary"
           @click="popover.toggle($event)"
         >
           <template #icon>
-            <AppBaseSvg name="export" class="!w-5 !h-5" />
+            <AppBaseSvg name="export" class="!w-5 !h-5 filter-primary-color" />
           </template>
         </PrimeVueButton>
         <PrimeVuePopover

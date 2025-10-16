@@ -3,9 +3,7 @@ import { useProductService } from '../services/catalog-product.service';
 import { useCategoryService } from '@/modules/catalog/services/Category/CategoryService';
 import excludeSVG from '@/app/assets/icons/exclude.svg';
 import deleteSVG from '@/app/assets/icons/delete.svg';
-import plusLineSVG from '@/app/assets/icons/plus-line.svg';
 import chevronDownSVG from '@/app/assets/icons/chevron-down.svg';
-import imageSVG from '@/app/assets/icons/image.svg';
 import confirmationSVG from '@/app/assets/icons/confirmation.svg';
 import closeRedSVG from '@/app/assets/icons/close-red.svg';
 import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
@@ -253,7 +251,7 @@ const cancelUpdate = () => {
             @click="triggerFileInput"
           >
             <template #icon>
-              <img :src="imageSVG" alt="" />
+              <AppBaseSvg name="image" class="!w-5 !h-5 filter-primary-color" />
             </template>
           </PrimeVueButton>
           <PrimeVueButton
@@ -471,7 +469,7 @@ const cancelUpdate = () => {
               @click="addVariant"
             >
               <template #icon>
-                <img :src="plusLineSVG" alt="" />
+                <AppBaseSvg name="plus-line" class="!w-5 !h-5 filter-primary-color" />
               </template>
             </PrimeVueButton>
           </div>
