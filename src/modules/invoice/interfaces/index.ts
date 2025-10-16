@@ -49,6 +49,7 @@ export interface IInvoiceCustomer {
   username: string;
   address: string | null;
   gender: string;
+  point: number | null;
 }
 export interface IInvoiceProduct {
   id: string;
