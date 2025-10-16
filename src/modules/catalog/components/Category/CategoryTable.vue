@@ -5,7 +5,6 @@ import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
 import plusLineWhiteSVG from '@/app/assets/icons/plus-line-white.svg';
 import threeDotsSVG from '@/app/assets/icons/three-dots.svg';
 import searchSVG from '@/app/assets/icons/search.svg';
-import imageSVG from '@/app/assets/icons/image.svg';
 import { onMounted, onUnmounted } from 'vue';
 
 const {
@@ -441,12 +440,12 @@ const rbac = useRbac();
               @click="triggerFileInput"
             >
               <template #icon>
-                <img :src="imageSVG" alt="" />
+                <AppBaseSvg name="image" class="!w-5 !h-5 filter-primary-color" />
               </template>
             </PrimeVueButton>
-            <PrimeVueButton variant="text" @click="removePhoto">
+            <PrimeVueButton variant="text" class="hover:bg-secondary" @click="removePhoto">
               <template #icon>
-                <AppBaseSvg name="delete" class="!w-5 !h-5" />
+                <AppBaseSvg name="delete" class="!w-5 !h-5 filter-primary-color" />
               </template>
             </PrimeVueButton>
           </div>
@@ -481,7 +480,7 @@ const rbac = useRbac();
             :label="useLocalization('modal.cancelButton')"
             severity="info"
             variant="outlined"
-            class="w-48"
+            class="w-48 border border-primary-border text-primary"
             @click="
               isAddOpen = false;
               resetForm();
@@ -522,12 +521,12 @@ const rbac = useRbac();
               @click="triggerFileInput"
             >
               <template #icon>
-                <img :src="imageSVG" alt="" />
+                <AppBaseSvg name="image" class="!w-5 !h-5 filter-primary-color" />
               </template>
             </PrimeVueButton>
-            <PrimeVueButton variant="text" @click="removePhoto">
+            <PrimeVueButton variant="text" class="hover:bg-secondary" @click="removePhoto">
               <template #icon>
-                <AppBaseSvg name="delete" class="!w-5 !h-5" />
+                <AppBaseSvg name="delete" class="!w-5 !h-5 filter-primary-color" />
               </template>
             </PrimeVueButton>
           </div>
@@ -562,7 +561,7 @@ const rbac = useRbac();
             :label="useLocalization('modal.cancelButton')"
             severity="info"
             variant="outlined"
-            class="w-48"
+            class="w-48 border border-primary-border text-primary"
             @click="
               isEditOpen = false;
               resetForm();
