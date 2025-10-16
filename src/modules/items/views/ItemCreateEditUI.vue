@@ -26,12 +26,17 @@ const { inventoryItems_onDelete } = useInventoryItemsListService();
 
 const isUpdateModal = ref(false);
 const isUnitConversionSidebarVisible = ref(false);
+const sidebarRef = ref<InstanceType<typeof InventorySidebarRight> | null>(null);
 
 const openUnitConversionSidebar = () => {
   isUnitConversionSidebarVisible.value = true;
 };
 
 const onSubmit = () => {
+  if (sidebarRef.value) {
+    form.value.conversions = sidebarRef.value.getLatestConversions();
+  }
+
   if (inventoryItemsAction_formOnMode.value === 'create') {
     inventoryItemsAction_onSubmit('create');
   } else {
@@ -48,6 +53,9 @@ const cancelUpdate = () => {
 };
 
 const confirmUpdate = async () => {
+  if (sidebarRef.value) {
+    form.value.conversions = sidebarRef.value.getLatestConversions();
+  }
   await inventoryItemsAction_onSubmit('edit', inventoryItems_editingItem.value?.id);
 };
 
