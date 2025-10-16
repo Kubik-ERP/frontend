@@ -62,6 +62,16 @@ export const LIST_CONTENT_SETTINGS_INVOICE: IDefaultContent[] = [
     key: 'isShowFooter',
     label: 'Show footer',
   },
+  {
+    id: 'show-loyalty-points-used',
+    key: 'isShowLoyaltyPointsUsed',
+    label: 'Show loyalty points used',
+  },
+  {
+    id: 'show-total-points-accumulated',
+    key: 'isShowTotalPointsAccumulated',
+    label: 'Show total points accumulated',
+  },
 ];
 
 export const LIST_INVOICE_NUMBER_CONTENTS: IDefaultContent[] = [

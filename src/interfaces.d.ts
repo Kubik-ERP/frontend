@@ -245,6 +245,8 @@ declare global {
     isShowTableNumber: boolean;
     isHideItemPrices: boolean;
     isShowFooter: boolean;
+    isShowLoyaltyPointsUsed: boolean;
+    isShowTotalPointsAccumulated: boolean;
     incrementBy?: number;
     resetSequence?: string;
     startingNumber?: number;
