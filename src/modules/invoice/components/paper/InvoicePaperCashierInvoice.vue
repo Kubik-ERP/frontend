@@ -309,8 +309,8 @@ const orderTypeLabel = computed(() => {
             v-if="
               invoice_invoiceData.configInvoice?.isShowLoyaltyPointsUsed &&
               invoice_invoiceData.data.loyaltyDiscount &&
-              invoice_invoiceData.data.loyaltyDiscount > 0 &&
-              invoice_invoiceData.data.paymentStatus !== 'unpaid'
+              invoice_invoiceData.data.loyaltyDiscount > 0
+              
             "
           >
             <td class="font-normal text-black text-[12pt] py-1">Loyalty Point Discount</td>
@@ -324,8 +324,7 @@ const orderTypeLabel = computed(() => {
             v-if="
               invoice_invoiceData.configInvoice?.isShowLoyaltyPointsUsed &&
               invoice_invoiceData.data.loyaltyPointsBenefit &&
-              invoice_invoiceData.data.loyaltyPointsBenefit?.pointsNeeds > 0 &&
-              invoice_invoiceData.data.paymentStatus !== 'unpaid'
+              invoice_invoiceData.data.loyaltyPointsBenefit?.pointsNeeds > 0
             "
           >
             <td class="font-normal text-black text-[12pt] py-1">Loyalty Point</td>
