@@ -80,6 +80,7 @@ const handleDownload = () => {
             data: invoice_modalPay.dataPayment,
           }"
           @simulate-payment="invoice_handleSimulatePayment"
+          @close="invoice_modalPay.showModalPayment = false"
         />
       </section>
     </template>

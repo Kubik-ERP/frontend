@@ -1,4 +1,4 @@
-export interface IFinancialReport_profitAndLost {
+export interface IFinancialReport_FinancialSummary {
   sales: {
     penjualanKotor: number;
     diskon: number;

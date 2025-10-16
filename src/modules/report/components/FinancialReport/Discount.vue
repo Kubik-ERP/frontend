@@ -7,11 +7,14 @@ const {
   financialReport_discount_columns,
   report_queryParams,
   report_getFinancialReport,
+  hasManageStaffMemberPermission,
   report_discount_values,
   outlet_lists_options,
   staff_lists_options,
   findOutletDetail,
   findStaffDetail,
+  hasAccessAllStorePermission,
+  outlet_currentOutlet,
 } = useReportService();
 
 // composables for export pdf
@@ -41,8 +44,12 @@ const onChangePage = (newPage: number) => {
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Financial Report - Discount Report',
-    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
-    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    storeName: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      : outlet_currentOutlet.value!.name,
+    storeAddress: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_discount_columns,
@@ -52,8 +59,12 @@ const handleExportToPdf = () => {
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Financial Report - Discount Report',
-    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
-    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    storeName: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      : outlet_currentOutlet.value!.name,
+    storeAddress: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_discount_columns,
@@ -67,7 +78,7 @@ const handleExportToCsv = () => {
       <template #content>
         <table class="w-full">
           <tbody>
-            <tr class="bg-primary-background">
+            <tr class="bg-primary-border">
               <th class="text-left p-1.5">Total Discount</th>
               <td class="text-right p-1.5">
                 {{
@@ -83,7 +94,7 @@ const handleExportToCsv = () => {
                 {{ useCurrencyFormat({ data: report_discount_values.simpleWidget?.totalItemValue }) }}
               </td>
             </tr>
-            <tr class="bg-primary-background">
+            <tr class="bg-primary-border">
               <th class="text-left p-1.5">Total Discounted Item</th>
               <td class="text-right p-1.5">
                 {{
@@ -118,10 +129,11 @@ const handleExportToCsv = () => {
           variant="outlined"
           label="Export"
           :disabled="formattedDataTable()?.length === 0"
+          class="border border-primary-border text-primary"
           @click="popover.toggle($event)"
         >
           <template #icon>
-            <AppBaseSvg name="export" class="!w-5 !h-5" />
+            <AppBaseSvg name="export" class="!w-5 !h-5 filter-primary-color" />
           </template>
         </PrimeVueButton>
         <PrimeVuePopover
@@ -157,12 +169,13 @@ const handleExportToCsv = () => {
             @update:end-date="report_getFinancialReport('discount-summary')"
           />
           <PrimeVueSelect
+            v-if="hasAccessAllStorePermission"
             v-model="report_queryParams.store_ids"
             :options="outlet_lists_options"
             option-label="label"
             option-value="value"
             placeholder="Select Outlet"
-            class="col-span-1 w-full"
+            class="col-span-1 w-full border border-primary-border"
             filter
             @change="report_getFinancialReport('discount-summary')"
           >
@@ -171,13 +184,14 @@ const handleExportToCsv = () => {
             </template>
           </PrimeVueSelect>
           <PrimeVueSelect
+            v-if="hasManageStaffMemberPermission"
             v-model="report_queryParams.staff_ids"
             :options="staff_lists_options"
             option-label="label"
             option-value="value"
             placeholder="Select Staff"
             filter
-            class="col-span-1 w-full"
+            class="col-span-1 w-full border border-primary-border"
             @change="report_getFinancialReport('discount-summary')"
             ><template #dropdownicon>
               <AppBaseSvg name="staff" class="w-5 h-5 text-text-primary" />

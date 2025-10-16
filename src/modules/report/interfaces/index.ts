@@ -1,7 +1,7 @@
 import type {
   IFinancialReport_discount,
   IFinancialReport_paymentMethod,
-  IFinancialReport_profitAndLost,
+  IFinancialReport_FinancialSummary,
   IFinancialReport_taxServiceCharge,
 } from './financial-report';
 export * from './financial-report';
@@ -58,7 +58,7 @@ export interface IReportStore {
   outlet_lists_values: IOutlet[];
   staff_lists_values: IStaffMember[];
   // financial report
-  report_profitAndLost_values: IFinancialReport_profitAndLost;
+  report_profitAndLost_values: IFinancialReport_FinancialSummary;
   report_discount_values: IFinancialReport_discount;
   report_paymentMethod_values: IFinancialReport_paymentMethod;
   report_taxAndServiceCharge_values: IFinancialReport_taxServiceCharge[];
@@ -88,6 +88,10 @@ export interface IReportStore {
 }
 
 export interface IReportProvided {
+  hasAccessAllStorePermission: boolean;
+  hasStoreManagementPermission: boolean;
+  hasManageStaffMemberPermission: boolean;
+  // columns
   financialReport_profitAndLost_columns: IColumnDataTable[];
   financialReport_discount_columns: IColumnDataTable[];
   financialReport_paymentMethod_columns: IColumnDataTable[];
@@ -118,7 +122,7 @@ export interface IReportProvided {
   // store
   report_isLoading: globalThis.Ref<boolean>;
   // financial
-  report_profitAndLost_values: globalThis.Ref<IFinancialReport_profitAndLost>;
+  report_profitAndLost_values: globalThis.Ref<IFinancialReport_FinancialSummary>;
   report_discount_values: globalThis.Ref<IFinancialReport_discount>;
   report_paymentMethod_values: globalThis.Ref<IFinancialReport_paymentMethod>;
   report_taxAndServiceCharge_values: globalThis.Ref<IFinancialReport_taxServiceCharge[]>;
@@ -149,4 +153,6 @@ export interface IReportProvided {
   // staff_list
   staff_lists_options: globalThis.Ref<IStaffMemberListOptions[]>;
   findStaffDetail: (id: string) => IStaffMember | null | undefined;
+  // misc
+  outlet_currentOutlet: globalThis.Ref<IOutlet | null>;
 }

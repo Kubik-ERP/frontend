@@ -15,7 +15,7 @@ export interface IInventoryItemsActionResponse{
 export interface IInventoryItemsActionProvided{
     inventoryItemsAction_isLoading: globalThis.Ref<boolean>;
     inventoryItemsAction_formData: globalThis.Ref<IInventoryItemsPayload>;
-    inventoryItemsAction_onSubmit: (payload: IInventoryItemsPayload, mode: 'create' | 'edit', id?: string) => Promise<void>;
+    inventoryItemsAction_onSubmit: (mode: 'create' | 'edit', id?: string) => Promise<void>;
     inventoryItemsAction_onCancel: () => void;
     inventoryItemsAction_values: globalThis.Ref<IInventoryItemsPayload>;
     inventoryItemsAction_Validation: globalThis.Ref<Validation>;

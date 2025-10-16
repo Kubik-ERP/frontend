@@ -147,6 +147,12 @@ const { authentication_userData } = storeToRefs(authenticationStore);
           <td v-if="!props.isHideItemPrices" class="font-normal text-black text-sm text-center py-2">100.000</td>
           <td v-if="!props.isHideItemPrices" class="font-normal text-black text-sm text-right py-2">100.000</td>
         </tr>
+        <tr>
+          <td class="font-normal text-black text-sm py-2">Product B</td>
+          <td class="font-normal text-black text-sm text-center py-2">1</td>
+          <td v-if="!props.isHideItemPrices" class="font-normal text-black text-sm text-center py-2">0</td>
+          <td v-if="!props.isHideItemPrices" class="font-normal text-black text-sm text-right py-2">0</td>
+        </tr>
       </tbody>
 
       <tfoot class="border-b border-solid border-grayscale-10">
@@ -158,8 +164,15 @@ const { authentication_userData } = storeToRefs(authenticationStore);
 
         <tr>
           <td class="font-normal text-black text-sm py-2">Promo</td>
-          <td class="font-normal text-black text-sm text-center py-2">2</td>
+          <td class="font-normal text-black text-sm text-center py-2"></td>
           <td colspan="2" class="font-normal text-black text-sm text-right py-2">-50.000</td>
+        </tr>
+
+     
+          <tr>
+          <td class="font-normal text-black text-sm py-2">Loyalty Point</td>
+          <td class="font-normal text-black text-sm text-center py-2"></td>
+          <td colspan="2" class="font-normal text-black text-sm text-right py-2">-4 pts</td>
         </tr>
 
         <tr class="border-b border-solid border-black">

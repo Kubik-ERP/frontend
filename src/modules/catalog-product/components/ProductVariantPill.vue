@@ -13,7 +13,7 @@ const props = defineProps({
       <div
         v-for="variant in props.variants"
         :key="variant"
-        class="text-primary bg-blue-secondary-background rounded-full px-2 py-1 w-fit whitespace-nowrap text-center text-xs"
+        class="text-white bg-secondary rounded-full px-2 py-1 w-fit whitespace-nowrap text-center text-xs"
       >
         {{ variant }}
       </div>
@@ -22,7 +22,7 @@ const props = defineProps({
       <div
         v-for="variant in props.variants.slice(0, 3)"
         :key="variant"
-        class="text-primary bg-blue-secondary-background rounded-full px-2 py-1 w-fit whitespace-nowrap text-center text-xs"
+        class="text-white bg-secondary rounded-full px-2 py-1 w-fit whitespace-nowrap text-center text-xs"
       >
         {{ variant }}
       </div>
