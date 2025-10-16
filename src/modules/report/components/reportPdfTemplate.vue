@@ -167,7 +167,7 @@ const chunkedData = computed(() => {
           background-color: #fff; /* Optional: Ensure it stands out */
         "
       >
-        <p style="margin: 0; margin-right: 5px">Powered by</p>
+        <!-- <p style="margin: 0; margin-right: 5px">Powered by</p> -->
         <img :src="APP_LOGO_BASE64" alt="KUBIXPOS Logo" style="height: 20px; vertical-align: middle" />
       </footer>
     </div>
