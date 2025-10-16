@@ -72,6 +72,8 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
       isShowTableNumber: true,
       isHideItemPrices: false,
       isShowFooter: true,
+      isShowLoyaltyPointsUsed: true,
+      isShowTotalPointsAccumulated: true,
     },
     invoiceNumberConfigurations: {
       invoicePreview: '202508010001',
@@ -171,6 +173,10 @@ export const useSettingInvoiceService = (): ISettingInvoiceProvided => {
         setting_invoice.value?.isShowTableNumber ?? false;
       settingInvoice_formData.contentSettings.isHideItemPrices = setting_invoice.value?.isHideItemPrices ?? false;
       settingInvoice_formData.contentSettings.isShowFooter = setting_invoice.value?.isShowFooter ?? false;
+      settingInvoice_formData.contentSettings.isShowLoyaltyPointsUsed =
+        setting_invoice.value?.isShowLoyaltyPointsUsed ?? true;
+      settingInvoice_formData.contentSettings.isShowTotalPointsAccumulated =
+        setting_invoice.value?.isShowTotalPointsAccumulated ?? true;
       // Note: companyLogo might need special handling if it's a file upload object
 
       // Map invoice number configurations
