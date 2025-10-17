@@ -140,9 +140,9 @@ const onHide = () => {
     :visible="visible"
     position="right"
     class="w-full sm:w-[51%]"
-    @update:visible="onHide"
     :dismissable="false"
     modal
+    @update:visible="onHide"
   >
     <template #header>
       <h3 class="font-semibold text-lg">Unit Conversion</h3>
