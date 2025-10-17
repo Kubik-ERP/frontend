@@ -342,7 +342,6 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
   const menuRecipeCreateEdit_onLoadInitialData = async (): Promise<void> => {
     // Always fetch inventory items for ingredients dropdown
     await menuRecipeCreateEdit_fetchInventoryItems();
-
     // If in edit mode, fetch the recipe details
     if (menuRecipeCreateEdit_isEditMode.value && route.params.id) {
       await menuRecipeCreateEdit_fetchDetails(String(route.params.id));

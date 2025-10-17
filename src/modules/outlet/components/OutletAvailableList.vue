@@ -60,10 +60,10 @@ const {
         <AppBaseSvg name="store" class="w-6 h-6" />
       </section>
 
-      <PrimeVueButton class="bg-transparent border-none w-full" severity="secondary">
+      <PrimeVueButton class="bg-transparent border-none w-full cursor-pointer" unstyled severity="secondary">
         <template #default>
-          <section id="content" class="flex items-center gap-2">
-            <AppBaseSvg name="plus-line" class="w-4 h-4" />
+          <section id="content" class="flex items-center justify-center gap-2">
+            <AppBaseSvg name="plus-line" class="w-4 h-4 filter-primary-color" />
             <span class="font-semibold text-primary text-sm">Add Store</span>
           </section>
         </template>
