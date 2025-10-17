@@ -5,10 +5,9 @@ import type { IMenuRecipeDetailProvided } from '../../interfaces';
 /**
  * @description Inject all the data and methods what we need
  */
-const { 
-  menuRecipeDetail_onEdit,
-  menuRecipeDetail_onShowDialogDeleteConfirmation
-} = inject('menuRecipeDetail') as IMenuRecipeDetailProvided;
+const { menuRecipeDetail_onEdit, menuRecipeDetail_onShowDialogDeleteConfirmation } = inject(
+  'menuRecipeDetail',
+) as IMenuRecipeDetailProvided;
 </script>
 
 <template>
@@ -21,8 +20,8 @@ const {
       @click="menuRecipeDetail_onEdit"
     />
 
-    <PrimeVueButton 
-      class="border border-solid border-error-hover w-fit px-4 py-3" 
+    <PrimeVueButton
+      class="border border-solid border-error-hover w-fit px-4 py-3"
       variant="text"
       @click="menuRecipeDetail_onShowDialogDeleteConfirmation"
     >

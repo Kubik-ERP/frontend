@@ -114,7 +114,7 @@ watch(menuRecipeCreateEdit_productSearchValue, () => {
               placeholder="Search product by name or barcode"
               class="text-sm w-full [&>input]:text-sm [&>input]:w-full"
               :class="{ ...classes }"
-              @option-select="event => menuRecipeCreateEdit_onSelectProduct(event.value)"
+              @option-select="(event: any) => menuRecipeCreateEdit_onSelectProduct(event.value)"
             >
               <template #option="{ option }">
                 <div class="flex items-center justify-between gap-3 p-2 w-full">
