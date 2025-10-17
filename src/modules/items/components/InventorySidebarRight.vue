@@ -61,8 +61,8 @@ watch(() => props.visible, (isVisible) => {
       conversions.value = JSON.parse(JSON.stringify(props.initialConversions.map(c => ({ fromUnit: c.unitSymbol, value: c.value, id: Date.now() + Math.random() }))));
     } else {
       conversions.value = [{ id: Date.now(), fromUnit: 'g', value: null }];
+      conversions.value.forEach(calculateAnswer);
     }
-    conversions.value.forEach(calculateAnswer);
   }
 }, { immediate: true });
 
@@ -73,9 +73,15 @@ const calculateAnswer = (item: ConversionItem) => {
   const base = conversionRates[props.unit];
 
   if (from && base && from.type === base.type) {
-    // How many 'fromUnit' in 1 'base.unit'
-    item.value = base.rate / from.rate;
+    // Auto-calculate ONLY for weight and volume, which have reliable fixed rates.
+    if (from.type === 'weight' || from.type === 'volume') {
+      item.value = base.rate / from.rate;
+    } else {
+      // For ALL 'count' types, clear the value. The user MUST enter it manually.
+      item.value = null;
+    }
   } else {
+    // If units are incompatible, clear the value.
     item.value = null;
   }
 };
@@ -104,17 +110,26 @@ watch(
   { immediate: true }
 );
 
-const onHide = () => {
-  const filteredConversions = conversions.value
+const getLatestConversions = () => {
+  console.log("Raw conversions data in sidebar:", JSON.stringify(conversions.value, null, 2));
+  return conversions.value
     .filter(c => c.fromUnit && c.value !== null && c.value > 0)
     .map(c => {
       const unitInfo = ITEM_UNIT_DROPDOWN.find(u => u.value === c.fromUnit);
-      return { 
-        unitName: unitInfo ? unitInfo.label : c.fromUnit, 
-        unitSymbol: c.fromUnit, 
-        value: c.value as number 
+      return {
+        unitName: unitInfo ? unitInfo.label : c.fromUnit,
+        unitSymbol: c.fromUnit,
+        value: c.value as number
       };
     });
+};
+
+defineExpose({
+  getLatestConversions
+});
+
+const onHide = () => {
+  const filteredConversions = getLatestConversions();
   emit('save', filteredConversions);
   emit('update:visible', false);
 };
@@ -125,6 +140,8 @@ const onHide = () => {
     :visible="visible"
     position="right"
     class="w-full sm:w-[51%]"
+    :dismissable="false"
+    modal
     @update:visible="onHide"
   >
     <template #header>
