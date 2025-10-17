@@ -127,6 +127,7 @@ onMounted(async () => {
     await productBundling_fetchProductBundlingDetails(route.params.id as string);
   }
   await productBundling_fetchProductList();
+  calculateTotalPrice();
 });
 </script>
 

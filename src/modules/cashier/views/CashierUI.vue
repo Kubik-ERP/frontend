@@ -159,6 +159,9 @@ const {
 
   // Initialize functions
   cashierOrderSummary_initializeRoute,
+  cashierOrderSummary_setSelectedLoyaltyBenefit,
+  cashierOrderSummary_selectedLoyaltyBenefitId,
+  cashierOrderSummary_selectedLoyaltyBenefit,
 } = useCashierOrderSummaryService();
 
 const {
@@ -332,6 +335,9 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   // Initialize functions
   cashierOrderSummary_initializeSelfOrder: () => Promise.resolve(), // Empty implementation for cashier
   cashierOrderSummary_initializeRoute,
+  cashierOrderSummary_setSelectedLoyaltyBenefit,
+  cashierOrderSummary_selectedLoyaltyBenefitId,
+  cashierOrderSummary_selectedLoyaltyBenefit,
 });
 
 provide('dailySalesList', {

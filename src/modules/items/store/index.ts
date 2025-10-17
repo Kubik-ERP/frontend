@@ -44,6 +44,10 @@ function convertItemToFormData(payload: IInventoryItemsPayload): FormData {
   appendIfPresent('supplierId', payload.supplierId);
   appendIfPresent('priceGrosir', String(payload.priceGrosir));
 
+  if (payload.conversions && payload.conversions.length > 0) {
+    formData.append('conversions', JSON.stringify(payload.conversions));
+  }
+
   if (payload.imageFile) {
     formData.append('image', payload.imageFile);
   } else if (payload.imagePreview === null) {

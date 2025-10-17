@@ -36,7 +36,7 @@
       "category": "Category Inventory",
       "categoryPlaceholder": "Select or search category",
       "unit": "Unit",
-      "unitPlaceholder": "Enter unit",
+      "unitPlaceholder": "Select or search unit",
       "notes": "Notes",
       "stock": "Stock & Inventory",
       "stockQuantity": "Stock Quantity",

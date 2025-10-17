@@ -5,6 +5,7 @@ export interface IProductBundlingCreateEditFormData {
   description: string;
   products: IProductList;
   type: string;
+  discount?: number | null;
   price: number;
   grandTotal: number;
   imagePreview?: string;

@@ -4,11 +4,10 @@ import CustomDatePicker from '../../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../../services/report.service';
 const {
-
   financialReport_discount_columns,
   report_queryParams,
   report_getFinancialReport,
-hasManageStaffMemberPermission,
+  hasManageStaffMemberPermission,
   report_discount_values,
   outlet_lists_options,
   staff_lists_options,
@@ -79,7 +78,7 @@ const handleExportToCsv = () => {
       <template #content>
         <table class="w-full">
           <tbody>
-            <tr class="bg-primary-background">
+            <tr class="bg-primary-border">
               <th class="text-left p-1.5">Total Discount</th>
               <td class="text-right p-1.5">
                 {{
@@ -95,7 +94,7 @@ const handleExportToCsv = () => {
                 {{ useCurrencyFormat({ data: report_discount_values.simpleWidget?.totalItemValue }) }}
               </td>
             </tr>
-            <tr class="bg-primary-background">
+            <tr class="bg-primary-border">
               <th class="text-left p-1.5">Total Discounted Item</th>
               <td class="text-right p-1.5">
                 {{
@@ -130,10 +129,11 @@ const handleExportToCsv = () => {
           variant="outlined"
           label="Export"
           :disabled="formattedDataTable()?.length === 0"
+          class="border border-primary-border text-primary"
           @click="popover.toggle($event)"
         >
           <template #icon>
-            <AppBaseSvg name="export" class="!w-5 !h-5" />
+            <AppBaseSvg name="export" class="!w-5 !h-5 filter-primary-color" />
           </template>
         </PrimeVueButton>
         <PrimeVuePopover
@@ -175,7 +175,7 @@ const handleExportToCsv = () => {
             option-label="label"
             option-value="value"
             placeholder="Select Outlet"
-            class="col-span-1 w-full"
+            class="col-span-1 w-full border border-primary-border"
             filter
             @change="report_getFinancialReport('discount-summary')"
           >
@@ -191,7 +191,7 @@ const handleExportToCsv = () => {
             option-value="value"
             placeholder="Select Staff"
             filter
-            class="col-span-1 w-full"
+            class="col-span-1 w-full border border-primary-border"
             @change="report_getFinancialReport('discount-summary')"
             ><template #dropdownicon>
               <AppBaseSvg name="staff" class="w-5 h-5 text-text-primary" />
