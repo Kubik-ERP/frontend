@@ -206,30 +206,30 @@ export const LIST_SIDEBAR_MENUS = [
           },
         ],
       },
-      {
-        name: 'Recipe',
-        translationKey: 'app.menus.recipe',
-        iconName: 'recipe',
-        path: '/recipe',
-        isHaveSubMenus: true,
-        subMenus: [
-          {
-            name: 'Menu Recipe',
-            translationKey: 'app.menus.menu-recipe',
-            path: '/recipe/menu-recipe',
-          },
-          {
-            name: 'Prep & Batch Management',
-            translationKey: 'app.menus.prep-batch-management',
-            path: '/recipe/prep-batch-management',
-          },
-          {
-            name: 'Waste Log',
-            translationKey: 'app.menus.waste-log',
-            path: '/recipe/waste-log',
-          }
-        ],
-      },
+      // {
+      //   name: 'Recipe',
+      //   translationKey: 'app.menus.recipe',
+      //   iconName: 'recipe',
+      //   path: '/recipe',
+      //   isHaveSubMenus: true,
+      //   subMenus: [
+      //     {
+      //       name: 'Menu Recipe',
+      //       translationKey: 'app.menus.menu-recipe',
+      //       path: '/recipe/menu-recipe',
+      //     },
+      //     {
+      //       name: 'Prep & Batch Management',
+      //       translationKey: 'app.menus.prep-batch-management',
+      //       path: '/recipe/prep-batch-management',
+      //     },
+      //     {
+      //       name: 'Waste Log',
+      //       translationKey: 'app.menus.waste-log',
+      //       path: '/recipe/waste-log',
+      //     }
+      //   ],
+      // },
       {
         name: 'Marketing',
         translationKey: 'app.menus.marketing',
