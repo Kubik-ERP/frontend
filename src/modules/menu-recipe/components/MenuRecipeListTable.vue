@@ -19,6 +19,9 @@ const togglePopover = (id: string, event: Event) => {
  */
 const {
   menuRecipeList_columns,
+  menuRecipeList_handleOnSortChange,
+  menuRecipeList_isLoading,
+  menuRecipeList_onChangePage,
   menuRecipeList_onShowDialogDelete,
   menuRecipeList_queryParams,
   menuRecipeList_values,
@@ -30,7 +33,7 @@ const {
     v-model:search-value="menuRecipeList_queryParams.search"
     btn-cta-create-title="Add New Recipe"
     :columns="menuRecipeList_columns"
-    :data="menuRecipeList_values"
+    :data="menuRecipeList_values.items"
     header-title="Menu Recipe List"
     :is-using-btn-cta-create="true"
     is-using-custom-body
@@ -38,11 +41,11 @@ const {
     is-using-search-on-header
     is-using-server-side-pagination
     is-using-pagination
-    :is-loading="false"
-    :rows-per-page="10"
-    :total-records="0"
+    :is-loading="menuRecipeList_isLoading"
+    :rows-per-page="menuRecipeList_values?.meta.pageSize"
+    :total-records="menuRecipeList_values?.meta.total"
     :first="
-      0
+      menuRecipeList_values?.meta ? (menuRecipeList_values.meta.page - 1) * menuRecipeList_values.meta.pageSize : 0
     "
     search-placeholder="Search Recipe"
     :sort-field="menuRecipeList_queryParams.orderBy"
@@ -54,6 +57,8 @@ const {
           : 0
     "
     @click-btn-cta-create="$router.push({ name: 'menu-recipe.create' })"
+    @sort="menuRecipeList_handleOnSortChange"
+    @page="menuRecipeList_onChangePage"
   >
     <template #body="{ column, data }">
       <template v-if="column.value === 'recipeName'">
@@ -62,7 +67,7 @@ const {
             {{ data[column.value] ?? '-' }}
           </span>
 
-          <PrimeVueChip v-if="data.isBaseRecipe" class="bg-primary-background p-2 rounded-full text-xs w-fit">
+          <PrimeVueChip v-if="data.baseRecipe" class="bg-primary-background p-2 rounded-full text-xs w-fit">
             Base Recipe
           </PrimeVueChip>
         </div>
@@ -76,19 +81,22 @@ const {
 
       <template v-else-if="column.value === 'costPerPortion'">
         <span class="font-normal text-black text-sm">
-          {{ useCurrencyFormat({
-            data: data[column.value],
-          }) }}
+          {{
+            useCurrencyFormat({
+              data: data[column.value],
+            })
+          }}
         </span>
       </template>
 
       <template v-else-if="column.value === 'marginPercent'">
         <span class="font-normal text-black text-sm">
-          {{ useCurrencyFormat({
-            data: data.costPerPortion * (data[column.value] / 100),
-          }) }} <span class="font-normal text-primary text-sm">
-            ({{ data[column.value] }}%)
-          </span>
+          {{
+            useCurrencyFormat({
+              data: data.costPerPortion * (data[column.value] / 100),
+            })
+          }}
+          <span class="font-normal text-primary text-sm"> ({{ data[column.value] }}%) </span>
         </span>
       </template>
 
@@ -105,52 +113,56 @@ const {
         </PrimeVueButton>
 
         <PrimeVuePopover
-            :ref="
+          :ref="
             (el: unknown) => {
               if (el) popovers[`popover-${data.id}`] = el;
             }
           "
-            :pt="{
-              content: 'p-0',
-            }"
-          >
-            <section id="popover-content" class="flex flex-col">
-              <PrimeVueButton
-                class="w-full px-4 py-3"
-                variant="text"
-                @click="$router.push({ name: 'menu-recipe.detail', params: { id: data.id } })"
-              >
-                <template #default>
-                  <section id="content" class="flex items-center gap-2 w-full">
-                    <AppBaseSvg name="eye-visible" class="w-4 h-4" />
-                    <span class="font-normal text-sm text-text-primary">Detail</span>
-                  </section>
-                </template>
-              </PrimeVueButton>
+          :pt="{
+            content: 'p-0',
+          }"
+        >
+          <section id="popover-content" class="flex flex-col">
+            <PrimeVueButton
+              class="w-full px-4 py-3"
+              variant="text"
+              @click="$router.push({ name: 'menu-recipe.detail', params: { id: data.id } })"
+            >
+              <template #default>
+                <section id="content" class="flex items-center gap-2 w-full">
+                  <AppBaseSvg name="eye-visible" class="w-4 h-4" />
+                  <span class="font-normal text-sm text-text-primary">Detail</span>
+                </section>
+              </template>
+            </PrimeVueButton>
 
-              <PrimeVueButton
-                class="w-full px-4 py-3"
-                variant="text"
-                @click="$router.push({ name: 'menu-recipe.edit', params: { id: data.id } })"
-              >
-                <template #default>
-                  <section id="content" class="flex items-center gap-2 w-full">
-                    <AppBaseSvg name="edit" class="w-4 h-4" />
-                    <span class="font-normal text-sm text-text-primary">Edit</span>
-                  </section>
-                </template>
-              </PrimeVueButton>
+            <PrimeVueButton
+              class="w-full px-4 py-3"
+              variant="text"
+              @click="$router.push({ name: 'menu-recipe.edit', params: { id: data.id } })"
+            >
+              <template #default>
+                <section id="content" class="flex items-center gap-2 w-full">
+                  <AppBaseSvg name="edit" class="w-4 h-4" />
+                  <span class="font-normal text-sm text-text-primary">Edit</span>
+                </section>
+              </template>
+            </PrimeVueButton>
 
-              <PrimeVueButton class="w-full px-4 py-3" variant="text" @click="menuRecipeList_onShowDialogDelete(data.id)">
-                <template #default>
-                  <section id="content" class="flex items-center gap-2 w-full">
-                    <AppBaseSvg name="delete" class="w-4 h-4" />
-                    <span class="font-normal text-sm text-text-primary">Delete</span>
-                  </section>
-                </template>
-              </PrimeVueButton>
-            </section>
-          </PrimeVuePopover>
+            <PrimeVueButton
+              class="w-full px-4 py-3"
+              variant="text"
+              @click="menuRecipeList_onShowDialogDelete(data.id)"
+            >
+              <template #default>
+                <section id="content" class="flex items-center gap-2 w-full">
+                  <AppBaseSvg name="delete" class="w-4 h-4" />
+                  <span class="font-normal text-sm text-text-primary">Delete</span>
+                </section>
+              </template>
+            </PrimeVueButton>
+          </section>
+        </PrimeVuePopover>
       </template>
 
       <template v-else>
