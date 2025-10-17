@@ -100,7 +100,10 @@ const { batchList_getClassOfBatchStatus, batchDetailsIngridient_columns, batchDe
       />
     </section>
 
-    <footer class="flex items-center justify-between pb-8 pt-4">
+    <footer
+      v-if="batchDetails_values.recipe.batchStatus !== 'cancelled'"
+      class="flex items-center justify-between pb-8 pt-4"
+    >
       <div class="flex items-center gap-2">
         <router-link
           :to="{ name: 'prep-batch-management.edit', params: { id: batchDetails_values.recipe.batchName } }"
@@ -111,8 +114,16 @@ const { batchList_getClassOfBatchStatus, batchDetailsIngridient_columns, batchDe
             </template>
           </PrimeVueButton>
         </router-link>
-
-        <PrimeVueButton label="Complete Batch" class="bg-primary border-primary-border text-white" />
+        <PrimeVueButton
+          :label="
+            batchDetails_values.recipe.batchStatus === 'planned'
+              ? 'Start Cooking'
+              : useTitleCaseWithSpaces(batchDetails_values.recipe.batchStatus) === 'In Progress'
+                ? 'Complete Batch'
+                : ''
+          "
+          class="bg-primary border-primary-border text-white"
+        />
       </div>
 
       <PrimeVueButton

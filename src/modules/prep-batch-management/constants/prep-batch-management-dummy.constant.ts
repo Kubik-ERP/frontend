@@ -3,7 +3,7 @@ export const BATCH_LIST_VALUES = Array.from({ length: 10 }, (_, i) => ({
   batchDate: new Date(`2025-01-0${i + 1}`), // Wrap the date string in new Date()
   targetYield: '100',
   notes: Math.random() < 0.5 ? 'Notes' : '',
-  batchStatus: ['Cancelled', 'Planned', 'In Progress', 'Posted'][Math.floor(Math.random() * 4)],
+  batchStatus: ['cancelled', 'planned', 'in_Progress', 'posted'][Math.floor(Math.random() * 4)],
   updatedAt: new Date(`2025-01-0${i + 1}`), // Wrap the date string in new Date()
 }));
 
@@ -11,7 +11,7 @@ const BATCH_DETAILS_RECIPE_VALUES = {
   batchName: 'Rendang Daging/Batch-25092025',
   recipeName: 'Rendang Daging',
   batchDate: new Date('2025-09-25'),
-  batchStatus: 'In Progress',
+  batchStatus: ['cancelled', 'planned', 'in_Progress', 'posted'][Math.floor(Math.random() * 4)],
   productLinked: 'Rendang Daging (#001)',
   productPrice: 24000,
   targetYield: 100,
