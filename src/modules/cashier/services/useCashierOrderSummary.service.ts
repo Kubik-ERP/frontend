@@ -42,6 +42,9 @@ import { MenuItem } from 'primevue/menuitem';
 // Router
 import { useRouter, useRoute } from 'vue-router';
 
+// Pinia helpers
+import { storeToRefs } from 'pinia';
+
 // Stores
 import { useCashierStore } from '../store';
 import { useInvoiceStore } from '@/modules/invoice/store';
@@ -51,8 +54,9 @@ import { useOutletStore } from '@/modules/outlet/store';
 import { useSocket } from '@/plugins/socket';
 
 // Vue
-import { ref, computed } from 'vue';
+import { computed, onUnmounted, reactive, ref, watch } from 'vue';
 import { ICashierCustomerState, ICashierSelected } from '../interfaces';
+import { ILoyaltyPointBenefit } from '@/modules/point-configuration/interfaces';
 
 // Composables
 import { useRbac } from '@/app/composables/useRbac';
@@ -129,6 +133,14 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     total: 0,
     selectedCustomer: null,
   });
+
+  const cashierOrderSummary_selectedLoyaltyBenefitId = ref<string | null>(null);
+  const cashierOrderSummary_selectedLoyaltyBenefit = ref<ILoyaltyPointBenefit | null>(null);
+
+  const cashierOrderSummary_setSelectedLoyaltyBenefit = (benefit: ILoyaltyPointBenefit | null) => {
+    cashierOrderSummary_selectedLoyaltyBenefitId.value = benefit?.id ?? null;
+    cashierOrderSummary_selectedLoyaltyBenefit.value = benefit;
+  };
 
   /**
    * @description Fetches the customer list from the store.
@@ -218,6 +230,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierProduct_customerState.value.selectedCustomer = {} as ICashierCustomer;
     cashierOrderSummary_modalSelectTable.value.selectedTable = [];
     cashierOrderSummary_modalVoucher.value.form = { voucherId: '', voucher_code: '' };
+    cashierOrderSummary_selectedLoyaltyBenefitId.value = null;
+    cashierOrderSummary_selectedLoyaltyBenefit.value = null;
     cashierProduct_selectedProduct.value = [];
     cashierOrderSummary_modalCancelOrder.value.show = false;
   };
@@ -236,6 +250,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       total: 0,
       subTotal: 0,
       discountTotal: 0,
+      totalRedeemDiscount: 0,
       grandTotal: 0,
       serviceCharge: 0,
       roundingAdjustment: 0,
@@ -356,7 +371,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         debouncedCalculateEstimation();
         await getVoucherActive(
           cashierOrderSummary_modalVoucher.value.search,
-          cashierProduct_selectedProduct.value.map(p => p.productId),
+          cashierProduct_selectedProduct.value.map(p => p.productId ?? p.bundlingId ?? ''),
         );
       }
 
@@ -587,9 +602,13 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     try {
       const response = await store.cashierProduct_calculateEstimation(
         {
-          voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId,
+          voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId || null,
+          customerId: cashierProduct_customerState.value.selectedCustomer?.id ?? undefined,
           products: cashierOrderSummary_summary.value.product,
           orderType: cashierOrderSummary_summary.value.orderType,
+          redeemLoyalty: cashierOrderSummary_selectedLoyaltyBenefitId.value
+            ? { loyalty_points_benefit_id: cashierOrderSummary_selectedLoyaltyBenefitId.value }
+            : undefined,
         },
         route,
       );
@@ -599,7 +618,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       if (!recalculating) {
         await getVoucherActive(
           cashierOrderSummary_modalVoucher.value.search,
-          cashierProduct_selectedProduct.value.map(p => p.productId),
+          cashierProduct_selectedProduct.value.map(p => p.productId ?? p.bundlingId ?? ''),
         );
 
         const availableVouchers = voucherData.value.filter(v => v.available);
@@ -643,6 +662,32 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     }
   };
 
+  const debouncedRecalculateWithLoyalty = debounce(() => cashierOrderSummary_handleCalculateEstimation(true), 300);
+
+  watch(
+    () => cashierOrderSummary_selectedLoyaltyBenefitId.value,
+    () => {
+      if (
+        cashierOrderSummary_modalOrderType.value.selectedOrderType &&
+        cashierProduct_selectedProduct.value.length > 0
+      ) {
+        debouncedRecalculateWithLoyalty();
+      }
+    },
+  );
+
+  watch(
+    () => cashierProduct_customerState.value.selectedCustomer?.id,
+    () => {
+      if (
+        cashierOrderSummary_modalOrderType.value.selectedOrderType &&
+        cashierProduct_selectedProduct.value.length > 0
+      ) {
+        debouncedRecalculateWithLoyalty();
+      }
+    },
+  );
+
   /**
    * @description debounce function to handle calculate estimation
    */
@@ -666,6 +711,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           total: 0,
           subTotal: 0,
           discountTotal: 0,
+          totalRedeemDiscount: 0,
           grandTotal: 0,
           serviceCharge: 0,
           roundingAdjustment: 0,
@@ -702,7 +748,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         orderType: cashierOrderSummary_summary.value.orderType,
         provider: provider,
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
-        customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
+        customerId: cashierProduct_customerState.value.selectedCustomer?.id ?? null,
         tableCode: cashierOrderSummary_isRetailBusinessType.value
           ? ''
           : cashierOrderSummary_summary.value.tableCode,
@@ -710,6 +756,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         paymentAmount: cashierOrderSummary_paymentForm.paymentAmount || null,
         voucherId: cashierOrderSummary_modalVoucher.value.form.voucherId || null,
         rounding_amount: cashierOrderSummary_calculateEstimation.value.data.roundingAdjustment || 0,
+        redeemLoyalty: cashierOrderSummary_selectedLoyaltyBenefitId.value
+          ? { loyalty_points_benefit_id: cashierOrderSummary_selectedLoyaltyBenefitId.value }
+          : undefined,
       };
 
       const response = await store.cashierProduct_paymentInstant(params, route);
@@ -781,12 +830,15 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         orderType: cashierOrderSummary_summary.value.orderType,
         paymentMethodId: cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
         voucherId: cashierOrderSummary_summary.value.selectedVoucher,
-        customerId: cashierProduct_customerState.value.selectedCustomer?.id || '',
+        customerId: cashierProduct_customerState.value.selectedCustomer?.id ?? null,
         tableCode: cashierOrderSummary_isRetailBusinessType.value
           ? ''
           : cashierOrderSummary_summary.value.tableCode,
         storeId: storeOutlet.outlet_currentOutlet?.id || '',
         rounding_amount: cashierOrderSummary_calculateEstimation.value.data.roundingAdjustment || 0,
+        redeemLoyalty: cashierOrderSummary_selectedLoyaltyBenefitId.value
+          ? { loyalty_points_benefit_id: cashierOrderSummary_selectedLoyaltyBenefitId.value }
+          : undefined,
       };
 
       const response = await store.cashierProduct_paymentProcess(params, route);
@@ -996,6 +1048,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
             variantId: item.variant?.id || '',
             quantity: item.qty,
             notes: item.notes,
+            type: 'product',
           };
         });
       } else {
@@ -1154,6 +1207,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       cashierOrderSummary_modalSelectTable.value.selectedTable = [];
       cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod = '';
       cashierProduct_customerState.value.selectedCustomer = null;
+      cashierOrderSummary_selectedLoyaltyBenefitId.value = null;
+      cashierOrderSummary_selectedLoyaltyBenefit.value = null;
     }
   };
 
@@ -1217,6 +1272,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_isLoadingUnpaidOrder,
 
     cashierProduct_customerState,
+    cashierOrderSummary_selectedLoyaltyBenefitId,
+    cashierOrderSummary_selectedLoyaltyBenefit,
 
     hasCustomerManagementPermission,
     cashierOrderSummary_isRetailBusinessType,
@@ -1242,6 +1299,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierProduct_onScrollFetchMoreCustomers,
 
     cashierOrderSummary_handleEditOrder,
+    cashierOrderSummary_setSelectedLoyaltyBenefit,
 
     cashierOrderSummary_isShowQuickOverview,
     cashierOrderSummary_onCloseDialogCashDrawerOverview,

@@ -160,7 +160,7 @@
   --color-black: #070707;
   --color-black-secondary: #434343;
   --color-border-error: #f0afaf;
-  --color-primary: #F3631D;
+  --color-primary: #f3631d;
   --color-primary-50: #e5f1f7;
   --color-primary-100: #b8d9e9;
   --color-primary-200: #8ac0da;
@@ -179,7 +179,7 @@
   --color-primary-background: #edf6fc;
   --color-primary-border: var(--color-secondary);
   --color-primary-hover: #0f3c56;
-  --color-secondary: #F5AA85;
+  --color-secondary: #f5aa85;
   --color-secondary-background: #e9f7f4;
   --color-secondary-hover: #2a7866;
   --color-blue-secondary-background: #d6ebf8;
@@ -219,4 +219,54 @@ span.p-datatable-column-title {
 .scrollbar-hidden::-webkit-scrollbar {
   -ms-overflow-style: none; /* IE dan Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+/* aproksimasi warna #F3631D lewat chain filter (nilai perkiraan) */
+.filter-primary-color {
+  filter: invert(48%) sepia(64%) saturate(530%) hue-rotate(333deg) brightness(94%) contrast(95%);
+}
+
+.filter-white-color {
+  filter: brightness(0) invert(1);
+}
+
+.p-select:focus,
+.p-select:focus-within,
+.p-multiselect:focus,
+.p-multiselect:focus-within,
+.p-dropdown:focus,
+.p-dropdown:focus-within,
+.p-inputtext:focus,
+.p-inputnumber:focus,
+.p-inputnumber:focus-within,
+.p-datepicker-dropdown:focus,
+.p-datepicker-dropdown:focus-within,
+.p-textarea:focus,
+.p-inputgroupaddon:focus-within,
+.p-checkbox:focus-within .p-checkbox-box,
+.p-radiobutton:focus-within .p-radiobutton-box {
+  @apply border-secondary;
+}
+
+.p-radiobutton-box[data-p='checked'],
+.p-checkbox-box[data-p='checked'],
+.p-toggleswitch-slider[data-p='checked'] {
+  @apply bg-primary border-primary;
+}
+
+.p-button-text,
+.p-button,
+.p-focus {
+  @apply hover:bg-secondary;
+}
+
+.p-datepicker-day-selected,
+.p-datepicker-month-selected,
+.p-datepicker-year-selected,
+.p-select-option-selected {
+  @apply bg-primary text-white;
+}
+
+.p-datepicker-day-selected-range {
+  @apply bg-secondary;
 }

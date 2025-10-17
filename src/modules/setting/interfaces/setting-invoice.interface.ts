@@ -15,6 +15,8 @@ export interface ISettingInvoiceDetail extends IPropsInvoicePaper {
   isShowTableNumber: boolean;
   isHideItemPrices: boolean;
   isShowFooter: boolean;
+  isShowLoyaltyPointsUsed: boolean;
+  isShowTotalPointsAccumulated: boolean;
 }
 
 export interface ISettingInvoiceDetailResponse {
@@ -35,6 +37,8 @@ export interface ISettingInvoiceContentSettings {
   isShowTableNumber: boolean;
   isHideItemPrices: boolean;
   isShowFooter: boolean;
+  isShowLoyaltyPointsUsed: boolean;
+  isShowTotalPointsAccumulated: boolean;
 }
 
 export interface ISettingInvoiceNumberConfigurations {
@@ -63,6 +67,8 @@ export interface ISettingInvoiceFormData {
     isShowTableNumber: boolean;
     isHideItemPrices: boolean;
     isShowFooter: boolean;
+    isShowLoyaltyPointsUsed: boolean;
+    isShowTotalPointsAccumulated: boolean;
   } & ISettingInvoiceContentSettings;
   invoiceNumberConfigurations: {
     invoicePreview: string;

@@ -15,7 +15,7 @@ export const WORKING_HOURS_LIST_VIEW_TYPES: IDropdownItem[] = [
 export const WORKING_HOURS_CREATE_EDIT_REPEAT_OPTIONS: IDropdownItem[] = [
   {
     label: 'Does Not Repeat',
-    value: 'none',
+    value: 'not_repeat',
   },
   {
     label: 'Daily',
@@ -23,7 +23,7 @@ export const WORKING_HOURS_CREATE_EDIT_REPEAT_OPTIONS: IDropdownItem[] = [
   },
   {
     label: 'Weekly on Monday',
-    value: 'weekly-monday',
+    value: 'weekly_on_monday',
   },
   {
     label: 'Every Weekday',
@@ -60,7 +60,7 @@ export const WORKING_HOURS_CREATE_EDIT_INITIAL_FORM_DATA: IWorkingHoursFormData 
   date: '',
   timeSlots: [WORKING_HOURS_CREATE_EDIT_INITIAL_TIME_SLOT],
   notes: '',
-  repeatType: 'none',
+  repeatType: 'not_repeat',
   customRecurrence: {
     frequency: 'day',
     interval: 1,

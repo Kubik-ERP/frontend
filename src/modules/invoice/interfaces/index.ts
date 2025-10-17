@@ -49,6 +49,7 @@ export interface IInvoiceCustomer {
   username: string;
   address: string | null;
   gender: string;
+  point: number | null;
 }
 export interface IInvoiceProduct {
   id: string;
@@ -59,10 +60,34 @@ export interface IInvoiceProduct {
   isPercent: boolean;
 }
 
+export interface IInvoiceBundling {
+  id: string;
+  storeId: string;
+  pictureUrl?: string;
+  name: string;
+  description: string;
+  type: string;
+  discount?: string;
+  price: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface IInvoiceVariant {
   id: string;
   name: string;
   price: number;
+}
+
+export interface IInvoiceBundlingItem {
+  id: string;
+  invoiceId: string;
+  invoiceDetailId: string;
+  productId: string;
+  qty: number;
+  createdAt: string;
+  updatedAt: string;
+  products: IInvoiceProduct;
 }
 
 export interface IInvoiceDetail {
@@ -75,7 +100,9 @@ export interface IInvoiceDetail {
   invoiceId: string;
   variantPrice: number | null;
   products: IInvoiceProduct;
+  catalogBundling: IInvoiceBundling;
   variant: IInvoiceVariant | null;
+  invoiceBundlingItems: IInvoiceBundlingItem[];
 }
 
 export interface IInvoicePaymentMethod {
@@ -84,6 +111,41 @@ export interface IInvoicePaymentMethod {
   iconName: string;
   sortNo: number;
   isAvailable: boolean;
+}
+
+export interface IInvoiceLoyaltyBenefitProduct {
+  id: string;
+  name: string;
+  price: number;
+  discountPrice: number | null;
+  pictureUrl: string | null;
+  isPercent: boolean;
+  storesId: string;
+  masterInventoryItemId: string | null;
+  barcode: string | null;
+}
+
+export interface IInvoiceLoyaltyBenefitFreeItem {
+  id: string;
+  loyaltyPointBenefitId: string;
+  productId: string;
+  quantity: number;
+  createdAt: string;
+  updatedAt: string;
+  products: IInvoiceLoyaltyBenefitProduct | null;
+}
+
+export interface IInvoiceLoyaltyPointsBenefit {
+  id: string;
+  loyaltyPointSettingId: string;
+  type: string;
+  benefitName: string;
+  pointsNeeds: number;
+  discountValue: number;
+  isPercent: boolean;
+  createdAt: string;
+  updatedAt: string;
+  benefitFreeItems: IInvoiceLoyaltyBenefitFreeItem[];
 }
 
 export interface IInvoiceData {
@@ -121,6 +183,8 @@ export interface IInvoiceData {
     fullname: string;
     id: number;
   } | null;
+  loyaltyDiscount?: number | null;
+  loyaltyPointsBenefit?: IInvoiceLoyaltyPointsBenefit | null;
 }
 
 export interface IInvoiceResponseInvoice {

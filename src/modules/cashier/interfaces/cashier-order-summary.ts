@@ -1,6 +1,7 @@
 import { MenuPassThroughAttributes, VirtualScrollerLazyEvent } from 'primevue';
 import { MenuItem } from 'primevue/menuitem';
 import { ICashierCustomerState, ICashierSelected } from '.';
+import { ILoyaltyPointBenefit } from '@/modules/point-configuration/interfaces';
 import {
   ICashierCustomer,
   ICashierResponseCalulateEstimationItem,
@@ -194,6 +195,8 @@ export interface ICashierOrderSummaryProvided {
   cashierOrderSummary_isButtonPlaceOrderDisabled: ComputedRef<boolean>;
 
   cashierProduct_customerState: Ref<ICashierCustomerState>;
+  cashierOrderSummary_selectedLoyaltyBenefitId: Ref<string | null>;
+  cashierOrderSummary_selectedLoyaltyBenefit: Ref<ILoyaltyPointBenefit | null>;
 
   hasCustomerManagementPermission: ComputedRef<boolean>;
   cashierOrderSummary_isRetailBusinessType: ComputedRef<boolean>;
@@ -222,6 +225,7 @@ export interface ICashierOrderSummaryProvided {
   cashierProduct_onScrollFetchMoreCustomers: (event: VirtualScrollerLazyEvent) => void;
 
   cashierOrderSummary_handleEditOrder: () => void;
+  cashierOrderSummary_setSelectedLoyaltyBenefit: (benefit: ILoyaltyPointBenefit | null) => void;
 
   cashierOrderSummary_isShowQuickOverview: Ref<boolean>;
   cashierOrderSummary_onCloseDialogCashDrawerOverview: () => void;

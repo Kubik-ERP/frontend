@@ -4,6 +4,8 @@ import confirmationSVG from '@/app/assets/icons/confirmation.svg';
 import imageSVG from '@/app/assets/icons/image.svg';
 import { useInventoryItemsListService } from '../services/items-list.service';
 import { useOutletStore } from '@/modules/outlet/store';
+import { ITEM_UNIT_DROPDOWN } from '../constants';
+import InventorySidebarRight from '../components/InventorySidebarRight.vue';
 
 const {
   inventoryItemsAction_formData: form,
@@ -23,10 +25,20 @@ const {
 const { inventoryItems_onDelete } = useInventoryItemsListService();
 
 const isUpdateModal = ref(false);
+const isUnitConversionSidebarVisible = ref(false);
+const sidebarRef = ref<InstanceType<typeof InventorySidebarRight> | null>(null);
+
+const openUnitConversionSidebar = () => {
+  isUnitConversionSidebarVisible.value = true;
+};
 
 const onSubmit = () => {
+  if (sidebarRef.value) {
+    form.value.conversions = sidebarRef.value.getLatestConversions();
+  }
+
   if (inventoryItemsAction_formOnMode.value === 'create') {
-    inventoryItemsAction_onSubmit(form.value, 'create');
+    inventoryItemsAction_onSubmit('create');
   } else {
     isUpdateModal.value = true;
   }
@@ -41,7 +53,10 @@ const cancelUpdate = () => {
 };
 
 const confirmUpdate = async () => {
-  await inventoryItemsAction_onSubmit(form.value, 'edit', inventoryItems_editingItem.value?.id);
+  if (sidebarRef.value) {
+    form.value.conversions = sidebarRef.value.getLatestConversions();
+  }
+  await inventoryItemsAction_onSubmit('edit', inventoryItems_editingItem.value?.id);
 };
 
 const outletStore = useOutletStore();
@@ -71,6 +86,8 @@ const removePhoto = () => {
   form.value.imagePreview = null;
   form.value.imageFile = null;
 };
+
+
 </script>
 
 <template>
@@ -238,13 +255,26 @@ const removePhoto = () => {
             spacing-bottom="mb-0"
             :validators="itemFormValidation.unit"
           >
-            <PrimeVueInputText
+            <PrimeVueDropdown
               id="unit"
               v-model="form.unit"
+              :options="ITEM_UNIT_DROPDOWN"
+              option-label="label"
+              option-value="value"
+              filter
+              show-clear
+              :placeholder="useLocalization('items.form.unitPlaceholder')"
               class="w-full"
               :class="{ ...classes }"
-              :placeholder="useLocalization('items.form.unitPlaceholder')"
             />
+            <div v-if="businessType === 'Restaurant'" class="mt-2 flex items-center gap-2">
+              <PrimeVueButton
+                icon="pi pi-calculator"
+                class="p-button-secondary text-primary p-button-sm"
+                @click="openUnitConversionSidebar"
+              />
+              <span class="text-sm">Unit Conversion</span>
+            </div>
           </AppBaseFormGroup>
 
           <!-- Notes (full width di mobile, half di tablet+) -->
@@ -424,7 +454,7 @@ const removePhoto = () => {
                 : 'items.form.buttons.update',
             )
           "
-          class="w-full sm:w-auto !px-6"
+          class="w-full sm:w-auto !px-6 bg-primary text-white"
           :disabled="!inventoryItemsAction_isValid"
           @click="onSubmit"
         />
@@ -435,11 +465,18 @@ const removePhoto = () => {
         :label="useLocalization('items.form.buttons.delete')"
         severity="danger"
         icon="pi pi-trash"
-        class="mt-4 sm:absolute sm:bottom-6 sm:right-20 !px-6 bg-transparent border-none text-red-600"
+        class="mt-4 sm:absolute sm:bottom-6 bg-transparent sm:right-20 !px-6 border-none text-red-600"
         @click="inventoryItems_onDelete(inventoryItems_editingItem?.id ?? '')"
       />
     </div>
   </section>
+
+  <InventorySidebarRight
+    v-model:visible="isUnitConversionSidebarVisible"
+    :unit="form.unit"
+    :initial-conversions="form.conversions"
+    @save="form.conversions = $event"
+  />
 
   <!-- Dialog Update -->
   <PrimeVueDialog :visible="isUpdateModal" modal header="">

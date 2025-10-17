@@ -7,11 +7,14 @@ const {
   financialReport_taxAndServiceCharge_columns,
   report_queryParams,
   report_getFinancialReport,
+  hasManageStaffMemberPermission,
   report_taxAndServiceCharge_values,
   outlet_lists_options,
   staff_lists_options,
   findOutletDetail,
   findStaffDetail,
+  hasAccessAllStorePermission,
+  outlet_currentOutlet,
 } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
@@ -19,8 +22,12 @@ const { exportToPdf, exportToCsv } = useReportExporter();
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Financial Report - Tax & Service Charge Report',
-    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
-    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    storeName: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      : outlet_currentOutlet.value!.name,
+    storeAddress: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_taxAndServiceCharge_columns,
@@ -30,8 +37,12 @@ const handleExportToPdf = () => {
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Financial Report - Tax & Service Charge Report',
-    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
-    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    storeName: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      : outlet_currentOutlet.value!.name,
+    storeAddress: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_taxAndServiceCharge_columns,
@@ -55,10 +66,6 @@ const popover = ref();
 </script>
 <template>
   <section>
-    <!-- <pre class="p-4 my-4 bg-gray-100 rounded-lg break-all" style="white-space: pre-wrap; word-wrap: break-word">
-      {{ report_taxAndServiceCharge_values }}
-      {{ formattedDataTable() }}
-    </pre> -->
     <AppBaseDataTable
       :data="formattedDataTable()"
       :columns="financialReport_taxAndServiceCharge_columns"
@@ -72,9 +79,9 @@ const popover = ref();
         <h1 class="font-bold text-2xl text-text-primary">Tax & Service Charge Report</h1>
       </template>
       <template #header-suffix>
-        <PrimeVueButton variant="outlined" label="Export" @click="popover.toggle($event)">
+        <PrimeVueButton variant="outlined" label="Export" class="border border-primary-border text-primary"  @click="popover.toggle($event)">
           <template #icon>
-            <AppBaseSvg name="export" class="!w-5 !h-5" />
+            <AppBaseSvg name="export" class="!w-5 !h-5 filter-primary-color" />
           </template>
         </PrimeVueButton>
         <PrimeVuePopover
@@ -110,6 +117,7 @@ const popover = ref();
             @update:end-date="report_getFinancialReport('tax-and-service-summary')"
           />
           <PrimeVueSelect
+            v-if="hasAccessAllStorePermission"
             v-model="report_queryParams.store_ids"
             :options="outlet_lists_options"
             option-label="label"
@@ -124,6 +132,7 @@ const popover = ref();
             </template>
           </PrimeVueSelect>
           <PrimeVueSelect
+            v-if="hasManageStaffMemberPermission"
             v-model="report_queryParams.staff_ids"
             :options="staff_lists_options"
             option-label="label"
