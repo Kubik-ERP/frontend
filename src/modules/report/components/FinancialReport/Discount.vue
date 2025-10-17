@@ -78,7 +78,7 @@ const handleExportToCsv = () => {
       <template #content>
         <table class="w-full">
           <tbody>
-            <tr class="bg-primary-border">
+            <tr class="bg-secondary/10">
               <th class="text-left p-1.5">Total Discount</th>
               <td class="text-right p-1.5">
                 {{
@@ -94,7 +94,7 @@ const handleExportToCsv = () => {
                 {{ useCurrencyFormat({ data: report_discount_values.simpleWidget?.totalItemValue }) }}
               </td>
             </tr>
-            <tr class="bg-primary-border">
+            <tr class="bg-secondary/10">
               <th class="text-left p-1.5">Total Discounted Item</th>
               <td class="text-right p-1.5">
                 {{

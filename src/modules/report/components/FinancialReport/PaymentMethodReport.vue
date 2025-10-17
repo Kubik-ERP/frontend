@@ -80,7 +80,7 @@ const formattedDataTable = () => {
       <template #content>
         <table class="w-full">
           <tbody>
-            <tr class="bg-primary-background">
+            <tr class="bg-secondary/10">
               <th class="text-left p-1.5">Total Transaction</th>
               <td class="text-right p-1.5">
                 {{
@@ -97,7 +97,7 @@ const formattedDataTable = () => {
                 {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.pendapatanKotor }) }}
               </td>
             </tr>
-            <tr class="bg-primary-background">
+            <tr class="bg-secondary/10">
               <th class="text-left p-1.5">Total Refund</th>
               <td class="text-right p-1.5">
                 {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.totalRefund }) }}
@@ -109,7 +109,7 @@ const formattedDataTable = () => {
                 {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.totalPenggunaanVoucher }) }}
               </td>
             </tr>
-            <tr class="bg-primary-background">
+            <tr class="bg-secondary/10">
               <th class="text-left p-1.5">Nett Sales</th>
               <td class="text-right p-1.5">
                 {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.nettSummary }) }}
