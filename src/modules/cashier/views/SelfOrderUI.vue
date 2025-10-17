@@ -80,6 +80,9 @@ const {
   cashierOrderSummary_handleEditOrder,
   cashierOrderSummary_onOpenDialogStockOverview,
   cashierOrderSummary_onCloseDialogStockOverview,
+  cashierOrderSummary_selectedLoyaltyBenefitId,
+  cashierOrderSummary_selectedLoyaltyBenefit,
+  cashierOrderSummary_setSelectedLoyaltyBenefit,
 
   // Initialize functions for self-order
   cashierOrderSummary_initializeSelfOrder,
@@ -149,6 +152,8 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierProduct_onSearchCustomer,
   cashierProduct_onScrollFetchMoreCustomers,
   cashierOrderSummary_handleEditOrder,
+  cashierOrderSummary_selectedLoyaltyBenefitId,
+  cashierOrderSummary_selectedLoyaltyBenefit,
 
   // No need for initialize functions in provider since they're used directly in onMounted
   cashierOrderSummary_initializeSelfOrder: () => Promise.resolve(),
@@ -164,6 +169,7 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   cashierOrderSummary_onOpenDialogTableOverview: () => {},
   cashierOrderSummary_onOpenDialogStockOverview,
   cashierOrderSummary_onCloseDialogStockOverview,
+  cashierOrderSummary_setSelectedLoyaltyBenefit
 });
 
 onMounted(async () => {

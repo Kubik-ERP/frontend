@@ -183,6 +183,10 @@ const orderTypeLabel = computed(() => {
               </td>
             </tr>
 
+            <tr v-if="item.invoiceBundlingItems.length > 0">
+              <td class="font-normal pr-0.5 text-black text-[12pt]">Bundling Items:</td>
+            </tr>
+
             <!-- Bundling Products (Sub-items) -->
             <template v-for="bundlingItem in item.invoiceBundlingItems" :key="bundlingItem.id">
               <tr>
@@ -190,18 +194,10 @@ const orderTypeLabel = computed(() => {
                   {{ bundlingItem.products?.name }}
                 </td>
                 <td class="font-normal pr-0.5 text-black text-[12pt] text-center"></td>
-                <td
-                  
-                  class="font-normal pr-0.5 text-black text-[12pt] text-center"
-                >
+                <td class="font-normal pr-0.5 text-black text-[12pt] text-center">
                   {{ useCurrencyFormat({ data: bundlingItem.products?.price ?? 0 }) }}
                 </td>
-                <td
-                  
-                  class="font-normal pr-0.5 text-black text-[12pt] text-right"
-                >
-                 
-                </td>
+                <td class="font-normal pr-0.5 text-black text-[12pt] text-right"></td>
               </tr>
             </template>
 
@@ -297,7 +293,49 @@ const orderTypeLabel = computed(() => {
             </td>
           </tr>
 
-          <tr v-if="invoice_invoiceData?.data?.paymentMethods?.name">
+           <tr
+            v-if="
+              invoice_invoiceData.configInvoice?.isShowLoyaltyPointsUsed 
+              
+            "
+          >
+            <td class="font-normal text-black text-[12pt] py-1">Loyalty Point Discount</td>
+            <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
+              -
+              {{ useCurrencyFormat({ data: invoice_invoiceData.data.loyaltyDiscount || 0 }) }}
+            </td>
+          </tr>
+
+           <tr
+            v-if="
+              invoice_invoiceData.configInvoice?.isShowLoyaltyPointsUsed
+            "
+          >
+            <td class="font-normal text-black text-[12pt] py-1">Loyalty Point</td>
+            <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
+              -{{ invoice_invoiceData.data.loyaltyPointsBenefit?.pointsNeeds || 0 }} pts
+            </td>
+          </tr>
+
+          <tr
+            v-if="
+              invoice_invoiceData.configInvoice?.isShowTotalPointsAccumulated
+            "
+          >
+            <td class="font-normal text-black text-[12pt] py-1">Points Accumulated</td>
+            <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
+              {{ invoice_invoiceData.data.customer.point }} pts
+            </td>
+          </tr>
+
+          <tr v-if="invoice_invoiceData.data.changeAmount"  class="border-b border-dashed border-black">
+            <td class="font-normal text-black text-[12pt] py-1">Kembali</td>
+            <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
+              {{ useCurrencyFormat({ data: invoice_invoiceData.data.changeAmount ?? 0 }) }}
+            </td>
+          </tr>
+
+          <tr v-if="invoice_invoiceData?.data?.paymentMethods?.name" class="border-b border-dashed border-black">
             <td class="font-normal text-black text-[12pt] py-1">
               {{ invoice_invoiceData?.data?.paymentMethods?.name || '' }}
             </td>
@@ -306,36 +344,7 @@ const orderTypeLabel = computed(() => {
             </td>
           </tr>
 
-          <tr class="border-b border-dashed border-black">
-            <td class="font-normal text-black text-[12pt] py-1">Kembali</td>
-            <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
-              {{ useCurrencyFormat({ data: invoice_invoiceData.data.changeAmount ?? 0 }) }}
-            </td>
-          </tr>
-
           <tr>
-            <td colspan="2" class="items-center font-normal text-black text-[12pt] py-1">
-              Tax
-              <span
-                v-if="invoice_invoiceData.data.paymentStatus === 'unpaid'"
-                class="ml-0.5 text-[10px] italic text-text-disabled"
-              >
-                ({{ invoice_invoiceData.calculate?.taxInclude ? 'included' : 'excluded' }})
-              </span>
-            </td>
-            <td colspan="2" class="font-normal text-black text-[12pt] text-right py-1">
-              {{
-                useCurrencyFormat({
-                  data:
-                    invoice_invoiceData.data.paymentStatus === 'unpaid'
-                      ? invoice_invoiceData.calculate?.tax || 0
-                      : invoice_invoiceData.data.taxAmount || 0,
-                })
-              }}
-            </td>
-          </tr>
-
-          <tr class="border-b border-solid border-black">
             <td colspan="2" class="items-center font-normal text-black text-[12pt] py-1">
               Service
               <span
@@ -352,6 +361,28 @@ const orderTypeLabel = computed(() => {
                     invoice_invoiceData.data.paymentStatus === 'unpaid'
                       ? invoice_invoiceData.calculate?.serviceCharge || 0
                       : invoice_invoiceData.data.serviceChargeAmount || 0,
+                })
+              }}
+            </td>
+          </tr>
+
+          <tr class="border-b border-solid border-black">
+            <td colspan="2" class="items-center font-normal text-black text-[12pt] py-1">
+              Tax
+              <span
+                v-if="invoice_invoiceData.data.paymentStatus === 'unpaid'"
+                class="ml-0.5 text-[10px] italic text-text-disabled"
+              >
+                ({{ invoice_invoiceData.calculate?.taxInclude ? 'included' : 'excluded' }})
+              </span>
+            </td>
+            <td colspan="2" class="font-normal text-black text-[12pt] text-right py-1">
+              {{
+                useCurrencyFormat({
+                  data:
+                    invoice_invoiceData.data.paymentStatus === 'unpaid'
+                      ? invoice_invoiceData.calculate?.tax || 0
+                      : invoice_invoiceData.data.taxAmount || 0,
                 })
               }}
             </td>

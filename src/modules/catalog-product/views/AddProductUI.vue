@@ -3,9 +3,6 @@ import { useProductService } from '../services/catalog-product.service';
 import { useCategoryService } from '@/modules/catalog/services/Category/CategoryService';
 import excludeSVG from '@/app/assets/icons/exclude.svg';
 import closeRedSVG from '@/app/assets/icons/close-red.svg';
-import plusLineSVG from '@/app/assets/icons/plus-line.svg';
-import chevronDownSVG from '@/app/assets/icons/chevron-down.svg';
-import imageSVG from '@/app/assets/icons/image.svg';
 
 const { getAllCategories } = useCategoryService();
 const { createProduct, product_formData, product_formValidations } = useProductService();
@@ -181,7 +178,7 @@ watch(product_formData, () => {
             @click="triggerFileInput"
           >
             <template #icon>
-              <img :src="imageSVG" alt="" />
+              <AppBaseSvg name="image" class="!w-5 !h-5 filter-primary-color" />
             </template>
           </PrimeVueButton>
           <PrimeVueButton
@@ -239,7 +236,7 @@ watch(product_formData, () => {
                 v-on="useListenerForm(product_formValidations, 'categories')"
               >
                 <template #dropdownicon>
-                  <img :src="chevronDownSVG" alt="" />
+                  <AppBaseSvg name="chevron-down" class="!w-5 !h-5 filter-primary-color" />
                 </template>
                 <template #option="{ option }">
                   {{ option.category }}
@@ -307,7 +304,7 @@ watch(product_formData, () => {
                       @update:modelValue="calculateDiscount"
                     >
                       <template #dropdownicon>
-                        <img :src="chevronDownSVG" alt="" />
+                        <AppBaseSvg name="chevron-down" class="!w-5 !h-5 filter-primary-color" />
                       </template>
                       <template #option="{ option }">
                         {{ option }}
@@ -400,7 +397,7 @@ watch(product_formData, () => {
               @click="addVariant"
             >
               <template #icon>
-                <img :src="plusLineSVG" alt="" />
+                <AppBaseSvg name="plus-line" class="!w-5 !h-5 filter-primary-color" />
               </template>
             </PrimeVueButton>
           </div>

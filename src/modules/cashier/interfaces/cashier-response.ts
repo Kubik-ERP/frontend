@@ -13,6 +13,8 @@ export interface ICashierResponseCalulateEstimationItem {
   subTotal: number;
   discountTotal: number;
   grandTotal: number;
+  totalRedeemDiscount?: number;
+  totalPointsEarn?: number;
   serviceCharge: number | null;
   serviceChargeInclude: boolean;
   tax: number | null;

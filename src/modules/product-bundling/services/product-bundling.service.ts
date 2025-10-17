@@ -38,6 +38,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
     grandTotal: 0,
     imagePreview: '',
     imageFile: undefined,
+    discount: null,
   });
 
   const productBundling_formRules = computed(() => ({
@@ -78,7 +79,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
         0,
       );
     } else if (productBundling_formData.type === 'DISCOUNT') {
-      productBundling_formData.price = 0;
+      productBundling_formData.price = productBundling_formData.discount ?? 0;
     }
     // else if (productBundling_formData.type === 'CUSTOM') {
     //   productBundling_formData.price = productBundling_formData.products.reduce(
@@ -326,8 +327,12 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
       }
       if (data.type === 'DISCOUNT') {
         productBundling_formData.price = data?.discount || 0;
+        productBundling_formData.discount = data?.discount || 0;
+
       } else {
         productBundling_formData.price = data.price;
+        productBundling_formData.discount = null;
+
       }
       productBundling_formData.products =
         data?.products?.map(p => ({

@@ -39,7 +39,7 @@ export const MENU_RECIPE_LIST_COLUMNS: IColumnDataTable[] = [
 export const MENU_RECIPE_LIST_VALUES = [
   {
     id: '1',
-    isBaseRecipe: true,
+    baseRecipe: true,
     recipeName: 'Rendang',
     output: 'Portion',
     yieldTarget: 100,
@@ -49,7 +49,7 @@ export const MENU_RECIPE_LIST_VALUES = [
   },
   {
     id: '2',
-    isBaseRecipe: false,
+    baseRecipe: false,
     recipeName: 'Soto Ayam',
     output: 'Portion',
     yieldTarget: 50,
@@ -59,12 +59,16 @@ export const MENU_RECIPE_LIST_VALUES = [
   },
   {
     id: '3',
-    isBaseRecipe: true,
+    baseRecipe: true,
     recipeName: 'Nasi Goreng',
     output: 'Portion',
     yieldTarget: 75,
     costPerPortion: 15000,
     marginPercent: 50,
     updatedAt: '05/03/2025',
-  }
-]
+  },
+];
+
+// Request constants for HTTP abort
+export const MENU_RECIPE_LIST_REQUEST = 'MENU_RECIPE_LIST_REQUEST';
+export const MENU_RECIPE_DELETE_REQUEST = 'MENU_RECIPE_DELETE_REQUEST';

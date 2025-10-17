@@ -5,9 +5,6 @@ import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
 import plusLineWhiteSVG from '@/app/assets/icons/plus-line-white.svg';
 import threeDotsSVG from '@/app/assets/icons/three-dots.svg';
 import searchSVG from '@/app/assets/icons/search.svg';
-import chevronLeftSVG from '@/app/assets/icons/chevron-left.svg';
-import chevronRightSVG from '@/app/assets/icons/chevron-right.svg';
-import imageSVG from '@/app/assets/icons/image.svg';
 import { onMounted, onUnmounted } from 'vue';
 
 const {
@@ -351,7 +348,7 @@ const rbac = useRbac();
             @click="prevPage()"
           >
             <template #icon>
-              <img :src="chevronLeftSVG" alt="" />
+              <AppBaseSvg name="arrow-left" class="!w-5 !h-5 filter-primary-color" />
             </template>
           </PrimeVueButton>
 
@@ -361,9 +358,7 @@ const rbac = useRbac();
               :key="p"
               :label="p.toString()"
               class="border-none aspect-square p-4"
-              :class="
-                page === p ? 'bg-blue-secondary-background text-primary' : 'bg-transparent text-grayscale-20'
-              "
+              :class="page === p ? 'bg-primary-border text-white' : 'bg-transparent text-grayscale-20'"
               @click="goToPage(p)"
             />
           </div>
@@ -377,7 +372,7 @@ const rbac = useRbac();
             @click="nextPage()"
           >
             <template #icon>
-              <img :src="chevronRightSVG" alt="" />
+              <AppBaseSvg name="arrow-right" class="!w-5 !h-5 filter-primary-color" />
             </template>
           </PrimeVueButton>
         </div>
@@ -445,12 +440,12 @@ const rbac = useRbac();
               @click="triggerFileInput"
             >
               <template #icon>
-                <img :src="imageSVG" alt="" />
+                <AppBaseSvg name="image" class="!w-5 !h-5 filter-primary-color" />
               </template>
             </PrimeVueButton>
-            <PrimeVueButton variant="text" @click="removePhoto">
+            <PrimeVueButton variant="text" class="hover:bg-secondary" @click="removePhoto">
               <template #icon>
-                <AppBaseSvg name="delete" class="!w-5 !h-5" />
+                <AppBaseSvg name="delete" class="!w-5 !h-5 filter-primary-color" />
               </template>
             </PrimeVueButton>
           </div>
@@ -485,7 +480,7 @@ const rbac = useRbac();
             :label="useLocalization('modal.cancelButton')"
             severity="info"
             variant="outlined"
-            class="w-48"
+            class="w-48 border border-primary-border text-primary"
             @click="
               isAddOpen = false;
               resetForm();
@@ -526,12 +521,12 @@ const rbac = useRbac();
               @click="triggerFileInput"
             >
               <template #icon>
-                <img :src="imageSVG" alt="" />
+                <AppBaseSvg name="image" class="!w-5 !h-5 filter-primary-color" />
               </template>
             </PrimeVueButton>
-            <PrimeVueButton variant="text" @click="removePhoto">
+            <PrimeVueButton variant="text" class="hover:bg-secondary" @click="removePhoto">
               <template #icon>
-                <AppBaseSvg name="delete" class="!w-5 !h-5" />
+                <AppBaseSvg name="delete" class="!w-5 !h-5 filter-primary-color" />
               </template>
             </PrimeVueButton>
           </div>
@@ -566,7 +561,7 @@ const rbac = useRbac();
             :label="useLocalization('modal.cancelButton')"
             severity="info"
             variant="outlined"
-            class="w-48"
+            class="w-48 border border-primary-border text-primary"
             @click="
               isEditOpen = false;
               resetForm();
