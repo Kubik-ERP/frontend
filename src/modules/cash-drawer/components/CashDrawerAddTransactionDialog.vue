@@ -8,7 +8,6 @@ import type { ICashDrawerCashRegisterProvide } from '../interfaces';
 const {
   cashDrawerCashRegister_formDataOfTransaction,
   cashDrawerCashRegister_formValidationsOfTransaction,
-  cashDrawerCashRegister_isFormInvalid,
   cashDrawerCashRegister_isLoading,
   cashDrawerCashRegister_onCloseDialogAddTransaction,
   cashDrawerCashRegister_onSubmitAddTransaction,
@@ -105,7 +104,7 @@ const {
           class="bg-primary border-none text-base py-[10px] rounded-lg w-full"
           label="Save"
           type="button"
-          :disabled="cashDrawerCashRegister_isFormInvalid || cashDrawerCashRegister_isLoading"
+          :disabled="cashDrawerCashRegister_isLoading"
           @click="cashDrawerCashRegister_onSubmitAddTransaction"
         />
       </footer>
