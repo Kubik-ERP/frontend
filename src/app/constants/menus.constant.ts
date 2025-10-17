@@ -261,16 +261,16 @@ export const LIST_SIDEBAR_MENUS = [
             translationKey: 'app.menus.staff-members',
             path: '/staff/staff-member',
           },
-          {
-            name: 'Working Hours',
-            translationKey: 'app.menus.working-hours',
-            path: '/staff/working-hours',
-          },
-          {
-            name: 'Attendance',
-            translationKey: 'app.menus.attendance',
-            path: '/staff/attendance',
-          },
+          // {
+          //   name: 'Working Hours',
+          //   translationKey: 'app.menus.working-hours',
+          //   path: '/staff/working-hours',
+          // },
+          // {
+          //   name: 'Attendance',
+          //   translationKey: 'app.menus.attendance',
+          //   path: '/staff/attendance',
+          // },
           {
             name: 'User Permission',
             translationKey: 'app.menus.user-permission',
