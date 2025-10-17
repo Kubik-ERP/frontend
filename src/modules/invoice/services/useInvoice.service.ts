@@ -6,11 +6,14 @@ import eventBus from '@/plugins/mitt';
 
 // Interfaces
 import {
+  IInvoiceDetail,
   IInvoiceInvoiceData,
   IInvoiceModalPayData,
   IInvoiceOtherOptionsData,
   IInvoiceProvided,
 } from '../interfaces';
+import { ICashierSelected } from '@/modules/cashier/interfaces';
+import { ICashierVariant, IProductItem } from '@/modules/cashier/interfaces/cashier-response';
 
 // Store
 import { useInvoiceStore } from '../store';
@@ -126,7 +129,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
           html2canvas: {
             scale: 3,
             useCORS: true,
-            fontScale: 1000, 
+            fontScale: 1000,
           },
           jsPDF: { unit: 'px', format: [ref.clientWidth, ref.clientHeight], orientation: 'portrait' },
         };
@@ -334,19 +337,99 @@ export const useInvoiceService = (): IInvoiceProvided => {
     $autoDirty: true,
   });
 
+  const mapVariant = (detail: IInvoiceDetail): ICashierVariant => {
+    if (detail.variant) {
+      return {
+        id: detail.variant.id,
+        name: detail.variant.name,
+        price: detail.variant.price ?? 0,
+      };
+    }
+
+    return {
+      id: detail.variantId ?? '',
+      name: '',
+      price: detail.variantPrice ?? 0,
+    };
+  };
+
+  const mapProductItem = (detail: IInvoiceDetail): IProductItem => ({
+    id: detail.productId,
+    name: detail.products?.name ?? '',
+    price: detail.products?.price ?? detail.productPrice ?? 0,
+    discountPrice: detail.products?.discountPrice ?? detail.productPrice ?? 0,
+    pictureUrl: detail.products?.pictureUrl ?? '',
+    isPercent: detail.products?.isPercent ?? false,
+    variant: detail.products ? [] : [],
+  });
+
+  const mapBundlingItem = (detail: IInvoiceDetail): IProductItem => {
+    const bundlingProducts = (detail.invoiceBundlingItems ?? []).map(item => ({
+      product_id: item.productId,
+      quantity: item.qty,
+      name: item.products?.name ?? '',
+      price: item.products?.price ?? 0,
+    }));
+
+    return {
+      id: detail.catalogBundling?.id ?? detail.productId,
+      name: detail.catalogBundling?.name ?? detail.products?.name ?? '',
+      price: detail.catalogBundling?.price ?? detail.productPrice ?? 0,
+      discountPrice: detail.catalogBundling?.price ?? detail.productPrice ?? 0,
+      pictureUrl: detail.catalogBundling?.pictureUrl ?? '',
+      isPercent: false,
+      description: detail.catalogBundling?.description,
+      discount: detail.catalogBundling?.discount as unknown as number | null,
+      type: detail.catalogBundling?.type,
+      bundlingType: detail.catalogBundling?.type,
+      products: bundlingProducts,
+      variant: [],
+    };
+  };
+
+  const mapInvoiceDetailToSelected = (detail: IInvoiceDetail): ICashierSelected => {
+    const variant = mapVariant(detail);
+    const baseNotes = detail.notes ?? '';
+
+    if (detail.catalogBundling) {
+      const bundlingProduct = mapBundlingItem(detail);
+
+      return {
+        type: 'bundling',
+        product: bundlingProduct,
+        variant,
+        bundling: bundlingProduct,
+        bundlingId: detail.catalogBundling.id,
+        productId: detail.catalogBundling.id,
+        variantId: variant.id,
+        quantity: detail.qty,
+        notes: baseNotes,
+      };
+    }
+
+    const product = mapProductItem(detail);
+
+    return {
+      type: 'single',
+      product,
+      variant,
+      productId: detail.productId,
+      variantId: variant.id,
+      quantity: detail.qty,
+      notes: baseNotes,
+    };
+  };
+
   const invoice_handleCalculate = async () => {
     invoice_invoiceData.value.isLoading = true;
 
-    const mappedProducts = invoice_invoiceData.value.data?.invoiceDetails.map(item => ({
-      ...item,
-      quantity: item.qty,
-      variantId: item.variantId || '',
-    }));
+    const mappedProducts: ICashierSelected[] =
+      invoice_invoiceData.value.data?.invoiceDetails.map(mapInvoiceDetailToSelected) ?? [];
 
     try {
       const response = await storeCashier.cashierProduct_calculateEstimation(
         {
-          products: mappedProducts || [],
+          products: mappedProducts,
           orderType: invoice_invoiceData.value.data?.orderType,
           voucherId: invoice_invoiceData.value.data?.voucherId,
         },

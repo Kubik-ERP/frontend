@@ -70,6 +70,7 @@ import eventBus from '@/plugins/mitt';
 import { useCashDrawerCashRegisterService } from '@/modules/cash-drawer/services/cash-drawer-cash-register.service';
 import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
 import { useCashDrawerListService } from '@/modules/cash-drawer/services/cash-drawer-list.service';
+import { IInvoiceDetail } from '@/modules/invoice/interfaces';
 
 export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided => {
   /**
@@ -108,6 +109,81 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const storeVoucher = useVoucherStore();
   const voucherData = ref<ICashierVoucher[]>([]);
   const { cashierProduct_selectedProduct } = storeToRefs(store);
+
+  const mapInvoiceDetailVariant = (detail: IInvoiceDetail) =>
+    detail.variant
+      ? reactive<ICashierSelected['variant']>({
+          id: detail.variant.id,
+          name: detail.variant.name,
+          price: detail.variant.price,
+        })
+      : reactive<ICashierSelected['variant']>({
+          id: detail.variantId ?? '',
+          name: '',
+          price: detail.variantPrice ?? 0,
+        });
+
+  const mapInvoiceDetailProduct = (detail: IInvoiceDetail) =>
+    reactive({
+      id: detail.productId ?? detail.catalogBundling?.id ?? '',
+      name: detail.products?.name ?? detail.catalogBundling?.name ?? '',
+      price: detail.products?.price ?? detail.productPrice ?? detail.catalogBundling?.price ?? 0,
+      discountPrice: detail.products?.discountPrice ?? detail.catalogBundling?.price ?? detail.productPrice ?? 0,
+      pictureUrl: detail.products?.pictureUrl ?? detail.catalogBundling?.pictureUrl ?? '',
+      isPercent: detail.products?.isPercent ?? false,
+      quantity: null,
+      variantHasProducts: null,
+      categoriesHasProducts: null,
+      description: detail.catalogBundling?.description,
+      discount: detail.catalogBundling?.discount as unknown as number | null,
+      type: detail.catalogBundling?.type,
+      bundlingType: detail.catalogBundling?.type,
+      products: (detail.invoiceBundlingItems ?? []).map(item => ({
+        product_id: item.productId,
+        quantity: item.qty,
+        name: item.products?.name ?? '',
+        price: item.products?.price ?? 0,
+      })),
+      variant: detail.variant
+        ? [
+            {
+              id: detail.variant.id,
+              name: detail.variant.name,
+              price: detail.variant.price,
+              productsId: detail.productId ?? '',
+            },
+          ]
+        : [],
+    });
+
+  const mapInvoiceDetailToSelected = (detail: IInvoiceDetail): ICashierSelected => {
+    const variant = mapInvoiceDetailVariant(detail);
+    const product = mapInvoiceDetailProduct(detail);
+
+    if (detail.catalogBundling) {
+      return {
+        type: 'bundling',
+        product,
+        bundling: product,
+        bundlingId: detail.catalogBundling.id,
+        productId: detail.catalogBundling.id,
+        variant,
+        variantId: variant.id,
+        quantity: detail.qty,
+        notes: detail.notes ?? '',
+      };
+    }
+
+    return {
+      type: 'single',
+      product,
+      variant,
+      productId: detail.productId ?? '',
+      variantId: variant.id,
+      quantity: detail.qty,
+      notes: detail.notes ?? '',
+    };
+  };
 
   /**
    * @description Reactive data binding
@@ -1010,51 +1086,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
         cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod = response.data.paymentMethodsId || '';
 
-        cashierProduct_selectedProduct.value = response.data.invoiceDetails.map((item): ICashierSelected => {
-          return {
-            product: reactive({
-              id: item.productId,
-              name: item.products.name,
-              price: item.products.price,
-              discountPrice: item.products.discountPrice,
-              pictureUrl: item.products.pictureUrl ?? '',
-              isPercent: item.products.isPercent,
-              quantity: null,
-              variantHasProducts: null,
-              categoriesHasProducts: null,
-              variant: item.variant
-                ? [
-                    {
-                      id: item.variant.id,
-                      name: item.variant.name,
-                      price: item.variant.price,
-                      productsId: item.productId,
-                    },
-                  ]
-                : [],
-            }),
-            variant: item.variant
-              ? reactive({
-                  id: item.variant.id,
-                  name: item.variant.name,
-                  price: item.variant.price,
-                })
-              : reactive({
-                  id: '',
-                  name: '',
-                  price: 0,
-                }),
-            productId: item.productId,
-            variantId: item.variant?.id || '',
-            quantity: item.qty,
-            notes: item.notes,
-            type: 'product',
-          };
-        });
+        cashierProduct_selectedProduct.value = response.data.invoiceDetails.map(mapInvoiceDetailToSelected);
       } else {
         console.error('No invoice data found');
       }
     } catch (error) {
+        console.error(error);
       router.push({
         name: 'cashier',
       });
