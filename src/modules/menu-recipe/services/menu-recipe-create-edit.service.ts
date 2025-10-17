@@ -284,8 +284,10 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
 
       // Update form data with fetched details
       if (menuRecipe_selectedData.value) {
-        menuRecipeCreateEdit_formData.value = menuRecipeCreateEdit_mapApiResponseToFormData(menuRecipe_selectedData.value);
-        
+        menuRecipeCreateEdit_formData.value = menuRecipeCreateEdit_mapApiResponseToFormData(
+          menuRecipe_selectedData.value,
+        );
+
         // If product exists, fetch and set selected product for calculations
         if (menuRecipe_selectedData.value.product_id) {
           await menuRecipeCreateEdit_fetchSelectedProductDetails(menuRecipe_selectedData.value.product_id);
@@ -340,7 +342,7 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
   const menuRecipeCreateEdit_onLoadInitialData = async (): Promise<void> => {
     // Always fetch inventory items for ingredients dropdown
     await menuRecipeCreateEdit_fetchInventoryItems();
-    
+
     // If in edit mode, fetch the recipe details
     if (menuRecipeCreateEdit_isEditMode.value && route.params.id) {
       await menuRecipeCreateEdit_fetchDetails(String(route.params.id));

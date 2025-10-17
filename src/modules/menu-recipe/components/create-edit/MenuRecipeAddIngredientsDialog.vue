@@ -67,7 +67,7 @@ onMounted(() => {
                 :loading="menuRecipeCreateEdit_isLoadingInventoryItems"
                 :options="menuRecipeCreateEdit_listInventoryItems"
                 option-label="itemName"
-                :option-value="option => option"
+                :option-value="(option: any) => option"
                 placeholder="Select Item"
                 class="[&>span]:text-sm text-black w-full"
                 :class="{ ...classes }"

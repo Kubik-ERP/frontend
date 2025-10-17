@@ -5,10 +5,9 @@ import type { IMenuRecipeDetailProvided } from '../../interfaces';
 /**
  * @description Inject all the data and methods what we need
  */
-const { 
-  menuRecipeDetail_data, 
-  menuRecipeDetail_listColumns 
-} = inject('menuRecipeDetail') as IMenuRecipeDetailProvided;
+const { menuRecipeDetail_data, menuRecipeDetail_listColumns } = inject(
+  'menuRecipeDetail',
+) as IMenuRecipeDetailProvided;
 </script>
 
 <template>
@@ -67,14 +66,9 @@ const {
     </template>
 
     <template #empty-data>
-      <td
-        :colspan="menuRecipeDetail_listColumns.length"
-        class="flex flex-col items-center justify-center gap-1"
-      >
+      <td :colspan="menuRecipeDetail_listColumns.length" class="flex flex-col items-center justify-center gap-1">
         <span class="font-semibold text-sm text-primary">No Ingredients Available</span>
-        <span class="font-normal text-sm text-text-disabled"
-          >This recipe doesn't have any ingredients yet.</span
-        >
+        <span class="font-normal text-sm text-text-disabled">This recipe doesn't have any ingredients yet.</span>
       </td>
     </template>
   </AppBaseDataTable>
