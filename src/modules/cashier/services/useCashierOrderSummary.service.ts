@@ -1071,12 +1071,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         cashierProduct_customerState.value.selectedCustomer = {
           id: response.data.customerId,
           name: response.data.customer.name,
-          code: null,
-          number: null,
-          email: null,
-          address: null,
-          dob: null,
-          username: null,
+          code: response.data.customer.code,
+          number: response.data.customer.number,
+        email: response.data.customer.email,
+address: response.data.customer.address,
+dob: response.data.customer.dob,
+username: response.data.customer.username,
           customersHasTag: null,
         };
 

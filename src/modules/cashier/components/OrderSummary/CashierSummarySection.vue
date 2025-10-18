@@ -103,6 +103,10 @@ const closeLoyaltyModal = () => {
 onMounted(() => {
   loyaltyPointSettingsDetail();
   loyaltyPointBenefit_fetchList();
+
+  if (cashierProduct_customerState.value.selectedCustomer?.id) {
+    requestCustomerLoyaltyPoint(cashierProduct_customerState.value.selectedCustomer!.id);
+  }
 });
 
 watch(

@@ -425,13 +425,26 @@ export const useInvoiceService = (): IInvoiceProvided => {
 
     const mappedProducts: ICashierSelected[] =
       invoice_invoiceData.value.data?.invoiceDetails.map(mapInvoiceDetailToSelected) ?? [];
+    const orderType = invoice_invoiceData.value.data?.orderType;
+    const voucherId = invoice_invoiceData.value.data?.voucherId || undefined;
+    const customerId =
+      invoice_invoiceData.value.data?.customerId ||
+      invoice_invoiceData.value.data?.customer?.id ||
+      undefined;
+    const loyaltyBenefitId = invoice_invoiceData.value.data?.loyaltyPointsBenefit?.id;
 
     try {
       const response = await storeCashier.cashierProduct_calculateEstimation(
         {
+          voucherId,
+          customerId,
           products: mappedProducts,
-          orderType: invoice_invoiceData.value.data?.orderType,
-          voucherId: invoice_invoiceData.value.data?.voucherId,
+          orderType,
+          redeemLoyalty: loyaltyBenefitId
+            ? {
+                loyalty_points_benefit_id: loyaltyBenefitId,
+              }
+            : undefined,
         },
         route,
       );
