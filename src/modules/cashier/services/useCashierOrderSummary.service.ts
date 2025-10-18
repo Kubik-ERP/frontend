@@ -56,7 +56,7 @@ import { useSocket } from '@/plugins/socket';
 // Vue
 import { computed, onUnmounted, reactive, ref, watch } from 'vue';
 import { ICashierCustomerState, ICashierSelected } from '../interfaces';
-import { ILoyaltyPointBenefit } from '@/modules/point-configuration/interfaces';
+import { ILoyaltyPointBenefit, IDiscount, IFreeItems } from '@/modules/point-configuration/interfaces';
 
 // Composables
 import { useRbac } from '@/app/composables/useRbac';
@@ -1087,6 +1087,36 @@ username: response.data.customer.username,
         cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod = response.data.paymentMethodsId || '';
 
         cashierProduct_selectedProduct.value = response.data.invoiceDetails.map(mapInvoiceDetailToSelected);
+
+        if (response.data.loyaltyPointsBenefit) {
+          const benefitData = response.data.loyaltyPointsBenefit;
+          let discountFreeItems: IDiscount | IFreeItems[];
+
+          if (benefitData.type === 'discount') {
+            discountFreeItems = {
+              value: benefitData.discountValue ?? 0,
+              unit: benefitData.isPercent ? '%' : 'Rp',
+              isPercent: benefitData.isPercent ?? false,
+            };
+          } else {
+            discountFreeItems =
+              benefitData.benefitFreeItems?.map(item => ({
+                id: item.id ?? undefined,
+                name: item.products?.name ?? '',
+                quantity: item.quantity ?? 0,
+              })) ?? [];
+          }
+
+          cashierOrderSummary_setSelectedLoyaltyBenefit({
+            id: benefitData.id,
+            type: benefitData.type,
+            benefitName: benefitData.benefitName,
+            pointNeeds: benefitData.pointsNeeds ?? 0,
+            discountFreeItems,
+          });
+        } else {
+          cashierOrderSummary_setSelectedLoyaltyBenefit(null);
+        }
       } else {
         console.error('No invoice data found');
       }

@@ -166,6 +166,7 @@ export const useCashierStore = defineStore('cashier', {
         redeemLoyalty?: {
           loyalty_points_benefit_id: string;
         };
+        invoiceId?: string;
       },
       route?: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},

@@ -445,6 +445,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
                 loyalty_points_benefit_id: loyaltyBenefitId,
               }
             : undefined,
+            invoiceId: invoice_invoiceData.value.data?.id,
         },
         route,
       );
