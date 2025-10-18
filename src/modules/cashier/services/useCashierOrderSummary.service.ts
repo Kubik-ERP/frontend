@@ -175,8 +175,11 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     }
 
     return {
-      type: 'single',
-      product,
+      type: detail.productPrice == 0 ? 'redeem' : 'single',
+      product: {
+        ...product,
+        price: detail.productPrice,
+      },
       variant,
       productId: detail.productId ?? '',
       variantId: variant.id,
@@ -489,9 +492,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   // watch for changes if orderType is filled change isExpanded to false
   watch(
-    () => [
-      cashierOrderSummary_modalOrderType.value.selectedOrderType,
-    ],
+    () => [cashierOrderSummary_modalOrderType.value.selectedOrderType],
     () => {
       debouncedHandleWatchChanges();
     },
@@ -1074,10 +1075,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           name: response.data.customer.name,
           code: response.data.customer.code,
           number: response.data.customer.number,
-        email: response.data.customer.email,
-address: response.data.customer.address,
-dob: response.data.customer.dob,
-username: response.data.customer.username,
+          email: response.data.customer.email,
+          address: response.data.customer.address,
+          dob: response.data.customer.dob,
+          username: response.data.customer.username,
           customersHasTag: null,
         };
         }
@@ -1089,7 +1090,10 @@ username: response.data.customer.username,
 
         cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod = response.data.paymentMethodsId || '';
 
-        cashierProduct_selectedProduct.value = response.data.invoiceDetails.map(mapInvoiceDetailToSelected);
+        cashierProduct_selectedProduct.value = response.data.invoiceDetails
+          .map(mapInvoiceDetailToSelected)
+        //   .filter((detail: ICashierSelected) => detail.type != 'redeem')
+          ;
 
         if (response.data.loyaltyPointsBenefit) {
           const benefitData = response.data.loyaltyPointsBenefit;
@@ -1124,7 +1128,7 @@ username: response.data.customer.username,
         console.error('No invoice data found');
       }
     } catch (error) {
-        console.error(error);
+      console.error(error);
       router.push({
         name: 'cashier',
       });
