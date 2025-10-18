@@ -1069,7 +1069,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       const response = await storeInvoice.invoice_fetchInvoiceById(invoiceId, route);
 
       if (response.data) {
-        cashierProduct_customerState.value.selectedCustomer = {
+        if(response.data.customer) {
+  cashierProduct_customerState.value.selectedCustomer = {
           id: response.data.customerId,
           name: response.data.customer.name,
           code: response.data.customer.code,
@@ -1080,6 +1081,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
           username: response.data.customer.username,
           customersHasTag: null,
         };
+        }
+      
 
         cashierOrderSummary_modalOrderType.value.selectedOrderType = response.data.orderType;
 
