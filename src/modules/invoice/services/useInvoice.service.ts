@@ -410,8 +410,11 @@ export const useInvoiceService = (): IInvoiceProvided => {
     const product = mapProductItem(detail);
 
     return {
-      type: 'single',
-      product,
+      type: detail.productPrice == 0 ? 'redeem' : 'single',
+      product: {
+        ...product,
+        price: detail.productPrice,
+      },
       variant,
       productId: detail.productId,
       variantId: variant.id,
@@ -428,9 +431,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
     const orderType = invoice_invoiceData.value.data?.orderType;
     const voucherId = invoice_invoiceData.value.data?.voucherId || undefined;
     const customerId =
-      invoice_invoiceData.value.data?.customerId ||
-      invoice_invoiceData.value.data?.customer?.id ||
-      undefined;
+      invoice_invoiceData.value.data?.customerId || invoice_invoiceData.value.data?.customer?.id || undefined;
     const loyaltyBenefitId = invoice_invoiceData.value.data?.loyaltyPointsBenefit?.id;
 
     try {
@@ -445,7 +446,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
                 loyalty_points_benefit_id: loyaltyBenefitId,
               }
             : undefined,
-            invoiceId: invoice_invoiceData.value.data?.id,
+          invoiceId: invoice_invoiceData.value.data?.id,
         },
         route,
       );
