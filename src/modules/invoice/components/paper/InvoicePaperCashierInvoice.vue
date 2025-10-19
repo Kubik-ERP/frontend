@@ -324,7 +324,7 @@ const orderTypeLabel = computed(() => {
           >
             <td class="font-normal text-black text-[12pt] py-1">Points Accumulated</td>
             <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
-              {{ invoice_invoiceData.data.customer.point }} pts
+              {{ invoice_invoiceData.data.totalEarnPoints }} pts
             </td>
           </tr>
 

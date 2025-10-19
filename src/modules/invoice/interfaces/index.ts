@@ -185,6 +185,7 @@ export interface IInvoiceData {
   } | null;
   loyaltyDiscount?: number | null;
   loyaltyPointsBenefit?: IInvoiceLoyaltyPointsBenefit | null;
+  totalEarnPoints?: number | null;
 }
 
 export interface IInvoiceResponseInvoice {
