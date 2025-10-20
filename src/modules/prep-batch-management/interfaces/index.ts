@@ -13,12 +13,18 @@ export interface IMenuRecipe {
   updatedAt: string;
 }
 
+export interface IInventoryItem {
+  id: string;
+}
+
 export interface IIngredient {
-  itemId: string;
+  ingredient_id: string;
+  item_id: string;
   qty: number;
   uom: string;
   notes: string;
   cost: number;
+  inventory_item: IInventoryItem;
 }
 export interface IBatchFormData {
   recipe: IMenuRecipe;
@@ -76,6 +82,7 @@ export interface IBatchStateStore {
     items: IMenuRecipe[] | [];
   };
   menuRecipeList_isLoading: boolean;
+  menuRecipe_ingredients: IIngredient[];
 }
 
 export type IBatchListProvided = {
@@ -90,6 +97,7 @@ export type IBatchListProvided = {
   menuRecipeList_onShowDialogDelete: (id: string) => void;
   menuRecipeList_fetchList: () => Promise<unknown>;
   menuRecipeList_onSelectedRecipe: (recipe: IMenuRecipe) => void;
+  menuRecipe_fetchIngridients: (id: string) => Promise<unknown>;
   // formdata
   batch_formData: IBatchFormData;
   batch_formValidation: globalThis.Ref<Validation>;
@@ -97,4 +105,5 @@ export type IBatchListProvided = {
   // store values
   menuRecipe_lists: globalThis.Ref<IBatchStateStore['menuRecipe_lists']>;
   menuRecipeList_isLoading: globalThis.Ref<IBatchStateStore['menuRecipeList_isLoading']>;
+  menuRecipe_ingredients: globalThis.Ref<IBatchStateStore['menuRecipe_ingredients']>;
 };

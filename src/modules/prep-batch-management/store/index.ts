@@ -1,7 +1,11 @@
 // Constants
 import { MENU_RECIPE_BASE_ENDPOINT } from '@/modules/menu-recipe/constants';
 // interfaces
-import type { IMenuRecipeListQueryParams, IMenuRecipeListResponse } from '@/modules/menu-recipe/interfaces';
+import type {
+  IMenuRecipeListQueryParams,
+  IMenuRecipeListResponse,
+  IMenuRecipeDetailResponse,
+} from '@/modules/menu-recipe/interfaces';
 import type { AxiosRequestConfig } from 'axios';
 import type { IBatchStateStore } from '../interfaces';
 
@@ -20,6 +24,7 @@ export const useBatchStore = defineStore('batch', {
       items: [],
     },
     menuRecipeList_isLoading: false,
+    menuRecipe_ingredients: [],
   }),
   getters: {},
   actions: {
@@ -42,6 +47,36 @@ export const useBatchStore = defineStore('batch', {
         });
 
         this.menuRecipe_lists = response.data.data;
+
+        return Promise.resolve(response.data);
+      } catch (error) {
+        return Promise.reject(error);
+      } finally {
+        this.menuRecipeList_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api menu recipe - detail
+     * @url /recipes/:id
+     * @method GET
+     * @access private
+     */
+    async menuRecipe_ingridients(
+      menuRecipeId: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IMenuRecipeDetailResponse> {
+      this.menuRecipeList_isLoading = true;
+
+      try {
+        const response = await httpClient.get<IMenuRecipeDetailResponse>(
+          `${MENU_RECIPE_BASE_ENDPOINT}/${menuRecipeId}`,
+          {
+            ...requestConfigurations,
+          },
+        );
+
+        this.menuRecipe_ingredients = response.data.data.ingredients;
 
         return Promise.resolve(response.data);
       } catch (error) {

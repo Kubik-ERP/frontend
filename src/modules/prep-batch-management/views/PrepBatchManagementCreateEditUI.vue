@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// Interfaces
+import type { IMenuRecipe } from '../interfaces';
 // services;
 import { useBatchService } from '../services/prep-batch-management.service';
 
@@ -11,16 +13,27 @@ const {
   menuRecipeList_onSelectedRecipe,
   menuRecipe_lists,
   menuRecipeList_isLoading,
+  menuRecipe_ingredients,
 } = useBatchService();
+
+const batchFormData_onClearRecipe = () => {
+  batch_formData.recipe = { recipeName: '' } as IMenuRecipe;
+  menuRecipeList_queryParams.search = '';
+
+  menuRecipe_ingredients.value = [];
+};
 
 onMounted(async () => {
   await menuRecipeList_fetchList();
 });
 </script>
 <template>
-  <pre>
+  <!-- <pre>
     {{ batch_formData }}
   </pre>
+  <pre>
+    {{ menuRecipe_ingredients }}
+  </pre> -->
   <div class="flex justify-between gap-4 w-full">
     <section id="form" class="grid grid-cols-2 gap-4 w-full">
       <AppBaseFormGroup
@@ -57,6 +70,18 @@ onMounted(async () => {
             </template>
           </PrimeVueInputIcon>
         </PrimeVueIconField>
+
+        <PrimeVueButton
+          v-if="batch_formData.recipe.recipeName !== ''"
+          class="mt-2 text-xs"
+          label="Clear"
+          severity="secondary"
+          @click="batchFormData_onClearRecipe"
+        >
+          <template #icon>
+            <AppBaseSvg name="delete" class="!w-4 !h-4" />
+          </template>
+        </PrimeVueButton>
       </AppBaseFormGroup>
 
       <AppBaseFormGroup
@@ -171,16 +196,38 @@ onMounted(async () => {
         <h3 class="text-xl font-medium leading-6 text-gray-900">Ingredients</h3>
         <AppBaseDataTable
           :columns="batchDetailsIngridient_columns"
+          :data="menuRecipe_ingredients"
           :is-using-header="false"
           :is-using-filter="false"
           :is-using-border-on-header="false"
           :is-using-pagination="false"
           :is-using-custom-empty-data="true"
+          :is-using-custom-body="true"
         >
           <template #empty-data>
             <section class="flex items-center justify-center">
               <span class="">Select recipe to show ingridients</span>
             </section>
+          </template>
+          <template #body="{ column, data }">
+            <template v-if="column.value === 'item'">
+              <span class="font-semibold text-sm text-text-primary">
+                {{ data.inventory_item.name }}
+              </span>
+            </template>
+            <template v-else-if="column.value === 'UOM'">
+              <span class="text-sm text-text-primary">
+                {{ data.uom }}
+              </span>
+            </template>
+            <template v-else-if="column.value === 'notes'">
+              <span class="text-sm text-text-primary">
+                {{ data.notes || '-' }}
+              </span>
+            </template>
+            <template v-else>
+              <span class="text-sm text-text-primary">{{ data[column.value] }}</span>
+            </template>
           </template>
         </AppBaseDataTable>
       </section>
@@ -197,9 +244,11 @@ onMounted(async () => {
         <PrimeVueButton class="min-w-40 text-primary" label="Cancel" variant="text" />
       </section>
     </section>
+
     <section id="vetical-divider">
       <div class="h-full w-0.5 bg-grayscale-20"></div>
     </section>
+
     <section id="production-cost" class="w-4/12">
       <table class="border-none">
         <thead>
@@ -224,7 +273,9 @@ onMounted(async () => {
             </td>
             <td class="">
               <span class="">{{
-                useCurrencyFormat({ data: batch_formData.recipe.costPerPortion || 0 }) || '-'
+                useCurrencyFormat({
+                  data: batch_formData.recipe.costPerPortion * batch_formData.targetYield || 0,
+                }) || '-'
               }}</span>
             </td>
           </tr>

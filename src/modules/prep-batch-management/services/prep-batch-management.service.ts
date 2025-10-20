@@ -19,7 +19,7 @@ import eventBus from '@/plugins/mitt';
 import { useBatchStore } from '../store';
 export const useBatchService = (): IBatchListProvided => {
   const store = useBatchStore();
-  const { menuRecipe_lists, menuRecipeList_isLoading } = storeToRefs(store);
+  const { menuRecipe_lists, menuRecipeList_isLoading, menuRecipe_ingredients } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const batch_formData = reactive<IBatchFormData>({
@@ -71,12 +71,35 @@ export const useBatchService = (): IBatchListProvided => {
 
   const menuRecipeList_onSelectedRecipe = (recipe: IMenuRecipe) => {
     batch_formData.recipe = recipe;
+
+    menuRecipe_fetchIngridients(recipe.id);
+    // batch_formData.ingredients = menuRecipe_ingredients.value;
   };
 
   const menuRecipeList_fetchList = async (): Promise<unknown> => {
     try {
       await store.menuRecipe_list(menuRecipeList_queryParams, {
         ...httpAbort_registerAbort('MENU_RECIPE_LIST_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * Handle fetch api menu recipe - ingridients
+   * @param id - Menu recipe ID
+   * @returns Promise of unknown value
+   * @throws Error if there is an error while fetching the data
+   */
+  const menuRecipe_fetchIngridients = async (id: string): Promise<unknown> => {
+    try {
+      await store.menuRecipe_ingridients(id, {
+        ...httpAbort_registerAbort('MENU_RECIPE_INGREDIENTS_REQUEST'),
       });
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -151,6 +174,7 @@ export const useBatchService = (): IBatchListProvided => {
     menuRecipeList_onShowDialogDelete,
     menuRecipeList_fetchList,
     menuRecipeList_onSelectedRecipe,
+    menuRecipe_fetchIngridients,
     // formdata
     batch_formData,
     batch_formValidation,
@@ -158,5 +182,6 @@ export const useBatchService = (): IBatchListProvided => {
     // store values
     menuRecipe_lists,
     menuRecipeList_isLoading,
+    menuRecipe_ingredients,
   };
 };
