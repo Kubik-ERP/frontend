@@ -28,12 +28,13 @@ const showImageUrl = (picture: string | null) => {
       <span class="text-grayscale-20">{{ useLocalization('cashier.orderSummary.noItemSelected') }}</span>
     </div>
     <div v-else class="flex flex-col w-full justify-center items-center">
-      <div
-        v-for="(item, key) in cashierProduct_selectedProduct"
-        :key="key"
-        class="grid grid-cols-12 gap-4 w-full justify-items-center"
-        :class="{ 'mb-4': key !== cashierProduct_selectedProduct.length - 1 }"
-      >
+      <template v-for="(item, key) in cashierProduct_selectedProduct">
+        <div
+          v-if="item.type !== 'redeem'"
+          :key="key"
+          class="grid grid-cols-12 gap-4 w-full justify-items-center"
+          :class="{ 'mb-4': key !== cashierProduct_selectedProduct.length - 1 }"
+        >
         <button
           class="cursor-pointer w-min h-min p-2 rounded-full bg-error-background"
           :disabled="cashierOrderSummary_calculateEstimation.isLoading"
@@ -171,7 +172,8 @@ const showImageUrl = (picture: string | null) => {
           v-if="key !== cashierProduct_selectedProduct.length - 1"
           class="border col-span-12 border-dashed border-b-2 border-grayscale-10 w-full"
         ></div>
-      </div>
+        </div>
+      </template>
     </div>
   </section>
 
