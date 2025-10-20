@@ -228,7 +228,7 @@ function handleExport() {
                 >
                   <template #default>
                     <section id="content" class="flex items-center gap-2">
-                      <AppBaseSvg name="plus-line" class="w-4 h-4" />
+                      <AppBaseSvg name="plus-line" class="filter-primary-color w-4 h-4" />
                       <span class="font-semibold text-xs text-primary">Cash In</span>
                     </section>
                   </template>
@@ -261,7 +261,7 @@ function handleExport() {
                 >
                   <template #default>
                     <section class="cash-out-button flex items-center gap-2">
-                      <AppBaseSvg name="minus" class="w-4 h-4" />
+                      <AppBaseSvg name="minus" class="filter-primary-color w-4 h-4" />
                       <span class="font-semibold text-xs text-primary">Cash Out</span>
                     </section>
                   </template>
@@ -328,7 +328,7 @@ function handleExport() {
               >
                 <template #default>
                   <section id="content" class="flex items-center gap-2">
-                    <AppBaseSvg name="export" class="w-4 h-4" />
+                    <AppBaseSvg name="export" class="filter-primary-color w-4 h-4" />
                     <span class="font-semibold text-sm text-primary">Export to PDF</span>
                   </section>
                 </template>

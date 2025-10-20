@@ -179,7 +179,7 @@ const handleSubmit = () => {
         <PrimeVueButton
           class="bg-primary border-none text-base py-[10px] w-full max-w-40"
           label="Save"
-          :disabled="cashDrawerList_isLoading"
+          :disabled="cashDrawerList_formValidationsOfOpenRegister.$invalid || cashDrawerList_isLoading"
           type="button"
           @click="handleSubmit"
         />

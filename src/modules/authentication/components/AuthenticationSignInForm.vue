@@ -40,7 +40,7 @@ const {
           "
         >
           <template #default>
-            <AppBaseSvg name="arrow-left" class="w-4 h-4" />
+            <AppBaseSvg name="arrow-left" class="filter-primary-color w-4 h-4" />
           </template>
         </PrimeVueButton>
 
@@ -68,7 +68,7 @@ const {
         <PrimeVueIconField>
           <PrimeVueInputIcon>
             <template #default>
-              <AppBaseSvg name="mail" class="w-4 h-4" />
+              <AppBaseSvg name="mail" class="filter-primary-color w-4 h-4" />
             </template>
           </PrimeVueInputIcon>
 
@@ -96,7 +96,7 @@ const {
         <PrimeVueIconField>
           <PrimeVueInputIcon>
             <template #default>
-              <AppBaseSvg name="key" class="w-4 h-4" />
+              <AppBaseSvg name="key" class="filter-primary-color w-4 h-4" />
             </template>
           </PrimeVueInputIcon>
 
