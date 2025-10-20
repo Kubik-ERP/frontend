@@ -15,13 +15,15 @@ const { cashierProduct_modalCategory } = inject<ICashierProductProvided>('cashie
     <PrimeVueButton
       variant="outlined"
       severity="primary"
-      class="bg-white rounded-full"
+      class="bg-white rounded-full border-primary"
       @click="cashierProduct_modalCategory.show = true"
     >
       <div class="flex gap-2 items-center">
-        <AppBaseSvg name="catalog" class="!h-4 !w-5" />
+        <AppBaseSvg name="catalog" class="filter-primary-color h-4 w-5" />
 
-        <span class="font-semibold text-sm text-primary">{{ useLocalization('cashier.categoryOrShowBundles') }}</span>
+        <span class="font-semibold text-sm text-primary">{{
+          useLocalization('cashier.categoryOrShowBundles')
+        }}</span>
       </div>
     </PrimeVueButton>
   </section>
