@@ -7,11 +7,86 @@ import {
 } from '../constants';
 
 // type
-import type { IBatchListProvided } from '../interfaces';
-
+import type { IBatchListProvided, IBatchFormData, IMenuRecipe } from '../interfaces';
+import type { IMenuRecipeListQueryParams } from '@/modules/menu-recipe/interfaces';
+// Vuelidate
+import useVuelidate from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 // Plugins
 import eventBus from '@/plugins/mitt';
+
+// store
+import { useBatchStore } from '../store';
 export const useBatchService = (): IBatchListProvided => {
+  const store = useBatchStore();
+  const { menuRecipe_lists, menuRecipeList_isLoading } = storeToRefs(store);
+  const { httpAbort_registerAbort } = useHttpAbort();
+
+  const batch_formData = reactive<IBatchFormData>({
+    recipe: {
+      id: '',
+      recipeName: '',
+    } as IMenuRecipe,
+    batchDate: new Date(),
+    targetYield: 0,
+    waste: 0,
+    notes: '',
+    ingredients: [],
+  });
+
+  const batch_formRules = computed(() => ({
+    recipe: {
+      required,
+    },
+    batchDate: {
+      required,
+    },
+    targetYield: {
+      required,
+    },
+    waste: {
+      required,
+    },
+  }));
+
+  const batch_formValidation = useVuelidate(batch_formRules, batch_formData, {
+    $autoDirty: true,
+  });
+
+  const menuRecipeList_queryParams: IMenuRecipeListQueryParams = reactive({
+    page: 1,
+    pageSize: 100,
+    search: '',
+    orderBy: 'updated_at',
+    orderDirection: 'desc',
+  });
+
+  watch(
+    () => menuRecipeList_queryParams,
+    debounce(async () => {
+      await menuRecipeList_fetchList();
+    }, 500),
+    { deep: true },
+  );
+
+  const menuRecipeList_onSelectedRecipe = (recipe: IMenuRecipe) => {
+    batch_formData.recipe = recipe;
+  };
+
+  const menuRecipeList_fetchList = async (): Promise<unknown> => {
+    try {
+      await store.menuRecipe_list(menuRecipeList_queryParams, {
+        ...httpAbort_registerAbort('MENU_RECIPE_LIST_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
   const menuRecipeList_onShowDialogDelete = (id: string) => {
     console.log(id);
     const argsEventEmitter: IPropsDialogConfirmation = {
@@ -71,8 +146,17 @@ export const useBatchService = (): IBatchListProvided => {
     // values
     batchList_values: BATCH_LIST_VALUES,
     batchDetails_values: BATCH_DETAILS_VALUES,
-    // method
+    // methods
     batchList_getClassOfBatchStatus,
     menuRecipeList_onShowDialogDelete,
+    menuRecipeList_fetchList,
+    menuRecipeList_onSelectedRecipe,
+    // formdata
+    batch_formData,
+    batch_formValidation,
+    menuRecipeList_queryParams,
+    // store values
+    menuRecipe_lists,
+    menuRecipeList_isLoading,
   };
 };

@@ -1,3 +1,34 @@
+import type { Validation } from '@vuelidate/core';
+import type { IMenuRecipeListQueryParams } from '@/modules/menu-recipe/interfaces';
+
+export interface IMenuRecipe {
+  id: string;
+  isBaseRecipe: boolean;
+  recipeName: string;
+  output: string;
+  yieldTarget: number;
+  costPerPortion: number;
+  marginRp: number;
+  marginPercent: number;
+  updatedAt: string;
+}
+
+export interface IIngredient {
+  itemId: string;
+  qty: number;
+  uom: string;
+  notes: string;
+  cost: number;
+}
+export interface IBatchFormData {
+  recipe: IMenuRecipe;
+  batchDate: Date;
+  targetYield: number;
+  waste: number;
+  notes?: string | null;
+  ingredients?: IIngredient[] | [];
+}
+
 export interface IBatchDetailsRecipe {
   batchName: string;
   recipeName: string;
@@ -39,6 +70,14 @@ export type IBatchList = {
   updatedAt: Date;
 };
 
+export interface IBatchStateStore {
+  menuRecipe_lists: {
+    meta: IPageMeta;
+    items: IMenuRecipe[] | [];
+  };
+  menuRecipeList_isLoading: boolean;
+}
+
 export type IBatchListProvided = {
   // columns
   batchList_columns: IColumnDataTable[];
@@ -49,4 +88,13 @@ export type IBatchListProvided = {
   // method
   batchList_getClassOfBatchStatus: (batchStatus: string) => string;
   menuRecipeList_onShowDialogDelete: (id: string) => void;
+  menuRecipeList_fetchList: () => Promise<unknown>;
+  menuRecipeList_onSelectedRecipe: (recipe: IMenuRecipe) => void;
+  // formdata
+  batch_formData: IBatchFormData;
+  batch_formValidation: globalThis.Ref<Validation>;
+  menuRecipeList_queryParams: IMenuRecipeListQueryParams;
+  // store values
+  menuRecipe_lists: globalThis.Ref<IBatchStateStore['menuRecipe_lists']>;
+  menuRecipeList_isLoading: globalThis.Ref<IBatchStateStore['menuRecipeList_isLoading']>;
 };
