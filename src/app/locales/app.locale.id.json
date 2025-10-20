@@ -58,6 +58,7 @@
       "master-brand": "Master Brand",
       "inventory-categories": "Kategori Inventori",
       "stock-opname": "Stock Opname",
+      "transfer-stock": "Stok Transfer",
       "storage-location": "Lokasi Penyimpanan",
       "purchase-order": "Purchase Order",
       "marketing": "Marketing",
@@ -111,5 +112,8 @@
 
     "table-configuration": "Konfigurasi Meja",
     "welcome-back": "Selamat datang kembali 👋"
+  },
+  "transferStock": {
+    "title": "Transfer Stok"
   }
 }

@@ -71,6 +71,7 @@
       "inventory-categories": "Inventory Categories",
       "stock-opname": "Stock Opname",
       "storage-location": "Storage Location",
+      "transfer-stock": "Transfer Stock",
       "purchase-order": "Purchase Order",
       "marketing": "Marketing",
       "voucher": "Voucher",
@@ -124,5 +125,8 @@
 
     "table-configuration": "Table Configuration",
     "welcome-back": "Welcome back 👋"
+  },
+  "transferStock": {
+    "title": "Stock Transfer"
   }
 }

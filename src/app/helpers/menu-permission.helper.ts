@@ -33,7 +33,13 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   view_supplier_details: ['/inventory', '/supplier/view/:id'],
   stock_adjustment: ['/inventory', '/items', '/items/view/:id'],
   manage_brand: ['/inventory', '/brand'],
-  manage_stock_opname: ['/inventory', '/stock-opname', '/stock-opname/issue/:id', '/stock-opname/detail/:id'],
+  manage_stock_opname: [
+    '/inventory',
+    '/stock-opname',
+    '/stock-opname/issue/:id',
+    '/stock-opname/detail/:id',
+    '/transfer-stock',
+  ],
   manage_storage_location: ['/inventory', '/storage-location'],
   manage_purchase_order: ['/purchase-order'],
 
