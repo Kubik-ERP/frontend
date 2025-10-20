@@ -72,6 +72,9 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
   const cashDrawerList_formValidationsOfOpenRegister = useVuelidate(
     cashDrawerList_formRulesOfOpenRegister,
     cashDrawerList_formDataOfOpenRegister,
+    {
+      $scope: 'cashDrawerList',
+    },
   );
 
   /**

@@ -23,7 +23,7 @@ const {
           <div class="mt-4">
             <div class="flex gap-4">
               <PrimeVueButton
-                class="flex-1 py-2 px-4 rounded-md flex items-center justify-center gap-2"
+                class="flex-1 py-2 px-4 rounded-md flex items-center justify-center gap-2 border-none"
                 :class="{
                   'bg-primary text-white': settingRounding_roundingType === 'up',
                   'bg-white hover:bg-primary hover:text-white text-black': settingRounding_roundingType !== 'up',
@@ -37,7 +37,7 @@ const {
                 </div>
               </PrimeVueButton>
               <PrimeVueButton
-                class="flex-1 py-2 px-4 rounded-md flex items-center justify-center gap-2"
+                class="flex-1 py-2 px-4 rounded-md flex items-center justify-center gap-2 border-none"
                 :class="{
                   'bg-primary text-white': settingRounding_roundingType === 'down',
                   'bg-white hover:bg-primary hover:text-white text-black': settingRounding_roundingType !== 'down',
@@ -57,7 +57,11 @@ const {
                 >Jumlah Pembulatan</label
               >
               <div class="mt-1 w-full flex gap-2">
-                <PrimeVueButton icon="pi pi-minus" class="border px-6" @click="settingRounding_handleDecrement" />
+                <PrimeVueButton
+                  icon="pi pi-minus"
+                  class="border-none bg-primary px-6"
+                  @click="settingRounding_handleDecrement"
+                />
                 <PrimeVueInputNumber
                   id="rounding-amount"
                   v-model="settingRounding_roundingValue"
@@ -66,14 +70,18 @@ const {
                   button-layout="horizontal"
                 >
                 </PrimeVueInputNumber>
-                <PrimeVueButton icon="pi pi-plus" class="border px-6" @click="settingRounding_handleIncrement" />
+                <PrimeVueButton
+                  icon="pi pi-plus"
+                  class="border-none bg-primary px-6"
+                  @click="settingRounding_handleIncrement"
+                />
               </div>
             </div>
           </div>
         </section>
 
-        <div class="bg-secondary text-secondary-hover px-4 py-3 rounded-md mt-4 flex gap-2">
-          <AppBaseSvg name="info-secondary" class="mt-1 !h-6 !w-6" />
+        <div class="bg-secondary text-black px-4 py-3 rounded-md mt-4 flex gap-2">
+          <AppBaseSvg name="info-secondary" class="filter-white-color mt-1 h-6 w-6" />
           <p>
             Sistem akan otomatis mengecek nominal Total Pembayaran untuk dibulatkan.
             <br />

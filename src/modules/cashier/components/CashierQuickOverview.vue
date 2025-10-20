@@ -89,7 +89,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
 
             <section id="right-content" class="flex items-center gap-2">
               <PrimeVueButton
-                class="w-full p-0 bg-transparent"
+                class="w-full p-0 bg-transparent hover:!bg-transparent"
                 variant="text"
                 @click="cashierOrderSummary_onOpenDialogQueueOverview"
               >
@@ -126,7 +126,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
             <section id="right-content" class="flex items-center gap-2">
               <PrimeVueButton
                 v-if="!!cashDrawerList_todayStatus"
-                class="w-full p-0 bg-transparent"
+                class="w-full p-0 bg-transparent hover:!bg-transparent"
                 variant="text"
                 @click="cashierOrderSummary_onOpenDialogCashDrawerOverview"
               >
