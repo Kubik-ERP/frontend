@@ -17,7 +17,7 @@ const {
 
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
-const { exportToPdf, exportToCsv } = useReportExporter();
+const { exportToPdf, exportToCsv, export_isloading } = useReportExporter();
 
 const popover = ref();
 

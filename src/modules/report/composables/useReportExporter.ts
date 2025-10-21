@@ -17,8 +17,9 @@ interface ReportConfig {
 }
 
 export function useReportExporter() {
-
+  const export_isloading = ref(false);
   const exportToCsv = (config: ReportConfig) => {
+    export_isloading.value = true;
     const reportHeader = [
       // Each element in this array is a new row in the CSV
       `Report Name:,${config.reportName}`,
@@ -79,8 +80,10 @@ export function useReportExporter() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    export_isloading.value = false;
   };
   const exportToPdf = async (config: ReportConfig) => {
+    export_isloading.value = true;
     // --- 1. FIXED/CONSTANT DATA IS HANDLED HERE ---
     const componentProps = {
       // Data passed from the function call
@@ -128,11 +131,13 @@ export function useReportExporter() {
     } finally {
       app.unmount();
       document.body.removeChild(container);
+      export_isloading.value = false;
     }
   };
 
   return {
     exportToPdf,
     exportToCsv,
+    export_isloading,
   };
 }
