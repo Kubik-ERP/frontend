@@ -170,10 +170,10 @@ export const useBatchService = (): IBatchListProvided => {
       description: `
         <div class="flex items-center justify-center">
           <p class="font-normal text-black-secondary text-sm text-center">
-            This action will stop the current recording and discard any unsaved or draft data.
+            Once saved, the batch will be set to Planned and ready to cook on the selected date.
           </p>
         </div>`,
-      iconName: 'delete-polygon',
+      iconName: 'confirmation',
       isOpen: true,
       isUsingButtonSecondary: true,
       isUsingHtmlTagOnDescription: true,
@@ -186,24 +186,80 @@ export const useBatchService = (): IBatchListProvided => {
       },
       textButtonPrimary: 'Cancel',
       textButtonSecondary: 'Delete',
-      title: 'Delete Batch',
+      title: 'Are you sure want to save this batch as Draft?',
       type: 'error',
     };
 
     eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
   };
 
+  const batchCreateEdit_startCookingDescription = () => {
+    const startBefore = `
+        <div class="flex items-center justify-center">
+          <p class="font-normal text-black-secondary text-sm text-center">
+            You’re starting this batch before the planned date. Are you sure you want to continue cooking now?
+          </p>
+        </div>`;
+
+    const startNow = `
+        <div class="flex items-center justify-center">
+          <p class="font-normal text-black-secondary text-sm text-center">
+            Ingredients will be prepared according to the recipe.
+          </p>
+        </div>`;
+
+    const startAfter = `
+        <div class="flex items-center justify-center">
+          <p class="font-normal text-black-secondary text-sm text-center">
+            This batch was scheduled for an earlier date. Starting now may affect your production plan. Do you still want to proceed?
+          </p>
+        </div>`;
+
+    let description;
+
+    const currentDate = new Date();
+    const batchDate = new Date(batch_formData.batchDate);
+    const sameDate = currentDate.getFullYear() === batchDate.getFullYear() &&
+      currentDate.getMonth() === batchDate.getMonth() &&
+      currentDate.getDate() === batchDate.getDate();
+
+    if (!sameDate && currentDate < batchDate) {
+      description = startBefore;
+    } else if (!sameDate && currentDate > batchDate) {
+      description = startAfter;
+    } else {
+      description = startNow;
+    }
+
+    return description;
+  };
+
+  const batchCreateEdit_startCookingTitle = () => {
+    const startBefore = 'Are you sure want to start cooking early?'
+
+    const startNow = 'Are you sure want to start batch cooking?'
+
+    const startAfter = 'Are you sure want to start batch cooking?'
+
+    let title;
+
+    if (new Date() < new Date(batch_formData.batchDate)) {
+      title = startBefore;
+    } else if (new Date() > new Date(batch_formData.batchDate)) {
+      title = startAfter;
+    } else {
+      title = startNow;
+    }
+
+    return title;
+  };
+
   const batchCreateEdit_onShowDialogStart = (id: string) => {
     console.log(id);
     const argsEventEmitter: IPropsDialogConfirmation = {
       id: 'batch-create-edit-start-dialog-confirmation',
-      description: `
-        <div class="flex items-center justify-center">
-          <p class="font-normal text-black-secondary text-sm text-center">
-            This action will stop the current recording and discard any unsaved or draft data.
-          </p>
-        </div>`,
-      iconName: 'delete-polygon',
+      description: batchCreateEdit_startCookingDescription(),
+      iconName: 'confirmation',
       isOpen: true,
       isUsingButtonSecondary: true,
       isUsingHtmlTagOnDescription: true,
@@ -214,9 +270,9 @@ export const useBatchService = (): IBatchListProvided => {
         // Logic to delete the table goes here
         eventBus.emit('AppBaseDialog', { id: 'batch-create-edit-start-dialog-confirmation', isOpen: false });
       },
-      textButtonPrimary: 'Cancel',
-      textButtonSecondary: 'Delete',
-      title: 'Delete Batch',
+      textButtonPrimary: 'Start Cooking',
+      textButtonSecondary: 'Cancel',
+      title: batchCreateEdit_startCookingTitle(),
       type: 'error',
     };
 
@@ -230,10 +286,10 @@ export const useBatchService = (): IBatchListProvided => {
       description: `
         <div class="flex items-center justify-center">
           <p class="font-normal text-black-secondary text-sm text-center">
-            This action will stop the current recording and discard any unsaved or draft data.
+            Once saved, the batch will be set to Planned and ready to cook on the selected date.
           </p>
         </div>`,
-      iconName: 'delete-polygon',
+      iconName: 'confirmation',
       isOpen: true,
       isUsingButtonSecondary: true,
       isUsingHtmlTagOnDescription: true,
@@ -244,9 +300,9 @@ export const useBatchService = (): IBatchListProvided => {
         // Logic to delete the table goes here
         eventBus.emit('AppBaseDialog', { id: 'batch-create-edit-save-dialog-confirmation', isOpen: false });
       },
-      textButtonPrimary: 'Cancel',
-      textButtonSecondary: 'Delete',
-      title: 'Delete Batch',
+      textButtonPrimary: 'Save as Draft',
+      textButtonSecondary: 'Cancel',
+      title: 'Are you sure want to save this batch as Draft?',
       type: 'error',
     };
 
@@ -260,10 +316,10 @@ export const useBatchService = (): IBatchListProvided => {
       description: `
         <div class="flex items-center justify-center">
           <p class="font-normal text-black-secondary text-sm text-center">
-            This action will stop the current recording and discard any unsaved or draft data.
+            Once saved, the batch will be set to Planned and ready to cook on the selected date.
           </p>
         </div>`,
-      iconName: 'delete-polygon',
+      iconName: 'confirmation',
       isOpen: true,
       isUsingButtonSecondary: true,
       isUsingHtmlTagOnDescription: true,
@@ -274,9 +330,9 @@ export const useBatchService = (): IBatchListProvided => {
         // Logic to delete the table goes here
         eventBus.emit('AppBaseDialog', { id: 'batch-create-edit-update-dialog-confirmation', isOpen: false });
       },
-      textButtonPrimary: 'Cancel',
-      textButtonSecondary: 'Delete',
-      title: 'Delete Batch',
+      textButtonPrimary: 'Update',
+      textButtonSecondary: 'Cancel',
+      title: 'Are you sure want to update this batch as Draft?',
       type: 'error',
     };
 

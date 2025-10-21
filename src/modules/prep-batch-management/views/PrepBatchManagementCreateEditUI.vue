@@ -18,6 +18,10 @@ const {
   menuRecipe_lists,
   menuRecipeList_isLoading,
   menuRecipe_ingredients,
+  // dialog confirmation
+  batchCreateEdit_onShowDialogStart,
+  batchCreateEdit_onShowDialogSave,
+  batchCreateEdit_onShowDialogUpdate,
 } = useBatchService();
 
 const batchFormData_onClearRecipe = () => {
@@ -271,12 +275,21 @@ onMounted(async () => {
           <section id="submit" class="flex gap-4">
             <PrimeVueButton
               class="min-w-40 border-primary-border text-primary"
-              :label="isEdit ? 'Update' : 'Save Draft'"
               variant="outlined"
+              :label="isEdit ? 'Update' : 'Save Draft'"
+              @click="
+                isEdit ? batchCreateEdit_onShowDialogUpdate('batch1') : batchCreateEdit_onShowDialogSave('batch1')
+              "
             />
-            <PrimeVueButton class="min-w-40 border-primary-border text-white bg-primary" label="Start Cooking" />
+            <PrimeVueButton
+              class="min-w-40 border-primary-border text-white bg-primary"
+              label="Start Cooking"
+              @click="batchCreateEdit_onShowDialogStart('batch1')"
+            />
           </section>
-          <PrimeVueButton class="min-w-40 text-primary" label="Cancel" variant="text" />
+          <router-link :to="{ name: 'prep-batch-management.index' }">
+            <PrimeVueButton class="min-w-40 text-primary" label="Cancel" variant="text" />
+          </router-link>
         </section>
       </section>
     </section>
