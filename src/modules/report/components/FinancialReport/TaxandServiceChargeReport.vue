@@ -136,7 +136,7 @@ const popover = ref();
             @change="report_getFinancialReport('tax-and-service-summary')"
           >
             <template #dropdownicon>
-              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
           <PrimeVueSelect
@@ -150,7 +150,7 @@ const popover = ref();
             class="col-span-1 w-full"
             @change="report_getFinancialReport('tax-and-service-summary')"
             ><template #dropdownicon>
-              <AppBaseSvg name="staff" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="staff" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
         </section>

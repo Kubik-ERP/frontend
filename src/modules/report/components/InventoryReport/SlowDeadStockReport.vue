@@ -146,7 +146,7 @@ const handleExportToCsv = () => {
             @change="report_getInventoryReport('slow-dead-stock')"
           >
             <template #dropdownicon>
-              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
         </section>

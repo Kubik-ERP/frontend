@@ -183,7 +183,7 @@ const handleExportToCsv = () => {
             @change="report_getFinancialReport('discount-summary')"
           >
             <template #dropdownicon>
-              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
           <PrimeVueSelect
@@ -197,7 +197,7 @@ const handleExportToCsv = () => {
             class="col-span-1 w-full border border-primary-border"
             @change="report_getFinancialReport('discount-summary')"
             ><template #dropdownicon>
-              <AppBaseSvg name="staff" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="staff" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
         </section>

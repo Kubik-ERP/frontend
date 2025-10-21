@@ -146,7 +146,7 @@ const onChangePage = (newPage: number) => {
             @change="report_getSalesReport('quarter')"
           >
             <template #dropdownicon>
-              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
           <PrimeVueSelect
@@ -159,7 +159,7 @@ const onChangePage = (newPage: number) => {
             class="col-span-1 w-full"
             @change="report_getSalesReport('quarter')"
             ><template #dropdownicon>
-              <AppBaseSvg name="staff" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="staff" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
         </section>

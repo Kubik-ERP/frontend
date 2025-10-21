@@ -149,7 +149,7 @@ class="border border-primary-border text-primary"
             @change="report_getInventoryReport('po-receiving-variance')"
           >
             <template #dropdownicon>
-              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
         </section>
