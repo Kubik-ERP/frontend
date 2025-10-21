@@ -324,23 +324,7 @@ const orderTypeLabel = computed(() => {
           >
             <td class="font-normal text-black text-[12pt] py-1">Points Accumulated</td>
             <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
-              {{ invoice_invoiceData.data.customer.point }} pts
-            </td>
-          </tr>
-
-          <tr v-if="invoice_invoiceData.data.changeAmount"  class="border-b border-dashed border-black">
-            <td class="font-normal text-black text-[12pt] py-1">Kembali</td>
-            <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
-              {{ useCurrencyFormat({ data: invoice_invoiceData.data.changeAmount ?? 0 }) }}
-            </td>
-          </tr>
-
-          <tr v-if="invoice_invoiceData?.data?.paymentMethods?.name" class="border-b border-dashed border-black">
-            <td class="font-normal text-black text-[12pt] py-1">
-              {{ invoice_invoiceData?.data?.paymentMethods?.name || '' }}
-            </td>
-            <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
-              {{ useCurrencyFormat({ data: invoice_invoiceData.data.paymentAmount || 0 }) }}
+              {{ invoice_invoiceData.data.totalEarnPoints }} pts
             </td>
           </tr>
 
@@ -366,7 +350,7 @@ const orderTypeLabel = computed(() => {
             </td>
           </tr>
 
-          <tr class="border-b border-solid border-black">
+          <tr class="border-b border-dashed border-black">
             <td colspan="2" class="items-center font-normal text-black text-[12pt] py-1">
               Tax
               <span
@@ -385,6 +369,22 @@ const orderTypeLabel = computed(() => {
                       : invoice_invoiceData.data.taxAmount || 0,
                 })
               }}
+            </td>
+          </tr>
+
+          <tr v-if="invoice_invoiceData?.data?.paymentMethods?.name" class="">
+            <td class="font-normal text-black text-[12pt] py-1">
+              {{ invoice_invoiceData?.data?.paymentMethods?.name || '' }}
+            </td>
+            <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
+              {{ useCurrencyFormat({ data: invoice_invoiceData.data.paymentAmount || 0 }) }}
+            </td>
+          </tr>
+
+          <tr  class="border-b border-solid border-black">
+            <td class="font-normal text-black text-[12pt] py-1">Kembali</td>
+            <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
+              {{ useCurrencyFormat({ data: invoice_invoiceData.data.changeAmount ?? 0 }) }}
             </td>
           </tr>
 

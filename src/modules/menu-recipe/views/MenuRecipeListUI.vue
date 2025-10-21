@@ -10,6 +10,10 @@ import { useMenuRecipeListService } from '../services/menu-recipe-list.service';
  */
 const {
   menuRecipeList_columns,
+  menuRecipeList_fetchList,
+  menuRecipeList_handleOnSortChange,
+  menuRecipeList_isLoading,
+  menuRecipeList_onChangePage,
   menuRecipeList_onShowDialogDelete,
   menuRecipeList_queryParams,
   menuRecipeList_values,
@@ -20,6 +24,10 @@ const {
  */
 provide('menuRecipeList', {
   menuRecipeList_columns,
+  menuRecipeList_fetchList,
+  menuRecipeList_handleOnSortChange,
+  menuRecipeList_isLoading,
+  menuRecipeList_onChangePage,
   menuRecipeList_onShowDialogDelete,
   menuRecipeList_queryParams,
   menuRecipeList_values,
@@ -30,7 +38,7 @@ provide('menuRecipeList', {
  */
 onMounted(() => {
   // Fetch the list when component is mounted
-  // menuRecipeList_fetchList();
+  menuRecipeList_fetchList();
 });
 </script>
 

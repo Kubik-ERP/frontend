@@ -47,8 +47,8 @@ const staffDisplayName = computed(() => {
 });
 
 const handleSubmit = () => {
-  cashDrawerList_onSubmitOpenRegisterForm()
-}
+  cashDrawerList_onSubmitOpenRegisterForm();
+};
 </script>
 
 <template>
@@ -179,12 +179,10 @@ const handleSubmit = () => {
         <PrimeVueButton
           class="bg-primary border-none text-base py-[10px] w-full max-w-40"
           label="Save"
-          :disabled="cashDrawerList_formValidationsOfOpenRegister.$invalid || cashDrawerList_isLoading" 
+          :disabled="cashDrawerList_formValidationsOfOpenRegister.$invalid || cashDrawerList_isLoading"
           type="button"
           @click="handleSubmit"
         />
-
-       
       </footer>
     </template>
   </AppBaseDialog>

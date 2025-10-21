@@ -140,6 +140,8 @@ const onHide = () => {
     :visible="visible"
     position="right"
     class="w-full sm:w-[51%]"
+    :dismissable="false"
+    modal
     @update:visible="onHide"
   >
     <template #header>

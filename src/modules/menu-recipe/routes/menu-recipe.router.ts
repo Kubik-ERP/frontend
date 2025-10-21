@@ -22,6 +22,39 @@ export default {
         title: 'Menu Recipe',
       },
     },
+    {
+      path: 'create',
+      name: 'menu-recipe.create',
+      component: () => import('../views/MenuRecipeCreateEditUI.vue'),
+      meta: {
+        layout: LAYOUT_OPTIONS.SIMPLE_NAVBAR,
+        requiresAuthorization: true,
+        title: 'Add New Recipe',
+        breadcrumb: 'Add New Recipe',
+      },
+    },
+    {
+      path: 'edit/:id',
+      name: 'menu-recipe.edit',
+      component: () => import('../views/MenuRecipeCreateEditUI.vue'),
+      meta: {
+        layout: LAYOUT_OPTIONS.SIMPLE_NAVBAR,
+        requiresAuthorization: true,
+        title: 'Edit Recipe',
+        breadcrumb: 'Edit Recipe',
+      },
+    },
+    {
+      path: 'detail/:id',
+      name: 'menu-recipe.detail',
+      component: () => import('../views/MenuRecipeDetailUI.vue'),
+      meta: {
+        layout: LAYOUT_OPTIONS.SIMPLE_NAVBAR,
+        requiresAuthorization: true,
+        title: 'Recipe Detail',
+        breadcrumb: 'Recipe Detail',
+      },
+    },
   ],
   meta: {
     breadcrumb: 'Menu Recipe',
