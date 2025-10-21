@@ -168,7 +168,7 @@ const formattedDataTable = () => {
             @change="report_getFinancialReport('financial-summary')"
           >
             <template #dropdownicon>
-              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
           <PrimeVueSelect
@@ -182,7 +182,7 @@ const formattedDataTable = () => {
             class="col-span-1 w-full"
             @change="report_getFinancialReport('financial-summary')"
             ><template #dropdownicon>
-              <AppBaseSvg name="staff" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="staff" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
         </section>
