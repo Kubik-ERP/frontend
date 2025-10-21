@@ -126,12 +126,12 @@ const handleExportToCsv = () => {
       </template>
 
       <template #filter>
-        <section class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4 pt-4">
+        <section class="grid grid-cols-1 xl:grid-cols-2 gap-4 pt-4">
           <CustomDatePicker
             v-model:start-date="report_queryParams.startDate"
             v-model:end-date="report_queryParams.endDate"
             :should-update-type="false"
-            class="col-span-1 xl:col-span-2 2xl:col-span-1"
+            class=""
             @update:end-date="report_getInventoryReport('slow-dead-stock')"
           />
           <PrimeVueSelect
@@ -141,7 +141,7 @@ const handleExportToCsv = () => {
             option-label="label"
             option-value="value"
             placeholder="Select Outlet"
-            class="col-span-1 w-full"
+            class=""
             filter
             @change="report_getInventoryReport('slow-dead-stock')"
           >
