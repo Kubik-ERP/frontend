@@ -17,7 +17,7 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
     class="block lg:hidden sticky z-10 inset-x-0 bottom-0 bg-white p-4"
   >
     <PrimeVueButton
-      class="border-none w-full text-white py-2.5 px-8"
+      class="border-none bg-primary w-full text-white py-2.5 px-8"
       type="button"
       label="Place Order"
       :disabled="cashierProduct_selectedProduct.length === 0"
@@ -26,7 +26,7 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
       <template #default>
         <section class="flex gap-2 justify-between w-full items-center">
           <div class="flex gap-2 items-center">
-            <AppBaseSvg name="cart" class="!h-4 !w-5" />
+            <AppBaseSvg name="cart" class="filter-white-color h-4 w-5" />
             <span class="font-semibold text-sm text-white"
               >{{ cashierProduct_selectedProduct.length }} {{ useLocalization('cashier.items') }}</span
             >

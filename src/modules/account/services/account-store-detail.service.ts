@@ -306,6 +306,7 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     accountStoreDetail_formData,
     {
       $autoDirty: true,
+      $scope: 'accountStoreDetailFacility',
     },
   );
 

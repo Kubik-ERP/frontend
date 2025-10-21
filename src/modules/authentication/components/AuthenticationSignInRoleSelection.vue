@@ -32,12 +32,12 @@ const { authenticationSignIn_onSelectRole } = inject<IAuthenticationSignInProvid
         class="bg-white border border-solid border-primary-border col-span-full lg:col-span-6 flex flex-col items-center gap-6 p-3 rounded-lg cursor-pointer basic-smooth-animation hover:bg-background"
         @click="authenticationSignIn_onSelectRole('OWNER')"
       >
-        <section id="box-icon" class="bg-primary-background w-12 h-12 p-2 rounded-full">
+        <section id="box-icon" class="bg-secondary w-12 h-12 p-2 rounded-full">
           <section
             id="inner-box"
-            class="bg-blue-secondary-background flex items-center justify-center w-full h-full p-1 rounded-full"
+            class="bg-primary flex items-center justify-center w-full h-full p-1 rounded-full"
           >
-            <AppBaseSvg name="account-company" class="w-4 h-4" />
+            <AppBaseSvg name="account-company" class="filter-white-color w-4 h-4" />
           </section>
         </section>
 
@@ -55,12 +55,12 @@ const { authenticationSignIn_onSelectRole } = inject<IAuthenticationSignInProvid
         class="bg-white border border-solid border-primary-border col-span-full lg:col-span-6 flex flex-col items-center gap-6 p-3 rounded-lg cursor-pointer basic-smooth-animation hover:bg-background"
         @click="authenticationSignIn_onSelectRole('EMPLOYEE')"
       >
-        <section id="box-icon" class="bg-primary-background w-12 h-12 p-2 rounded-full">
+        <section id="box-icon" class="bg-secondary w-12 h-12 p-2 rounded-full">
           <section
             id="inner-box"
-            class="bg-blue-secondary-background flex items-center justify-center w-full h-full p-1 rounded-full"
+            class="bg-primary flex items-center justify-center w-full h-full p-1 rounded-full"
           >
-            <AppBaseSvg name="user" class="w-4 h-4" />
+            <AppBaseSvg name="user" class="filter-white-color w-4 h-4" />
           </section>
         </section>
 

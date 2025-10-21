@@ -52,13 +52,13 @@ const { cashierProduct_productState, cashierProduct_handleOpenModalAddProduct, i
 
               <div class="flex items-center gap-2">
                 <PrimeVueChip
-                  class="bg-primary-background font-normal text-xs px-2 py-[6px] text-text-disabled"
-                  :label="`Stock: ${props.stock}`"
+                  class="bg-primary text-white font-normal text-xs px-2 py-[6px]"
+                  :label="`Stock: ${props.stock != null ? props.stock : 'N/A'}`"
                 />
               </div>
 
-              <div class="bg-primary-background p-1 h-fit rounded-full w-max">
-                <span class="text-xs text-text-disabled">{{ props.category }}</span>
+              <div class="bg-primary px-2 py-[6px] h-fit rounded-full w-max">
+                <span class="text-xs text-white">{{ props.category }}</span>
               </div>
             </div>
           </div>

@@ -234,6 +234,7 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
 
   const freeItemsBenefit_formValidations = useVuelidate(freeItemsBenefit_formRules, freeItemsBenefit_formData, {
     $autoDirty: true,
+    $scope: 'freeItemsBenefit',
   });
 
   const loyaltyPointBenefit_onSubmitDialogFreeItems = async (): Promise<void> => {

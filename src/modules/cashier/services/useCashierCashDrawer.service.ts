@@ -5,9 +5,7 @@ import {
 } from '@/modules/cash-drawer/constants/cash-drawer.constant';
 
 // Interfaces
-import type {
-  ICashDrawerListOpenRegisterFormData,
-} from '@/modules/cash-drawer/interfaces/cash-drawer-list.interface';
+import type { ICashDrawerListOpenRegisterFormData } from '@/modules/cash-drawer/interfaces/cash-drawer-list.interface';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -59,6 +57,9 @@ export const useCashierCashDrawerService = () => {
   const cashierCashDrawer_formValidationsOfOpenRegister = useVuelidate(
     cashierCashDrawer_formRulesOfOpenRegister,
     cashierCashDrawer_formDataOfOpenRegister,
+    {
+      $scope: 'cashierCashDrawer',
+    },
   );
 
   /**
@@ -171,6 +172,8 @@ export const useCashierCashDrawerService = () => {
    */
   const cashierCashDrawer_onSubmitOpenRegisterForm = async (): Promise<void> => {
     cashierCashDrawer_formValidationsOfOpenRegister.value.$touch();
+
+    console.log(cashierCashDrawer_formValidationsOfOpenRegister.value, 'valid');
 
     if (cashierCashDrawer_formValidationsOfOpenRegister.value.$invalid) {
       return;

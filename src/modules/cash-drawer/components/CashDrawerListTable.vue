@@ -43,7 +43,7 @@ const {
         <span class="font-normal text-sm text-text-primary">
           {{
             useCurrencyFormat({
-              data: data[column.value],
+              data: data[column.value] ?? 0,
               hidePrefix: true,
               addSuffix: true,
             })
@@ -53,7 +53,7 @@ const {
 
       <template v-else-if="column.value === 'staffName'">
         <span class="font-normal text-sm text-text-primary">
-          {{ data.employees.name }}
+          {{ data?.employees?.name ?? '-' }}
         </span>
       </template>
 
@@ -80,7 +80,7 @@ const {
       </template>
 
       <template v-else>
-        <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
+        <span class="font-normal text-sm text-text-primary">{{ data[column.value] ?? '-' }}</span>
       </template>
     </template>
   </AppBaseDataTable>
