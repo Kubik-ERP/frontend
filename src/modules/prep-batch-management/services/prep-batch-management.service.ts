@@ -162,6 +162,127 @@ export const useBatchService = (): IBatchListProvided => {
       }
     }
   };
+
+  const batchCreateEdit_onShowDialogCancel = (id: string) => {
+    console.log(id);
+    const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'batch-create-edit-cancel-dialog-confirmation',
+      description: `
+        <div class="flex items-center justify-center">
+          <p class="font-normal text-black-secondary text-sm text-center">
+            This action will stop the current recording and discard any unsaved or draft data.
+          </p>
+        </div>`,
+      iconName: 'delete-polygon',
+      isOpen: true,
+      isUsingButtonSecondary: true,
+      isUsingHtmlTagOnDescription: true,
+      onClickButtonPrimary: () => {
+        eventBus.emit('AppBaseDialog', { id: 'batch-create-edit-cancel-dialog-confirmation', isOpen: false });
+      },
+      onClickButtonSecondary: () => {
+        // Logic to delete the table goes here
+        eventBus.emit('AppBaseDialog', { id: 'batch-create-edit-cancel-dialog-confirmation', isOpen: false });
+      },
+      textButtonPrimary: 'Cancel',
+      textButtonSecondary: 'Delete',
+      title: 'Delete Batch',
+      type: 'error',
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
+  const batchCreateEdit_onShowDialogStart = (id: string) => {
+    console.log(id);
+    const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'batch-create-edit-start-dialog-confirmation',
+      description: `
+        <div class="flex items-center justify-center">
+          <p class="font-normal text-black-secondary text-sm text-center">
+            This action will stop the current recording and discard any unsaved or draft data.
+          </p>
+        </div>`,
+      iconName: 'delete-polygon',
+      isOpen: true,
+      isUsingButtonSecondary: true,
+      isUsingHtmlTagOnDescription: true,
+      onClickButtonPrimary: () => {
+        eventBus.emit('AppBaseDialog', { id: 'batch-create-edit-start-dialog-confirmation', isOpen: false });
+      },
+      onClickButtonSecondary: () => {
+        // Logic to delete the table goes here
+        eventBus.emit('AppBaseDialog', { id: 'batch-create-edit-start-dialog-confirmation', isOpen: false });
+      },
+      textButtonPrimary: 'Cancel',
+      textButtonSecondary: 'Delete',
+      title: 'Delete Batch',
+      type: 'error',
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
+  const batchCreateEdit_onShowDialogSave = (id: string) => {
+    console.log(id);
+    const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'batch-create-edit-save-dialog-confirmation',
+      description: `
+        <div class="flex items-center justify-center">
+          <p class="font-normal text-black-secondary text-sm text-center">
+            This action will stop the current recording and discard any unsaved or draft data.
+          </p>
+        </div>`,
+      iconName: 'delete-polygon',
+      isOpen: true,
+      isUsingButtonSecondary: true,
+      isUsingHtmlTagOnDescription: true,
+      onClickButtonPrimary: () => {
+        eventBus.emit('AppBaseDialog', { id: 'batch-create-edit-save-dialog-confirmation', isOpen: false });
+      },
+      onClickButtonSecondary: () => {
+        // Logic to delete the table goes here
+        eventBus.emit('AppBaseDialog', { id: 'batch-create-edit-save-dialog-confirmation', isOpen: false });
+      },
+      textButtonPrimary: 'Cancel',
+      textButtonSecondary: 'Delete',
+      title: 'Delete Batch',
+      type: 'error',
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
+  const batchCreateEdit_onShowDialogUpdate = (id: string) => {
+    console.log(id);
+    const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'batch-create-edit-update-dialog-confirmation',
+      description: `
+        <div class="flex items-center justify-center">
+          <p class="font-normal text-black-secondary text-sm text-center">
+            This action will stop the current recording and discard any unsaved or draft data.
+          </p>
+        </div>`,
+      iconName: 'delete-polygon',
+      isOpen: true,
+      isUsingButtonSecondary: true,
+      isUsingHtmlTagOnDescription: true,
+      onClickButtonPrimary: () => {
+        eventBus.emit('AppBaseDialog', { id: 'batch-create-edit-update-dialog-confirmation', isOpen: false });
+      },
+      onClickButtonSecondary: () => {
+        // Logic to delete the table goes here
+        eventBus.emit('AppBaseDialog', { id: 'batch-create-edit-update-dialog-confirmation', isOpen: false });
+      },
+      textButtonPrimary: 'Cancel',
+      textButtonSecondary: 'Delete',
+      title: 'Delete Batch',
+      type: 'error',
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
   return {
     // columns
     batchList_columns: BATCH_LIST_COLUMNS,
@@ -183,5 +304,10 @@ export const useBatchService = (): IBatchListProvided => {
     menuRecipe_lists,
     menuRecipeList_isLoading,
     menuRecipe_ingredients,
+    // dialog confirmation
+    batchCreateEdit_onShowDialogStart,
+    batchCreateEdit_onShowDialogSave,
+    batchCreateEdit_onShowDialogUpdate,
+    batchCreateEdit_onShowDialogCancel,
   };
 };

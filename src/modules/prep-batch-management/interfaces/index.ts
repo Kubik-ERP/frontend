@@ -106,4 +106,9 @@ export type IBatchListProvided = {
   menuRecipe_lists: globalThis.Ref<IBatchStateStore['menuRecipe_lists']>;
   menuRecipeList_isLoading: globalThis.Ref<IBatchStateStore['menuRecipeList_isLoading']>;
   menuRecipe_ingredients: globalThis.Ref<IBatchStateStore['menuRecipe_ingredients']>;
+  // dialog confirmation
+  batchCreateEdit_onShowDialogStart: (id: string) => void;
+  batchCreateEdit_onShowDialogSave: (id: string) => void;
+  batchCreateEdit_onShowDialogUpdate: (id: string) => void;
+  batchCreateEdit_onShowDialogCancel: (id: string) => void;
 };
