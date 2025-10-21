@@ -94,7 +94,8 @@ const handleExportToCsv = () => {
           variant="outlined"
           label="Export"
           :disabled="formattedDataTable()?.length === 0"
-class="border border-primary-border text-primary"
+          class="border border-primary-border text-primary"
+          :loading="export_isloading"
           @click="popover.toggle($event)"
         >
           <template #icon>
@@ -112,12 +113,14 @@ class="border border-primary-border text-primary"
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .pdf"
+              :loading="export_isloading"
               @click="handleExportToPdf"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .csv"
+              :loading="export_isloading"
               @click="handleExportToCsv"
             />
           </section>
