@@ -1,144 +1,117 @@
-import type { Ref } from 'vue';
-
 export type TransferStockStatus =
-  | 'draft'
+  | 'requested'
   | 'approved'
   | 'shipped'
   | 'received'
   | 'received_with_issue'
-  | 'closed';
+  | 'rejected'
+  | 'canceled';
 
-export interface ITransferStockItem {
-  id: string;
-  productId: string;
-  productCode: string;
-  productName: string;
-  uom: string;
-  qtyRequested: number;
-  qtyApproved: number;
-  qtyShipped: number;
-  qtyReceived: number;
-  unitPrice: number | null;
-  shortfallQty: number;
-  issueNotes: string | null;
+export interface ITransferStockUserReference {
+  id: number;
+  fullname: string | null;
+  email: string | null;
 }
 
-export interface ITransferStockLogEntry {
+export interface ITransferStockRecord {
   id: string;
-  transferId: string;
-  action: string;
-  status: TransferStockStatus;
-  actor: string;
-  message: string;
-  createdAt: string;
-  meta?: Record<string, unknown>;
-}
-
-export interface ITransferStockSummary {
-  id: string;
-  referenceNumber: string;
-  status: TransferStockStatus;
+  transactionCode: string;
   storeFromId: string;
-  storeFromName: string;
-  storeToId: string;
-  storeToName: string;
-  requestedBy: string;
-  approvalRequired: boolean;
-  totalItems: number;
-  totalQty: number;
-  totalValue: number;
-  notes: string | null;
+  storeToId: string | null;
+  status: TransferStockStatus;
+  note: string | null;
+  requestedBy: number | null;
+  requestAt: string | null;
+  approvedBy: number | null;
+  approvedAt: string | null;
+  canceledBy: number | null;
+  canceledAt: string | null;
+  rejectedBy: number | null;
+  rejectedAt: string | null;
+  shippedBy: number | null;
+  shippedAt: string | null;
+  receivedBy: number | null;
+  receivedAt: string | null;
+  deliveryNote: string | null;
+  logisticProvider: string | null;
+  trackingNumber: string | null;
   createdAt: string;
   updatedAt: string;
-  approvedAt?: string | null;
-  approvedBy?: string | null;
-  shippedAt?: string | null;
-  shippedBy?: string | null;
-  receivedAt?: string | null;
-  receivedBy?: string | null;
-  logisticProvider?: string | null;
-  trackingNumber?: string | null;
-  deliveryNote?: string | null;
-  estimatedArrivalDate?: string | null;
+  requestedUser?: ITransferStockUserReference | null;
+  approvedUser?: ITransferStockUserReference | null;
+  shippedUser?: ITransferStockUserReference | null;
+  receivedUser?: ITransferStockUserReference | null;
+  canceledUser?: ITransferStockUserReference | null;
+  rejectedUser?: ITransferStockUserReference | null;
 }
 
-export interface ITransferStock extends ITransferStockSummary {
-  items: ITransferStockItem[];
-  logs: ITransferStockLogEntry[];
-  attachments: string[];
+export interface ITransferStockListPayload {
+  items: ITransferStockRecord[];
+  meta: IPageMeta;
 }
 
-export interface ITransferStockStoreInventory {
+export interface ITransferStockListResponse extends IDefaultResponseFetch {
+  data?: ITransferStockListPayload;
+  result?: ITransferStockListPayload;
+}
+
+export interface ITransferStockMutationResponse<T = ITransferStockRecord> extends IDefaultResponseFetch {
+  data?: T;
+  result?: T;
+}
+
+export interface ITransferStockListParams {
+  page?: number;
+  pageSize?: number;
+  orderBy?: string;
+  orderDirection?: 'asc' | 'desc';
+}
+
+export interface ITransferStockItemOption {
   id: string;
-  code: string;
   name: string;
-  address: string;
-  phone?: string;
-  contactPerson?: string;
-  inventory: Record<
-    string,
-    {
-      productId: string;
-      productCode: string;
-      productName: string;
-      uom: string;
-      availableQty: number;
-      reservedQty: number;
-      inTransitQty: number;
-    }
-  >;
+  sku: string;
+  stockQuantity: number;
 }
 
-export interface ITransferStockCreateFormPayload {
-  storeFromId: string;
+export interface ITransferStockItemListPayload {
+  items: ITransferStockItemOption[];
+  meta: IPageMeta;
+}
+
+export interface ITransferStockItemListResponse extends IDefaultResponseFetch {
+  data?: ITransferStockItemListPayload;
+  result?: ITransferStockItemListPayload;
+}
+
+export interface ITransferStockItemListRequest {
   storeToId: string;
-  requestedBy: string;
-  approvalRequired: boolean;
-  notes: string | null;
-  items: Array<
-    Pick<ITransferStockItem, 'productId' | 'productCode' | 'productName' | 'uom' | 'qtyRequested' | 'unitPrice'>
-  >;
+  search?: string;
+  page?: number;
+  pageSize?: number;
 }
 
-export interface ITransferStockApprovePayload {
-  transferId: string;
-  approvedBy: string;
+export interface ITransferStockCreateItemPayload {
+  itemId: string;
+  qty: number;
 }
 
-export interface ITransferStockShipmentPayload {
-  transferId: string;
-  shippedBy: string;
-  shippedAt: string;
-  logisticProvider?: string | null;
-  trackingNumber?: string | null;
-  deliveryNote?: string | null;
-  qtyShipped: Array<{ itemId: string; qtyShipped: number }>;
+export interface ITransferStockCreatePayload {
+  storeToId: string;
+  note?: string | null;
+  items: ITransferStockCreateItemPayload[];
 }
 
-export interface ITransferStockReceivePayload {
-  transferId: string;
-  receivedBy: string;
-  receivedAt: string;
-  items: Array<{ itemId: string; qtyReceived: number; issueNotes: string | null }>;
+export interface ITransferStockRequestPayload {
+  storeToId?: string;
+  note?: string | null;
+  items: ITransferStockCreateItemPayload[];
 }
 
-export interface ITransferStockClosePayload {
-  transferId: string;
-  closedBy: string;
-  notes?: string | null;
-}
-
-export interface ITransferStockStoreProvided {
-  transferStock_isLoading: Ref<boolean>;
-  transferStock_list: Ref<ITransferStockSummary[]>;
-  transferStock_selected: Ref<ITransferStock | null>;
-  transferStock_stores: Ref<ITransferStockStoreInventory[]>;
-  transferStock_createTransfer: (payload: ITransferStockCreateFormPayload) => Promise<ITransferStock>;
-  transferStock_approveTransfer: (payload: ITransferStockApprovePayload) => Promise<ITransferStock>;
-  transferStock_cancelApproval: (transferId: string, actor: string) => Promise<ITransferStock>;
-  transferStock_shipTransfer: (payload: ITransferStockShipmentPayload) => Promise<ITransferStock>;
-  transferStock_receiveTransfer: (payload: ITransferStockReceivePayload) => Promise<ITransferStock>;
-  transferStock_closeTransfer: (payload: ITransferStockClosePayload) => Promise<ITransferStock>;
-  transferStock_selectTransfer: (transferId: string | null) => void;
-  transferStock_initialize: () => Promise<void>;
+export interface ITransferStockFormItem {
+  itemId: string;
+  name: string;
+  sku: string;
+  stockQuantity: number;
+  qty: number;
 }
