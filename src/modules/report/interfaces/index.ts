@@ -39,8 +39,10 @@ export * from './voucher-report';
 import { IOutlet } from '@/modules/outlet/interfaces';
 export type { IOutlet };
 
-import { IStaffMember } from '@/modules/staff-member/interfaces';
-export type { IStaffMember };
+export interface IStaffMember{
+  id: string;
+  fullname: string;
+}
 
 interface IOutletListOptions {
   value: string;

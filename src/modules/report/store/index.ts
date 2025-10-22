@@ -112,7 +112,7 @@ export const useReportStore = defineStore('report', {
           ...requestConfigurations,
         });
 
-        this.staff_lists_values = response.data.data.employees;
+        this.staff_lists_values = response.data.data;
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
