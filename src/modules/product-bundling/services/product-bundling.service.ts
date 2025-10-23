@@ -21,6 +21,7 @@ import eventBus from '@/plugins/mitt';
 export const useProductBundlingService = (): IProductBundlingProvided => {
   const router = useRouter();
   const store = useProductBundlingStore();
+  const route = useRoute();
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const { productList_isLoading, productBundling_productList, productBundling_list, productBundling_isLoading } =
@@ -136,7 +137,7 @@ export const useProductBundlingService = (): IProductBundlingProvided => {
       console.log('productBundling_queryParams:', productBundling_queryParams);
       await store.productBundling_fetchProductBundlingList(productBundling_queryParams, {
         ...httpAbort_registerAbort('LOYALTY_POINT_BENEFIT_PRODUCT_LIST'),
-      });
+      }, route);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error);
