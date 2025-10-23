@@ -21,6 +21,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
    * @description Injected variables
    */
   const store = useStaffMemberStore(); // Instance of the store
+  const route = useRoute();
   const {
     staffMember_isLoading,
     staffMember_listDropdownItemStaff,
@@ -149,9 +150,9 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
         pageSize: 100,
         orderBy: null,
         orderDirection: null
-      }, {})
+      }, {}, route)
 
-      staffMemberCreateEdit_permissionData.value = res.data.items
+      staffMemberCreateEdit_permissionData.value = res.data?.items ?? []
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);

@@ -162,7 +162,7 @@ export const useReportService = (): IReportProvided => {
       },
       ...staff_lists_values.value.map(item => {
         return {
-          label: item.name,
+          label: item.fullname,
           value: item.id,
         };
       }),
