@@ -18,17 +18,17 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
       <div class="flex justify-between">
         <div class="flex gap-2 font-semibold text-xs">
           <span>{{ item.qty }}x</span>
-          <span>{{ item.products.name }}</span>
+          <span>{{ item.products?.name ?? item.catalogBundling?.name }}</span>
         </div>
         <div class="flex flex-col items-end">
           <span class="text-xs">{{
             useCurrencyFormat({
-              data: item.productPrice,
+              data: item.productPrice - item.productDiscount,
             })
           }}</span>
-          <span class="text-text-disabled text-[8px] line-through">{{
+          <span v-if="item.productDiscount != 0" class="text-text-disabled text-[8px] line-through">{{
             useCurrencyFormat({
-              data: item.productPrice * item.qty,
+              data: item.productPrice,
             })
           }}</span>
         </div>
@@ -43,6 +43,18 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
         <div v-if="item.notes" class="flex flex-col">
           <span class="text-text-disabled font-semibold text-[10px]">Notes</span>
           <span class="text-xs text-justify">{{ item.notes }} </span>
+        </div>
+      </div>
+
+      <div v-if="item.invoiceBundlingItems?.length" class="flex flex-col gap-1 mb-4">
+        <span class="text-xs font-semibold text-black">Bundling Items:</span>
+        <div
+          v-for="bundlingItem in item.invoiceBundlingItems"
+          :key="bundlingItem.id"
+          class="flex justify-between pl-4 text-xs text-black italic"
+        >
+          <span>{{ bundlingItem.products?.name ?? '-' }}</span>
+          <span>{{ useCurrencyFormat({ data: bundlingItem.products?.price ?? 0 }) }}</span>
         </div>
       </div>
 

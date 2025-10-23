@@ -29,6 +29,7 @@ import { required } from '@vuelidate/validators';
 
 export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided => {
   const router = useRouter();
+  const route = useRoute();
 
   const pointConfiguration_activeTab = ref<string>('loyalty-point-benefit');
 
@@ -165,7 +166,7 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     try {
       await store.loyaltySettings_fetchDetails({
         ...httpAbort_registerAbort('LOYALTY_POINT_SETTINGS_LIST_REQUEST'),
-      });
+      }, route);
 
       loyaltyPointSettingsDetail_loadData();
     } catch (error: unknown) {

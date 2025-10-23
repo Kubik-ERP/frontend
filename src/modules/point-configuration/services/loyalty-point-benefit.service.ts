@@ -26,6 +26,7 @@ import { usePointConfigurationStore } from '../store';
 
 export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided => {
   const router = useRouter();
+  const route = useRoute();
   const store = usePointConfigurationStore();
   const {
     loyaltyPointBenefit_isLoading,
@@ -422,7 +423,7 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
       await store.loyaltyPointBenefit_fetchlist(loyaltyPointBenefit_queryParams, {
         ...httpAbort_registerAbort(LOYALTY_POINT_BENEFIT_LIST_REQUEST),
         paramsSerializer: useParamsSerializer,
-      });
+      }, route);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error);

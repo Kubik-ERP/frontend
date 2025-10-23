@@ -14,6 +14,7 @@ import type {
 // Plugins
 import httpClient from '@/plugins/axios';
 import { IRoleListQueryParams, IRoleListResponse } from '@/modules/role/interfaces/role-list.interface';
+import { RouteLocationNormalizedLoadedGeneric } from 'vue-router';
 
 export const useStaffMemberStore = defineStore('staff-member', {
   state: (): IStaffMemberStore => ({
@@ -234,13 +235,17 @@ export const useStaffMemberStore = defineStore('staff-member', {
     },
     async staffMember_getPermissions(
       params: IRoleListQueryParams,
-      requestConfigurations: AxiosRequestConfig
+      requestConfigurations: AxiosRequestConfig,
+      route?: RouteLocationNormalizedLoadedGeneric,
     ): Promise<IRoleListResponse> {
       try {
-        const response = await httpClient.get<IRoleListResponse>(STAFF_MEMBER_PERMISSION_ENDPOINT, {
-          params,
-          ...requestConfigurations,
-        });
+        const response = await httpClient.get<IRoleListResponse>(
+          (route?.path.includes('self-order') ? '/self-order' : '') + STAFF_MEMBER_PERMISSION_ENDPOINT,
+          {
+            params,
+            ...requestConfigurations,
+          },
+        );
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -251,7 +256,9 @@ export const useStaffMemberStore = defineStore('staff-member', {
       }
     },
 
-    async staffMember_getOwnerWithStaff(requestConfigurations: AxiosRequestConfig): Promise<IStaffMemberGetWithOwnerResponse> {
+    async staffMember_getOwnerWithStaff(
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IStaffMemberGetWithOwnerResponse> {
       try {
         const response = await httpClient.get<IStaffMemberGetWithOwnerResponse>(`/users/staffs`, {
           ...requestConfigurations,
@@ -266,6 +273,6 @@ export const useStaffMemberStore = defineStore('staff-member', {
       } finally {
         this.staffMember_isLoading = false;
       }
-    }
+    },
   },
 });

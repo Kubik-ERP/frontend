@@ -17,7 +17,7 @@ const {
 } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
-const { exportToPdf, exportToCsv } = useReportExporter();
+const { exportToPdf, exportToCsv, export_isloading } = useReportExporter();
 const popover = ref();
 const handleExportToPdf = () => {
   exportToPdf({
@@ -97,6 +97,7 @@ const onChangePage = (newPage: number) => {
           variant="outlined"
           label="Export"
           class="border border-primary-border text-primary"
+          :loading="export_isloading"
           @click="popover.toggle($event)"
         >
           <template #icon>
@@ -114,12 +115,14 @@ const onChangePage = (newPage: number) => {
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .pdf"
+              :loading="export_isloading"
               @click="handleExportToPdf"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .csv"
+              :loading="export_isloading"
               @click="handleExportToCsv"
             />
           </section>
@@ -147,7 +150,7 @@ const onChangePage = (newPage: number) => {
             @change="report_getSalesReport('staff')"
           >
             <template #dropdownicon>
-              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
         </section>

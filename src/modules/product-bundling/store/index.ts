@@ -11,6 +11,23 @@ import type {
 import type { AxiosRequestConfig } from 'axios';
 // Plugins
 import httpClient from '@/plugins/axios';
+import { RouteLocationNormalizedLoadedGeneric } from 'vue-router';
+
+function withStoreHeader(
+  route: RouteLocationNormalizedLoadedGeneric,
+  extra: AxiosRequestConfig = {},
+): AxiosRequestConfig {
+  if (route.path.includes('self-order')) {
+    return {
+      ...extra,
+      headers: {
+        ...(extra.headers || {}),
+        'X-STORE-ID': route.query.storeId as string,
+      },
+    };
+  }
+  return extra;
+}
 
 function convertProductBundlingToFormData(payload: IProductBundlingPayload): FormData {
   const formData = new FormData();
@@ -113,13 +130,18 @@ export const useProductBundlingStore = defineStore('product-bundling', {
     async productBundling_fetchProductBundlingList(
       params: IProductListRequestQuery,
       requestConfigurations: AxiosRequestConfig,
+      route?: RouteLocationNormalizedLoadedGeneric,
     ): Promise<unknown> {
       this.productBundling_isLoading = true;
       try {
-        const response = await httpClient.get(`${PRODUCT_BUNDLING_BASE_ENDPOINT}`, {
-          params,
-          ...requestConfigurations,
-        });
+        const response = await httpClient.get(
+          (route?.path.includes('self-order') ? '/self-order' : '') + `${PRODUCT_BUNDLING_BASE_ENDPOINT}`,
+          {
+            params,
+            ...requestConfigurations,
+            ...(route ? withStoreHeader(route) : {}),
+          },
+        );
         this.productBundling_list = response.data.data;
         return Promise.resolve(response.data);
       } catch (error: unknown) {

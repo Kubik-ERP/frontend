@@ -17,7 +17,7 @@ const {
 
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
-const { exportToPdf, exportToCsv } = useReportExporter();
+const { exportToPdf, exportToCsv, export_isloading } = useReportExporter();
 
 const popover = ref();
 
@@ -92,7 +92,8 @@ const handleExportToCsv = () => {
           variant="outlined"
           label="Export"
           :disabled="formattedDataTable()?.length === 0"
-class="border border-primary-border text-primary"
+          class="border border-primary-border text-primary"
+          :loading="export_isloading"
           @click="popover.toggle($event)"
         >
           <template #icon>
@@ -110,12 +111,14 @@ class="border border-primary-border text-primary"
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .pdf"
+              :loading="export_isloading"
               @click="handleExportToPdf"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .csv"
+              :loading="export_isloading"
               @click="handleExportToCsv"
             />
           </section>
@@ -123,12 +126,12 @@ class="border border-primary-border text-primary"
       </template>
 
       <template #filter>
-        <section class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4 pt-4">
+        <section class="grid grid-cols-1 xl:grid-cols-2 gap-4 pt-4">
           <CustomDatePicker
             v-model:start-date="report_queryParams.startDate"
             v-model:end-date="report_queryParams.endDate"
             :should-update-type="false"
-            class="col-span-1 xl:col-span-2 2xl:col-span-1"
+            class=""
             @update:end-date="report_getInventoryReport('slow-dead-stock')"
           />
           <PrimeVueSelect
@@ -138,12 +141,12 @@ class="border border-primary-border text-primary"
             option-label="label"
             option-value="value"
             placeholder="Select Outlet"
-            class="col-span-1 w-full"
+            class=""
             filter
             @change="report_getInventoryReport('slow-dead-stock')"
           >
             <template #dropdownicon>
-              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
         </section>

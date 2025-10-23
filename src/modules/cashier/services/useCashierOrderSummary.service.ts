@@ -540,7 +540,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
    */
   const getVoucherActive = async (search: string, productIds?: string[]) => {
     try {
-      const response = await storeVoucher.voucherList_getActiveVoucher(search, productIds ?? []);
+      const response = await storeVoucher.voucherList_getActiveVoucher(search, productIds ?? [], {}, route);
       const data = response.data;
 
       voucherData.value = data.map((voucher: IVoucher) => {
@@ -1069,20 +1069,19 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       const response = await storeInvoice.invoice_fetchInvoiceById(invoiceId, route);
 
       if (response.data) {
-        if(response.data.customer) {
-  cashierProduct_customerState.value.selectedCustomer = {
-          id: response.data.customerId,
-          name: response.data.customer.name,
-          code: response.data.customer.code,
-          number: response.data.customer.number,
-          email: response.data.customer.email,
-          address: response.data.customer.address,
-          dob: response.data.customer.dob,
-          username: response.data.customer.username,
-          customersHasTag: null,
-        };
+        if (response.data.customer) {
+          cashierProduct_customerState.value.selectedCustomer = {
+            id: response.data.customerId,
+            name: response.data.customer.name,
+            code: response.data.customer.code,
+            number: response.data.customer.number,
+            email: response.data.customer.email,
+            address: response.data.customer.address,
+            dob: response.data.customer.dob,
+            username: response.data.customer.username,
+            customersHasTag: null,
+          };
         }
-      
 
         cashierOrderSummary_modalOrderType.value.selectedOrderType = response.data.orderType;
 
@@ -1090,10 +1089,8 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
         cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod = response.data.paymentMethodsId || '';
 
-        cashierProduct_selectedProduct.value = response.data.invoiceDetails
-          .map(mapInvoiceDetailToSelected)
+        cashierProduct_selectedProduct.value = response.data.invoiceDetails.map(mapInvoiceDetailToSelected);
         //   .filter((detail: ICashierSelected) => detail.type != 'redeem')
-          ;
 
         if (response.data.loyaltyPointsBenefit) {
           const benefitData = response.data.loyaltyPointsBenefit;

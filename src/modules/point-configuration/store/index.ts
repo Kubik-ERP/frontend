@@ -17,6 +17,23 @@ import type {
 
 // Plugins
 import httpClient from '@/plugins/axios';
+import { RouteLocationNormalizedLoadedGeneric } from 'vue-router';
+
+function withStoreHeader(
+  route: RouteLocationNormalizedLoadedGeneric,
+  extra: AxiosRequestConfig = {},
+): AxiosRequestConfig {
+  if (route.path.includes('self-order')) {
+    return {
+      ...extra,
+      headers: {
+        ...(extra.headers || {}),
+        'X-STORE-ID': route.query.storeId as string,
+      },
+    };
+  }
+  return extra;
+}
 
 export const usePointConfigurationStore = defineStore('point-configuration', {
   state: (): IPointConfigurationStore => ({
@@ -87,14 +104,19 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
     async loyaltyPointBenefit_fetchlist(
       params: IPointConfigurationListRequestQuery,
       requestConfigurations: AxiosRequestConfig,
+      route?: RouteLocationNormalizedLoadedGeneric,
     ): Promise<IPointConfigurationListResponse> {
       this.loyaltyPointBenefit_isLoading = true;
 
       try {
-        const response = await httpClient.get(`${LOYALTY_POINT_BENEFIT_BASE_ENDPOINT}`, {
-          params,
-          ...requestConfigurations,
-        });
+        const response = await httpClient.get(
+          (route?.path.includes('self-order') ? '/self-order' : '') + `${LOYALTY_POINT_BENEFIT_BASE_ENDPOINT}`,
+          {
+            params,
+            ...requestConfigurations,
+            ...(route ? withStoreHeader(route) : {}),
+          },
+        );
         this.loyaltyPointBenefit_list = response.data.data;
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -288,10 +310,19 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
       }
     },
 
-    async loyaltySettings_fetchDetails(requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async loyaltySettings_fetchDetails(
+      requestConfigurations: AxiosRequestConfig,
+      route?: RouteLocationNormalizedLoadedGeneric,
+    ): Promise<unknown> {
       this.loyaltyPointBenefit_isLoading = true;
       try {
-        const response = await httpClient.get(`${LOYALTY_POINT_SETTINGS_BASE_ENDPOINT}`, requestConfigurations);
+        const response = await httpClient.get(
+          (route?.path.includes('self-order') ? '/self-order' : '') + `${LOYALTY_POINT_SETTINGS_BASE_ENDPOINT}`,
+          {
+            ...requestConfigurations,
+            ...(route ? withStoreHeader(route) : {}),
+          },
+        );
         this.loyaltyPointSettings_value = response.data.data.data;
         return Promise.resolve(response.data);
       } catch (error: unknown) {

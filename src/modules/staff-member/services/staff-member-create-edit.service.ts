@@ -792,7 +792,7 @@ export const useStaffMemberCreateEditService = (): IStaffMemberCreateEditProvide
         pageSize: 100,
         orderBy: null,
         orderDirection: null
-      }, {})
+      }, {}, useRoute())
       
       staffMemberCreateEdit_permissionData.value = res.data.items
     } catch (error) {

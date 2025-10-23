@@ -94,6 +94,7 @@ export interface IInvoiceDetail {
   id: string;
   productId: string;
   productPrice: number;
+  productDiscount: number;
   variantId: string;
   notes: string;
   qty: number;
