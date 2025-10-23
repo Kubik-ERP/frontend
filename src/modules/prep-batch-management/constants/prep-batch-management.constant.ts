@@ -64,4 +64,10 @@ export const BATCH_DETAILS_INGRIDIENTS_COLUMNS: IColumnDataTable[] = [
   },
 ];
 
-
+export const WASTE_LOG_CATEGORIES: IDropdownItem[] = [
+  { label: 'Overcook', value: 'overcook' },
+  { label: 'Evaporation', value: 'evaporation' },
+  { label: 'Spillage', value: 'spillage' },
+  { label: 'Expired', value: 'expired' },
+  { label: 'Other', value: 'other' },
+];

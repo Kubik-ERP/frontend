@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // constants
+import { WASTE_LOG_CATEGORIES } from '../constants';
 import { ITEM_UNIT_DROPDOWN } from '@/modules/items/constants';
 const wasteLog_formData = reactive({
   item: null,
@@ -36,7 +37,7 @@ const wasteLog_formData = reactive({
           option-label="name"
           option-value="id"
           placeholder="Select item"
-          class="text-sm  w-full"
+          class="text-sm w-full"
           :class="{ ...classes }"
         />
       </AppBaseFormGroup>
@@ -74,7 +75,7 @@ const wasteLog_formData = reactive({
             option-label="label"
             option-value="value"
             placeholder="Select UOM"
-            class="text-sm  w-full"
+            class="text-sm w-full"
             :class="{ ...classes }"
           />
         </AppBaseFormGroup>
@@ -90,14 +91,11 @@ const wasteLog_formData = reactive({
         >
           <PrimeVueSelect
             v-model="wasteLog_formData.category"
-            :options="[
-              { id: 1, name: 'Category 1' },
-              { id: 2, name: 'Category 2' },
-            ]"
+            :options="WASTE_LOG_CATEGORIES"
             option-label="name"
             option-value="id"
             placeholder="Select category"
-            class="text-sm  w-full"
+            class="text-sm w-full"
             :class="{ ...classes }"
           />
         </AppBaseFormGroup>
