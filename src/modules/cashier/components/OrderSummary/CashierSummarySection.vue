@@ -103,6 +103,10 @@ const closeLoyaltyModal = () => {
 onMounted(() => {
   loyaltyPointSettingsDetail();
   loyaltyPointBenefit_fetchList();
+
+  if (cashierProduct_customerState.value.selectedCustomer?.id) {
+    requestCustomerLoyaltyPoint(cashierProduct_customerState.value.selectedCustomer!.id);
+  }
 });
 
 watch(
@@ -284,7 +288,13 @@ const redeemPoints = () => {
       <button
         v-if="cashierProduct_customerState.selectedCustomer != null"
         type="button"
-        class="flex items-center justify-between w-full h-10 px-4 bg-primary-background border border-primary-border rounded-lg shadow-sm hover:bg-primary-background transition"
+        class="flex items-center justify-between w-full h-10 px-4 rounded-lg shadow-sm transition"
+        :class="[
+          route.name === 'cashier-order-edit' 
+            ? 'bg-gray-100 border border-gray-200 text-gray-400 cursor-not-allowed opacity-70' 
+            : 'bg-primary-background border border-primary-border hover:bg-primary-background cursor-pointer'
+        ]"
+        :disabled="route.name === 'cashier-order-edit'"
         @click="openLoyaltyModal"
       >
         <div class="flex items-center gap-2">
@@ -439,12 +449,12 @@ const redeemPoints = () => {
                   <span class="text-primary text-xs font-medium"> ({{ item.quantity }}) {{ item.name }} </span>
                 </div>
               </div>
-              <div
+              <!-- <div
                 v-if="selectedBenefit?.id === benefit.id && benefit.pointNeeds <= loyaltyPoints_list?.total"
                 class="absolute right-8 top-1/2 -translate-y-1/2"
               >
                 <i class="pi pi-check-circle text-primary text-lg"></i>
-              </div>
+              </div> -->
             </div>
 
             <!-- Free Product -->

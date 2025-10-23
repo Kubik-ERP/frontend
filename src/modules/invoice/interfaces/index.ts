@@ -94,6 +94,7 @@ export interface IInvoiceDetail {
   id: string;
   productId: string;
   productPrice: number;
+  productDiscount: number;
   variantId: string;
   notes: string;
   qty: number;
@@ -185,6 +186,7 @@ export interface IInvoiceData {
   } | null;
   loyaltyDiscount?: number | null;
   loyaltyPointsBenefit?: IInvoiceLoyaltyPointsBenefit | null;
+  totalEarnPoints?: number | null;
 }
 
 export interface IInvoiceResponseInvoice {

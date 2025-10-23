@@ -16,6 +16,23 @@ import httpClient from '@/plugins/axios';
 import { defineStore } from 'pinia';
 import { IVoucherViewResponse } from '../interfaces/voucher-view.interface';
 import { IVoucherEditRequest, IVoucherEditResponse } from '../interfaces/voucher-edit.interface';
+import { RouteLocationNormalizedLoadedGeneric } from 'vue-router';
+
+function withStoreHeader(
+  route: RouteLocationNormalizedLoadedGeneric,
+  extra: AxiosRequestConfig = {},
+): AxiosRequestConfig {
+  if (route.path.includes('self-order')) {
+    return {
+      ...extra,
+      headers: {
+        ...(extra.headers || {}),
+        'X-STORE-ID': route.query.storeId as string,
+      },
+    };
+  }
+  return extra;
+}
 
 export const useVoucherStore = defineStore('voucher', {
   state(): IVoucherStateStore {
@@ -175,30 +192,35 @@ export const useVoucherStore = defineStore('voucher', {
       search: string,
       productIds: string[],
       requestConfigurations: AxiosRequestConfig = {},
+      route?: RouteLocationNormalizedLoadedGeneric,
     ): Promise<IVoucherActiveResponse> {
       this.voucher_isLoading = true;
       try {
         console.log(search);
-        const response = await httpClient.get<IVoucherActiveResponse>(`${VOUCHER_BASE_ENDPOINT}/active`, {
-          params: {
-            search: search,
-            productIds: productIds,
-          },
-          paramsSerializer: params => {
-            const query = new URLSearchParams();
+        const response = await httpClient.get<IVoucherActiveResponse>(
+          (route?.path.includes('self-order') ? '/self-order' : '') + `${VOUCHER_BASE_ENDPOINT}/active`,
+          {
+            params: {
+              search: search,
+              productIds: productIds,
+            },
+            paramsSerializer: params => {
+              const query = new URLSearchParams();
 
-            Object.entries(params).forEach(([key, value]) => {
-              if (Array.isArray(value)) {
-                value.forEach(v => query.append(key, v));
-              } else if (value !== undefined && value !== null) {
-                query.append(key, String(value));
-              }
-            });
+              Object.entries(params).forEach(([key, value]) => {
+                if (Array.isArray(value)) {
+                  value.forEach(v => query.append(key, v));
+                } else if (value !== undefined && value !== null) {
+                  query.append(key, String(value));
+                }
+              });
 
-            return query.toString();
+              return query.toString();
+            },
+            ...requestConfigurations,
+            ...(route == null ? {} : withStoreHeader(route)),
           },
-          ...requestConfigurations,
-        });
+        );
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
