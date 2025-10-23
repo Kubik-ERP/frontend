@@ -266,6 +266,7 @@ export const useCustomerDetailService = () => {
         customerId,
         httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
         loyaltyPoint_queryParams,
+        route,
       );
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -285,6 +286,7 @@ export const useCustomerDetailService = () => {
         customerId,
         httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
         queryParams,
+        route,
       );
     } catch (error: unknown) {
       if (error instanceof Error) {
