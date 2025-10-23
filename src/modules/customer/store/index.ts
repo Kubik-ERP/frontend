@@ -20,6 +20,23 @@ import type {
 } from '../interfaces/CustomerDetailInterface';
 
 import httpClient from '@/plugins/axios';
+import { RouteLocationNormalizedLoadedGeneric } from 'vue-router';
+
+function withStoreHeader(
+  route: RouteLocationNormalizedLoadedGeneric,
+  extra: AxiosRequestConfig = {},
+): AxiosRequestConfig {
+  if (route.path.includes('self-order')) {
+    return {
+      ...extra,
+      headers: {
+        ...(extra.headers || {}),
+        'X-STORE-ID': route.query.storeId as string,
+      },
+    };
+  }
+  return extra;
+}
 
 export const useCustomerDetailsStore = defineStore('customer-details', {
   state: (): ICustomerDetailsStore => ({
@@ -87,14 +104,17 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
       id: string,
       requestConfigurations: AxiosRequestConfig,
       params: ICustomerLoyaltyPointQuery,
+      route?: RouteLocationNormalizedLoadedGeneric,
     ): Promise<IloyaltyPoints> {
       this.loyaltyPoints_isLoading = true;
       try {
         const response = await httpClient.get(
-          `${CUSTOMER_DETAILS_BASE_ENDPOINT}${LOYALTY_POINTS_ENDPOINT}/${id}`,
+          (route?.path.includes('self-order') ? '/self-order' : '') +
+            `${CUSTOMER_DETAILS_BASE_ENDPOINT}${LOYALTY_POINTS_ENDPOINT}/${id}`,
           {
             params,
             ...requestConfigurations,
+            ...(route == null ? {} : withStoreHeader(route)),
           },
         );
         this.loyaltyPoints_list = response.data.data.points;
@@ -143,7 +163,7 @@ export const useCustomerDetailsStore = defineStore('customer-details', {
     },
     async increasePoint_onEdit(
       requestConfigurations: AxiosRequestConfig,
-      id:string,
+      id: string,
       data: IIncreasePoint,
       customer_id: string,
     ): Promise<IloyaltyPoints> {

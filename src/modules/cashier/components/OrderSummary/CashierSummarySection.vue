@@ -11,15 +11,17 @@ import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-sum
 import { ICashierOrderType } from '../../interfaces';
 
 // Route
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useLoyaltyPointBenefitService } from '@/modules/point-configuration/services/loyalty-point-benefit.service';
 import { IDiscount, IFreeItems, ILoyaltyPointBenefit } from '@/modules/point-configuration/interfaces';
 import { usePointConfigurationService } from '@/modules/point-configuration/services/point-configuration.service';
 import { useCustomerDetailService } from '@/modules/customer/services/customer-detail.service';
 import { computed, inject, onMounted, provide, ref, watch } from 'vue';
+import { ICashierCustomer } from '../../interfaces/cashier-response';
 // import { useCustomerDetailsStore } from '@/modules/customer/store';
 
 const route = useRoute();
+const router = useRouter();
 
 /**
  * @description Inject all the data and methods what we need
@@ -57,6 +59,120 @@ const loyaltyButtonText = computed(() => {
     return `${selectedBenefit.value.benefitName} (${selectedBenefit.value.pointNeeds} pts)`;
   }
   return 'Redeem Loyalty Point';
+});
+
+type SelfOrderDisplayUser = {
+  name: string;
+  code: string | null;
+  number: string | null;
+  email: string | null;
+  isGuest: boolean;
+};
+
+const defaultSelfOrderDisplayUser: SelfOrderDisplayUser = {
+  name: 'Guest',
+  code: null,
+  number: null,
+  email: null,
+  isGuest: true,
+};
+
+const isSelfOrderRoute = computed(() => route.name === 'self-order');
+
+const selfOrderDisplayUser = ref<SelfOrderDisplayUser>({ ...defaultSelfOrderDisplayUser });
+
+const setDisplayUserAsGuest = (name: string = defaultSelfOrderDisplayUser.name) => {
+  selfOrderDisplayUser.value = {
+    name,
+    code: null,
+    number: null,
+    email: null,
+    isGuest: true,
+  };
+};
+
+const setDisplayUserFromCustomer = (customer: ICashierCustomer) => {
+  selfOrderDisplayUser.value = {
+    name: customer.name,
+    code: customer.code,
+    number: customer.number,
+    email: customer.email,
+    isGuest: false,
+  };
+
+  if (cashierProduct_customerState.value.selectedCustomer?.id !== customer.id) {
+    cashierProduct_customerState.value.selectedCustomer = customer;
+  }
+};
+
+const syncSelfOrderUserFromStorage = () => {
+  if (!isSelfOrderRoute.value || typeof window === 'undefined') {
+    return;
+  }
+
+  const stored = window.localStorage.getItem('userinfo');
+
+  if (!stored) {
+    setDisplayUserAsGuest();
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(stored) as Partial<ICashierCustomer> & { isGuest?: boolean; name?: string };
+
+    if (parsed?.isGuest) {
+      setDisplayUserAsGuest(parsed.name ?? defaultSelfOrderDisplayUser.name);
+      cashierProduct_customerState.value.selectedCustomer = null;
+      return;
+    }
+
+    if (parsed && typeof parsed === 'object' && parsed.name) {
+      setDisplayUserFromCustomer(parsed as ICashierCustomer);
+      return;
+    }
+
+    setDisplayUserAsGuest();
+  } catch (error) {
+    console.error('Failed to parse stored user info', error);
+    setDisplayUserAsGuest();
+  }
+};
+
+const handleSignInAsGuest = () => {
+  if (!isSelfOrderRoute.value || typeof window === 'undefined') {
+    return;
+  }
+
+  window.localStorage.setItem(
+    'userinfo',
+    JSON.stringify({ isGuest: true, name: defaultSelfOrderDisplayUser.name }),
+  );
+  window.localStorage.setItem('shoppingCart', JSON.stringify({}));
+  cashierProduct_customerState.value.selectedCustomer = null;
+  setDisplayUserAsGuest();
+};
+
+const navigateToSelfOrderLogin = () => {
+  if (!isSelfOrderRoute.value) {
+    return;
+  }
+
+  router.push({
+    name: 'login-self-order',
+    query: {
+      ...route.query,
+      redirect: route.fullPath,
+    },
+  });
+};
+
+const selfOrderPhoneDisplay = computed(() => {
+  if (!selfOrderDisplayUser.value.number) {
+    return null;
+  }
+
+  const segments = [selfOrderDisplayUser.value.code, selfOrderDisplayUser.value.number].filter(Boolean);
+  return segments.join(' ');
 });
 
 // const selectedBenefitDiscount = computed<IDiscount | null>(() => {
@@ -101,6 +217,10 @@ const closeLoyaltyModal = () => {
 };
 
 onMounted(() => {
+  if (isSelfOrderRoute.value) {
+    syncSelfOrderUserFromStorage();
+  }
+
   loyaltyPointSettingsDetail();
   loyaltyPointBenefit_fetchList();
 
@@ -108,6 +228,15 @@ onMounted(() => {
     requestCustomerLoyaltyPoint(cashierProduct_customerState.value.selectedCustomer!.id);
   }
 });
+
+watch(
+  () => route.name,
+  newName => {
+    if (newName === 'self-order') {
+      syncSelfOrderUserFromStorage();
+    }
+  },
+);
 
 watch(
   () => cashierProduct_customerState.value.selectedCustomer?.id,
@@ -127,6 +256,48 @@ watch(
     requestCustomerLoyaltyPoint(newCustomerId);
   },
   { immediate: true },
+);
+
+watch(
+  () => cashierProduct_customerState.value.selectedCustomer,
+  newCustomer => {
+    if (!isSelfOrderRoute.value) {
+      return;
+    }
+
+    if (newCustomer) {
+      setDisplayUserFromCustomer(newCustomer);
+
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('userinfo', JSON.stringify(newCustomer));
+      }
+
+      return;
+    }
+
+    if (typeof window === 'undefined') {
+      setDisplayUserAsGuest();
+      return;
+    }
+
+    const stored = window.localStorage.getItem('userinfo');
+
+    if (!stored) {
+      setDisplayUserAsGuest();
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(stored) as { isGuest?: boolean; name?: string };
+
+      if (parsed?.isGuest) {
+        setDisplayUserAsGuest(parsed.name ?? defaultSelfOrderDisplayUser.name);
+      }
+    } catch {
+      setDisplayUserAsGuest();
+    }
+  },
+  { deep: true },
 );
 
 watch(
@@ -197,102 +368,147 @@ const redeemPoints = () => {
       id="cashier-summary-section-order-item"
       class="flex flex-col gap-2"
     >
-      <div v-if="hasCustomerManagementPermission" class="flex flex-col gap-2 w-full">
-        <label for="username" class="text-sm">
-          {{ useLocalization('cashier.mainSection.username') }}
-          <span class="text-text-disabled">(Optional)</span>
-        </label>
+      <template v-if="hasCustomerManagementPermission">
+        <div class="flex flex-col gap-2 w-full">
+          <label for="username" class="text-sm">
+            {{ useLocalization('cashier.mainSection.username') }}
+            <span class="text-text-disabled">(Optional)</span>
+          </label>
 
-        <PrimeVueIconField class="flex w-full">
-          <PrimeVueInputIcon class="pi pi-user" />
+          <PrimeVueIconField class="flex w-full">
+            <PrimeVueInputIcon class="pi pi-user" />
 
-          <PrimeVueAutoComplete
-            v-model="cashierProduct_customerState.selectedCustomer"
-            :suggestions="cashierProduct_customerState.customerList"
-            :options="cashierProduct_customerState.customerList"
-            :field="'name'"
-            :option-value="'id'"
-            :option-value-key="'id'"
-            option-label="name"
-            :min-length="1"
-            :loading="cashierProduct_customerState.isLoading"
-            :dropdown="true"
-            class="w-full text-sm placeholder:text-sm"
-            :placeholder="'Select Customer Name (Optional)'"
-            :disabled="route.name === 'cashier-order-edit'"
-            :virtual-scroller-options="{
-              itemSize: 50,
-              step: cashierProduct_customerState.limit,
-              lazy: true,
-              delay: 300,
-              loading: cashierProduct_customerState.isLoading,
-              onLazyLoad: cashierProduct_onScrollFetchMoreCustomers,
-            }"
-            :pt="{
-              pcInputText: 'text-sm placeholder:text-sm',
-              option: 'text-sm',
-            }"
-            @complete="(event: AutoCompleteCompleteEvent) => cashierProduct_onSearchCustomer(event.query)"
-          >
-            <template #value="slotProps">
-              <div v-if="slotProps.value" class="flex items-center gap-2">
-                <span class="text-sm">{{ slotProps.value.name }}</span>
-                <span
-                  v-if="loyaltyPoints_list?.total != null"
-                  class="flex items-center gap-1 text-xs font-semibold text-[#18618B]"
-                >
-                  <i class="pi pi-star text-[#0F3C56] text-[12px]"></i>
-                  <span>{{ loyaltyPoints_list?.total }} pts</span>
+            <PrimeVueAutoComplete
+              v-model="cashierProduct_customerState.selectedCustomer"
+              :suggestions="cashierProduct_customerState.customerList"
+              :options="cashierProduct_customerState.customerList"
+              :field="'name'"
+              :option-value="'id'"
+              :option-value-key="'id'"
+              option-label="name"
+              :min-length="1"
+              :loading="cashierProduct_customerState.isLoading"
+              :dropdown="true"
+              class="w-full text-sm placeholder:text-sm"
+              :placeholder="'Select Customer Name (Optional)'"
+              :disabled="route.name === 'cashier-order-edit'"
+              :virtual-scroller-options="{
+                itemSize: 50,
+                step: cashierProduct_customerState.limit,
+                lazy: true,
+                delay: 300,
+                loading: cashierProduct_customerState.isLoading,
+                onLazyLoad: cashierProduct_onScrollFetchMoreCustomers,
+              }"
+              :pt="{
+                pcInputText: 'text-sm placeholder:text-sm',
+                option: 'text-sm',
+              }"
+              @complete="(event: AutoCompleteCompleteEvent) => cashierProduct_onSearchCustomer(event.query)"
+            >
+              <template #value="slotProps">
+                <div v-if="slotProps.value" class="flex items-center gap-2">
+                  <span class="text-sm">{{ slotProps.value.name }}</span>
+                  <span
+                    v-if="loyaltyPoints_list?.total != null"
+                    class="flex items-center gap-1 text-xs font-semibold text-[#18618B]"
+                  >
+                    <i class="pi pi-star text-[#0F3C56] text-[12px]"></i>
+                    <span>{{ loyaltyPoints_list?.total }} pts</span>
+                  </span>
+                </div>
+                <span v-else>{{ slotProps.placeholder ?? 'Select Customer Name (Optional)' }}</span>
+              </template>
+              <template #option="slotProps">
+                <div class="flex gap-1 text-xs w-full items-center">
+                  <div class="flex flex-col w-full">
+                    <div class="font-semibold text-sm">{{ slotProps.option.name }}</div>
+                    <span class="text-xs text-text-disabled">{{ slotProps.option.email }}</span>
+                  </div>
+                  <div class="text-xs">({{ slotProps.option.code }}) {{ slotProps.option.number }}</div>
+                </div>
+              </template>
+
+              <template #empty>
+                <div class="flex flex-col items-center justify-center p-4 h-full">
+                  <p class="font-semibold text-sm text-black">No customer found</p>
+                </div>
+              </template>
+
+              <template #footer>
+                <div class="px-1 py-1">
+                  <PrimeVueButton
+                    label="Add New"
+                    fluid
+                    text
+                    severity="secondary"
+                    size="small"
+                    icon="pi pi-plus"
+                    class="text-sm"
+                    @click="
+                      async () => {
+                        cashierOrderSummary_handleModalAddCustomer(null);
+                      }
+                    "
+                  />
+                </div>
+              </template>
+            </PrimeVueAutoComplete>
+          </PrimeVueIconField>
+        </div>
+      </template>
+
+      <template v-else-if="isSelfOrderRoute">
+        <div class="flex flex-col gap-2 w-full">
+          <label for="self-order-customer" class="text-sm">
+            {{ useLocalization('cashier.mainSection.username') }}
+          </label>
+
+          <div class="flex flex-col gap-3 w-full rounded-lg border border-primary-border bg-white p-3 shadow-sm">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex flex-col">
+                <span class="text-sm font-semibold">{{ selfOrderDisplayUser.name }}</span>
+                <span v-if="selfOrderPhoneDisplay" class="text-xs text-text-disabled">
+                  {{ selfOrderPhoneDisplay }}
+                </span>
+                <span v-else-if="selfOrderDisplayUser.email" class="text-xs text-text-disabled">
+                  {{ selfOrderDisplayUser.email }}
+                </span>
+                <span v-else class="text-xs text-text-disabled">
+                  {{ selfOrderDisplayUser.isGuest ? 'Guest checkout' : '' }}
                 </span>
               </div>
-              <span v-else>{{ slotProps.placeholder ?? 'Select Customer Name (Optional)' }}</span>
-            </template>
-            <template #option="slotProps">
-              <div class="flex gap-1 text-xs w-full items-center">
-                <div class="flex flex-col w-full">
-                  <div class="font-semibold text-sm">{{ slotProps.option.name }}</div>
-                  <span class="text-xs text-text-disabled">{{ slotProps.option.email }}</span>
-                </div>
-                <div class="text-xs">({{ slotProps.option.code }}) {{ slotProps.option.number }}</div>
-              </div>
-            </template>
 
-            <template #empty>
-              <div class="flex flex-col items-center justify-center p-4 h-full">
-                <p class="font-semibold text-sm text-black">No customer found</p>
-              </div>
-            </template>
-
-            <template #footer>
-              <div class="px-1 py-1">
+              <div class="flex items-center gap-2">
                 <PrimeVueButton
-                  label="Add New"
-                  fluid
+                  v-if="selfOrderDisplayUser.isGuest"
                   text
-                  severity="secondary"
                   size="small"
-                  icon="pi pi-plus"
-                  class="text-sm"
-                  @click="
-                    async () => {
-                      cashierOrderSummary_handleModalAddCustomer(null);
-                    }
-                  "
-                />
+                  @click="navigateToSelfOrderLogin"
+                >
+                  Sign In
+                </PrimeVueButton>
+                <PrimeVueButton text size="small" severity="secondary" @click="handleSignInAsGuest">
+                  Sign In as Guest
+                </PrimeVueButton>
               </div>
-            </template>
-          </PrimeVueAutoComplete>
-        </PrimeVueIconField>
-      </div>
+            </div>
+
+            <span v-if="selfOrderDisplayUser.isGuest" class="text-xs text-text-disabled">
+              Sign in to earn loyalty points and access personalized offers.
+            </span>
+          </div>
+        </div>
+      </template>
 
       <button
         v-if="cashierProduct_customerState.selectedCustomer != null"
         type="button"
         class="flex items-center justify-between w-full h-10 px-4 rounded-lg shadow-sm transition"
         :class="[
-          route.name === 'cashier-order-edit' 
-            ? 'bg-gray-100 border border-gray-200 text-gray-400 cursor-not-allowed opacity-70' 
-            : 'bg-primary-background border border-primary-border hover:bg-primary-background cursor-pointer'
+          route.name === 'cashier-order-edit'
+            ? 'bg-gray-100 border border-gray-200 text-gray-400 cursor-not-allowed opacity-70'
+            : 'bg-primary-background border border-primary-border hover:bg-primary-background cursor-pointer',
         ]"
         :disabled="route.name === 'cashier-order-edit'"
         @click="openLoyaltyModal"

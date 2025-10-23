@@ -71,6 +71,14 @@ httpClient.interceptors.response.use(
     if (requestId) {
       loadingStore.endRequest(requestId);
     }
+
+    if (error.message == 'canceled') {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
     /**
      * @description Here's we can handle various errors.
      */
