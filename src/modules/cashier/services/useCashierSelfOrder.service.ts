@@ -121,6 +121,18 @@ export const useCashierSelfOrderService = () => {
     }
   };
 
+  const cashierSelfOrder_handleGuestSignIn = () => {
+    const redirectPath = (route.query.redirect as string) || '/self-order';
+    const queryParams = {
+      storeId: route.query.storeId as string,
+      floorName: route.query.floorName as string,
+      tablesName: route.query.tablesName as string,
+    };
+    localStorage.setItem('userinfo', JSON.stringify({ isGuest: true, name: 'Guest' }));
+    localStorage.setItem('shoppingCart', JSON.stringify({}));
+    router.push({ path: redirectPath, query: queryParams });
+  };
+
   return {
     cashierSelfOrder_signInForm,
     cashierSelfOrder_signUpForm,
@@ -130,5 +142,6 @@ export const useCashierSelfOrderService = () => {
     cashierSelfOrder_isLoadingSignUp,
     cashierSelfOrder_handleSignIn,
     cashierSelfOrder_handleSignUp,
+    cashierSelfOrder_handleGuestSignIn,
   };
 };
