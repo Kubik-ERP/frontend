@@ -80,8 +80,8 @@ const {
           </div>
         </section>
 
-        <div class="bg-secondary text-black px-4 py-3 rounded-md mt-4 flex gap-2">
-          <AppBaseSvg name="info-secondary" class="filter-white-color mt-1 h-6 w-6" />
+        <div class="bg-secondary/10 text-black px-4 py-3 rounded-md mt-4 flex gap-2">
+          <AppBaseSvg name="info-secondary" class="filter-black-color mt-1 h-10 w-10" />
           <p>
             Sistem akan otomatis mengecek nominal Total Pembayaran untuk dibulatkan.
             <br />

@@ -37,7 +37,6 @@ provide('menuRecipeList', {
  * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
  */
 onMounted(() => {
-  // Fetch the list when component is mounted
   menuRecipeList_fetchList();
 });
 </script>

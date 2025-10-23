@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Constants
+import { APP_BASE_URL } from '@/app/constants';
+
 // Interfaces
 import type { IAccountStoreDetailProvided } from '../../interfaces';
 
@@ -23,6 +26,13 @@ const {
   accountStoreDetail_selectedTable,
   accountStoreDetail_onDownloadTableQRCode,
 } = inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
+
+const generateUrl = computed(() => {
+  return `${APP_BASE_URL}/self-order/login?storeId=${outlet_selectedOutletOnAccountPage.value!.id}&floorName=${accountStoreDetail_selectedTable?.value?.floorName ?? ''}&tablesName=${accountStoreDetail_selectedTable?.value?.name ?? ''}`;
+});
+const encodeUrl = computed(() => {
+  return encodeURIComponent(generateUrl.value);
+});
 </script>
 
 <template>
@@ -71,10 +81,7 @@ const {
           <span class="font-normal text-grayscale-70 text-xs">{{ useLocalization('account.table-qr-code') }}</span>
 
           <div class="flex items-center gap-2">
-            <Qrcode
-              id="account-store-table-qr-code"
-              :value="`${APP_BASE_URL}/self-order/login?storeId=${outlet_selectedOutletOnAccountPage?.id}&floorName=${accountStoreDetail_selectedTable?.floorName ?? ''}&tablesName=${accountStoreDetail_selectedTable?.name ?? ''}`"
-            />
+            <Qrcode id="account-store-table-qr-code" :value="encodeUrl" />
 
             <PrimeVueButton
               class="bg-transparent border-none basic-smooth-animation w-fit p-4"

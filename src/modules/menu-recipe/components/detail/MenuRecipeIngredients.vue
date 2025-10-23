@@ -31,7 +31,7 @@ const { menuRecipeDetail_data, menuRecipeDetail_listColumns } = inject(
       <template v-if="column.value === 'item'">
         <div class="flex flex-col gap-1">
           <span class="font-normal text-black text-sm">
-            {{ data?.inventory_item?.itemName || data?.item_id || '-' }}
+            {{ data?.inventory_item?.name ?? '-' }}
           </span>
         </div>
       </template>

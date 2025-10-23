@@ -32,6 +32,7 @@ const {
   menuRecipeCreateEdit_onSearchProduct,
   menuRecipeCreateEdit_productSearchValue,
   menuRecipeCreateEdit_selectedProduct,
+  menuRecipeCreateEdit_onLoadInitialData,
   menuRecipeCreateEdit_onSelectProduct,
   menuRecipeCreateEdit_onResetProductSearch,
   menuRecipeCreateEdit_isLoadingProducts,
@@ -75,11 +76,18 @@ provide('menuRecipeCreateEdit', {
   menuRecipeCreateEdit_isLoadingProducts,
   // Inventory items
   menuRecipeCreateEdit_listInventoryItems,
-  menuRecipeCreateEdit_fetchInventoryItems,
   menuRecipeCreateEdit_isLoadingInventoryItems,
   menuRecipeCreateEdit_calculatedMarginRp,
   menuRecipeCreateEdit_calculatedMarginPercent,
   menuRecipeCreateEdit_totalCostPortion,
+});
+
+/**
+ * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
+ */
+onMounted(async () => {
+  await menuRecipeCreateEdit_onLoadInitialData();
+  await menuRecipeCreateEdit_fetchInventoryItems();
 });
 </script>
 
