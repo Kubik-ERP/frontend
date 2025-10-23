@@ -293,12 +293,7 @@ const orderTypeLabel = computed(() => {
             </td>
           </tr>
 
-           <tr
-            v-if="
-              invoice_invoiceData.configInvoice?.isShowLoyaltyPointsUsed 
-              
-            "
-          >
+          <tr v-if="invoice_invoiceData.configInvoice?.isShowLoyaltyPointsUsed">
             <td class="font-normal text-black text-[12pt] py-1">Loyalty Point Discount</td>
             <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
               -
@@ -306,22 +301,21 @@ const orderTypeLabel = computed(() => {
             </td>
           </tr>
 
-           <tr
-            v-if="
-              invoice_invoiceData.configInvoice?.isShowLoyaltyPointsUsed
-            "
-          >
+          <tr v-if="invoice_invoiceData.configInvoice?.isShowLoyaltyPointsUsed">
             <td class="font-normal text-black text-[12pt] py-1">Loyalty Point</td>
             <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
               -{{ invoice_invoiceData.data.loyaltyPointsBenefit?.pointsNeeds || 0 }} pts
             </td>
           </tr>
 
-          <tr
-            v-if="
-              invoice_invoiceData.configInvoice?.isShowTotalPointsAccumulated
-            "
-          >
+          <tr v-if="invoice_invoiceData.configInvoice?.isShowLoyaltyPointsUsed">
+            <td class="pl-6 font-normal text-black text-[12pt] py-1 italic">Benefit name</td>
+            <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1 italic">
+              {{ invoice_invoiceData.data.loyaltyPointsBenefit?.benefitName }}
+            </td>
+          </tr>
+
+          <tr v-if="invoice_invoiceData.configInvoice?.isShowTotalPointsAccumulated">
             <td class="font-normal text-black text-[12pt] py-1">Points Accumulated</td>
             <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
               {{ invoice_invoiceData.data.totalEarnPoints }} pts
@@ -381,7 +375,7 @@ const orderTypeLabel = computed(() => {
             </td>
           </tr>
 
-          <tr  class="border-b border-solid border-black">
+          <tr class="border-b border-solid border-black">
             <td class="font-normal text-black text-[12pt] py-1">Kembali</td>
             <td colspan="3" class="font-normal text-black text-[12pt] text-right py-1">
               {{ useCurrencyFormat({ data: invoice_invoiceData.data.changeAmount ?? 0 }) }}

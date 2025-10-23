@@ -18,7 +18,7 @@ const {
 } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
-const { exportToPdf, exportToCsv } = useReportExporter();
+const { exportToPdf, exportToCsv, export_isloading } = useReportExporter();
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Financial Report - Tax & Service Charge Report',
@@ -79,7 +79,13 @@ const popover = ref();
         <h1 class="font-bold text-2xl text-text-primary">Tax & Service Charge Report</h1>
       </template>
       <template #header-suffix>
-        <PrimeVueButton variant="outlined" label="Export" class="border border-primary-border text-primary"  @click="popover.toggle($event)">
+        <PrimeVueButton
+          variant="outlined"
+          label="Export"
+          class="border border-primary-border text-primary"
+          :loading="export_isloading"
+          @click="popover.toggle($event)"
+        >
           <template #icon>
             <AppBaseSvg name="export" class="!w-5 !h-5 filter-primary-color" />
           </template>
@@ -95,12 +101,14 @@ const popover = ref();
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .pdf"
+              :loading="export_isloading"
               @click="handleExportToPdf"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .csv"
+              :loading="export_isloading"
               @click="handleExportToCsv"
             />
           </section>
@@ -128,7 +136,7 @@ const popover = ref();
             @change="report_getFinancialReport('tax-and-service-summary')"
           >
             <template #dropdownicon>
-              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
           <PrimeVueSelect
@@ -142,7 +150,7 @@ const popover = ref();
             class="col-span-1 w-full"
             @change="report_getFinancialReport('tax-and-service-summary')"
             ><template #dropdownicon>
-              <AppBaseSvg name="staff" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="staff" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
         </section>

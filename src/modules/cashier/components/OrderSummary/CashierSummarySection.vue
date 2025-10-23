@@ -449,12 +449,12 @@ const redeemPoints = () => {
                   <span class="text-primary text-xs font-medium"> ({{ item.quantity }}) {{ item.name }} </span>
                 </div>
               </div>
-              <div
+              <!-- <div
                 v-if="selectedBenefit?.id === benefit.id && benefit.pointNeeds <= loyaltyPoints_list?.total"
                 class="absolute right-8 top-1/2 -translate-y-1/2"
               >
                 <i class="pi pi-check-circle text-primary text-lg"></i>
-              </div>
+              </div> -->
             </div>
 
             <!-- Free Product -->

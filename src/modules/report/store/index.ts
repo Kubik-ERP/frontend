@@ -112,7 +112,10 @@ export const useReportStore = defineStore('report', {
           ...requestConfigurations,
         });
 
-        this.staff_lists_values = response.data.data.employees;
+        this.staff_lists_values = response.data.data.map((staffMember: IStaffMember) => ({
+          ...staffMember,
+          name: staffMember.fullname,
+        }));
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
