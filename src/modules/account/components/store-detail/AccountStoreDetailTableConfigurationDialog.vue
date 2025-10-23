@@ -28,7 +28,10 @@ const {
 } = inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
 
 const generateUrl = computed(() => {
-  return `${APP_BASE_URL}/self-order/login?storeId=${outlet_selectedOutletOnAccountPage.value!.id}&floorName=${accountStoreDetail_selectedTable?.value?.floorName ?? ''}&tablesName=${accountStoreDetail_selectedTable?.value?.name ?? ''}`;
+  const storeId = encodeURIComponent(outlet_selectedOutletOnAccountPage.value!.id);
+  const floorName = encodeURIComponent(accountStoreDetail_selectedTable?.value?.floorName ?? '');
+  const tablesName = encodeURIComponent(accountStoreDetail_selectedTable?.value?.name ?? '');
+  return `${APP_BASE_URL}/self-order/login?storeId=${storeId}&floorName=${floorName}&tablesName=${tablesName}`;
 });
 const encodeUrl = computed(() => {
   return encodeURIComponent(generateUrl.value);
