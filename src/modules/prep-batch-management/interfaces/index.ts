@@ -35,6 +35,12 @@ export interface IBatchFormData {
   ingredients?: IIngredient[] | [];
 }
 
+export interface IBatchDetailsFormData {
+  actualBatchYield: number;
+  setWastePerItemIngridients: boolean;
+  notes?: string | null;
+}
+
 export interface IBatchDetailsRecipe {
   batchName: string;
   recipeName: string;
@@ -111,4 +117,12 @@ export type IBatchListProvided = {
   batchCreateEdit_onShowDialogSave: (id: string) => void;
   batchCreateEdit_onShowDialogUpdate: (id: string) => void;
   batchCreateEdit_onShowDialogCancel: (id: string) => void;
+
+  // batch details
+  // formdata
+  batchDetails_formData: IBatchDetailsFormData;
+  batchDetails_formValidation: globalThis.Ref<Validation>;
+  // batch detail dialog
+  batchDetails_onShowDialogCompleteBatch: () => void;
+  batchDetails_onCloseDialogCompleteBatch: () => void;
 };

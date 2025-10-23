@@ -1,0 +1,127 @@
+<script setup lang="ts">
+// components
+import WasteLog from './WasteLog.vue';
+// interfaces
+import type { IBatchListProvided } from '../interfaces';
+
+/**
+ * @description Inject all the data and methods what we need
+ */
+const {
+  batchDetails_onCloseDialogCompleteBatch,
+  batchDetails_values,
+  batchList_getClassOfBatchStatus,
+  batchDetails_formData,
+  batchDetails_formValidation,
+} = inject<IBatchListProvided>('batchDetails')!;
+</script>
+<template>
+  <AppBaseDialog
+    id="batch-details-complete-batch-dialog"
+    :closable="false"
+    @close="batchDetails_onCloseDialogCompleteBatch"
+  >
+    <template #header>
+      <header class="flex flex-col gap-2 border-b border-solid border-grayscale-20 pb-4">
+        <h1 class="font-semibold text-black text-lg">Complete Post Batch Record</h1>
+        <h6>
+          Confirm your final production results before posting this batch. Once submitted, the system will record
+          the actual yield, deduct ingredients, and add finished portions to your inventory.
+        </h6>
+        <section class="grid grid-cols-2 pt-4">
+          <div class="flex flex-col">
+            <label for="recipe-name"> Recipe </label>
+            <span class="font-medium">{{ batchDetails_values.recipe.recipeName }}</span>
+          </div>
+          <div class="flex flex-col">
+            <label for="recipe-name"> Batch Target Yield </label>
+            <span class="font-medium">{{ batchDetails_values.recipe.targetYield }}</span>
+          </div>
+          <div class="flex flex-col">
+            <label for="recipe-name"> Date </label>
+            <span class="font-medium">{{
+              useFormatDate(batchDetails_values.recipe.batchDate, 'dd/mm/yyyy')
+            }}</span>
+          </div>
+          <div class="flex flex-col">
+            <label for="recipe-name"> Status </label>
+            <span>
+              <PrimeVueChip
+                :class="[
+                  batchList_getClassOfBatchStatus(batchDetails_values.recipe.batchStatus),
+                  'text-xs font-normal py-1 px-1.5 w-fit',
+                ]"
+                :label="useTitleCaseWithSpaces(batchDetails_values.recipe.batchStatus)"
+              />
+            </span>
+          </div>
+        </section>
+      </header>
+    </template>
+
+    <template #content>
+      <main class="flex flex-col gap-4">
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+          is-name-as-label
+          label-for="actualBatchYield"
+          name="Actual Batch Yield"
+          spacing-bottom="mb-0"
+          class="w-1/2"
+          :validators="batchDetails_formValidation.actualBatchYield"
+        >
+          <PrimeVueInputNumber
+            v-model="batchDetails_formData.actualBatchYield"
+            class="w-full"
+            :class="{ ...classes }"
+          />
+        </AppBaseFormGroup>
+
+        <div class="flex items-center gap-2">
+          <PrimeVueCheckbox
+            v-model="batchDetails_formData.setWastePerItemIngridients"
+            name="setWastePerItemIngridients"
+            binary
+          />
+          <label for="setWastePerItemIngridients">Set waste per item ingredient</label>
+        </div>
+
+        <section v-if="batchDetails_formData.setWastePerItemIngridients">
+          <WasteLog />
+        </section>
+
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+          is-name-as-label
+          label-for="notes"
+          name="Notes"
+          spacing-bottom="mb-0"
+        >
+          <PrimeVueTextarea v-model="batchDetails_formData.notes" class="w-full" :class="{ ...classes }" />
+        </AppBaseFormGroup>
+      </main>
+    </template>
+
+    <template #footer>
+      <footer class="flex items-center justify-end w-full gap-4">
+        <PrimeVueButton
+          class="font-semibold text-base text-primary w-fit min-w-40 border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
+          label="Cancel"
+          severity="secondary"
+          variant="outlined"
+          @click="batchDetails_onCloseDialogCompleteBatch"
+        />
+
+        <PrimeVueButton
+          class="bg-primary border-none text-base py-[10px] w-fit min-w-40"
+          label="Complete & Post Batch"
+          type="button"
+          :disabled="batchDetails_formValidation.$invalid"
+          @click="batchDetails_onCloseDialogCompleteBatch"
+        />
+      </footer>
+    </template>
+  </AppBaseDialog>
+</template>

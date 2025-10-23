@@ -1,8 +1,29 @@
 <script setup lang="ts">
+// component dialog
+import { RouterLink } from 'vue-router';
+import CompletePostBatchRecord from '../components/CompletePostBatchRecord.vue';
 // services
 import { useBatchService } from '../services/prep-batch-management.service';
 
-const { batchList_getClassOfBatchStatus, batchDetailsIngridient_columns, batchDetails_values } = useBatchService();
+const {
+  batchList_getClassOfBatchStatus,
+  batchDetailsIngridient_columns,
+  batchDetails_values,
+  batchDetails_onShowDialogCompleteBatch,
+  batchDetails_onCloseDialogCompleteBatch,
+  batchDetails_formData,
+  batchDetails_formValidation,
+} = useBatchService();
+
+provide('batchDetails', {
+  batchList_getClassOfBatchStatus,
+  batchDetailsIngridient_columns,
+  batchDetails_values,
+  batchDetails_onShowDialogCompleteBatch,
+  batchDetails_onCloseDialogCompleteBatch,
+  batchDetails_formData,
+  batchDetails_formValidation,
+});
 </script>
 <template>
   <section class="flex flex-col gap-4">
@@ -115,6 +136,7 @@ const { batchList_getClassOfBatchStatus, batchDetailsIngridient_columns, batchDe
           </PrimeVueButton>
         </router-link>
         <PrimeVueButton
+        v-if="batchDetails_values.recipe.batchStatus !== 'posted'"
           :label="
             batchDetails_values.recipe.batchStatus === 'planned'
               ? 'Start Cooking'
@@ -123,18 +145,29 @@ const { batchList_getClassOfBatchStatus, batchDetailsIngridient_columns, batchDe
                 : ''
           "
           class="bg-primary border-primary-border text-white"
+          @click="
+            batchDetails_values.recipe.batchStatus === 'planned'
+              ? batchDetails_onShowDialogCompleteBatch()
+              : useTitleCaseWithSpaces(batchDetails_values.recipe.batchStatus) === 'In Progress'
+                ? batchDetails_onShowDialogCompleteBatch()
+                : batchDetails_onShowDialogCompleteBatch()
+          "
         />
       </div>
 
-      <PrimeVueButton
-        variant="text"
-        class="text-error-main hover:bg-error-background"
-        label="Cancel Batch Cooking"
-      >
-        <template #icon>
-          <AppBaseSvg name="close-circle-red" color="text-error-main" class="!w-4 !h-4" />
-        </template>
-      </PrimeVueButton>
+      <Router-link v-if="batchDetails_values.recipe.batchStatus !== 'posted'" :to="{ name: 'prep-batch-management.index' }">
+        <PrimeVueButton
+          variant="text"
+          class="text-error-main hover:bg-error-background"
+          label="Cancel Batch Cooking"
+        >
+          <template #icon>
+            <AppBaseSvg name="close-circle-red" color="text-error-main" class="!w-4 !h-4" />
+          </template>
+        </PrimeVueButton>
+      </Router-link>
     </footer>
   </section>
+
+  <CompletePostBatchRecord />
 </template>

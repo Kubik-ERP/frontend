@@ -7,7 +7,7 @@ import {
 } from '../constants';
 
 // type
-import type { IBatchListProvided, IBatchFormData, IMenuRecipe } from '../interfaces';
+import type { IBatchListProvided, IBatchFormData, IMenuRecipe, IBatchDetailsFormData } from '../interfaces';
 import type { IMenuRecipeListQueryParams } from '@/modules/menu-recipe/interfaces';
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
@@ -21,6 +21,23 @@ export const useBatchService = (): IBatchListProvided => {
   const store = useBatchStore();
   const { menuRecipe_lists, menuRecipeList_isLoading, menuRecipe_ingredients } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
+
+  const batchDetails_formData = reactive<IBatchDetailsFormData>({
+    actualBatchYield: 0,
+    setWastePerItemIngridients: false,
+    notes: '',
+  });
+
+  const batchDetails_formRules = computed(() => ({
+    actualBatchYield: {
+      required,
+    },
+    
+  }));
+
+  const batchDetails_formValidation = useVuelidate(batchDetails_formRules, batchDetails_formData, {
+    $autoDirty: true,
+  });
 
   const batch_formData = reactive<IBatchFormData>({
     recipe: {
@@ -219,7 +236,8 @@ export const useBatchService = (): IBatchListProvided => {
 
     const currentDate = new Date();
     const batchDate = new Date(batch_formData.batchDate);
-    const sameDate = currentDate.getFullYear() === batchDate.getFullYear() &&
+    const sameDate =
+      currentDate.getFullYear() === batchDate.getFullYear() &&
       currentDate.getMonth() === batchDate.getMonth() &&
       currentDate.getDate() === batchDate.getDate();
 
@@ -235,11 +253,11 @@ export const useBatchService = (): IBatchListProvided => {
   };
 
   const batchCreateEdit_startCookingTitle = () => {
-    const startBefore = 'Are you sure want to start cooking early?'
+    const startBefore = 'Are you sure want to start cooking early?';
 
-    const startNow = 'Are you sure want to start batch cooking?'
+    const startNow = 'Are you sure want to start batch cooking?';
 
-    const startAfter = 'Are you sure want to start batch cooking?'
+    const startAfter = 'Are you sure want to start batch cooking?';
 
     let title;
 
@@ -339,6 +357,15 @@ export const useBatchService = (): IBatchListProvided => {
     eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
   };
 
+  const batchDetails_onShowDialogCompleteBatch = () => {
+    console.log('batchDetails_onShowDialogCompleteBatch');
+    eventBus.emit('AppBaseDialog', { id: 'batch-details-complete-batch-dialog', isOpen: true });
+  };
+
+  const batchDetails_onCloseDialogCompleteBatch = () => {
+    eventBus.emit('AppBaseDialog', { id: 'batch-details-complete-batch-dialog', isOpen: false });
+  };
+
   return {
     // columns
     batchList_columns: BATCH_LIST_COLUMNS,
@@ -365,5 +392,13 @@ export const useBatchService = (): IBatchListProvided => {
     batchCreateEdit_onShowDialogSave,
     batchCreateEdit_onShowDialogUpdate,
     batchCreateEdit_onShowDialogCancel,
+
+    // batch details
+    // formdata
+    batchDetails_formData,
+    batchDetails_formValidation,
+    // batch details dialog
+    batchDetails_onShowDialogCompleteBatch,
+    batchDetails_onCloseDialogCompleteBatch,
   };
 };
