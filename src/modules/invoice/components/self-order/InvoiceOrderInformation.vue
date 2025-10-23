@@ -23,11 +23,11 @@ const orderTypeLabel = computed(() => {
     <div class="grid grid-cols-2 gap-2 w-full">
       <div class="flex flex-col gap-1">
         <span class="text-text-disabled text-sm">Customer Name</span>
-        <span class="text-xs">{{ invoice_invoiceData?.data?.customer.name || '-' }}</span>
+        <span class="text-xs">{{ invoice_invoiceData?.data?.customer?.name ?? '-' }}</span>
       </div>
       <div class="flex flex-col gap-1">
         <span class="text-text-disabled text-sm">Table No.</span>
-        <span class="text-xs">{{ invoice_invoiceData?.data?.tableCode || '-' }}</span>
+        <span class="text-xs">{{ invoice_invoiceData?.data?.tableCode ?? '-' }}</span>
       </div>
       <div class="flex flex-col gap-1">
         <span class="text-text-disabled text-sm">Order Type</span>
