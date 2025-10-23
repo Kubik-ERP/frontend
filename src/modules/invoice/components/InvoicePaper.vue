@@ -70,7 +70,7 @@ defineExpose({ invoiceRef, kitchenRef, tableRef, print, download });
       >
         <PrimeVueTabList
           unstyled
-          class="flex cursor-pointer mb-6 w-fit items-center justify-center p-2 bg-secondary-background rounded-md"
+          class="flex cursor-pointer mb-6 w-fit items-center justify-center p-2 bg-secondary/10 rounded-md"
         >
           <PrimeVueTab
             v-for="(item, index) in filteredTabs"
@@ -80,8 +80,8 @@ defineExpose({ invoiceRef, kitchenRef, tableRef, print, download });
             :class="[
               'p-2 cursor-pointer rounded-md',
               invoice_activeInvoice === item.id
-                ? 'bg-[#64C9B1] text-white font-semibold'
-                : 'text-secondary-hover hover:bg-secondary/20',
+                ? 'bg-primary text-white font-semibold'
+                : 'text-black hover:bg-secondary/20',
             ]"
             >{{ item.name }}</PrimeVueTab
           >

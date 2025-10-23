@@ -191,7 +191,7 @@ const hasPermission = rbac.hasPermission('edit_invoice');
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
-                  <AppBaseSvg name="edit" class="h-4 w-4" />
+                  <AppBaseSvg name="edit" class="filter-primary-color h-4 w-4" />
                   <span class="font-semibold text-primary text-sm">Edit Order</span>
                 </section>
               </template>
@@ -230,7 +230,7 @@ const hasPermission = rbac.hasPermission('edit_invoice');
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg
                 :name="invoice_invoiceData.data.paymentStatus !== 'unpaid' ? 'cash' : 'cash-white'"
-                class="!w-6 !h-6"
+                class="w-6 h-6"
               />
               <span class="font-semibold text-white text-sm">Pay Now</span>
             </section>
@@ -251,7 +251,7 @@ const hasPermission = rbac.hasPermission('edit_invoice');
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg
                 :name="invoice_invoiceData.data.paymentStatus !== 'unpaid' ? 'printer' : 'printer-primary'"
-                class="!w-6 !h-6"
+                class="filter-primary-color w-6 h-6"
                 color="primary"
               />
               <span
@@ -267,7 +267,7 @@ const hasPermission = rbac.hasPermission('edit_invoice');
         </PrimeVueButton>
       </section>
 
-        <!-- change from print to download -->
+      <!-- change from print to download -->
 
       <section id="print-buttons" class="flex flex-col items-center gap-4 w-full">
         <PrimeVueButton
@@ -309,9 +309,9 @@ const hasPermission = rbac.hasPermission('edit_invoice');
         >
           <section
             id="box-icon"
-            class="bg-primary-background flex items-center justify-center p-2 rounded-full w-10 h-10"
+            class="bg-primary flex items-center justify-center p-2 rounded-full w-10 h-10 opacity-80"
           >
-            <AppBaseSvg name="link" class="!w-6 !h-6" />
+            <AppBaseSvg name="link" class="filter-white-color w-6 h-6" />
           </section>
 
           <span class="font-normal text-grayscale-70 text-sm"> Copy Link </span>
@@ -325,9 +325,9 @@ const hasPermission = rbac.hasPermission('edit_invoice');
         >
           <section
             id="box-icon"
-            class="bg-primary-background flex items-center justify-center p-2 rounded-full w-10 h-10"
+            class="bg-primary opacity-80 flex items-center justify-center p-2 rounded-full w-10 h-10"
           >
-            <AppBaseSvg name="mail" class="!w-6 !h-6" />
+            <AppBaseSvg name="mail" class="filter-white-color w-6 h-6" />
           </section>
 
           <span class="font-normal text-grayscale-70 text-sm"> Email </span>
@@ -340,9 +340,9 @@ const hasPermission = rbac.hasPermission('edit_invoice');
         >
           <section
             id="box-icon"
-            class="bg-primary-background flex items-center justify-center p-2 rounded-full w-10 h-10"
+            class="bg-primary opacity-80 flex items-center justify-center p-2 rounded-full w-10 h-10"
           >
-            <AppBaseSvg name="whatsapp" class="!w-6 !h-6" />
+            <AppBaseSvg name="whatsapp" class="filter-white-color w-6 h-6" />
           </section>
 
           <span class="font-normal text-grayscale-70 text-sm"> Whatsapp </span>

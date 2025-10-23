@@ -222,6 +222,10 @@ span.p-datatable-column-title {
 }
 
 /* aproksimasi warna #F3631D lewat chain filter (nilai perkiraan) */
+.filter-black-color {
+  filter: brightness(0);
+}
+
 .filter-primary-color {
   filter: invert(48%) sepia(64%) saturate(530%) hue-rotate(333deg) brightness(94%) contrast(95%);
 }

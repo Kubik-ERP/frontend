@@ -11,7 +11,7 @@ const {
   outletList_onNavigateToCreateStore,
   outletList_onSelectOutlet,
   outletList_selectedOutlet,
-} = inject<IOutletListProvided>('outletList')!;;
+} = inject<IOutletListProvided>('outletList')!;
 </script>
 
 <template>
@@ -20,7 +20,7 @@ const {
       v-for="(outlet, outletIndex) in outletList_lists.items"
       id="outlet"
       :key="`outlet-${outletIndex}`"
-      class="col-span-5 lg:col-span-2 relative inset-0 z-0 flex flex-col items-center gap-4 p-2 rounded-lg cursor-pointer basic-smooth-animation hover:bg-primary-background hover:[&>a]:opacity-100 px-4 py-6"
+      class="col-span-5 lg:col-span-2 relative inset-0 z-0 flex flex-col items-center gap-4 p-2 rounded-lg cursor-pointer basic-smooth-animation hover:bg-secondary/10 hover:[&>a]:opacity-100 px-4 py-6"
       :class="outletList_dynamicClassOfSelectedOutlet(outlet)"
       @click="outletList_onSelectOutlet(outlet)"
     >
@@ -53,18 +53,18 @@ const {
     </section>
 
     <section
-      class="col-span-5 lg:col-span-2 relative inset-0 z-0 flex flex-col items-center justify-center gap-4 cursor-pointer basic-smooth-animation hover:bg-primary-background hover:[&>#box-outlet]:!bg-white py-4"
+      class="col-span-5 lg:col-span-2 relative inset-0 z-0 flex flex-col items-center justify-center gap-4 cursor-pointer basic-smooth-animation hover:bg-secondary/10 hover:[&>#box-outlet]:!bg-white py-4"
       @click="outletList_onNavigateToCreateStore"
     >
-      <section id="box-outlet" class="basic-smooth-animation bg-primary-background p-5 rounded-full">
+      <section id="box-outlet" class="basic-smooth-animation bg-white p-5 rounded-full">
         <AppBaseSvg name="store" class="w-6 h-6" />
       </section>
 
       <PrimeVueButton class="bg-transparent border-none w-full cursor-pointer" unstyled severity="secondary">
         <template #default>
           <section id="content" class="flex items-center justify-center gap-2">
-            <AppBaseSvg name="plus-line" class="w-4 h-4 filter-primary-color" />
-            <span class="font-semibold text-primary text-sm">Add Store</span>
+            <AppBaseSvg name="plus-line" class="w-4 h-4 filter-black-color" />
+            <span class="font-semibold text-black text-sm">Add Store</span>
           </section>
         </template>
       </PrimeVueButton>

@@ -148,12 +148,12 @@ export const useMenuRecipeStore = defineStore('menu-recipe', {
     },
 
     /**
-     * @description Handle fetch api menu recipe - edit
+     * @description Handle fetch api menu recipe - update
      * @url /recipes/:id
      * @method PUT
      * @access private
      */
-    async menuRecipe_edit(
+    async menuRecipe_update(
       menuRecipeId: string,
       payload: IMenuRecipeCreateEditFormPayload,
       requestConfigurations: AxiosRequestConfig,
