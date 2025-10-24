@@ -28,7 +28,7 @@ const { kitchenQueue_invoices, kitchenQueue_listTabs } = inject<IKitchenQueuePro
     <section id="kitchen-queue-tab-panel" class="absolute left-1/2 transform -translate-x-1/2">
       <PrimeVueTabList
         unstyled
-        class="flex cursor-pointer w-full max-w-md items-center justify-center p-2 bg-secondary-background rounded-xl"
+        class="flex cursor-pointer w-full max-w-md items-center justify-center p-2 bg-secondary rounded-xl"
       >
         <PrimeVueTab
           unstyled
@@ -36,7 +36,7 @@ const { kitchenQueue_invoices, kitchenQueue_listTabs } = inject<IKitchenQueuePro
           :class="[
             'py-2 px-12 mx-2 cursor-pointer rounded-xl text-[10px] lg:text-base font-semibold',
             kitchenQueue_listTabs === 'orders'
-              ? 'bg-[#64C9B1] text-white'
+              ? 'bg-primary text-white'
               : 'text-secondary-hover hover:bg-secondary/20',
           ]"
         >

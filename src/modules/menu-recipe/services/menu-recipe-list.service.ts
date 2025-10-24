@@ -19,8 +19,8 @@ export const useMenuRecipeListService = (): IMenuRecipeListProvided => {
    * @description Injected variables
    */
   const store = useMenuRecipeStore(); // Instance of the store
-  const { menuRecipe_isLoading, menuRecipe_lists } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
+  const { menuRecipe_isLoading, menuRecipe_lists } = storeToRefs(store);
 
   /**
    * @description Reactive data binding
@@ -73,7 +73,6 @@ export const useMenuRecipeListService = (): IMenuRecipeListProvided => {
    * @description Handle business logic for showing pop up confirmation delete recipe
    */
   const menuRecipeList_onShowDialogDelete = (id: string) => {
-    console.log(id);
     const argsEventEmitter: IPropsDialogConfirmation = {
       id: 'menu-recipe-list-dialog-delete',
       description: `

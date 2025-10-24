@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Constants
+import { APP_BASE_URL } from '@/app/constants';
+
 // Interfaces
 import type { IAccountStoreTableConfigurationProvided } from '../../interfaces';
 
@@ -27,6 +30,13 @@ const {
   accountStoreTableConfiguration_onShowDialogEnableQrCode,
   accountStoreTableConfiguration_onSubmitFormAddTable,
 } = inject<IAccountStoreTableConfigurationProvided>('accountStoreTableConfiguration')!;
+
+const generateUrl = computed(() => {
+  return `${APP_BASE_URL}/self-order/login?storeId=${encodeURIComponent(outlet_selectedOutletOnAccountPage.value!.id)}&floorName=${encodeURIComponent(accountStoreTableConfiguration_formDataOfAddTable.floorName)}&tablesName=${encodeURIComponent(accountStoreTableConfiguration_formDataOfAddTable.name)}`;
+});
+const encodeUrl = computed(() => {
+  return encodeURIComponent(generateUrl.value);
+});
 </script>
 
 <template>
@@ -129,9 +139,7 @@ const {
             <span class="font-normal text-grayscale-70 text-xs"> Table QR Code </span>
 
             <div class="flex items-center gap-2">
-              <Qrcode
-                :value="`${APP_BASE_URL}/self-order/login?storeId=${outlet_selectedOutletOnAccountPage?.id}&floorName=${accountStoreTableConfiguration_formDataOfAddTable.floorName}&tablesName=${accountStoreTableConfiguration_formDataOfAddTable.name}`"
-              />
+              <Qrcode :value="encodeUrl" />
 
               <PrimeVueButton
                 class="border border-solid border-error-hover w-fit px-4 py-3"

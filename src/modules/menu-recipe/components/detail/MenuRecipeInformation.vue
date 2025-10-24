@@ -33,7 +33,7 @@ const { menuRecipeDetail_data } = inject('menuRecipeDetail') as IMenuRecipeDetai
         <h6 class="font-medium text-sm text-gray-700">Link to Product</h6>
 
         <p class="text-sm text-text-primary">
-          {{ menuRecipeDetail_data?.product_id || '-' }}
+          {{ menuRecipeDetail_data?.products?.name || '-' }}
         </p>
       </section>
 
@@ -41,21 +41,23 @@ const { menuRecipeDetail_data } = inject('menuRecipeDetail') as IMenuRecipeDetai
         <section id="product-details" class="col-span-full lg:col-span-6 flex flex-col gap-2">
           <h6 class="font-medium text-sm text-black">Product Details</h6>
 
-          <table class="min-w-full table-auto text-left text-sm text-black">
+          <table class="min-w-full table-auto text-left text-sm">
             <tbody>
               <tr>
-                <td class="px-0 pb-1">Product Name</td>
-                <td class="px-0 pb-1">:</td>
-                <td class="px-0 pb-1">-</td>
+                <td class="px-0 pb-1 text-text-disabled max-w-8">Product Name</td>
+                <td class="px-0 pb-1 text-text-disabled">:</td>
+                <td class="px-0 pb-1">
+                  {{ menuRecipeDetail_data?.products.name || '-' }}
+                </td>
               </tr>
 
               <tr>
-                <td class="px-0 pb-1">Price</td>
-                <td class="px-0 pb-1">:</td>
+                <td class="px-0 pb-1 text-text-disabled max-w-8">Price</td>
+                <td class="px-0 pb-1 text-text-disabled">:</td>
                 <td class="px-0 pb-1">
                   {{
                     useCurrencyFormat({
-                      data: 0,
+                      data: menuRecipeDetail_data?.products.price || 0,
                     })
                   }}
                 </td>
