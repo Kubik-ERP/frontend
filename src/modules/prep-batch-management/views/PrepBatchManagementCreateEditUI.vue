@@ -186,7 +186,13 @@ onMounted(async () => {
           :validators="batch_formValidation.targetYield"
         >
           <PrimeVueIconField>
-            <PrimeVueInputNumber v-model="batch_formData.targetYield" class="w-full" :class="{ ...classes }" />
+            <PrimeVueInputNumber
+              v-model="batch_formData.targetYield"
+              class="w-full"
+              :class="{ ...classes }"
+              :min="1"
+              :disabled="batch_formData.recipe.recipeName === ''"
+            />
             <PrimeVueInputIcon>
               <template #default>
                 <span>Portion</span>
@@ -254,6 +260,12 @@ onMounted(async () => {
                   {{ data.inventory_item.name }}
                 </span>
               </template>
+              <template v-else-if="column.value === 'qty'">
+                <span class="flex flex-col text-sm">
+                  <p class="text-text-primary">{{ data.qty * batch_formData.targetYield }}</p>
+                  <p class="text-text-disabled">Base : {{ data.qty }}</p>
+                </span>
+              </template>
               <template v-else-if="column.value === 'UOM'">
                 <span class="text-sm text-text-primary">
                   {{ data.uom }}
@@ -262,6 +274,14 @@ onMounted(async () => {
               <template v-else-if="column.value === 'notes'">
                 <span class="text-sm text-text-primary">
                   {{ data.notes || '-' }}
+                </span>
+              </template>
+              <template v-else-if="column.value === 'cost'">
+                <span class="flex flex-col text-sm">
+                  <p class="text-text-primary">
+                    {{ useCurrencyFormat({ data: data.cost * batch_formData.targetYield }) }}
+                  </p>
+                  <p class="text-text-disabled">Base : {{ useCurrencyFormat({ data: data.cost }) }}</p>
                 </span>
               </template>
               <template v-else>
@@ -278,7 +298,7 @@ onMounted(async () => {
               variant="outlined"
               :label="isEdit ? 'Update' : 'Save Draft'"
               @click="
-                isEdit ? batchCreateEdit_onShowDialogUpdate('batch1') : batchCreateEdit_onShowDialogSave('batch1')
+                isEdit ? batchCreateEdit_onShowDialogUpdate('batch1') : batchCreateEdit_onShowDialogSave()
               "
             />
             <PrimeVueButton
@@ -312,7 +332,9 @@ onMounted(async () => {
             </td>
             <td class="">
               <span class="">{{
-                useCurrencyFormat({ data: batch_formData.recipe.costPerPortion || 0 }) || '-'
+                useCurrencyFormat({
+                  data: batch_formData.recipe.costPerPortion * batch_formData.targetYield || 0,
+                }) || '-'
               }}</span>
             </td>
           </tr>
@@ -323,7 +345,7 @@ onMounted(async () => {
             <td class="">
               <span class="">{{
                 useCurrencyFormat({
-                  data: batch_formData.recipe.costPerPortion * batch_formData.targetYield || 0,
+                  data: batch_formData.recipe.costPerPortion || 0,
                 }) || '-'
               }}</span>
             </td>

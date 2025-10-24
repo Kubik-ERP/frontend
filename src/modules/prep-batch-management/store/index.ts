@@ -1,5 +1,6 @@
 // Constants
 import { MENU_RECIPE_BASE_ENDPOINT } from '@/modules/menu-recipe/constants';
+import { BATCH_BASE_ENDPOINT } from '../constants';
 // interfaces
 import type {
   IMenuRecipeListQueryParams,
@@ -7,7 +8,7 @@ import type {
   IMenuRecipeDetailResponse,
 } from '@/modules/menu-recipe/interfaces';
 import type { AxiosRequestConfig } from 'axios';
-import type { IBatchStateStore } from '../interfaces';
+import type { IBatchStateStore, IBatchFormData } from '../interfaces';
 
 // plugins
 import httpClient from '@/plugins/axios';
@@ -28,6 +29,25 @@ export const useBatchStore = defineStore('batch', {
   }),
   getters: {},
   actions: {
+    async batch_create(payload: IBatchFormData, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+      const data = {
+        recipeId : payload.recipe.id,
+        date: useFormatDateLocal(payload.batchDate),
+        batchTargetYield: payload.targetYield,
+        notes: payload.notes,
+        batchWaste: payload.waste
+      }
+      try {
+        const response = await httpClient.post(BATCH_BASE_ENDPOINT, data, {
+          ...requestConfigurations,
+        });
+        return response.data;
+      } catch (error: unknown) {
+        if (error instanceof Error) return Promise.reject(error);
+        else return Promise.reject(new Error(String(error)));
+      }
+    },
+
     /**
      * @description Handle fetch api menu recipe - list
      * @url /recipes?query

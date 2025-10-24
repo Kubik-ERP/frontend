@@ -32,7 +32,6 @@ export const useBatchService = (): IBatchListProvided => {
     actualBatchYield: {
       required,
     },
-    
   }));
 
   const batchDetails_formValidation = useVuelidate(batchDetails_formRules, batchDetails_formData, {
@@ -45,7 +44,7 @@ export const useBatchService = (): IBatchListProvided => {
       recipeName: '',
     } as IMenuRecipe,
     batchDate: new Date(),
-    targetYield: 0,
+    targetYield: 1,
     waste: 0,
     notes: '',
     ingredients: [],
@@ -297,8 +296,10 @@ export const useBatchService = (): IBatchListProvided => {
     eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
   };
 
-  const batchCreateEdit_onShowDialogSave = (id: string) => {
-    console.log(id);
+  const batchCreateEdit_onShowDialogSave = () => {
+    
+    
+
     const argsEventEmitter: IPropsDialogConfirmation = {
       id: 'batch-create-edit-save-dialog-confirmation',
       description: `
@@ -312,6 +313,7 @@ export const useBatchService = (): IBatchListProvided => {
       isUsingButtonSecondary: true,
       isUsingHtmlTagOnDescription: true,
       onClickButtonPrimary: () => {
+        batchCreateEdit_onSaveDraft();
         eventBus.emit('AppBaseDialog', { id: 'batch-create-edit-save-dialog-confirmation', isOpen: false });
       },
       onClickButtonSecondary: () => {
@@ -366,6 +368,36 @@ export const useBatchService = (): IBatchListProvided => {
     eventBus.emit('AppBaseDialog', { id: 'batch-details-complete-batch-dialog', isOpen: false });
   };
 
+  const batchCreateEdit_onSaveDraft = async () => {
+
+    batchDetails_formValidation.value.$touch();
+
+    if (batchDetails_formValidation.value.$invalid) {
+      return;
+    }
+
+    console.log('batchCreateEdit_onSaveDraft:' + batchDetails_formValidation.value.$invalid);
+
+    try {
+      await store.batch_create(batch_formData, {
+        ...httpAbort_registerAbort('MENU_RECIPE_INGREDIENTS_REQUEST'),
+      });
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: `Batch saved as draft created.`,
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
   return {
     // columns
     batchList_columns: BATCH_LIST_COLUMNS,
@@ -400,5 +432,7 @@ export const useBatchService = (): IBatchListProvided => {
     // batch details dialog
     batchDetails_onShowDialogCompleteBatch,
     batchDetails_onCloseDialogCompleteBatch,
+    // create edit batch methods
+    batchCreateEdit_onSaveDraft,
   };
 };

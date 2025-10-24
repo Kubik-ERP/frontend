@@ -1,1 +1,1 @@
-export const BATCH_BASE_ENDPOINT = '/batch';
+export const BATCH_BASE_ENDPOINT = '/batch-recipe';
