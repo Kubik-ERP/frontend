@@ -21,93 +21,90 @@ const showImageUrl = (picture: string | null) => {
 <template>
   <section
     id="cashier-summary-product-list"
-    class="flex flex-col overflow-y-scroll flex-grow border-b-grayscale-10 border-b-2 p-4 border-t-grayscale-10 justify-center items-center h-![5000px]"
-    :class="cashierProduct_selectedProduct.length === 0 ? 'justify-center' : 'justify-start'"
+    class="flex flex-col overflow-y-scroll flex-grow border-b-grayscale-10 border-b-2 border-t-grayscale-10 p-4"
+    :class="cashierProduct_selectedProduct.length === 0 ? 'justify-center items-center' : ''"
   >
-    <div v-if="cashierProduct_selectedProduct.length === 0" class="">
+    <!-- Empty State -->
+    <div v-if="cashierProduct_selectedProduct.length === 0" class="text-center">
       <span class="text-grayscale-20">{{ useLocalization('cashier.orderSummary.noItemSelected') }}</span>
     </div>
-    <div v-else class="flex flex-col w-full justify-center items-center">
-      <template v-for="(item, key) in cashierProduct_selectedProduct">
-        <div
-          v-if="item.type !== 'redeem'"
-          :key="key"
-          class="grid grid-cols-12 gap-4 w-full justify-items-center"
-          :class="{ 'mb-4': key !== cashierProduct_selectedProduct.length - 1 }"
-        >
-        <button
-          class="cursor-pointer w-min h-min p-2 rounded-full bg-error-background"
-          :disabled="cashierOrderSummary_calculateEstimation.isLoading"
-          @click="cashierProduct_selectedProduct.splice(key, 1)"
-        >
-          <AppBaseSvg name="trash" class="!h-4 !w-4" />
-        </button>
-        <div class="col-span-6 xl:col-span-7 flex flex-col gap-4">
-          <div class="flex gap-4">
-            <AppBaseImage
-              :src="item.product?.pictureUrl == null ? null : showImageUrl(item.product?.pictureUrl)"
-              alt="product"
-              class="w-10 h-10 object-cover"
-            />
 
-            <div class="flex flex-col">
-              <span class="text-sm font-semibold">{{ item.product?.name }}</span>
-              <div class="flex flex-col w-fit">
-                <span class="text-xs">{{
-                  useCurrencyFormat({
-                    data: item.product?.discountPrice ?? item.product?.price ?? 0,
-                  })
-                }}</span>
-                <span
-                  v-if="item.product?.discountPrice && item.product?.discountPrice < item.product?.price"
-                  class="text-text-disabled text-[10px] line-through text-right"
-                  >{{
+    <!-- Product List -->
+    <div v-else class="flex flex-col w-full gap-4">
+      <template v-for="(item, key) in cashierProduct_selectedProduct">
+        <div v-if="item.type !== 'redeem'" :key="key" class="flex flex-col gap-4">
+          <!-- Product Header: Delete Button + Product Info + Quantity Controls -->
+          <div class="flex items-start gap-3">
+            <!-- Delete Button -->
+            <button
+              class="flex-shrink-0 w-8 h-8 p-2 rounded-full bg-error-background hover:opacity-80 transition-opacity"
+              :disabled="cashierOrderSummary_calculateEstimation.isLoading"
+              @click="cashierProduct_selectedProduct.splice(key, 1)"
+            >
+              <AppBaseSvg name="trash" class="!h-4 !w-4" />
+            </button>
+
+            <!-- Product Info -->
+            <div class="flex-1 flex gap-3">
+              <AppBaseImage
+                :src="item.product?.pictureUrl == null ? null : showImageUrl(item.product?.pictureUrl)"
+                alt="product"
+                class="w-10 h-10 object-cover rounded flex-shrink-0"
+              />
+
+              <div class="flex-1 flex flex-col gap-1">
+                <span class="text-sm font-semibold line-clamp-2">{{ item.product?.name }}</span>
+                <div class="flex flex-col gap-0.5">
+                  <span class="text-xs font-medium">{{
                     useCurrencyFormat({
-                      data: item.product?.price,
+                      data: item.product?.discountPrice ?? item.product?.price ?? 0,
                     })
-                  }}</span
-                >
+                  }}</span>
+                  <span
+                    v-if="item.product?.discountPrice && item.product?.discountPrice < item.product?.price"
+                    class="text-text-disabled text-[10px] line-through"
+                    >{{
+                      useCurrencyFormat({
+                        data: item.product?.price,
+                      })
+                    }}</span
+                  >
+                </div>
               </div>
             </div>
+
+            <!-- Quantity Controls -->
+            <div class="flex-shrink-0 flex items-center gap-2">
+              <PrimeVueButton
+                type="button"
+                class="border border-primary text-primary px-3 h-8"
+                variant="outlined"
+                label="-"
+                :disabled="cashierOrderSummary_calculateEstimation.isLoading"
+                @click="item.quantity > 1 ? (item.quantity -= 1) : (item.quantity = 1)"
+              />
+              <PrimeVueInputNumber
+                v-model="item.quantity"
+                class="!w-12"
+                input-class="!w-12 !text-center text-sm"
+                :min="1"
+                :disabled="cashierOrderSummary_calculateEstimation.isLoading"
+              />
+              <PrimeVueButton
+                type="button"
+                class="border border-primary text-primary px-3 h-8"
+                variant="outlined"
+                label="+"
+                :disabled="cashierOrderSummary_calculateEstimation.isLoading"
+                @click="item.quantity += 1"
+              />
+            </div>
           </div>
-        </div>
-        <div class="col-span-5 xl:col-span-4">
-          <div class="flex items-center gap-2">
-            <PrimeVueButton
-              type="button"
-              class="border border-primary text-primary px-4"
-              variant="outlined"
-              label="-"
-              :disabled="cashierOrderSummary_calculateEstimation.isLoading"
-              @click="item.quantity > 1 ? (item.quantity -= 1) : (item.quantity = 1)"
-            />
-            <PrimeVueInputNumber
-              v-model="item.quantity"
-              class="!w-14"
-              input-class="!w-14 justify-items-center text-center"
-              :min="1"
-              :disabled="cashierOrderSummary_calculateEstimation.isLoading"
-            />
-            <PrimeVueButton
-              type="button"
-              class="border border-primary text-primary px-4"
-              variant="outlined"
-              label="+"
-              :disabled="cashierOrderSummary_calculateEstimation.isLoading"
-              @click="item.quantity += 1"
-            />
-          </div>
-        </div>
-        <button
-          class="w-min h-min p-2 rounded-full bg-error-background"
-          style="visibility: hidden"
-          :disabled="true"
-        >
-          <AppBaseSvg name="trash" class="!h-4 !w-4" />
-        </button>
-        <div class="col-start-2 col-end-13 justify-self-stretch self-start text-left">
-          <div class="flex flex-col gap-1 w-full">
-            <div v-if="item.variant.id">
+
+          <!-- Product Details Section -->
+          <div class="flex flex-col gap-3 ml-11 border-l border-grayscale-10 pl-3">
+            <!-- Variant Info -->
+            <div v-if="item.variant.id" class="flex flex-col gap-1">
               <p class="font-semibold text-xs text-text-disabled">
                 {{ useLocalization('cashier.mainSection.variant') }}
               </p>
@@ -123,55 +120,60 @@ const showImageUrl = (picture: string | null) => {
               </p>
             </div>
 
-            <section v-if="(item?.bundling?.products?.length || 0) > 0" id="list-variant">
-              <span class="font-semibold">{{ useLocalization('cashier.mainSection.products') }}</span>
+            <!-- Bundled Products -->
+            <section v-if="(item?.bundling?.products?.length || 0) > 0" class="flex flex-col gap-2">
+              <span class="font-semibold text-sm">{{ useLocalization('cashier.mainSection.products') }}</span>
 
-              <div class="border rounded-md border-grayscale-10 overflow-auto flex flex-col max-h-48 flex-grow">
+              <div class="border rounded-md border-grayscale-10 overflow-hidden">
                 <div
                   v-for="product in item.bundling?.products"
                   :key="product.product_id"
-                  class="flex justify-between w-full p-2"
+                  class="flex justify-between items-center w-full p-2 hover:bg-grayscale-5 transition-colors"
                 >
-                  <div class="flex items-center gap-2">
-                    <label :for="product.product_id">{{ product.name }}</label>
-                  </div>
+                  <label :for="product.product_id" class="text-sm cursor-pointer flex-1">
+                    {{ product.name }}
+                  </label>
 
-                  <span class="text-sm text-text-disabled">{{
+                  <span class="text-sm text-text-disabled ml-2 flex-shrink-0">{{
                     product.price == 0 ? 'Free' : `Rp ${product.price}`
                   }}</span>
                 </div>
               </div>
             </section>
 
-            <div v-if="item.notes">
+            <!-- Notes Section -->
+            <div v-if="item.notes" class="flex flex-col gap-1">
               <p class="font-semibold text-xs text-text-disabled">
                 {{ useLocalization('cashier.mainSection.notes') }}
               </p>
-              <p class="text-sm">{{ item.notes }}</p>
+              <p class="text-sm bg-grayscale-5 p-2 rounded">{{ item.notes }}</p>
             </div>
 
+            <!-- Add/Edit Notes Button -->
             <PrimeVueButton
+              type="button"
               variant="text"
-              class="w-fit"
+              class="w-fit px-0 hover:opacity-80"
               @click="
                 cashierOrderSummary_modalAddEditNotes.show = true;
                 cashierOrderSummary_modalAddEditNotes.item = key;
                 cashierOrderSummary_modalAddEditNotes.tempValue = item.notes;
               "
             >
-              <AppBaseSvg name="add-notes" class="h-4 w-4 filter-primary-color" />
-
-              <span class="font-semibold text-primary text-sm">{{
-                item.notes ? useLocalization('cashier.edit') : useLocalization('cashier.mainSection.addNotes')
-              }}</span>
+              <div class="flex items-center gap-2">
+                <AppBaseSvg name="add-notes" class="h-4 w-4 filter-primary-color" />
+                <span class="font-semibold text-primary text-sm">{{
+                  item.notes ? useLocalization('cashier.edit') : useLocalization('cashier.mainSection.addNotes')
+                }}</span>
+              </div>
             </PrimeVueButton>
           </div>
-        </div>
 
-        <div
-          v-if="key !== cashierProduct_selectedProduct.length - 1"
-          class="border col-span-12 border-dashed border-b-2 border-grayscale-10 w-full"
-        ></div>
+          <!-- Divider between items -->
+          <div
+            v-if="key !== cashierProduct_selectedProduct.length - 1"
+            class="border-b border-dashed border-grayscale-10 mt-2"
+          ></div>
         </div>
       </template>
     </div>
