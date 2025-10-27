@@ -172,11 +172,16 @@ const { authentication_userData } = storeToRefs(authenticationStore);
           <td colspan="2" class="font-normal text-black text-sm text-right py-2">-50.000</td>
         </tr>
 
-     
-          <tr v-if="props.isShowLoyaltyPointsUsed">
+        <tr v-if="props.isShowLoyaltyPointsUsed">
           <td class="font-normal text-black text-sm py-2">Loyalty Point</td>
           <td class="font-normal text-black text-sm text-center py-2"></td>
           <td colspan="2" class="font-normal text-black text-sm text-right py-2">-4 pts</td>
+        </tr>
+
+        <tr v-if="props.isShowLoyaltyPointsUsed">
+          <td class="pl-6 font-normal text-black text-sm py-2 italic">Benefit Name</td>
+          <td class="font-normal text-black text-sm text-center py-2"></td>
+          <td colspan="2" class="font-normal text-black text-sm text-right py-2 italic">Rp 10,000 Off</td>
         </tr>
 
         <tr v-if="props.isShowTotalPointsAccumulated">

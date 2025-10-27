@@ -17,7 +17,6 @@ const togglePopover = (id: string, event: Event) => {
  * @description Inject all the data and methods what we need
  */
 const {
-  menuRecipeCreateEdit_fetchInventoryItems,
   menuRecipeCreateEdit_formDataOfIngredientItem,
   menuRecipeCreateEdit_formValidationsOfIngredientItem,
   menuRecipeCreateEdit_isLoadingInventoryItems,
@@ -33,13 +32,6 @@ const {
   menuRecipeCreateEdit_onShowDialogSaveIngredients,
   menuRecipeCreateEdit_isEditingIngredientItem,
 } = inject('menuRecipeCreateEdit') as IMenuRecipeCreateEditProvided;
-
-/**
- * @description Fetch inventory items when component is mounted
- */
-onMounted(() => {
-  menuRecipeCreateEdit_fetchInventoryItems();
-});
 </script>
 
 <template>
@@ -138,7 +130,7 @@ onMounted(() => {
               <PrimeVueTextarea
                 id="notes"
                 v-model="menuRecipeCreateEdit_formDataOfIngredientItem.notes"
-                placeholder="Describe open register notes here"
+                placeholder="Describe any notes here..."
                 class="text-sm w-full"
                 rows="5"
               />

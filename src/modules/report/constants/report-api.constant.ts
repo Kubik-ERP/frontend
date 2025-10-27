@@ -5,3 +5,5 @@ export const REPORT_VOUCHER_ENDPOINT = `${REPORT_BASE_ENDPOINT}/voucher-status-r
 export const REPORT_CUSTOMER_ENDPOINT = `${REPORT_BASE_ENDPOINT}/customer-report`;
 // export const REPORT_BASE_FINANCIAL_ENDPOINT = `${REPORT_BASE_ENDPOINT}/financial`;
 export const REPORT_INVENTORY_ENDPOINT = `${REPORT_BASE_ENDPOINT}/inventory-valuation`;
+
+export const STAFF_MEMBER_BASE_ENDPOINT = '/users/staffs';
