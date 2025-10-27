@@ -22,6 +22,8 @@ export const useBatchService = (): IBatchListProvided => {
   const { menuRecipe_lists, menuRecipeList_isLoading, menuRecipe_ingredients } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
+  const router = useRouter();
+
   const batchDetails_formData = reactive<IBatchDetailsFormData>({
     actualBatchYield: 0,
     setWastePerItemIngridients: false,
@@ -43,6 +45,8 @@ export const useBatchService = (): IBatchListProvided => {
       id: '',
       recipeName: '',
     } as IMenuRecipe,
+    recipeId: null,
+    recipeName: '',
     batchDate: new Date(),
     targetYield: 1,
     waste: 0,
@@ -51,7 +55,7 @@ export const useBatchService = (): IBatchListProvided => {
   });
 
   const batch_formRules = computed(() => ({
-    recipe: {
+    recipeId: {
       required,
     },
     batchDate: {
@@ -68,6 +72,20 @@ export const useBatchService = (): IBatchListProvided => {
   const batch_formValidation = useVuelidate(batch_formRules, batch_formData, {
     $autoDirty: true,
   });
+
+  const batch_formData_onClear = () => {
+    batch_formData.recipe = {
+      id: '',
+      recipeName: '',
+    } as IMenuRecipe;
+    batch_formData.batchDate = new Date();
+    batch_formData.targetYield = 1;
+    batch_formData.waste = 0;
+    batch_formData.notes = '';
+    batch_formData.ingredients = [];
+
+    batch_formValidation.value.$reset();
+  };
 
   const menuRecipeList_queryParams: IMenuRecipeListQueryParams = reactive({
     page: 1,
@@ -86,6 +104,7 @@ export const useBatchService = (): IBatchListProvided => {
   );
 
   const menuRecipeList_onSelectedRecipe = (recipe: IMenuRecipe) => {
+    batch_formData.recipeId = recipe.id;
     batch_formData.recipe = recipe;
 
     menuRecipe_fetchIngridients(recipe.id);
@@ -297,9 +316,6 @@ export const useBatchService = (): IBatchListProvided => {
   };
 
   const batchCreateEdit_onShowDialogSave = () => {
-    
-    
-
     const argsEventEmitter: IPropsDialogConfirmation = {
       id: 'batch-create-edit-save-dialog-confirmation',
       description: `
@@ -369,14 +385,12 @@ export const useBatchService = (): IBatchListProvided => {
   };
 
   const batchCreateEdit_onSaveDraft = async () => {
+    batch_formValidation.value.$touch();
 
-    batchDetails_formValidation.value.$touch();
-
-    if (batchDetails_formValidation.value.$invalid) {
+    if (batch_formValidation.value.$invalid) {
+      console.log('batchCreateEdit_onSaveDraft:' + batch_formValidation.value.$invalid);
       return;
     }
-
-    console.log('batchCreateEdit_onSaveDraft:' + batchDetails_formValidation.value.$invalid);
 
     try {
       await store.batch_create(batch_formData, {
@@ -389,6 +403,9 @@ export const useBatchService = (): IBatchListProvided => {
         position: EToastPosition.TOP_RIGHT,
       };
       eventBus.emit('AppBaseToast', argsEventEmitter);
+      batch_formData_onClear();
+
+      router.push({ name: 'prep-batch-management.index' });
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);

@@ -82,7 +82,7 @@ onMounted(async () => {
           label-for="recipe"
           name="Recipe"
           spacing-bottom="mb-0"
-          :validators="batch_formValidation.recipe"
+          :validators="batch_formValidation.recipeId"
         >
           <PrimeVueIconField>
             <PrimeVueAutoComplete
@@ -111,7 +111,7 @@ onMounted(async () => {
           </PrimeVueIconField>
 
           <PrimeVueButton
-            v-if="batch_formData.recipe.recipeName !== ''"
+            v-if="batch_formData.recipeId !== null"
             class="mt-2 text-xs"
             label="Clear"
             severity="secondary"
@@ -297,9 +297,7 @@ onMounted(async () => {
               class="min-w-40 border-primary-border text-primary"
               variant="outlined"
               :label="isEdit ? 'Update' : 'Save Draft'"
-              @click="
-                isEdit ? batchCreateEdit_onShowDialogUpdate('batch1') : batchCreateEdit_onShowDialogSave()
-              "
+              @click="isEdit ? batchCreateEdit_onShowDialogUpdate('batch1') : batchCreateEdit_onShowDialogSave()"
             />
             <PrimeVueButton
               class="min-w-40 border-primary-border text-white bg-primary"

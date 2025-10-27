@@ -27,6 +27,8 @@ export interface IIngredient {
   inventory_item: IInventoryItem;
 }
 export interface IBatchFormData {
+  recipeId : string | null;
+  recipeName : string;
   recipe: IMenuRecipe;
   batchDate: Date;
   targetYield: number;
