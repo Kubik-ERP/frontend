@@ -96,11 +96,11 @@ export const LIST_SIDEBAR_MENUS = [
             translationKey: 'app.menus.sales-report',
             path: '/report/sales-report',
           },
-          // {
-          //   name: 'Inventory Report',
-          //   translationKey: 'app.menus.inventory-report',
-          //   path: '/report/inventory-report',
-          // },
+          {
+            name: 'Inventory Report',
+            translationKey: 'app.menus.inventory-report',
+            path: '/report/inventory-report',
+          },
           // {
           //   name: 'Raw Material Report',
           //   path: '/report/raw-material-report',
@@ -207,6 +207,30 @@ export const LIST_SIDEBAR_MENUS = [
         ],
       },
       {
+        name: 'Recipe',
+        translationKey: 'app.menus.recipe',
+        iconName: 'recipe',
+        path: '/recipe',
+        isHaveSubMenus: true,
+        subMenus: [
+          {
+            name: 'Menu Recipe',
+            translationKey: 'app.menus.menu-recipe',
+            path: '/recipe/menu-recipe',
+          },
+          {
+            name: 'Prep & Batch Management',
+            translationKey: 'app.menus.prep-batch-management',
+            path: '/recipe/prep-batch-management',
+          },
+          {
+            name: 'Waste Log',
+            translationKey: 'app.menus.waste-log',
+            path: '/recipe/waste-log',
+          }
+        ],
+      },
+      {
         name: 'Marketing',
         translationKey: 'app.menus.marketing',
         iconName: 'marketing',
@@ -237,16 +261,16 @@ export const LIST_SIDEBAR_MENUS = [
             translationKey: 'app.menus.staff-members',
             path: '/staff/staff-member',
           },
-          {
-            name: 'Working Hours',
-            translationKey: 'app.menus.working-hours',
-            path: '/staff/working-hours',
-          },
-          {
-            name: 'Attendance',
-            translationKey: 'app.menus.attendance',
-            path: '/staff/attendance',
-          },
+          // {
+          //   name: 'Working Hours',
+          //   translationKey: 'app.menus.working-hours',
+          //   path: '/staff/working-hours',
+          // },
+          // {
+          //   name: 'Attendance',
+          //   translationKey: 'app.menus.attendance',
+          //   path: '/staff/attendance',
+          // },
           {
             name: 'User Permission',
             translationKey: 'app.menus.user-permission',

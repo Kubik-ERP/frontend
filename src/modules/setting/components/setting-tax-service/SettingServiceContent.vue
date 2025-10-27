@@ -47,7 +47,7 @@ const {
           </AppBaseFormGroup>
 
           <section id="tax-configuration" class="flex flex-col gap-2">
-            <h6 class="font-semibold text-sm text-black">Tax Configuration</h6>
+            <h6 class="font-semibold text-sm text-black">Service Charge Configuration</h6>
 
             <section id="tax-product-price" class="flex flex-col gap-2">
               <p class="font-normal text-sm text-black">Product price includes service charge</p>
@@ -73,7 +73,7 @@ const {
           </section>
 
           <PrimeVueButton
-            class="bg-blue-primary border-none text-sm py-[10px] w-40 mt-2"
+            class="bg-primary border-none text-sm py-[10px] w-40 mt-2"
             label="Save"
             type="submit"
             :disabled="settingTaxService_formValidationsOfService.$invalid"

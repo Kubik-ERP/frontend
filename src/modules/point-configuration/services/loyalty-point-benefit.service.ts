@@ -26,6 +26,7 @@ import { usePointConfigurationStore } from '../store';
 
 export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided => {
   const router = useRouter();
+  const route = useRoute();
   const store = usePointConfigurationStore();
   const {
     loyaltyPointBenefit_isLoading,
@@ -185,8 +186,6 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
       // Handle the case where data.discountFreeItems is an array of IFreeItems
     }
 
-    console.log(discountBenefit_formData);
-
     const argsEventEmitter: IPropsDialog = {
       id: 'loyalty-point-benefit-dialog-discount',
       isOpen: true,
@@ -236,6 +235,7 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
 
   const freeItemsBenefit_formValidations = useVuelidate(freeItemsBenefit_formRules, freeItemsBenefit_formData, {
     $autoDirty: true,
+    $scope: 'freeItemsBenefit',
   });
 
   const loyaltyPointBenefit_onSubmitDialogFreeItems = async (): Promise<void> => {
@@ -361,12 +361,69 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
     limit: 10,
   });
 
+  const loyaltyPointBenefit_fetchDeleteBenefit = async (id: string): Promise<void> => {
+    try {
+      await store.loyaltyPointBenefit_deleteBenefit(id, {
+        ...httpAbort_registerAbort('LOYALTY_POINT_BENEFIT_DELETE_BENEFIT_REQUEST'),
+      });
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Benefit has been deleted successfully.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    } finally {
+      await loyaltyPointBenefit_fetchList();
+    }
+  };
+
+  const loyaltyPointBenefit_onDelete = async (id: string): Promise<void> => {
+    const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'loyalty-point-benefit-delete-dialog-confirmation',
+      description: 'This action cannot be undone, and the Benefit you remove will be deleted from the system',
+      iconName: 'delete-polygon',
+      isOpen: true,
+      isUsingButtonSecondary: true,
+      onClickButtonPrimary: () => {
+        const argsEventEmitter: IPropsDialogConfirmation = {
+          id: 'loyalty-point-benefit-delete-dialog-confirmation',
+          isOpen: false,
+        };
+
+        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+      },
+      onClickButtonSecondary: async () => {
+        const argsEventEmitter: IPropsDialogConfirmation = {
+          id: 'loyalty-point-benefit-delete-dialog-confirmation',
+          isOpen: false,
+        };
+
+        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+
+        await loyaltyPointBenefit_fetchDeleteBenefit(id);
+      },
+      textButtonPrimary: 'Cancel',
+      textButtonSecondary: 'Delete Loyalty Benefit',
+      title: 'Are you sure want to delete this Loyalty Benefit?',
+      type: 'error',
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
   const loyaltyPointBenefit_fetchList = async (): Promise<void> => {
     try {
       await store.loyaltyPointBenefit_fetchlist(loyaltyPointBenefit_queryParams, {
         ...httpAbort_registerAbort(LOYALTY_POINT_BENEFIT_LIST_REQUEST),
         paramsSerializer: useParamsSerializer,
-      });
+      }, route);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error);
@@ -450,6 +507,7 @@ export const useLoyaltyPointBenefitService = (): ILoyaltyPointBenefitProvided =>
     loyaltyPointBenefit_onSubmitEditDialogDiscount,
     loyaltyPointBenefit_onCloseDialogDiscount,
     loyaltyPointBenefit_fetchList,
+    loyaltyPointBenefit_onDelete,
 
     loyaltyPointBenefit_queryParams,
     loyaltyPointBenefit_list,

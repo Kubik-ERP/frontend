@@ -4,9 +4,10 @@ import {
   REPORT_FINANCIAL_ENDPOINT,
   REPORT_VOUCHER_ENDPOINT,
   REPORT_CUSTOMER_ENDPOINT,
+  REPORT_INVENTORY_ENDPOINT,
+  STAFF_MEMBER_BASE_ENDPOINT,
 } from '../constants';
 import { OUTLET_BASE_ENDPOINT } from '@/modules/outlet/constants';
-import { STAFF_MEMBER_BASE_ENDPOINT } from '@/modules/staff-member/constants';
 // Plugins
 import httpClient from '@/plugins/axios';
 // type
@@ -16,10 +17,17 @@ import type {
   IReportQueryParams,
   IFinancialReport_discount,
   IFinancialReport_paymentMethod,
-  IFinancialReport_profitAndLost,
+  IFinancialReport_FinancialSummary,
   IFinancialReport_taxServiceCharge,
-  IInventoryReport_stock,
-  IInventoryReport_stockMovement,
+  // IInventoryReport_stock,
+  // IInventoryReport_stockMovement,
+  IInventoryReport_movementLedger,
+  IInventoryReport_currentStockOverview,
+  IInventoryReport_poReceivingVariance,
+  IInventoryReport_slowDeadStock,
+  IInventoryReport_itemPerformance,
+  IInventoryReport_itemPerformanceByCategory,
+  IInventoryReport_itemPerformanceByBrand,
   IVoucherReport,
   ISalesReport,
   ICustomerReport,
@@ -34,7 +42,7 @@ export const useReportStore = defineStore('report', {
     outlet_lists_values: [] as IOutlet[],
     staff_lists_values: [] as IStaffMember[],
     // financial
-    report_profitAndLost_values: {} as IFinancialReport_profitAndLost,
+    report_profitAndLost_values: {} as IFinancialReport_FinancialSummary,
     report_discount_values: {} as IFinancialReport_discount,
     report_paymentMethod_values: {} as IFinancialReport_paymentMethod,
     report_taxAndServiceCharge_values: [] as IFinancialReport_taxServiceCharge[],
@@ -48,8 +56,14 @@ export const useReportStore = defineStore('report', {
     salesReport_salesByQuarter_values: {} as ISalesReport,
     salesReport_salesByYear_values: {} as ISalesReport,
     // inventory
-    inventoryReport_stock_values: [] as IInventoryReport_stock[],
-    inventoryReport_stockMovement_values: [] as IInventoryReport_stockMovement[],
+    inventoryReport_movementLedger_values: [] as IInventoryReport_movementLedger[],
+    inventoryReport_currentStockOverview_values: {} as IInventoryReport_currentStockOverview,
+    inventoryReport_poReceivingVariance_values: [] as IInventoryReport_poReceivingVariance[],
+    inventoryReport_slowDeadStock_values: [] as IInventoryReport_slowDeadStock[],
+    inventoryReport_itemPerformance_values: [] as IInventoryReport_itemPerformance[],
+    inventoryReport_itemPerformanceByCategory_values: [] as IInventoryReport_itemPerformanceByCategory[],
+    inventoryReport_itemPerformanceByBrand_values: [] as IInventoryReport_itemPerformanceByBrand[],
+    // voucher
     voucherReport_values: [] as IVoucherReport[],
     // customer
     customerReport_values: [] as ICustomerReport[],
@@ -98,7 +112,10 @@ export const useReportStore = defineStore('report', {
           ...requestConfigurations,
         });
 
-        this.staff_lists_values = response.data.data.employees;
+        this.staff_lists_values = response.data.data.map((staffMember: IStaffMember) => ({
+          ...staffMember,
+          name: staffMember.fullname,
+        }));
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -213,18 +230,38 @@ export const useReportStore = defineStore('report', {
     async getInventoryReport(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
       this.report_isLoading = true;
       try {
-        const response = await httpClient.get(`dashboard/stock-report`, {
+        const response = await httpClient.get(`${REPORT_INVENTORY_ENDPOINT}`, {
           params,
           ...requestConfigurations,
         });
         // console.log('response', response.data);
         switch (params.type) {
-          case 'stock': {
-            this.inventoryReport_stock_values = response.data.data;
+          case 'movement-ledger': {
+            this.inventoryReport_movementLedger_values = response.data.data;
             break;
           }
-          case 'movement': {
-            this.inventoryReport_stockMovement_values = response.data.data;
+          case 'current-stock-overview': {
+            this.inventoryReport_currentStockOverview_values = response.data.data;
+            break;
+          }
+          case 'po-receiving-variance': {
+            this.inventoryReport_poReceivingVariance_values = response.data.data;
+            break;
+          }
+          case 'slow-dead-stock': {
+            this.inventoryReport_slowDeadStock_values = response.data.data;
+            break;
+          }
+          case 'item-performance': {
+            this.inventoryReport_itemPerformance_values = response.data.data;
+            break;
+          }
+          case 'item-performance-by-category': {
+            this.inventoryReport_itemPerformanceByCategory_values = response.data.data;
+            break;
+          }
+          case 'item-performance-by-brand': {
+            this.inventoryReport_itemPerformanceByBrand_values = response.data.data;
             break;
           }
           default: {

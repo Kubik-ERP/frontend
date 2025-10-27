@@ -45,6 +45,10 @@ watch(
 const staffDisplayName = computed(() => {
   return authentication_userData.value?.fullname || 'Current Staff';
 });
+
+const handleSubmit = () => {
+  cashDrawerList_onSubmitOpenRegisterForm();
+};
 </script>
 
 <template>
@@ -86,14 +90,14 @@ const staffDisplayName = computed(() => {
             <PrimeVueChip
               v-for="suggestionPrice in cashDrawerList_suggestionRegisterBalance"
               :key="suggestionPrice"
-              class="bg-secondary-background cursor-pointer hover:bg-secondary basic-smooth-animation"
+              class="bg-secondary/10 cursor-pointer hover:bg-secondary basic-smooth-animation"
               @click="cashDrawerList_formDataOfOpenRegister.balance = suggestionPrice"
             >
               <template #default>
                 <div class="flex items-center gap-2">
-                  <AppBaseSvg name="plus-line" class="!w-[10px] !h-[10px]" />
+                  <AppBaseSvg name="plus-line" class="w-3 h-3 filter-black-color" />
 
-                  <span class="font-semibold text-green-primary text-xs">
+                  <span class="font-semibold text-black text-xs">
                     {{
                       useCurrencyFormat({
                         data: suggestionPrice,
@@ -173,11 +177,11 @@ const staffDisplayName = computed(() => {
         />
 
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
+          class="bg-primary border-none text-base py-[10px] w-full max-w-40"
           label="Save"
-          type="button"
           :disabled="cashDrawerList_formValidationsOfOpenRegister.$invalid || cashDrawerList_isLoading"
-          @click="cashDrawerList_onSubmitOpenRegisterForm"
+          type="button"
+          @click="handleSubmit"
         />
       </footer>
     </template>

@@ -7,10 +7,13 @@ export interface ICashierModalAddProductItem {
 }
 
 export interface ICashierSelected {
-  product: IProductItem;
+  type: string;
+  product?: IProductItem;
   variant: ICashierVariant;
-  productId: string;
-  variantId: string;
+  bundling?: IProductItem;
+  bundlingId?: string;
+  productId?: string;
+  variantId?: string;
   quantity: number;
   notes: string;
 }

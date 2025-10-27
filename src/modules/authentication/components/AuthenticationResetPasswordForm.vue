@@ -21,7 +21,7 @@ const {
       <section id="text-information" class="flex flex-col gap-2">
         <div class="flex items-center gap-4">
           <PrimeVueButton
-            class="bg-transparent border border-solid border-blue-primary p-2 basic-smooth-animation hover:bg-grayscale-10"
+            class="bg-transparent border border-solid border-primary p-2 basic-smooth-animation hover:bg-grayscale-10"
             as="a"
             href="/authentication/sign-in"
           >
@@ -64,7 +64,7 @@ const {
     </AppBaseFormGroup>
 
     <PrimeVueButton
-      class="bg-blue-primary border-none text-sm py-[10px]"
+      class="bg-primary border-none text-sm py-[10px]"
       label="Submit"
       type="submit"
       :disabled="authenticationResetPassword_formValidations.$invalid"

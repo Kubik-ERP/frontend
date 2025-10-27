@@ -37,6 +37,9 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   manage_storage_location: ['/inventory', '/storage-location'],
   manage_purchase_order: ['/purchase-order'],
 
+  // Recipe and kitchen management
+  recipe_management: ['/recipe', '/recipe/menu-recipe', '/recipe/prep-batch-management', '/recipe/waste-log'],
+
   // Staff management
   manage_staff_member: [
     '/staff',
@@ -46,7 +49,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
     '/user-permission/access-control/edit',
     '/user-permission/role',
   ],
-  manage_staff_attendance: ['/staff/attendance'],
+  manage_staff_attendance: ['/staff/attendance', '/staff/working-hours'],
 
   // Cash management
   set_up_cash_drawer: ['/cash-drawer'],

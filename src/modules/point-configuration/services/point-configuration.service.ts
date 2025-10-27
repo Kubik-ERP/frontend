@@ -29,6 +29,7 @@ import { required } from '@vuelidate/validators';
 
 export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided => {
   const router = useRouter();
+  const route = useRoute();
 
   const pointConfiguration_activeTab = ref<string>('loyalty-point-benefit');
 
@@ -165,7 +166,7 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     try {
       await store.loyaltySettings_fetchDetails({
         ...httpAbort_registerAbort('LOYALTY_POINT_SETTINGS_LIST_REQUEST'),
-      });
+      }, route);
 
       loyaltyPointSettingsDetail_loadData();
     } catch (error: unknown) {
@@ -236,7 +237,7 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
   const loyaltyPointSettings_EditProduct = ref<IProduct[] | null>(null);
 
   const loyaltyPointSettings_onShowDialogEditProduct = (product: IProduct): void => {
-    loyaltyPointSettings_EditProduct.value = [{...product}];
+    loyaltyPointSettings_EditProduct.value = [{ ...product }];
     console.log(loyaltyPointSettings_EditProduct.value);
     const argsEventEmitter: IPropsDialog = {
       id: 'loyalty-point-settings-dialog-edit-product',
@@ -258,9 +259,13 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
   };
 
   const loyaltyPointSettings_onSubmitDialogEditProduct = (): void => {
-    const productIndex = loyaltyPointSettings_formData.productBasedItems.findIndex((product) => product.productId === loyaltyPointSettings_EditProduct.value?.[0].productId);
+    const productIndex = loyaltyPointSettings_formData.productBasedItems.findIndex(
+      product => product.productId === loyaltyPointSettings_EditProduct.value?.[0].productId,
+    );
     if (productIndex !== -1) {
-      loyaltyPointSettings_formData.productBasedItems[productIndex] = {...loyaltyPointSettings_EditProduct.value?.[0]};
+      loyaltyPointSettings_formData.productBasedItems[productIndex] = {
+        ...loyaltyPointSettings_EditProduct.value?.[0],
+      };
     }
     loyaltyPointSettings_onCloseDialogEditProduct();
   };
@@ -429,6 +434,65 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     loyaltyPointSettings_onCloseDialog();
   };
 
+  const loyaltyPointSettings_fetchDeleteProduct = async (productId: string): Promise<void> => {
+    try {
+      loyaltyPointSettings_formData.productBasedItems = loyaltyPointSettings_formData.productBasedItems.filter(
+        item => item.productId !== productId,
+      );
+
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: 'Product has been Removed successfully.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      await loyaltyPointSettings_fetchAllProduct();
+    }
+  };
+
+  const loyaltyPointSettings_onDeleteProduct = (productId: string): void => {
+    const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'loyalty-point-setting-delete-dialog-confirmation',
+      description: 'This action cannot be undone, and the Product you remove will be deleted from the system',
+      iconName: 'delete-polygon',
+      isOpen: true,
+      isUsingButtonSecondary: true,
+      onClickButtonPrimary: () => {
+        const argsEventEmitter: IPropsDialogConfirmation = {
+          id: 'loyalty-point-setting-delete-dialog-confirmation',
+          isOpen: false,
+        };
+
+        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+      },
+      onClickButtonSecondary: async () => {
+        const argsEventEmitter: IPropsDialogConfirmation = {
+          id: 'loyalty-point-setting-delete-dialog-confirmation',
+          isOpen: false,
+        };
+
+        eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+
+        await loyaltyPointSettings_fetchDeleteProduct(productId);
+      },
+      textButtonPrimary: 'Cancel',
+      textButtonSecondary: 'Delete Product Benefit',
+      title: 'Are you sure want to delete this Product Benefit?',
+      type: 'error',
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
   return {
     pointConfiguration_activeTab,
     pointConfiguration_listTabs: LIST_TABS_POINT_CONFIGURATION,
@@ -462,12 +526,13 @@ export const usePointConfigurationService = (): ILoyaltyPointSettingsProvided =>
     loyaltyPointSettings_onSubmitDialog,
     loyaltyPointSettings_onShowDialogEditProduct,
     loyaltyPointSettings_onCloseDialogEditProduct,
+    loyaltyPointSettings_onDeleteProduct,
 
     isProductSelected,
     getSelectedProductData,
     loyaltyPointSettings_toggleSelection,
     loyaltyPointSettings_updateProductValue,
     loyaltyPointSettings_EditProduct,
-    loyaltyPointSettings_onSubmitDialogEditProduct
+    loyaltyPointSettings_onSubmitDialogEditProduct,
   };
 };

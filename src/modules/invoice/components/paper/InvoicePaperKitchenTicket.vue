@@ -68,7 +68,7 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
           <td class="text-black text-[12pt] font-bold w-full">{{ item.qty }}x</td>
           <td class="text-black text-[12pt] whitespace-nowrap">
             <div class="flex flex-col">
-              <span class="font-bold">{{ item.products.name }}</span>
+              <span class="font-bold">{{ item.products?.name ?? item.catalogBundling?.name ?? '-' }}</span>
             </div>
           </td>
         </tr>
@@ -81,6 +81,22 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
 
           <td class="font-bold text-right">{{ item.notes || '-' }}</td>
         </tr>
+        <tr v-if="item.invoiceBundlingItems.length > 0">
+          <td class="font-normal pr-0.5 text-black text-[12pt]">Bundling Items:</td>
+        </tr>
+
+        <!-- Bundling Products (Sub-items) -->
+        <template v-for="bundlingItem in item.invoiceBundlingItems" :key="bundlingItem.id">
+          <tr class="italic">
+            <td class="pl-6 text-black text-[12pt] font-bold w-full">{{ bundlingItem.qty }}x</td>
+
+            <td class="text-black text-[12pt] whitespace-nowrap">
+              <div class="flex flex-col">
+                <span class="font-bold"> {{ bundlingItem.products?.name }}</span>
+              </div>
+            </td>
+          </tr>
+        </template>
         <tr class="h-2"></tr>
       </tbody>
     </table>

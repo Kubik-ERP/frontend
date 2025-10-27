@@ -18,6 +18,7 @@ interface IProps {
   isUsingBorderOnHeader?: boolean;
   isUsingBtnCtaCreate?: boolean;
   isUsingCustomBody?: boolean;
+  isUsingCustomEmptyData?: boolean;
   isUsingCustomFilter?: boolean;
   isUsingCustomFooter?: boolean;
   isUsingCustomHeader?: boolean;
@@ -61,6 +62,7 @@ const props = withDefaults(defineProps<IProps>(), {
   isUsingBorderOnHeader: true,
   isUsingBtnCtaCreate: false,
   isUsingCustomBody: false,
+  isUsingCustomEmptyData: false,
   isUsingCustomFilter: false,
   isUsingCustomFooter: false,
   isUsingCustomHeader: false,
@@ -403,15 +405,24 @@ const getIconClass = computed(() => {
             </template>
 
             <template v-else-if="props.data.length === 0">
-              <tr>
-                <td :colspan="props.columns.length" class="px-4 py-8 text-center">
-                  <span class="font-semibold text-sm text-text-primary">No data available</span>
-                </td>
-              </tr>
+              <template v-if="props.isUsingCustomEmptyData">
+                <slot name="empty-data" />
+              </template>
+
+              <template v-else>
+                <tr>
+                  <td :colspan="props.columns.length" class="px-4 py-8 text-center">
+                    <span class="font-semibold text-sm text-text-primary">No data available</span>
+                  </td>
+                </tr>
+              </template>
             </template>
 
             <template v-else>
-              <template v-for="(record, recordIndex) in props.data" :key="(record as any)[props.expandableRowsIdField]">
+              <template
+                v-for="(record, recordIndex) in props.data"
+                :key="(record as any)[props.expandableRowsIdField]"
+              >
                 <!-- Main Row -->
                 <tr class="hover:bg-gray-50">
                   <template v-for="column in props.columns" :key="column.value">
@@ -424,7 +435,7 @@ const getIconClass = computed(() => {
                           :index="recordIndex"
                           :is-expandable="
                             props.isUsingExpandableRows &&
-                            ((record as any)[props.expandableRowsField] || []).length > 1
+                            ((record as any)[props.expandableRowsField] || []).length > 0
                           "
                           :is-expanded="isRowExpanded(recordIndex)"
                           :toggle-expansion="() => toggleRowExpansion(recordIndex)"
@@ -448,11 +459,7 @@ const getIconClass = computed(() => {
                 <!-- Expanded Rows for Additional Items -->
                 <template v-if="isRowExpanded(recordIndex)">
                   <tr>
-                    <slot
-                      name="expanded-body"
-                      :data="record"
-                      :index="recordIndex"
-                    />
+                    <slot name="expanded-body" :data="record" :index="recordIndex" />
                   </tr>
                 </template>
               </template>
@@ -482,7 +489,7 @@ const getIconClass = computed(() => {
             >
               <template #default>
                 <section id="content" class="flex items-center gap-1 lg:gap-2">
-                  <AppBaseSvg name="arrow-left" class="!w-4 !h-4" />
+                  <AppBaseSvg name="arrow-left" class="w-4 h-4 filter-primary-color" />
                   <span v-if="!isCurrentlyMobile" class="font-normal text-sm text-primary">Previous</span>
                 </section>
               </template>
@@ -499,9 +506,7 @@ const getIconClass = computed(() => {
                     :label="(Number(p) + 1).toString()"
                     class="border-none aspect-square p-2 lg:p-4"
                     :class="
-                      currentPage === Number(p)
-                        ? 'bg-blue-secondary-background text-primary'
-                        : 'bg-transparent text-grayscale-20'
+                      currentPage === Number(p) ? 'bg-primary text-white' : 'bg-transparent text-grayscale-20'
                     "
                     @click="emits('update:currentPage', Number(p) + 1)"
                   />
@@ -520,7 +525,7 @@ const getIconClass = computed(() => {
               <template #default>
                 <section id="content" class="flex items-center gap-1 lg:gap-2">
                   <span v-if="!isCurrentlyMobile" class="font-normal text-sm text-primary">Next</span>
-                  <AppBaseSvg name="arrow-right" class="!w-4 !h-4" />
+                  <AppBaseSvg name="arrow-right" class="w-4 h-4 filter-primary-color" />
                 </section>
               </template>
             </PrimeVueButton>
@@ -556,7 +561,11 @@ const getIconClass = computed(() => {
         @sort="handleSort"
       >
         <template #empty>
-          <section class="flex items-center justify-center w-full">
+          <template v-if="props.isUsingCustomEmptyData">
+            <slot name="empty-data" />
+          </template>
+
+          <section v-else class="flex items-center justify-center w-full">
             <span class="font-semibold text-sm text-text-primary">No data available</span>
           </section>
         </template>
@@ -698,7 +707,7 @@ const getIconClass = computed(() => {
             >
               <template #default>
                 <section id="content" class="flex items-center gap-1 lg:gap-2">
-                  <AppBaseSvg name="arrow-left" class="!w-4 !h-4" />
+                  <AppBaseSvg name="arrow-left" class="w-4 h-4 filter-primary-color" />
                   <span v-if="!isCurrentlyMobile" class="font-normal text-sm text-primary">Previous</span>
                 </section>
               </template>
@@ -715,9 +724,7 @@ const getIconClass = computed(() => {
                     :label="(Number(p) + 1).toString()"
                     class="border-none aspect-square p-2 lg:p-4"
                     :class="
-                      currentPage === Number(p)
-                        ? 'bg-blue-secondary-background text-primary'
-                        : 'bg-transparent text-grayscale-20'
+                      currentPage === Number(p) ? 'bg-secondary text-white' : 'bg-transparent text-grayscale-20'
                     "
                     @click="emits('update:currentPage', Number(p) + 1)"
                   />
@@ -736,7 +743,7 @@ const getIconClass = computed(() => {
               <template #default>
                 <section id="content" class="flex items-center gap-1 lg:gap-2">
                   <span v-if="!isCurrentlyMobile" class="font-normal text-sm text-primary">Next</span>
-                  <AppBaseSvg name="arrow-right" class="!w-4 !h-4" />
+                  <AppBaseSvg name="arrow-right" class="w-4 h-4 filter-primary-color" />
                 </section>
               </template>
             </PrimeVueButton>

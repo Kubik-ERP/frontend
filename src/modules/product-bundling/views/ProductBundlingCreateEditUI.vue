@@ -21,6 +21,7 @@ const {
   setPricingType,
   calculateTotalPrice,
 } = useProductBundlingService();
+import imageSVG from '@/app/assets/icons/image.svg';
 
 // --- State for the AutoComplete component ---
 const currentSelection = ref<IProduct | null>(null);
@@ -92,14 +93,75 @@ const onResetButtonClick = () => {
   );
 };
 
+// ✅ Added proper typing for `event`
+const handleImageUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (file) {
+    productBundling_formData.imageFile = file; // ✅ Save the file
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (reader.result) {
+        productBundling_formData.imagePreview = reader.result.toString();
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+// ✅ Added proper typing for `fileInput`
+const fileInput = ref<HTMLInputElement | null>(null);
+
+const triggerFileInput = () => {
+  fileInput.value?.click();
+};
+
+const removePhoto = () => {
+  productBundling_formData.imagePreview = '';
+  productBundling_formData.imageFile = undefined;
+};
+
 onMounted(async () => {
   if (route.name === 'product-bundling.edit') {
     await productBundling_fetchProductBundlingDetails(route.params.id as string);
   }
   await productBundling_fetchProductList();
+  calculateTotalPrice();
 });
 </script>
+
 <template>
+  <div class="flex flex-col justify-center items-center">
+    <p>{{ useLocalization('productDetail.photo.label') }}</p>
+    <AppBaseImage :src="productBundling_formData.imagePreview" alt="Photo" class="w-64 h-64 object-cover" />
+
+    <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
+
+    <div class="flex items-center justify-center gap-2 mt-4">
+      <PrimeVueButton
+        :label="useLocalization('productDetail.photo.button')"
+        class="shadow-xs hover:bg-transparent rounded-xl px-8 py-2 text-primary border-primary border-2"
+        variant="outlined"
+        @click="triggerFileInput"
+      >
+        <template #icon>
+          <img :src="imageSVG" alt="" />
+        </template>
+      </PrimeVueButton>
+      <PrimeVueButton
+        v-if="productBundling_formData.imagePreview"
+        variant="text"
+        severity="danger"
+        label="Delete Image"
+        @click="removePhoto"
+      >
+        <template #icon>
+          <AppBaseSvg name="delete" class="!w-5 !h-5" />
+        </template>
+      </PrimeVueButton>
+    </div>
+  </div>
   <section class="grid grid-cols-2 gap-8">
     <section class="flex flex-col gap-4">
       <!-- <pre>{{ productBundling_formData }}</pre> -->
@@ -194,7 +256,9 @@ onMounted(async () => {
       <PrimeVueCard class="h-fit">
         <template #content>
           <div class="flex flex-col gap-4 w-full">
-            <label for="product-picker" class="font-semibold">{{ useLocalization('productBundling.form.selectProductLabel') }}</label>
+            <label for="product-picker" class="font-semibold">{{
+              useLocalization('productBundling.form.selectProductLabel')
+            }}</label>
             <PrimeVueAutoComplete
               id="product-picker"
               v-model="currentSelection"
@@ -239,7 +303,9 @@ onMounted(async () => {
                         spacing-bottom="mb-0"
                       >
                         <label class="flex items-center">
-                          <span class="block text-sm font-medium leading-6 text-gray-900">{{ useLocalization('productBundling.form.totalItemsLabel') }}</span>
+                          <span class="block text-sm font-medium leading-6 text-gray-900">{{
+                            useLocalization('productBundling.form.totalItemsLabel')
+                          }}</span>
                           <span class="text-error-main">*</span>
                         </label>
                         <PrimeVueInputNumber
@@ -269,7 +335,8 @@ onMounted(async () => {
                     </div>
 
                     <span class="font-semibold text-right mt-4">
-                      {{ useLocalization('productBundling.form.totalPriceLabel') }} : {{ useCurrencyFormat({ data: product.price * product.quantity }) }}
+                      {{ useLocalization('productBundling.form.totalPriceLabel') }} :
+                      {{ useCurrencyFormat({ data: product.price * product.quantity }) }}
                     </span>
                   </div>
 
@@ -318,14 +385,20 @@ onMounted(async () => {
         <router-link :to="{ name: 'product-bundling.index' }">
           <PrimeVueButton class="bg-transparent border-primary min-w-44">
             <template #default>
-              <span class="font-semibold text-base text-primary">{{ useLocalization('productBundling.form.cancelButton') }}</span>
+              <span class="font-semibold text-base text-primary">{{
+                useLocalization('productBundling.form.cancelButton')
+              }}</span>
             </template>
           </PrimeVueButton>
         </router-link>
         <PrimeVueButton
           class="bg-primary border-none min-w-44 disabled:bg-grayscale-20"
           :disabled="productBundling_formValidations.$invalid"
-          :label="route.name === 'product-bundling.edit' ? useLocalization('productBundling.form.editButton') : useLocalization('productBundling.form.addButton')"
+          :label="
+            route.name === 'product-bundling.edit'
+              ? useLocalization('productBundling.form.editButton')
+              : useLocalization('productBundling.form.addButton')
+          "
           @click="
             route.name === 'product-bundling.edit'
               ? productBundling_fetchUpdateProductBundlingList()

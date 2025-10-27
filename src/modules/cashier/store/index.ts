@@ -160,8 +160,13 @@ export const useCashierStore = defineStore('cashier', {
     async cashierProduct_calculateEstimation(
       payload: {
         voucherId?: string | null;
-        products: unknown;
+        customerId?: string | null;
+        products: ICashierSelected[];
         orderType?: string;
+        redeemLoyalty?: {
+          loyalty_points_benefit_id: string;
+        };
+        invoiceId?: string;
       },
       route?: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},
@@ -170,7 +175,29 @@ export const useCashierStore = defineStore('cashier', {
         const response = await httpClient.post<ICashierResponseCalulateEstimation>(
           (route?.name === 'self-order' || route?.name === 'self-order-invoice' ? '/self-order' : '') +
             CASHIER_ENDPOINT_PAYMENT_CALCULATE_ESTIMATION,
-          payload,
+          {
+            ...payload,
+            products: payload.products.map(product => {
+              const basePayload = {
+                productId: product.productId ?? product.bundlingId ?? '',
+                variantId: product.variantId ?? '',
+                quantity: product.quantity,
+                notes: product.notes,
+                type: product.type ?? 'single',
+                bundlingId: product.bundlingId,
+              };
+
+              if ((product.type ?? 'single') === 'bundling') {
+                return {
+                  ...basePayload,
+                  productId: '',
+                  bundlingId: product.bundlingId ?? product.product?.id ?? '',
+                };
+              }
+
+              return basePayload;
+            }),
+          },
 
           withStoreHeader(route || useRoute(), requestConfigurations),
         );
@@ -197,10 +224,13 @@ export const useCashierStore = defineStore('cashier', {
         orderType: string;
         paymentMethodId: string;
         voucherId: string;
-        customerId: string;
+        customerId: string | null;
         tableCode: string;
         storeId: string;
         rounding_amount: number;
+        redeemLoyalty?: {
+          loyalty_points_benefit_id: string;
+        };
       },
       route: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},
@@ -208,7 +238,33 @@ export const useCashierStore = defineStore('cashier', {
       try {
         const response = await httpClient.post<ICashierResponseProcessCheckout>(
           (route.path.includes('self-order') ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_PROCESS,
-          payload,
+          // payload,
+
+          {
+            ...payload,
+            products: payload.products.map(product => {
+              if ((product.type ?? 'single') === 'single') {
+                return product;
+              } else if ((product.type ?? 'single') === 'bundling') {
+                return {
+                  quantity: product.quantity,
+                  notes: product.notes,
+                  bundling: {
+                    id: product.bundling?.id,
+                    name: product.bundling?.name,
+                    description: product.bundling?.description,
+                    price: product.bundling?.price,
+                    discount: product.bundling?.discount,
+                    type: product.bundling?.bundlingType,
+                    products: product.bundling?.products,
+                  },
+                  bundlingId: product.bundlingId,
+                  type: product.type,
+                };
+              }
+              return product;
+            }),
+          },
           withStoreHeader(route, requestConfigurations),
         );
         return Promise.resolve(response.data);
@@ -233,12 +289,15 @@ export const useCashierStore = defineStore('cashier', {
         orderType: string;
         provider: string;
         paymentMethodId: string;
-        customerId: string | undefined;
+        customerId: string | null;
         tableCode: string;
         storeId: string;
         paymentAmount: number | null;
         voucherId: string | null;
         rounding_amount: number;
+        redeemLoyalty?: {
+          loyalty_points_benefit_id: string;
+        };
       },
       route: RouteLocationNormalizedLoadedGeneric,
       requestConfigurations: AxiosRequestConfig = {},
@@ -246,7 +305,31 @@ export const useCashierStore = defineStore('cashier', {
       try {
         const response = await httpClient.post<ICashierResponseMidtransQrisPayment>(
           (route.path.includes('self-order') ? '/self-order' : '') + CASHIER_ENDPOINT_PAYMENT_INSTANT,
-          payload,
+          {
+            ...payload,
+            products: payload.products.map(product => {
+              if ((product.type ?? 'single') === 'single') {
+                return product;
+              } else if ((product.type ?? 'single') === 'bundling') {
+                return {
+                  quantity: product.quantity,
+                  notes: product.notes,
+                  bundling: {
+                    id: product.bundling?.id,
+                    name: product.bundling?.name,
+                    description: product.bundling?.description,
+                    price: product.bundling?.price,
+                    discount: product.bundling?.discount,
+                    type: product.bundling?.bundlingType,
+                    products: product.bundling?.products,
+                  },
+                  bundlingId: product.bundlingId,
+                  type: product.type,
+                };
+              }
+              return product;
+            }),
+          },
 
           withStoreHeader(route, requestConfigurations),
         );
@@ -390,13 +473,27 @@ export const useCashierStore = defineStore('cashier', {
         const response = await httpClient.put<void>(
           `${CASHIER_BASE_INVOICE_ENDPOINT}/${payload.invoiceId}`,
           {
-            products: payload.products.map(f => {
-              return {
-                productId: f.productId,
-                quantity: f.quantity,
-                variantId: f.variantId,
-                notes: f.notes,
-              };
+            products: payload.products.map(product => {
+              if ((product.type ?? 'single') === 'single') {
+                return product;
+              } else if ((product.type ?? 'single') === 'bundling') {
+                return {
+                  quantity: product.quantity,
+                  notes: product.notes,
+                  bundling: {
+                    id: product.bundling?.id,
+                    name: product.bundling?.name,
+                    description: product.bundling?.description,
+                    price: product.bundling?.price,
+                    discount: product.bundling?.discount,
+                    type: product.bundling?.bundlingType,
+                    products: product.bundling?.products,
+                  },
+                  bundlingId: product.bundlingId,
+                  type: product.type,
+                };
+              }
+              return product;
             }),
           },
           {

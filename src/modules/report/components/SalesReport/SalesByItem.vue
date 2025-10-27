@@ -8,21 +8,28 @@ const {
   salesReport_columns,
   report_queryParams,
   report_getSalesReport,
+  hasManageStaffMemberPermission,
   salesReport_salesByItem_values,
   staff_lists_options,
   outlet_lists_options,
   findOutletDetail,
   findStaffDetail,
+  hasAccessAllStorePermission,
+  outlet_currentOutlet,
 } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
-const { exportToPdf, exportToCsv } = useReportExporter();
+const { exportToPdf, exportToCsv, export_isloading } = useReportExporter();
 const popover = ref();
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Sales Report - Sales By Items Report',
-    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
-    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    storeName: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      : outlet_currentOutlet.value!.name,
+    storeAddress: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: salesReport_columns,
@@ -32,8 +39,12 @@ const handleExportToPdf = () => {
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Sales Report - Sales By Items Report',
-    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
-    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    storeName: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      : outlet_currentOutlet.value!.name,
+    storeAddress: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: salesReport_columns,
@@ -51,6 +62,7 @@ const formattedDataTable = () => {
         diskonItem: useCurrencyFormat({ data: item.diskonItem }),
         refund: useCurrencyFormat({ data: item.refund }),
         pajak: useCurrencyFormat({ data: item.pajak }),
+        biayaLayanan: useCurrencyFormat({ data: item.biayaLayanan }),
         totalPenjualan: useCurrencyFormat({ data: item.totalPenjualan }),
         countPenggunaanVoucher: item.countPenggunaanVoucher,
       };
@@ -87,10 +99,12 @@ const onChangePage = (newPage: number) => {
           :disabled="formattedDataTable().length === 0"
           variant="outlined"
           label="Export"
+          class="border border-primary-border text-primary"
+          :loading="export_isloading"
           @click="popover.toggle($event)"
         >
           <template #icon>
-            <AppBaseSvg name="export" class="!w-5 !h-5" />
+            <AppBaseSvg name="export" class="!w-5 !h-5 filter-primary-color" />
           </template>
         </PrimeVueButton>
         <PrimeVuePopover
@@ -104,12 +118,14 @@ const onChangePage = (newPage: number) => {
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .pdf"
+              :loading="export_isloading"
               @click="handleExportToPdf"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .csv"
+              :loading="export_isloading"
               @click="handleExportToCsv"
             />
           </section>
@@ -126,6 +142,7 @@ const onChangePage = (newPage: number) => {
             @update:end-date="report_getSalesReport('item')"
           />
           <PrimeVueSelect
+            v-if="hasAccessAllStorePermission"
             v-model="report_queryParams.store_ids"
             :options="outlet_lists_options"
             option-label="label"
@@ -136,10 +153,11 @@ const onChangePage = (newPage: number) => {
             @change="report_getSalesReport('item')"
           >
             <template #dropdownicon>
-              <AppBaseSvg name="store" class="w-5 h-5 text-text-primary" />
+              <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
           <PrimeVueSelect
+            v-if="hasManageStaffMemberPermission"
             v-model="report_queryParams.staff_ids"
             :options="staff_lists_options"
             option-label="label"
@@ -148,8 +166,9 @@ const onChangePage = (newPage: number) => {
             filter
             class="col-span-1 w-full"
             @change="report_getSalesReport('item')"
-            ><template #dropdownicon>
-              <AppBaseSvg name="staff" class="w-5 h-5 text-text-primary" />
+            >
+            <template #dropdownicon>
+              <AppBaseSvg name="staff" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
         </section>

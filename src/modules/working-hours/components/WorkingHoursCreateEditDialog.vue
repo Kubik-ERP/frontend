@@ -68,7 +68,7 @@ const {
               option-value="value"
               placeholder="Select staff member"
               input-id="staffId"
-              class="text-sm w-full"
+              class="text-sm w-full h-9"
               :class="{ ...classes }"
               v-on="useListenerForm(workingHoursList_formValidations, 'staffId')"
             >
@@ -104,8 +104,14 @@ const {
               placeholder="Select date"
               show-icon
               input-id="date"
-              class="text-sm w-full"
+              class="[&>input]:!text-sm text-text-disabled [&>input]:placeholder:!text-sm placeholder:text-text-disabled w-full max-w-full"
               :class="{ ...classes }"
+              :pt="{
+                pcInputText: '!text-sm',
+                dayCell: '!text-sm',
+                title: '!text-sm',
+                tableHeaderCell: '!text-sm',
+              }"
               v-on="useListenerForm(workingHoursList_formValidations, 'date')"
             />
           </AppBaseFormGroup>
@@ -142,6 +148,7 @@ const {
                   v-slot="{ classes }"
                   class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
                   is-name-as-label
+                  is-required
                   :label-for="`start-shift-${index}`"
                   name="Start Shift"
                   spacing-bottom="mb-0"
@@ -157,11 +164,18 @@ const {
                     <PrimeVueDatePicker
                       :id="`start-shift-${index}`"
                       v-model="timeSlot.openTime"
-                      class="w-full"
+                      class="[&>input]:!text-sm text-text-disabled [&>input]:placeholder:!text-sm placeholder:text-text-disabled w-full max-w-full"
                       :class="{ ...classes }"
                       fluid
                       time-only
                       placeholder="Select start time"
+                      :pt="{
+                        pcInputText: '!text-sm',
+                        dayCell: '!text-sm',
+                        title: '!text-sm',
+                        tableHeaderCell: '!text-sm',
+                      }"
+                      v-on="useListenerFormEach(workingHoursList_formValidations.timeSlots, index, 'openTime')"
                     />
 
                     <PrimeVueInputGroupAddon>
@@ -171,11 +185,13 @@ const {
                 </AppBaseFormGroup>
 
                 <!-- End Shift -->
-                <div class="flex items-end gap-2">
+                <div class="flex items-end gap-2 w-full">
                   <AppBaseFormGroup
                     v-slot="{ classes }"
                     class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+                    class="w-full"
                     is-name-as-label
+                    is-required
                     :label-for="`end-shift-${index}`"
                     name="End Shift"
                     spacing-bottom="mb-0"
@@ -191,11 +207,17 @@ const {
                       <PrimeVueDatePicker
                         :id="`end-shift-${index}`"
                         v-model="timeSlot.closeTime"
-                        class="w-full"
+                        class="[&>input]:!text-sm text-text-disabled [&>input]:placeholder:!text-sm placeholder:text-text-disabled w-full max-w-full"
                         :class="{ ...classes }"
                         fluid
                         time-only
                         placeholder="Select end time"
+                        :pt="{
+                          pcInputText: '!text-sm',
+                          dayCell: '!text-sm',
+                          title: '!text-sm',
+                          tableHeaderCell: '!text-sm',
+                        }"
                       />
 
                       <PrimeVueInputGroupAddon>
@@ -363,25 +385,19 @@ const {
         </div>
 
         <!-- Notes -->
-        <AppBaseFormGroup
-          v-slot="{ classes }"
-          class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
-          is-name-as-label
-          label-for="notes"
-          name="Notes"
-          spacing-bottom="mb-0"
-          :validators="workingHoursList_formValidations.notes"
-        >
+        <section id="notes" class="flex flex-col gap-1">
+          <span class="font-medium text-sm text-gray-900">
+            Notes
+          </span>
+
           <PrimeVueTextarea
             v-model="workingHoursList_formData.notes"
             input-id="notes"
             placeholder="Add any additional notes..."
             rows="3"
             class="text-sm w-full"
-            :class="{ ...classes }"
-            v-on="useListenerForm(workingHoursList_formValidations, 'notes')"
           />
-        </AppBaseFormGroup>
+        </section>
       </form>
     </template>
 
@@ -395,8 +411,9 @@ const {
           @click="workingHoursList_onCloseDialog"
         />
 
+
         <PrimeVueButton
-          class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
+          class="bg-primary border-none text-base py-[10px] w-full max-w-40"
           label="Save"
           type="button"
           :disabled="workingHoursList_formValidations.$invalid"

@@ -43,6 +43,7 @@ const {
   accountStoreDetail_operationalHours,
   accountStoreDetail_selectedFloor,
   accountStoreDetail_storeTables,
+  accountStoreDetail_fetchChangeTableStatus,
 } = useAccountStoreDetailsService();
 
 const {
@@ -158,6 +159,9 @@ const {
 
   // Initialize functions
   cashierOrderSummary_initializeRoute,
+  cashierOrderSummary_setSelectedLoyaltyBenefit,
+  cashierOrderSummary_selectedLoyaltyBenefitId,
+  cashierOrderSummary_selectedLoyaltyBenefit,
 } = useCashierOrderSummaryService();
 
 const {
@@ -204,6 +208,7 @@ provide('accountStoreDetail', {
   accountStoreDetail_operationalHours,
   accountStoreDetail_selectedFloor,
   accountStoreDetail_storeTables,
+  accountStoreDetail_fetchChangeTableStatus,
 });
 
 provide('cashDrawerCashRegister', {
@@ -330,6 +335,9 @@ provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
   // Initialize functions
   cashierOrderSummary_initializeSelfOrder: () => Promise.resolve(), // Empty implementation for cashier
   cashierOrderSummary_initializeRoute,
+  cashierOrderSummary_setSelectedLoyaltyBenefit,
+  cashierOrderSummary_selectedLoyaltyBenefitId,
+  cashierOrderSummary_selectedLoyaltyBenefit,
 });
 
 provide('dailySalesList', {

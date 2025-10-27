@@ -17,8 +17,8 @@ const httpClient: AxiosInstance = axios.create({
     ? `${import.meta.env.VITE_APP_BASE_API_URL}${import.meta.env.VITE_APP_BASE_API_PREFIX}`
     : '/api',
   headers: {
-      'ngrok-skip-browser-warning': 'true'
-    }
+    'ngrok-skip-browser-warning': 'true',
+  },
 });
 
 httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
@@ -40,7 +40,10 @@ httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   }
 
   // Get fresh outlet values directly from store state
-  if (outletStore?.$state?.outlet_selectedOutletOnAccountPage?.id && window.location.pathname.includes('account')) {
+  if (
+    outletStore?.$state?.outlet_selectedOutletOnAccountPage?.id &&
+    window.location.pathname.includes('account')
+  ) {
     config.headers['X-STORE-ID'] = outletStore?.$state?.outlet_selectedOutletOnAccountPage?.id;
   } else if (outletStore?.$state?.outlet_currentOutlet?.id) {
     config.headers['X-STORE-ID'] = outletStore?.$state?.outlet_currentOutlet?.id;
@@ -68,6 +71,14 @@ httpClient.interceptors.response.use(
     if (requestId) {
       loadingStore.endRequest(requestId);
     }
+
+    if (error.message == 'canceled') {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
     /**
      * @description Here's we can handle various errors.
      */
@@ -92,7 +103,7 @@ httpClient.interceptors.response.use(
         localStorage.removeItem('authentication');
         localStorage.removeItem('outlet');
 
-        // // Redirect to sign-in page
+        // Redirect to sign-in page
         window.location.href = '/authentication/sign-in';
 
         break;

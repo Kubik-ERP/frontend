@@ -50,11 +50,11 @@ const applyDateChange = () => {
       : start; // This creates a copy, not a reference
 
     const startDateWithZeroTime = new Date(start.getTime());
-  startDateWithZeroTime.setHours(0, 0, 0, 0);
-  emit('update:startDate', startDateWithZeroTime);
-  const endDateWith2359Time = new Date(end.getTime());
-  endDateWith2359Time.setHours(23, 59, 59, 999);
-  emit('update:endDate', endDateWith2359Time);
+    startDateWithZeroTime.setHours(0, 0, 0, 0);
+    emit('update:startDate', startDateWithZeroTime);
+    const endDateWith2359Time = new Date(end.getTime());
+    endDateWith2359Time.setHours(23, 59, 59, 999);
+    emit('update:endDate', endDateWith2359Time);
 
     type.value = 'custom';
 
@@ -229,7 +229,7 @@ const onClickShortcut = (label: string) => {
   <section class="w-full">
     <PrimeVueButton
       variant="text"
-      class="px-3 py-2 border w-full border-solid border-grayscale-20"
+      class="px-3 py-2 border w-full border-solid border-grayscale-20 hover:bg-secondary"
       @click="dialogVisible = true"
     >
       <template #default>
@@ -239,7 +239,9 @@ const onClickShortcut = (label: string) => {
             <span class="text-text-primary"
               >{{ useFormatDate(startDate, 'dd/mm/yyyy') }} - {{ useFormatDate(endDate, 'dd/mm/yyyy') }}</span
             >
-            <span class="text-text-disabled"> <AppBaseSvg name="calendarBlank" class="!w-5 !h-5" /> </span>
+            <span class="text-text-disabled">
+              <AppBaseSvg name="calendarBlank" class="!w-5 !h-5 filter-primary-color" />
+            </span>
           </div></section
       ></template>
     </PrimeVueButton>
@@ -297,7 +299,7 @@ const onClickShortcut = (label: string) => {
                 ]"
                 :key="label"
                 variant="text"
-                class="w-full px-3 py-2 border border-solid border-grayscale-20"
+                class="w-full px-3 py-2 border border-solid border-grayscale-20 text-primary hover:bg-secondary"
                 :label="label"
                 @click="onClickShortcut(label)"
               />
@@ -306,8 +308,14 @@ const onClickShortcut = (label: string) => {
         </section>
       </template>
       <template #footer>
-        <PrimeVueButton label="Cancel" severity="secondary" variant="outlined" @click="cancelDateChange" />
-        <PrimeVueButton label="Apply" @click="applyDateChange" />
+        <PrimeVueButton
+          label="Cancel"
+          severity="secondary"
+          variant="outlined"
+          class="border-primary-border text-primary"
+          @click="cancelDateChange"
+        />
+        <PrimeVueButton label="Apply" class="bg-primary border-none" @click="applyDateChange" />
       </template>
     </PrimeVueDialog>
   </section>

@@ -1,4 +1,3 @@
-r
 <script setup lang="ts">
 // Interfaces
 import type { ICashierProductProvided } from '../interfaces/cashier-product-service';
@@ -95,6 +94,34 @@ const imageUrl = (image: string) => {
           </section>
         </template>
       </PrimeVueCard>
+
+      <!-- 🆕 Product Bundles Card -->
+<PrimeVueCard
+  :unstyled="true"
+  :pt="{
+    body: 'bg-white border border-grayscale-10 shadow-none drop-shadow-none p-4 rounded-2xl hover:border-grayscale-20 active:bg-grayscale-10/5',
+  }"
+  class="flex-shrink-0 w-[calc(100%/4)] xl:w-[calc(100%/7)] cursor-pointer"
+  :class="{
+    'border-primary-border border rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]':
+      cashierProduct_productState.selectedCategory === 'bundle'
+  }"
+  @click="cashierProduct_handleSelectCategory( 'bundle')"
+>
+  <template #content>
+    <section id="cashier-card-content" class="flex flex-col gap-3 items-center">
+      <AppBaseImage
+        src="/images/icons/package.svg"
+        alt="Product Bundles"
+        class="h-8 w-8 rounded-full object-cover pointer-events-none"
+      />
+      <p class="font-semibold text-sm text-grayscale-70 line-clamp-2 text-center">
+        Product Bundles
+      </p>
+    </section>
+  </template>
+</PrimeVueCard>
+
     </section>
   </section>
 </template>

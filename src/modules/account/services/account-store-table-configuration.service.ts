@@ -37,7 +37,6 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
   const route = useRoute();
   const router = useRouter();
   const { httpAbort_registerAbort } = useHttpAbort();
-  const { outlet_selectedOutletOnAccountPage } = storeToRefs(outletStore);
 
   /**
    * @description Reactive data binding
@@ -204,7 +203,6 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
   const accountStoreTableConfiguration_fetchUpdateStoreTable = async (): Promise<void> => {
     try {
       await outletStore.fetchOutlet_updateStoreTable(
-        outlet_selectedOutletOnAccountPage.value!.id,
         accountStoreTableConfiguration_formData,
         {
           ...httpAbort_registerAbort(ACCOUNT_STORE_TABLE_DELETE_REQUEST),
@@ -629,7 +627,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
     );
 
     const tablesCount = floor?.tables?.length || 0;
-    const hasTablesWarning = tablesCount > 0 
+    const hasTablesWarning = tablesCount > 0
       ? `<br><br><span class="font-medium text-error-main">Warning: This will also delete ${tablesCount} table${tablesCount > 1 ? 's' : ''} on this floor.</span>`
       : '';
 
@@ -684,7 +682,7 @@ export const useAccountStoreTableConfigurationService = (): IAccountStoreTableCo
       }
     } catch (error) {
       console.error('Error deleting floor configuration:', error);
-      
+
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
         type: EToastType.DANGER,

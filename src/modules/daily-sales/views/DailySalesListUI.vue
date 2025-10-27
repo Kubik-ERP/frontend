@@ -21,6 +21,7 @@ const {
   dailySalesList_getClassOfOrderType,
   dailySalesList_getClassOfPaymentStatus,
   dailySalesList_isLoading,
+  dailySalesList_isUserHasPermissionForManageStaff,
   dailySalesList_onChangePage,
   dailySales_handleOnSortChange,
   dailySalesList_queryParams,
@@ -30,86 +31,15 @@ const {
   dailySalesList_values,
 } = useDailySalesListService(outlet_currentOutlet.value?.businessType);
 
-const { staffMemberList_dropdownItemStaff } = useStaffMemberListService();
+const { staffMemberList_dropdownItemStaffUsingUserId } = useStaffMemberListService();
 
 /**
- * @description Get mock items for demo (in real app, this would come from API)
- */
-const getMockItems = (invoiceData: Record<string, unknown>) => {
-  // Mock data for demo purposes - use invoice ID to generate consistent mock data
-  const invoiceId = (invoiceData.id as string) || 'default';
-  const mockItemsData = [
-    [
-      {
-        id: `${invoiceId}-item-1`,
-        name: 'Nasi Goreng Spesial',
-        qty: 2,
-        price: 25000,
-        discountAmount: 2000,
-        subtotal: 48000
-      },
-      {
-        id: `${invoiceId}-item-2`,
-        name: 'Ayam Bakar',
-        qty: 1,
-        price: 30000,
-        discountAmount: 0,
-        subtotal: 30000
-      }
-    ],
-    [
-      {
-        id: `${invoiceId}-item-1`,
-        name: 'Gado-gado',
-        qty: 1,
-        price: 15000,
-        discountAmount: 1000,
-        subtotal: 14000
-      },
-      {
-        id: `${invoiceId}-item-2`,
-        name: 'Es Jeruk',
-        qty: 2,
-        price: 8000,
-        discountAmount: 0,
-        subtotal: 16000
-      },
-      {
-        id: `${invoiceId}-item-3`,
-        name: 'Kerupuk',
-        qty: 1,
-        price: 3000,
-        discountAmount: 0,
-        subtotal: 3000
-      }
-    ],
-    [
-      {
-        id: `${invoiceId}-item-1`,
-        name: 'Soto Ayam',
-        qty: 1,
-        price: 20000,
-        discountAmount: 0,
-        subtotal: 20000
-      }
-    ]
-  ];
-
-  // Return different mock data based on invoice ID hash
-  const hash = invoiceId.split('').reduce((acc: number, char: string) => {
-    return ((acc << 5) - acc) + char.charCodeAt(0);
-  }, 0);
-
-  return mockItemsData[Math.abs(hash) % mockItemsData.length] || [];
-};
-
-/**
- * @description Computed data with mock items added
+ * @description Use actual invoice data instead of mock data
  */
 const dailySalesDataWithItems = computed(() => {
   return dailySalesList_values.data.items.map((invoice) => ({
     ...invoice,
-    items: getMockItems(invoice as unknown as Record<string, unknown>)
+    items: invoice.invoiceDetails || []
   }));
 });
 </script>
@@ -135,7 +65,7 @@ const dailySalesDataWithItems = computed(() => {
       is-using-header
       is-using-custom-table
       is-using-expandable-rows
-      expandable-rows-field="items"
+      expandable-rows-field="invoiceDetails"
       expandable-rows-id-field="id"
       @update:currentPage="dailySalesList_onChangePage"
       @update:sort="dailySales_handleOnSortChange"
@@ -233,10 +163,11 @@ const dailySalesDataWithItems = computed(() => {
 
             <section id="staff" class="col-span-4">
               <PrimeVueSelect
+                v-if="dailySalesList_isUserHasPermissionForManageStaff"
                 id="staff"
                 v-model="dailySalesList_queryParams.staffId"
                 filter
-                :options="staffMemberList_dropdownItemStaff"
+                :options="staffMemberList_dropdownItemStaffUsingUserId"
                 option-label="label"
                 option-value="value"
                 placeholder="Select Staff"
@@ -387,34 +318,54 @@ const dailySalesDataWithItems = computed(() => {
               <table class="w-full">
                 <thead>
                   <tr class="bg-gray-100">
-                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase">Item Name</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase">Product</th>
                     <th class="px-3 py-2 text-center text-xs font-medium text-gray-700 uppercase">Qty</th>
-                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Price</th>
-                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Discount</th>
+                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Product Price</th>
+                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Variant Price</th>
+                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Product Discount</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase">Variant</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase">Notes</th>
                     <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Subtotal</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                  <tr v-for="mockItem in getMockItems(data as unknown as Record<string, unknown>)" :key="mockItem.id" class="hover:bg-gray-50">
+                  <tr v-for="invoiceDetail in data.invoiceDetails" :key="invoiceDetail.id" class="hover:bg-gray-50">
                     <td class="px-3 py-2">
-                      <span class="font-medium text-sm text-gray-900">{{ mockItem.name }}</span>
+                      <div class="flex flex-col">
+                        <span class="font-normal text-sm text-gray-700">{{ invoiceDetail.products.name }}</span>
+                      </div>
                     </td>
                     <td class="px-3 py-2 text-center">
-                      <span class="font-normal text-sm text-gray-700">{{ mockItem.qty }}</span>
+                      <span class="font-normal text-sm text-gray-700">{{ invoiceDetail.qty }}</span>
                     </td>
                     <td class="px-3 py-2 text-right">
                       <span class="font-normal text-sm text-gray-700">{{
-                        useCurrencyFormat({ data: mockItem.price })
+                        useCurrencyFormat({ data: invoiceDetail.productPrice })
                       }}</span>
                     </td>
                     <td class="px-3 py-2 text-right">
-                      <span class="font-normal text-sm text-gray-700" :class="mockItem.discountAmount > 0 ? 'text-red-600' : ''">
-                        {{ mockItem.discountAmount > 0 ? '-' : '' }}{{ useCurrencyFormat({ data: mockItem.discountAmount }) }}
+                      <span class="font-normal text-sm text-gray-700">{{
+                        useCurrencyFormat({ data: invoiceDetail?.variant?.price ?? 0 })
+                      }}</span>
+                    </td>
+                    <td class="px-3 py-2 text-right">
+                      <span class="font-normal text-sm text-gray-700" :class="(invoiceDetail.products.discountPrice || 0) > 0 ? 'text-red-600' : ''">
+                        {{ (invoiceDetail.products.discountPrice || 0) > 0 ? '-' : '' }}{{ useCurrencyFormat({ data: invoiceDetail.products.discountPrice || 0 }) }}
                       </span>
+                    </td>
+                    <td class="px-3 py-2">
+                      <div class="flex flex-col">
+                        <span class="font-normal text-sm text-gray-700">{{ invoiceDetail?.variant?.name }}</span>
+                      </div>
+                    </td>
+                    <td class="px-3 py-2">
+                      <span class="font-normal text-sm text-gray-700">{{ invoiceDetail.notes || '-' }}</span>
                     </td>
                     <td class="px-3 py-2 text-right">
                       <span class="font-semibold text-sm text-gray-900">{{
-                        useCurrencyFormat({ data: mockItem.subtotal })
+                        useCurrencyFormat({
+                          data: (invoiceDetail.productPrice + (invoiceDetail?.variant?.price ?? 0)) * invoiceDetail.qty - (invoiceDetail.products.discountPrice || 0)
+                        })
                       }}</span>
                     </td>
                   </tr>

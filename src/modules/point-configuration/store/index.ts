@@ -17,6 +17,23 @@ import type {
 
 // Plugins
 import httpClient from '@/plugins/axios';
+import { RouteLocationNormalizedLoadedGeneric } from 'vue-router';
+
+function withStoreHeader(
+  route: RouteLocationNormalizedLoadedGeneric,
+  extra: AxiosRequestConfig = {},
+): AxiosRequestConfig {
+  if (route.path.includes('self-order')) {
+    return {
+      ...extra,
+      headers: {
+        ...(extra.headers || {}),
+        'X-STORE-ID': route.query.storeId as string,
+      },
+    };
+  }
+  return extra;
+}
 
 export const usePointConfigurationStore = defineStore('point-configuration', {
   state: (): IPointConfigurationStore => ({
@@ -87,14 +104,19 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
     async loyaltyPointBenefit_fetchlist(
       params: IPointConfigurationListRequestQuery,
       requestConfigurations: AxiosRequestConfig,
+      route?: RouteLocationNormalizedLoadedGeneric,
     ): Promise<IPointConfigurationListResponse> {
       this.loyaltyPointBenefit_isLoading = true;
 
       try {
-        const response = await httpClient.get(`${LOYALTY_POINT_BENEFIT_BASE_ENDPOINT}`, {
-          params,
-          ...requestConfigurations,
-        });
+        const response = await httpClient.get(
+          (route?.path.includes('self-order') ? '/self-order' : '') + `${LOYALTY_POINT_BENEFIT_BASE_ENDPOINT}`,
+          {
+            params,
+            ...requestConfigurations,
+            ...(route ? withStoreHeader(route) : {}),
+          },
+        );
         this.loyaltyPointBenefit_list = response.data.data;
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -158,6 +180,27 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
       this.loyaltyPointBenefit_isLoading = true;
       try {
         const response = await httpClient.patch(`${LOYALTY_POINT_BENEFIT_BASE_ENDPOINT}/${payload.id}`, payload, {
+          ...requestConfigurations,
+        });
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.loyaltyPointBenefit_isLoading = false;
+      }
+    },
+
+    async loyaltyPointBenefit_deleteBenefit(
+      id: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.loyaltyPointBenefit_isLoading = true;
+      try {
+        const response = await httpClient.delete(`${LOYALTY_POINT_BENEFIT_BASE_ENDPOINT}/${id}`, {
           ...requestConfigurations,
         });
         return Promise.resolve(response.data);
@@ -249,10 +292,37 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
       }
     },
 
-    async loyaltySettings_fetchDetails(requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async loyaltyBenefit_deleteFreeItems(id: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
       this.loyaltyPointBenefit_isLoading = true;
       try {
-        const response = await httpClient.get(`${LOYALTY_POINT_SETTINGS_BASE_ENDPOINT}`, requestConfigurations);
+        const response = await httpClient.delete(`${LOYALTY_POINT_BENEFIT_BASE_ENDPOINT}/${id}`, {
+          ...requestConfigurations,
+        });
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.loyaltyPointBenefit_isLoading = false;
+      }
+    },
+
+    async loyaltySettings_fetchDetails(
+      requestConfigurations: AxiosRequestConfig,
+      route?: RouteLocationNormalizedLoadedGeneric,
+    ): Promise<unknown> {
+      this.loyaltyPointBenefit_isLoading = true;
+      try {
+        const response = await httpClient.get(
+          (route?.path.includes('self-order') ? '/self-order' : '') + `${LOYALTY_POINT_SETTINGS_BASE_ENDPOINT}`,
+          {
+            ...requestConfigurations,
+            ...(route ? withStoreHeader(route) : {}),
+          },
+        );
         this.loyaltyPointSettings_value = response.data.data.data;
         return Promise.resolve(response.data);
       } catch (error: unknown) {
@@ -280,6 +350,29 @@ export const usePointConfigurationStore = defineStore('point-configuration', {
           },
         );
         this.loyaltyPointSettingsProduct_value = response.data.data;
+        console.log(this.loyaltyPointSettingsProduct_value);
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.productList_isLoading = false;
+      }
+    },
+
+    async loyaltySettings_deleteProductList(
+      id: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
+      this.productList_isLoading = true;
+      try {
+        const response = await httpClient.delete(
+          `${LOYALTY_POINT_SETTINGS_BASE_ENDPOINT}/${id}`,
+          requestConfigurations,
+        );
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

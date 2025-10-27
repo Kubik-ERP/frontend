@@ -3,15 +3,26 @@
 import CustomDatePicker from '../components/CustomDatePicker.vue';
 // service
 import { useReportService } from '../services/report.service';
-const { lossReport_columns, report_queryParams, findOutletDetail, findStaffDetail } = useReportService();
+const {
+  lossReport_columns,
+  report_queryParams,
+  findOutletDetail,
+  findStaffDetail,
+  hasAccessAllStorePermission,
+  outlet_currentOutlet,
+} = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../composables/useReportExporter';
-const { exportToPdf, exportToCsv } = useReportExporter();
+const { exportToPdf, exportToCsv, export_isloading } = useReportExporter();
 const handleExportToPdf = () => {
   exportToPdf({
     reportName: 'Loss Report',
-    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
-    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    storeName: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      : outlet_currentOutlet.value!.name,
+    storeAddress: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: lossReport_columns,
@@ -21,8 +32,12 @@ const handleExportToPdf = () => {
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Loss Report',
-    storeName: findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores',
-    storeAddress: findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores',
+    storeName: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      : outlet_currentOutlet.value!.name,
+    storeAddress: hasAccessAllStorePermission
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: lossReport_columns,
@@ -569,9 +584,15 @@ const onChangePage = (newPage: number) => {
         <h1 class="font-bold text-2xl text-text-primary">Loss Report</h1>
       </template>
       <template #header-suffix>
-        <PrimeVueButton variant="outlined" label="Export" @click="popover.toggle($event)">
+        <PrimeVueButton
+          variant="outlined"
+          label="Export"
+          class="border border-primary-border text-primary"
+          :loading="export_isloading"
+          @click="popover.toggle($event)"
+        >
           <template #icon>
-            <AppBaseSvg name="export" class="!w-5 !h-5" />
+            <AppBaseSvg name="export" class="!w-5 !h-5 filter-primary-color" />
           </template>
         </PrimeVueButton>
         <PrimeVuePopover
@@ -585,12 +606,14 @@ const onChangePage = (newPage: number) => {
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .pdf"
+              :loading="export_isloading"
               @click="handleExportToPdf"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .csv"
+              :loading="export_isloading"
               @click="handleExportToCsv"
             />
           </section>

@@ -41,7 +41,7 @@ const hasPermission = rbac.hasPermission('invoice_templates');
         class="flex items-center gap-2 cursor-pointer"
         @click="settingInvoice_toggleEditableInvoiceConfiguration"
       >
-        <AppBaseSvg name="edit" class="!w-5 !h-5" />
+        <AppBaseSvg name="edit" class="filter-primary-color w-5 h-5" />
         <span class="font-semibold text-primary text-sm"> Edit Invoice Config </span>
       </div>
     </header>
@@ -133,7 +133,7 @@ const hasPermission = rbac.hasPermission('invoice_templates');
                         >
                           <template #default>
                             <section id="content" class="flex items-center gap-2">
-                              <AppBaseSvg name="image" class="!w-5 !h-5" />
+                              <AppBaseSvg name="image" class="filter-primary-color w-5 h-5" />
                               <span class="font-normal text-sm">Change Image</span>
                             </section>
                           </template>
@@ -142,7 +142,7 @@ const hasPermission = rbac.hasPermission('invoice_templates');
                     </PrimeVueFileUpload>
 
                     <section id="description" class="flex gap-3">
-                      <AppBaseSvg name="info" class="!w-5 !h-5"/>
+                      <AppBaseSvg name="info" class="filter-primary-color w-5 h-5"/>
                       <span class="font-normal text-black-secondary text-xs">
                         Only square images (1:1 ratio) are supported. <br />
                         Please adjust your image before uploading.
@@ -156,7 +156,7 @@ const hasPermission = rbac.hasPermission('invoice_templates');
                     class="flex items-center gap-2 cursor-pointer"
                     @click="settingInvoice_onShowEditFooterContentDialog"
                   >
-                    <AppBaseSvg name="edit" class="!w-5 !h-5"/>
+                    <AppBaseSvg name="edit" class="filter-primary-color w-5 h-5"/>
                     <span class="font-semibold text-primary text-sm"> Edit footer content </span>
                   </div>
                 </template>
@@ -182,7 +182,7 @@ const hasPermission = rbac.hasPermission('invoice_templates');
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
-                  <AppBaseSvg name="settings" class="!w-5 !h-5"/>
+                  <AppBaseSvg name="settings" class="filter-primary-color w-5 h-5"/>
                   <span class="font-normal text-sm">Invoice Number Configuration</span>
                 </section>
               </template>
@@ -225,7 +225,7 @@ const hasPermission = rbac.hasPermission('invoice_templates');
       />
 
       <PrimeVueButton
-        class="bg-blue-primary border-none text-base py-[10px] w-full max-w-40"
+        class="bg-primary border-none text-base py-[10px] w-full max-w-40"
         label="Update"
         type="button"
         :disabled="settingInvoice_formValidations.$invalid"

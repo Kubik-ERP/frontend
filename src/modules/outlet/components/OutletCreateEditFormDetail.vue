@@ -185,7 +185,7 @@ const { authentication_userData } = storeToRefs(authenticationStore);
           :show-cancel-button="false"
           :show-upload-button="false"
           :pt="{
-            root: 'border-2 border-dashed border-grayscale-30 bg-primary-background flex flex-col items-center justify-center py-10 relative inset-0 z-0',
+            root: 'border-2 border-dashed border-grayscale-30 bg-transparent flex flex-col items-center justify-center py-10 relative inset-0 z-0 hover:border-primary',
             header: `relative inset-0 z-[1] ${outletCreateEdit_formData.photo ? '[&>button]:hidden' : ''}`,
             content: '[&>.p-progressbar]:hidden',
             fileInfo: 'hidden',
@@ -197,7 +197,8 @@ const { authentication_userData } = storeToRefs(authenticationStore);
           <template #header="{ chooseCallback }">
             <PrimeVueButton
               v-if="!outletCreateEdit_formData.photo"
-              class="bg-white button-shadow border-none font-semibold text-blue-primary text-sm py-[10px] w-full max-w-36"
+              class="bg-white button-shadow border-none font-semibold text-primary text-sm py-[10px] w-full max-w-36"
+              style="box-shadow: 0px 0px 10px 0px #00000026;"
               @click="chooseCallback()"
             >
               <template #default>

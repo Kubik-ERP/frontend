@@ -1,7 +1,7 @@
 import type {
   IFinancialReport_discount,
   IFinancialReport_paymentMethod,
-  IFinancialReport_profitAndLost,
+  IFinancialReport_FinancialSummary,
   IFinancialReport_taxServiceCharge,
 } from './financial-report';
 export * from './financial-report';
@@ -9,7 +9,17 @@ export * from './financial-report';
 import type { ISalesReport } from './sales-report';
 export * from './sales-report';
 
-import type { IInventoryReport_stock, IInventoryReport_stockMovement } from './inventory-report';
+import type {
+  // IInventoryReport_stock,
+  // IInventoryReport_stockMovement,
+  IInventoryReport_movementLedger,
+  IInventoryReport_currentStockOverview,
+  IInventoryReport_poReceivingVariance,
+  IInventoryReport_slowDeadStock,
+  IInventoryReport_itemPerformance,
+  IInventoryReport_itemPerformanceByCategory,
+  IInventoryReport_itemPerformanceByBrand,
+} from './inventory-report';
 export * from './inventory-report';
 
 // customer
@@ -29,8 +39,11 @@ export * from './voucher-report';
 import { IOutlet } from '@/modules/outlet/interfaces';
 export type { IOutlet };
 
-import { IStaffMember } from '@/modules/staff-member/interfaces';
-export type { IStaffMember };
+export interface IStaffMember {
+  id: string;
+  fullname: string;
+  name?: string;
+}
 
 interface IOutletListOptions {
   value: string;
@@ -48,7 +61,7 @@ export interface IReportStore {
   outlet_lists_values: IOutlet[];
   staff_lists_values: IStaffMember[];
   // financial report
-  report_profitAndLost_values: IFinancialReport_profitAndLost;
+  report_profitAndLost_values: IFinancialReport_FinancialSummary;
   report_discount_values: IFinancialReport_discount;
   report_paymentMethod_values: IFinancialReport_paymentMethod;
   report_taxAndServiceCharge_values: IFinancialReport_taxServiceCharge[];
@@ -62,8 +75,15 @@ export interface IReportStore {
   salesReport_salesByQuarter_values: ISalesReport;
   salesReport_salesByYear_values: ISalesReport;
   // inventory report
-  inventoryReport_stock_values: IInventoryReport_stock[];
-  inventoryReport_stockMovement_values: IInventoryReport_stockMovement[];
+  // inventoryReport_stock_values: IInventoryReport_stock[];
+  // inventoryReport_stockMovement_values: IInventoryReport_stockMovement[];
+  inventoryReport_movementLedger_values: IInventoryReport_movementLedger[];
+  inventoryReport_currentStockOverview_values: IInventoryReport_currentStockOverview;
+  inventoryReport_poReceivingVariance_values: IInventoryReport_poReceivingVariance[];
+  inventoryReport_slowDeadStock_values: IInventoryReport_slowDeadStock[];
+  inventoryReport_itemPerformance_values: IInventoryReport_itemPerformance[];
+  inventoryReport_itemPerformanceByCategory_values: IInventoryReport_itemPerformanceByCategory[];
+  inventoryReport_itemPerformanceByBrand_values: IInventoryReport_itemPerformanceByBrand[];
   // voucher report
   voucherReport_values: IVoucherReport[];
   // customer report
@@ -71,6 +91,10 @@ export interface IReportStore {
 }
 
 export interface IReportProvided {
+  hasAccessAllStorePermission: boolean;
+  hasStoreManagementPermission: boolean;
+  hasManageStaffMemberPermission: boolean;
+  // columns
   financialReport_profitAndLost_columns: IColumnDataTable[];
   financialReport_discount_columns: IColumnDataTable[];
   financialReport_paymentMethod_columns: IColumnDataTable[];
@@ -79,8 +103,13 @@ export interface IReportProvided {
   salesReport_columns: IColumnDataTable[];
   salesReport_salesByItem_columns: IColumnDataTable[];
   salesReport_salesByOrderType_columns: IColumnDataTable[];
-  inventoryReport_stock_columns: IColumnDataTable[];
-  inventoryReport_stockMovement_columns: IColumnDataTable[];
+  inventoryReport_movementLedger_columns: IColumnDataTable[];
+  inventoryReport_currentStockOverview_columns: IColumnDataTable[];
+  inventoryReport_poReceivingVariance_columns: IColumnDataTable[];
+  inventoryReport_slowDeadStock_columns: IColumnDataTable[];
+  inventoryReport_itemPerformance_columns: IColumnDataTable[];
+  inventoryReport_itemPerformanceByCategory_columns: IColumnDataTable[];
+  inventoryReport_itemPerformanceByBrand_columns: IColumnDataTable[];
   voucherReport_columns: IColumnDataTable[];
   customerReport_columns: IColumnDataTable[];
   // methods
@@ -96,7 +125,7 @@ export interface IReportProvided {
   // store
   report_isLoading: globalThis.Ref<boolean>;
   // financial
-  report_profitAndLost_values: globalThis.Ref<IFinancialReport_profitAndLost>;
+  report_profitAndLost_values: globalThis.Ref<IFinancialReport_FinancialSummary>;
   report_discount_values: globalThis.Ref<IFinancialReport_discount>;
   report_paymentMethod_values: globalThis.Ref<IFinancialReport_paymentMethod>;
   report_taxAndServiceCharge_values: globalThis.Ref<IFinancialReport_taxServiceCharge[]>;
@@ -110,8 +139,13 @@ export interface IReportProvided {
   salesReport_salesByQuarter_values: globalThis.Ref<ISalesReport>;
   salesReport_salesByYear_values: globalThis.Ref<ISalesReport>;
   // inventory report
-  inventoryReport_stock_values: globalThis.Ref<IInventoryReport_stock[]>;
-  inventoryReport_stockMovement_values: globalThis.Ref<IInventoryReport_stockMovement[]>;
+  inventoryReport_movementLedger_values: globalThis.Ref<IInventoryReport_movementLedger[]>;
+  inventoryReport_currentStockOverview_values: globalThis.Ref<IInventoryReport_currentStockOverview>;
+  inventoryReport_poReceivingVariance_values: globalThis.Ref<IInventoryReport_poReceivingVariance[]>;
+  inventoryReport_slowDeadStock_values: globalThis.Ref<IInventoryReport_slowDeadStock[]>;
+  inventoryReport_itemPerformance_values: globalThis.Ref<IInventoryReport_itemPerformance[]>;
+  inventoryReport_itemPerformanceByCategory_values: globalThis.Ref<IInventoryReport_itemPerformanceByCategory[]>;
+  inventoryReport_itemPerformanceByBrand_values: globalThis.Ref<IInventoryReport_itemPerformanceByBrand[]>;
   // voucher report
   voucherReport_values: globalThis.Ref<IVoucherReport[]>;
   // customer report
@@ -122,4 +156,6 @@ export interface IReportProvided {
   // staff_list
   staff_lists_options: globalThis.Ref<IStaffMemberListOptions[]>;
   findStaffDetail: (id: string) => IStaffMember | null | undefined;
+  // misc
+  outlet_currentOutlet: globalThis.Ref<IOutlet | null>;
 }

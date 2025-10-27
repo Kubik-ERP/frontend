@@ -21,9 +21,11 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
    * @description Injected variables
    */
   const store = useStaffMemberStore(); // Instance of the store
+  const route = useRoute();
   const {
     staffMember_isLoading,
     staffMember_listDropdownItemStaff,
+    staffMember_listDropdownItemStaffUsingUserId,
     staffMember_listDropdownItemTitles,
     staffMember_lists,
   } = storeToRefs(store);
@@ -148,9 +150,9 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
         pageSize: 100,
         orderBy: null,
         orderDirection: null
-      }, {})
-      
-      staffMemberCreateEdit_permissionData.value = res.data.items
+      }, {}, route)
+
+      staffMemberCreateEdit_permissionData.value = res.data?.items ?? []
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -167,6 +169,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
   return {
     staffMemberList_columns: STAFF_MEMBER_LIST_COLUMNS,
     staffMemberList_dropdownItemStaff: staffMember_listDropdownItemStaff,
+    staffMemberList_dropdownItemStaffUsingUserId: staffMember_listDropdownItemStaffUsingUserId,
     staffMemberList_dropdownItemTitles: staffMember_listDropdownItemTitles,
     staffMemberList_typesOfUserPermissions: staffMemberCreateEdit_permissionData,
     staffMemberList_fetchListMembers,

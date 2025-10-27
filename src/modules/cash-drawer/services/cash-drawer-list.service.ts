@@ -72,6 +72,9 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
   const cashDrawerList_formValidationsOfOpenRegister = useVuelidate(
     cashDrawerList_formRulesOfOpenRegister,
     cashDrawerList_formDataOfOpenRegister,
+    {
+      $scope: 'cashDrawerList',
+    },
   );
 
   /**
@@ -128,6 +131,7 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
    */
   const cashDrawerList_fetchOpenRegister = async (): Promise<unknown> => {
     try {
+      console.log('cashDrawerList_fetchOpenRegister here');
       const result = await store.cashDrawer_open(
         outlet_currentOutlet.value!.id,
         cashDrawerList_formDataOfOpenRegister,
@@ -262,6 +266,8 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
     if (cashDrawerList_formValidationsOfOpenRegister.value.$invalid) {
       return;
     }
+
+    console.log('cashDrawerList_onSubmitOpenRegisterForm, here');
 
     try {
       await cashDrawerList_fetchOpenRegister();

@@ -266,6 +266,27 @@ export const useCustomerDetailService = () => {
         customerId,
         httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
         loyaltyPoint_queryParams,
+        route,
+      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  const customerDetails_fetchLoyaltyPointByCustomerId = async (
+    customerId: string,
+    queryParams: ICustomerLoyaltyPointQuery,
+  ): Promise<IloyaltyPoints> => {
+    try {
+      return await store.fetch_loyaltyPoints_list(
+        customerId,
+        httpAbort_registerAbort(SALES_INVOICE_LIST_REQUEST),
+        queryParams,
+        route,
       );
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -492,5 +513,6 @@ export const useCustomerDetailService = () => {
     pointTypeFormat,
 
     handle_editLoyaltyPoints,
+    customerDetails_fetchLoyaltyPointByCustomerId,
   };
 };

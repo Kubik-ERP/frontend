@@ -46,8 +46,8 @@ export interface IQueryParams {
 
 export interface IProductBasedItems {
   productId?: string | null;
-  name?: string| null;
-  price?: number| null;
+  name?: string | null;
+  price?: number | null;
   pointsEarned?: number | null;
   minimumPurchase?: number | null;
 }
@@ -85,9 +85,9 @@ export interface ISelectedProducts {
   name?: string | null;
   price?: number | null;
   isSelected?: boolean | null;
-  productId?: string| null;
-  pointsEarned?: number| null;
-  minimumPurchase?: number| null;
+  productId?: string | null;
+  pointsEarned?: number | null;
+  minimumPurchase?: number | null;
 }
 
 export interface IProductWithSelection extends ILoyaltyPointSettingsAllProductList {
@@ -147,4 +147,5 @@ export interface ILoyaltyPointSettingsProvided {
   ) => void;
   loyaltyPointSettings_EditProduct: Ref<IProduct[] | null>;
   loyaltyPointSettings_onSubmitDialogEditProduct: () => void;
+  loyaltyPointSettings_onDeleteProduct: (productId: string) => void;
 }

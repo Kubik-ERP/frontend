@@ -210,7 +210,7 @@ const handleLogout = async () => {
         :class="[isCollapsed && !isCurrentlyMobile ? 'justify-center' : 'gap-2']"
         @click="() => $router.push({ name: 'outlet.list' })"
       >
-        <AppBaseSvg name="store" class="!w-5 !h-5 flex-shrink-0" />
+        <AppBaseSvg name="store" class="!w-5 !h-5 flex-shrink-0 filter-primary-color" />
         <section
           v-show="!isCollapsed || isCurrentlyMobile"
           id="outlet-information"
@@ -263,8 +263,8 @@ const handleLogout = async () => {
                   >
                     <AppBaseSvg
                       :name="menu.iconName"
-                      class="!w-5 !h-5"
-                      :class="[isAnySubMenuActive(menu) ? 'filter-white' : '']"
+                      class="w-5 h-5"
+                      :class="[isAnySubMenuActive(menu) ? 'filter-white' : 'filter-primary-color']"
                     />
                     <span
                       class="font-normal text-base whitespace-nowrap"
@@ -291,13 +291,13 @@ const handleLogout = async () => {
                       <RouterLink
                         v-ripple
                         :to="subMenu.path"
-                        class="inline-block w-full h-fit bg-grayscale-10 px-1"
+                        class="inline-block w-full h-fit bg-grayscale-10"
                         :class="[subMenuIndex === menu.subMenus.length - 1 ? 'pb-1' : '']"
                       >
                         <div
                           id="content"
-                          class="flex items-center px-4 py-2 rounded text-surface-700 hover:bg-primary-border dark:text-surface-0 dark:hover:bg-primary-border duration-150 transition-colors p-ripple"
-                          :class="[route.path === subMenu.path ? 'bg-primary-border' : 'bg-grayscale-10']"
+                          class="flex items-center px-4 py-2 rounded text-surface-700 hover:bg-secondary dark:text-surface-0 dark:hover:bg-secondary duration-150 transition-colors p-ripple"
+                          :class="[route.path === subMenu.path ? 'bg-secondary' : 'bg-grayscale-10']"
                         >
                           <span class="font-normal text-base text-black pl-7">
                             {{ subMenu.translationKey ? useLocalization(subMenu.translationKey) : subMenu.name }}
@@ -320,8 +320,8 @@ const handleLogout = async () => {
                   >
                     <AppBaseSvg
                       :name="menu.iconName"
-                      class="!w-5 !h-5"
-                      :class="[isAnySubMenuActive(menu) ? 'filter-white' : '']"
+                      class="w-5 h-5"
+                      :class="[isAnySubMenuActive(menu) ? 'filter-white' : 'filter-primary-color']"
                     />
                   </div>
                 </template>
@@ -346,8 +346,8 @@ const handleLogout = async () => {
                   >
                     <AppBaseSvg
                       :name="menu.iconName"
-                      class="!w-5 !h-5 flex-shrink-0"
-                      :class="[route.path === menu.path ? 'filter-white' : '']"
+                      class="w-5 h-5 flex-shrink-0"
+                      :class="[route.path === menu.path ? 'filter-white' : 'filter-primary-color']"
                     />
                     <p
                       v-show="!isCollapsed || isCurrentlyMobile"
@@ -380,7 +380,7 @@ const handleLogout = async () => {
           :to="additionalMenu.path"
           class="flex items-center py-2 basic-smooth-animation hover:bg-grayscale-10 cursor-pointer rounded-md"
           :class="[
-            route.path === additionalMenu.path ? 'bg-primary-border' : '',
+            route.path === additionalMenu.path ? 'bg-secondary' : '',
             isCollapsed && !isCurrentlyMobile ? 'justify-center px-2' : 'gap-2 px-4',
           ]"
           :title="isCollapsed && !isCurrentlyMobile ? additionalMenu.name : ''"
@@ -400,7 +400,7 @@ const handleLogout = async () => {
     <!-- logout -->
     <section v-if="isCurrentlyMobile" id="logout" class="flex flex-col gap-2 w-full">
       <PrimeVueButton
-        class="flex items-center px-4 py-2 rounded text-surface-700 hover:bg-primary-border dark:text-surface-0 dark:hover:bg-primary-border hover:cursor-pointer duration-150 transition-colors p-ripple"
+        class="flex items-center px-4 py-2 rounded text-surface-700 hover:bg-secondary dark:text-surface-0 dark:hover:bg-secondary hover:cursor-pointer duration-150 transition-colors p-ripple"
         variant="text"
         unstyled
         @click="handleLogout"
