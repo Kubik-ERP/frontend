@@ -404,6 +404,16 @@ const hasPermission = rbac.hasPermission('product_management');
         }"
       >
         <div class="flex flex-col items-start">
+          <router-link :to="{ name: 'catalog.products.detail', params: { id: selectedProduct.id } }">
+            <PrimeVueButton variant="text" :label="'Preview'" class="text-black w-full px-4 py-3">
+              <template #default>
+                <section class="flex items-center gap-2 w-full">
+                  <AppBaseSvg name="eye-visible" class="!w-4 !h-4" />
+                  <span class="font-normal text-text-primary">{{ 'Preview' }}</span>
+                </section>
+              </template>
+            </PrimeVueButton>
+          </router-link>
           <PrimeVueButton
             variant="text"
             :label="useLocalization('main.popover.edit')"
