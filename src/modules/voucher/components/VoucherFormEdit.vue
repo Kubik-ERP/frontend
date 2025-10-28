@@ -460,7 +460,7 @@ function removeSelectedProduct(id: string) {
         <PrimeVueButton
           label="Update Voucher"
           :disabled="voucherEdit_isLoading"
-          class="p-button-primary px-6"
+          class="bg-primary px-6"
           type="submit"
         />
       </div>

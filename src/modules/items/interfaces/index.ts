@@ -30,6 +30,8 @@ export interface IInventoryItems {
   itemName: string;
   imageUrl?: string | null;
   conversions?: IUnitConversion[];
+  markup: number;
+  margin: number;
 }
 
 export interface IInventoryItemsStockAdjustment {
