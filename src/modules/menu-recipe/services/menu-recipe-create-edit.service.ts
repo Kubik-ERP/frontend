@@ -225,7 +225,32 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
       marginPerSellingPriceRp: apiData.margin_per_selling_price_rp,
       marginPerSellingPricePercent: apiData.margin_per_selling_price_percent,
       ingredients: apiData.ingredients.map((ingredient: IIngredient) => ({
-        itemId: ingredient.item_id as unknown as IInventoryItems,
+        itemId: {
+          id: ingredient.inventory_item.id,
+          name: ingredient.inventory_item.name,
+          itemName: ingredient.inventory_item.name,
+          pricePerUnit: ingredient.inventory_item.price_per_unit,
+          unit: ingredient.inventory_item.unit,
+          brandId: ingredient.inventory_item.brand_id,
+          barcode: ingredient.inventory_item.barcode || '',
+          sku: ingredient.inventory_item.sku,
+          categoryId: ingredient.inventory_item.category_id,
+          notes: ingredient.inventory_item.notes,
+          stockQuantity: ingredient.inventory_item.stock_quantity,
+          reorderLevel: ingredient.inventory_item.reorder_level,
+          minimumStockQuantity: ingredient.inventory_item.minimum_stock_quantity,
+          expiryDate: ingredient.inventory_item.expiry_date ? String(ingredient.inventory_item.expiry_date) : '',
+          storageLocationId: ingredient.inventory_item.storage_location_id || '',
+          supplierId: ingredient.inventory_item.supplier_id,
+          createdAt: ingredient.inventory_item.created_at.toString(),
+          updatedAt: ingredient.inventory_item.updated_at.toString(),
+          priceGrosir: ingredient.inventory_item.price_grosir,
+          // Add missing required fields with fallback values
+          brand: '', // Will be populated when we have brand data
+          category: '', // Will be populated when we have category data
+          storageLocation: '', // Will be populated when we have storage location data
+          supplier: '', // Will be populated when we have supplier data
+        } as IInventoryItems,
         quantity: ingredient.qty,
         uom: ingredient.uom,
         notes: ingredient.notes,
@@ -311,7 +336,7 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
     try {
       const payload = menuRecipeCreateEdit_createPayloadFromFormData();
 
-      const response = await store.menuRecipe_edit(id, payload, {
+      const response = await store.menuRecipe_update(id, payload, {
         ...httpAbort_registerAbort(MENU_RECIPE_UPDATE_REQUEST),
       });
 
@@ -546,24 +571,17 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
    * @description Handle business logic for event button add ingredient item on dialog
    */
   const menuRecipeCreateEdit_onSaveIngredientItems = (): void => {
-    // Add form data from list
-    menuRecipeCreateEdit_formData.value.ingredients.push(
-      ...menuRecipeCreateEdit_listIngredientItemsOnDialog.value,
-    );
-
-    // Remove duplicate items
-    menuRecipeCreateEdit_formData.value.ingredients = [
-      ...new Map(
-        menuRecipeCreateEdit_formData.value.ingredients.map(item => [JSON.stringify(item), item]),
-      ).values(),
-    ];
+    // Replace the form data ingredients with the dialog list
+    menuRecipeCreateEdit_formData.value.ingredients = [...menuRecipeCreateEdit_listIngredientItemsOnDialog.value];
   };
 
   /**
    * @description Handle business logic for showing dialog add ingredient
    */
   const menuRecipeCreateEdit_onShowDialogAddIngredient = (): void => {
-    console.log('show dialog add ingredient');
+    // Populate dialog list with existing ingredients when opening dialog
+    menuRecipeCreateEdit_listIngredientItemsOnDialog.value = [...menuRecipeCreateEdit_formData.value.ingredients];
+
     const argsEventEmitter: IPropsDialog = {
       id: 'menu-recipe-add-ingredients-dialog',
       isOpen: true,
@@ -761,13 +779,6 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
       menuRecipeCreateEdit_isLoadingProducts.value = false;
     }
   };
-
-  /**
-   * @description Initialize component on mounted
-   */
-  onMounted(async () => {
-    await menuRecipeCreateEdit_onLoadInitialData();
-  });
 
   return {
     menuRecipeCreateEdit_fetchCreate,

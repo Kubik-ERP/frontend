@@ -12,8 +12,12 @@ interface CountryInformation {
   slug: string;
 }
 
-const { cashierSelfOrder_handleSignIn, cashierSelfOrder_signInForm, cashierSelfOrder_formValidationsSignIn } =
-  useCashierSelfOrderService();
+const {
+  cashierSelfOrder_handleSignIn,
+  cashierSelfOrder_signInForm,
+  cashierSelfOrder_formValidationsSignIn,
+  cashierSelfOrder_handleGuestSignIn,
+} = useCashierSelfOrderService();
 
 // Helper function for country option labels
 const getCountryOptionLabel = (value: CountryInformation): string => {
@@ -72,7 +76,7 @@ const getCountryOptionLabel = (value: CountryInformation): string => {
           </AppBaseFormGroup>
         </div>
 
-        <span class="text-xs text-[#323232]">Phone Number</span>
+        <span class="text-xs text-[#323232]">Phone Number (please login with the number you used during registration to access your loyalty points)</span>
         <div class="grid grid-cols-7 gap-2 items-end w-full">
           <div class="col-span-2 flex flex-col gap-1 h-16">
             <AppBaseFormGroup
@@ -137,6 +141,9 @@ const getCountryOptionLabel = (value: CountryInformation): string => {
           @click="cashierSelfOrder_handleSignIn()"
           >Sign In</PrimeVueButton
         >
+        <PrimeVueButton class="w-full" outlined severity="secondary" @click="cashierSelfOrder_handleGuestSignIn()">
+          Sign In as Guest
+        </PrimeVueButton>
       </div>
     </div>
 

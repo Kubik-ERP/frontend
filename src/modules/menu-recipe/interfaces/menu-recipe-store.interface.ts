@@ -11,6 +11,7 @@ export interface IMenuRecipe {
   store_id: string;
   created_at: Date;
   updated_at: Date;
+  products: IProducts;
   ingredients: IIngredient[];
 }
 
@@ -26,6 +27,36 @@ export interface IIngredient {
 
 export interface IInventoryItem {
   id: string;
+  name: string;
+  brand_id: string;
+  barcode: null | string;
+  sku: string;
+  category_id: string;
+  unit: string;
+  notes: string;
+  stock_quantity: number;
+  reorder_level: number;
+  minimum_stock_quantity: number;
+  expiry_date: null;
+  storage_location_id: null;
+  price_per_unit: number;
+  supplier_id: string;
+  created_at: Date;
+  updated_at: Date;
+  store_id: string;
+  price_grosir: number;
+}
+
+export interface IProducts {
+  id: string;
+  name: string;
+  price: number;
+  discount_price: null;
+  picture_url: string;
+  is_percent: boolean;
+  stores_id: string;
+  master_inventory_item_id: string;
+  barcode: string;
 }
 
 export interface IMenuRecipeCreateEditFormPayload {

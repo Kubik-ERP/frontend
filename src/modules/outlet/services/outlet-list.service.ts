@@ -40,7 +40,7 @@ export const useOutletListService = (): IOutletListProvided => {
    */
   const outletList_dynamicClassOfSelectedOutlet = (outlet: IOutlet) => {
     if (outletList_selectedOutlet.value?.id === outlet.id) {
-      return 'border border-solid border-primary-border bg-primary-background outlet-selecter-shadow';
+      return 'bg-secondary/10 outlet-selecter-shadow';
     }
 
     return '';
@@ -108,7 +108,7 @@ export const useOutletListService = (): IOutletListProvided => {
 
     const currentStoreCount = outlet_lists.value.items.length;
     const storeLimit = authentication_userData.value.limitStore || 0;
-    
+
     if (currentStoreCount >= storeLimit) {
       // Show toast error message
       eventBus.emit('AppBaseToast', {
@@ -119,7 +119,7 @@ export const useOutletListService = (): IOutletListProvided => {
       });
       return false;
     }
-    
+
     return true;
   };
 

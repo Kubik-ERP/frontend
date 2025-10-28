@@ -5,9 +5,9 @@ import {
   REPORT_VOUCHER_ENDPOINT,
   REPORT_CUSTOMER_ENDPOINT,
   REPORT_INVENTORY_ENDPOINT,
+  STAFF_MEMBER_BASE_ENDPOINT,
 } from '../constants';
 import { OUTLET_BASE_ENDPOINT } from '@/modules/outlet/constants';
-import { STAFF_MEMBER_BASE_ENDPOINT } from '@/modules/staff-member/constants';
 // Plugins
 import httpClient from '@/plugins/axios';
 // type
@@ -112,7 +112,10 @@ export const useReportStore = defineStore('report', {
           ...requestConfigurations,
         });
 
-        this.staff_lists_values = response.data.data.employees;
+        this.staff_lists_values = response.data.data.map((staffMember: IStaffMember) => ({
+          ...staffMember,
+          name: staffMember.fullname,
+        }));
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {

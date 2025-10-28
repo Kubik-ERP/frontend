@@ -36,7 +36,7 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
       <span class="font-semibold">Discount Product</span>
 
       <div class="flex flex-col items-end">
-        <span class="text-xs font-semibold">{{
+        <span class="text-xs font-semibold">-{{
           useCurrencyFormat({
             data:
               invoice_invoiceData.data.paymentStatus === 'unpaid'
@@ -44,6 +44,46 @@ const { invoice_invoiceData } = inject<IInvoiceProvided>('invoice')!;
                 : invoice_invoiceData.data.totalProductDiscount || 0,
           })
         }}</span>
+      </div>
+    </div>
+
+    <div v-if="invoice_invoiceData.data.loyaltyDiscount && invoice_invoiceData.data.loyaltyDiscount > 0" class="flex justify-between">
+      <span class="font-semibold">Loyalty Point Discount</span>
+
+      <div class="flex flex-col items-end">
+        <span class="text-xs font-semibold">
+          -{{ useCurrencyFormat({ data: invoice_invoiceData.data.loyaltyDiscount || 0 }) }}
+        </span>
+      </div>
+    </div>
+
+    <div v-if="invoice_invoiceData.data.loyaltyPointsBenefit && invoice_invoiceData.data.loyaltyPointsBenefit.pointsNeeds > 0" class="flex justify-between">
+      <span class="font-semibold">Loyalty Point</span>
+
+      <div class="flex flex-col items-end">
+        <span class="text-xs font-semibold">
+          -{{ invoice_invoiceData.data.loyaltyPointsBenefit?.pointsNeeds || 0 }} pts
+        </span>
+      </div>
+    </div>
+
+    <div v-if="invoice_invoiceData.data.loyaltyPointsBenefit && invoice_invoiceData.data.loyaltyPointsBenefit.benefitName" class="flex justify-between">
+      <span class="pl-6 text-text-disabled text-xs italic">Benefit name</span>
+
+      <div class="flex flex-col items-end">
+        <span class="text-xs text-text-disabled italic">
+          {{ invoice_invoiceData.data.loyaltyPointsBenefit?.benefitName }}
+        </span>
+      </div>
+    </div>
+
+    <div v-if="invoice_invoiceData.data.totalEarnPoints && invoice_invoiceData.data.totalEarnPoints > 0" class="flex justify-between">
+      <span class="font-semibold">Points Accumulated</span>
+
+      <div class="flex flex-col items-end">
+        <span class="text-xs font-semibold">
+          {{ invoice_invoiceData.data.totalEarnPoints }} pts
+        </span>
       </div>
     </div>
 

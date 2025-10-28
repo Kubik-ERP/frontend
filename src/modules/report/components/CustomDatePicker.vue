@@ -239,7 +239,9 @@ const onClickShortcut = (label: string) => {
             <span class="text-text-primary"
               >{{ useFormatDate(startDate, 'dd/mm/yyyy') }} - {{ useFormatDate(endDate, 'dd/mm/yyyy') }}</span
             >
-            <span class="text-text-disabled"> <AppBaseSvg name="calendarBlank" class="!w-5 !h-5" /> </span>
+            <span class="text-text-disabled">
+              <AppBaseSvg name="calendarBlank" class="!w-5 !h-5 filter-primary-color" />
+            </span>
           </div></section
       ></template>
     </PrimeVueButton>
