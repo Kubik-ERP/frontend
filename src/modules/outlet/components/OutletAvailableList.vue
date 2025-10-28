@@ -57,7 +57,7 @@ const {
       @click="outletList_onNavigateToCreateStore"
     >
       <section id="box-outlet" class="basic-smooth-animation bg-white p-5 rounded-full">
-        <AppBaseSvg name="store" class="w-6 h-6" />
+        <AppBaseSvg name="store" class="w-6 h-6 filter-primary-color" />
       </section>
 
       <PrimeVueButton class="bg-transparent border-none w-full cursor-pointer" unstyled severity="secondary">
