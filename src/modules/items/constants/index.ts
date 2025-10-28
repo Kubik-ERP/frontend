@@ -25,12 +25,13 @@ export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
     value: 'categoryName',
     translationKey: 'items.form.category',
   },
-  {
-    label: 'Brand',
-    sortable: false,
-    value: 'brandName',
-    translationKey: 'items.form.brand',
-  },
+  // {
+  //   label: 'Brand',
+  //   sortable: false,
+  //   value: 'brandName',
+  //   translationKey: 'items.form.brand',
+  // },
+
   // {
   //   label: 'Unit',
   //   sortable: false,
@@ -47,12 +48,25 @@ export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
   //   sortable: true,
   //   value: 'reorderLevel',
   // },
-  {
-    label: 'Minimum Stock',
-    sortable: true,
-    value: 'minimumStockQuantity',
-    translationKey: 'items.form.minStockQuantity',
+  // {
+  //   label: 'Minimum Stock',
+  //   sortable: true,
+  //   value: 'minimumStockQuantity',
+  //   translationKey: 'items.form.minStockQuantity',
 
+  // },
+
+   {
+    label: 'Markup (%)',
+    sortable: true,
+    value: 'markup',
+    translationKey: 'items.form.markup',
+  },
+  {
+    label: 'Margin (%)',
+    sortable: true,
+    value: 'margin',
+    translationKey: 'items.form.margin',
   },
   {
     label: 'Price Per Unit',
