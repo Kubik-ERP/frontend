@@ -181,7 +181,7 @@ const onDateSelect = (val: [Date, Date] | null) => {
             :hide-on-range-selection="true"
             :manual-input="false"
             @update:value="onDateSelect"
-            
+
           />
         </AppBaseFormGroup>
       </div>
@@ -447,7 +447,7 @@ const onDateSelect = (val: [Date, Date] | null) => {
         <PrimeVueButton
           label="Add Voucher"
           :disabled="voucherFormIsLoading"
-          class="p-button-primary px-6"
+          class="bg-primary px-6"
           type="submit"
         />
       </div>
