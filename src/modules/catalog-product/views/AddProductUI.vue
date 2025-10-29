@@ -17,6 +17,7 @@ function clearForm() {
   product_formData.variants = [];
   product_formData.categories = [];
   product_formData.imagePreview = '';
+  product_formData.stock_quantity = 0;
 
   product_formValidations.value.$reset();
 }
@@ -265,6 +266,27 @@ watch(product_formData, () => {
               />
             </AppBaseFormGroup>
           </div>
+
+          <div>
+            <AppBaseFormGroup
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+              is-name-as-label
+              label-for="stock"
+              :name="useLocalization('productDetail.form.stock.label')"
+              :validators="product_formValidations.stock_quantity"
+            >
+              <PrimeVueInputNumber
+                v-model="product_formData.stock_quantity"
+                name="stock"
+                fluid
+                class="border shadow-xs border-grayscale-30 rounded-lg"
+                :class="{ ...classes }"
+                v-on="useListenerForm(product_formValidations, 'stock_quantity')"
+              />
+            </AppBaseFormGroup>
+          </div>
+
         </div>
         <div class="grid grid-cols-2 h-fit w-full gap-x-8 mt-8">
           <div class="flex items-center gap-2 col-span-2">

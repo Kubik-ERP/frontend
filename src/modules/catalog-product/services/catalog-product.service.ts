@@ -27,6 +27,7 @@ function convertProductToFormData(payload: CreateProductPayload): FormData {
   formData.append('discount_price', String(payload.discount_price));
   formData.append('isDiscount', String(payload.isDiscount));
   formData.append('is_percent', String(payload.is_percent));
+  formData.append('stock_quantity', String(payload.stock_quantity));
 
   // Optional image
 
@@ -73,6 +74,7 @@ export const useProductService = () => {
     is_percent: false,
     discount_price: 0,
     variants: [],
+    stock_quantity: 0
   });
   const product_formValidatable = computed(() => ({
     name: product_formData.name,
@@ -80,6 +82,7 @@ export const useProductService = () => {
     categories: product_formData.categories,
     discount_value: product_formData.discount_value,
     variants: product_formData.variants,
+    stock_quantity: product_formData.stock_quantity
   }));
 
   const product_formRules = computed(() => ({
@@ -93,6 +96,7 @@ export const useProductService = () => {
         price: { required },
       }),
     },
+    stock_quantity: { required }
   }));
 
   const product_formValidations = useVuelidate(product_formRules, product_formValidatable, {

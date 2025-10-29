@@ -81,6 +81,7 @@ export interface CreateProductPayload {
   picture_url?: string;
   categories?: ICategory[];
   variants?: IVariant[];
+  stock_quantity?: number;
 }
 
 export interface IProductResponse {
