@@ -186,7 +186,7 @@ const onHide = () => {
           />
         </div>
 
-        <!-- Tombol Hapus di luar kotak -->
+        <!-- Tombol Hapus di kali di kotak -->
         <PrimeVueButton
           icon="pi pi-trash"
           class="p-2 text-red-500 border-none bg-transparent hover:bg-red-50 rounded-md"

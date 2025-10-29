@@ -26,7 +26,7 @@ const {
             href="/authentication/sign-in"
           >
             <template #default>
-              <AppBaseSvg name="arrow-left" class="w-4 h-4" />
+              <AppBaseSvg name="arrow-left" class="w-4 h-4 filter-primary-color" />
             </template>
           </PrimeVueButton>
 
@@ -48,7 +48,7 @@ const {
       <PrimeVueIconField>
         <PrimeVueInputIcon>
           <template #default>
-            <AppBaseSvg name="mail" class="w-4 h-4" />
+            <AppBaseSvg name="mail" class="w-4 h-4 filter-primary-color" />
           </template>
         </PrimeVueInputIcon>
 

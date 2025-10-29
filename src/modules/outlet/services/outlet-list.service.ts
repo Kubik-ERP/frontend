@@ -40,7 +40,7 @@ export const useOutletListService = (): IOutletListProvided => {
    */
   const outletList_dynamicClassOfSelectedOutlet = (outlet: IOutlet) => {
     if (outletList_selectedOutlet.value?.id === outlet.id) {
-      return 'bg-secondary outlet-selecter-shadow';
+      return 'bg-secondary/10 outlet-selecter-shadow';
     }
 
     return '';

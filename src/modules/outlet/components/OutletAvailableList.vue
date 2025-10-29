@@ -57,14 +57,14 @@ const {
       @click="outletList_onNavigateToCreateStore"
     >
       <section id="box-outlet" class="basic-smooth-animation bg-white p-5 rounded-full">
-        <AppBaseSvg name="store" class="w-6 h-6" />
+        <AppBaseSvg name="store" class="w-6 h-6 filter-primary-color" />
       </section>
 
       <PrimeVueButton class="bg-transparent border-none w-full cursor-pointer" unstyled severity="secondary">
         <template #default>
           <section id="content" class="flex items-center justify-center gap-2">
-            <AppBaseSvg name="plus-line" class="w-4 h-4 filter-black-color" />
-            <span class="font-semibold text-black text-sm">Add Store</span>
+            <AppBaseSvg name="plus-line" class="w-4 h-4 filter-primary-color" />
+            <span class="font-semibold text-primary text-sm">Add Store</span>
           </section>
         </template>
       </PrimeVueButton>
