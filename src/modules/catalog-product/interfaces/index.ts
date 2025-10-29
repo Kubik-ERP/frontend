@@ -69,7 +69,6 @@ export interface IProduct {
 }
 
 export interface CreateProductPayload {
-
   imagePreview?: string;
   imageFile?: File;
   name?: string;
@@ -82,6 +81,7 @@ export interface CreateProductPayload {
   categories?: ICategory[];
   variants?: IVariant[];
   stock_quantity?: number;
+  recipeId?: string;
 }
 
 export interface IProductResponse {
@@ -89,8 +89,23 @@ export interface IProductResponse {
   lastPage: number;
 }
 
-
 export interface CreateCategoryPayload {
   name: string;
   price?: number;
+}
+
+export interface IProductStateStore {
+  recipeList_values: IRecipeList[];
+}
+
+export interface IRecipeList {
+  id: string;
+  isBaseRecipe: boolean;
+  recipeName: string;
+  output: string;
+  yieldTarget: number;
+  costPerPortion: number;
+  marginRp: number;
+  marginPercent: number;
+  updatedAt: string;
 }

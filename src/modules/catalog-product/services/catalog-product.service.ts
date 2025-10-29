@@ -16,6 +16,8 @@ import eventBus from '@/plugins/mitt';
 
 import { useOutletStore } from '@/modules/outlet/store';
 
+import { useProductDetailsStore } from '../store/product.store';
+
 const API_URL = `${import.meta.env.VITE_APP_BASE_API_URL}/api/products`;
 
 function convertProductToFormData(payload: CreateProductPayload): FormData {
@@ -28,6 +30,7 @@ function convertProductToFormData(payload: CreateProductPayload): FormData {
   formData.append('isDiscount', String(payload.isDiscount));
   formData.append('is_percent', String(payload.is_percent));
   formData.append('stock_quantity', String(payload.stock_quantity));
+  formData.append('recipeId', String(payload.recipeId));
 
   // Optional image
 
@@ -52,6 +55,35 @@ function convertProductToFormData(payload: CreateProductPayload): FormData {
 }
 
 export const useProductService = () => {
+  const { httpAbort_registerAbort } = useHttpAbort();
+  const store = useProductDetailsStore();
+  const { recipeList_values } = storeToRefs(store);
+
+  const recipeList_params = reactive({
+    search: '',
+  });
+  const catalogProduct_fetchRecipeList = async () => {
+    try {
+      await store.fetchRecipeList(recipeList_params.search, {
+        ...httpAbort_registerAbort('MENU_RECIPE_BASE_ENDPOINT'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  watch(
+    () => recipeList_params.search,
+    debounce(async () => {
+      await catalogProduct_fetchRecipeList();
+    }, 500),
+    { deep: true },
+  );
+
   const outletStore = useOutletStore();
 
   const storeID = outletStore.outlet_currentOutlet?.id;
@@ -60,7 +92,7 @@ export const useProductService = () => {
   const headers = {
     'X-STORE-ID': storeID,
     Authorization: `Bearer ${token?.authentication_token}`,
-    'ngrok-skip-browser-warning': 'true'
+    'ngrok-skip-browser-warning': 'true',
   };
 
   const product_formData = reactive<CreateProductPayload>({
@@ -74,7 +106,8 @@ export const useProductService = () => {
     is_percent: false,
     discount_price: 0,
     variants: [],
-    stock_quantity: 0
+    stock_quantity: 0,
+    recipeId: '',
   });
   const product_formValidatable = computed(() => ({
     name: product_formData.name,
@@ -82,7 +115,7 @@ export const useProductService = () => {
     categories: product_formData.categories,
     discount_value: product_formData.discount_value,
     variants: product_formData.variants,
-    stock_quantity: product_formData.stock_quantity
+    stock_quantity: product_formData.stock_quantity,
   }));
 
   const product_formRules = computed(() => ({
@@ -96,7 +129,7 @@ export const useProductService = () => {
         price: { required },
       }),
     },
-    stock_quantity: { required }
+    stock_quantity: { required },
   }));
 
   const product_formValidations = useVuelidate(product_formRules, product_formValidatable, {
@@ -108,7 +141,7 @@ export const useProductService = () => {
       const response = await axios.get(`${API_URL}/?page=${page}&limit=${limit}&search=${search}`, {
         headers: headers,
       });
-      
+
       const products: IProduct[] = response.data.data.products.map((item: IProduct) => ({
         id: item.id,
         name: item.name,
@@ -322,5 +355,8 @@ export const useProductService = () => {
     getProductByCategories,
     product_formValidations,
     product_formData,
+    recipeList_values,
+    catalogProduct_fetchRecipeList,
+    recipeList_params,
   };
 };
