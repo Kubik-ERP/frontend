@@ -59,7 +59,7 @@ const loadProduct = async () => {
   try {
     loading.value = true;
     const response = await getProductById(route.params.id);
-
+    console.log('response : ', response);
     product_formData.name = response.name;
     product_formData.price = response.price;
     product_formData.discount_price = response.discountPrice;
@@ -68,6 +68,10 @@ const loadProduct = async () => {
     product_formData.is_percent = response.isPercent;
     product_formData.imagePreview = response.picture_url;
     product_formData.isDiscount = response.discountPrice !== response.price;
+    product_formData.recipeId = response.menuRecipes[0].recipeId || null;
+
+    recipeList_params.search = response.menuRecipes[0].recipeName || '';
+    recipeList_values.value = [response.menuRecipes[0]];
 
     if (product_formData.isDiscount) {
       if (response.isPercent) {
@@ -195,7 +199,7 @@ const handleClearRecipe = () => {
 };
 
 onMounted(async () => {
-  Promise.all([catalogProduct_fetchRecipeList(), loadCategories(), loadProduct()]);
+  Promise.all([loadCategories(), loadProduct(), catalogProduct_fetchRecipeList()]);
 });
 
 const cancelLeave = () => {

@@ -246,6 +246,7 @@ export const useProductService = () => {
         picture_url: pictureUrl,
         categoriesHasProducts: categories,
         variantHasProducts: variants,
+        menuRecipes: product.menuRecipes,
       };
     } catch (error) {
       if (error instanceof Error) {

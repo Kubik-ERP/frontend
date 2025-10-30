@@ -66,6 +66,10 @@ export interface IProduct {
   isPercent?: boolean;
   categoriesHasProducts?: ICategoryHasProduct[];
   variantHasProducts?: IVariantHasProduct[];
+  menuRecipes?: {
+    recipeId: string;
+    recipeName: string;
+  }[];
 }
 
 export interface CreateProductPayload {
