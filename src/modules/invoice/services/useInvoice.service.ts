@@ -24,6 +24,7 @@ import { useSettingStore } from '@/modules/setting/store';
 
 // Constant
 import { CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT, CASHIER_PROVIDER } from '@/modules/cashier/constants';
+import { INVOICE_TABS_CONFIG } from '../constants/invoice.constant';
 import useVuelidate from '@vuelidate/core';
 import { minValue, numeric, required } from '@vuelidate/validators';
 
@@ -36,7 +37,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
 
   const route = useRoute();
 
-  const invoice_activeInvoice = ref<number>(1);
+  const invoice_activeInvoice = ref<string>('cashier-invoice');
 
   const { outlet_currentOutlet } = storeToRefs(storeOutlet);
   const { setting_invoice } = storeToRefs(storeSetting);
@@ -231,15 +232,15 @@ export const useInvoiceService = (): IInvoiceProvided => {
     // };
 
     switch (invoice_activeInvoice.value) {
-      case 1:
+      case 'cashier-invoice':
         download(invoiceRef, 'invoice');
         // openPdfInNewTab(invoiceRef, 'invoice');
         break;
-      case 2:
+      case 'kitchen-ticket':
         download(kitchenRef, 'kitchen');
         // openPdfInNewTab(kitchenRef, 'kitchen');
         break;
-      case 3:
+      case 'table-ticket':
         download(tableRef, 'table');
         // openPdfInNewTab(tableRef, 'table');
         break;
@@ -619,5 +620,6 @@ export const useInvoiceService = (): IInvoiceProvided => {
     invoice_handleOtherOptions,
     invoice_handlePayInvoice,
     invoice_handleSimulatePayment,
+    invoice_listTabs: INVOICE_TABS_CONFIG,
   };
 };

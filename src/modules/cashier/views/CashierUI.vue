@@ -374,6 +374,7 @@ onMounted(async () => {
   // Initialize product data (only for cashier, not self-order)
   await cashierProduct_handleFetchCategory();
   await cashierProduct_handleFetchProductCategory();
+  await cashierCashDrawer_fetchTodayStatus();
 
   // Initialize order summary based on route (cashier only)
   cashierOrderSummary_initializeRoute();
@@ -382,13 +383,12 @@ onMounted(async () => {
   if (cashierOrderSummary_isRetailBusinessType) {
     // Fetch inventory items data for retail business type
     await inventoryItems_fetchData();
-    await cashierCashDrawer_fetchTodayStatus();
   } else {
+    //
     dailySalesList_queryParams.createdAtFrom = new Date();
     dailySalesList_queryParams.createdAtTo = new Date();
 
     await dailySalesList_fetchListInvoices();
-    await cashierCashDrawer_fetchTodayStatus();
   }
 
   // Fetch outlet store table data for cashier

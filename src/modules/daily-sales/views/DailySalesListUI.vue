@@ -3,6 +3,9 @@
 import { useDailySalesListService } from '../services/daily-sales-list.service';
 import { useStaffMemberListService } from '@/modules/staff-member/services/staff-member-list.service';
 
+// Interfaces
+import type { IDailySalesInvoiceDetail } from '../interfaces';
+
 // Stores
 import { useOutletStore } from '@/modules/outlet/store';
 
@@ -37,15 +40,36 @@ const { staffMemberList_dropdownItemStaffUsingUserId } = useStaffMemberListServi
  * @description Use actual invoice data instead of mock data
  */
 const dailySalesDataWithItems = computed(() => {
-  return dailySalesList_values.data.items.map((invoice) => ({
+  return dailySalesList_values.data.items.map(invoice => ({
     ...invoice,
-    items: invoice.invoiceDetails || []
+    items: invoice.invoiceDetails || [],
+    hasBundles: hasBundlingItems(invoice.invoiceDetails || []),
+    bundleCount: getBundlingCount(invoice.invoiceDetails || []),
   }));
 });
+
+/**
+ * @description Check if invoice has bundling items
+ */
+const hasBundlingItems = (invoiceDetails: IDailySalesInvoiceDetail[]): boolean => {
+  return invoiceDetails?.some(detail => 
+    detail.catalogBundling && detail.invoiceBundlingItems?.length > 0
+  ) || false;
+};
+
+/**
+ * @description Get bundling count for display
+ */
+const getBundlingCount = (invoiceDetails: IDailySalesInvoiceDetail[]): number => {
+  const bundlingItems = invoiceDetails?.filter(detail => 
+    detail.catalogBundling && detail.invoiceBundlingItems?.length > 0
+  ) ?? [];
+  return bundlingItems.length;
+};
 </script>
 
 <template>
-  <section id="daily-sales" class="flex flex-col relative inset-0 z-0">
+  <section id="daily-sales" class="flex flex-col relative inset-0 z-0 overflow-x-auto">
     <AppBaseDataTable
       btn-cta-create-title="Add Cash In/Out"
       :columns="dailySalesList_columns"
@@ -77,6 +101,12 @@ const dailySalesDataWithItems = computed(() => {
           <PrimeVueChip
             class="text-xs font-normal bg-secondary-background text-green-primary"
             :label="`${dailySalesList_values.data.meta.total} Invoices`"
+          />
+          
+          <PrimeVueChip
+            v-if="dailySalesDataWithItems.filter(invoice => invoice.hasBundles).length > 0"
+            class="text-xs font-normal bg-blue-100 text-blue-700"
+            :label="`${dailySalesDataWithItems.filter(invoice => invoice.hasBundles).length} with Bundles`"
           />
         </div>
       </template>
@@ -144,11 +174,7 @@ const dailySalesDataWithItems = computed(() => {
               />
             </section>
 
-            <section
-              v-if="outlet_currentOutlet?.businessType !== 'Retail'"
-              id="order-type"
-              class="col-span-4"
-            >
+            <section v-if="outlet_currentOutlet?.businessType !== 'Retail'" id="order-type" class="col-span-4">
               <PrimeVueMultiSelect
                 v-model="dailySalesList_queryParams.orderType"
                 display="chip"
@@ -208,17 +234,9 @@ const dailySalesDataWithItems = computed(() => {
       <template #body="{ column, data, isExpandable, isExpanded, toggleExpansion }">
         <template v-if="column.value === 'expand'">
           <div class="flex justify-center">
-            <PrimeVueButton
-              v-if="isExpandable"
-              variant="text"
-              size="small"
-              @click="toggleExpansion"
-            >
+            <PrimeVueButton v-if="isExpandable" variant="text" size="small" @click="toggleExpansion">
               <template #icon>
-                <AppBaseSvg
-                  :name="isExpanded ? 'chevron-up' : 'chevron-down'"
-                  class="!w-4 !h-4"
-                />
+                <AppBaseSvg :name="isExpanded ? 'chevron-up' : 'chevron-down'" class="!w-4 !h-4" />
               </template>
             </PrimeVueButton>
           </div>
@@ -232,7 +250,14 @@ const dailySalesDataWithItems = computed(() => {
 
         <template v-else-if="column.value === 'invoiceNumber'">
           <router-link :to="`/invoice/${data.id}`">
-            <span class="font-normal text-sm text-sky-600 cursor-pointer"> #{{ data[column.value] }} </span>
+            <div class="flex items-center gap-2">
+              <span class="font-normal text-sm text-sky-600 cursor-pointer"> #{{ data[column.value] }} </span>
+              <PrimeVueChip
+                v-if="data.hasBundles"
+                class="text-xs font-normal bg-blue-100 text-blue-700"
+                label="Bundle"
+              />
+            </div>
           </router-link>
         </template>
 
@@ -268,6 +293,12 @@ const dailySalesDataWithItems = computed(() => {
           />
         </template>
 
+        <template v-else-if="column.value === 'paymentMethod'">
+          <span class="font-normal text-sm text-text-primary">{{
+            data.paymentMethods ? data.paymentMethods.name : '-'
+          }}</span>
+        </template>
+
         <template v-else-if="column.value === 'paymentStatus'">
           <PrimeVueChip
             :class="[dailySalesList_getClassOfPaymentStatus(data[column.value]), 'text-xs font-normal']"
@@ -294,6 +325,10 @@ const dailySalesDataWithItems = computed(() => {
           </template>
         </template>
 
+        <template v-else-if="column.value === 'servedBy'">
+          <span class="font-normal text-sm text-text-primary">{{ data.users ? data.users.fullname : '-' }}</span>
+        </template>
+
         <template v-else-if="column.value === 'action'">
           <router-link :to="`/invoice/${data.id}`">
             <PrimeVueButton variant="text" rounded aria-label="Filter">
@@ -315,60 +350,134 @@ const dailySalesDataWithItems = computed(() => {
           <div class="bg-gray-50 border-l-4 border-blue-200 p-4">
             <h4 class="font-semibold text-sm text-gray-800 mb-3">Order Items</h4>
             <div class="overflow-x-auto">
-              <table class="w-full">
+              <table class="w-full" style="min-width: 600px;">
                 <thead>
                   <tr class="bg-gray-100">
-                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase">Product</th>
-                    <th class="px-3 py-2 text-center text-xs font-medium text-gray-700 uppercase">Qty</th>
-                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Product Price</th>
-                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Variant Price</th>
-                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Product Discount</th>
-                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase">Variant</th>
-                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase">Notes</th>
-                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Subtotal</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-32">Product</th>
+                    <th class="px-3 py-2 text-center text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-16">Qty</th>
+                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-24">Product Price</th>
+                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-24">Variant Price</th>
+                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-28">
+                      Product Discount
+                    </th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-24">Variant</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-20">Notes</th>
+                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-24">Subtotal</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                  <tr v-for="invoiceDetail in data.invoiceDetails" :key="invoiceDetail.id" class="hover:bg-gray-50">
-                    <td class="px-3 py-2">
+                  <tr
+                    v-for="invoiceDetail in data.invoiceDetails"
+                    :key="invoiceDetail.id"
+                    class="hover:bg-gray-50"
+                  >
+                    <td class="px-3 py-2 whitespace-nowrap">
                       <div class="flex flex-col">
-                        <span class="font-normal text-sm text-gray-700">{{ invoiceDetail.products.name }}</span>
+                        <span class="font-normal text-sm text-gray-700">
+                          {{ invoiceDetail.products?.name ?? invoiceDetail.catalogBundling?.name }}
+                        </span>
+                        <span v-if="invoiceDetail.catalogBundling" class="text-xs text-blue-600 italic">
+                          (Bundle)
+                        </span>
                       </div>
                     </td>
-                    <td class="px-3 py-2 text-center">
+                    <td class="px-3 py-2 text-center whitespace-nowrap">
                       <span class="font-normal text-sm text-gray-700">{{ invoiceDetail.qty }}</span>
                     </td>
-                    <td class="px-3 py-2 text-right">
+                    <td class="px-3 py-2 text-right whitespace-nowrap">
                       <span class="font-normal text-sm text-gray-700">{{
                         useCurrencyFormat({ data: invoiceDetail.productPrice })
                       }}</span>
                     </td>
-                    <td class="px-3 py-2 text-right">
+                    <td class="px-3 py-2 text-right whitespace-nowrap">
                       <span class="font-normal text-sm text-gray-700">{{
                         useCurrencyFormat({ data: invoiceDetail?.variant?.price ?? 0 })
                       }}</span>
                     </td>
-                    <td class="px-3 py-2 text-right">
-                      <span class="font-normal text-sm text-gray-700" :class="(invoiceDetail.products.discountPrice || 0) > 0 ? 'text-red-600' : ''">
-                        {{ (invoiceDetail.products.discountPrice || 0) > 0 ? '-' : '' }}{{ useCurrencyFormat({ data: invoiceDetail.products.discountPrice || 0 }) }}
+                    <td class="px-3 py-2 text-right whitespace-nowrap">
+                      <span
+                        class="font-normal text-sm text-gray-700"
+                        :class="(invoiceDetail.products?.discountPrice || 0) > 0 ? 'text-red-600' : ''"
+                      >
+                        {{ (invoiceDetail.products?.discountPrice || 0) > 0 ? '-' : ''
+                        }}{{ useCurrencyFormat({ data: invoiceDetail.products?.discountPrice || 0 }) }}
                       </span>
                     </td>
-                    <td class="px-3 py-2">
+                    <td class="px-3 py-2 whitespace-nowrap">
                       <div class="flex flex-col">
                         <span class="font-normal text-sm text-gray-700">{{ invoiceDetail?.variant?.name }}</span>
                       </div>
                     </td>
-                    <td class="px-3 py-2">
+                    <td class="px-3 py-2 whitespace-nowrap">
                       <span class="font-normal text-sm text-gray-700">{{ invoiceDetail.notes || '-' }}</span>
                     </td>
-                    <td class="px-3 py-2 text-right">
+                    <td class="px-3 py-2 text-right whitespace-nowrap">
                       <span class="font-semibold text-sm text-gray-900">{{
                         useCurrencyFormat({
-                          data: (invoiceDetail.productPrice + (invoiceDetail?.variant?.price ?? 0)) * invoiceDetail.qty - (invoiceDetail.products.discountPrice || 0)
+                          data:
+                            (invoiceDetail.productPrice + (invoiceDetail?.variant?.price ?? 0)) *
+                              invoiceDetail.qty -
+                            (invoiceDetail.products?.discountPrice || 0),
                         })
                       }}</span>
                     </td>
                   </tr>
+                  
+                  <!-- Bundling Items Sub-rows -->
+                  <template v-for="invoiceDetail in data.invoiceDetails" :key="`bundling-${invoiceDetail.id}`">
+                    <template v-if="invoiceDetail.catalogBundling && invoiceDetail.invoiceBundlingItems?.length > 0">
+                      <tr class="bg-gradient-to-r from-blue-50 to-blue-25">
+                        <td colspan="8" class="px-3 py-2">
+                          <div class="flex items-center gap-2">
+                            <span class="text-sm text-blue-600">📦</span>
+                            <span class="text-xs font-semibold text-blue-700">Bundle Items ({{ invoiceDetail.invoiceBundlingItems.length }}):</span>
+                            <span class="text-xs text-blue-600 italic">{{ invoiceDetail.catalogBundling.name }}</span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        v-for="bundlingItem in invoiceDetail.invoiceBundlingItems"
+                        :key="bundlingItem.id"
+                        class="bg-blue-25 hover:bg-blue-50 transition-colors duration-200"
+                      >
+                        <td class="px-6 py-2 whitespace-nowrap">
+                          <div class="flex items-center gap-2">
+                            <span class="text-sm text-blue-400">├─</span>
+                            <span class="font-normal text-sm text-blue-800">
+                              {{ bundlingItem.products?.name }}
+                            </span>
+                          </div>
+                        </td>
+                        <td class="px-3 py-2 text-center whitespace-nowrap">
+                          <span class="font-medium text-sm text-blue-700 bg-blue-100 px-2 py-1 rounded-full">{{ bundlingItem.qty }}</span>
+                        </td>
+                        <td class="px-3 py-2 text-right whitespace-nowrap">
+                          <span class="font-normal text-sm text-blue-700">{{
+                            useCurrencyFormat({ data: bundlingItem.products?.price ?? 0 })
+                          }}</span>
+                        </td>
+                        <td class="px-3 py-2 text-center whitespace-nowrap">
+                          <span class="text-sm text-gray-400">-</span>
+                        </td>
+                        <td class="px-3 py-2 text-center whitespace-nowrap">
+                          <span class="text-sm text-gray-400">-</span>
+                        </td>
+                        <td class="px-3 py-2 text-center whitespace-nowrap">
+                          <span class="text-sm text-gray-400">-</span>
+                        </td>
+                        <td class="px-3 py-2 text-center whitespace-nowrap">
+                          <span class="text-sm text-gray-400">-</span>
+                        </td>
+                        <td class="px-3 py-2 text-right whitespace-nowrap">
+                          <span class="font-semibold text-sm text-blue-700 bg-blue-100 px-2 py-1 rounded">{{
+                            useCurrencyFormat({
+                              data: (bundlingItem.products?.price ?? 0) * bundlingItem.qty
+                            })
+                          }}</span>
+                        </td>
+                      </tr>
+                    </template>
+                  </template>
                 </tbody>
               </table>
             </div>
