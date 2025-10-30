@@ -8,7 +8,7 @@ export type IProductDetails = {
   photoUrl: string;
   name: string;
   categories: string[];
-  recipe: IRecipe;
+  menuRecipes: IRecipe[];
   price: number;
   discountPrice: number;
   productVariant: IProductVariant[];
@@ -16,8 +16,8 @@ export type IProductDetails = {
 };
 
 type IRecipe = {
-  id: string;
-  name: string;
+  recipeId: string;
+  recipeName: string;
 };
 
 type IProductVariant = {
@@ -33,6 +33,8 @@ type IProductPortionStock = {
   difference: number;
 };
 
+
+
 export type IProductDetailsProvided = {
   // columns
   productDetails_productVariants_columns: IColumnDataTable[];
@@ -40,4 +42,6 @@ export type IProductDetailsProvided = {
   // data
   productDetails: globalThis.Ref<IProductDetails>;
   productDetails_isLoading: globalThis.Ref<boolean>;
+  // methods
+  productDetails_fetchProductDetails: (id: string) => Promise<void>;
 };

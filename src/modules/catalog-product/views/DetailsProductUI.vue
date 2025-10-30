@@ -11,6 +11,7 @@ const {
   productDetails_productVariants_columns,
   productDetails,
   productDetails_isLoading,
+  productDetails_fetchProductDetails,
 } = useProductDetailsService();
 
 provide('productDetails', {
@@ -58,6 +59,10 @@ watch(
 const photoUrl = (image: string) => {
   return APP_BASE_BUCKET_URL + image;
 };
+const route = useRoute();
+onMounted(async () => {
+  await productDetails_fetchProductDetails(route.params.id as string);
+});
 </script>
 <template>
   <header class="flex items-center justify-between">
@@ -91,10 +96,10 @@ const photoUrl = (image: string) => {
       <ProductVariantPill :variants="productDetails.categories" />
     </section>
 
-    <section class="col-span-2">
+    <section v-if="productDetails.menuRecipes.length > 0" class="col-span-2">
       <label for="link-to-recipe" class="block text-sm font-medium leading-6 text-gray-900">Link to Recipe</label>
-      <router-link :to="{ name: 'menu-recipe.detail', params: { id: '1' } }">
-        <p class="text-blue-500">{{ productDetails.recipe.name }}</p>
+      <router-link :to="{ name: 'menu-recipe.detail', params: { id: productDetails.menuRecipes[0].recipeId } }">
+        <p class="text-blue-500">{{ productDetails.menuRecipes[0].recipeName }}</p>
       </router-link>
     </section>
 

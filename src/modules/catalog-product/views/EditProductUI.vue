@@ -68,10 +68,12 @@ const loadProduct = async () => {
     product_formData.is_percent = response.isPercent;
     product_formData.imagePreview = response.picture_url;
     product_formData.isDiscount = response.discountPrice !== response.price;
-    product_formData.recipeId = response.menuRecipes[0].recipeId || null;
 
-    recipeList_params.search = response.menuRecipes[0].recipeName || '';
-    recipeList_values.value = [response.menuRecipes[0]];
+    if (response.menuRecipes.length > 0) {
+      product_formData.recipeId = response.menuRecipes[0].recipeId || null;
+      recipeList_params.search = response.menuRecipes[0].recipeName || '';
+      recipeList_values.value = [response.menuRecipes[0]];
+    }
 
     if (product_formData.isDiscount) {
       if (response.isPercent) {
