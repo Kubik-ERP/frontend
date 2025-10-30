@@ -54,7 +54,7 @@ const dailySalesDataWithItems = computed(() => {
 const hasBundlingItems = (invoiceDetails: IDailySalesInvoiceDetail[]): boolean => {
   return invoiceDetails?.some(detail => 
     detail.catalogBundling && detail.invoiceBundlingItems?.length > 0
-  ) ?? false;
+  ) || false;
 };
 
 /**
