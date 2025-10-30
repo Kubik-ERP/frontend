@@ -30,7 +30,8 @@ function convertProductToFormData(payload: CreateProductPayload): FormData {
   formData.append('isDiscount', String(payload.isDiscount));
   formData.append('is_percent', String(payload.is_percent));
   formData.append('stock_quantity', String(payload.stock_quantity));
-  formData.append('recipeId', String(payload.recipeId));
+  
+  formData.append('recipeId', payload.recipeId === "" ||payload.recipeId === undefined || payload.recipeId === null ? 'null' : String(payload.recipeId));
 
   // Optional image
 
