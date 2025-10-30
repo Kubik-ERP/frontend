@@ -119,6 +119,13 @@ export const ITEMS_LIST_COLUMS_RETAIL: IColumnDataTable[] = [
   // },
 
   // {
+  //   label: 'Brand',
+  //   sortable: false,
+  //   value: 'brandName',
+  //   translationKey: 'items.form.brand',
+  // },
+
+  // {
   //   label: 'Unit',
   //   sortable: false,
   //   value: 'unit',
