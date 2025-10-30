@@ -51,8 +51,8 @@ export const WORKING_HOURS_CUSTOM_RECURRENCE_FREQUENCY_OPTIONS: IDropdownItem[] 
 ];
 
 export const WORKING_HOURS_CREATE_EDIT_INITIAL_TIME_SLOT: IWorkingHoursFormDataTimeSlot = {
-  openTime: null,
-  closeTime: null,
+  openTime: '',
+  closeTime: '',
 };
 
 export const WORKING_HOURS_CREATE_EDIT_INITIAL_FORM_DATA: IWorkingHoursFormData = {
