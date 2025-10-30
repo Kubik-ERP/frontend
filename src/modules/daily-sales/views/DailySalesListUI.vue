@@ -52,19 +52,21 @@ const dailySalesDataWithItems = computed(() => {
  * @description Check if invoice has bundling items
  */
 const hasBundlingItems = (invoiceDetails: IDailySalesInvoiceDetail[]): boolean => {
-  return invoiceDetails?.some(detail => 
-    detail.catalogBundling && detail.invoiceBundlingItems?.length > 0
-  ) || false;
+  return (
+    invoiceDetails?.some(detail => detail.catalogBundling && detail.invoiceBundlingItems?.length > 0) || false
+  );
 };
 
 /**
  * @description Get bundling count for display
  */
 const getBundlingCount = (invoiceDetails: IDailySalesInvoiceDetail[]): number => {
-  const bundlingItems = invoiceDetails?.filter(detail => 
-    detail.catalogBundling && detail.invoiceBundlingItems?.length > 0
-  ) ?? [];
-  return bundlingItems.length;
+  return (
+    invoiceDetails?.reduce(
+      (count, detail) => (detail.catalogBundling && detail.invoiceBundlingItems?.length > 0 ? count + 1 : count),
+      0,
+    ) ?? 0
+  );
 };
 </script>
 
@@ -102,7 +104,7 @@ const getBundlingCount = (invoiceDetails: IDailySalesInvoiceDetail[]): number =>
             class="text-xs font-normal bg-secondary-background text-green-primary"
             :label="`${dailySalesList_values.data.meta.total} Invoices`"
           />
-          
+
           <PrimeVueChip
             v-if="dailySalesDataWithItems.filter(invoice => invoice.hasBundles).length > 0"
             class="text-xs font-normal bg-blue-100 text-blue-700"
@@ -350,19 +352,49 @@ const getBundlingCount = (invoiceDetails: IDailySalesInvoiceDetail[]): number =>
           <div class="bg-gray-50 border-l-4 border-blue-200 p-4">
             <h4 class="font-semibold text-sm text-gray-800 mb-3">Order Items</h4>
             <div class="overflow-x-auto">
-              <table class="w-full" style="min-width: 600px;">
+              <table class="w-full" style="min-width: 600px">
                 <thead>
                   <tr class="bg-gray-100">
-                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-32">Product</th>
-                    <th class="px-3 py-2 text-center text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-16">Qty</th>
-                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-24">Product Price</th>
-                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-24">Variant Price</th>
-                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-28">
+                    <th
+                      class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-32"
+                    >
+                      Product
+                    </th>
+                    <th
+                      class="px-3 py-2 text-center text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-16"
+                    >
+                      Qty
+                    </th>
+                    <th
+                      class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-24"
+                    >
+                      Product Price
+                    </th>
+                    <th
+                      class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-24"
+                    >
+                      Variant Price
+                    </th>
+                    <th
+                      class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-28"
+                    >
                       Product Discount
                     </th>
-                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-24">Variant</th>
-                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-20">Notes</th>
-                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-24">Subtotal</th>
+                    <th
+                      class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-24"
+                    >
+                      Variant
+                    </th>
+                    <th
+                      class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-20"
+                    >
+                      Notes
+                    </th>
+                    <th
+                      class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase whitespace-nowrap min-w-24"
+                    >
+                      Subtotal
+                    </th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
@@ -422,16 +454,22 @@ const getBundlingCount = (invoiceDetails: IDailySalesInvoiceDetail[]): number =>
                       }}</span>
                     </td>
                   </tr>
-                  
+
                   <!-- Bundling Items Sub-rows -->
                   <template v-for="invoiceDetail in data.invoiceDetails" :key="`bundling-${invoiceDetail.id}`">
-                    <template v-if="invoiceDetail.catalogBundling && invoiceDetail.invoiceBundlingItems?.length > 0">
+                    <template
+                      v-if="invoiceDetail.catalogBundling && invoiceDetail.invoiceBundlingItems?.length > 0"
+                    >
                       <tr class="bg-gradient-to-r from-blue-50 to-blue-25">
                         <td colspan="8" class="px-3 py-2">
                           <div class="flex items-center gap-2">
                             <span class="text-sm text-blue-600">📦</span>
-                            <span class="text-xs font-semibold text-blue-700">Bundle Items ({{ invoiceDetail.invoiceBundlingItems.length }}):</span>
-                            <span class="text-xs text-blue-600 italic">{{ invoiceDetail.catalogBundling.name }}</span>
+                            <span class="text-xs font-semibold text-blue-700"
+                              >Bundle Items ({{ invoiceDetail.invoiceBundlingItems.length }}):</span
+                            >
+                            <span class="text-xs text-blue-600 italic">{{
+                              invoiceDetail.catalogBundling.name
+                            }}</span>
                           </div>
                         </td>
                       </tr>
@@ -449,7 +487,9 @@ const getBundlingCount = (invoiceDetails: IDailySalesInvoiceDetail[]): number =>
                           </div>
                         </td>
                         <td class="px-3 py-2 text-center whitespace-nowrap">
-                          <span class="font-medium text-sm text-blue-700 bg-blue-100 px-2 py-1 rounded-full">{{ bundlingItem.qty }}</span>
+                          <span class="font-medium text-sm text-blue-700 bg-blue-100 px-2 py-1 rounded-full">{{
+                            bundlingItem.qty
+                          }}</span>
                         </td>
                         <td class="px-3 py-2 text-right whitespace-nowrap">
                           <span class="font-normal text-sm text-blue-700">{{
@@ -471,7 +511,7 @@ const getBundlingCount = (invoiceDetails: IDailySalesInvoiceDetail[]): number =>
                         <td class="px-3 py-2 text-right whitespace-nowrap">
                           <span class="font-semibold text-sm text-blue-700 bg-blue-100 px-2 py-1 rounded">{{
                             useCurrencyFormat({
-                              data: (bundlingItem.products?.price ?? 0) * bundlingItem.qty
+                              data: (bundlingItem.products?.price ?? 0) * bundlingItem.qty,
                             })
                           }}</span>
                         </td>

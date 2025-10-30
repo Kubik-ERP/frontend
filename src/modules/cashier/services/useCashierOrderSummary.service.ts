@@ -846,7 +846,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         router.push({
           name: route.name === 'cashier' || route.name === 'cashier-order-edit' ? 'invoice' : 'self-order-invoice',
           params: {
-            invoiceId: response.data?.invoiceId ?? null,
+            invoiceId: response.data?.invoiceId ?? '',
           },
           query: {
             ...route.query,

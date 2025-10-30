@@ -129,16 +129,19 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    */
   const workingHoursList_fetchCreate = async (): Promise<void> => {
     try {
+      // Create formatter once outside map loop for better performance
+      const timeFormatter = new Intl.DateTimeFormat('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+
       const payload: IWorkingHoursFormData = {
         ...workingHoursList_formData,
         timeSlots: workingHoursList_formData.timeSlots.map(slot => ({
           // Convert Date objects to string format like this HH:mm for API
-          openTime: Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }).format(
-            new Date(slot.openTime),
-          ),
-          closeTime: Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }).format(
-            new Date(slot.closeTime),
-          ),
+          openTime: timeFormatter.format(new Date(slot.openTime)),
+          closeTime: timeFormatter.format(new Date(slot.closeTime)),
         })),
       };
 
