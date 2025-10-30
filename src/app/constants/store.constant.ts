@@ -1,3 +1,4 @@
+export const STORE_SUGGESTION_PRICES: number[] = [5000, 10000, 20000, 50000, 100000];
 export const STORE_INITIAL_VALUES_OF_OPERATIONAL_HOURS: IStoreOperationalHour[] = [
   {
     timeSlots: [

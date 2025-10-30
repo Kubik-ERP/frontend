@@ -50,14 +50,14 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
   const workingHoursList_createEditFormMode = ref<'create' | 'edit'>('create');
   const workingHoursList_createEditMinDate = ref<string>('');
   const workingHoursList_createEditMaxDate = ref<string>('');
-  
+
   // Initialize selected month with current month immediately
   const currentDate = new Date();
   const currentMonth = currentDate.toISOString().slice(0, 7); // Format: YYYY-MM
   const workingHoursList_selectedMonth = ref<string>(currentMonth);
-  
+
   const workingHoursList_selectedViewType = ref<string>('Month');
-  
+
   // Initialize current week start immediately
   const today = new Date();
   const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
@@ -65,7 +65,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
   const mondayOfCurrentWeek = new Date(today);
   mondayOfCurrentWeek.setDate(today.getDate() + mondayOffset);
   const workingHoursList_currentWeekStart = ref<Date>(mondayOfCurrentWeek);
-  
+
   const workingHoursList_currentWorkingHoursId = ref<string>('');
 
   /**
@@ -88,7 +88,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
       $each: helpers.forEach({
         openTime: { required },
         closeTime: { required },
-      })
+      }),
     },
     repeatType: { required },
     customRecurrence: {
@@ -129,7 +129,20 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    */
   const workingHoursList_fetchCreate = async (): Promise<void> => {
     try {
-      await workingHoursStore.workingHours_create(workingHoursList_formData, {
+      const payload: IWorkingHoursFormData = {
+        ...workingHoursList_formData,
+        timeSlots: workingHoursList_formData.timeSlots.map(slot => ({
+          // Convert Date objects to string format like this HH:mm for API
+          openTime: Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }).format(
+            new Date(slot.openTime),
+          ),
+          closeTime: Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }).format(
+            new Date(slot.closeTime),
+          ),
+        })),
+      };
+
+      await workingHoursStore.workingHours_create(payload, {
         ...httpAbort_registerAbort(WORKING_HOURS_CREATE_REQUEST),
       });
 
@@ -258,7 +271,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    */
   const workingHoursList_listValues = computed(() => {
     // Create a mapping structure based on staff members instead of working hours
-    return staffMember_lists.value.employees.map((staffMember) => {
+    return staffMember_lists.value.employees.map(staffMember => {
       const tableRow: Record<string, string | number> = {
         id: staffMember.userId, // Use userId to match with working hours staff_id
         staff: staffMember.name,
@@ -269,7 +282,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
 
         // Find all working hours for this staff member
         const staffWorkingHours = workingHours_lists.value.filter(
-          (workingHour) => workingHour.staff_id === staffMember.userId
+          workingHour => workingHour.staff_id === staffMember.userId,
         );
 
         if (workingHoursList_selectedViewType.value === 'Week') {
@@ -283,9 +296,11 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
             // Find working hours for this specific date
             const dayWorkingHours = staffWorkingHours.filter(workingHour => {
               const workingHourDate = new Date(workingHour.date);
-              return workingHourDate.getDate() === currentDay && 
-                     workingHourDate.getMonth() + 1 === currentMonth && 
-                     workingHourDate.getFullYear() === currentYear;
+              return (
+                workingHourDate.getDate() === currentDay &&
+                workingHourDate.getMonth() + 1 === currentMonth &&
+                workingHourDate.getFullYear() === currentYear
+              );
             });
 
             if (dayWorkingHours.length > 0) {
@@ -295,12 +310,12 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
                 workingHour.working_hour_time_slots.forEach(slot => {
                   const startTime = new Date(slot.open_time);
                   const endTime = new Date(slot.close_time);
-                  
+
                   const startHour = String(startTime.getHours()).padStart(2, '0');
                   const startMinute = String(startTime.getMinutes()).padStart(2, '0');
                   const endHour = String(endTime.getHours()).padStart(2, '0');
                   const endMinute = String(endTime.getMinutes()).padStart(2, '0');
-                  
+
                   allTimeSlots.push(`${startHour}:${startMinute}-${endHour}:${endMinute}`);
                 });
               });
@@ -313,19 +328,21 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
         } else {
           // Month view: show Present/Absent for each day
           const daysInMonth = new Date(year, month, 0).getDate();
-          
+
           for (let day = 1; day <= daysInMonth; day++) {
             // Find working hours for this specific date
             const dayWorkingHours = staffWorkingHours.filter(workingHour => {
               const workingHourDate = new Date(workingHour.date);
-              return workingHourDate.getDate() === day && 
-                     workingHourDate.getMonth() + 1 === month && 
-                     workingHourDate.getFullYear() === year;
+              return (
+                workingHourDate.getDate() === day &&
+                workingHourDate.getMonth() + 1 === month &&
+                workingHourDate.getFullYear() === year
+              );
             });
 
             // Check if there are any time slots for this day
-            const hasTimeSlots = dayWorkingHours.some(workingHour => 
-              workingHour.working_hour_time_slots.length > 0
+            const hasTimeSlots = dayWorkingHours.some(
+              workingHour => workingHour.working_hour_time_slots.length > 0,
             );
 
             tableRow[`day_${day}`] = hasTimeSlots ? 'Present' : 'Absent';

@@ -255,7 +255,7 @@ const getIconClass = computed(() => {
 
 <template>
   <!-- Mobile Scrollable Wrapper -->
-  <div class="w-full overflow-x-auto lg:overflow-x-visible">
+  <div class="w-full">
     <!-- Custom Table for Expandable Rows -->
     <template v-if="props.isUsingCustomTable">
       <!-- Header Section -->
@@ -549,6 +549,7 @@ const getIconClass = computed(() => {
         :scroll-height="isScrollable ? computedScrollHeight : undefined"
         :scrollable="isScrollable"
         table-style="min-width: 50rem"
+        breakpoint="1440px"
         :pt="{
           root: 'rounded-sm',
           header: 'border-none p-0',

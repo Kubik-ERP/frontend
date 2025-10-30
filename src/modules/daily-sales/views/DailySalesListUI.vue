@@ -37,9 +37,9 @@ const { staffMemberList_dropdownItemStaffUsingUserId } = useStaffMemberListServi
  * @description Use actual invoice data instead of mock data
  */
 const dailySalesDataWithItems = computed(() => {
-  return dailySalesList_values.data.items.map((invoice) => ({
+  return dailySalesList_values.data.items.map(invoice => ({
     ...invoice,
-    items: invoice.invoiceDetails || []
+    items: invoice.invoiceDetails || [],
   }));
 });
 </script>
@@ -144,11 +144,7 @@ const dailySalesDataWithItems = computed(() => {
               />
             </section>
 
-            <section
-              v-if="outlet_currentOutlet?.businessType !== 'Retail'"
-              id="order-type"
-              class="col-span-4"
-            >
+            <section v-if="outlet_currentOutlet?.businessType !== 'Retail'" id="order-type" class="col-span-4">
               <PrimeVueMultiSelect
                 v-model="dailySalesList_queryParams.orderType"
                 display="chip"
@@ -208,17 +204,9 @@ const dailySalesDataWithItems = computed(() => {
       <template #body="{ column, data, isExpandable, isExpanded, toggleExpansion }">
         <template v-if="column.value === 'expand'">
           <div class="flex justify-center">
-            <PrimeVueButton
-              v-if="isExpandable"
-              variant="text"
-              size="small"
-              @click="toggleExpansion"
-            >
+            <PrimeVueButton v-if="isExpandable" variant="text" size="small" @click="toggleExpansion">
               <template #icon>
-                <AppBaseSvg
-                  :name="isExpanded ? 'chevron-up' : 'chevron-down'"
-                  class="!w-4 !h-4"
-                />
+                <AppBaseSvg :name="isExpanded ? 'chevron-up' : 'chevron-down'" class="!w-4 !h-4" />
               </template>
             </PrimeVueButton>
           </div>
@@ -268,6 +256,12 @@ const dailySalesDataWithItems = computed(() => {
           />
         </template>
 
+        <template v-else-if="column.value === 'paymentMethod'">
+          <span class="font-normal text-sm text-text-primary">{{
+            data.paymentMethods ? data.paymentMethods.name : '-'
+          }}</span>
+        </template>
+
         <template v-else-if="column.value === 'paymentStatus'">
           <PrimeVueChip
             :class="[dailySalesList_getClassOfPaymentStatus(data[column.value]), 'text-xs font-normal']"
@@ -292,6 +286,10 @@ const dailySalesDataWithItems = computed(() => {
           <template v-else>
             <span class="font-normal text-sm text-text-primary">N/A</span>
           </template>
+        </template>
+
+        <template v-else-if="column.value === 'servedBy'">
+          <span class="font-normal text-sm text-text-primary">{{ data.users ? data.users.fullname : '-' }}</span>
         </template>
 
         <template v-else-if="column.value === 'action'">
@@ -322,14 +320,20 @@ const dailySalesDataWithItems = computed(() => {
                     <th class="px-3 py-2 text-center text-xs font-medium text-gray-700 uppercase">Qty</th>
                     <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Product Price</th>
                     <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Variant Price</th>
-                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Product Discount</th>
+                    <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">
+                      Product Discount
+                    </th>
                     <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase">Variant</th>
                     <th class="px-3 py-2 text-left text-xs font-medium text-gray-700 uppercase">Notes</th>
                     <th class="px-3 py-2 text-right text-xs font-medium text-gray-700 uppercase">Subtotal</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                  <tr v-for="invoiceDetail in data.invoiceDetails" :key="invoiceDetail.id" class="hover:bg-gray-50">
+                  <tr
+                    v-for="invoiceDetail in data.invoiceDetails"
+                    :key="invoiceDetail.id"
+                    class="hover:bg-gray-50"
+                  >
                     <td class="px-3 py-2">
                       <div class="flex flex-col">
                         <span class="font-normal text-sm text-gray-700">{{ invoiceDetail.products.name }}</span>
@@ -349,8 +353,12 @@ const dailySalesDataWithItems = computed(() => {
                       }}</span>
                     </td>
                     <td class="px-3 py-2 text-right">
-                      <span class="font-normal text-sm text-gray-700" :class="(invoiceDetail.products.discountPrice || 0) > 0 ? 'text-red-600' : ''">
-                        {{ (invoiceDetail.products.discountPrice || 0) > 0 ? '-' : '' }}{{ useCurrencyFormat({ data: invoiceDetail.products.discountPrice || 0 }) }}
+                      <span
+                        class="font-normal text-sm text-gray-700"
+                        :class="(invoiceDetail.products.discountPrice || 0) > 0 ? 'text-red-600' : ''"
+                      >
+                        {{ (invoiceDetail.products.discountPrice || 0) > 0 ? '-' : ''
+                        }}{{ useCurrencyFormat({ data: invoiceDetail.products.discountPrice || 0 }) }}
                       </span>
                     </td>
                     <td class="px-3 py-2">
@@ -364,7 +372,10 @@ const dailySalesDataWithItems = computed(() => {
                     <td class="px-3 py-2 text-right">
                       <span class="font-semibold text-sm text-gray-900">{{
                         useCurrencyFormat({
-                          data: (invoiceDetail.productPrice + (invoiceDetail?.variant?.price ?? 0)) * invoiceDetail.qty - (invoiceDetail.products.discountPrice || 0)
+                          data:
+                            (invoiceDetail.productPrice + (invoiceDetail?.variant?.price ?? 0)) *
+                              invoiceDetail.qty -
+                            (invoiceDetail.products.discountPrice || 0),
                         })
                       }}</span>
                     </td>

@@ -9,6 +9,7 @@ import CashierSummaryTotal from './OrderSummary/CashierSummaryTotal.vue';
 import CashierSummaryModalCancelOrder from './OrderSummary/Modal/CashierSummaryModalCancelOrder.vue';
 import CashierSummaryModalInvoiceDetail from './OrderSummary/Modal/CashierSummaryModalInvoiceDetail.vue';
 import CashierSummaryModalMoreOptionsMobile from './OrderSummary/Modal/CashierSummaryModalMoreOptionsMobile.vue';
+import CashierSummaryModalOrderSummary from './OrderSummary/Modal/CashierSummaryModalOrderSummary.vue';
 import CashierSummaryModalOrderType from './OrderSummary/Modal/CashierSummaryModalOrderType.vue';
 import CashierSummaryModalPaymentMethod from './OrderSummary/Modal/CashierSummaryModalPaymentMethod.vue';
 import CashierSummaryModalPaymentQRIS from './OrderSummary/Modal/CashierSummaryModalPaymentQRIS.vue';
@@ -49,6 +50,7 @@ const voucherPermission = rbac.hasPermission('voucher');
     <CashierSummaryButtonAction />
 
     <section id="order-summary-modal">
+      <CashierSummaryModalOrderSummary />
       <CashierSummaryModalCancelOrder />
       <CashierSummaryModalInvoiceDetail />
 

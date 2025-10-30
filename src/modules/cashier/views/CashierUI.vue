@@ -21,7 +21,7 @@ import { useCashierProductService } from '../services/useCashierProduct.service'
 import { useCashierOrderSummaryService } from '../services/useCashierOrderSummary.service';
 
 import { useCashDrawerCashRegisterService } from '@/modules/cash-drawer/services/cash-drawer-cash-register.service';
-import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
+import { useCashierQueueService } from '../services/useCashierQueue.service';
 import { useInvoiceService } from '@/modules/invoice/services/useInvoice.service';
 import { useInventoryItemsListService } from '@/modules/items/services/items-list.service';
 import { useStaffMemberListService } from '@/modules/staff-member/services/staff-member-list.service';
@@ -178,7 +178,9 @@ const {
   dailySalesList_typesOfOrderType,
   dailySalesList_typesOfPaymentStatus,
   dailySalesList_values,
-} = useDailySalesListService();
+  queueStatusCounts,
+  totalQueueCount,
+} = useCashierQueueService();
 
 const {
   inventoryItems_colums,
@@ -353,6 +355,8 @@ provide('dailySalesList', {
   dailySalesList_typesOfOrderType,
   dailySalesList_typesOfPaymentStatus,
   dailySalesList_values,
+  queueStatusCounts,
+  totalQueueCount,
 });
 
 provide('invoice', {
@@ -374,6 +378,7 @@ onMounted(async () => {
   // Initialize product data (only for cashier, not self-order)
   await cashierProduct_handleFetchCategory();
   await cashierProduct_handleFetchProductCategory();
+  await cashierCashDrawer_fetchTodayStatus();
 
   // Initialize order summary based on route (cashier only)
   cashierOrderSummary_initializeRoute();
@@ -382,14 +387,10 @@ onMounted(async () => {
   if (cashierOrderSummary_isRetailBusinessType) {
     // Fetch inventory items data for retail business type
     await inventoryItems_fetchData();
-    await cashierCashDrawer_fetchTodayStatus();
   } else {
-    dailySalesList_queryParams.createdAtFrom = new Date();
-    dailySalesList_queryParams.createdAtTo = new Date();
-
-    await dailySalesList_fetchListInvoices();
-    await cashierCashDrawer_fetchTodayStatus();
+    //
   }
+  await (dailySalesList_fetchListInvoices as () => Promise<void>)();
 
   // Fetch outlet store table data for cashier
   accountStoreDetail_fetchOutletStoreTable();

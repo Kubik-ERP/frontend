@@ -31,8 +31,8 @@ export interface IWorkingHoursData {
 
 // ===== FORM INTERFACES =====
 export interface IWorkingHoursFormDataTimeSlot {
-  openTime: Date | null;
-  closeTime: Date | null;
+  openTime: Date | string;
+  closeTime: Date | string;
 }
 
 export interface ICustomRecurrence {
