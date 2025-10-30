@@ -188,16 +188,20 @@ const {
 
           <PrimeVueButton
             v-if="route.name === 'cashier' || route.name === 'cashier-order-edit'"
+            v-slot="slotProps"
+            as-child
             outlined
             class="w-full border-primary"
             @click="cashierOrderSummary_handleSaveUnpaidOrder"
           >
-            <section class="flex gap-2 justify-center w-full items-center">
-              <AppBaseSvg name="order-primary" class="filter-primary-color h-5 w-5" />
-              <span class="font-semibold text-primary truncate">{{
-                useLocalization('cashier.mainSection.saveUnpaidOrder')
-              }}</span>
-            </section>
+            <RouterLink :to="{ name: 'invoice' }" v-bind="slotProps" class="p-3 w-full border border-primary">
+              <section class="flex gap-2 justify-center w-full items-center">
+                <AppBaseSvg name="order-primary" class="filter-primary-color h-5 w-5" />
+                <span class="font-semibold text-primary truncate">{{
+                  useLocalization('cashier.mainSection.saveUnpaidOrder')
+                }}</span>
+              </section>
+            </RouterLink>
           </PrimeVueButton>
 
           <PrimeVueButton

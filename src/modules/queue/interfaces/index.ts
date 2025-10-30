@@ -20,14 +20,11 @@ export interface IDailySales {
   discountAmount: number;
   grandTotal: number;
   id: string;
-  invoiceDetails: IInvoiceDetail[];
   invoiceNumber: string;
   orderType: string;
-  orderStatus: string;
   paidAt: string | null;
   paymentMethodsId: string | null;
   paymentStatus: string;
-  queue?: string | number;
   serviceChargeAmount: number;
   serviceChargeId: string | null;
   subtotal: number;
@@ -37,90 +34,6 @@ export interface IDailySales {
   updatedAt: string;
 }
 
-export interface IInvoiceDetail {
-  id: string;
-  productId: string;
-  productPrice: number;
-  variantId: null;
-  notes: string;
-  qty: number;
-  invoiceId: string;
-  variantPrice: number;
-  productDiscount: number;
-  catalogBundlingId: null;
-  benefitFreeItemsId: null;
-  products: Products;
-  variant: null;
-  catalogBundling: ICatalogBundling | null;
-  invoiceBundlingItems: IInvoiceBundlingItems[] | [];
-}
-
-export interface IInvoiceBundlingItems {
-  id: string;
-  invoiceId: string;
-  invoiceDetailId: string;
-  productId: string;
-  qty: number;
-  createdAt: Date;
-  updatedAt: Date;
-  products: IProducts;
-}
-
-export interface IProducts {
-  id: string;
-  name: string;
-  price: number;
-  discountPrice: number;
-  pictureUrl: string;
-  isPercent: boolean;
-  storesId: string;
-  masterInventoryItemId: null;
-  barcode: null;
-  stockQuantity: number;
-}
-
-export interface ICatalogBundling {
-  id: string;
-  storeId: string;
-  name: string;
-  description: string;
-  type: string;
-  discount: null;
-  price: number;
-  createdAt: Date;
-  updatedAt: Date;
-  pictureUrl: string;
-}
-
-export interface Products {
-  id: string;
-  name: string;
-  price: number;
-  discountPrice: number;
-  pictureUrl: string;
-  isPercent: boolean;
-  storesId: string;
-  masterInventoryItemId: null;
-  barcode: null;
-  stockQuantity: number;
-  categoriesHasProducts: CategoriesHasProduct[];
-}
-
-export interface CategoriesHasProduct {
-  categoriesId: string;
-  productsId: string;
-  categories: Categories;
-}
-
-export interface Categories {
-  id: string;
-  category: string;
-  description: string;
-  pictureUrl: string;
-  storesId: string;
-  masterInventoryCategoryId: null;
-}
-
 export interface IDailySalesListResponse {
   data: {
     items: IDailySales[] | [];
@@ -128,13 +41,13 @@ export interface IDailySalesListResponse {
     queueStatusCounts: {
       inProgress: number;
       placed: number;
-    };
+    }
   };
 }
 
 export interface IQueueStateStore {
   queue_isLoading: boolean;
-  dailySales_invoiceLists: IDailySalesListResponse;
+  dailySales_invoiceLists : IDailySalesListResponse
 }
 
 export interface IQueueListRequestBody {
@@ -142,10 +55,9 @@ export interface IQueueListRequestBody {
 }
 
 export interface IQueueListResponse {
-  data: {
+  data:{
     success: boolean;
     message: string;
-  };
+  }
 }
 
-export * from './queue-provided.interface';

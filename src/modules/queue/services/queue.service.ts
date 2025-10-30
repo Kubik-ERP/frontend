@@ -191,80 +191,7 @@ export const useQueueService = () => {
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   };
 
-  /**
-   * @description Computed property for queue status counts
-   */
-  const queue_queueStatusCounts = computed(() => {
-    return dailySales_invoiceLists.value.data.queueStatusCounts || { inProgress: 0, placed: 0 };
-  });
-
-  /**
-   * @description Computed property for total queue count (inProgress + placed)
-   */
-  const queue_totalQueueCount = computed(() => {
-    const counts = queue_queueStatusCounts.value;
-    console.log('Queue Status Counts:', counts);
-    return counts.inProgress + counts.placed;
-  });
-
-  /**
-   * @description Computed property for queue loading state
-   */
-  const queue_isLoadingComputed = computed(() => queue_isLoading.value);
-
-  /**
-   * @description Computed property for queue values
-   */
-  const queue_valuesComputed = computed(() => dailySales_invoiceLists.value);
-
-  /**
-   * @description Style helper methods for cashier compatibility
-   */
-  const queue_getClassOfOrderStatus = (orderStatus: string): string => {
-    return orderStatusClass(orderStatus);
-  };
-
-  const queue_getClassOfOrderType = (orderType: string): string => {
-    return orderTypeClass(orderType);
-  };
-
-  const queue_getClassOfPaymentStatus = (paymentStatus: string): string => {
-    // Use same logic as order status for now
-    return orderStatusClass(paymentStatus);
-  };
-
   return {
-    // Loading states
-    queue_isLoading: queue_isLoadingComputed,
-
-    // Data
-    queue_values: queue_valuesComputed,
-    queue_queueStatusCounts,
-    queue_totalQueueCount,
-
-    // Columns and configurations
-    queue_columns: QUEUE_LIST_COLUMNS,
-    queue_orderStatusList: ORDER_STATUS_LIST,
-    queue_orderTypeList: ORDER_TYPE_LIST,
-
-    // Query parameters
-    queue_queryParams: dailySalesList_queryParams,
-
-    // Methods
-    queue_fetchListInvoices: dailySalesList_fetchListInvoices,
-    queue_onChangePage: dailySalesList_onChangePage,
-    queue_handleOnSortChange: dailySales_handleOnSortChange,
-    queue_changeOrderStatus: changeOrderStatus,
-
-    // Style methods
-    queue_getClassOfOrderStatus,
-    queue_getClassOfOrderType,
-    queue_getClassOfPaymentStatus,
-
-    // Utility methods
-    queue_calculateDeltaHHMMSS: calculateDeltaHHMMSS,
-
-    // Legacy compatibility for QueueUI.vue (backward compatibility)
     queueColumns: QUEUE_LIST_COLUMNS,
     orderStatusList: ORDER_STATUS_LIST,
     orderTypeList: ORDER_TYPE_LIST,
@@ -272,11 +199,13 @@ export const useQueueService = () => {
     orderStatusClass,
     orderTypeClass,
     calculateDeltaHHMMSS,
-    dailySalesList_isLoading: queue_isLoadingComputed,
+
+    dailySalesList_isLoading: queue_isLoading,
     dailySalesList_onChangePage,
     dailySales_handleOnSortChange,
     dailySalesList_queryParams,
-    dailySalesList_values: queue_valuesComputed,
+    dailySalesList_values: dailySales_invoiceLists.value,
+
     dailySalesList_fetchListInvoices,
   };
 };

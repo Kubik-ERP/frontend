@@ -1,6 +1,6 @@
 // Interfaces
 import type { DataTableSortEvent } from 'primevue';
-import type { IDailySalesListResponse } from '@/modules/queue/interfaces';
+import type { IDailySalesListResponse } from './index';
 
 export interface IDailySalesListRequestQuery {
   createdAtFrom: Date | null;
@@ -31,7 +31,4 @@ export interface IDailySalesListProvided {
   dailySalesList_typesOfPaymentStatus: IDropdownItem[];
   dailySalesList_typesOfOrderStatus: IDropdownItem[];
   dailySalesList_values: IDailySalesListResponse;
-  // Queue-specific properties for cashier
-  queueStatusCounts?: ComputedRef<{ inProgress: number; placed: number }>;
-  totalQueueCount?: ComputedRef<number>;
 }

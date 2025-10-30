@@ -20,7 +20,7 @@ const {
   cashierOrderSummary_onOpenDialogTableOverview,
   cashierOrderSummary_onOpenDialogStockOverview,
 } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
-const { totalQueueCount } = inject<IDailySalesListProvided>('dailySalesList')!;
+const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesList')!;
 </script>
 
 <template>
@@ -105,7 +105,7 @@ const { totalQueueCount } = inject<IDailySalesListProvided>('dailySalesList')!;
 
           <section id="content" class="flex items-end gap-1">
             <h4 class="font-bold text-primary text-2xl">
-              {{ totalQueueCount || 0 }}
+              {{ dailySalesList_values.data.items.length }}
             </h4>
 
             <span class="font-semibold text-disabled text-sm"> queue </span>

@@ -6,7 +6,7 @@ import InvoicePaperCashierInvoice from '@/modules/invoice/components/paper/Invoi
 import type { IDailySalesListProvided } from '@/modules/daily-sales/interfaces/daily-sales-list.interface';
 import type { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
 import type { IInvoiceProvided } from '@/modules/invoice/interfaces';
-import type { IDailySales } from '@/modules/queue/interfaces';
+import type { IDailySales } from '@/modules/daily-sales/interfaces';
 
 /**
  * @description Inject all the data and methods what we need

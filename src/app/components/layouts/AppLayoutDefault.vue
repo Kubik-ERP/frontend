@@ -51,7 +51,7 @@ const mainLayoutClasses = computed(() => {
     return `${baseClasses} w-full h-full flex flex-col`;
   }
 
-  return `${baseClasses} flex-1 flex flex-col`;
+  return `${baseClasses} flex-1 flex flex-col max-w-[82%]`;
 });
 </script>
 

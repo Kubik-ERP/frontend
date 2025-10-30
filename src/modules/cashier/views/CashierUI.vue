@@ -21,7 +21,7 @@ import { useCashierProductService } from '../services/useCashierProduct.service'
 import { useCashierOrderSummaryService } from '../services/useCashierOrderSummary.service';
 
 import { useCashDrawerCashRegisterService } from '@/modules/cash-drawer/services/cash-drawer-cash-register.service';
-import { useCashierQueueService } from '../services/useCashierQueue.service';
+import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
 import { useInvoiceService } from '@/modules/invoice/services/useInvoice.service';
 import { useInventoryItemsListService } from '@/modules/items/services/items-list.service';
 import { useStaffMemberListService } from '@/modules/staff-member/services/staff-member-list.service';
@@ -178,9 +178,7 @@ const {
   dailySalesList_typesOfOrderType,
   dailySalesList_typesOfPaymentStatus,
   dailySalesList_values,
-  queueStatusCounts,
-  totalQueueCount,
-} = useCashierQueueService();
+} = useDailySalesListService();
 
 const {
   inventoryItems_colums,
@@ -355,8 +353,6 @@ provide('dailySalesList', {
   dailySalesList_typesOfOrderType,
   dailySalesList_typesOfPaymentStatus,
   dailySalesList_values,
-  queueStatusCounts,
-  totalQueueCount,
 });
 
 provide('invoice', {
@@ -389,8 +385,11 @@ onMounted(async () => {
     await inventoryItems_fetchData();
   } else {
     //
+    dailySalesList_queryParams.createdAtFrom = new Date();
+    dailySalesList_queryParams.createdAtTo = new Date();
+
+    await dailySalesList_fetchListInvoices();
   }
-  await (dailySalesList_fetchListInvoices as () => Promise<void>)();
 
   // Fetch outlet store table data for cashier
   accountStoreDetail_fetchOutletStoreTable();
