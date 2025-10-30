@@ -20,6 +20,8 @@
       "priceRetail": "Price Sell",
       "priceGrosir": "Price Buy",
       "details": "Item Details",
+      "markup": "Markup (%)",
+      "margin": "Margin (%)",
       "photo": {
         "label": "Photo (Optional)",
         "button": "Select Image",

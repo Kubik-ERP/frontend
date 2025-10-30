@@ -138,7 +138,7 @@ const formatDate = (date: Date) => {
 
           <!-- Button -->
           <PrimeVueButton
-            class="w-full sm:w-fit"
+            class="w-full bg-primary text-white px-4 py-2 h-10 rounded-md sm:w-fit"
             :label="useLocalization('voucher.main.popover.add')"
             @click="goToCreate"
           >

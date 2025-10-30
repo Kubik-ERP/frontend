@@ -33,9 +33,6 @@ const generateUrl = computed(() => {
   const tablesName = encodeURIComponent(accountStoreDetail_selectedTable?.value?.name ?? '');
   return `${APP_BASE_URL}/self-order/login?storeId=${storeId}&floorName=${floorName}&tablesName=${tablesName}`;
 });
-const encodeUrl = computed(() => {
-  return encodeURIComponent(generateUrl.value);
-});
 </script>
 
 <template>
@@ -84,7 +81,7 @@ const encodeUrl = computed(() => {
           <span class="font-normal text-grayscale-70 text-xs">{{ useLocalization('account.table-qr-code') }}</span>
 
           <div class="flex items-center gap-2">
-            <Qrcode id="account-store-table-qr-code" :value="encodeUrl" />
+            <Qrcode id="account-store-table-qr-code" :value="generateUrl" />
 
             <PrimeVueButton
               class="bg-transparent border-none basic-smooth-animation w-fit p-4"
