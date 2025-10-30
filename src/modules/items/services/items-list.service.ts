@@ -1,9 +1,10 @@
 import { IInventoryCategoryListRequestQuery } from '@/modules/inventory-category/interfaces/inventory-category-list.interface';
-import { ITEMS_LIST_COLUMS } from '../constants';
+import { ITEMS_LIST_COLUMS, ITEMS_LIST_COLUMS_RETAIL } from '../constants';
 import { IInventoryItemsListProvided } from '../interfaces/items-list.interface';
 import { useInventoryItemsStore } from '../store';
 import { DataTableSortEvent } from 'primevue';
 import eventBus from '@/plugins/mitt';
+import { useOutletStore } from '@/modules/outlet/store';
 
 export const useInventoryItemsListService = (): IInventoryItemsListProvided => {
   const store = useInventoryItemsStore();
@@ -131,11 +132,13 @@ export const useInventoryItemsListService = (): IInventoryItemsListProvided => {
       isOpen: true,
       width: '600px',
     });
-    
+
   }
+const outletStore = useOutletStore();
+const businessType = outletStore.outlet_currentOutlet?.businessType;
 
   return {
-    inventoryItems_colums: ITEMS_LIST_COLUMS,
+    inventoryItems_colums: businessType === 'Restaurant' ?  ITEMS_LIST_COLUMS : ITEMS_LIST_COLUMS_RETAIL,
     inventoryItems_queryParams,
     inventoryItems_fetchData,
     inventoryItems_list: inventoryItems_lists.value.data.items,

@@ -26,6 +26,10 @@ export const useQueueStore = defineStore('queue', {
           total: 10,
           totalPages: 1,
         },
+        queueStatusCounts: {
+          inProgress: 0,
+          placed: 0,
+        },
       },
     },
   }),

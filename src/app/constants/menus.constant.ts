@@ -227,7 +227,7 @@ export const LIST_SIDEBAR_MENUS = [
             name: 'Waste Log',
             translationKey: 'app.menus.waste-log',
             path: '/recipe/waste-log',
-          }
+          },
         ],
       },
       {

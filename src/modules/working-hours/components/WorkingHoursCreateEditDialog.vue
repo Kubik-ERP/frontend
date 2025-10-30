@@ -130,8 +130,8 @@ const {
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
-                  <AppBaseSvg name="plus-line" class="w-4 h-4" />
-                  <span class="font-medium text-sm">Add another shift</span>
+                  <AppBaseSvg name="plus-line" class="filter-primary-color w-4 h-4" />
+                  <span class="font-medium text-sm text-primary">Add another shift</span>
                 </section>
               </template>
             </PrimeVueButton>
