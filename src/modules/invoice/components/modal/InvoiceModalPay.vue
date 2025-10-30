@@ -181,7 +181,7 @@ watch(
         </template>
         <template v-else>
           <div class="flex w-full justify-between items-center -mt-3">
-            <span class="text-sm lg:text-basetext-text-disabled">Total Price</span>
+            <span class="text-sm lg:text-base text-text-disabled">Total Price</span>
             <span class="font-semibold">{{
               useCurrencyFormat({ data: invoice_invoiceData.calculate?.grandTotal || 0 })
             }}</span>
