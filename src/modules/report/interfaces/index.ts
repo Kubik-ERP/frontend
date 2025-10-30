@@ -6,6 +6,15 @@ import type {
 } from './financial-report';
 export * from './financial-report';
 
+import type {
+  ILoyaltyPointReport_spendBased,
+  ILoyaltyPointReport_benefitUtilization,
+  ILoyaltyPointReport_expiryWarning,
+  ILoyaltyPointReport_productBased,
+  ILoyaltyPointReport_typeAccumulation,
+} from './loyalty-point-report';
+export * from './loyalty-point-report';
+
 import type { ISalesReport } from './sales-report';
 export * from './sales-report';
 
@@ -88,6 +97,12 @@ export interface IReportStore {
   voucherReport_values: IVoucherReport[];
   // customer report
   customerReport_values: ICustomerReport[];
+  // loyalty point report
+  loyaltyPointReport_spendBased_values: ILoyaltyPointReport_spendBased;
+  loyaltyPointReport_benefitUtilization_values: ILoyaltyPointReport_benefitUtilization;
+  loyaltyPointReport_expiryWarning_values: ILoyaltyPointReport_expiryWarning;
+  loyaltyPointReport_productBased_values: ILoyaltyPointReport_productBased;
+  loyaltyPointReport_typeAccumulation_values: ILoyaltyPointReport_typeAccumulation;
 }
 
 export interface IReportProvided {
@@ -112,6 +127,11 @@ export interface IReportProvided {
   inventoryReport_itemPerformanceByBrand_columns: IColumnDataTable[];
   voucherReport_columns: IColumnDataTable[];
   customerReport_columns: IColumnDataTable[];
+  loyaltyPointReport_spendBased_columns: IColumnDataTable[];
+  loyaltyPointReport_benefitUtilization_columns: IColumnDataTable[];
+  loyaltyPointReport_expiryWarning_columns: IColumnDataTable[];
+  loyaltyPointReport_productBased_columns: IColumnDataTable[];
+  loyaltyPointReport_typeAccumulation_columns: IColumnDataTable[];
   // methods
   fetchStaff_lists: () => Promise<void>;
   fetchOutlet_lists: () => Promise<void>;
@@ -120,6 +140,7 @@ export interface IReportProvided {
   report_getInventoryReport: (type: string) => Promise<void>;
   report_getVoucherReport: () => Promise<void>;
   report_getCustomerReport: () => Promise<void>;
+  report_getLoyaltyPointReport: (type: string) => Promise<void>;
   // params
   report_queryParams: IReportQueryParams;
   // store
@@ -150,6 +171,12 @@ export interface IReportProvided {
   voucherReport_values: globalThis.Ref<IVoucherReport[]>;
   // customer report
   customerReport_values: globalThis.Ref<ICustomerReport[]>;
+  // loyalty point report
+  loyaltyPointReport_spendBased_values: globalThis.Ref<ILoyaltyPointReport_spendBased>;
+  loyaltyPointReport_benefitUtilization_values: globalThis.Ref<ILoyaltyPointReport_benefitUtilization>;
+  loyaltyPointReport_expiryWarning_values: globalThis.Ref<ILoyaltyPointReport_expiryWarning>;
+  loyaltyPointReport_productBased_values: globalThis.Ref<ILoyaltyPointReport_productBased>;
+  loyaltyPointReport_typeAccumulation_values: globalThis.Ref<ILoyaltyPointReport_typeAccumulation>;
   // outlet_list
   outlet_lists_options: globalThis.Ref<IOutletListOptions[]>;
   findOutletDetail: (id: string) => IOutlet | null | undefined;

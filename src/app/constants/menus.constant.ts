@@ -122,6 +122,10 @@ export const LIST_SIDEBAR_MENUS = [
           //   name: 'Commision Report',
           //   path: '/report/commision-report',
           // },
+          {
+            name: 'Loyalty Point Report',
+            path: '/report/loyalty-point-report',
+          }
         ],
       },
       {
