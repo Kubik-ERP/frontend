@@ -1066,7 +1066,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_fetchInvoiceDetail = async (invoiceId: string) => {
     try {
-      const response = await storeInvoice.invoice_fetchInvoiceById(invoiceId ?? null, route);
+      if (!invoiceId) {
+        throw new Error('No invoice ID provided to fetch invoice detail');
+      }
+      const response = await storeInvoice.invoice_fetchInvoiceById(invoiceId, route);
 
       if (response.data) {
         if (response.data.customer) {
