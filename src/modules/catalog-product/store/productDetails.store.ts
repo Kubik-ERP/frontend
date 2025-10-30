@@ -9,37 +9,15 @@ export const useProductDetailsStore = defineStore('product-details', {
   state: (): IProductDetailsStateStore => ({
     productDetails_isLoading: false,
     productDetails: {
-      id: '64adf394-d6d7-4f44-bb44-0e8f13b17d03',
-      photoUrl: '1757395160529-227739470.webp',
-      name: 'Super Giant',
-      categories: ['Super', 'Giant'],
-      menuRecipes: [
-        {
-          recipeId: '64adf394-d6d7-4f44-bb44-0e8f13b17d03',
-          recipeName: 'Recipe Super Giant',
-        },
-      ],
-      price: 92000,
-      discountPrice: 90000,
-      productVariant: [
-        {
-          name: 'Original1',
-          additionalPrice: 0,
-        },
-        {
-          name: 'Pedas',
-          additionalPrice: 10000,
-        },
-      ],
-      portionStock: [
-        {
-          batchName: 'BATCH-0001',
-          batchDate: new Date('2023-01-01'),
-          batchActualPortion: 100,
-          batchPortionLeft: 100,
-          difference: 0,
-        },
-      ],
+      id: '',
+      photoUrl: '',
+      name: '',
+      categories: [],
+      menuRecipes: [],
+      price: 0,
+      discountPrice: 0,
+      productVariant: [],
+      portionStock: [],
     } as IProductDetails,
   }),
   actions: {

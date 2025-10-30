@@ -26,11 +26,32 @@ type IProductVariant = {
 };
 
 type IProductPortionStock = {
-  batchName: string;
-  batchDate: Date;
-  batchActualPortion: number;
-  batchPortionLeft: number;
-  difference: number;
+  // batchName: string;
+  // batchDate: Date;
+  // batchActualPortion: number;
+  // batchPortionLeft: number;
+  // difference: number;
+  id: string
+  productId: string;
+  storesId: string;
+  action: string
+  adjustmentQuantity: number
+  notes: string
+  previousQuantity: number
+  newQuantity: number
+  createdAt: string
+  updatedAt: string
+  createdBy: number
+  users:{
+    id: string
+    username: string
+    email: string
+    fullname: string
+  },
+  stores: {
+    id: string
+    name: string
+  }
 };
 
 
