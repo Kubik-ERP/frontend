@@ -1,4 +1,4 @@
-import { useOutletStore } from "@/modules/outlet/store";
+import { useOutletStore } from '@/modules/outlet/store';
 
 export const ITEMS_API_BASE_ENDPOINT = '/inventory-items';
 
@@ -7,12 +7,6 @@ export const ITEMS_LIST_REQUEST = 'ITEMS_LIST_REQUEST';
 const store = useOutletStore();
 const businessType = store.outlet_currentOutlet?.businessType;
 export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
-  {
-    label: 'SKU',
-    sortable: false,
-    value: 'sku',
-    translationKey: 'items.form.sku',
-  },
   {
     label: 'Item Name',
     sortable: false,
@@ -56,7 +50,99 @@ export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
 
   // },
 
-   {
+  //  {
+  //   label: 'Markup (%)',
+  //   sortable: true,
+  //   value: 'markup',
+  //   translationKey: 'items.form.markup',
+  // },
+  // {
+  //   label: 'Margin (%)',
+  //   sortable: true,
+  //   value: 'margin',
+  //   translationKey: 'items.form.margin',
+  // },
+  {
+    label: 'Price Per Unit',
+    sortable: true,
+    value: 'unitPrice',
+    translationKey: businessType === 'Restaurant' ? 'items.form.pricePerUnit' : 'items.form.priceRetail',
+  },
+  {
+    label: 'Price Grosir',
+    sortable: true,
+    value: 'priceGrosir',
+    translationKey: 'items.form.priceGrosir',
+  },
+  {
+    label: 'Expiry Date',
+    sortable: true,
+    value: 'expiryDate',
+    translationKey: 'items.form.expiryDate',
+  },
+  // {
+  //   label: 'Supplier',
+  //   sortable: false,
+  //   value: 'supplierId',
+  // },
+  // {
+  //   label: 'Storage Location',
+  //   sortable: false,
+  //   value: 'storageLocationId',
+  // },
+  {
+    label: '',
+    sortable: false,
+    value: 'action',
+    width: '100px',
+  },
+];
+
+export const ITEMS_LIST_COLUMS_RETAIL: IColumnDataTable[] = [
+  {
+    label: 'Item Name',
+    sortable: false,
+    value: 'name',
+    translationKey: 'items.form.name',
+  },
+  {
+    label: 'Category',
+    sortable: false,
+    value: 'categoryName',
+    translationKey: 'items.form.category',
+  },
+  // {
+  //   label: 'Brand',
+  //   sortable: false,
+  //   value: 'brandName',
+  //   translationKey: 'items.form.brand',
+  // },
+
+  // {
+  //   label: 'Unit',
+  //   sortable: false,
+  //   value: 'unit',
+  // },
+  {
+    label: 'Stock Quantity',
+    sortable: true,
+    value: 'stockQuantity',
+    translationKey: 'items.form.stockQuantity',
+  },
+  // {
+  //   label: 'Reorder Level',
+  //   sortable: true,
+  //   value: 'reorderLevel',
+  // },
+  // {
+  //   label: 'Minimum Stock',
+  //   sortable: true,
+  //   value: 'minimumStockQuantity',
+  //   translationKey: 'items.form.minStockQuantity',
+
+  // },
+
+  {
     label: 'Markup (%)',
     sortable: true,
     value: 'markup',
@@ -74,6 +160,7 @@ export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
     value: 'unitPrice',
     translationKey: businessType === 'Restaurant' ? 'items.form.pricePerUnit' : 'items.form.priceRetail',
   },
+  { label: 'Price Grosir', sortable: true, value: 'priceGrosir', translationKey: 'items.form.priceGrosir' },
   {
     label: 'Expiry Date',
     sortable: true,
@@ -142,7 +229,6 @@ export const ITEMS_LIST_COLUMS_IMPORT: IColumnDataTable[] = [
     label: 'Minimum Stock',
     sortable: true,
     value: 'minimumStockQuantity',
-
   },
   {
     label: 'Price Per Unit',
@@ -196,7 +282,6 @@ export const ITEM_STOCK_ADJUSTMENT_LIST_COLUMNS: IColumnDataTable[] = [
     label: 'Notes',
     sortable: false,
     value: 'notes',
-
   },
   {
     label: 'Adjusted By',
@@ -207,30 +292,27 @@ export const ITEM_STOCK_ADJUSTMENT_LIST_COLUMNS: IColumnDataTable[] = [
     label: '',
     sortable: false,
     value: 'aksi',
-  }
-]
-
-
-export const ITEM_UNIT_DROPDOWN: IDropdownItem[] = [
-  { label: "Kilogram (Kg)", value: "kg" },
-  { label: "Gram (g)", value: "g" },
-  { label: "Miligram (mg)", value: "mg" },
-  { label: "Liter (L)", value: "l" },
-  { label: "Mililiter (ml)", value: "ml" },
-  { label: "Piece (pcs)", value: "pcs" },
-  { label: "Pack (pck)", value: "pck" },
-  { label: "Bottle", value: "bottle" },
-  { label: "Can", value: "can" },
-  { label: "Sachet", value: "sachet" },
-  { label: "Box", value: "box" },
-  { label: "Dozen", value: "dozen" },
-  { label: "Portion", value: "portion" },
-  { label: "Slice", value: "slice" },
-  { label: "Cup", value: "cup" },
-  { label: "Table Spoon (Tbsp)", value: "tbsp" },
-  { label: "Tea Spoon (Tsp)", value: "tsp" },
-  { label: "Serving", value: "serving" },
-  { label: "Batch", value: "batch" },
+  },
 ];
 
-
+export const ITEM_UNIT_DROPDOWN: IDropdownItem[] = [
+  { label: 'Kilogram (Kg)', value: 'kg' },
+  { label: 'Gram (g)', value: 'g' },
+  { label: 'Miligram (mg)', value: 'mg' },
+  { label: 'Liter (L)', value: 'l' },
+  { label: 'Mililiter (ml)', value: 'ml' },
+  { label: 'Piece (pcs)', value: 'pcs' },
+  { label: 'Pack (pck)', value: 'pck' },
+  { label: 'Bottle', value: 'bottle' },
+  { label: 'Can', value: 'can' },
+  { label: 'Sachet', value: 'sachet' },
+  { label: 'Box', value: 'box' },
+  { label: 'Dozen', value: 'dozen' },
+  { label: 'Portion', value: 'portion' },
+  { label: 'Slice', value: 'slice' },
+  { label: 'Cup', value: 'cup' },
+  { label: 'Table Spoon (Tbsp)', value: 'tbsp' },
+  { label: 'Tea Spoon (Tsp)', value: 'tsp' },
+  { label: 'Serving', value: 'serving' },
+  { label: 'Batch', value: 'batch' },
+];
