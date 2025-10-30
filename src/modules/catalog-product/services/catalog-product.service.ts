@@ -247,6 +247,7 @@ export const useProductService = () => {
         categoriesHasProducts: categories,
         variantHasProducts: variants,
         menuRecipes: product.menuRecipes,
+        stockQuantity: product.stockQuantity,
       };
     } catch (error) {
       if (error instanceof Error) {

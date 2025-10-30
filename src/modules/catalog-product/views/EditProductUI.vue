@@ -68,6 +68,7 @@ const loadProduct = async () => {
     product_formData.is_percent = response.isPercent;
     product_formData.imagePreview = response.picture_url;
     product_formData.isDiscount = response.discountPrice !== response.price;
+    product_formData.stock_quantity = response.stockQuantity;
 
     if (response.menuRecipes.length > 0) {
       product_formData.recipeId = response.menuRecipes[0].recipeId || null;

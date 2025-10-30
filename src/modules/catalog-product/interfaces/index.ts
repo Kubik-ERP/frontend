@@ -70,6 +70,7 @@ export interface IProduct {
     recipeId: string;
     recipeName: string;
   }[];
+  stockQuantity?: number;
 }
 
 export interface CreateProductPayload {
