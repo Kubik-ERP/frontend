@@ -126,6 +126,9 @@ const rbac = useRbac();
           <template v-else-if="column.value === 'categoryName'">
             <span class="text-gray-700">{{ data.category || '-' }}</span>
           </template>
+          <template v-else-if="column.value === 'priceGrosir'">
+            <span class="text-gray-700">Rp{{ data.priceGrosir?.toLocaleString('id-ID') ?? 0 }}</span>
+          </template>
 
           <!-- Brand -->
           <template v-else-if="column.value === 'brandName'">
