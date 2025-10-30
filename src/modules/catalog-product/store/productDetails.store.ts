@@ -40,7 +40,7 @@ export const useProductDetailsStore = defineStore('product-details', {
               additionalPrice: item.variant.price,
             };
           },
-        );
+        ) || [];
         this.productDetails.categories = response.data.data.categoriesHasProducts.map(
           (item: { categories: { category: string } }) => {
             // Return the string directly

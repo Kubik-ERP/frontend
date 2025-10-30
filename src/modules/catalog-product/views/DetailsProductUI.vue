@@ -61,13 +61,14 @@ const photoUrl = (image: string) => {
 };
 const route = useRoute();
 onMounted(async () => {
+  // await productDetails_fetchProductDetails(route.params.id as string);
   await productDetails_fetchProductDetails(route.params.id as string);
 });
 </script>
 <template>
   <header class="flex items-center justify-between">
     <h1 class="text-xl font-semibold">Product information</h1>
-    <router-link :to="{ name: 'catalog.products.edit', params: { id: productDetails.id } }">
+    <router-link :to="{ name: 'catalog.products.edit', params: { id: productDetails?.id as string || '12'} }">
       <PrimeVueButton variant="outlined" label="Edit Product Details" class="border border-primary text-primary">
         <template #icon>
           <AppBaseSvg name="edit" class="!w-5 !h-5 filter-primary-color" />
@@ -80,7 +81,7 @@ onMounted(async () => {
     <section class="col-span-2 flex flex-col">
       <label for="photo">Photo</label>
       <AppBaseImage
-        :src="photoUrl(productDetails.photoUrl)"
+        :src="photoUrl(productDetails?.photoUrl)"
         alt="Photo"
         class="w-32 h-32 object-cover rounded-xl"
       />
@@ -88,18 +89,18 @@ onMounted(async () => {
 
     <section>
       <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Product Name</label>
-      <p>{{ productDetails.name }}</p>
+      <p>{{ productDetails?.name }}</p>
     </section>
 
     <section>
       <label for="category" class="block text-sm font-medium leading-6 text-gray-900">Category</label>
-      <ProductVariantPill :variants="productDetails.categories" />
+      <ProductVariantPill :variants="productDetails?.categories || []" />
     </section>
 
-    <section v-if="productDetails.menuRecipes.length > 0" class="col-span-2">
+    <section v-if="productDetails?.menuRecipes?.length > 0" class="col-span-2">
       <label for="link-to-recipe" class="block text-sm font-medium leading-6 text-gray-900">Link to Recipe</label>
-      <router-link :to="{ name: 'menu-recipe.detail', params: { id: productDetails.menuRecipes[0].recipeId } }">
-        <p class="text-blue-500">{{ productDetails.menuRecipes[0].recipeName }}</p>
+      <router-link :to="{ name: 'menu-recipe.detail', params: { id: productDetails?.menuRecipes[0].recipeId } }">
+        <p class="text-blue-500">{{ productDetails?.menuRecipes[0].recipeName }}</p>
       </router-link>
     </section>
 
@@ -107,11 +108,11 @@ onMounted(async () => {
 
     <section>
       <label for="price" class="block text-sm font-medium leading-6 text-gray-900">Product Price</label>
-      <p>{{ useCurrencyFormat({ data: productDetails.price }) }}</p>
+      <p>{{ useCurrencyFormat({ data: productDetails?.price }) }}</p>
     </section>
     <section>
       <label for="price" class="block text-sm font-medium leading-6 text-gray-900">Product Discount</label>
-      <p>{{ useCurrencyFormat({ data: productDetails.discountPrice }) }}</p>
+      <p>{{ useCurrencyFormat({ data: productDetails?.discountPrice }) }}</p>
     </section>
 
     <section class="col-span-2">
