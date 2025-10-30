@@ -12,6 +12,9 @@ import { useGlobalLoading } from '@/app/composables/useGlobalLoading';
 // Stores
 import { useMobileStore } from '@/app/store/mobile.store';
 
+// Layout constants
+const MAIN_LAYOUT_MAX_WIDTH = '82%';
+
 // Global loading state
 const { isLoading, clearAllLoading } = useGlobalLoading();
 
@@ -51,7 +54,7 @@ const mainLayoutClasses = computed(() => {
     return `${baseClasses} w-full h-full flex flex-col`;
   }
 
-  return `${baseClasses} flex-1 flex flex-col max-w-[82%]`;
+  return `${baseClasses} flex-1 flex flex-col max-w-[${MAIN_LAYOUT_MAX_WIDTH}]`;
 });
 </script>
 
