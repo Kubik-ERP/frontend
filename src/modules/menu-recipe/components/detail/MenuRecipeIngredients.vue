@@ -50,7 +50,7 @@ const { menuRecipeDetail_data, menuRecipeDetail_listColumns } = inject(
 
       <template v-else-if="column.value === 'cost'">
         <span class="font-normal text-black text-sm">
-          {{ useCurrencyFormat({ data: data?.cost || 0 }) }}
+          {{ useCurrencyFormat({ data: data?.inventory_item.price_per_unit * data.qty }) }}
         </span>
       </template>
 

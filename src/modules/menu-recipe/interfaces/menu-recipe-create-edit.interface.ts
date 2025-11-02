@@ -8,7 +8,7 @@ import type { IProductItem } from '@/modules/cashier/interfaces/cashier-response
 export interface IMenuRecipeCreateEditIngredientItem {
   itemId: IInventoryItems | null;
   quantity: number;
-  uom: string;
+  uom: string | null;
   notes: string | null;
   cost: number;
 }
@@ -50,6 +50,10 @@ export interface IMenuRecipeCreateEditProvided {
   menuRecipeCreateEdit_onShowDialogAddIngredient: () => void;
   menuRecipeCreateEdit_onShowDialogCancelAddIngredient: () => void;
   menuRecipeCreateEdit_onShowDialogSaveIngredients: () => void;
+  menuRecipeCreateEdit_onShowDialogDeleteIngredient: (index: number) => void;
+  menuRecipeCreateEdit_onConfirmDeleteIngredient: () => void;
+  menuRecipeCreateEdit_onCancelDeleteIngredient: () => void;
+  menuRecipeCreateEdit_selectedIngredientIndex: Ref<number>;
   // Ingredient edit state
   menuRecipeCreateEdit_isEditingIngredientItem: Ref<boolean>;
   menuRecipeCreateEdit_editingIngredientItemIndex: Ref<number>;
