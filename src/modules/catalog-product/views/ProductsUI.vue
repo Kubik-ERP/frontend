@@ -286,7 +286,7 @@ const hasPermission = rbac.hasPermission('product_management');
 
         <template #empty> No products found. </template>
 
-        <PrimeVueColumn sortable field="name" header="Name" class="w-1/5">
+        <PrimeVueColumn field="name" header="Name" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
               <PrimeVueSkeleton height="1.5rem" />
@@ -297,7 +297,7 @@ const hasPermission = rbac.hasPermission('product_management');
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn sortable field="categories" header="Category" class="w-1/5">
+        <PrimeVueColumn field="categories" header="Category" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
               <PrimeVueSkeleton height="1.5rem" />
@@ -308,7 +308,7 @@ const hasPermission = rbac.hasPermission('product_management');
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn sortable field="variants" header="Variants" class="w-1/5">
+        <PrimeVueColumn field="variants" header="Variants" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
               <PrimeVueSkeleton height="1.5rem" />
@@ -319,7 +319,7 @@ const hasPermission = rbac.hasPermission('product_management');
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn sortable field="price" header="Price" class="w-1/5">
+        <PrimeVueColumn field="price" header="Price" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
               <PrimeVueSkeleton height="1.5rem" />
@@ -330,13 +330,24 @@ const hasPermission = rbac.hasPermission('product_management');
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn sortable field="discount_price" header="Discount Price" class="w-1/5">
+        <PrimeVueColumn field="discount_price" header="Discount Price" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
               <PrimeVueSkeleton height="1.5rem" />
             </template>
             <template v-else>
               {{ formatCurrency(data.discount_price) }}
+            </template>
+          </template>
+        </PrimeVueColumn>
+
+        <PrimeVueColumn field="stock" header="Stock" class="w-1/5">
+          <template #body="{ data }">
+            <template v-if="loading">
+              <PrimeVueSkeleton height="1.5rem" />
+            </template>
+            <template v-else>
+              {{ data.stock }}
             </template>
           </template>
         </PrimeVueColumn>

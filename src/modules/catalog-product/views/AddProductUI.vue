@@ -24,7 +24,7 @@ function clearForm() {
   product_formData.variants = [];
   product_formData.categories = [];
   product_formData.imagePreview = '';
-  product_formData.stock_quantity = 0;
+  // product_formData.stock_quantity = 0;
   product_formData.recipeId = null;
 
   product_formValidations.value.$reset();
@@ -307,7 +307,7 @@ watch(product_formData, () => {
             </AppBaseFormGroup>
           </div>
 
-          <div>
+          <!-- <div>
             <AppBaseFormGroup
               v-slot="{ classes }"
               class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
@@ -325,7 +325,7 @@ watch(product_formData, () => {
                 v-on="useListenerForm(product_formValidations, 'stock_quantity')"
               />
             </AppBaseFormGroup>
-          </div>
+          </div> -->
         </div>
         <div class="grid grid-cols-2 h-fit w-full gap-x-8 mt-8">
           <div class="flex items-center gap-2 col-span-2">

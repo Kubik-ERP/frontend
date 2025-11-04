@@ -68,7 +68,7 @@ onMounted(async () => {
 <template>
   <header class="flex items-center justify-between">
     <h1 class="text-xl font-semibold">Product information</h1>
-    <router-link :to="{ name: 'catalog.products.edit', params: { id: productDetails?.id as string || '12'} }">
+    <router-link :to="{ name: 'catalog.products.edit', params: { id: (productDetails?.id as string) || '12' } }">
       <PrimeVueButton variant="outlined" label="Edit Product Details" class="border border-primary text-primary">
         <template #icon>
           <AppBaseSvg name="edit" class="!w-5 !h-5 filter-primary-color" />
@@ -97,11 +97,15 @@ onMounted(async () => {
       <ProductVariantPill :variants="productDetails?.categories || []" />
     </section>
 
-    <section v-if="productDetails?.menuRecipes?.length > 0" class="col-span-2">
+    <section v-if="productDetails?.menuRecipes?.length > 0" class="">
       <label for="link-to-recipe" class="block text-sm font-medium leading-6 text-gray-900">Link to Recipe</label>
       <router-link :to="{ name: 'menu-recipe.detail', params: { id: productDetails?.menuRecipes[0].recipeId } }">
         <p class="text-blue-500">{{ productDetails?.menuRecipes[0].recipeName }}</p>
       </router-link>
+    </section>
+    <section class="">
+      <label for="stock-quantity" class="block text-sm font-medium leading-6 text-gray-900">Stock Quantity</label>
+      <p>{{ productDetails?.stockQuantity }}</p>
     </section>
 
     <h2 class="col-span-2 text-xl font-semibold">Product Price</h2>

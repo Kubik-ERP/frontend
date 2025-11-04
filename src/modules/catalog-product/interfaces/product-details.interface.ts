@@ -13,6 +13,7 @@ export type IProductDetails = {
   discountPrice: number;
   productVariant: IProductVariant[];
   portionStock: IProductPortionStock[];
+  stockQuantity: number
 };
 
 type IRecipe = {

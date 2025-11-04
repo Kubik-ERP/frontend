@@ -29,9 +29,9 @@ function convertProductToFormData(payload: CreateProductPayload): FormData {
   formData.append('discount_price', String(payload.discount_price));
   formData.append('isDiscount', String(payload.isDiscount));
   formData.append('is_percent', String(payload.is_percent));
-  formData.append('stock_quantity', String(payload.stock_quantity));
+  // formData.append('stock_quantity', String(payload.stock_quantity));
   
-  formData.append('recipeId', payload.recipeId === "" ||payload.recipeId === undefined || payload.recipeId === null ? 'null' : String(payload.recipeId));
+  formData.append('recipeId', payload.recipeId === "" || payload.recipeId === undefined || payload.recipeId === null ? '' : String(payload.recipeId));
 
   // Optional image
 
@@ -107,7 +107,7 @@ export const useProductService = () => {
     is_percent: false,
     discount_price: 0,
     variants: [],
-    stock_quantity: 0,
+    // stock_quantity: 0,
     recipeId: '',
   });
   const product_formValidatable = computed(() => ({
@@ -116,7 +116,7 @@ export const useProductService = () => {
     categories: product_formData.categories,
     discount_value: product_formData.discount_value,
     variants: product_formData.variants,
-    stock_quantity: product_formData.stock_quantity,
+    // stock_quantity: product_formData.stock_quantity,
   }));
 
   const product_formRules = computed(() => ({
@@ -130,7 +130,7 @@ export const useProductService = () => {
         price: { required },
       }),
     },
-    stock_quantity: { required },
+    // stock_quantity: { required },
   }));
 
   const product_formValidations = useVuelidate(product_formRules, product_formValidatable, {
@@ -153,6 +153,7 @@ export const useProductService = () => {
           (cat: ICategoryHasProduct) => cat.categories.category,
         ),
         variantHasProducts: item.variantHasProducts?.map((variant: IVariantHasProduct) => variant.variant.name),
+        stock: item.stockQuantity || 0,
       }));
 
       const lastPage = response.data.data.lastPage;
