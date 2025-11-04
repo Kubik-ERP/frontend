@@ -31,6 +31,21 @@ export const useBatchStore = defineStore('batch', {
   }),
   getters: {},
   actions: {
+    async batch_start(batchId: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+      try {
+        this.batch_isLoading = true;
+
+        const response = await httpClient.post(`${BATCH_BASE_ENDPOINT}/${batchId}/start`, {
+          ...requestConfigurations,
+        });
+        return response.data;
+      } catch (error: unknown) {
+        if (error instanceof Error) return Promise.reject(error);
+        else return Promise.reject(new Error(String(error)));
+      } finally {
+        this.batch_isLoading = false;
+      }
+    },
     async fetchBatchList(requestConfigurations: AxiosRequestConfig): Promise<unknown> {
       try {
         this.batch_isLoading = true;
@@ -46,7 +61,7 @@ export const useBatchStore = defineStore('batch', {
         this.batch_isLoading = false;
       }
     },
-    async batch_create(payload: IBatchFormData, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async batch_saveDraft(payload: IBatchFormData, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
       const data = {
         recipeId: payload.recipe.id,
         date: useFormatDateLocal(payload.batchDate),

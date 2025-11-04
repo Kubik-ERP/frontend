@@ -6,6 +6,7 @@ const {
   batchList_columns,
   // batchList_values,
   batchList_getClassOfBatchStatus,
+  batchList_getLabelOfBatchStatus,
   menuRecipeList_onShowDialogDelete,
   batch_fetchList,
   batch_lists,
@@ -32,9 +33,9 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <pre>
-    {{ batch_lists.length }}
-  </pre>
+  <!-- <pre>
+    {{ batch_lists }}
+  </pre> -->
   <AppBaseDataTable
     :columns="batchList_columns"
     :data="batch_lists"
@@ -145,8 +146,11 @@ onMounted(async () => {
       <template v-else-if="column.value === 'batchStatus'">
         <span>
           <PrimeVueChip
-            :class="[batchList_getClassOfBatchStatus(data['status']), 'text-xs font-normal py-1 px-1.5 w-fit']"
-            :label="`${data['status']}`"
+            :class="[
+              batchList_getClassOfBatchStatus(batchList_getLabelOfBatchStatus(data['status'])),
+              'text-xs font-normal py-1 px-1.5 w-fit',
+            ]"
+            :label="batchList_getLabelOfBatchStatus(data['status'])"
           />
         </span>
       </template>
@@ -167,9 +171,7 @@ onMounted(async () => {
         </span>
       </template>
       <template v-else>
-        <span class="font-normal text-sm text-text-primary">
-          {{ data[column.value] }} else
-        </span>
+        <span class="font-normal text-sm text-text-primary"> {{ data[column.value] }} else </span>
       </template>
     </template>
   </AppBaseDataTable>

@@ -116,7 +116,7 @@ export const useBatchService = (): IBatchListProvided => {
         return Promise.reject(new Error(String(error)));
       }
     }
-  }
+  };
 
   const menuRecipeList_onSelectedRecipe = (recipe: IMenuRecipe) => {
     batch_formData.recipeId = recipe.id;
@@ -188,6 +188,26 @@ export const useBatchService = (): IBatchListProvided => {
     };
 
     eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
+  const batchList_getLabelOfBatchStatus = (batchStatus: number): string => {
+    switch (batchStatus) {
+      case 0: {
+        return 'Planned';
+      }
+      case 1: {
+        return 'In Progress';
+      }
+      case 2: {
+        return 'Cancelled';
+      }
+      case 3: {
+        return 'Posted';
+      }
+      default: {
+        return '';
+      }
+    }
   };
   const batchList_getClassOfBatchStatus = (batchStatus: string): string => {
     if (!batchStatus) {
@@ -305,8 +325,7 @@ export const useBatchService = (): IBatchListProvided => {
     return title;
   };
 
-  const batchCreateEdit_onShowDialogStart = (id: string) => {
-    console.log(id);
+  const batchCreateEdit_onShowDialogStart = () => {
     const argsEventEmitter: IPropsDialogConfirmation = {
       id: 'batch-create-edit-start-dialog-confirmation',
       description: batchCreateEdit_startCookingDescription(),
@@ -315,6 +334,7 @@ export const useBatchService = (): IBatchListProvided => {
       isUsingButtonSecondary: true,
       isUsingHtmlTagOnDescription: true,
       onClickButtonPrimary: () => {
+        batchCreateEdit_onStartCooking();
         eventBus.emit('AppBaseDialog', { id: 'batch-create-edit-start-dialog-confirmation', isOpen: false });
       },
       onClickButtonSecondary: () => {
@@ -408,7 +428,7 @@ export const useBatchService = (): IBatchListProvided => {
     }
 
     try {
-      await store.batch_create(batch_formData, {
+      await store.batch_saveDraft(batch_formData, {
         ...httpAbort_registerAbort('MENU_RECIPE_INGREDIENTS_REQUEST'),
       });
       const argsEventEmitter: IPropsToast = {
@@ -430,6 +450,46 @@ export const useBatchService = (): IBatchListProvided => {
     }
   };
 
+  const batchCreateEdit_onStartCooking = async () => {
+    try {
+      const batchId = await store
+        .batch_saveDraft(batch_formData, {
+          ...httpAbort_registerAbort('BATCH_CREATE_REQUEST'),
+        })
+        .then(response => {
+          return response.data.id;
+        })
+        .catch((error: unknown) => {
+          if (error instanceof Error) {
+            return Promise.reject(error);
+          } else {
+            return Promise.reject(new Error(String(error)));
+          }
+        });
+
+      console.log(batchId);
+
+      await store.batch_start(batchId, {
+        ...httpAbort_registerAbort('BATCH_START_REQUEST'),
+      });
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: `Batch started cooking.`,
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      batch_formData_onClear();
+      router.push({ name: 'prep-batch-management.index' });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
   return {
     // columns
     batchList_columns: BATCH_LIST_COLUMNS,
@@ -439,6 +499,7 @@ export const useBatchService = (): IBatchListProvided => {
     batchDetails_values: BATCH_DETAILS_VALUES,
     // methods
     batchList_getClassOfBatchStatus,
+    batchList_getLabelOfBatchStatus,
     menuRecipeList_onShowDialogDelete,
     menuRecipeList_fetchList,
     menuRecipeList_onSelectedRecipe,
