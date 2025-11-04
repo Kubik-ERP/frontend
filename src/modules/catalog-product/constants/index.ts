@@ -1,3 +1,5 @@
+export * from './catalog-product.constant'
+
 export const PRODUCT_API_BASE_ENDPOINT = '/products';
 
 export const PRODUCT_LIST_COLUMNS_IMPORT :IColumnDataTable[] = [
