@@ -22,7 +22,7 @@ const {
   menuRecipeList_handleOnSortChange,
   menuRecipeList_isLoading,
   menuRecipeList_onChangePage,
-  menuRecipeList_onShowDialogDelete,
+  menuRecipeList_onShowDialogCancel,
   menuRecipeList_queryParams,
   menuRecipeList_values,
 } = inject('menuRecipeList') as IMenuRecipeListProvided;
@@ -152,7 +152,7 @@ const {
             <PrimeVueButton
               class="w-full px-4 py-3"
               variant="text"
-              @click="menuRecipeList_onShowDialogDelete(data.id)"
+              @click="menuRecipeList_onShowDialogCancel(data.id)"
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2 w-full">

@@ -72,7 +72,7 @@ export const useMenuRecipeListService = (): IMenuRecipeListProvided => {
   /**
    * @description Handle business logic for showing pop up confirmation delete recipe
    */
-  const menuRecipeList_onShowDialogDelete = (id: string) => {
+  const menuRecipeList_onShowDialogCancel = (id: string) => {
     const argsEventEmitter: IPropsDialogConfirmation = {
       id: 'menu-recipe-list-dialog-delete',
       description: `
@@ -115,7 +115,7 @@ export const useMenuRecipeListService = (): IMenuRecipeListProvided => {
     menuRecipeList_handleOnSortChange,
     menuRecipeList_isLoading: menuRecipe_isLoading,
     menuRecipeList_onChangePage,
-    menuRecipeList_onShowDialogDelete,
+    menuRecipeList_onShowDialogCancel,
     menuRecipeList_queryParams,
     menuRecipeList_values: menuRecipe_lists,
   };

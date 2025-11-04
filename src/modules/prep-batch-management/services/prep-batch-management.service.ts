@@ -160,14 +160,13 @@ export const useBatchService = (): IBatchListProvided => {
     }
   };
 
-  const menuRecipeList_onShowDialogDelete = (id: string) => {
-    console.log(id);
+  const menuRecipeList_onShowDialogCancel = (id: string) => {
     const argsEventEmitter: IPropsDialogConfirmation = {
       id: 'batch-list-dialog-delete',
       description: `
         <div class="flex items-center justify-center">
           <p class="font-normal text-black-secondary text-sm text-center">
-            This action will stop the current recording and discard any unsaved or draft data.
+            This action cannot be undone and the batch will not be prepared.
           </p>
         </div>`,
       iconName: 'delete-polygon',
@@ -178,37 +177,18 @@ export const useBatchService = (): IBatchListProvided => {
         eventBus.emit('AppBaseDialog', { id: 'batch-list-dialog-delete', isOpen: false });
       },
       onClickButtonSecondary: () => {
-        // Logic to delete the table goes here
+        batchCreateEdit_onCancelCooking(id);
         eventBus.emit('AppBaseDialog', { id: 'batch-list-dialog-delete', isOpen: false });
       },
       textButtonPrimary: 'Cancel',
-      textButtonSecondary: 'Delete',
-      title: 'Delete Batch',
+      textButtonSecondary: 'Cancel Batch Cooking',
+      title: 'Are you sure you want to cancel this batch cooking plan?',
       type: 'error',
     };
 
     eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
   };
 
-  const batchList_getLabelOfBatchStatus = (batchStatus: number): string => {
-    switch (batchStatus) {
-      case 0: {
-        return 'Planned';
-      }
-      case 1: {
-        return 'In Progress';
-      }
-      case 2: {
-        return 'Cancelled';
-      }
-      case 3: {
-        return 'Posted';
-      }
-      default: {
-        return '';
-      }
-    }
-  };
   const batchList_getClassOfBatchStatus = (batchStatus: string): string => {
     if (!batchStatus) {
       return '';
@@ -221,7 +201,7 @@ export const useBatchService = (): IBatchListProvided => {
       case 'PLANNED': {
         return 'bg-warning-background text-warning-main';
       }
-      case 'IN_PROGRESS': {
+      case 'COOKING': {
         return 'bg-secondary-background text-secondary';
       }
       case 'POSTED': {
@@ -233,8 +213,7 @@ export const useBatchService = (): IBatchListProvided => {
     }
   };
 
-  const batchCreateEdit_onShowDialogCancel = (id: string) => {
-    console.log(id);
+  const batchCreateEdit_onShowDialogCancel = () => {
     const argsEventEmitter: IPropsDialogConfirmation = {
       id: 'batch-create-edit-cancel-dialog-confirmation',
       description: `
@@ -490,6 +469,31 @@ export const useBatchService = (): IBatchListProvided => {
     }
   };
 
+  const batchCreateEdit_onCancelCooking = async (batchId: string) => {
+    try {
+      await store.batch_cancel(batchId, {
+        ...httpAbort_registerAbort('BATCH_CANCEL_REQUEST'),
+      });
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: `Batch canceled.`,
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      batch_formData_onClear();
+      router.push({ name: 'prep-batch-management.index' });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      batch_fetchList();
+    }
+  };
+
   return {
     // columns
     batchList_columns: BATCH_LIST_COLUMNS,
@@ -499,8 +503,7 @@ export const useBatchService = (): IBatchListProvided => {
     batchDetails_values: BATCH_DETAILS_VALUES,
     // methods
     batchList_getClassOfBatchStatus,
-    batchList_getLabelOfBatchStatus,
-    menuRecipeList_onShowDialogDelete,
+    menuRecipeList_onShowDialogCancel,
     menuRecipeList_fetchList,
     menuRecipeList_onSelectedRecipe,
     menuRecipe_fetchIngridients,

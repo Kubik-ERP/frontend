@@ -6,8 +6,7 @@ const {
   batchList_columns,
   // batchList_values,
   batchList_getClassOfBatchStatus,
-  batchList_getLabelOfBatchStatus,
-  menuRecipeList_onShowDialogDelete,
+  menuRecipeList_onShowDialogCancel,
   batch_fetchList,
   batch_lists,
   batch_isLoading,
@@ -98,7 +97,10 @@ onMounted(async () => {
                 </template>
               </PrimeVueButton>
             </router-link>
-            <router-link :to="{ name: 'prep-batch-management.edit', params: { id: data.id } }">
+            <router-link
+              v-if="data.status !== 'CANCELLED'"
+              :to="{ name: 'prep-batch-management.edit', params: { id: data.id } }"
+            >
               <PrimeVueButton
                 class="w-full px-4 py-3"
                 variant="text"
@@ -118,14 +120,15 @@ onMounted(async () => {
             </router-link>
 
             <PrimeVueButton
+              v-if="data.status !== 'CANCELLED'"
               class="w-full px-4 py-3"
               variant="text"
-              @click="menuRecipeList_onShowDialogDelete(data.batch)"
+              @click="menuRecipeList_onShowDialogCancel(data.id)"
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2 w-full">
-                  <AppBaseSvg name="delete" class="!w-4 !h-4" />
-                  <span class="font-normal text-sm text-text-primary">Delete</span>
+                  <AppBaseSvg name="close" class="!w-4 !h-4" />
+                  <span class="font-normal text-sm text-text-primary">Cancel</span>
                 </section>
               </template>
             </PrimeVueButton>
@@ -146,11 +149,8 @@ onMounted(async () => {
       <template v-else-if="column.value === 'batchStatus'">
         <span>
           <PrimeVueChip
-            :class="[
-              batchList_getClassOfBatchStatus(batchList_getLabelOfBatchStatus(data['status'])),
-              'text-xs font-normal py-1 px-1.5 w-fit',
-            ]"
-            :label="batchList_getLabelOfBatchStatus(data['status'])"
+            :class="[batchList_getClassOfBatchStatus(data['status']), 'text-xs font-normal py-1 px-1.5 w-fit']"
+            :label="useTitleCaseWithSpaces(data['status'].toLowerCase())"
           />
         </span>
       </template>

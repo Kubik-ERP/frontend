@@ -31,6 +31,21 @@ export const useBatchStore = defineStore('batch', {
   }),
   getters: {},
   actions: {
+    async batch_cancel(id: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+      try {
+        this.batch_isLoading = true;
+
+        const response = await httpClient.post(`${BATCH_BASE_ENDPOINT}/${id}/cancel`, {
+          ...requestConfigurations,
+        });
+        return response.data;
+      } catch (error: unknown) {
+        if (error instanceof Error) return Promise.reject(error);
+        else return Promise.reject(new Error(String(error)));
+      } finally {
+        this.batch_isLoading = false;
+      }
+    },
     async batch_start(batchId: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
       try {
         this.batch_isLoading = true;
