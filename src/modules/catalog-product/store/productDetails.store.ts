@@ -18,6 +18,7 @@ export const useProductDetailsStore = defineStore('product-details', {
       discountPrice: 0,
       productVariant: [],
       portionStock: [],
+      stockQuantity: 0,
     } as IProductDetails,
   }),
   actions: {
