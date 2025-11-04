@@ -27,8 +27,8 @@ export interface IIngredient {
   inventory_item: IInventoryItem;
 }
 export interface IBatchFormData {
-  recipeId : string | null;
-  recipeName : string;
+  recipeId: string | null;
+  recipeName: string;
   recipe: IMenuRecipe;
   batchDate: Date;
   targetYield: number;
@@ -85,6 +85,16 @@ export type IBatchList = {
 };
 
 export interface IBatchStateStore {
+  batch_isLoading: boolean;
+  batch_lists: {
+    id: string;
+    batchName: string;
+    date: Date;
+    batch_target_yield: number;
+    notes: string;
+    status: string;
+    updated_at: Date;
+  }[];
   menuRecipe_lists: {
     meta: IPageMeta;
     items: IMenuRecipe[] | [];
@@ -106,6 +116,7 @@ export type IBatchListProvided = {
   menuRecipeList_fetchList: () => Promise<unknown>;
   menuRecipeList_onSelectedRecipe: (recipe: IMenuRecipe) => void;
   menuRecipe_fetchIngridients: (id: string) => Promise<unknown>;
+  batch_fetchList: () => Promise<unknown>;
   // formdata
   batch_formData: IBatchFormData;
   batch_formValidation: globalThis.Ref<Validation>;
@@ -114,6 +125,8 @@ export type IBatchListProvided = {
   menuRecipe_lists: globalThis.Ref<IBatchStateStore['menuRecipe_lists']>;
   menuRecipeList_isLoading: globalThis.Ref<IBatchStateStore['menuRecipeList_isLoading']>;
   menuRecipe_ingredients: globalThis.Ref<IBatchStateStore['menuRecipe_ingredients']>;
+  batch_isLoading: globalThis.Ref<IBatchStateStore['batch_isLoading']>;
+  batch_lists: globalThis.Ref<IBatchStateStore['batch_lists']>;
   // dialog confirmation
   batchCreateEdit_onShowDialogStart: (id: string) => void;
   batchCreateEdit_onShowDialogSave: () => void;

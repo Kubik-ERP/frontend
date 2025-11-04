@@ -19,7 +19,8 @@ import eventBus from '@/plugins/mitt';
 import { useBatchStore } from '../store';
 export const useBatchService = (): IBatchListProvided => {
   const store = useBatchStore();
-  const { menuRecipe_lists, menuRecipeList_isLoading, menuRecipe_ingredients } = storeToRefs(store);
+  const { menuRecipe_lists, menuRecipeList_isLoading, menuRecipe_ingredients, batch_isLoading, batch_lists } =
+    storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const router = useRouter();
@@ -102,6 +103,20 @@ export const useBatchService = (): IBatchListProvided => {
     }, 500),
     { deep: true },
   );
+
+  const batch_fetchList = async (): Promise<unknown> => {
+    try {
+      await store.fetchBatchList({
+        ...httpAbort_registerAbort('BATCH_LIST_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  }
 
   const menuRecipeList_onSelectedRecipe = (recipe: IMenuRecipe) => {
     batch_formData.recipeId = recipe.id;
@@ -428,6 +443,7 @@ export const useBatchService = (): IBatchListProvided => {
     menuRecipeList_fetchList,
     menuRecipeList_onSelectedRecipe,
     menuRecipe_fetchIngridients,
+    batch_fetchList,
     // formdata
     batch_formData,
     batch_formValidation,
@@ -436,6 +452,8 @@ export const useBatchService = (): IBatchListProvided => {
     menuRecipe_lists,
     menuRecipeList_isLoading,
     menuRecipe_ingredients,
+    batch_isLoading,
+    batch_lists,
     // dialog confirmation
     batchCreateEdit_onShowDialogStart,
     batchCreateEdit_onShowDialogSave,

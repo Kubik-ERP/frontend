@@ -15,6 +15,8 @@ import httpClient from '@/plugins/axios';
 
 export const useBatchStore = defineStore('batch', {
   state: (): IBatchStateStore => ({
+    batch_isLoading: false,
+    batch_lists: [] as IBatchStateStore['batch_lists'],
     menuRecipe_lists: {
       meta: {
         page: 1,
@@ -29,14 +31,29 @@ export const useBatchStore = defineStore('batch', {
   }),
   getters: {},
   actions: {
+    async fetchBatchList(requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+      try {
+        this.batch_isLoading = true;
+        const response = await httpClient.get(BATCH_BASE_ENDPOINT, {
+          ...requestConfigurations,
+        });
+        this.batch_lists = response.data.data;
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) return Promise.reject(error);
+        else return Promise.reject(new Error(String(error)));
+      } finally {
+        this.batch_isLoading = false;
+      }
+    },
     async batch_create(payload: IBatchFormData, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
       const data = {
-        recipeId : payload.recipe.id,
+        recipeId: payload.recipe.id,
         date: useFormatDateLocal(payload.batchDate),
         batchTargetYield: payload.targetYield,
         notes: payload.notes,
-        batchWaste: payload.waste
-      }
+        batchWaste: payload.waste,
+      };
       try {
         const response = await httpClient.post(BATCH_BASE_ENDPOINT, data, {
           ...requestConfigurations,

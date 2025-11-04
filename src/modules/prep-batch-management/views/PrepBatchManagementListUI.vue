@@ -2,8 +2,15 @@
 // services
 import { useBatchService } from '../services/prep-batch-management.service';
 
-const { batchList_columns, batchList_values, batchList_getClassOfBatchStatus, menuRecipeList_onShowDialogDelete } =
-  useBatchService();
+const {
+  batchList_columns,
+  // batchList_values,
+  batchList_getClassOfBatchStatus,
+  menuRecipeList_onShowDialogDelete,
+  batch_fetchList,
+  batch_lists,
+  batch_isLoading,
+} = useBatchService();
 
 const popoverRefs = ref<Record<string, ComponentPublicInstance | null>>({});
 const setPopoverRef = (recordId: number, el: Element | ComponentPublicInstance | null) => {
@@ -19,23 +26,25 @@ const togglePopover = (event: Event, recordId: number) => {
     popover.toggle(event);
   }
 };
+
+onMounted(async () => {
+  await batch_fetchList();
+});
 </script>
 <template>
   <AppBaseDataTable
     :columns="batchList_columns"
-    :data="batchList_values"
+    :data="batch_lists"
     is-using-custom-body
     is-using-custom-header-prefix
     is-using-custom-header-suffix
     is-using-pagination
+    :is-loading="batch_isLoading"
     :is-using-filter="false"
   >
     <template #header-prefix>
       <h1>
-        <span class="font-semibold text-2xl text-text-primary">
-          <!-- {{ useLocalization('prepBatchManagement.listPage.title') }} -->
-          Batch List
-        </span>
+        <span class="font-semibold text-2xl text-text-primary"> Batch List </span>
       </h1>
     </template>
     <template #header-suffix>
@@ -46,10 +55,7 @@ const togglePopover = (event: Event, recordId: number) => {
               <section id="content" class="flex items-center gap-2">
                 <AppBaseSvg name="plus-line-white" class="w-4 h-4" />
 
-                <span class="font-semibold text-base text-white">
-                  <!-- {{ useLocalization('account.add-store-facility') }} -->
-                  Add New Batch
-                </span>
+                <span class="font-semibold text-base text-white"> Add New Batch </span>
               </section>
             </template>
           </PrimeVueButton>
@@ -58,19 +64,19 @@ const togglePopover = (event: Event, recordId: number) => {
     </template>
     <template #body="{ column, data }">
       <template v-if="column.value === 'action'">
-        <PrimeVueButton variant="text" rounded aria-label="detail" @click="togglePopover($event, data.batch)">
+        <PrimeVueButton variant="text" rounded aria-label="detail" @click="togglePopover($event, data.id)">
           <template #icon>
             <AppBaseSvg name="three-dots" class="!w-5 !h-5 filter-primary-color" />
           </template>
         </PrimeVueButton>
         <PrimeVuePopover
-          :ref="(el: Element | ComponentPublicInstance | null) => setPopoverRef(data.batch, el)"
+          :ref="(el: Element | ComponentPublicInstance | null) => setPopoverRef(data.id, el)"
           :pt="{
             content: 'p-0',
           }"
         >
           <section id="popover-content" class="flex flex-col">
-            <router-link :to="{ name: 'prep-batch-management.details', params: { id: data.batch } }">
+            <router-link :to="{ name: 'prep-batch-management.details', params: { id: data.id } }">
               <PrimeVueButton
                 class="w-full px-4 py-3"
                 variant="text"
@@ -88,7 +94,7 @@ const togglePopover = (event: Event, recordId: number) => {
                 </template>
               </PrimeVueButton>
             </router-link>
-            <router-link :to="{ name: 'prep-batch-management.edit', params: { id: data.batch } }">
+            <router-link :to="{ name: 'prep-batch-management.edit', params: { id: data.id } }">
               <PrimeVueButton
                 class="w-full px-4 py-3"
                 variant="text"
@@ -122,22 +128,28 @@ const togglePopover = (event: Event, recordId: number) => {
           </section>
         </PrimeVuePopover>
       </template>
+
+      <template v-else-if="column.value === 'batch'">
+        <span class="font-normal text-sm text-text-primary">
+          {{ data['menu_recipes'].recipe_name }}/Batch-{{ useFormatDate(data['date'], 'ddmmyyyy') }}
+        </span>
+      </template>
       <template v-else-if="column.value === 'batchDate'">
         <span class="font-normal text-sm text-text-primary">
-          {{ useFormatDate(data[column.value], 'dd/mm/yyyy') }}
+          {{ useFormatDate(data['date'], 'dd/mm/yyyy') }}
         </span>
       </template>
       <template v-else-if="column.value === 'batchStatus'">
         <span>
           <PrimeVueChip
-            :class="[batchList_getClassOfBatchStatus(data[column.value]), 'text-xs font-normal py-1 px-1.5 w-fit']"
-            :label="useTitleCaseWithSpaces(data[column.value])"
+            :class="[batchList_getClassOfBatchStatus(data['status']), 'text-xs font-normal py-1 px-1.5 w-fit']"
+            :label="`${data['status']}`"
           />
         </span>
       </template>
       <template v-else-if="column.value === 'targetYield'">
         <span class="font-normal text-sm text-text-primary flex gap-2">
-          {{ data[column.value] }}
+          {{ data['batch_target_yield'] }}
           <p class="text-disabled">Portion</p>
         </span>
       </template>
