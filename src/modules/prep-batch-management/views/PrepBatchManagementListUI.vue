@@ -32,6 +32,9 @@ onMounted(async () => {
 });
 </script>
 <template>
+  <pre>
+    {{ batch_lists.length }}
+  </pre>
   <AppBaseDataTable
     :columns="batchList_columns"
     :data="batch_lists"
@@ -131,7 +134,7 @@ onMounted(async () => {
 
       <template v-else-if="column.value === 'batch'">
         <span class="font-normal text-sm text-text-primary">
-          {{ data['menu_recipes'].recipe_name }}/Batch-{{ useFormatDate(data['date'], 'ddmmyyyy') }}
+          {{ data.menu_recipes.recipe_name }}/Batch-{{ useFormatDate(data.date, 'ddmmyyyy') }}
         </span>
       </template>
       <template v-else-if="column.value === 'batchDate'">
@@ -149,13 +152,13 @@ onMounted(async () => {
       </template>
       <template v-else-if="column.value === 'targetYield'">
         <span class="font-normal text-sm text-text-primary flex gap-2">
-          {{ data['batch_target_yield'] }}
+          {{ data.batch_target_yield }}
           <p class="text-disabled">Portion</p>
         </span>
       </template>
       <template v-else-if="column.value === 'notes'">
         <span class="font-normal text-sm text-text-primary">
-          {{ data[column.value] || '-' }}
+          {{ data['notes'] || '-' }}
         </span>
       </template>
       <template v-else-if="column.value === 'updatedAt'">
@@ -165,7 +168,7 @@ onMounted(async () => {
       </template>
       <template v-else>
         <span class="font-normal text-sm text-text-primary">
-          {{ data[column.value] }}
+          {{ data[column.value] }} else
         </span>
       </template>
     </template>

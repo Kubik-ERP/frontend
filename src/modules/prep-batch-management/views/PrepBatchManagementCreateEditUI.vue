@@ -139,6 +139,7 @@ onMounted(async () => {
             show-icon
             fluid
             icon-display="input"
+            date-format="dd/mm/yy"
           />
         </AppBaseFormGroup>
 
