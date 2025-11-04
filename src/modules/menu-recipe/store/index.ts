@@ -8,8 +8,10 @@ import type {
   IMenuRecipeCreateEditResponse,
   IMenuRecipeDeleteResponse,
   IMenuRecipeDetailResponse,
+  IMenuRecipeDetailVersionResponse,
   IMenuRecipeListQueryParams,
   IMenuRecipeListResponse,
+  IMenuRecipeListVersionResponse,
   IMenuRecipeStateStore,
 } from '../interfaces';
 
@@ -29,6 +31,7 @@ export const useMenuRecipeStore = defineStore('menu-recipe', {
       },
       items: [],
     },
+    menuRecipe_versions: null,
   }),
   getters: {
     /**
@@ -120,6 +123,37 @@ export const useMenuRecipeStore = defineStore('menu-recipe', {
     },
 
     /**
+     * @description Handle fetch api menu recipe - detail version
+     * @url /recipes/:id/versions/:versionId
+     * @method GET
+     * @access private
+     */
+    async menuRecipe_detailVersion(
+      menuRecipeId: string,
+      versionId: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IMenuRecipeDetailVersionResponse> {
+      this.menuRecipe_isLoading = true;
+
+      try {
+        const response = await httpClient.get<IMenuRecipeDetailVersionResponse>(
+          `${MENU_RECIPE_BASE_ENDPOINT}/${menuRecipeId}/versions/${versionId}`,
+          {
+            ...requestConfigurations,
+          },
+        );
+
+        this.menuRecipe_selectedData = response.data.data;
+
+        return Promise.resolve(response.data);
+      } catch (error) {
+        return Promise.reject(error);
+      } finally {
+        this.menuRecipe_isLoading = false;
+      }
+    },
+
+    /**
      * @description Handle fetch api menu recipe - list
      * @url /recipes?query
      * @method GET
@@ -138,6 +172,36 @@ export const useMenuRecipeStore = defineStore('menu-recipe', {
         });
 
         this.menuRecipe_lists = response.data.data;
+
+        return Promise.resolve(response.data);
+      } catch (error) {
+        return Promise.reject(error);
+      } finally {
+        this.menuRecipe_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api menu recipe - list versions
+     * @url /recipes/:id/versions
+     * @method GET
+     * @access private
+     */
+    async menuRecipe_listVersions(
+      menuRecipeId: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IMenuRecipeListVersionResponse> {
+      this.menuRecipe_isLoading = true;
+
+      try {
+        const response = await httpClient.get<IMenuRecipeListVersionResponse>(
+          `${MENU_RECIPE_BASE_ENDPOINT}/${menuRecipeId}/versions`,
+          {
+            ...requestConfigurations,
+          },
+        );
+
+        this.menuRecipe_versions = response.data.data;
 
         return Promise.resolve(response.data);
       } catch (error) {

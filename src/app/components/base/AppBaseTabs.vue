@@ -6,6 +6,7 @@ import { useMobileStore } from '@/app/store/mobile.store';
  * @description Define the props interface
  */
 interface IProps {
+  customClassOnTabPanel?: string;
   items?: ITabs[];
   size?: 'small' | 'medium' | 'large';
   value?: string;
@@ -115,7 +116,7 @@ const onChange = (value: string | number) => {
       class="px-0"
       :class="[localValue === tabPanel.value ? 'block' : 'hidden', 'w-full']"
     >
-      <PrimeVueTabPanel :value="tabPanel.value">
+      <PrimeVueTabPanel :value="tabPanel.value" :class="[props.customClassOnTabPanel]">
         <component :is="tabPanel.component" />
       </PrimeVueTabPanel>
     </PrimeVueTabPanels>

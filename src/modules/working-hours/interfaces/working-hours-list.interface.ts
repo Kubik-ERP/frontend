@@ -1,4 +1,5 @@
 import type { Validation } from '@vuelidate/core';
+import type { IStaffMember } from '@/modules/staff-member/interfaces';
 
 // ===== DATA INTERFACES =====
 export interface ITimeSlot {
@@ -30,8 +31,8 @@ export interface IWorkingHoursData {
 
 // ===== FORM INTERFACES =====
 export interface IWorkingHoursFormDataTimeSlot {
-  openTime: Date | null;
-  closeTime: Date | null;
+  openTime: Date | string;
+  closeTime: Date | string;
 }
 
 export interface ICustomRecurrence {
@@ -67,7 +68,7 @@ export interface IWorkingHoursListProvided {
   workingHoursList_createEditMaxDate: globalThis.Ref<string>;
   workingHoursList_createEditMinDate: globalThis.Ref<string>;
   workingHoursList_createEditRepeatOptions: IDropdownItem[];
-  workingHoursList_createEditStaffList: globalThis.Ref<IDropdownItem[]>;
+  workingHoursList_createEditStaffList: globalThis.ComputedRef<IDropdownItem[]>;
   workingHoursList_customRecurrenceEndDate: globalThis.ComputedRef<Date | null>;
   workingHoursList_customRecurrenceFrequencyOptions: IDropdownItem[];
   workingHoursList_fetchList: () => Promise<void>;
@@ -75,7 +76,7 @@ export interface IWorkingHoursListProvided {
   workingHoursList_formValidations: globalThis.Ref<Validation>;
   workingHoursList_formattedDate: globalThis.ComputedRef<string>;
   workingHoursList_getCurrentWeekDateString: (dayOfWeek: number) => string;
-  workingHoursList_getStaffData: (staffId: number) => IStaffWorkingHours | undefined;
+  workingHoursList_getStaffData: (staffId: number) => IStaffMember | undefined;
   workingHoursList_getWeekDateRange: globalThis.ComputedRef<string>;
   workingHoursList_hasValidHeaderData: globalThis.ComputedRef<boolean>;
   workingHoursList_isLoading: globalThis.Ref<boolean>;

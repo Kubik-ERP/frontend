@@ -112,7 +112,7 @@ const handleSubmit = () => {
               }}</span>
             </div>
 
-            <PrimeVueButton class="cursor-default text-black border-primary-border bg-primary-background">
+            <PrimeVueButton class="cursor-default text-black border-primary-border bg-transparent">
               <div class="flex justify-between w-full">
                 <span class="text-sm lg:text-base">{{
                   useLocalization('cashier.orderSummary.placeOrderDetail.paymentMethod')
@@ -154,7 +154,7 @@ const handleSubmit = () => {
 
             <section id="list-balances" class="flex flex-wrap items-center gap-2 w-full">
               <PrimeVueChip
-                class="bg-secondary-background cursor-pointer hover:bg-secondary basic-smooth-animation"
+                class="bg-secondary/10 cursor-pointer hover:bg-secondary basic-smooth-animation"
                 @click="
                   cashierOrderSummary_paymentForm.paymentAmount =
                     cashierOrderSummary_calculateEstimation?.data?.grandTotal;
@@ -163,9 +163,9 @@ const handleSubmit = () => {
               >
                 <template #default>
                   <div class="flex items-center gap-2">
-                    <AppBaseSvg name="plus-line" class="!w-[10px] !h-[10px] text-secondary-hover" />
+                    <AppBaseSvg name="plus-line" class="w-3 h-3 filter-black-color" />
 
-                    <span class="font-semibold text-green-primary text-xs">
+                    <span class="font-semibold text-black text-xs">
                       {{
                         useCurrencyFormat({
                           data: cashierOrderSummary_calculateEstimation?.data?.grandTotal,
@@ -179,7 +179,7 @@ const handleSubmit = () => {
               <PrimeVueChip
                 v-for="suggestionPrice in CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE"
                 :key="suggestionPrice"
-                class="bg-secondary-background cursor-pointer hover:bg-secondary basic-smooth-animation"
+                class="bg-secondary/10 cursor-pointer hover:bg-secondary basic-smooth-animation"
                 @click="
                   cashierOrderSummary_paymentForm.paymentAmount = suggestionPrice;
                   calculateChangeAmount();
@@ -187,9 +187,9 @@ const handleSubmit = () => {
               >
                 <template #default>
                   <div class="flex items-center gap-2">
-                    <AppBaseSvg name="plus-line" class="!w-[10px] !h-[10px] text-secondary-hover" />
+                    <AppBaseSvg name="plus-line" class="w-3 h-3 filter-black-color" />
 
-                    <span class="font-semibold text-green-primary text-xs">
+                    <span class="font-semibold text-black text-xs">
                       {{
                         useCurrencyFormat({
                           data: suggestionPrice,
@@ -204,7 +204,9 @@ const handleSubmit = () => {
 
             <div class="flex flex-col gap-2">
               <div class="flex justify-between">
-                <span>{{ useLocalization('cashier.orderSummary.placeOrderDetail.moneyReceived') }}</span>
+                <span class="text-sm">{{
+                  useLocalization('cashier.orderSummary.placeOrderDetail.moneyReceived')
+                }}</span>
                 <span class="text-sm lg:text-base font-semibold">{{
                   useCurrencyFormat({
                     data: cashierOrderSummary_paymentForm.paymentAmount,
@@ -212,7 +214,9 @@ const handleSubmit = () => {
                 }}</span>
               </div>
               <div class="flex justify-between">
-                <span>{{ useLocalization('cashier.orderSummary.placeOrderDetail.totalPrice') }}</span>
+                <span class="text-sm">{{
+                  useLocalization('cashier.orderSummary.placeOrderDetail.totalPrice')
+                }}</span>
                 <span class="text-sm lg:text-base font-semibold">{{
                   useCurrencyFormat({
                     data: cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0,

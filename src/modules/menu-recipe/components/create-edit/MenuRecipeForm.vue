@@ -23,6 +23,7 @@ const {
   menuRecipeCreateEdit_listColumns,
   menuRecipeCreateEdit_listProducts,
   menuRecipeCreateEdit_listOutputUnitOptions,
+  menuRecipeCreateEdit_onShowDialogDeleteIngredient,
   menuRecipeCreateEdit_onShowDialogAddIngredient,
   menuRecipeCreateEdit_onSave,
   menuRecipeCreateEdit_onSearchProduct,
@@ -237,7 +238,7 @@ watch(menuRecipeCreateEdit_productSearchValue, () => {
         </header>
       </template>
 
-      <template #body="{ column, data }">
+      <template #body="{ column, data, index }">
         <template v-if="column.value === 'item'">
           <div class="flex flex-col gap-1">
             <span class="font-normal text-black text-sm">
@@ -280,22 +281,9 @@ watch(menuRecipeCreateEdit_productSearchValue, () => {
           >
             <section id="popover-content" class="flex flex-col">
               <PrimeVueButton
-                class="w-full px-4 py-3"
+                class="bg-transparent border-none w-full px-4 py-3"
                 variant="text"
-                @click="$router.push({ name: 'menu-recipe.detail', params: { id: data.id } })"
-              >
-                <template #default>
-                  <section id="content" class="flex items-center gap-2 w-full">
-                    <AppBaseSvg name="eye-visible" class="w-4 h-4" />
-                    <span class="font-normal text-sm text-black">Detail</span>
-                  </section>
-                </template>
-              </PrimeVueButton>
-
-              <PrimeVueButton
-                class="w-full px-4 py-3"
-                variant="text"
-                @click="$router.push({ name: 'menu-recipe.edit', params: { id: data.id } })"
+                @click="menuRecipeCreateEdit_onShowDialogAddIngredient()"
               >
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
@@ -305,7 +293,11 @@ watch(menuRecipeCreateEdit_productSearchValue, () => {
                 </template>
               </PrimeVueButton>
 
-              <PrimeVueButton class="w-full px-4 py-3">
+              <PrimeVueButton
+                class="bg-transparent border-none w-full px-4 py-3"
+                variant="text"
+                @click="menuRecipeCreateEdit_onShowDialogDeleteIngredient(index)"
+              >
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="delete" class="w-4 h-4" />

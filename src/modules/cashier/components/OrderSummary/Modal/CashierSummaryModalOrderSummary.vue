@@ -19,6 +19,7 @@ const route = useRoute();
 const {
   cashierOrderSummary_modalOrderSummary,
   cashierOrderSummary_handleModalAddCustomer,
+  cashierOrderSummary_handleSaveUnpaidOrder,
   cashierProduct_customerState,
   cashierOrderSummary_modalMenuOrderItem,
   cashierOrderSummary_modalPlaceOrderConfirmation,
@@ -190,11 +191,12 @@ const {
             v-slot="slotProps"
             as-child
             outlined
-            class="w-full"
+            class="w-full border-primary"
+            @click="cashierOrderSummary_handleSaveUnpaidOrder"
           >
             <RouterLink :to="{ name: 'invoice' }" v-bind="slotProps" class="p-3 w-full border border-primary">
               <section class="flex gap-2 justify-center w-full items-center">
-                <AppBaseSvg name="order-primary" class="!h-5 !w-5" />
+                <AppBaseSvg name="order-primary" class="filter-primary-color h-5 w-5" />
                 <span class="font-semibold text-primary truncate">{{
                   useLocalization('cashier.mainSection.saveUnpaidOrder')
                 }}</span>
@@ -208,7 +210,7 @@ const {
               cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod === '' ||
               cashierOrderSummary_isLoadingUnpaidOrder
             "
-            class="py-2.5 px-14"
+            class="bg-primary border-none py-2.5 px-14"
             type="button"
             label="Place Order"
             @click="cashierOrderSummary_modalPlaceOrderConfirmation.show = true"

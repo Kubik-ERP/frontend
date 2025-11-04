@@ -846,7 +846,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         router.push({
           name: route.name === 'cashier' || route.name === 'cashier-order-edit' ? 'invoice' : 'self-order-invoice',
           params: {
-            invoiceId: response.data.invoiceId,
+            invoiceId: response.data?.invoiceId ?? null,
           },
           query: {
             ...route.query,
@@ -877,7 +877,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     try {
       const params = {
         ...CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT,
-        order_id: invoiceId,
+        order_id: invoiceId ?? null,
       };
 
       await store.cashierProduct_simulatePayment(params, route);
@@ -926,14 +926,14 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
         router.push({
           name: 'invoice',
           params: {
-            invoiceId: response.data.orderId,
+            invoiceId: response.data?.orderId ?? null,
           },
         });
       } else {
         router.push({
           name: 'self-order-invoice',
           params: {
-            invoiceId: response.data.orderId,
+            invoiceId: response.data?.orderId ?? null,
           },
           query: {
             ...route.query,
@@ -1012,11 +1012,11 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
       if (data.orderId === orderId) {
         if (route.name === 'cashier' || route.name === 'cashier-order-edit') {
-          router.replace({ name: 'invoice', params: { invoiceId: data.orderId } });
+          router.replace({ name: 'invoice', params: { invoiceId: data?.orderId ?? null } });
         } else {
           router.replace({
             name: 'self-order-invoice',
-            params: { invoiceId: data.orderId },
+            params: { invoiceId: data?.orderId ?? null },
             query: { ...route.query },
           });
         }
@@ -1031,7 +1031,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       }
       if (route.name === 'cashier' || route.name === 'cashier-order-edit') {
         if (data.orderId === orderId) {
-          router.replace({ name: 'invoice', params: { invoiceId: data.orderId } });
+          router.replace({ name: 'invoice', params: { invoiceId: data?.orderId ?? null } });
         }
       }
     });
@@ -1039,20 +1039,20 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_handleEditOrder = async () => {
     try {
-      const invoiceId = route.params.invoiceId as string;
+      const invoiceId = route.params?.invoiceId as string;
       if (!invoiceId) {
         throw new Error('No invoice ID provided in route parameters');
       }
 
       await store.cashierProduct_handleEditOrder({
-        invoiceId: invoiceId,
+        invoiceId,
         products: cashierProduct_selectedProduct.value,
       });
 
       router.push({
         name: 'invoice',
         params: {
-          invoiceId: invoiceId,
+          invoiceId,
         },
       });
     } catch (error) {
@@ -1066,6 +1066,9 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   const cashierOrderSummary_fetchInvoiceDetail = async (invoiceId: string) => {
     try {
+      if (!invoiceId) {
+        throw new Error('No invoice ID provided to fetch invoice detail');
+      }
       const response = await storeInvoice.invoice_fetchInvoiceById(invoiceId, route);
 
       if (response.data) {

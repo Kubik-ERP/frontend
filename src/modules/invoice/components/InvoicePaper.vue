@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Constants
-import { INVOICE_LIST_TAB } from '../constants/invoice.constant';
+// import { INVOICE_LIST_TAB } from '../constants/invoice.constant';
 
 // Interfaces
 import type { IInvoiceProvided } from '../interfaces/index';
@@ -13,7 +13,7 @@ import InvoicePaperTableTicket from './paper/InvoicePaperTableTicket.vue';
 // Stores
 import { useOutletStore } from '@/modules/outlet/store';
 
-const { invoice_activeInvoice, invoice_handleDownload, invoice_handlePrint } =
+const { invoice_activeInvoice, invoice_handleDownload, invoice_handlePrint, invoice_listTabs } =
   inject<IInvoiceProvided>('invoice')!;
 
 /**
@@ -28,9 +28,10 @@ const { outlet_currentOutlet } = storeToRefs(outletStore);
 const filteredTabs = computed(() => {
   if (outlet_currentOutlet.value?.businessType === 'Retail') {
     // Only show Cashier Invoice for Retail
-    return INVOICE_LIST_TAB.filter(tab => tab.id === 1);
+    return invoice_listTabs.filter(tab => tab.label === 'Cashier Invoice');
   }
-  return INVOICE_LIST_TAB;
+
+  return invoice_listTabs;
 });
 
 /**
@@ -63,8 +64,13 @@ defineExpose({ invoiceRef, kitchenRef, tableRef, print, download });
     id="box-paper"
     class="overflow-y-auto overflow-x-clip col-span-12 lg:col-span-8 h-full inset-0 z-0 bg-background flex justify-center p-6 w-full"
   >
-    <section id="invoice-change-paper" class="max-w-screen md:max-w-xl">
-      <PrimeVueTabs
+    <section id="invoice-change-paper" class="min-w-md max-w-screen">
+      <AppBaseTabs
+        v-model:value="invoice_activeInvoice"
+        :items="filteredTabs"
+        custom-class-on-tab-panel="flex justify-center w-full"
+      />
+      <!-- <PrimeVueTabs
         v-model:value="invoice_activeInvoice"
         class="flex items-center justify-center max-w-screen md:max-w-xl overflow-x-scroll"
       >
@@ -97,7 +103,7 @@ defineExpose({ invoiceRef, kitchenRef, tableRef, print, download });
             <InvoicePaperTableTicket />
           </PrimeVueTabPanel>
         </PrimeVueTabPanels>
-      </PrimeVueTabs>
+      </PrimeVueTabs> -->
 
       <Teleport to="body">
         <div

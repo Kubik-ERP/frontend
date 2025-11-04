@@ -70,6 +70,30 @@ export interface IDailySalesItem {
   productDiscount: number | null;
 }
 
+export interface IInvoiceBundlingItem {
+  id: string;
+  invoiceId: string;
+  invoiceDetailId: string;
+  productId: string;
+  qty: number;
+  createdAt: string;
+  updatedAt: string;
+  products: IProduct;
+}
+
+export interface ICatalogBundling {
+  id: string;
+  storeId: string;
+  pictureUrl?: string;
+  name: string;
+  description: string;
+  type: string;
+  discount?: string;
+  price: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface IDailySalesInvoiceDetail {
   id: string;
   productId: string;
@@ -80,6 +104,10 @@ export interface IDailySalesInvoiceDetail {
   invoiceId: string;
   variantPrice: number;
   productDiscount: number | null;
+  products: IProduct;
+  variant: null | IProductVariant;
+  catalogBundling: ICatalogBundling | null;
+  invoiceBundlingItems: IInvoiceBundlingItem[];
 }
 
 export interface IDailySalesUser {
