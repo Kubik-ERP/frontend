@@ -27,13 +27,13 @@ const {
           >
             <AppBaseSvg name="confirmation" class="!w-14 !h-14" />
 
-            <div class="flex flex-col gap-3 p-2 items-center">
+            <div class="flex flex-col gap-3 items-center">
               <span class="font-semibold text-base lg:text-lg">{{
                 useLocalization('cashier.orderSummary.placeOrderConfirmation.title')
               }}</span>
-              <div class="grid grid-cols-12 py-2.5 px-4 mx-2 bg-secondary/80 rounded-xl">
-                <AppBaseSvg name="info" class="!w-3 !h-3 col-span-1 mt-1 text-secondary" />
-                <span class="text-xs lg:text-sm text-secondary-hover text-justify col-span-11">{{
+              <div class="grid grid-cols-12 py-2.5 px-4 bg-secondary/10 rounded-xl">
+                <AppBaseSvg name="info" class="w-5 h-5 col-span-1 mt-1 filter-black-color" />
+                <span class="text-xs lg:text-sm text-black text-justify col-span-11">{{
                   useLocalization('cashier.orderSummary.placeOrderConfirmation.description')
                 }}</span>
               </div>
@@ -51,7 +51,7 @@ const {
             ></PrimeVueButton>
 
             <PrimeVueButton
-              class="bg-primary w-1/2 py-2.5 text-sm lg:text-base"
+              class="bg-primary border-none w-1/2 py-2.5 text-sm lg:text-base"
               type="button"
               :label="useLocalization('cashier.orderSummary.placeOrderConfirmation.placeOrder')"
               :disabled="cashierOrderSummary_modalPlaceOrderDetail.isLoading"

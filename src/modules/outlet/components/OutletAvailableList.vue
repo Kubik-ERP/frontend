@@ -63,8 +63,8 @@ const {
       <PrimeVueButton class="bg-transparent border-none w-full cursor-pointer" unstyled severity="secondary">
         <template #default>
           <section id="content" class="flex items-center justify-center gap-2">
-            <AppBaseSvg name="plus-line" class="w-4 h-4 filter-primary-color" />
-            <span class="font-semibold text-primary text-sm">Add Store</span>
+            <AppBaseSvg name="plus-line" class="w-4 h-4 filter-black-color" />
+            <span class="font-semibold text-black text-sm">Add Store</span>
           </section>
         </template>
       </PrimeVueButton>

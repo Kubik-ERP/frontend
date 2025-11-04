@@ -286,7 +286,7 @@ const hasPermission = rbac.hasPermission('product_management');
 
         <template #empty> No products found. </template>
 
-        <PrimeVueColumn sortable field="name" header="Name" class="w-1/5">
+        <PrimeVueColumn field="name" header="Name" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
               <PrimeVueSkeleton height="1.5rem" />
@@ -297,7 +297,7 @@ const hasPermission = rbac.hasPermission('product_management');
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn sortable field="categories" header="Category" class="w-1/5">
+        <PrimeVueColumn field="categories" header="Category" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
               <PrimeVueSkeleton height="1.5rem" />
@@ -308,7 +308,7 @@ const hasPermission = rbac.hasPermission('product_management');
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn sortable field="variants" header="Variants" class="w-1/5">
+        <PrimeVueColumn field="variants" header="Variants" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
               <PrimeVueSkeleton height="1.5rem" />
@@ -319,7 +319,7 @@ const hasPermission = rbac.hasPermission('product_management');
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn sortable field="price" header="Price" class="w-1/5">
+        <PrimeVueColumn field="price" header="Price" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
               <PrimeVueSkeleton height="1.5rem" />
@@ -330,13 +330,24 @@ const hasPermission = rbac.hasPermission('product_management');
           </template>
         </PrimeVueColumn>
 
-        <PrimeVueColumn sortable field="discount_price" header="Discount Price" class="w-1/5">
+        <PrimeVueColumn field="discount_price" header="Discount Price" class="w-1/5">
           <template #body="{ data }">
             <template v-if="loading">
               <PrimeVueSkeleton height="1.5rem" />
             </template>
             <template v-else>
               {{ formatCurrency(data.discount_price) }}
+            </template>
+          </template>
+        </PrimeVueColumn>
+
+        <PrimeVueColumn field="stock" header="Stock" class="w-1/5">
+          <template #body="{ data }">
+            <template v-if="loading">
+              <PrimeVueSkeleton height="1.5rem" />
+            </template>
+            <template v-else>
+              {{ data.stock }}
             </template>
           </template>
         </PrimeVueColumn>
@@ -404,6 +415,16 @@ const hasPermission = rbac.hasPermission('product_management');
         }"
       >
         <div class="flex flex-col items-start">
+          <router-link :to="{ name: 'catalog.products.detail', params: { id: selectedProduct.id } }">
+            <PrimeVueButton variant="text" :label="'Preview'" class="text-black w-full px-4 py-3">
+              <template #default>
+                <section class="flex items-center gap-2 w-full">
+                  <AppBaseSvg name="eye-visible" class="!w-4 !h-4" />
+                  <span class="font-normal text-text-primary">{{ 'Preview' }}</span>
+                </section>
+              </template>
+            </PrimeVueButton>
+          </router-link>
           <PrimeVueButton
             variant="text"
             :label="useLocalization('main.popover.edit')"
