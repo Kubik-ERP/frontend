@@ -45,9 +45,9 @@ export const TRANSFER_STOCK_LIST_COLUMNS: IColumnDataTable[] = [
     value: 'createdAt',
   },
   {
-    label: 'Actions',
+    label: '',
     sortable: false,
-    value: 'actions',
+    value: 'action',
   },
 ];
 
