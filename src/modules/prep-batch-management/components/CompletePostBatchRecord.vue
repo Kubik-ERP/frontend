@@ -9,7 +9,7 @@ import type { IBatchListProvided } from '../interfaces';
  */
 const {
   batchDetails_onCloseDialogCompleteBatch,
-  batchDetails_values,
+  batchDetail_values,
   batchList_getClassOfBatchStatus,
   batchDetails_formData,
   batchDetails_formValidation,
@@ -31,27 +31,25 @@ const {
         <section class="grid grid-cols-2 pt-4">
           <div class="flex flex-col">
             <label for="recipe-name"> Recipe </label>
-            <span class="font-medium">{{ batchDetails_values.recipe.recipeName }}</span>
+            <span class="font-medium">{{ batchDetail_values?.menu_recipes?.recipe_name }}</span>
           </div>
           <div class="flex flex-col">
             <label for="recipe-name"> Batch Target Yield </label>
-            <span class="font-medium">{{ batchDetails_values.recipe.targetYield }}</span>
+            <span class="font-medium">{{ batchDetail_values?.batch_target_yield }}</span>
           </div>
           <div class="flex flex-col">
             <label for="recipe-name"> Date </label>
-            <span class="font-medium">{{
-              useFormatDate(batchDetails_values.recipe.batchDate, 'dd/mm/yyyy')
-            }}</span>
+            <span class="font-medium">{{ useFormatDate(batchDetail_values?.date, 'dd/mm/yyyy') }}</span>
           </div>
           <div class="flex flex-col">
             <label for="recipe-name"> Status </label>
             <span>
               <PrimeVueChip
                 :class="[
-                  batchList_getClassOfBatchStatus(batchDetails_values.recipe.batchStatus),
+                  batchList_getClassOfBatchStatus(batchDetail_values?.status),
                   'text-xs font-normal py-1 px-1.5 w-fit',
                 ]"
-                :label="useTitleCaseWithSpaces(batchDetails_values.recipe.batchStatus)"
+                :label="useTitleCaseWithSpaces(batchDetail_values?.status?.toLowerCase())"
               />
             </span>
           </div>

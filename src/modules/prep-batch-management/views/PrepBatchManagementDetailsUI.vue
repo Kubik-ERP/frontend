@@ -8,7 +8,6 @@ const route = useRoute();
 const {
   batchList_getClassOfBatchStatus,
   batchDetailsIngridient_columns,
-  batchDetails_values,
   batchDetails_onShowDialogCompleteBatch,
   batchDetails_onCloseDialogCompleteBatch,
   menuRecipeList_onShowDialogCancel,
@@ -21,7 +20,6 @@ const {
 provide('batchDetails', {
   batchList_getClassOfBatchStatus,
   batchDetailsIngridient_columns,
-  batchDetails_values,
   batchDetails_onShowDialogCompleteBatch,
   batchDetails_onCloseDialogCompleteBatch,
   batchDetails_formData,
@@ -206,15 +204,15 @@ onMounted(async () => {
           :label="
             batchDetail_values?.status?.toLowerCase() === 'planned'
               ? 'Start Cooking'
-              : useTitleCaseWithSpaces(batchDetail_values?.status?.toLowerCase()) === 'In Progress'
+              : useTitleCaseWithSpaces(batchDetail_values?.status?.toLowerCase()) === 'cooking'
                 ? 'Complete Batch'
-                : ''
+                : 'Complete Batch'
           "
           class="bg-primary border-primary-border text-white"
           @click="
             batchDetail_values?.status?.toLowerCase() === 'planned'
               ? batchDetails_onShowDialogCompleteBatch()
-              : useTitleCaseWithSpaces(batchDetail_values?.status?.toLowerCase()) === 'In Progress'
+              : useTitleCaseWithSpaces(batchDetail_values?.status?.toLowerCase()) === 'cooking'
                 ? batchDetails_onShowDialogCompleteBatch()
                 : batchDetails_onShowDialogCompleteBatch()
           "
