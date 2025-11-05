@@ -7,7 +7,13 @@ import {
 } from '../constants';
 
 // type
-import type { IBatchListProvided, IBatchFormData, IMenuRecipe, IBatchDetailsFormData } from '../interfaces';
+import type {
+  IBatchListProvided,
+  IBatchFormData,
+  IMenuRecipe,
+  IBatchDetailsFormData,
+  IBatchQueryParams,
+} from '../interfaces';
 import type { IMenuRecipeListQueryParams } from '@/modules/menu-recipe/interfaces';
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
@@ -19,8 +25,14 @@ import eventBus from '@/plugins/mitt';
 import { useBatchStore } from '../store';
 export const useBatchService = (): IBatchListProvided => {
   const store = useBatchStore();
-  const { menuRecipe_lists, menuRecipeList_isLoading, menuRecipe_ingredients, batch_isLoading, batch_lists } =
-    storeToRefs(store);
+  const {
+    menuRecipe_lists,
+    menuRecipeList_isLoading,
+    menuRecipe_ingredients,
+    batch_isLoading,
+    batch_lists,
+    batchDetail_values,
+  } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const router = useRouter();
@@ -104,10 +116,41 @@ export const useBatchService = (): IBatchListProvided => {
     { deep: true },
   );
 
+  const batch_queryParams = reactive<IBatchQueryParams>({
+    page: 1,
+    limit: 10,
+  });
+
+  watch(
+    () => batch_queryParams,
+    debounce(async () => {
+      await batch_fetchList();
+    }, 500),
+    { deep: true },
+  );
+
+  const batch_onChangePage = (page: number) => {
+    batch_queryParams.page = page;
+  };
+
   const batch_fetchList = async (): Promise<unknown> => {
     try {
-      await store.fetchBatchList({
+      await store.fetchBatchList(batch_queryParams, {
         ...httpAbort_registerAbort('BATCH_LIST_REQUEST'),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  const batch_fetchDetails = async (id: string): Promise<unknown> => {
+    try {
+      await store.fetchBatchDetail(id, {
+        ...httpAbort_registerAbort('BATCH_DETAILS_REQUEST'),
       });
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -161,6 +204,7 @@ export const useBatchService = (): IBatchListProvided => {
   };
 
   const menuRecipeList_onShowDialogCancel = (id: string) => {
+    console.log(id);
     const argsEventEmitter: IPropsDialogConfirmation = {
       id: 'batch-list-dialog-delete',
       description: `
@@ -508,6 +552,9 @@ export const useBatchService = (): IBatchListProvided => {
     menuRecipeList_onSelectedRecipe,
     menuRecipe_fetchIngridients,
     batch_fetchList,
+    batch_onChangePage,
+    batch_queryParams,
+    batch_fetchDetails,
     // formdata
     batch_formData,
     batch_formValidation,
@@ -518,6 +565,7 @@ export const useBatchService = (): IBatchListProvided => {
     menuRecipe_ingredients,
     batch_isLoading,
     batch_lists,
+    batchDetail_values,
     // dialog confirmation
     batchCreateEdit_onShowDialogStart,
     batchCreateEdit_onShowDialogSave,

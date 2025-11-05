@@ -8,6 +8,7 @@ const {
   batchList_getClassOfBatchStatus,
   menuRecipeList_onShowDialogCancel,
   batch_fetchList,
+  batch_onChangePage,
   batch_lists,
   batch_isLoading,
 } = useBatchService();
@@ -37,13 +38,18 @@ onMounted(async () => {
   </pre> -->
   <AppBaseDataTable
     :columns="batchList_columns"
-    :data="batch_lists"
+    :data="batch_lists.data"
+    :total-records="batch_lists.meta.total"
+    :rows-per-page="batch_lists.meta.limit"
+    :first="(batch_lists.meta.page - 1) * batch_lists.meta.limit"
     is-using-custom-body
     is-using-custom-header-prefix
     is-using-custom-header-suffix
     is-using-pagination
     :is-loading="batch_isLoading"
     :is-using-filter="false"
+    is-using-server-side-pagination
+    @update:currentPage="batch_onChangePage"
   >
     <template #header-prefix>
       <h1>
@@ -127,7 +133,7 @@ onMounted(async () => {
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2 w-full">
-                  <AppBaseSvg name="close" class="!w-4 !h-4" />
+                  <AppBaseSvg name="close-circle-red" class="!w-4 !h-4" />
                   <span class="font-normal text-sm text-text-primary">Cancel</span>
                 </section>
               </template>

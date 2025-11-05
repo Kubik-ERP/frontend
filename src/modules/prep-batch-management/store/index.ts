@@ -8,7 +8,7 @@ import type {
   IMenuRecipeDetailResponse,
 } from '@/modules/menu-recipe/interfaces';
 import type { AxiosRequestConfig } from 'axios';
-import type { IBatchStateStore, IBatchFormData } from '../interfaces';
+import type { IBatchStateStore, IBatchFormData, IBatchQueryParams, IBatchDetailsResponse } from '../interfaces';
 
 // plugins
 import httpClient from '@/plugins/axios';
@@ -16,7 +16,16 @@ import httpClient from '@/plugins/axios';
 export const useBatchStore = defineStore('batch', {
   state: (): IBatchStateStore => ({
     batch_isLoading: false,
-    batch_lists: [] as IBatchStateStore['batch_lists'],
+    batch_lists: {
+      data: [],
+      meta: {
+        page: 1,
+        limit: 10,
+        total: 0,
+        totalPages: 0,
+      },
+    } as IBatchStateStore['batch_lists'],
+    batchDetail_values: {} as IBatchDetailsResponse,
     menuRecipe_lists: {
       meta: {
         page: 1,
@@ -61,10 +70,28 @@ export const useBatchStore = defineStore('batch', {
         this.batch_isLoading = false;
       }
     },
-    async fetchBatchList(requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+
+    async fetchBatchDetail(id: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+      try {
+        this.batch_isLoading = true;
+        const response = await httpClient.get(`${BATCH_BASE_ENDPOINT}/${id}`, {
+          ...requestConfigurations,
+        });
+        this.batchDetail_values = response.data.data;
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) return Promise.reject(error);
+        else return Promise.reject(new Error(String(error)));
+      } finally {
+        this.batch_isLoading = false;
+      }
+    },
+
+    async fetchBatchList(params: IBatchQueryParams, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
       try {
         this.batch_isLoading = true;
         const response = await httpClient.get(BATCH_BASE_ENDPOINT, {
+          params,
           ...requestConfigurations,
         });
         this.batch_lists = response.data.data;
