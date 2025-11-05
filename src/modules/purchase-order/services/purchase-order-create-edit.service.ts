@@ -505,7 +505,7 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
     const argsEventEmitter: IPropsDialog = {
       id: 'purchase-order-create-edit-add-product-item',
       isOpen: true,
-      isUsingClosableButton: true,
+      isUsingClosableButton: false,
       width: '742px',
     };
 
@@ -521,7 +521,7 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
     const argsEventEmitter: IPropsDialog = {
       id: 'purchase-order-create-edit-edit-quantity',
       isOpen: true,
-      isUsingClosableButton: true,
+      isUsingClosableButton: false,
       width: '548px',
     };
 
