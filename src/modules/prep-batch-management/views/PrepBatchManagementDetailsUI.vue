@@ -15,6 +15,9 @@ const {
   batchDetails_formValidation,
   batch_fetchDetails,
   batchDetail_values,
+  batchDetails_onShowDialogStart,
+  batch_wasteLog_formData,
+  batchDetails_onCompleteBatch
 } = useBatchService();
 
 provide('batchDetails', {
@@ -26,6 +29,9 @@ provide('batchDetails', {
   batchDetails_formValidation,
   batch_fetchDetails,
   batchDetail_values,
+  batchDetails_onShowDialogStart,
+  batch_wasteLog_formData,
+  batchDetails_onCompleteBatch
 });
 
 onMounted(async () => {
@@ -200,7 +206,7 @@ onMounted(async () => {
           </PrimeVueButton>
         </router-link>
         <PrimeVueButton
-          v-if="batchDetail_values?.status?.toLowerCase() !== 'posted'"
+          v-if="batchDetail_values?.status?.toLowerCase() !== 'completed'"
           :label="
             batchDetail_values?.status?.toLowerCase() === 'planned'
               ? 'Start Cooking'
@@ -211,7 +217,7 @@ onMounted(async () => {
           class="bg-primary border-primary-border text-white"
           @click="
             batchDetail_values?.status?.toLowerCase() === 'planned'
-              ? batchDetails_onShowDialogCompleteBatch()
+              ? batchDetails_onShowDialogStart(route.params.id as string)
               : useTitleCaseWithSpaces(batchDetail_values?.status?.toLowerCase()) === 'cooking'
                 ? batchDetails_onShowDialogCompleteBatch()
                 : batchDetails_onShowDialogCompleteBatch()
@@ -234,4 +240,5 @@ onMounted(async () => {
 
   <CompletePostBatchRecord />
   <AppBaseDialogConfirmation id="batch-list-dialog-delete" />
+  <AppBaseDialogConfirmation id="batch-details-start-dialog-confirmation" />
 </template>

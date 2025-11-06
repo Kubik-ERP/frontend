@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import { ref, onUnmounted } from 'vue';
+// --- MODIFIED ---
+import { ref, onUnmounted, watch, inject } from 'vue';
+// -------------
+
+// interfaces
+import type { IBatchListProvided } from '../interfaces';
+
+/**
+ * @description Inject all the data and methods what we need
+ */
+const { batch_wasteLog_formData, batchDetail_values } = inject<IBatchListProvided>('batchDetails')!;
 
 // constants
 import { WASTE_LOG_CATEGORIES } from '../constants';
@@ -10,7 +20,7 @@ interface WasteLogEntry {
   item: number | null;
   quantity: number | null;
   uom: string | null;
-  category: number | null;
+  category: number | null; // This is the ID from the dropdown
   photo: File | null;
   photoPreviewUrl: string | null; // <-- To store the preview URL
   notes: string | null;
@@ -27,14 +37,48 @@ const createEmptyWasteLog = (): WasteLogEntry => ({
   notes: null,
 });
 
-// Main state is now a ref array, initialized with one empty log
+// Main state for the UI, initialized with one empty log
+// This ref is *only* for the UI logic
 const wasteLogs = ref<WasteLogEntry[]>([createEmptyWasteLog()]);
 
 // Moved item options here from the template
-const mockItems = [
-  { id: 1, name: 'Item 1' },
-  { id: 2, name: 'Item 2' },
-];
+const mockItems = batchDetail_values.value?.batch_cooking_recipe_ingredient.map(item => ({
+  id: item.ingredients.master_inventory_items.id,
+  name: item.ingredients.master_inventory_items.name,
+}));
+
+// --- ADDED: This is the magic! ---
+// This watch syncs your UI's `wasteLogs` ref with the injected `batch_wasteLog_formData`
+watch(
+  wasteLogs,
+  currentWasteLogs => {
+    if (!batch_wasteLog_formData) return;
+
+    // 1. Map the UI data (with Files, numbers, etc.)
+    //    to the service data structure (with strings, nulls, etc.)
+    const newServiceItems = currentWasteLogs
+      .filter(log => log.item !== null || log.quantity !== null || log.category !== null) // Only add non-empty rows
+      .map(log => ({
+        inventoryItemId: String(log.item ?? ''), // Convert item ID (number) to string
+        quantity: log.quantity ?? 0,
+        uom: log.uom ?? '',
+        category: log.category?.toString() ?? '', // Convert category ID (number) to name (string)
+        notes: log.notes ?? null,
+
+        // IMPORTANT: File upload is a separate process.
+        // We are storing the `log.photo` File object in the UI state,
+        // but the service state `photoUrl` will be null for now.
+        // You'll need a separate function to upload `log.photo`
+        // and get a URL to save here.
+        photoUrl: null,
+      }));
+
+    // 2. Update the injected service object
+    batch_wasteLog_formData.wasteLog.items = newServiceItems;
+  },
+  { deep: true }, // 'deep' ensures the watch triggers on any change inside the array
+);
+// --- END ADDED ---
 
 // Function to add a new, empty form row
 function addWasteRow() {
@@ -69,17 +113,15 @@ function triggerFileInput(index: number) {
 // Function to handle file selection
 function handleFileChange(event: Event, index: number) {
   const target = event.target as HTMLInputElement;
-  const log = wasteLogs.value[index];
+  const log = wasteLogs.value[index]; // Revoke old URL if one exists, to prevent memory leaks
 
-  // Revoke old URL if one exists, to prevent memory leaks
   if (log.photoPreviewUrl) {
     URL.revokeObjectURL(log.photoPreviewUrl);
   }
 
   if (target.files && target.files.length > 0) {
     const file = target.files[0];
-    log.photo = file;
-    // Create a new local URL for the selected file
+    log.photo = file; // Create a new local URL for the selected file
     log.photoPreviewUrl = URL.createObjectURL(file);
   } else {
     log.photo = null;
@@ -89,17 +131,15 @@ function handleFileChange(event: Event, index: number) {
 
 // Function to clear a selected photo
 function clearPhoto(index: number) {
-  const log = wasteLogs.value[index];
+  const log = wasteLogs.value[index]; // Revoke the URL to free up memory
 
-  // Revoke the URL to free up memory
   if (log.photoPreviewUrl) {
     URL.revokeObjectURL(log.photoPreviewUrl);
   }
 
   log.photo = null;
-  log.photoPreviewUrl = null;
+  log.photoPreviewUrl = null; // Also reset the file input value to allow selecting the same file again
 
-  // Also reset the file input value to allow selecting the same file again
   if (fileInputRefs.value[index]) {
     fileInputRefs.value[index].value = '';
   }
@@ -201,8 +241,8 @@ onUnmounted(() => {
           <PrimeVueSelect
             v-model="wasteLog.category"
             :options="WASTE_LOG_CATEGORIES"
-            option-label="name"
-            option-value="id"
+            option-label="label"
+            option-value="value"
             placeholder="Select category"
             class="text-sm w-full"
             :class="{ ...classes }"

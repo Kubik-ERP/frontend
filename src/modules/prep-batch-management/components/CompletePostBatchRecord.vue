@@ -11,8 +11,9 @@ const {
   batchDetails_onCloseDialogCompleteBatch,
   batchDetail_values,
   batchList_getClassOfBatchStatus,
-  batchDetails_formData,
   batchDetails_formValidation,
+  batch_wasteLog_formData,
+  batchDetails_onCompleteBatch
 } = inject<IBatchListProvided>('batchDetails')!;
 </script>
 <template>
@@ -67,10 +68,10 @@ const {
           name="Actual Batch Yield"
           spacing-bottom="mb-0"
           class="w-1/2"
-          :validators="batchDetails_formValidation.actualBatchYield"
+          :validators="batchDetails_formValidation.batchWaste"
         >
           <PrimeVueInputNumber
-            v-model="batchDetails_formData.actualBatchYield"
+            v-model="batch_wasteLog_formData.batchWaste"
             class="w-full"
             :class="{ ...classes }"
           />
@@ -78,14 +79,14 @@ const {
 
         <div class="flex items-center gap-2">
           <PrimeVueCheckbox
-            v-model="batchDetails_formData.setWastePerItemIngridients"
+            v-model="batch_wasteLog_formData.setWastePerItemIngridients"
             name="setWastePerItemIngridients"
             binary
           />
           <label for="setWastePerItemIngridients">Set waste per item ingredient</label>
         </div>
 
-        <section v-if="batchDetails_formData.setWastePerItemIngridients">
+        <section v-if="batch_wasteLog_formData.setWastePerItemIngridients">
           <WasteLog />
         </section>
 
@@ -97,7 +98,7 @@ const {
           name="Notes"
           spacing-bottom="mb-0"
         >
-          <PrimeVueTextarea v-model="batchDetails_formData.notes" class="w-full" :class="{ ...classes }" />
+          <PrimeVueTextarea v-model="batch_wasteLog_formData.notes" class="w-full" :class="{ ...classes }" />
         </AppBaseFormGroup>
       </main>
     </template>
@@ -117,7 +118,7 @@ const {
           label="Complete & Post Batch"
           type="button"
           :disabled="batchDetails_formValidation.$invalid"
-          @click="batchDetails_onCloseDialogCompleteBatch"
+          @click="batchDetails_onCompleteBatch"
         />
       </footer>
     </template>

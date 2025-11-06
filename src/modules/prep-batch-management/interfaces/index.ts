@@ -160,6 +160,22 @@ export interface IBatchDetailsResponse {
   }>;
 }
 
+export interface IWasteLogItem_formData {
+  batchWaste: number;
+  notes?: string | null;
+  setWastePerItemIngridients: boolean;
+  wasteLog: {
+    items: {
+      inventoryItemId: string;
+      quantity: number;
+      uom: string;
+      category: string;
+      notes?: string | null;
+      photoUrl?: string | null;
+    }[];
+  };
+}
+
 export type IBatchListProvided = {
   // columns
   batchList_columns: IColumnDataTable[];
@@ -193,7 +209,10 @@ export type IBatchListProvided = {
   batchCreateEdit_onShowDialogSave: () => void;
   batchCreateEdit_onShowDialogUpdate: (id: string) => void;
   batchCreateEdit_onShowDialogCancel: (id: string) => void;
+  batchDetails_onShowDialogStart: (id: string) => void;
   // batch details
+  // methods
+  batchDetails_onCompleteBatch: () => void;
   // formdata
   batchDetails_formData: IBatchDetailsFormData;
   batchDetails_formValidation: globalThis.Ref<Validation>;
@@ -202,4 +221,6 @@ export type IBatchListProvided = {
   batchDetails_onCloseDialogCompleteBatch: () => void;
   // create edit batch methods
   batchCreateEdit_onSaveDraft: () => void;
+  // waste log
+  batch_wasteLog_formData: IWasteLogItem_formData;
 };

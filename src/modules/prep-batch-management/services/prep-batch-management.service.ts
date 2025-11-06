@@ -13,6 +13,7 @@ import type {
   IMenuRecipe,
   IBatchDetailsFormData,
   IBatchQueryParams,
+  IWasteLogItem_formData,
 } from '../interfaces';
 import type { IMenuRecipeListQueryParams } from '@/modules/menu-recipe/interfaces';
 // Vuelidate
@@ -37,6 +38,15 @@ export const useBatchService = (): IBatchListProvided => {
 
   const router = useRouter();
 
+  const batch_wasteLog_formData = reactive<IWasteLogItem_formData>({
+    batchWaste: 0,
+    notes: '',
+    setWastePerItemIngridients: false,
+    wasteLog: {
+      items: [],
+    },
+  });
+
   const batchDetails_formData = reactive<IBatchDetailsFormData>({
     actualBatchYield: 0,
     setWastePerItemIngridients: false,
@@ -44,12 +54,12 @@ export const useBatchService = (): IBatchListProvided => {
   });
 
   const batchDetails_formRules = computed(() => ({
-    actualBatchYield: {
+    batchWaste: {
       required,
     },
   }));
 
-  const batchDetails_formValidation = useVuelidate(batchDetails_formRules, batchDetails_formData, {
+  const batchDetails_formValidation = useVuelidate(batchDetails_formRules, batch_wasteLog_formData, {
     $autoDirty: true,
   });
 
@@ -248,7 +258,7 @@ export const useBatchService = (): IBatchListProvided => {
       case 'COOKING': {
         return 'bg-secondary-background text-secondary';
       }
-      case 'POSTED': {
+      case 'COMPLETED': {
         return 'bg-success-background text-success';
       }
       default: {
@@ -348,7 +358,38 @@ export const useBatchService = (): IBatchListProvided => {
     return title;
   };
 
+  const batchDetails_onShowDialogStart = (id: string) => {
+    console.log('start Cooking');
+    const argsEventEmitter: IPropsDialogConfirmation = {
+      id: 'batch-details-start-dialog-confirmation',
+      description: batchCreateEdit_startCookingDescription(),
+      iconName: 'confirmation',
+      isOpen: true,
+      isUsingButtonSecondary: true,
+      isUsingHtmlTagOnDescription: true,
+      onClickButtonPrimary: () => {
+        batchCreateEdit_onStartCooking(id);
+        eventBus.emit('AppBaseDialog', { id: 'batch-details-start-dialog-confirmation', isOpen: false });
+      },
+      onClickButtonSecondary: () => {
+        // Logic to delete the table goes here
+        eventBus.emit('AppBaseDialog', { id: 'batch-details-start-dialog-confirmation', isOpen: false });
+      },
+      textButtonPrimary: 'Start Cooking',
+      textButtonSecondary: 'Cancel',
+      title: batchCreateEdit_startCookingTitle(),
+      type: 'error',
+    };
+
+    eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+  };
+
   const batchCreateEdit_onShowDialogStart = () => {
+    // touch
+    batch_formValidation.value.$touch();
+    if (batch_formValidation.value.$invalid) {
+      return;
+    }
     const argsEventEmitter: IPropsDialogConfirmation = {
       id: 'batch-create-edit-start-dialog-confirmation',
       description: batchCreateEdit_startCookingDescription(),
@@ -374,6 +415,10 @@ export const useBatchService = (): IBatchListProvided => {
   };
 
   const batchCreateEdit_onShowDialogSave = () => {
+    batch_formValidation.value.$touch();
+    if (batch_formValidation.value.$invalid) {
+      return;
+    }
     const argsEventEmitter: IPropsDialogConfirmation = {
       id: 'batch-create-edit-save-dialog-confirmation',
       description: `
@@ -473,26 +518,28 @@ export const useBatchService = (): IBatchListProvided => {
     }
   };
 
-  const batchCreateEdit_onStartCooking = async () => {
+  const batchCreateEdit_onStartCooking = async (id?: string) => {
     try {
-      const batchId = await store
-        .batch_saveDraft(batch_formData, {
-          ...httpAbort_registerAbort('BATCH_CREATE_REQUEST'),
-        })
-        .then(response => {
-          return response.data.id;
-        })
-        .catch((error: unknown) => {
-          if (error instanceof Error) {
-            return Promise.reject(error);
-          } else {
-            return Promise.reject(new Error(String(error)));
-          }
-        });
+      let batchId = id;
+      if (!batchId) {
+        console.log('masuk sini');
+        batchId = await store
+          .batch_saveDraft(batch_formData, {
+            ...httpAbort_registerAbort('BATCH_CREATE_REQUEST'),
+          })
+          .then(response => {
+            return response.data.id;
+          })
+          .catch((error: unknown) => {
+            if (error instanceof Error) {
+              return Promise.reject(error);
+            } else {
+              return Promise.reject(new Error(String(error)));
+            }
+          });
+      }
 
-      console.log(batchId);
-
-      await store.batch_start(batchId, {
+      await store.batch_start(batchId!, {
         ...httpAbort_registerAbort('BATCH_START_REQUEST'),
       });
       const argsEventEmitter: IPropsToast = {
@@ -538,6 +585,29 @@ export const useBatchService = (): IBatchListProvided => {
     }
   };
 
+  const batchDetails_onCompleteBatch = async () => {
+    try {
+      await store.batch_complete(batchDetail_values.value.id, batch_wasteLog_formData, {
+        ...httpAbort_registerAbort('BATCH_COMPLETE_REQUEST'),
+      });
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: `Batch completed.`,
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      batchDetails_onCloseDialogCompleteBatch();
+      router.push({ name: 'prep-batch-management.index' });
+      batch_fetchList();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
   return {
     // columns
     batchList_columns: BATCH_LIST_COLUMNS,
@@ -571,14 +641,18 @@ export const useBatchService = (): IBatchListProvided => {
     batchCreateEdit_onShowDialogSave,
     batchCreateEdit_onShowDialogUpdate,
     batchCreateEdit_onShowDialogCancel,
-
+    batchDetails_onShowDialogStart,
     // batch details
+    // methods
+    batchDetails_onCompleteBatch,
     // formdata
     batchDetails_formData,
     batchDetails_formValidation,
     // batch details dialog
     batchDetails_onShowDialogCompleteBatch,
     batchDetails_onCloseDialogCompleteBatch,
+    // wastelog
+    batch_wasteLog_formData,
     // create edit batch methods
     batchCreateEdit_onSaveDraft,
   };

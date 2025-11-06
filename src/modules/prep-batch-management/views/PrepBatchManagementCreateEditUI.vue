@@ -6,6 +6,7 @@ import { useBatchService } from '../services/prep-batch-management.service';
 
 const route = useRoute();
 const isEdit = ref(false);
+const status = ref('');
 
 const {
   batch_formData,
@@ -13,6 +14,8 @@ const {
   batchDetailsIngridient_columns,
   menuRecipeList_queryParams,
   menuRecipeList_fetchList,
+  batch_fetchDetails,
+  batchDetail_values,
   menuRecipeList_onSelectedRecipe,
   batchList_getClassOfBatchStatus,
   menuRecipe_lists,
@@ -31,22 +34,47 @@ const batchFormData_onClearRecipe = () => {
   menuRecipe_ingredients.value = [];
 };
 
+const batch_editMode = async () => {
+  batchFormData_onClearRecipe();
+
+  await batch_fetchDetails(route.params.id as string);
+
+  isEdit.value = route.params.id ? true : false;
+
+  status.value = batchDetail_values?.value?.status;
+
+  menuRecipeList_queryParams.search = batchDetail_values?.value?.menu_recipes?.recipe_name;
+
+  batch_formData.recipe.id = batchDetail_values?.value?.recipe_id;
+  batch_formData.recipe.recipeName = batchDetail_values?.value?.menu_recipes?.recipe_name;
+  batch_formData.recipe.yieldTarget = batchDetail_values?.value?.menu_recipes?.target_yield;
+  // batch_formData.recipe.costPerPortion = batchDetail_values?.value?.menu_recipes?.cost_per_portion || 0;
+  batch_formData.recipe.output = batchDetail_values?.value?.menu_recipes?.output_unit;
+  //   "isBaseRecipe": false,
+
+  //   "costPerPortion": 10000,
+  //   "marginRp": 15000,
+  //   "marginPercent": 60,
+  //   "updatedAt": "20/10/2025"
+  batch_formData.recipeId = batchDetail_values?.value?.recipe_id;
+  batch_formData.recipeName = batchDetail_values?.value?.menu_recipes?.recipe_name;
+  batch_formData.notes = batchDetail_values?.value?.notes;
+  batch_formData.targetYield = batchDetail_values?.value?.batch_target_yield;
+  batch_formData.waste = batchDetail_values?.value?.batch_waste;
+  batch_formData.batchDate = new Date(useFormatDate(batchDetail_values?.value?.date, 'dd/mm/yyyy'));
+
+  menuRecipeList_onSelectedRecipe(batch_formData.recipe);
+};
+
 onMounted(async () => {
   await menuRecipeList_fetchList();
   if (route.name === 'prep-batch-management.edit') {
-    isEdit.value = route.params.id ? true : false;
+    await batch_editMode();
     console.log('🚀 ~ onMounted ~ route.params.id:', route.params.id);
   }
 });
 </script>
 <template>
-  <!-- <pre>
-    {{ batch_formData }}
-  </pre>
-  <pre>
-    {{ menuRecipe_ingredients }}
-  </pre> -->
-
   <div class="flex justify-between gap-4 w-full">
     <section class="w-full flex flex-col gap-4">
       <section v-if="isEdit" class="flex flex-col gap-4">
@@ -56,15 +84,19 @@ onMounted(async () => {
             <span class="flex gap-2">
               <p class="text-disabled">Status</p>
               <PrimeVueChip
-                :class="[batchList_getClassOfBatchStatus('IN_PROGRESS'), 'text-xs font-normal py-1 px-1.5 w-fit']"
-                :label="useTitleCaseWithSpaces('In Progress')"
+                :class="[batchList_getClassOfBatchStatus(status), 'text-xs font-normal py-1 px-1.5 w-fit']"
+                :label="useTitleCaseWithSpaces(status.toLowerCase())"
               />
             </span>
           </div>
         </div>
         <div class="flex flex-col gap-2">
           <label for="batch-name">Batch Name</label>
-          <p>Rendang Daging/{{ route.params.id }}</p>
+          <p>
+            {{ batchDetail_values?.menu_recipes?.recipe_name }}/Batch-{{
+              useFormatDate(batchDetail_values?.date, 'ddmmyyyy')
+            }}
+          </p>
         </div>
       </section>
 

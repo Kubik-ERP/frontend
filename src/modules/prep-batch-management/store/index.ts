@@ -8,7 +8,13 @@ import type {
   IMenuRecipeDetailResponse,
 } from '@/modules/menu-recipe/interfaces';
 import type { AxiosRequestConfig } from 'axios';
-import type { IBatchStateStore, IBatchFormData, IBatchQueryParams, IBatchDetailsResponse } from '../interfaces';
+import type {
+  IBatchStateStore,
+  IBatchFormData,
+  IBatchQueryParams,
+  IBatchDetailsResponse,
+  IWasteLogItem_formData,
+} from '../interfaces';
 
 // plugins
 import httpClient from '@/plugins/axios';
@@ -40,6 +46,20 @@ export const useBatchStore = defineStore('batch', {
   }),
   getters: {},
   actions: {
+    async batch_complete(batchId: string,wasteLog: IWasteLogItem_formData, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+      try {
+        this.batch_isLoading = true;
+        const response = await httpClient.post(`${BATCH_BASE_ENDPOINT}/${batchId}/complete`, wasteLog, {
+          ...requestConfigurations,
+        });
+        return response.data;
+      } catch (error: unknown) {
+        if (error instanceof Error) return Promise.reject(error);
+        else return Promise.reject(new Error(String(error)));
+      } finally {
+        this.batch_isLoading = false;
+      }
+    },
     async batch_cancel(id: string, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
       try {
         this.batch_isLoading = true;
