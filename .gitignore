@@ -38,6 +38,6 @@ dist-ssr
 .env.production.local
 
 # Generated files
-src/components.d.ts
-src/auto-imports.d.ts
-.eslintrc-auto-import.json
+# src/components.d.ts
+# src/auto-imports.d.ts
+# .eslintrc-auto-import.json
