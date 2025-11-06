@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start:dev": "node check-and-start.js",
-    "build": "node check-and-build.js",
+    "build": "npx vue-tsc && npx vite build",
     "preview": "vite preview",
     "generate:module": "node module.js",
     "test:unit": "vitest",
