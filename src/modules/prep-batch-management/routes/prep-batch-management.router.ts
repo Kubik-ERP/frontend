@@ -22,6 +22,41 @@ export default {
         title: 'Prep & Batch Management',
       },
     },
+    {
+      path: 'create',
+      name: 'prep-batch-management.create',
+      component: () => import('../views/PrepBatchManagementCreateEditUI.vue'),
+      meta: {
+        layout: LAYOUT_OPTIONS.SIMPLE_NAVBAR,
+        requiresAuthorization: true,
+        title: 'Add New Batch',
+        breadcrumb: 'Add New Batch',
+      },
+    },
+    {
+      path: 'edit/:id',
+      props: route => ({ id: route.params.id }),
+      name: 'prep-batch-management.edit',
+      component: () => import('../views/PrepBatchManagementCreateEditUI.vue'),
+      meta: {
+        layout: LAYOUT_OPTIONS.SIMPLE_NAVBAR,
+        requiresAuthorization: true,
+        title: 'Edit Batch',
+        breadcrumb: 'Edit Batch',
+      },
+    },
+    {
+      path: 'details/:id',
+      props: route => ({ id: route.params.id }),
+      name: 'prep-batch-management.details',
+      component: () => import('../views/PrepBatchManagementDetailsUI.vue'),
+      meta: {
+        layout: LAYOUT_OPTIONS.SIMPLE_NAVBAR,
+        requiresAuthorization: true,
+        title: 'Details Batch',
+        breadcrumb: 'Details Batch',
+      },
+    },
   ],
   meta: {
     breadcrumb: 'Prep & Batch Management',

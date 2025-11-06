@@ -27,6 +27,10 @@ const {
   menuRecipeCreateEdit_onShowDialogAddIngredient,
   menuRecipeCreateEdit_onShowDialogCancelAddIngredient,
   menuRecipeCreateEdit_onShowDialogSaveIngredients,
+  menuRecipeCreateEdit_onShowDialogDeleteIngredient,
+  menuRecipeCreateEdit_onConfirmDeleteIngredient,
+  menuRecipeCreateEdit_onCancelDeleteIngredient,
+  menuRecipeCreateEdit_selectedIngredientIndex,
   // Product search functionality
   menuRecipeCreateEdit_listProducts,
   menuRecipeCreateEdit_onSearchProduct,
@@ -66,6 +70,10 @@ provide('menuRecipeCreateEdit', {
   menuRecipeCreateEdit_onShowDialogAddIngredient,
   menuRecipeCreateEdit_onShowDialogCancelAddIngredient,
   menuRecipeCreateEdit_onShowDialogSaveIngredients,
+  menuRecipeCreateEdit_onShowDialogDeleteIngredient,
+  menuRecipeCreateEdit_onConfirmDeleteIngredient,
+  menuRecipeCreateEdit_onCancelDeleteIngredient,
+  menuRecipeCreateEdit_selectedIngredientIndex,
   // Product search
   menuRecipeCreateEdit_listProducts,
   menuRecipeCreateEdit_onSearchProduct,
@@ -96,7 +104,6 @@ onMounted(async () => {
     <MenuRecipeContent />
 
     <AppBaseDialogConfirmation id="menu-recipe-create-edit-dialog-confirmation" />
-    <AppBaseDialogConfirmation id="menu-recipe-save-ingredients-dialog-confirmation" />
     <MenuRecipeAddIngredientsDialog />
   </section>
 </template>

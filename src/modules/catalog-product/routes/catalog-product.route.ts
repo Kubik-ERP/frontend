@@ -49,6 +49,17 @@ const routes: RouteRecordRaw[] = [
           title: 'Edit Product',
         },
       },
+      {
+        path: 'product-detail/:id',
+        name: 'catalog.products.detail',
+        component: () => import('../views/DetailsProductUI.vue'),
+        meta: {
+          requiresAuthorization: true,
+          layout: LAYOUT_OPTIONS.SIMPLE_NAVBAR,
+          breadcrumb: 'Product Detail',
+          title: 'Product Detail',
+        },
+      }
     ],
   },
 ];

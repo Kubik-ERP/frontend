@@ -2,6 +2,7 @@
 // Interface
 import { ICashierOrderSummaryPaymentMethod } from '@/modules/cashier/interfaces/cashier-order-summary';
 import { IInvoiceProvided } from '../../interfaces';
+import { STORE_SUGGESTION_PRICES } from '@/app/constants';
 
 /**
  * @description Inject all the data and methods what we need
@@ -124,17 +125,41 @@ watch(
             </PrimeVueIconField>
           </AppBaseFormGroup>
 
+          <section id="list-balances" class="flex flex-wrap items-center gap-2 w-full">
+            <PrimeVueChip
+              v-for="suggestionPrice in STORE_SUGGESTION_PRICES"
+              :key="suggestionPrice"
+              class="bg-secondary/10 cursor-pointer hover:bg-secondary basic-smooth-animation"
+              @click="invoice_invoiceData.form.paymentAmount = suggestionPrice"
+            >
+              <template #default>
+                <div class="flex items-center gap-2">
+                  <AppBaseSvg name="plus-line" class="w-3 h-3 filter-black-color" />
+
+                  <span class="font-semibold text-black text-xs">
+                    {{
+                      useCurrencyFormat({
+                        data: suggestionPrice,
+                        addSuffix: true,
+                      })
+                    }}
+                  </span>
+                </div>
+              </template>
+            </PrimeVueChip>
+          </section>
+
           <div class="flex flex-col gap-2">
             <div class="flex justify-between">
-              <span>Money Received</span>
+              <span class="text-sm lg:text-base">Money Received</span>
               <span class="text-sm lg:text-base font-semibold">{{
                 useCurrencyFormat({ data: invoice_invoiceData.form.paymentAmount })
               }}</span>
             </div>
           </div>
 
-          <div class="flex w-full justify-between items-center">
-            <span class="text-text-disabled">Total Price</span>
+          <div class="flex w-full justify-between items-center -mt-3">
+            <span class="text-sm lg:text-base text-text-disabled">Total Price</span>
             <span class="font-semibold">{{
               useCurrencyFormat({ data: invoice_invoiceData.calculate?.grandTotal || 0 })
             }}</span>
@@ -155,8 +180,8 @@ watch(
           </div>
         </template>
         <template v-else>
-          <div class="flex w-full justify-between items-center">
-            <span class="text-text-disabled">Total Price</span>
+          <div class="flex w-full justify-between items-center -mt-3">
+            <span class="text-sm lg:text-base text-text-disabled">Total Price</span>
             <span class="font-semibold">{{
               useCurrencyFormat({ data: invoice_invoiceData.calculate?.grandTotal || 0 })
             }}</span>
@@ -164,9 +189,7 @@ watch(
         </template>
 
         <div class="flex justify-end">
-          <PrimeVueButton
-            class="bg-white text-black w-36 border-primary-border hover:bg-primary-background-hover"
-            @click="closeCallback"
+          <PrimeVueButton class="bg-transparent text-primary w-36 border-secondary" @click="closeCallback"
             >Cancel</PrimeVueButton
           >
           <PrimeVueButton

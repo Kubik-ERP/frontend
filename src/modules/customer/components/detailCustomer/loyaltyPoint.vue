@@ -127,7 +127,9 @@ const hasPermission = rbac.hasPermission('management_customer_loyalty_point');
 
       <template #body="{ column, data }">
         <template v-if="column.value === 'invoiceID'">
-          <span class="font-normal text-sm text-text-primary">{{ data.invoiceID ?? '-' }}</span>
+          <router-link :to="{ name: 'invoice', params: { invoiceId: data.invoiceId } }">
+            <span class="font-normal text-sm text-text-primary">{{ data.invoice.invoiceNumber ?? '-' }}</span>
+          </router-link>
         </template>
 
         <template v-else-if="column.value === 'purchaseDate'">

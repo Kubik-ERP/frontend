@@ -63,7 +63,7 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
   const menuRecipeCreateEdit_formDataOfIngredientItem = ref<IMenuRecipeCreateEditIngredientItem>({
     itemId: null,
     quantity: 0,
-    uom: '',
+    uom: null,
     notes: null,
     cost: 0,
   });
@@ -88,6 +88,7 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
    */
   const menuRecipeCreateEdit_isEditingIngredientItem = ref<boolean>(false);
   const menuRecipeCreateEdit_editingIngredientItemIndex = ref<number>(-1);
+  const menuRecipeCreateEdit_selectedIngredientIndex = ref<number>(-1);
 
   /**
    * @description Form validations
@@ -122,6 +123,9 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
   const menuRecipeCreateEdit_formValidationsOfIngredientItem = useVuelidate(
     menuRecipeCreateEdit_formRulesOfIngredientItem,
     menuRecipeCreateEdit_formDataOfIngredientItem,
+    {
+      $autoDirty: true,
+    },
   );
 
   /**
@@ -204,7 +208,7 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
       ingredients: menuRecipeCreateEdit_formData.value.ingredients.map(ingredient => ({
         itemId: ingredient.itemId?.id || '',
         qty: ingredient.quantity,
-        uom: ingredient.uom,
+        uom: ingredient.uom ?? '',
         notes: ingredient.notes || '',
         cost: ingredient.cost,
       })),
@@ -388,7 +392,23 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
       marginPerSellingPricePercent: 0,
       ingredients: [],
     };
+
     menuRecipeCreateEdit_formValidations.value.$reset();
+  };
+
+  /**
+   * @description Handle reset form data of ingredients
+   */
+  const menuRecipeCreateEdit_onResetFormOfIngredients = (): void => {
+    menuRecipeCreateEdit_formDataOfIngredientItem.value = {
+      itemId: null,
+      quantity: 0,
+      uom: 'Kilogram (kg)',
+      notes: null,
+      cost: 0,
+    };
+
+    menuRecipeCreateEdit_formValidationsOfIngredientItem.value.$reset();
   };
 
   /**
@@ -403,12 +423,29 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
       }
 
       if (menuRecipeCreateEdit_isEditingIngredientItem.value) {
-        // Update existing item
-        menuRecipeCreateEdit_listIngredientItemsOnDialog.value[
-          menuRecipeCreateEdit_editingIngredientItemIndex.value
-        ] = {
-          ...menuRecipeCreateEdit_formDataOfIngredientItem.value,
-        };
+        // Check if we're editing from main form (selectedIngredientIndex >= 0)
+        if (menuRecipeCreateEdit_selectedIngredientIndex.value >= 0) {
+          // Update ingredient in main form data
+          menuRecipeCreateEdit_formData.value.ingredients[menuRecipeCreateEdit_selectedIngredientIndex.value] = {
+            ...menuRecipeCreateEdit_formDataOfIngredientItem.value,
+          };
+
+          // Reset selected ingredient index
+          menuRecipeCreateEdit_selectedIngredientIndex.value = -1;
+
+          // Close dialog for main form edit (use the new edit dialog ID)
+          eventBus.emit('AppBaseDialog', {
+            id: 'menu-recipe-edit-ingredient-dialog',
+            isOpen: false,
+          });
+        } else {
+          // Update existing item in dialog list (original behavior)
+          menuRecipeCreateEdit_listIngredientItemsOnDialog.value[
+            menuRecipeCreateEdit_editingIngredientItemIndex.value
+          ] = {
+            ...menuRecipeCreateEdit_formDataOfIngredientItem.value,
+          };
+        }
 
         // Reset edit mode
         menuRecipeCreateEdit_isEditingIngredientItem.value = false;
@@ -421,17 +458,9 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
       }
 
       // Reset form data of ingredient item
-      menuRecipeCreateEdit_formDataOfIngredientItem.value = {
-        itemId: null,
-        quantity: 0,
-        uom: '',
-        notes: null,
-        cost: 0,
-      };
+      menuRecipeCreateEdit_onResetFormOfIngredients();
     } catch (error) {
       console.error('Error adding ingredient item:', error);
-    } finally {
-      menuRecipeCreateEdit_formValidationsOfIngredientItem.value.$reset();
     }
   };
 
@@ -478,14 +507,7 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
         menuRecipeCreateEdit_editingIngredientItemIndex.value = -1;
 
         // Reset form data
-        menuRecipeCreateEdit_formDataOfIngredientItem.value = {
-          itemId: null,
-          quantity: 0,
-          uom: '',
-          notes: null,
-          cost: 0,
-        };
-        menuRecipeCreateEdit_formValidationsOfIngredientItem.value.$reset();
+        menuRecipeCreateEdit_onResetFormOfIngredients();
       }
     } catch (error) {
       console.error('Error deleting ingredient item:', error);
@@ -513,6 +535,119 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
       menuRecipeCreateEdit_formValidationsOfIngredientItem.value.$reset();
     } catch (error) {
       console.error('Error canceling edit ingredient item:', error);
+    }
+  };
+
+  /**
+   * @description Handle show dialog for delete individual ingredient
+   */
+  const menuRecipeCreateEdit_onShowDialogDeleteIngredient = (index: number): void => {
+    try {
+      // Set the selected ingredient index
+      menuRecipeCreateEdit_selectedIngredientIndex.value = index;
+
+      // Show delete confirmation dialog
+      const argsEventEmitter: IPropsDialogConfirmation = {
+        id: 'menu-recipe-create-edit-dialog-confirmation',
+        description: `
+          <div class="flex items-center justify-center">
+            <p class="font-normal text-black text-sm text-center">
+              Are you sure you want to delete this ingredient? This action cannot be undone.
+            </p>
+          </div>`,
+        iconName: 'delete-polygon',
+        isOpen: true,
+        isUsingButtonSecondary: true,
+        isUsingHtmlTagOnDescription: true,
+        onClickButtonPrimary: () => {
+          menuRecipeCreateEdit_formData.value.ingredients.splice(
+            menuRecipeCreateEdit_selectedIngredientIndex.value,
+            1,
+          );
+
+          // Reset selected index
+          menuRecipeCreateEdit_selectedIngredientIndex.value = -1;
+
+          // Close dialog
+          eventBus.emit('AppBaseDialogConfirmation', {
+            id: 'menu-recipe-create-edit-dialog-confirmation',
+            isOpen: false,
+          });
+
+          // Show success toast
+          eventBus.emit('AppBaseToast', {
+            isOpen: true,
+            message: 'Ingredient deleted successfully!',
+            position: EToastPosition.TOP_RIGHT,
+            type: EToastType.SUCCESS,
+          });
+        },
+        onClickButtonSecondary: () => {
+          eventBus.emit('AppBaseDialogConfirmation', {
+            id: 'menu-recipe-create-edit-dialog-confirmation',
+            isOpen: false,
+          });
+        },
+        textButtonPrimary: 'Delete',
+        textButtonSecondary: 'Cancel',
+        title: 'Delete Ingredient',
+      };
+
+      eventBus.emit('AppBaseDialogConfirmation', argsEventEmitter);
+    } catch (error) {
+      console.error('Error showing delete ingredient dialog:', error);
+    }
+  };
+
+  /**
+   * @description Handle confirm delete ingredient
+   */
+  const menuRecipeCreateEdit_onConfirmDeleteIngredient = (): void => {
+    try {
+      if (menuRecipeCreateEdit_selectedIngredientIndex.value >= 0) {
+        // Remove ingredient from form data
+        menuRecipeCreateEdit_formData.value.ingredients.splice(
+          menuRecipeCreateEdit_selectedIngredientIndex.value,
+          1,
+        );
+
+        // Reset selected index
+        menuRecipeCreateEdit_selectedIngredientIndex.value = -1;
+
+        // Close dialog
+        eventBus.emit('AppBaseDialogConfirmation', {
+          id: 'menu-recipe-create-edit-dialog-confirmation',
+          isOpen: false,
+        });
+
+        // Show success toast
+        eventBus.emit('AppBaseToast', {
+          isOpen: true,
+          message: 'Ingredient deleted successfully!',
+          position: EToastPosition.TOP_RIGHT,
+          type: EToastType.SUCCESS,
+        });
+      }
+    } catch (error) {
+      console.error('Error deleting ingredient:', error);
+    }
+  };
+
+  /**
+   * @description Handle cancel delete ingredient
+   */
+  const menuRecipeCreateEdit_onCancelDeleteIngredient = (): void => {
+    try {
+      // Reset selected index
+      menuRecipeCreateEdit_selectedIngredientIndex.value = -1;
+
+      // Close dialog
+      eventBus.emit('AppBaseDialogConfirmation', {
+        id: 'menu-recipe-create-edit-dialog-confirmation',
+        isOpen: false,
+      });
+    } catch (error) {
+      console.error('Error canceling delete ingredient:', error);
     }
   };
 
@@ -625,7 +760,7 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
    */
   const menuRecipeCreateEdit_onShowDialogSaveIngredients = () => {
     const argsEventEmitter: IPropsDialogConfirmation = {
-      id: 'menu-recipe-save-ingredients-dialog-confirmation',
+      id: 'menu-recipe-create-edit-dialog-confirmation',
       iconName: 'info',
       title: 'Add Ingredients to Recipe',
       description: `Are you sure you want to add ${menuRecipeCreateEdit_listIngredientItemsOnDialog.value.length} ingredient(s) to this recipe?`,
@@ -654,7 +789,7 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
    */
   const menuRecipeCreateEdit_onCloseSaveIngredientsConfirmation = (): void => {
     const argsEventEmitter: IPropsDialog = {
-      id: 'menu-recipe-save-ingredients-dialog-confirmation',
+      id: 'menu-recipe-create-edit-dialog-confirmation',
       isOpen: false,
     };
 
@@ -806,6 +941,11 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
     menuRecipeCreateEdit_onShowDialogAddIngredient,
     menuRecipeCreateEdit_onShowDialogCancelAddIngredient,
     menuRecipeCreateEdit_onShowDialogSaveIngredients,
+    // Individual ingredient management
+    menuRecipeCreateEdit_onShowDialogDeleteIngredient,
+    menuRecipeCreateEdit_onConfirmDeleteIngredient,
+    menuRecipeCreateEdit_onCancelDeleteIngredient,
+    menuRecipeCreateEdit_selectedIngredientIndex,
     // Ingredient edit state
     menuRecipeCreateEdit_isEditingIngredientItem,
     menuRecipeCreateEdit_editingIngredientItemIndex,

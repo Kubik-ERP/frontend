@@ -15,6 +15,21 @@ export interface IMenuRecipe {
   ingredients: IIngredient[];
 }
 
+export interface IMenuRecipeDetailVersion extends IMenuRecipe {
+  version_id: string;
+  version_number: string;
+}
+
+export interface IMenuRecipeListVersion {
+  versions: IMenuRecipeVersion[];
+}
+
+export interface IMenuRecipeVersion {
+  versionId: string;
+  versionNumber: string;
+  createdAt: string;
+}
+
 export interface IIngredient {
   ingredient_id: string;
   item_id: string;
@@ -112,11 +127,19 @@ export interface IMenuRecipeCreateEditResponse {
   updated_at: Date;
 }
 
+export interface IMenuRecipeDetailVersionResponse extends IDefaultResponseFetch {
+  data: IMenuRecipeDetailVersion;
+}
+
 export interface IMenuRecipeListResponse extends IDefaultResponseFetch {
   data: {
     meta: IPageMeta;
     items: IMenuRecipeList[] | [];
   };
+}
+
+export interface IMenuRecipeListVersionResponse extends IDefaultResponseFetch {
+  data: IMenuRecipeListVersion;
 }
 
 export interface IMenuRecipeStateStore {
@@ -126,4 +149,5 @@ export interface IMenuRecipeStateStore {
     meta: IPageMeta;
     items: IMenuRecipeList[] | [];
   };
+  menuRecipe_versions: IMenuRecipeListVersion | null;
 }
