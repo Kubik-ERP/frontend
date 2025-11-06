@@ -38,7 +38,19 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            docker ps -q --filter "publish=8090" | xargs -r docker stop
-            gunzip -c kubik-frontend.tar.gz | docker load
-            docker rm kubik-frontend || true
-            docker run -d --name kubik-frontend --restart always -p 8090:8090 kubik-frontend:latest
+            echo "===> Stop and remove old container..."
+            docker stop kubik-frontend || true
+            docker rm -f kubik-frontend || true
+
+            echo "===> Load new image..."
+            gunzip -c /root/kubik-frontend.tar.gz | docker load
+
+            echo "===> Run new container..."
+            docker run -d \
+              --name kubik-frontend \
+              --restart always \
+              -p 8090:8090 \
+              kubik-frontend:latest
+            echo "===> Deployment completed."
+            rm -f /root/kubik-frontend.tar.gz
+            echo "===> Cleaned up image file."
