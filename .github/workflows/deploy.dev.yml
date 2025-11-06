@@ -38,9 +38,12 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            echo "===> Stop and remove old container..."
-            docker stop kubik-frontend || true
-            docker rm -f kubik-frontend || true
+            echo "===> Stop and remove old container (if any)..."
+            docker ps -q --filter "name=kubik-frontend" | xargs -r docker stop
+            docker ps -aq --filter "name=kubik-frontend" | xargs -r docker rm -f
+
+            echo "===> Freeing port 8090 if occupied..."
+            fuser -k 8090/tcp || true
 
             echo "===> Load new image..."
             gunzip -c /root/kubik-frontend.tar.gz | docker load
@@ -51,6 +54,24 @@ jobs:
               --restart always \
               -p 8090:8090 \
               kubik-frontend:latest
-            echo "===> Deployment completed."
+
+            echo "===> Waiting for container to start..."
+            sleep 10
+
+            echo "===> Checking container health..."
+            if ! docker ps --filter "name=kubik-frontend" --filter "status=running" | grep kubik-frontend; then
+              echo "❌ Container failed to start properly."
+              docker logs kubik-frontend || true
+              exit 1
+            fi
+
+            echo "===> Checking HTTP response..."
+            if ! curl -s -o /dev/null -w "%{http_code}" http://localhost:8090 | grep -q "200"; then
+              echo "❌ Frontend did not respond with 200 OK."
+              docker logs kubik-frontend || true
+              exit 1
+            fi
+
+            echo "✅ Deployment successful and container is healthy."
             rm -f /root/kubik-frontend.tar.gz
             echo "===> Cleaned up image file."
