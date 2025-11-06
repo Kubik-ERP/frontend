@@ -160,6 +160,12 @@ export interface IBatchDetailsResponse {
   }>;
 }
 
+export interface batch_saveDraftResponse {
+  data: {
+    id: string
+  }
+}
+
 export interface IWasteLogItem_formData {
   batchWaste: number;
   notes?: string | null;

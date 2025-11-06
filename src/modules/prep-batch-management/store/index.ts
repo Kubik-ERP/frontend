@@ -46,7 +46,11 @@ export const useBatchStore = defineStore('batch', {
   }),
   getters: {},
   actions: {
-    async batch_complete(batchId: string,wasteLog: IWasteLogItem_formData, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async batch_complete(
+      batchId: string,
+      wasteLog: IWasteLogItem_formData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<unknown> {
       try {
         this.batch_isLoading = true;
         const response = await httpClient.post(`${BATCH_BASE_ENDPOINT}/${batchId}/complete`, wasteLog, {
@@ -123,7 +127,14 @@ export const useBatchStore = defineStore('batch', {
         this.batch_isLoading = false;
       }
     },
-    async batch_saveDraft(payload: IBatchFormData, requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async batch_saveDraft(
+      payload: IBatchFormData,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<{
+      data: {
+        id: string;
+      };
+    }> {
       const data = {
         recipeId: payload.recipe.id,
         date: useFormatDateLocal(payload.batchDate),
