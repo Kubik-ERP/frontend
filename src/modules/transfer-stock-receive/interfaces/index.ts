@@ -1,0 +1,1 @@
+export * from './transfer-stock-receive-list.interface';
