@@ -6,32 +6,36 @@ on:
       - staging
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Copy Project to Server
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          source: '.'
-          target: '~/app_frontend'
+      - name: Build Docker image
+        run: |
+          docker build -t kubik-frontend:latest .
 
-      - name: SSH and Build Docker on Server
+      - name: Save image
+        run: docker save kubik-frontend:latest | gzip > kubik-frontend.tar.gz
+
+      - name: Copy image to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: root
+          key: ${{ secrets.SSH_KEY }}
+          source: 'kubik-frontend.tar.gz'
+          target: '/root/'
+
+      - name: Deploy on server
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          host: ${{ secrets.HOST }}
+          username: root
+          key: ${{ secrets.SSH_KEY }}
           script: |
-            cd ~/app_frontend
-            cp ~/.env-fe ~/app_frontend/.env
-            docker build -t kubik-frontend .
-            docker stop kubik-frontend || true
+            docker ps -q --filter "publish=8090" | xargs -r docker stop
+            gunzip -c kubik-frontend.tar.gz | docker load
             docker rm kubik-frontend || true
-            docker run -d --name kubik-frontend --restart always -p 8090:8090 kubik-frontend
+            docker run -d -p 8091:8090 --name kubik-frontend kubik-frontend:latest
