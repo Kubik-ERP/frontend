@@ -14,7 +14,7 @@ const {
   menuRecipeList_handleOnSortChange,
   menuRecipeList_isLoading,
   menuRecipeList_onChangePage,
-  menuRecipeList_onShowDialogDelete,
+  menuRecipeList_onShowDialogCancel,
   menuRecipeList_queryParams,
   menuRecipeList_values,
 } = useMenuRecipeListService();
@@ -28,7 +28,7 @@ provide('menuRecipeList', {
   menuRecipeList_handleOnSortChange,
   menuRecipeList_isLoading,
   menuRecipeList_onChangePage,
-  menuRecipeList_onShowDialogDelete,
+  menuRecipeList_onShowDialogCancel,
   menuRecipeList_queryParams,
   menuRecipeList_values,
 });
