@@ -2,8 +2,7 @@ name: Build & Deploy to Server
 
 on:
   push:
-    branches:
-      - staging
+    branches: [staging]
 
 jobs:
   build-and-deploy:
@@ -11,6 +10,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Create .env file from secret
+        run: |
+          echo "${{ secrets.ENV_FE_STAGING }}" > .env
 
       - name: Build Docker image
         run: |
@@ -38,4 +41,4 @@ jobs:
             docker ps -q --filter "publish=8090" | xargs -r docker stop
             gunzip -c kubik-frontend.tar.gz | docker load
             docker rm kubik-frontend || true
-            docker run -d -p 8091:8090 --name kubik-frontend kubik-frontend:latest
+            docker run -d --name kubik-frontend --restart always -p 8090:8090 kubik-frontend:latest
