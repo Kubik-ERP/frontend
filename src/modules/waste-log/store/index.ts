@@ -113,8 +113,13 @@ export const useWasteLogStore = defineStore('waste-log', {
       try {
         const response = await httpClient.get<{
           data: {
-            meta: IPageMeta;
-            items: IWasteLog[];
+            data: IWasteLog[];
+            meta: {
+              page: number;
+              limit: number;
+              total: number;
+              totalPages: number;
+            };
           };
         }>(WASTE_LOG_BASE_ENDPOINT, {
           params,
@@ -123,7 +128,15 @@ export const useWasteLogStore = defineStore('waste-log', {
 
         // Update store state dengan response yang diterima
         if (response.data && response.data.data) {
-          this.wasteLog_lists = response.data.data;
+          this.wasteLog_lists = {
+            items: response.data.data.data,
+            meta: {
+              page: response.data.data.meta.page,
+              pageSize: response.data.data.meta.limit,
+              total: response.data.data.meta.total,
+              totalPages: response.data.data.meta.totalPages,
+            },
+          };
         }
 
         return Promise.resolve(response.data);

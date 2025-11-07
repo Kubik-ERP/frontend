@@ -6,10 +6,12 @@ import type { IWasteLogListProvided } from '../interfaces';
  * @description Inject all the data and methods what we need
  */
 const {
+  wasteLogList_batchOptions,
   wasteLogList_categoryOptions,
   wasteLogList_formData,
   wasteLogList_formValidations,
   wasteLogList_inventoryItems,
+  wasteLogList_isLoadingBatchOptions,
   wasteLogList_isLoadingInventoryItems,
   wasteLogList_onAddWasteLogItem,
   wasteLogList_onDeleteWasteLogItem,
@@ -60,19 +62,38 @@ onMounted(() => {
             name="Batch"
             :validators="wasteLogList_formValidations.batchId"
           >
-            <PrimeVueAutoComplete
+            <PrimeVueDropdown
               v-model="wasteLogList_formData.batchId"
-              :suggestions="[]"
-              :loading="false"
-              option-label="name"
-              placeholder="Search Recipe Batch"
-              class="text-sm w-full [&>input]:text-sm [&>input]:w-full"
+              :options="wasteLogList_batchOptions"
+              :loading="wasteLogList_isLoadingBatchOptions"
+              option-label="batchName"
+              :option-value="(option: any) => option"
+              placeholder="Select Recipe Batch"
+              class="text-sm w-full"
               :class="{ ...classes }"
             >
-              <template #option="{ option }">
-                {{ option }}
+              <template #value="slotProps">
+                <div v-if="slotProps.value && typeof slotProps.value === 'object'" class="flex flex-col">
+                  <span class="font-medium text-sm">{{ slotProps.value.menu_recipes.recipe_name }}</span>
+
+                  <span class="text-xs text-gray-500">
+                    Date: {{ new Date(slotProps.value.date).toLocaleDateString() }} | Status:
+                    {{ slotProps.value.status }}
+                  </span>
+                </div>
+                <span v-else>{{ slotProps.placeholder }}</span>
               </template>
-            </PrimeVueAutoComplete>
+
+              <template #option="slotProps">
+                <div class="flex flex-col">
+                  <span class="font-medium text-sm">{{ slotProps.option.menu_recipes.recipe_name }}</span>
+                  <span class="text-xs text-gray-500">
+                    Date: {{ new Date(slotProps.option.date).toLocaleDateString() }} | Status:
+                    {{ slotProps.option.status }}
+                  </span>
+                </div>
+              </template>
+            </PrimeVueDropdown>
           </AppBaseFormGroup>
         </section>
 
@@ -329,7 +350,7 @@ onMounted(() => {
           class="bg-primary border-none text-base py-[10px] w-full max-w-40"
           label="Save"
           type="button"
-          :disabled="wasteLogList_formValidations.$invalid || wasteLogList_formData.wasteLogs.length === 0"
+          :disabled="wasteLogList_formData.wasteLogs.length === 0"
           @click="wasteLogList_onSaveWasteLog"
         />
       </footer>
