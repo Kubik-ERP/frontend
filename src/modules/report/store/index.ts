@@ -4,6 +4,7 @@ import {
   REPORT_FINANCIAL_ENDPOINT,
   REPORT_VOUCHER_ENDPOINT,
   REPORT_CUSTOMER_ENDPOINT,
+  REPORT_LOYALTY_POINT_ENDPOINT,
   REPORT_INVENTORY_ENDPOINT,
   STAFF_MEMBER_BASE_ENDPOINT,
 } from '../constants';
@@ -33,6 +34,12 @@ import type {
   ICustomerReport,
   IOutlet,
   IStaffMember,
+  // loyalty point
+  ILoyaltyPointReport_spendBased,
+  ILoyaltyPointReport_benefitUtilization,
+  ILoyaltyPointReport_expiryWarning,
+  ILoyaltyPointReport_productBased,
+  ILoyaltyPointReport_typeAccumulation,
 } from '../interfaces';
 
 export const useReportStore = defineStore('report', {
@@ -67,6 +74,12 @@ export const useReportStore = defineStore('report', {
     voucherReport_values: [] as IVoucherReport[],
     // customer
     customerReport_values: [] as ICustomerReport[],
+    // loyalty point
+    loyaltyPointReport_spendBased_values: {} as ILoyaltyPointReport_spendBased,
+    loyaltyPointReport_benefitUtilization_values: {} as ILoyaltyPointReport_benefitUtilization,
+    loyaltyPointReport_expiryWarning_values: {} as ILoyaltyPointReport_expiryWarning,
+    loyaltyPointReport_productBased_values: {} as ILoyaltyPointReport_productBased,
+    loyaltyPointReport_typeAccumulation_values: {} as ILoyaltyPointReport_typeAccumulation,
   }),
   actions: {
     /**
@@ -310,6 +323,55 @@ export const useReportStore = defineStore('report', {
         });
         // console.log('response', response.data);
         this.customerReport_values = response.data.data;
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.report_isLoading = false;
+      }
+    },
+
+    async getLoyaltyPointReport(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
+      this.report_isLoading = true;
+      try {
+        const response = await httpClient.get(`${REPORT_LOYALTY_POINT_ENDPOINT}`, {
+          params,
+          ...requestConfigurations,
+        });
+        switch (params.type) {
+          case 'spend-based': {
+            this.loyaltyPointReport_spendBased_values = response.data.data;
+            break;
+          }
+
+          case 'product-based': {
+            this.loyaltyPointReport_productBased_values = response.data.data;
+            break;
+          }
+
+          case 'benefit-utilization': {
+            this.loyaltyPointReport_benefitUtilization_values = response.data.data;
+            break;
+          }
+
+          case 'expiry-warning': {
+            this.loyaltyPointReport_expiryWarning_values = response.data.data;
+            break;
+          }
+
+          case 'type-accumulation': {
+            this.loyaltyPointReport_typeAccumulation_values = response.data.data;
+            break;
+          }
+
+          default: {
+            console.warn(`Unknown type: ${params.type}`);
+          }
+        }
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

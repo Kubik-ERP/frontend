@@ -18,6 +18,7 @@ const togglePopover = (id: string, event: Event) => {
  */
 const {
   wasteLogList_columns,
+  wasteLogList_flattenedItems,
   wasteLogList_handleOnSortChange,
   wasteLogList_isLoading,
   wasteLogList_onChangePage,
@@ -32,7 +33,7 @@ const {
   <AppBaseDataTable
     btn-cta-create-title="Add Waste Record"
     :columns="wasteLogList_columns"
-    :data="wasteLogList_values.items"
+    :data="wasteLogList_flattenedItems"
     header-title="Waste List"
     :is-using-btn-cta-create="true"
     is-using-custom-body
@@ -65,7 +66,7 @@ const {
           @click="(event: Event) => togglePopover(data.wasteLogId, event)"
         >
           <template #icon>
-            <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
+            <AppBaseSvg name="three-dots" class="w-5! h-5!" />
           </template>
         </PrimeVueButton>
 
@@ -109,13 +110,16 @@ const {
         </PrimeVuePopover>
       </template>
 
-      <template v-else-if="column.value === 'itemsCount'">
-        <span class="font-normal text-sm text-grayscale-70">
-          {{ data.wasteLogItems?.length || 0 }} items
-        </span>
+      <template v-else-if="column.value === 'batch'">
+        <div class="flex flex-col gap-1">
+          <span class="font-normal text-sm text-grayscale-70">{{ data.batchId }}</span>
+          <span v-if="data.updatedAt" class="font-normal text-xs text-grayscale-60">
+            {{ new Date(data.updatedAt).toLocaleDateString() }}
+          </span>
+        </div>
       </template>
 
-      <template v-else-if="column.value === 'createdAt' || column.value === 'updatedAt'">
+      <template v-else-if="column.value === 'updatedAt'">
         <span class="font-normal text-sm text-grayscale-70">
           {{ data[column.value] ? new Date(data[column.value]).toLocaleDateString() : '-' }}
         </span>

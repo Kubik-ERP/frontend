@@ -1,26 +1,36 @@
 export const WASTE_LOG_LIST_COLUMNS: IColumnDataTable[] = [
   {
-    label: 'Batch ID',
-    sortable: true,
-    value: 'batchId',
-  },
-  {
-    label: 'Store',
-    sortable: true,
-    value: 'storeName',
-  },
-  {
-    label: 'Items Count',
+    label: 'Item',
     sortable: false,
-    value: 'itemsCount',
+    value: 'inventoryItemName',
   },
   {
-    label: 'Created At',
-    sortable: true,
-    value: 'createdAt',
+    label: 'Batch',
+    sortable: false,
+    value: 'batch',
   },
   {
-    label: 'Updated At',
+    label: 'Qty',
+    sortable: false,
+    value: 'quantity',
+  },
+  {
+    label: 'UOM',
+    sortable: false,
+    value: 'uom',
+  },
+  {
+    label: 'Category',
+    sortable: false,
+    value: 'category',
+  },
+  {
+    label: 'Notes',
+    sortable: false,
+    value: 'notes',
+  },
+  {
+    label: 'Last Update',
     sortable: true,
     value: 'updatedAt',
   },
