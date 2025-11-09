@@ -21,7 +21,7 @@ export interface ICashDrawerCashRegisterQueryParamsOfTransaction {
 
 export interface ICashDrawerCashRegisterProvide {
   cashDrawerCashRegister_detail: globalThis.Ref<ICashDrawerItem | null>;
-  cashDrawerCashRegister_fetchCashDrawerDetails: (id?: string) => Promise<unknown>;
+  cashDrawerCashRegister_fetchCashDrawerDetails: () => Promise<unknown>;
   cashDrawerCashRegister_fetchTrasanctions: (id?: string) => Promise<unknown>;
   cashDrawerCashRegister_formDataOfCloseTransaction: ICashDrawerCashRegisterFormDataOfCloseTransaction;
   cashDrawerCashRegister_formDataOfTransaction: ICashDrawerCashRegisterFormDataOfTransaction;
