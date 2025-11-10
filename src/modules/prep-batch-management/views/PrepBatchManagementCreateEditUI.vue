@@ -330,7 +330,7 @@ onMounted(async () => {
               class="min-w-40 border-primary-border text-primary"
               variant="outlined"
               :label="isEdit ? 'Update' : 'Save Draft'"
-              @click="isEdit ? batchCreateEdit_onShowDialogUpdate('batch1') : batchCreateEdit_onShowDialogSave()"
+              @click="isEdit ? batchCreateEdit_onShowDialogUpdate(route.params.id as string) : batchCreateEdit_onShowDialogSave()"
             />
             <PrimeVueButton
               class="min-w-40 border-primary-border text-white bg-primary"
