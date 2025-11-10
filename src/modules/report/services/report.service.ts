@@ -108,7 +108,17 @@ export const useReportService = (): IReportProvided => {
     999,
   );
 
+  const getLocalGMTString = (): number => {
+    const offsetInMinutes = new Date().getTimezoneOffset();
+
+    // 2. We invert the sign and divide by 60 to get the offset in hours.
+    const offsetInHours = -offsetInMinutes / 60;
+
+    return offsetInHours;
+  };
+
   const report_queryParams = reactive<IReportQueryParams>({
+    gmt: getLocalGMTString(),
     startDate: initialStartDate,
     endDate: initialEndDate,
     store_ids: outlet_currentOutlet.value?.id,
@@ -117,12 +127,14 @@ export const useReportService = (): IReportProvided => {
 
   const formatQueryParamsDate = (params: IReportQueryParams, type?: string): IReportQueryParams => {
     Object.assign(report_queryParams, {
+      gmt: params.gmt,
       startDate: params.startDate,
       endDate: params.endDate,
       store_ids: params.store_ids,
       staff_ids: params.staff_ids,
     });
     const newParams = {
+      gmt: params.gmt,
       startDate: useFormatDateLocal(params.startDate, true) as unknown as Date,
       endDate: useFormatDateLocal(params.endDate, true) as unknown as Date,
       type: type,

@@ -40,6 +40,7 @@ export interface IReportQueryParams {
   type?: string | null;
   store_ids?: string | null;
   staff_ids?: string | null;
+  gmt?: number | null;
 }
 
 import type { IVoucherReport } from './voucher-report';
