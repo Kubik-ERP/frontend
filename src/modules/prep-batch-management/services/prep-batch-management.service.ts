@@ -171,13 +171,7 @@ export const useBatchService = (): IBatchListProvided => {
     }
   };
 
-  const menuRecipeList_onSelectedRecipe = (recipe: IMenuRecipe) => {
-    batch_formData.recipeId = recipe.id;
-    batch_formData.recipe = recipe;
-
-    menuRecipe_fetchIngridients(recipe.id);
-    // batch_formData.ingredients = menuRecipe_ingredients.value;
-  };
+  
 
   const menuRecipeList_fetchList = async (): Promise<unknown> => {
     try {
@@ -463,6 +457,7 @@ export const useBatchService = (): IBatchListProvided => {
       isUsingButtonSecondary: true,
       isUsingHtmlTagOnDescription: true,
       onClickButtonPrimary: () => {
+        batchCreateEdit_onUpdateCooking(id);
         eventBus.emit('AppBaseDialog', { id: 'batch-create-edit-update-dialog-confirmation', isOpen: false });
       },
       onClickButtonSecondary: () => {
@@ -560,6 +555,29 @@ export const useBatchService = (): IBatchListProvided => {
     }
   };
 
+  const batchCreateEdit_onUpdateCooking = async (batchId: string) => {
+    try {
+      await store.batch_update(batchId, batch_formData, {
+        ...httpAbort_registerAbort('BATCH_UPDATE_REQUEST'),
+      });
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.SUCCESS,
+        message: `Batch updated.`,
+        position: EToastPosition.TOP_RIGHT,
+      };
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+      batch_formData_onClear();
+      router.push({ name: 'prep-batch-management.index' });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
   const batchCreateEdit_onCancelCooking = async (batchId: string) => {
     try {
       await store.batch_cancel(batchId, {
@@ -619,7 +637,6 @@ export const useBatchService = (): IBatchListProvided => {
     batchList_getClassOfBatchStatus,
     menuRecipeList_onShowDialogCancel,
     menuRecipeList_fetchList,
-    menuRecipeList_onSelectedRecipe,
     menuRecipe_fetchIngridients,
     batch_fetchList,
     batch_onChangePage,

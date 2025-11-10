@@ -104,7 +104,7 @@ onMounted(async () => {
               </PrimeVueButton>
             </router-link>
             <router-link
-              v-if="data.status !== 'CANCELLED'"
+              v-if="data.status !== 'CANCELLED' && data.status !== 'COMPLETED' && data.status !== 'COOKING'"
               :to="{ name: 'prep-batch-management.edit', params: { id: data.id } }"
             >
               <PrimeVueButton
@@ -126,7 +126,7 @@ onMounted(async () => {
             </router-link>
 
             <PrimeVueButton
-              v-if="data.status !== 'CANCELLED'"
+              v-if="data.status !== 'CANCELLED' && data.status !== 'COMPLETED'"
               class="w-full px-4 py-3"
               variant="text"
               @click="menuRecipeList_onShowDialogCancel(data.id)"

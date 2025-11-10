@@ -139,6 +139,7 @@ export interface IBatchDetailsResponse {
     recipe_name: string;
     target_yield: number;
     output_unit: string;
+    productPrice: number;
   };
   batch_cooking_recipe_ingredient: Array<{
     id: string;
@@ -193,7 +194,7 @@ export type IBatchListProvided = {
   batchList_getClassOfBatchStatus: (batchStatus: string) => string;
   menuRecipeList_onShowDialogCancel: (id: string) => void;
   menuRecipeList_fetchList: () => Promise<unknown>;
-  menuRecipeList_onSelectedRecipe: (recipe: IMenuRecipe) => void;
+  // menuRecipeList_onSelectedRecipe: (recipe: IMenuRecipe) => void;
   menuRecipe_fetchIngridients: (id: string) => Promise<unknown>;
   batch_fetchList: () => Promise<unknown>;
   batch_onChangePage: (page: number) => void;

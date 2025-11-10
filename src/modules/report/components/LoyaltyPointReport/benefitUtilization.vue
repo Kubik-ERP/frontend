@@ -52,7 +52,11 @@ const formattedDataTable = () => {
   const newData =
     loyaltyPointReport_benefitUtilization_values?.value?.table?.map(item => {
       return {
-        item,
+        benefitName: item.benefitName,
+        type: useTitleCaseWithSpaces(item.type),
+        countUsed: item.countUsed,
+        totalPointUsed: useCurrencyFormat({ data: item.totalPointUsed, hidePrefix: true }),
+        amount: useCurrencyFormat({ data: item.amount, hidePrefix: true }),
       };
     }) || [];
   return newData;
@@ -75,7 +79,7 @@ const onChangePage = (newPage: number) => {
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
-                    data: loyaltyPointReport_benefitUtilization_values?.dashboard?.sumOfAllPoints,
+                    data: loyaltyPointReport_benefitUtilization_values?.dashboard?.sumOfAllPoints || 0,
                     hidePrefix: true,
                   })
                 }}
@@ -86,35 +90,41 @@ const onChangePage = (newPage: number) => {
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
-                    data: loyaltyPointReport_benefitUtilization_values?.dashboard?.countCustomers,
+                    data: loyaltyPointReport_benefitUtilization_values?.dashboard?.countCustomers || 0,
                     hidePrefix: true,
                   })
                 }}
               </td>
             </tr>
             <tr class="bg-secondary/10">
-              <th class="text-left p-1.5">Sum of Points Used By Type</th>
+              <th class="text-left p-1.5">Sum of Points Used By Free Items</th>
               <td class="text-right p-1.5">
-                {{ loyaltyPointReport_benefitUtilization_values?.dashboard?.sumPointsUsedByType }}
+                {{ loyaltyPointReport_benefitUtilization_values?.dashboard?.sumPointsUsedByType?.free_items || 0 }}
               </td>
             </tr>
-            <tr>
+            <tr class="">
+              <th class="text-left p-1.5">Sum of Points Used By Discount</th>
+              <td class="text-right p-1.5">
+                {{ loyaltyPointReport_benefitUtilization_values?.dashboard?.sumPointsUsedByType?.discount || 0 }}
+              </td>
+            </tr>
+            <tr class="bg-secondary/10">
               <th class="text-left p-1.5">Sum of Discount Amount</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
-                    data: loyaltyPointReport_benefitUtilization_values?.dashboard?.sumOfDiscountAmount,
+                    data: loyaltyPointReport_benefitUtilization_values?.dashboard?.sumOfDiscountAmount || 0,
                     hidePrefix: true,
                   })
                 }}
               </td>
             </tr>
-            <tr class="bg-secondary/10">
+            <tr class="">
               <th class="text-left p-1.5">Sum of Free Items</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
-                    data: loyaltyPointReport_benefitUtilization_values?.dashboard?.sumOfCountTotalFreeItems,
+                    data: loyaltyPointReport_benefitUtilization_values?.dashboard?.sumOfCountTotalFreeItems || 0,
                     hidePrefix: true,
                   })
                 }}
