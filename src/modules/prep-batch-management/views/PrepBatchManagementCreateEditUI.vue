@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// import { AutoCompleteEmitsOptions } from 'primevue';
+
 // Interfaces
 import type { IMenuRecipe } from '../interfaces';
 // services;
@@ -16,16 +18,24 @@ const {
   menuRecipeList_fetchList,
   batch_fetchDetails,
   batchDetail_values,
-  menuRecipeList_onSelectedRecipe,
   batchList_getClassOfBatchStatus,
   menuRecipe_lists,
   menuRecipeList_isLoading,
   menuRecipe_ingredients,
+  menuRecipe_fetchIngridients,
   // dialog confirmation
   batchCreateEdit_onShowDialogStart,
   batchCreateEdit_onShowDialogSave,
   batchCreateEdit_onShowDialogUpdate,
 } = useBatchService();
+
+const menuRecipeList_onSelectedRecipe = (recipe: IMenuRecipe) => {
+  batch_formData.recipeId = recipe.id;
+  batch_formData.recipe = recipe;
+
+  menuRecipe_fetchIngridients(recipe.id);
+  // batch_formData.ingredients = menuRecipe_ingredients.value;
+};
 
 const batchFormData_onClearRecipe = () => {
   batch_formData.recipe = { recipeName: '' } as IMenuRecipe;
@@ -66,11 +76,18 @@ const batch_editMode = async () => {
   menuRecipeList_onSelectedRecipe(batch_formData.recipe);
 };
 
+// 1. Create a ref for the AutoComplete component
+// const autoCompleteRef = ref<AutoCompleteEmitsOptions>();
+
+// ... your other code (menuRecipeList_fetchList, etc.) ...
+
+
+
 onMounted(async () => {
   await menuRecipeList_fetchList();
   if (route.name === 'prep-batch-management.edit') {
     await batch_editMode();
-    console.log('🚀 ~ onMounted ~ route.params.id:', route.params.id);
+    // console.log('🚀 ~ onMounted ~ route.params.id:', route.params.id);
   }
 });
 </script>
@@ -125,6 +142,9 @@ onMounted(async () => {
               field="recipeName"
               class="text-sm w-full [&>input]:text-sm [&>input]:w-full"
               :class="{ ...classes }"
+              :min-length="0"
+              dropdown
+              @complete="menuRecipeList_fetchList()"
               @option-select="(event: any) => menuRecipeList_onSelectedRecipe(event.value)"
             >
               <template #option="{ option }">
@@ -134,12 +154,15 @@ onMounted(async () => {
                   </div>
                 </div>
               </template>
+              <template #dropdownicon>
+                <AppBaseSvg name="search" class="w-4 h-4" />
+              </template>
             </PrimeVueAutoComplete>
-            <PrimeVueInputIcon>
+            <!-- <PrimeVueInputIcon>
               <template #default>
                 <AppBaseSvg name="search" class="w-4 h-4" />
               </template>
-            </PrimeVueInputIcon>
+            </PrimeVueInputIcon> -->
           </PrimeVueIconField>
 
           <PrimeVueButton
@@ -330,7 +353,11 @@ onMounted(async () => {
               class="min-w-40 border-primary-border text-primary"
               variant="outlined"
               :label="isEdit ? 'Update' : 'Save Draft'"
-              @click="isEdit ? batchCreateEdit_onShowDialogUpdate(route.params.id as string) : batchCreateEdit_onShowDialogSave()"
+              @click="
+                isEdit
+                  ? batchCreateEdit_onShowDialogUpdate(route.params.id as string)
+                  : batchCreateEdit_onShowDialogSave()
+              "
             />
             <PrimeVueButton
               class="min-w-40 border-primary-border text-white bg-primary"

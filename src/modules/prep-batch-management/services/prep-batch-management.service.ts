@@ -171,13 +171,7 @@ export const useBatchService = (): IBatchListProvided => {
     }
   };
 
-  const menuRecipeList_onSelectedRecipe = (recipe: IMenuRecipe) => {
-    batch_formData.recipeId = recipe.id;
-    batch_formData.recipe = recipe;
-
-    menuRecipe_fetchIngridients(recipe.id);
-    // batch_formData.ingredients = menuRecipe_ingredients.value;
-  };
+  
 
   const menuRecipeList_fetchList = async (): Promise<unknown> => {
     try {
@@ -643,7 +637,6 @@ export const useBatchService = (): IBatchListProvided => {
     batchList_getClassOfBatchStatus,
     menuRecipeList_onShowDialogCancel,
     menuRecipeList_fetchList,
-    menuRecipeList_onSelectedRecipe,
     menuRecipe_fetchIngridients,
     batch_fetchList,
     batch_onChangePage,
