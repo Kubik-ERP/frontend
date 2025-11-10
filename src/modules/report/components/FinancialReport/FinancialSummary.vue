@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // components
 import CustomDatePicker from '../../components/CustomDatePicker.vue';
+import DownloadDialog from '../DownloadingDialog.vue';
 // service
 import { useReportService } from '../../services/report.service';
 const {
@@ -15,27 +16,17 @@ const {
   findStaffDetail,
   hasAccessAllStorePermission,
   outlet_currentOutlet,
+  // download dialog
+  isDialogVisible,
+  downloadStatus,
+  isDownloading,
+  financialReport_exportPDF,
+  dialogDownload_onClose,
 } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
-const { exportToPdf, exportToCsv, export_isloading } = useReportExporter();
+const { exportToCsv, export_isloading } = useReportExporter();
 const popover = ref();
-
-const handleExportToPdf = () => {
-  exportToPdf({
-    reportName: 'Financial Report - Financial Summary',
-    storeName: hasAccessAllStorePermission
-      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
-      : outlet_currentOutlet.value!.name,
-    storeAddress: hasAccessAllStorePermission
-      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
-      : outlet_currentOutlet.value!.address,
-    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
-    period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: financialReport_profitAndLost_columns,
-    tableData: formattedDataTable(),
-  });
-};
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Financial Report - Financial Summary',
@@ -98,6 +89,7 @@ const formattedDataTable = () => {
 </script>
 <template>
   <section>
+    <DownloadDialog v-model:visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
     <AppBaseDataTable
       :data="formattedDataTable()"
       :columns="financialReport_profitAndLost_columns"
@@ -133,8 +125,8 @@ const formattedDataTable = () => {
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .pdf"
-              :loading="export_isloading"
-              @click="handleExportToPdf"
+              :loading="isDownloading"
+              @click="financialReport_exportPDF('financial-summary')"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"

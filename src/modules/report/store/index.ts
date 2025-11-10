@@ -7,6 +7,7 @@ import {
   REPORT_LOYALTY_POINT_ENDPOINT,
   REPORT_INVENTORY_ENDPOINT,
   STAFF_MEMBER_BASE_ENDPOINT,
+  REPORT_FINANCIAL_EXPORT_PDF_ENDPOINT,
 } from '../constants';
 import { OUTLET_BASE_ENDPOINT } from '@/modules/outlet/constants';
 // Plugins
@@ -180,6 +181,59 @@ export const useReportStore = defineStore('report', {
         }
       } finally {
         this.report_isLoading = false;
+      }
+    },
+
+    async financialReport_exportPDF(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
+      try {
+        const response = await httpClient.get(`${REPORT_FINANCIAL_EXPORT_PDF_ENDPOINT}/financial-report`, {
+          params,
+          ...requestConfigurations,
+          responseType: 'blob',
+        });
+
+        // --- FIX IS HERE ---
+        // 1. Get the content-type from the response header
+        const contentType = response.headers['content-type'] || 'application/pdf';
+
+        // 2. Create the blob with the *correct* type
+        const blob = new Blob([response.data], { type: contentType });
+        // --- END FIX ---
+
+        const url = window.URL.createObjectURL(blob);
+        console.log('Blob URL:', url);
+
+        // --- (Optional but Recommended) Get filename from header ---
+        const contentDisposition = response.headers['content-disposition'];
+        let filename = 'financial-report.pdf'; // Default fallback
+        if (contentDisposition) {
+          const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+          const matches = filenameRegex.exec(contentDisposition);
+          if (matches != null && matches[1]) {
+            filename = matches[1].replace(/['"]/g, '');
+          }
+        }
+        // --- End Recommended ---
+
+        // Buat link untuk trigger download
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename; // Use the dynamic filename
+        document.body.appendChild(a);
+        a.click();
+
+        // Bersihkan
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
+        // You've already handled the download, so just resolve
+        return Promise.resolve();
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
       }
     },
 

@@ -25,7 +25,7 @@ import {
   LOYALTYPOINTREPORT_BENEFITUTILIZATION_COLUMNS,
   LOYALTYPOINTREPORT_PRODUCTBASED_COLUMNS,
   LOYALTYPOINTREPORT_SPENDBASED_COLUMNS,
-  LOYALTYPOINTREPORT_TYPEACCUMULATION_COLUMNS
+  LOYALTYPOINTREPORT_TYPEACCUMULATION_COLUMNS,
 } from '../constants';
 // type
 import { IReportProvided, IReportQueryParams } from '../interfaces';
@@ -302,6 +302,41 @@ export const useReportService = (): IReportProvided => {
   const hasStoreManagementPermission = rbac.hasPermission('store_management');
   const hasManageStaffMemberPermission = rbac.hasPermission('manage_staff_member');
 
+  /**
+   * @description Handle export pdf report for financial report
+   * @param {string} [type] - type of report to be exported
+   * @returns {Promise<void>}
+   */
+  const isDownloading = ref<boolean>(false);
+  const isDialogVisible = ref(false);
+  const downloadStatus = ref<'downloading' | 'success' | 'error'>('downloading');
+
+  const dialogDownload_onClose = () => {
+    downloadStatus.value = 'downloading';
+  };
+
+  const financialReport_exportPDF = async (type?: string) => {
+    isDownloading.value = true;
+
+    downloadStatus.value = 'downloading';
+    isDialogVisible.value = true;
+    try {
+      await store.financialReport_exportPDF(formatQueryParamsDate(report_queryParams, type), {
+        ...httpAbort_registerAbort('FINANCIALREPORT_EXPORT_PDF_REQUEST'),
+      });
+      downloadStatus.value = 'success';
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+        downloadStatus.value = 'error';
+      } else {
+        console.error(new Error(String(error)));
+      }
+    } finally {
+      isDownloading.value = false;
+    }
+  };
+
   return {
     // rbac
     hasAccessAllStorePermission,
@@ -383,5 +418,12 @@ export const useReportService = (): IReportProvided => {
     findStaffDetail,
     // misc
     outlet_currentOutlet,
+    // download dialog
+    isDialogVisible,
+    downloadStatus,
+    dialogDownload_onClose,
+    // export pdf
+    isDownloading,
+    financialReport_exportPDF,
   };
 };

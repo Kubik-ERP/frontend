@@ -185,4 +185,11 @@ export interface IReportProvided {
   findStaffDetail: (id: string) => IStaffMember | null | undefined;
   // misc
   outlet_currentOutlet: globalThis.Ref<IOutlet | null>;
+  // download dialog
+  isDialogVisible: globalThis.Ref<boolean>;
+  downloadStatus: globalThis.Ref<'downloading' | 'success' | 'error'>;
+  dialogDownload_onClose: () => void;
+  // export pdf
+  isDownloading: globalThis.Ref<boolean>;
+  financialReport_exportPDF: (type?: string) => Promise<void>;
 }
