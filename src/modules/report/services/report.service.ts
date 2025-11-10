@@ -20,6 +20,12 @@ import {
   SALESREPORT_SALESBYORDERTYPE_COLUMNS,
   SALESREPORT_COLUMNS,
   CUSTOMERREPORT_COLUMNS,
+  // loyalty point
+  LOYALTYPOINTREPORT_EXPIRYWARNING_COLUMNS,
+  LOYALTYPOINTREPORT_BENEFITUTILIZATION_COLUMNS,
+  LOYALTYPOINTREPORT_PRODUCTBASED_COLUMNS,
+  LOYALTYPOINTREPORT_SPENDBASED_COLUMNS,
+  LOYALTYPOINTREPORT_TYPEACCUMULATION_COLUMNS
 } from '../constants';
 // type
 import { IReportProvided, IReportQueryParams } from '../interfaces';
@@ -55,6 +61,12 @@ export const useReportService = (): IReportProvided => {
     voucherReport_values,
     // customer
     customerReport_values,
+    // loyalty point
+    loyaltyPointReport_spendBased_values,
+    loyaltyPointReport_benefitUtilization_values,
+    loyaltyPointReport_expiryWarning_values,
+    loyaltyPointReport_productBased_values,
+    loyaltyPointReport_typeAccumulation_values,
     // outlet
     outlet_lists_values,
     // staff
@@ -259,6 +271,24 @@ export const useReportService = (): IReportProvided => {
     }
   };
 
+  const report_getLoyaltyPointReport = async (type?: string) => {
+    try {
+      Promise.all([
+        fetchOutlet_lists(),
+        // fetchStaff_lists(),
+        await store.getLoyaltyPointReport(formatQueryParamsDate(report_queryParams, type), {
+          ...httpAbort_registerAbort('LOYALTYPOINTREPORT_REQUEST'),
+        }),
+      ]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
+
   const findOutletDetail = (id: string) => {
     return outlet_lists_values.value.find(item => item.id === id);
   };
@@ -295,6 +325,11 @@ export const useReportService = (): IReportProvided => {
     inventoryReport_itemPerformanceByBrand_columns: INVENTORYREPORT_ITEMPERFORMANCEBYBRAND_COLUMNS,
     voucherReport_columns: MARKETINGREPORT_COLUMNS,
     customerReport_columns: CUSTOMERREPORT_COLUMNS,
+    loyaltyPointReport_spendBased_columns: LOYALTYPOINTREPORT_SPENDBASED_COLUMNS,
+    loyaltyPointReport_productBased_columns: LOYALTYPOINTREPORT_PRODUCTBASED_COLUMNS,
+    loyaltyPointReport_benefitUtilization_columns: LOYALTYPOINTREPORT_BENEFITUTILIZATION_COLUMNS,
+    loyaltyPointReport_expiryWarning_columns: LOYALTYPOINTREPORT_EXPIRYWARNING_COLUMNS,
+    loyaltyPointReport_typeAccumulation_columns: LOYALTYPOINTREPORT_TYPEACCUMULATION_COLUMNS,
     // params
     report_queryParams,
     // methods
@@ -305,6 +340,7 @@ export const useReportService = (): IReportProvided => {
     report_getInventoryReport,
     report_getVoucherReport,
     report_getCustomerReport,
+    report_getLoyaltyPointReport,
     // store
     report_isLoading,
     // financial
@@ -333,6 +369,12 @@ export const useReportService = (): IReportProvided => {
     voucherReport_values,
     // customer
     customerReport_values,
+    // loyalty point
+    loyaltyPointReport_spendBased_values,
+    loyaltyPointReport_benefitUtilization_values,
+    loyaltyPointReport_expiryWarning_values,
+    loyaltyPointReport_productBased_values,
+    loyaltyPointReport_typeAccumulation_values,
     // outlet
     outlet_lists_options,
     findOutletDetail,

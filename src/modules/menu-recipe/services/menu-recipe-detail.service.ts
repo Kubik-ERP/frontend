@@ -3,6 +3,8 @@ import {
   MENU_RECIPE_DETAIL_LIST_INGREDIENTS_COLUMNS,
   MENU_RECIPE_DETAIL_FETCH_REQUEST,
   MENU_RECIPE_DETAIL_DELETE_REQUEST,
+  MENU_RECIPE_DETAIL_FETCH_VERSIONS_REQUEST,
+  MENU_RECIPE_DETAIL_FETCH_VERSION_DETAIL_REQUEST,
 } from '../constants';
 import { EToastType, EToastPosition } from '@/app/constants';
 
@@ -25,8 +27,13 @@ export const useMenuRecipeDetailService = (): IMenuRecipeDetailProvided => {
   const router = useRouter();
   const route = useRoute();
   const store = useMenuRecipeStore();
-  const { menuRecipe_selectedData, menuRecipe_isLoading } = storeToRefs(store);
+  const { menuRecipe_selectedData, menuRecipe_isLoading, menuRecipe_versions } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
+
+  /**
+   * @description Reactive data binding
+   */
+  const menuRecipeDetail_selectedVersionId = ref<string | null>(null);
 
   /**
    * @description Handle fetch api menu recipe - detail
@@ -82,10 +89,53 @@ export const useMenuRecipeDetailService = (): IMenuRecipeDetailProvided => {
   };
 
   /**
+   * @description Handle fetch api menu recipe - detail version
+   */
+  const menuRecipeDetail_fetchVersionDetail = async (versionId: string): Promise<unknown> => {
+    if (!route.params.id) {
+      return Promise.reject(new Error('Menu recipe ID is required'));
+    }
+
+    try {
+      await store.menuRecipe_detailVersion(String(route.params.id), versionId, {
+        ...httpAbort_registerAbort(MENU_RECIPE_DETAIL_FETCH_VERSION_DETAIL_REQUEST),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api menu recipe - list versions
+   */
+  const menuRecipeDetail_fetchVersions = async (): Promise<unknown> => {
+    if (!route.params.id) {
+      return Promise.reject(new Error('Menu recipe ID is required'));
+    }
+
+    try {
+      await store.menuRecipe_listVersions(String(route.params.id), {
+        ...httpAbort_registerAbort(MENU_RECIPE_DETAIL_FETCH_VERSIONS_REQUEST),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
    * @description Handle load initial data
    */
   const menuRecipeDetail_onLoadInitialData = async (): Promise<void> => {
     await menuRecipeDetail_fetchDetails();
+    await menuRecipeDetail_fetchVersions();
   };
 
   /**
@@ -103,6 +153,23 @@ export const useMenuRecipeDetailService = (): IMenuRecipeDetailProvided => {
       name: 'menu-recipe.edit',
       params: { id: route.params.id },
     });
+  };
+
+  /**
+   * @description Handle reset selected version to current version
+   */
+  const menuRecipeDetail_onResetToCurrentVersion = (): void => {
+    menuRecipeDetail_selectedVersionId.value = null;
+    // Refetch current recipe data
+    menuRecipeDetail_fetchDetails();
+  };
+
+  /**
+   * @description Handle on select version
+   */
+  const menuRecipeDetail_onSelectVersion = (versionId: string): void => {
+    menuRecipeDetail_selectedVersionId.value = versionId;
+    menuRecipeDetail_fetchVersionDetail(versionId);
   };
 
   /**
@@ -152,12 +219,18 @@ export const useMenuRecipeDetailService = (): IMenuRecipeDetailProvided => {
     menuRecipeDetail_data: menuRecipe_selectedData,
     menuRecipeDetail_fetchDetails,
     menuRecipeDetail_fetchDelete,
+    menuRecipeDetail_fetchVersionDetail,
+    menuRecipeDetail_fetchVersions,
     menuRecipeDetail_isLoading: menuRecipe_isLoading,
     menuRecipeDetail_listColumns: MENU_RECIPE_DETAIL_LIST_INGREDIENTS_COLUMNS,
     menuRecipeDetail_onBack,
     menuRecipeDetail_onCancelDialogDeleteConfirmation,
     menuRecipeDetail_onEdit,
     menuRecipeDetail_onLoadInitialData,
+    menuRecipeDetail_onResetToCurrentVersion,
+    menuRecipeDetail_onSelectVersion,
     menuRecipeDetail_onShowDialogDeleteConfirmation,
+    menuRecipeDetail_selectedVersionId,
+    menuRecipeDetail_versions: menuRecipe_versions,
   };
 };

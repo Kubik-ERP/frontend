@@ -2,36 +2,76 @@ name: Build & Deploy to Server
 
 on:
   push:
-    branches:
-      - staging
+    branches: [staging]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Copy Project to Server
-        uses: appleboy/scp-action@v0.1.4
+      - name: Create .env file from secret
+        run: |
+          echo "${{ secrets.ENV_FE_STAGING }}" > .env
+
+      - name: Build Docker image
+        run: |
+          docker build -t kubik-frontend:latest .
+
+      - name: Save image
+        run: docker save kubik-frontend:latest | gzip > kubik-frontend.tar.gz
+
+      - name: Copy image to server
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: '.'
-          target: '~/app_frontend'
+          source: 'kubik-frontend.tar.gz'
+          target: '/root/'
 
-      - name: SSH and Build Docker on Server
+      - name: Deploy on server
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd ~/app_frontend
-            cp ~/.env-fe ~/app_frontend/.env
-            docker build -t kubik-frontend .
-            docker stop kubik-frontend || true
-            docker rm kubik-frontend || true
-            docker run -d --name kubik-frontend --restart always -p 8090:8090 kubik-frontend
+            echo "===> Stop and remove old container (if any)..."
+            docker ps -q --filter "name=kubik-frontend" | xargs -r docker stop
+            docker ps -aq --filter "name=kubik-frontend" | xargs -r docker rm -f
+
+            echo "===> Freeing port 8090 if occupied..."
+            fuser -k 8090/tcp || true
+
+            echo "===> Load new image..."
+            gunzip -c /root/kubik-frontend.tar.gz | docker load
+
+            echo "===> Run new container..."
+            docker run -d \
+              --name kubik-frontend \
+              --restart always \
+              -p 8090:8090 \
+              kubik-frontend:latest
+
+            echo "===> Waiting for container to start..."
+            sleep 10
+
+            echo "===> Checking container health..."
+            if ! docker ps --filter "name=kubik-frontend" --filter "status=running" | grep kubik-frontend; then
+              echo "❌ Container failed to start properly."
+              docker logs kubik-frontend || true
+              exit 1
+            fi
+
+            echo "===> Checking HTTP response..."
+            if ! curl -s -o /dev/null -w "%{http_code}" http://localhost:8090 | grep -q "200"; then
+              echo "❌ Frontend did not respond with 200 OK."
+              docker logs kubik-frontend || true
+              exit 1
+            fi
+
+            echo "✅ Deployment successful and container is healthy."
+            rm -f /root/kubik-frontend.tar.gz
+            echo "===> Cleaned up image file."

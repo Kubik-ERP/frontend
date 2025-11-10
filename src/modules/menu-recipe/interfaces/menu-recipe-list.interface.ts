@@ -16,7 +16,7 @@ export interface IMenuRecipeListProvided {
   menuRecipeList_handleOnSortChange: (event: DataTableSortEvent) => void;
   menuRecipeList_isLoading: globalThis.Ref<boolean>;
   menuRecipeList_onChangePage: (page: number) => void;
-  menuRecipeList_onShowDialogDelete: (id: string) => void;
+  menuRecipeList_onShowDialogCancel: (id: string) => void;
   menuRecipeList_queryParams: IMenuRecipeListQueryParams;
   menuRecipeList_values: globalThis.Ref<{
     items: IMenuRecipeList[];

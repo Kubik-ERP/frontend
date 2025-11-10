@@ -40,6 +40,10 @@
         "label": "Price",
         "error": "Price field is required"
       },
+      "stock":{
+        "label": "Stock",
+        "error": "Stock field is required"
+      },
       "discount": {
         "checkbox": "Add Discount Price",
         "valueLabel": "Discount Value",

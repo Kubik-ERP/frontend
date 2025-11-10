@@ -1,0 +1,140 @@
+export const TRANSFER_STOCK_LIST_COLUMNS: IColumnDataTable[] = [
+  {
+    label: 'Transfer Number',
+    sortable: true,
+    value: 'transferNumber',
+  },
+  {
+    label: 'From Store',
+    sortable: true,
+    value: 'fromStoreName',
+  },
+  {
+    label: 'To Store',
+    sortable: true,
+    value: 'toStoreName',
+  },
+  {
+    label: 'Transfer Date',
+    sortable: true,
+    value: 'transferDate',
+  },
+  {
+    label: 'Status',
+    sortable: true,
+    value: 'status',
+  },
+  {
+    label: 'Total Items',
+    sortable: true,
+    value: 'totalItems',
+  },
+  {
+    label: 'Total Qty',
+    sortable: true,
+    value: 'totalQuantity',
+  },
+  {
+    label: 'Total Value',
+    sortable: true,
+    value: 'totalValue',
+  },
+  {
+    label: 'Created At',
+    sortable: true,
+    value: 'createdAt',
+  },
+  {
+    label: '',
+    sortable: false,
+    value: 'action',
+  },
+];
+
+// Mock data for transfer stock list (will be replaced with actual API call)
+export const TRANSFER_STOCK_LIST_MOCK_DATA = {
+  items: [
+    {
+      id: 'ts-001',
+      transferNumber: 'TS-2024-001',
+      fromStoreName: 'Store Jakarta Pusat',
+      toStoreName: 'Store Jakarta Selatan',
+      transferDate: '2024-11-01',
+      status: 'approved',
+      totalItems: 5,
+      totalQuantity: 25,
+      totalValue: 500000,
+      createdAt: '2024-11-01T08:00:00Z',
+      updatedAt: '2024-11-01T08:30:00Z',
+    },
+    {
+      id: 'ts-002',
+      transferNumber: 'TS-2024-002',
+      fromStoreName: 'Store Jakarta Pusat',
+      toStoreName: 'Store Jakarta Utara',
+      transferDate: '2024-11-02',
+      status: 'shipped',
+      totalItems: 3,
+      totalQuantity: 15,
+      totalValue: 300000,
+      createdAt: '2024-11-02T09:00:00Z',
+      updatedAt: '2024-11-02T10:00:00Z',
+    },
+    {
+      id: 'ts-003',
+      transferNumber: 'TS-2024-003',
+      fromStoreName: 'Store Jakarta Selatan',
+      toStoreName: 'Store Jakarta Barat',
+      transferDate: '2024-11-03',
+      status: 'received',
+      totalItems: 8,
+      totalQuantity: 40,
+      totalValue: 800000,
+      createdAt: '2024-11-03T10:00:00Z',
+      updatedAt: '2024-11-03T14:00:00Z',
+    },
+    {
+      id: 'ts-004',
+      transferNumber: 'TS-2024-004',
+      fromStoreName: 'Store Jakarta Barat',
+      toStoreName: 'Store Jakarta Timur',
+      transferDate: '2024-11-04',
+      status: 'draft',
+      totalItems: 2,
+      totalQuantity: 10,
+      totalValue: 150000,
+      createdAt: '2024-11-04T11:00:00Z',
+      updatedAt: '2024-11-04T11:00:00Z',
+    },
+    {
+      id: 'ts-005',
+      transferNumber: 'TS-2024-005',
+      fromStoreName: 'Store Jakarta Timur',
+      toStoreName: 'Store Bekasi',
+      transferDate: '2024-11-05',
+      status: 'closed',
+      totalItems: 6,
+      totalQuantity: 30,
+      totalValue: 600000,
+      createdAt: '2024-11-05T08:00:00Z',
+      updatedAt: '2024-11-05T16:00:00Z',
+    },
+  ],
+  meta: {
+    currentPage: 1,
+    pageSize: 10,
+    total: 5,
+    totalPages: 1,
+  },
+};
+
+// Status class mapping for UI styling
+export const TRANSFER_STOCK_STATUS_CLASSES = {
+  draft: 'text-gray-600 bg-gray-100',
+  approved: 'text-blue-600 bg-blue-100',
+  shipped: 'text-orange-600 bg-orange-100',
+  received: 'text-green-600 bg-green-100',
+  received_with_issue: 'text-yellow-600 bg-yellow-100',
+  closed: 'text-purple-600 bg-purple-100',
+  cancelled: 'text-red-600 bg-red-100',
+} as const;

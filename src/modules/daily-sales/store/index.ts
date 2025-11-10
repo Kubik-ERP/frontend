@@ -18,7 +18,7 @@ export const useDailySalesStore = defineStore('daily-sales', {
         meta: {
           page: 1,
           pageSize: 10,
-          total: 10,
+          total: 0,
           totalPages: 1,
         },
       },

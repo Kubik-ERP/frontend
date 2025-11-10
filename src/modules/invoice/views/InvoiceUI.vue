@@ -35,6 +35,7 @@ const {
   invoice_handleOtherOptions,
   invoice_handlePayInvoice,
   invoice_handleSimulatePayment,
+  invoice_listTabs,
 } = useInvoiceService();
 
 provide('invoice', {
@@ -49,6 +50,7 @@ provide('invoice', {
   invoice_handleOtherOptions,
   invoice_handlePayInvoice,
   invoice_handleSimulatePayment,
+  invoice_listTabs,
 });
 
 const invoicePaperRef = ref();
@@ -70,7 +72,7 @@ const handleDownload = () => {
       <InvoiceStatusMobile translate="no" />
       <section id="content" class="relative grid grid-rows-1 grid-cols-12 h-[calc(100dvh-5rem)]">
         <InvoicePaper ref="invoicePaperRef" translate="no" />
-        <InvoiceStatus translate="no" @download="handleDownload" @print="handlePrint"  />
+        <InvoiceStatus translate="no" @download="handleDownload" @print="handlePrint" />
         <InvoiceMobileButtonAction translate="no" @download="handleDownload" @print="handlePrint" />
         <InvoiceModalPay translate="no" />
 

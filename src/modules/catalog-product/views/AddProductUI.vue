@@ -5,7 +5,14 @@ import excludeSVG from '@/app/assets/icons/exclude.svg';
 import closeRedSVG from '@/app/assets/icons/close-red.svg';
 
 const { getAllCategories } = useCategoryService();
-const { createProduct, product_formData, product_formValidations } = useProductService();
+const {
+  createProduct,
+  product_formData,
+  product_formValidations,
+  recipeList_values,
+  catalogProduct_fetchRecipeList,
+  recipeList_params,
+} = useProductService();
 const discount_unit = ref('Rp');
 const loading = ref(false);
 function clearForm() {
@@ -17,9 +24,15 @@ function clearForm() {
   product_formData.variants = [];
   product_formData.categories = [];
   product_formData.imagePreview = '';
+  // product_formData.stock_quantity = 0;
+  product_formData.recipeId = null;
 
   product_formValidations.value.$reset();
 }
+
+const handleSelectRecipe = value => {
+  product_formData.recipeId = value.id;
+};
 
 const fileInput = ref(null);
 const triggerFileInput = () => {
@@ -112,7 +125,10 @@ const loadCategories = async () => {
 };
 
 onMounted(async () => {
-  loadCategories();
+  Promise.all([loadCategories(), catalogProduct_fetchRecipeList()]).catch(error =>
+    console.error('Failed to load categories and fetch recipes:', error),
+  );
+  
 });
 
 let hasConfirmedLeave = false;
@@ -244,6 +260,31 @@ watch(product_formData, () => {
               </PrimeVueMultiSelect>
             </AppBaseFormGroup>
           </div>
+
+          <div class="flex flex-col col-span-2 w-1/2 pr-4">
+            <label for="recipeId" class="flex gap-1 text-sm font-medium leading-6 text-gray-900 w-full">
+              Link to Recipe
+              <p class="text-text-disabled">(optional)</p>
+            </label>
+            <PrimeVueAutoComplete
+              v-model="recipeList_params.search"
+              :suggestions="recipeList_values"
+              :loading="false"
+              option-label="recipeName"
+              placeholder="Search Recipe"
+              class="text-sm w-full [&>input]:text-sm [&>input]:w-full"
+              @option-select="event => handleSelectRecipe(event.value)"
+            >
+              <template #option="{ option }">
+                <div class="flex items-center justify-between gap-3 p-2 w-full">
+                  <div class="flex flex-col flex-1">
+                    <span class="font-medium text-sm text-black">{{ option.recipeName }}</span>
+                  </div>
+                </div>
+              </template>
+            </PrimeVueAutoComplete>
+          </div>
+
           <div class="flex flex-col">
             <AppBaseFormGroup
               v-slot="{ classes }"
@@ -265,6 +306,26 @@ watch(product_formData, () => {
               />
             </AppBaseFormGroup>
           </div>
+
+          <!-- <div>
+            <AppBaseFormGroup
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+              is-name-as-label
+              label-for="stock"
+              :name="useLocalization('productDetail.form.stock.label')"
+              :validators="product_formValidations.stock_quantity"
+            >
+              <PrimeVueInputNumber
+                v-model="product_formData.stock_quantity"
+                name="stock"
+                fluid
+                class="border shadow-xs border-grayscale-30 rounded-lg"
+                :class="{ ...classes }"
+                v-on="useListenerForm(product_formValidations, 'stock_quantity')"
+              />
+            </AppBaseFormGroup>
+          </div> -->
         </div>
         <div class="grid grid-cols-2 h-fit w-full gap-x-8 mt-8">
           <div class="flex items-center gap-2 col-span-2">

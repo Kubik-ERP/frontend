@@ -19,7 +19,9 @@ const paymentStatusLabel = computed(() => {
     <section id="invoice-id" class="flex flex-col">
       <p id="label-invoice-id" class="font-normal text-text-disabled text-sm">Invoice ID</p>
 
-      <p id="invoice-id" class="font-semibold text-black text-lg">{{ invoice_invoiceData.data?.invoiceNumber }}</p>
+      <p id="invoice-id" class="font-semibold text-black text-base">
+        {{ invoice_invoiceData.data?.invoiceNumber }}
+      </p>
     </section>
 
     <section
@@ -30,13 +32,13 @@ const paymentStatusLabel = computed(() => {
         variant="outlined"
         severity="primary"
         size="small"
-        class="rounded-lg"
+        class="border-primary rounded-lg"
         @click="popover.toggle($event)"
       >
-        <AppBaseSvg name="share" class="!w-3 !h-3" />
+        <AppBaseSvg name="share" class="filter-primary-color w-3 h-3" />
         <span class="font-semibold text-primary text-xs"> Share </span>
       </PrimeVueButton>
-      <AppBaseSvg name="more" class="!w-6 !h-6" />
+      <!-- <AppBaseSvg name="more" class="filter-primary-color w-6 h-6" /> -->
 
       <PrimeVuePopover
         ref="popover"
@@ -77,17 +79,17 @@ const paymentStatusLabel = computed(() => {
 
     <div>
       <PrimeVueChip
-        class="bg-primary-background px-4 py-2 rounded-full"
+        class="bg-secondary/10 px-4 py-2 rounded-full"
         :class="{
-          'bg-primary-background': invoice_invoiceData.data?.paymentStatus === 'paid',
+          'bg-secondary/10': invoice_invoiceData.data?.paymentStatus === 'paid',
           'bg-warning-background': invoice_invoiceData.data?.paymentStatus === 'unpaid',
           'bg-error-background': invoice_invoiceData.data?.paymentStatus === 'refund',
         }"
       >
-        <AppBaseSvg :name="invoice_invoiceData.data?.paymentStatus" class="!w-8 !h-8" />
+        <AppBaseSvg :name="invoice_invoiceData.data?.paymentStatus" class="w-6 h-6" />
 
         <span
-          class="font-semibold text-primary text-lg"
+          class="font-semibold text-primary text-base"
           :class="{
             'text-primary': invoice_invoiceData.data?.paymentStatus === 'paid',
             'text-warning-main': invoice_invoiceData.data?.paymentStatus === 'unpaid',

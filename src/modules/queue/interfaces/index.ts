@@ -38,6 +38,10 @@ export interface IDailySalesListResponse {
   data: {
     items: IDailySales[] | [];
     meta: IPageMeta;
+    queueStatusCounts: {
+      inProgress: number;
+      placed: number;
+    }
   };
 }
 

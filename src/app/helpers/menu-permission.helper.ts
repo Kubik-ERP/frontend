@@ -77,6 +77,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
     '/report/inventory-report',
     '/report/voucher-report',
     '/report/customer-report',
+    '/report/loyalty-point-report',
   ],
   invoice_templates: ['/pos-setting', '/pos-setting/invoice'],
 
@@ -113,18 +114,14 @@ export const filterMenusByPermissions = (
   return menuCategories
     .map(category => {
       const filteredMenus = category.menus.filter((menu: IMenu) => {
-        // 🔹 Hide catalog menu if businessType is not 'Restaurant'
-        if (businessType !== 'Restaurant' && menu.path === '/catalog') {
-          return false;
-        }
-
         // 🔹 Hide queue menu for Retail business type
-        if (businessType === 'Retail' && menu.path === '/queue') {
-          return false;
+        if (businessType === 'Retail') {
+          if (['Catalog', 'Queue', 'Recipe'].includes(menu.name)) {
+            return false;
+          }
         }
 
         // 🔹 Cek akses main menu
-        console.log('🚀 ~ hasMenuPermission ~ menu.path:', menu);
         const hasMainMenuAccess = hasMenuPermission(menu.path, userPermissions);
 
         // 🔹 Kalau menu ini store-related dan user punya access_all_store → auto boleh
