@@ -36,11 +36,19 @@ export interface ILoyaltyPointReport_benefitUtilization {
   dashboard: {
     sumOfAllPoints: number;
     countCustomers: number;
-    sumPointsUsedByType: null; // TODO: fix this
+    sumPointsUsedByType: {
+      [key: string]: number;
+    };
     sumOfDiscountAmount: number;
     sumOfCountTotalFreeItems: number;
   };
-  table: []; // TODO: fix this
+  table: {
+    benefitName: string;
+    type: string;
+    countUsed: number;
+    totalPointUsed: number;
+    amount: number;
+  }[];
 }
 
 export interface ILoyaltyPointReport_expiryWarning {
@@ -48,7 +56,7 @@ export interface ILoyaltyPointReport_expiryWarning {
     sumOfAllPoints: number;
     countCustomers: number;
     sumByEachTypes: {
-      [key: string]: number; // TODO: fix this
+      [key: string]: number;
     };
   };
   table: {
