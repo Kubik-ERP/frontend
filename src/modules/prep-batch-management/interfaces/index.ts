@@ -139,6 +139,7 @@ export interface IBatchDetailsResponse {
     recipe_name: string;
     target_yield: number;
     output_unit: string;
+    productPrice: number;
   };
   batch_cooking_recipe_ingredient: Array<{
     id: string;

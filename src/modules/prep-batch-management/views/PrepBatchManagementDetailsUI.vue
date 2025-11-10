@@ -91,8 +91,7 @@ onMounted(async () => {
       <div id="recipe-product-price" class="flex flex-col col-span-2">
         <label for="recipe-product-price" class="text-sm font-semibold">Product Price</label>
         <span>
-          <!-- {{ useCurrencyFormat({ data: batchDetails_values?.recipe?.productPrice }) }} -->
-          TIDAK ADA
+          {{ useCurrencyFormat({ data: batchDetail_values?.menu_recipes?.productPrice || 0 }) }}
         </span>
       </div>
       <!-- Batch Target Yield -->
