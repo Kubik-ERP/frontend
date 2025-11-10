@@ -79,7 +79,7 @@ const onChangePage = (newPage: number) => {
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
-                    data: loyaltyPointReport_expiryWarning_values?.dashboard?.sumOfAllPoints,
+                    data: loyaltyPointReport_expiryWarning_values?.dashboard?.sumOfAllPoints || 0,
                     hidePrefix: true,
                   })
                 }}
@@ -90,7 +90,7 @@ const onChangePage = (newPage: number) => {
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
-                    data: loyaltyPointReport_expiryWarning_values?.dashboard?.countCustomers,
+                    data: loyaltyPointReport_expiryWarning_values?.dashboard?.countCustomers || 0,
                     hidePrefix: true,
                   })
                 }}
@@ -108,7 +108,7 @@ const onChangePage = (newPage: number) => {
             >
               <tr class="odd:bg-secondary/10">
                 <th class="text-left p-1.5">{{ useTitleCaseWithSpaces(key as string) }}</th>
-                <td class="text-right p-1.5">{{ value }}</td>
+                <td class="text-right p-1.5">{{ value || 0 }}</td>
               </tr>
             </template>
           </tbody>

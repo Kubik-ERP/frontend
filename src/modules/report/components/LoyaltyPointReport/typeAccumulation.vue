@@ -49,13 +49,14 @@ const handleExportToCsv = () => {
 };
 
 const formattedDataTable = () => {
-  const newData = loyaltyPointReport_typeAccumulation_values?.value?.table?.map(item => {
-    return {
-      type: item.type,
-      sumTotalPoints: useCurrencyFormat({ data: item.sumTotalPoints, hidePrefix: true }),
-      totalCustomers: useCurrencyFormat({ data: item.totalCustomers, hidePrefix: true }),
-    }
-  }) || [];
+  const newData =
+    loyaltyPointReport_typeAccumulation_values?.value?.table?.map(item => {
+      return {
+        type: item.type,
+        sumTotalPoints: useCurrencyFormat({ data: item.sumTotalPoints, hidePrefix: true }),
+        totalCustomers: useCurrencyFormat({ data: item.totalCustomers, hidePrefix: true }),
+      };
+    }) || [];
   return newData;
 };
 
@@ -64,7 +65,6 @@ const limit = ref<number>(10);
 const onChangePage = (newPage: number) => {
   page.value = newPage;
 };
-
 </script>
 <template>
   <section class="flex flex-col gap-4">
@@ -77,7 +77,7 @@ const onChangePage = (newPage: number) => {
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
-                    data: loyaltyPointReport_typeAccumulation_values?.dashboard?.sumOfAllPoints,
+                    data: loyaltyPointReport_typeAccumulation_values?.dashboard?.sumOfAllPoints || 0,
                     hidePrefix: true,
                   })
                 }}
@@ -88,7 +88,7 @@ const onChangePage = (newPage: number) => {
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
-                    data: loyaltyPointReport_typeAccumulation_values?.dashboard?.sumOfAllPointsExpired,
+                    data: loyaltyPointReport_typeAccumulation_values?.dashboard?.sumOfAllPointsExpired || 0,
                     hidePrefix: true,
                   })
                 }}
@@ -99,7 +99,7 @@ const onChangePage = (newPage: number) => {
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
-                    data: loyaltyPointReport_typeAccumulation_values?.dashboard?.totalCustomers,
+                    data: loyaltyPointReport_typeAccumulation_values?.dashboard?.totalCustomers || 0,
                     hidePrefix: true,
                   })
                 }}

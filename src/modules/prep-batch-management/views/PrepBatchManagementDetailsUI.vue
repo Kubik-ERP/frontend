@@ -17,7 +17,7 @@ const {
   batchDetail_values,
   batchDetails_onShowDialogStart,
   batch_wasteLog_formData,
-  batchDetails_onCompleteBatch
+  batchDetails_onCompleteBatch,
 } = useBatchService();
 
 provide('batchDetails', {
@@ -31,7 +31,7 @@ provide('batchDetails', {
   batchDetail_values,
   batchDetails_onShowDialogStart,
   batch_wasteLog_formData,
-  batchDetails_onCompleteBatch
+  batchDetails_onCompleteBatch,
 });
 
 onMounted(async () => {
@@ -91,8 +91,7 @@ onMounted(async () => {
       <div id="recipe-product-price" class="flex flex-col col-span-2">
         <label for="recipe-product-price" class="text-sm font-semibold">Product Price</label>
         <span>
-          <!-- {{ useCurrencyFormat({ data: batchDetails_values?.recipe?.productPrice }) }} -->
-          TIDAK ADA
+          {{ useCurrencyFormat({ data: batchDetail_values?.menu_recipes?.productPrice || 0 }) }}
         </span>
       </div>
       <!-- Batch Target Yield -->
@@ -198,7 +197,10 @@ onMounted(async () => {
       class="flex items-center justify-between pb-8 pt-4"
     >
       <div class="flex items-center gap-2">
-        <router-link :to="{ name: 'prep-batch-management.edit', params: { id: batchDetail_values?.id } }">
+        <router-link
+          v-if="batchDetail_values?.status?.toLowerCase() !== 'completed'"
+          :to="{ name: 'prep-batch-management.edit', params: { id: batchDetail_values?.id } }"
+        >
           <PrimeVueButton variant="outlined" label="Edit Batch" class="border border-primary-border text-primary">
             <template #icon>
               <AppBaseSvg name="edit" class="!w-4 !h-4 filter-primary-color" />
@@ -226,6 +228,7 @@ onMounted(async () => {
       </div>
 
       <PrimeVueButton
+        v-if="batchDetail_values?.status?.toLowerCase() !== 'completed'"
         variant="text"
         class="text-error-main hover:bg-error-background"
         label="Cancel Batch Cooking"

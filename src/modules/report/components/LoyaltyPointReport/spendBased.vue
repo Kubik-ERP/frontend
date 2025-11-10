@@ -81,7 +81,7 @@ const onChangePage = (newPage: number) => {
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
-                    data: loyaltyPointReport_spendBased_values?.dashboard?.sumOfAllPoints,
+                    data: loyaltyPointReport_spendBased_values?.dashboard?.sumOfAllPoints|| 0,
                     hidePrefix: true,
                   })
                 }}
@@ -92,7 +92,7 @@ const onChangePage = (newPage: number) => {
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
-                    data: loyaltyPointReport_spendBased_values?.dashboard?.sumOfAllPointsExpired,
+                    data: loyaltyPointReport_spendBased_values?.dashboard?.sumOfAllPointsExpired|| 0,
                     hidePrefix: true,
                   })
                 }}
@@ -103,7 +103,7 @@ const onChangePage = (newPage: number) => {
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
-                    data: loyaltyPointReport_spendBased_values?.dashboard?.totalCustomers,
+                    data: loyaltyPointReport_spendBased_values?.dashboard?.totalCustomers|| 0,
                     hidePrefix: true,
                   })
                 }}
@@ -114,7 +114,7 @@ const onChangePage = (newPage: number) => {
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
-                    data: loyaltyPointReport_spendBased_values?.dashboard?.totalInvoices,
+                    data: loyaltyPointReport_spendBased_values?.dashboard?.totalInvoices|| 0,
                     hidePrefix: true,
                   })
                 }}

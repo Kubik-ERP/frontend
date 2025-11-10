@@ -66,12 +66,31 @@ export const LOYALTYPOINTREPORT_PRODUCTBASED_COLUMNS: IColumnDataTable[] = [
 
 export const LOYALTYPOINTREPORT_BENEFITUTILIZATION_COLUMNS: IColumnDataTable[] = [
   {
-    label: 'DATA BELOM ADA', // TODO: replace with real data
+    label: 'Benefit Name',
     sortable: false,
-    value: 'customerName',
+    value: 'benefitName',
+  },
+  {
+    label: 'Type',
+    sortable: false,
+    value: 'type',
+  },
+  {
+    label: 'Count Used',
+    sortable: false,
+    value: 'countUsed',
+  },
+  {
+    label: 'Total Point Used',
+    sortable: false,
+    value: 'totalPointUsed',
+  },
+  {
+    label: 'Amount',
+    sortable: false,
+    value: 'amount',
   },
 ];
-
 export const LOYALTYPOINTREPORT_EXPIRYWARNING_COLUMNS: IColumnDataTable[] = [
   {
     label: 'Customer Name',

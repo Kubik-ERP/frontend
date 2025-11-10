@@ -46,6 +46,27 @@ export const useBatchStore = defineStore('batch', {
   }),
   getters: {},
   actions: {
+    async batch_update(batchId: string, payload: IBatchFormData, requestConfigurations: AxiosRequestConfig) {
+      const data = {
+        recipeId: payload.recipe.id,
+        date: useFormatDateLocal(payload.batchDate),
+        batchTargetYield: payload.targetYield,
+        notes: payload.notes,
+        batchWaste: payload.waste,
+      };
+      try {
+        this.batch_isLoading = true;
+        const response = await httpClient.put(`${BATCH_BASE_ENDPOINT}/${batchId}`, data, {
+          ...requestConfigurations,
+        });
+        return response.data;
+      } catch (error: unknown) {
+        if (error instanceof Error) return Promise.reject(error);
+        else return Promise.reject(new Error(String(error)));
+      } finally {
+        this.batch_isLoading = false;
+      }
+    },
     async batch_complete(
       batchId: string,
       wasteLog: IWasteLogItem_formData,
