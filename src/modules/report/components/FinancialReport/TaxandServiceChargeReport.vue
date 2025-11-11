@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // components
+import DownloadingDialog from '../DownloadingDialog.vue';
 import CustomDatePicker from '../../components/CustomDatePicker.vue';
-import DownloadDialog from '../DownloadingDialog.vue';
 // service
 import { useReportService } from '../../services/report.service';
 const {
@@ -58,7 +58,7 @@ const formattedDataTable = () => {
 const popover = ref();
 </script>
 <template>
-  <DownloadDialog v-model:visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
+  <DownloadingDialog v-model:visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
   <section>
     <AppBaseDataTable
       :data="formattedDataTable()"

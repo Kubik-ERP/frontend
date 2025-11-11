@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // components
 import CustomDatePicker from '../../components/CustomDatePicker.vue';
-import DownloadDialog from '../DownloadingDialog.vue';
+import DownloadingDialog from '../DownloadingDialog.vue';
 // service
 import { useReportService } from '../../services/report.service';
 const {
@@ -89,7 +89,7 @@ const formattedDataTable = () => {
 </script>
 <template>
   <section>
-    <DownloadDialog v-model:visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
+    <DownloadingDialog v-model:visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
     <AppBaseDataTable
       :data="formattedDataTable()"
       :columns="financialReport_profitAndLost_columns"

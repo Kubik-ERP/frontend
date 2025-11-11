@@ -199,7 +199,7 @@ export interface IReportProvided {
       | 'inventory-report'
       | 'voucher-report'
       | 'staff-report'
-      | 'loyalty-point-report'
+      | 'loyalty-report'
       | 'customer-report',
     type: string,
   ) => Promise<void>;
