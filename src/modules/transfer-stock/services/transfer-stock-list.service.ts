@@ -18,6 +18,8 @@ import type {
   ITransferStockCancelPayload,
   ITransferStockReceivePayload,
   ITransferStockShipPayload,
+  ITransferStockItem,
+  Store,
 } from '../interfaces';
 
 // Plugins
@@ -135,6 +137,47 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
   const transferStockList_values = computed(() => transferStock_lists.value);
 
   /**
+   * @description Helper functions for calculating values
+   */
+  const transferStockList_getTotalItems = (transferStockItems: ITransferStockItem[]): number => {
+    return transferStockItems?.length || 0;
+  };
+
+  const transferStockList_getTotalQty = (transferStockItems: ITransferStockItem[]): number => {
+    return transferStockItems?.reduce((total, item) => total + (item.qtyReserved || 0), 0) || 0;
+  };
+
+  const transferStockList_getTotalValue = (transferStockItems: ITransferStockItem[]): number => {
+    return transferStockItems?.reduce((total, item) => {
+      // Handle Subtotal interface with { s, e, d } structure (decimal.js format)
+      const subtotal = item.subtotal;
+      if (subtotal && typeof subtotal === 'object' && 's' in subtotal && 'e' in subtotal && 'd' in subtotal) {
+        // Simple conversion for decimal.js-like objects
+        // s: sign (1 for positive, -1 for negative)
+        // e: exponent 
+        // d: digits array
+        const sign = subtotal.s || 1;
+        const digits = subtotal.d || [0];
+        const exponent = subtotal.e || 0;
+        
+        // Convert to number (simplified approach)
+        let value = 0;
+        for (let i = 0; i < digits.length; i++) {
+          value = value * 10 + digits[i];
+        }
+        value = value * sign * Math.pow(10, exponent - digits.length + 1);
+        
+        return total + value;
+      }
+      return total + (typeof subtotal === 'number' ? subtotal : 0);
+    }, 0) || 0;
+  };
+
+  const transferStockList_getStoreName = (store: Store): string => {
+    return store?.name || '-';
+  };
+
+  /**
    * @description Handle fetch api transfer stock - list
    */
   const transferStockList_fetchList = async (): Promise<unknown> => {
@@ -178,30 +221,34 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
 
   /**
    * @description Check if approve button should be shown
+   * Flow: Draft/Drafted → Approved
    */
   const transferStockList_onShowButtonApprove = (status: string): boolean => {
-    return status === 'draft';
+    return ['draft', 'drafted'].includes(status.toLowerCase());
   };
 
   /**
    * @description Check if cancel button should be shown
+   * Can cancel at: Draft/Drafted/Approved
    */
   const transferStockList_onShowButtonCancel = (status: string): boolean => {
-    return ['draft', 'approved'].includes(status);
+    return ['draft', 'drafted', 'approved'].includes(status.toLowerCase());
   };
 
   /**
    * @description Check if ship button should be shown
+   * Flow: Approved → Shipped
    */
   const transferStockList_onShowButtonShip = (status: string): boolean => {
-    return status === 'approved';
+    return status.toLowerCase() === 'approved';
   };
 
   /**
    * @description Check if receive button should be shown
+   * Flow: Shipped → Received/Received_with_issue
    */
   const transferStockList_onShowButtonReceive = (status: string): boolean => {
-    return status === 'shipped';
+    return status.toLowerCase() === 'shipped';
   };
 
   /**
@@ -464,16 +511,18 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
 
   /**
    * @description Check if cancel transfer button should be shown
+   * Can cancel before shipped
    */
   const transferStockList_onShowButtonCancelTransfer = (status: string): boolean => {
-    return ['draft', 'approved'].includes(status);
+    return ['draft', 'drafted', 'approved'].includes(status.toLowerCase());
   };
 
   /**
    * @description Check if shipping document button should be shown
+   * Available after shipped
    */
   const transferStockList_onShowButtonShippingDocument = (status: string): boolean => {
-    return ['shipped', 'received', 'closed'].includes(status);
+    return ['shipped', 'received', 'received_with_issue', 'closed'].includes(status.toLowerCase());
   };
 
   return {
@@ -488,6 +537,10 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
     transferStockList_formValidationsOfReceive,
     transferStockList_formValidationsOfShip,
     transferStockList_getClassOfStatus,
+    transferStockList_getStoreName,
+    transferStockList_getTotalItems,
+    transferStockList_getTotalQty,
+    transferStockList_getTotalValue,
     transferStockList_handleOnSortChange,
     transferStockList_isLoading,
     transferStockList_onChangePage,

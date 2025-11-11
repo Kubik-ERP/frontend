@@ -54,6 +54,17 @@ const routes: RouteRecordRaw[] = [
           requiresAuthorization: true,
         },
       },
+      {
+        path: ':id/shipping-document',
+        name: 'transfer-stock.shipping-document',
+        component: () => import('../views/TransferStockShippingDocumentUI.vue'),
+        meta: {
+          breadcrumb: 'Shipping Document',
+          layout: LAYOUT_OPTIONS.EMPTY,
+          requiresAuthorization: true,
+          title: 'Shipping Document',
+        },
+      },
     ],
     meta: {
       breadcrumb: 'Transfer Stock',

@@ -1,23 +1,18 @@
 export const TRANSFER_STOCK_LIST_COLUMNS: IColumnDataTable[] = [
   {
-    label: 'Transfer Number',
+    label: 'Transaction Code',
     sortable: true,
-    value: 'transferNumber',
+    value: 'transactionCode',
   },
   {
     label: 'From Store',
     sortable: true,
-    value: 'fromStoreName',
+    value: 'storeFrom',
   },
   {
     label: 'To Store',
     sortable: true,
-    value: 'toStoreName',
-  },
-  {
-    label: 'Transfer Date',
-    sortable: true,
-    value: 'transferDate',
+    value: 'storeTo',
   },
   {
     label: 'Status',
@@ -26,23 +21,28 @@ export const TRANSFER_STOCK_LIST_COLUMNS: IColumnDataTable[] = [
   },
   {
     label: 'Total Items',
-    sortable: true,
+    sortable: false,
     value: 'totalItems',
   },
   {
     label: 'Total Qty',
-    sortable: true,
-    value: 'totalQuantity',
+    sortable: false,
+    value: 'totalQty',
   },
   {
     label: 'Total Value',
-    sortable: true,
+    sortable: false,
     value: 'totalValue',
   },
   {
-    label: 'Created At',
+    label: 'Drafted At',
     sortable: true,
-    value: 'createdAt',
+    value: 'draftedAt',
+  },
+  {
+    label: 'Shipped At',
+    sortable: true,
+    value: 'shippedAt',
   },
   {
     label: '',
@@ -131,10 +131,14 @@ export const TRANSFER_STOCK_LIST_MOCK_DATA = {
 // Status class mapping for UI styling
 export const TRANSFER_STOCK_STATUS_CLASSES = {
   draft: 'text-gray-600 bg-gray-100',
+  drafted: 'text-gray-600 bg-gray-100',
+  pending: 'text-yellow-600 bg-yellow-100',
   approved: 'text-blue-600 bg-blue-100',
   shipped: 'text-orange-600 bg-orange-100',
   received: 'text-green-600 bg-green-100',
-  received_with_issue: 'text-yellow-600 bg-yellow-100',
+  received_with_issue: 'text-yellow-700 bg-yellow-200',
   closed: 'text-purple-600 bg-purple-100',
+  rejected: 'text-red-600 bg-red-100',
+  canceled: 'text-red-600 bg-red-100',
   cancelled: 'text-red-600 bg-red-100',
 } as const;

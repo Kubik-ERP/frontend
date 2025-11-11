@@ -40,7 +40,7 @@ export const useTransferStockCreateEditService = (): ITransferStockCreateEditPro
   const store = useTransferStockStore(); // Instance of the store
   const outletStore = useOutletStore(); // Outlet store for getting stores/outlets
   const itemsStore = useInventoryItemsStore(); // Items store for getting inventory items
-  // const { transferStock_detail } = storeToRefs(store);
+  const { transferStock_data } = storeToRefs(store);
   // const { httpAbort_registerAbort } = useHttpAbort(); // TODO: Uncomment when backend API is available
 
   /**
@@ -417,37 +417,37 @@ export const useTransferStockCreateEditService = (): ITransferStockCreateEditPro
   /**
    * @description Watcher to populate form when detail is loaded (for edit mode)
    */
-  // watch(
-  //   () => transferStock_detail.value,
-  //   newDetail => {
-  //     if (newDetail && newDetail.fromStoreId && newDetail.toStoreId && newDetail.transferDate) {
-  //       transferStockCreateEdit_formData.value = {
-  //         fromStoreId: newDetail.fromStoreId,
-  //         toStoreId: newDetail.toStoreId,
-  //         transferDate: new Date(newDetail.transferDate),
-  //         notes: newDetail.notes || '',
-  //         productItems: [],
-  //       };
+  watch(
+    () => transferStock_data.value,
+    newDetail => {
+      if (newDetail && transferStockCreateEdit_isEditMode.value) {
+        transferStockCreateEdit_formData.value = {
+          fromStoreId: newDetail.storeFromId || '',
+          toStoreId: newDetail.storeToId || '',
+          transferDate: newDetail.draftedAt ? new Date(newDetail.draftedAt) : null,
+          notes: newDetail.note || '',
+          productItems: [],
+        };
 
-  //       // Transform product items to the create-edit format only if they exist
-  //       if (newDetail.transferStockItems && Array.isArray(newDetail.transferStockItems)) {
-  //         transferStockCreateEdit_selectedProductItems.value = newDetail.transferStockItems.map(item => ({
-  //           id: item.id || '',
-  //           masterItemId: item.masterInventoryItemId || '',
-  //           name: item.itemInfo?.name || '',
-  //           brandName: item.itemInfo?.brandName || '',
-  //           quantity: item.requestedQuantity || 0,
-  //           sku: item.itemInfo?.sku || '',
-  //           unit: item.itemInfo?.unit || '',
-  //           unitPrice: item.unitPrice || 0,
-  //           totalPrice: item.totalPrice || 0,
-  //           stockQuantity: item.itemInfo?.stockQuantity || 0,
-  //         }));
-  //       }
-  //     }
-  //   },
-  //   { immediate: true },
-  // );
+        // Transform product items to the create-edit format
+        if (newDetail.transferStockItems && Array.isArray(newDetail.transferStockItems)) {
+          transferStockCreateEdit_selectedProductItems.value = newDetail.transferStockItems.map(item => ({
+            id: item.id || '',
+            masterItemId: item.masterInventoryItemId || '',
+            name: item.masterInventoryItems?.name || '',
+            brandName: item.masterInventoryItems?.brandId || '',
+            quantity: item.qtyReserved || 0,
+            sku: item.masterInventoryItems?.sku || '',
+            unit: item.masterInventoryItems?.unit || '',
+            unitPrice: typeof item.unitPrice === 'object' ? parseFloat(JSON.stringify(item.unitPrice)) : (item.unitPrice || 0),
+            totalPrice: typeof item.subtotal === 'object' ? parseFloat(JSON.stringify(item.subtotal)) : (item.subtotal || 0),
+            stockQuantity: item.masterInventoryItems?.stockQuantity || 0,
+          }));
+        }
+      }
+    },
+    { immediate: true },
+  );
 
   /**
    * @description Handle business logic for adding product item

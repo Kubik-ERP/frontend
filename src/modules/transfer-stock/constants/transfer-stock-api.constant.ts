@@ -1,11 +1,11 @@
 // API endpoint object
 export const TRANSFER_STOCK_API = {
-  CHANGE_STATUS: '/transfer-stock/transfer/change-status',
-  CREATE: '/transfer-stock/transfer',
-  DELETE: '/transfer-stock/transfer/delete',
-  DETAIL: '/transfer-stock/detail',
-  LIST: '/transfer-stock/transfer',
-  UPDATE: '/transfer-stock/transfer',
+  CHANGE_STATUS: '/transfer-stock/change-status',
+  CREATE: '/transfer-stock',
+  DELETE: '/transfer-stock',
+  DETAIL: '/transfer-stock',
+  LIST: '/transfer-stock',
+  UPDATE: '/transfer-stock',
 };
 
 // Key Http Request (for tracking)
