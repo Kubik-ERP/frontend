@@ -8,4 +8,4 @@ export const REPORT_LOYALTY_POINT_ENDPOINT = `${REPORT_BASE_ENDPOINT}/loyalty-re
 export const REPORT_INVENTORY_ENDPOINT = `${REPORT_BASE_ENDPOINT}/inventory-valuation`;
 
 export const STAFF_MEMBER_BASE_ENDPOINT = '/users/staffs';
-export const REPORT_FINANCIAL_EXPORT_PDF_ENDPOINT = `/generate/pdf`
+export const REPORT_DOWNLOAD_PDF_ENDPOINT = `/generate/pdf`

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // components
 import CustomDatePicker from '../../components/CustomDatePicker.vue';
+import DownloadDialog from '../DownloadingDialog.vue';
 // service
 import { useReportService } from '../../services/report.service';
 const {
@@ -15,25 +16,17 @@ const {
   findStaffDetail,
   hasAccessAllStorePermission,
   outlet_currentOutlet,
+  report_downloadPDF,
+  isDownloading,
+  // download dialog
+  isDialogVisible,
+  downloadStatus,
+  dialogDownload_onClose,
 } = useReportService();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
-const { exportToPdf, exportToCsv, export_isloading } = useReportExporter();
-const handleExportToPdf = () => {
-  exportToPdf({
-    reportName: 'Financial Report - Tax & Service Charge Report',
-    storeName: hasAccessAllStorePermission
-      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
-      : outlet_currentOutlet.value!.name,
-    storeAddress: hasAccessAllStorePermission
-      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
-      : outlet_currentOutlet.value!.address,
-    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
-    period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: financialReport_taxAndServiceCharge_columns,
-    tableData: formattedDataTable(),
-  });
-};
+const { exportToCsv, export_isloading } = useReportExporter();
+
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Financial Report - Tax & Service Charge Report',
@@ -65,6 +58,7 @@ const formattedDataTable = () => {
 const popover = ref();
 </script>
 <template>
+  <DownloadDialog v-model:visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
   <section>
     <AppBaseDataTable
       :data="formattedDataTable()"
@@ -83,7 +77,6 @@ const popover = ref();
           variant="outlined"
           label="Export"
           class="border border-primary-border text-primary"
-          :loading="export_isloading"
           @click="popover.toggle($event)"
         >
           <template #icon>
@@ -101,8 +94,8 @@ const popover = ref();
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .pdf"
-              :loading="export_isloading"
-              @click="handleExportToPdf"
+              :loading="isDownloading"
+              @click="report_downloadPDF('financial-report', 'tax-and-service-summary')"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"

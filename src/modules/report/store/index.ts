@@ -7,7 +7,7 @@ import {
   REPORT_LOYALTY_POINT_ENDPOINT,
   REPORT_INVENTORY_ENDPOINT,
   STAFF_MEMBER_BASE_ENDPOINT,
-  REPORT_FINANCIAL_EXPORT_PDF_ENDPOINT,
+  REPORT_DOWNLOAD_PDF_ENDPOINT,
 } from '../constants';
 import { OUTLET_BASE_ENDPOINT } from '@/modules/outlet/constants';
 // Plugins
@@ -184,9 +184,9 @@ export const useReportStore = defineStore('report', {
       }
     },
 
-    async financialReport_exportPDF(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
+    async report_downloadPDF(path: string, params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
       try {
-        const response = await httpClient.get(`${REPORT_FINANCIAL_EXPORT_PDF_ENDPOINT}/financial-report`, {
+        const response = await httpClient.get(`${REPORT_DOWNLOAD_PDF_ENDPOINT}/${path}`, {
           params,
           ...requestConfigurations,
           responseType: 'blob',

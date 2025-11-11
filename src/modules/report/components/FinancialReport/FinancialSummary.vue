@@ -20,13 +20,13 @@ const {
   isDialogVisible,
   downloadStatus,
   isDownloading,
-  financialReport_exportPDF,
+  report_downloadPDF,
   dialogDownload_onClose,
 } = useReportService();
+const popover = ref();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
-const { exportToCsv, export_isloading } = useReportExporter();
-const popover = ref();
+const { exportToCsv } = useReportExporter();
 const handleExportToCsv = () => {
   exportToCsv({
     reportName: 'Financial Report - Financial Summary',
@@ -107,7 +107,6 @@ const formattedDataTable = () => {
           variant="outlined"
           label="Export"
           class="border border-primary-border text-primary"
-          :loading="export_isloading"
           @click="popover.toggle($event)"
         >
           <template #icon>
@@ -126,13 +125,12 @@ const formattedDataTable = () => {
               variant="text"
               label="Export to .pdf"
               :loading="isDownloading"
-              @click="financialReport_exportPDF('financial-summary')"
+              @click="report_downloadPDF('financial-report', 'financial-summary')"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .csv"
-              :loading="export_isloading"
               @click="handleExportToCsv"
             />
           </section>

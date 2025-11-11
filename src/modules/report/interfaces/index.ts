@@ -192,5 +192,15 @@ export interface IReportProvided {
   dialogDownload_onClose: () => void;
   // export pdf
   isDownloading: globalThis.Ref<boolean>;
-  financialReport_exportPDF: (type?: string) => Promise<void>;
+  report_downloadPDF: (
+    path:
+      | 'financial-report'
+      | 'advabced-sales-report'
+      | 'inventory-report'
+      | 'voucher-report'
+      | 'staff-report'
+      | 'loyalty-point-report'
+      | 'customer-report',
+    type: string,
+  ) => Promise<void>;
 }

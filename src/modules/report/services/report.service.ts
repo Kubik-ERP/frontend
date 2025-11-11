@@ -319,6 +319,7 @@ export const useReportService = (): IReportProvided => {
    * @param {string} [type] - type of report to be exported
    * @returns {Promise<void>}
    */
+
   const isDownloading = ref<boolean>(false);
   const isDialogVisible = ref(false);
   const downloadStatus = ref<'downloading' | 'success' | 'error'>('downloading');
@@ -327,13 +328,13 @@ export const useReportService = (): IReportProvided => {
     downloadStatus.value = 'downloading';
   };
 
-  const financialReport_exportPDF = async (type?: string) => {
+  const report_downloadPDF = async (path: string, type?: string) => {
     isDownloading.value = true;
 
     downloadStatus.value = 'downloading';
     isDialogVisible.value = true;
     try {
-      await store.financialReport_exportPDF(formatQueryParamsDate(report_queryParams, type), {
+      await store.report_downloadPDF(path, formatQueryParamsDate(report_queryParams, type), {
         ...httpAbort_registerAbort('FINANCIALREPORT_EXPORT_PDF_REQUEST'),
       });
       downloadStatus.value = 'success';
@@ -436,6 +437,6 @@ export const useReportService = (): IReportProvided => {
     dialogDownload_onClose,
     // export pdf
     isDownloading,
-    financialReport_exportPDF,
+    report_downloadPDF,
   };
 };
