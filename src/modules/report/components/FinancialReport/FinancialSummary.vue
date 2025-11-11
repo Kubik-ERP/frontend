@@ -16,7 +16,7 @@ const {
   findStaffDetail,
   hasAccessAllStorePermission,
   outlet_currentOutlet,
-  // download dialog
+  // download pdf
   isDialogVisible,
   downloadStatus,
   isDownloading,

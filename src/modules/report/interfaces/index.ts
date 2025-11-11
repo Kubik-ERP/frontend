@@ -195,7 +195,7 @@ export interface IReportProvided {
   report_downloadPDF: (
     path:
       | 'financial-report'
-      | 'advabced-sales-report'
+      | 'advanced-sales-report'
       | 'inventory-report'
       | 'voucher-report'
       | 'staff-report'
