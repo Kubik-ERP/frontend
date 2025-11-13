@@ -251,7 +251,7 @@ watch(menuRecipeCreateEdit_productSearchValue, () => {
           <span class="font-normal text-black text-sm">
             {{
               useCurrencyFormat({
-                data: data.itemId?.pricePerUnit * data.quantity || 0,
+                data: data.cost || 0,
               })
             }}
           </span>

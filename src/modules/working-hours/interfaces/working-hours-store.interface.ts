@@ -1,6 +1,6 @@
 export interface IWorkingHour {
   id:                      number;
-  staff_id:                number;
+  staff_id:                string; // UUID
   date:                    Date;
   notes:                   string;
   repeat_type:             string;
@@ -28,7 +28,15 @@ export interface IWorkingHourTimeSlot {
 }
 
 export interface IWorkingHoursListResponse extends IDefaultResponseFetch {
-  data: IWorkingHour[];
+  data: {
+    items: IWorkingHour[];
+    meta: {
+      page: number;
+      pageSize: number;
+      total: number;
+      totalPages: number;
+    };
+  };
 }
 
 export interface IWorkingHoursStateStore {

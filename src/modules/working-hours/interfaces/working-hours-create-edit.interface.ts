@@ -6,7 +6,7 @@ export interface IWorkingHoursCreateEditTimeSlot {
 }
 
 export interface IWorkingHoursCreateEditFormData {
-  staffId: number | null;
+  staffId: string | null; // UUID
   date: string; // Format: "YYYY-MM-DD"
   timeSlots: IWorkingHoursCreateEditTimeSlot[];
   notes: string;

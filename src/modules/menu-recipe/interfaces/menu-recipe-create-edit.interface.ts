@@ -38,6 +38,7 @@ export interface IMenuRecipeCreateEditProvided {
   menuRecipeCreateEdit_listColumns: IColumnDataTable[];
   menuRecipeCreateEdit_listIngredientItemsOnDialog: Ref<IMenuRecipeCreateEditIngredientItem[]>;
   menuRecipeCreateEdit_listOutputUnitOptions: IDropdownItem[];
+  menuRecipeCreateEdit_availableUomOptions: ComputedRef<IDropdownItem[]>;
   menuRecipeCreateEdit_onAddIngredientItem: () => void;
   menuRecipeCreateEdit_onEditIngredientItem: (index: number) => void;
   menuRecipeCreateEdit_onDeleteIngredientItem: (index: number) => void;

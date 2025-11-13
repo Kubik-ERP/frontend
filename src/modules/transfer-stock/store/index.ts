@@ -3,9 +3,7 @@ import { defineStore } from 'pinia';
 import type { AxiosRequestConfig } from 'axios';
 
 // Constants
-import {
-  TRANSFER_STOCK_API,
-} from '../constants';
+import { TRANSFER_STOCK_API } from '../constants';
 
 // Interfaces
 import type {
@@ -209,13 +207,10 @@ export const useTransferStockStore = defineStore('transfer-stock', {
       this.transferStock_isLoading = true;
 
       try {
-        const response = await httpClient.get<ITransferStockListResponse>(
-          TRANSFER_STOCK_API.LIST,
-          {
-            params,
-            ...requestConfigurations,
-          },
-        );
+        const response = await httpClient.get<ITransferStockListResponse>(TRANSFER_STOCK_API.LIST, {
+          params,
+          ...requestConfigurations,
+        });
 
         this.transferStock_lists = response.data.data;
 
@@ -265,7 +260,7 @@ export const useTransferStockStore = defineStore('transfer-stock', {
 
     /**
      * @description Handle fetch api transfer stock - receive (receiver side)
-     * @url /transfer-stock/receiver/change-status/{id}
+     * @url /transfer-stock/transfer/change-status/{id}
      * @method POST
      * @access private
      */
@@ -277,7 +272,7 @@ export const useTransferStockStore = defineStore('transfer-stock', {
 
       try {
         const response = await httpClient.post<ITransferStockActionResponse>(
-          `/transfer-stock/receiver/change-status/${transferStockId}`,
+          `${TRANSFER_STOCK_API.CHANGE_STATUS}/${transferStockId}`,
           { status: 'receive' },
           requestConfigurations,
         );
@@ -333,6 +328,7 @@ export const useTransferStockStore = defineStore('transfer-stock', {
      * @access private
      */
     async transferStock_update(
+      id: string,
       payload: ITransferStockUpdatePayload,
       requestConfigurations?: AxiosRequestConfig,
     ): Promise<ITransferStockDetailResponse> {
@@ -340,7 +336,7 @@ export const useTransferStockStore = defineStore('transfer-stock', {
 
       try {
         const response = await httpClient.put<ITransferStockDetailResponse>(
-          TRANSFER_STOCK_API.UPDATE,
+          `${TRANSFER_STOCK_API.UPDATE}/${id}`,
           payload,
           requestConfigurations,
         );

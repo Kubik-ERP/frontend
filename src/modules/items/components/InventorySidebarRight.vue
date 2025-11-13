@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { ITEM_UNIT_DROPDOWN } from '../constants';
-import type { IUnitConversion } from '../interfaces';
+import type { IUnitConversionForm } from '../interfaces';
 
 const props = defineProps({
   visible: {
@@ -13,7 +13,7 @@ const props = defineProps({
     default: '', // unit utama yang dipilih di form item (misal: 'kg', 'g', 'ml', dll)
   },
   initialConversions: {
-    type: Array as () => IUnitConversion[],
+    type: Array as () => IUnitConversionForm[],
     default: () => [],
   }
 });

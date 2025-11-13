@@ -45,6 +45,18 @@ export default {
         title: 'Edit Staff Member',
       },
     },
+    {
+      path: 'detail/:id',
+      props: route => ({ id: route.params.id }),
+      name: 'staff-member.detail',
+      component: () => import('../views/StaffMemberDetailUI.vue'),
+      meta: {
+        breadcrumb: 'Staff Member Details',
+        layout: LAYOUT_OPTIONS.DEFAULT,
+        requiresAuthorization: true,
+        title: 'Staff Member Details',
+      },
+    }
   ],
   meta: {
     breadcrumb: 'Staff Members',

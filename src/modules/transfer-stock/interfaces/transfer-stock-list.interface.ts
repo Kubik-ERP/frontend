@@ -4,11 +4,13 @@ import type { DataTableSortEvent } from 'primevue';
 import type {
   ITransferStockApprovePayload,
   ITransferStockCancelPayload,
+  ITransferStock,
   ITransferStockItem,
   ITransferStockListRequestQuery,
   ITransferStockMeta,
   ITransferStockReceivePayload,
   ITransferStockShipPayload,
+  Store,
 } from './transfer-stock-store.interface';
 
 export interface ITransferStockListProvided {
@@ -23,6 +25,10 @@ export interface ITransferStockListProvided {
   transferStockList_formValidationsOfReceive: globalThis.Ref<Validation>;
   transferStockList_formValidationsOfShip: globalThis.Ref<Validation>;
   transferStockList_getClassOfStatus: (status: string) => string;
+  transferStockList_getStoreName: (store: Store) => string;
+  transferStockList_getTotalItems: (transferStockItems: ITransferStockItem[]) => number;
+  transferStockList_getTotalQty: (transferStockItems: ITransferStockItem[]) => number;
+  transferStockList_getTotalValue: (transferStockItems: ITransferStockItem[]) => number;
   transferStockList_handleOnSortChange: (event: DataTableSortEvent) => void;
   transferStockList_isLoading: globalThis.Ref<boolean>;
   transferStockList_onChangePage: (page: number) => void;
@@ -46,7 +52,7 @@ export interface ITransferStockListProvided {
   transferStockList_onSubmitShip: () => Promise<void>;
   transferStockList_queryParams: ITransferStockListRequestQuery;
   transferStockList_values: globalThis.Ref<{
-    items: ITransferStockItem[];
+    items: ITransferStock[];
     meta: ITransferStockMeta;
   } | null>;
 }

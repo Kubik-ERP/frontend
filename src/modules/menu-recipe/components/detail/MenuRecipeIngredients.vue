@@ -5,9 +5,11 @@ import type { IMenuRecipeDetailProvided } from '../../interfaces';
 /**
  * @description Inject all the data and methods what we need
  */
-const { menuRecipeDetail_data, menuRecipeDetail_listColumns } = inject(
-  'menuRecipeDetail',
-) as IMenuRecipeDetailProvided;
+const {
+  menuRecipeDetail_data,
+  menuRecipeDetail_listColumns,
+  menuRecipeDetail_calculateIngredientCost,
+} = inject('menuRecipeDetail') as IMenuRecipeDetailProvided;
 </script>
 
 <template>
@@ -50,7 +52,7 @@ const { menuRecipeDetail_data, menuRecipeDetail_listColumns } = inject(
 
       <template v-else-if="column.value === 'cost'">
         <span class="font-normal text-black text-sm">
-          {{ useCurrencyFormat({ data: data?.inventory_item.price_per_unit * data.qty }) }}
+          {{ useCurrencyFormat({ data: menuRecipeDetail_calculateIngredientCost(data) }) }}
         </span>
       </template>
 

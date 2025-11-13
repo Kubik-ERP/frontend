@@ -40,7 +40,7 @@ export const useTransferStockCreateEditService = (): ITransferStockCreateEditPro
   const store = useTransferStockStore(); // Instance of the store
   const outletStore = useOutletStore(); // Outlet store for getting stores/outlets
   const itemsStore = useInventoryItemsStore(); // Items store for getting inventory items
-  // const { transferStock_detail } = storeToRefs(store);
+  const { transferStock_data } = storeToRefs(store);
   // const { httpAbort_registerAbort } = useHttpAbort(); // TODO: Uncomment when backend API is available
 
   /**
@@ -341,7 +341,7 @@ export const useTransferStockCreateEditService = (): ITransferStockCreateEditPro
         note: transferStockCreateEdit_formData.value.notes || undefined,
       };
 
-      await store.transferStock_update(payload);
+      await store.transferStock_update(transferStockCreateEdit_transferStockId.value, payload);
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
@@ -417,37 +417,70 @@ export const useTransferStockCreateEditService = (): ITransferStockCreateEditPro
   /**
    * @description Watcher to populate form when detail is loaded (for edit mode)
    */
-  // watch(
-  //   () => transferStock_detail.value,
-  //   newDetail => {
-  //     if (newDetail && newDetail.fromStoreId && newDetail.toStoreId && newDetail.transferDate) {
-  //       transferStockCreateEdit_formData.value = {
-  //         fromStoreId: newDetail.fromStoreId,
-  //         toStoreId: newDetail.toStoreId,
-  //         transferDate: new Date(newDetail.transferDate),
-  //         notes: newDetail.notes || '',
-  //         productItems: [],
-  //       };
+  watch(
+    () => transferStock_data.value,
+    newDetail => {
+      if (newDetail && transferStockCreateEdit_isEditMode.value) {
+        transferStockCreateEdit_formData.value = {
+          fromStoreId: newDetail.storeFromId || '',
+          toStoreId: newDetail.storeToId || '',
+          transferDate: newDetail.draftedAt ? new Date(newDetail.draftedAt) : null,
+          notes: newDetail.note || '',
+          productItems: [],
+        };
 
-  //       // Transform product items to the create-edit format only if they exist
-  //       if (newDetail.transferStockItems && Array.isArray(newDetail.transferStockItems)) {
-  //         transferStockCreateEdit_selectedProductItems.value = newDetail.transferStockItems.map(item => ({
-  //           id: item.id || '',
-  //           masterItemId: item.masterInventoryItemId || '',
-  //           name: item.itemInfo?.name || '',
-  //           brandName: item.itemInfo?.brandName || '',
-  //           quantity: item.requestedQuantity || 0,
-  //           sku: item.itemInfo?.sku || '',
-  //           unit: item.itemInfo?.unit || '',
-  //           unitPrice: item.unitPrice || 0,
-  //           totalPrice: item.totalPrice || 0,
-  //           stockQuantity: item.itemInfo?.stockQuantity || 0,
-  //         }));
-  //       }
-  //     }
-  //   },
-  //   { immediate: true },
-  // );
+        // Transform product items to the create-edit format
+        if (newDetail.transferStockItems && Array.isArray(newDetail.transferStockItems)) {
+          transferStockCreateEdit_selectedProductItems.value = newDetail.transferStockItems.map(item => {
+            // Helper function to parse Decimal.js format
+            const parseDecimalValue = (value: unknown): number => {
+              if (!value) return 0;
+              
+              if (typeof value === 'object' && value !== null && 's' in value && 'e' in value && 'd' in value) {
+                const decimalValue = value as { s: number; e: number; d: number[] };
+                const sign = decimalValue.s || 1;
+                const digits = decimalValue.d || [0];
+                const exponent = decimalValue.e || 0;
+
+                // Convert Decimal.js format to number
+                let numValue = 0;
+                
+                // Combine all digits
+                for (let i = 0; i < digits.length; i++) {
+                  const digitValue = digits[i];
+                  const digitLength = digitValue.toString().length;
+                  numValue = numValue * Math.pow(10, digitLength) + digitValue;
+                }
+                
+                // Apply exponent adjustment
+                const totalDigits = digits.reduce((acc: number, d: number) => acc + d.toString().length, 0);
+                const adjustment = exponent - totalDigits + 1;
+                numValue = numValue * Math.pow(10, adjustment) * sign;
+
+                return numValue;
+              }
+              
+              return typeof value === 'number' ? value : 0;
+            };
+
+            return {
+              id: item.id || '',
+              masterItemId: item.masterInventoryItemId || '',
+              name: item.masterInventoryItems?.name || '',
+              brandName: item.masterInventoryItems?.brandId || '',
+              quantity: item.qtyReserved || 0,
+              sku: item.masterInventoryItems?.sku || '',
+              unit: item.masterInventoryItems?.unit || '',
+              unitPrice: parseDecimalValue(item.unitPrice),
+              totalPrice: parseDecimalValue(item.subtotal),
+              stockQuantity: item.masterInventoryItems?.stockQuantity || 0,
+            };
+          });
+        }
+      }
+    },
+    { immediate: true },
+  );
 
   /**
    * @description Handle business logic for adding product item

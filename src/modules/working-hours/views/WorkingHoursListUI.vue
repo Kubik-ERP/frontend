@@ -7,7 +7,7 @@ import WorkingHoursCreateEditDialog from '../components/WorkingHoursCreateEditDi
 import { useStaffMemberListService } from '@/modules/staff-member/services/staff-member-list.service';
 import { useWorkingHoursListService } from '../services/working-hours-list.service';
 
-const { staffMemberList_fetchListMembers, staffMemberList_dropdownItemStaffUsingUserId } = useStaffMemberListService();
+const { staffMemberList_fetchListMembers } = useStaffMemberListService();
 const {
   workingHoursList_addTimeSlot,
   workingHoursList_calendarDate,
@@ -16,6 +16,7 @@ const {
   workingHoursList_createEditMaxDate,
   workingHoursList_createEditMinDate,
   workingHoursList_createEditRepeatOptions,
+  workingHoursList_createEditStaffList,
   workingHoursList_customRecurrenceEndDate,
   workingHoursList_customRecurrenceFrequencyOptions,
   workingHoursList_fetchList,
@@ -57,7 +58,7 @@ provide('workingHoursList', {
   workingHoursList_createEditMaxDate,
   workingHoursList_createEditMinDate,
   workingHoursList_createEditRepeatOptions,
-  workingHoursList_createEditStaffList: staffMemberList_dropdownItemStaffUsingUserId,
+  workingHoursList_createEditStaffList,
   workingHoursList_customRecurrenceEndDate,
   workingHoursList_customRecurrenceFrequencyOptions,
   workingHoursList_fetchList,

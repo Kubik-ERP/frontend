@@ -18,12 +18,32 @@ export interface IWasteLog {
   batchId: string;
   storeId: string;
   storeName: string;
-  wasteLogItems: WasteLogItem[];
+  batchCookingRecipe?: IWasteLogBatchRecipe;
+  wasteLogItems: IWasteLogItem[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface WasteLogItem {
+export interface IWasteLogBatchRecipe {
+  id: string;
+  recipeId: string;
+  date: Date;
+  batchTargetYield: number;
+  batchWaste: number;
+  notes: string;
+  createdAt: Date;
+  createdBy: number;
+  updatedAt: Date;
+  updatedBy: number;
+  status: number;
+  costBatch: null;
+  costPortion: null;
+  marginSellingPrice: null;
+  cookingAt: Date;
+  storeId: string;
+}
+
+export interface IWasteLogItem {
   wasteLogItemId: string;
   inventoryItemId: string;
   inventoryItemName: string;
@@ -31,9 +51,16 @@ export interface WasteLogItem {
   quantity: number;
   uom: string;
   notes: string;
-  photoUrl: string;
+  photoUrl?: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface IWasteLogListResponse extends IDefaultResponseFetch {
+  data: {
+    items: IWasteLog[];
+    meta: IPageMeta;
+  };
 }
 
 export interface IWasteLogStateStore {
