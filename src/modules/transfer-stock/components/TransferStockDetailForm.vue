@@ -14,8 +14,12 @@ import eventBus from '@/plugins/mitt';
 /**
  * @description Inject all the data and methods what we need
  */
-const { transferStockDetail_data, transferStockDetail_getStatusClass, shippingDocumentData } =
-  inject<ITransferStockDetailProvided>('transferStockDetail')!;
+const {
+  transferStockDetail_data,
+  transferStockDetail_formatStatusText,
+  transferStockDetail_getStatusClass,
+  shippingDocumentData,
+} = inject<ITransferStockDetailProvided>('transferStockDetail')!;
 
 /**
  * @description Create ref for PDF template element
@@ -85,7 +89,6 @@ async function handleExportShippingDocumentToPdf() {
     eventBus.emit('AppBaseToast', argsEventEmitter);
   } catch (error) {
     console.error('Error exporting to PDF:', error);
-    
     // Error toast
     const argsEventEmitter: IPropsToast = {
       isOpen: true,
@@ -118,14 +121,12 @@ const formatCurrency = (value: unknown): string => {
     // For example: {s: 1, e: 4, d: [17500]} means 17500 (where e is the exponent position)
     // {s: 1, e: 3, d: [3500]} means 3500
     let numValue = 0;
-    
     // Combine all digits
     for (let i = 0; i < digits.length; i++) {
       const digitValue = digits[i];
       const digitLength = digitValue.toString().length;
       numValue = numValue * Math.pow(10, digitLength) + digitValue;
     }
-    
     // Apply exponent adjustment
     const totalDigits = digits.reduce((acc, d) => acc + d.toString().length, 0);
     const adjustment = exponent - totalDigits + 1;
@@ -157,14 +158,12 @@ const getTotalValue = (): string => {
 
         // Convert Decimal.js format to number
         let numValue = 0;
-        
         // Combine all digits
         for (let i = 0; i < digits.length; i++) {
           const digitValue = digits[i];
           const digitLength = digitValue.toString().length;
           numValue = numValue * Math.pow(10, digitLength) + digitValue;
         }
-        
         // Apply exponent adjustment
         const totalDigits = digits.reduce((acc: number, d: number) => acc + d.toString().length, 0);
         const adjustment = exponent - totalDigits + 1;
@@ -271,10 +270,7 @@ const transferStockListColumns = [
               class="font-normal text-xs px-2 py-1 rounded-full w-fit"
               :class="[transferStockDetail_getStatusClass(transferStockDetail_data?.status ?? '')]"
             >
-              {{
-                (transferStockDetail_data?.status?.charAt(0)?.toUpperCase() ?? '') +
-                (transferStockDetail_data?.status?.slice(1) ?? '')
-              }}
+              {{ transferStockDetail_formatStatusText(transferStockDetail_data?.status ?? '') }}
             </span>
           </section>
 

@@ -12,6 +12,7 @@ import eventBus from '@/plugins/mitt';
 
 // Stores
 import { useTransferStockStore } from '../store';
+import { useOutletStore } from '@/modules/outlet/store';
 
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
@@ -28,12 +29,30 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
   const store = useTransferStockStore(); // Instance of the store
   const { transferStock_data, transferStock_isLoading } = storeToRefs(store);
 
+  // Get current store ID from outlet store
+  const outletStore = useOutletStore();
+  const { outlet_currentOutlet } = storeToRefs(outletStore);
+
   /**
    * @description Computed properties for business logic
    */
   const transferStockDetail_routeParamsId = computed(() =>
     route.params.id.length > 0 ? String(route.params.id) : '',
   );
+
+  /**
+   * @description Check if current store is the "from" store (sender)
+   */
+  const transferStockDetail_isFromStore = computed(() => {
+    return transferStock_data.value?.storeFromId === outlet_currentOutlet.value?.id;
+  });
+
+  /**
+   * @description Check if current store is the "to" store (receiver)
+   */
+  const transferStockDetail_isToStore = computed(() => {
+    return transferStock_data.value?.storeToId === outlet_currentOutlet.value?.id;
+  });
 
   /**
    * @description Reactive data binding
@@ -48,7 +67,8 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
   });
 
   const transferStockDetail_formDataOfReceive = ref<ITransferStockReceivePayload>({
-    status: 'receive',
+    status: 'received',
+    items: [],
   });
 
   const transferStockDetail_formDataOfShip = ref<ITransferStockShipPayload>({
@@ -72,6 +92,7 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
 
   const transferStockDetail_formRulesOfReceive = computed(() => ({
     status: { required },
+    items: { required },
   }));
 
   const transferStockDetail_formRulesOfShip = computed(() => ({
@@ -114,39 +135,65 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
 
   /**
    * @description Handle business logic to return dynamic action button
+   * Store A (from): Can do Draft → Approved → Shipped
+   * Store B (to): Can only Receive when status is Shipped
    */
   const transferStockDetail_dynamicButtonAction = (status: string): void => {
-    switch (status.toLowerCase()) {
-      case 'draft':
-      case 'drafted':
-        transferStockDetail_onShowDialogApprove();
-        break;
-      case 'approved':
-        transferStockDetail_onShowDialogShip();
-        break;
-      case 'shipped':
+    const statusLower = status.toLowerCase();
+
+    // Store A (From Store) actions
+    if (transferStockDetail_isFromStore.value) {
+      switch (statusLower) {
+        case 'draft':
+        case 'drafted':
+          transferStockDetail_onShowDialogApprove();
+          break;
+        case 'approved':
+          transferStockDetail_onShowDialogShip();
+          break;
+        default:
+          // After shipped, Store A cannot do any action
+          break;
+      }
+    }
+
+    // Store B (To Store) actions
+    if (transferStockDetail_isToStore.value) {
+      if (statusLower === 'shipped') {
         transferStockDetail_onShowDialogReceive();
-        break;
-      default:
-        break;
+      }
     }
   };
 
   /**
    * @description Handle business logic to return dynamic label button
+   * Store A (from): Draft → Approve, Approved → Ship
+   * Store B (to): Shipped → Receive
    */
   const transferStockDetail_dynamicButtonLabel = (status: string): string => {
-    switch (status.toLowerCase()) {
-      case 'draft':
-      case 'drafted':
-        return 'Approve Transfer';
-      case 'approved':
-        return 'Ship Transfer';
-      case 'shipped':
-        return 'Receive Transfer';
-      default:
-        return 'Unknown Action';
+    const statusLower = status.toLowerCase();
+
+    // Store A (From Store) labels
+    if (transferStockDetail_isFromStore.value) {
+      switch (statusLower) {
+        case 'draft':
+        case 'drafted':
+          return 'Approve Transfer';
+        case 'approved':
+          return 'Ship Transfer';
+        default:
+          return '';
+      }
     }
+
+    // Store B (To Store) labels
+    if (transferStockDetail_isToStore.value) {
+      if (statusLower === 'shipped') {
+        return 'Receive Transfer';
+      }
+    }
+
+    return '';
   };
 
   /**
@@ -186,6 +233,21 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
   };
 
   /**
+   * @description Handle fetch api transfer stock - check product destination
+   */
+  const transferStockDetail_fetchCheckProductDestination = async (id: string): Promise<unknown> => {
+    try {
+      return await store.transferStock_checkProductDestination(id);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
    * @description Handle fetch api transfer stock - details
    */
   const transferStockDetail_fetchDetails = async (id: string): Promise<unknown> => {
@@ -205,7 +267,10 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
    */
   const transferStockDetail_fetchReceive = async (): Promise<unknown> => {
     try {
-      return await store.transferStock_receive(transferStockDetail_routeParamsId.value);
+      return await store.transferStock_receive(
+        transferStockDetail_routeParamsId.value,
+        transferStockDetail_formDataOfReceive.value,
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -244,12 +309,27 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
       approved: 'text-blue-600 bg-blue-100',
       shipped: 'text-orange-600 bg-orange-100',
       received: 'text-green-600 bg-green-100',
+      received_with_issue: 'text-yellow-700 bg-yellow-200',
       closed: 'text-purple-600 bg-purple-100',
       canceled: 'text-red-600 bg-red-100',
       cancelled: 'text-red-600 bg-red-100',
     };
 
     return statusClasses[status.toLowerCase() as keyof typeof statusClasses] || 'text-gray-600 bg-gray-100';
+  };
+
+  /**
+   * @description Format status text (convert underscore to space and capitalize)
+   */
+  const transferStockDetail_formatStatusText = (status: string): string => {
+    if (!status) return '';
+
+    // Replace underscores with spaces and capitalize each word
+    return status
+      .toLowerCase()
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   };
 
   /**
@@ -333,7 +413,10 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
     };
 
     eventBus.emit('AppBaseDialog', argsEventEmitter);
-    transferStockDetail_formDataOfReceive.value = { status: 'receive' };
+    transferStockDetail_formDataOfReceive.value = {
+      status: 'received',
+      items: [],
+    };
   };
 
   /**
@@ -360,6 +443,11 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
   const transferStockDetail_onLoadInitialData = async (id: string): Promise<void> => {
     try {
       await transferStockDetail_fetchDetails(id);
+
+      // If current store is the destination store (Store B), check product destination
+      if (transferStockDetail_isToStore.value) {
+        await transferStockDetail_fetchCheckProductDestination(id);
+      }
     } catch (error) {
       console.error('Error loading transfer stock details:', error);
     }
@@ -452,8 +540,18 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
    * @description Handle show dialog receive
    */
   const transferStockDetail_onShowDialogReceive = (): void => {
+    // Populate items from transfer stock items
+    const items =
+      transferStock_data.value?.transferStockItems.map(item => ({
+        itemId: item.masterInventoryItemId,
+        qty_shipped: item.qtyReserved,
+        qty_received: item.qtyReserved, // Default to same as shipped
+        notes: '',
+      })) || [];
+
     transferStockDetail_formDataOfReceive.value = {
-      status: 'receive',
+      status: 'received',
+      items,
     };
 
     const argsEventEmitter: IPropsDialog = {
@@ -578,11 +676,45 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
   });
 
   /**
+   * @description Check if action button should be shown
+   * Store A (from): Show for Draft/Drafted/Approved statuses only
+   * Store B (to): Show only when Shipped
+   * Hide for Received/Cancelled/Closed statuses
+   */
+  const transferStockDetail_shouldShowActionButton = computed(() => {
+    const status = transferStock_data.value?.status?.toLowerCase() || '';
+
+    // Hide for final statuses
+    if (['received', 'cancelled', 'canceled', 'closed'].includes(status)) {
+      return false;
+    }
+
+    // Store A (From Store): can act on Draft, Drafted, Approved
+    if (transferStockDetail_isFromStore.value) {
+      return ['draft', 'drafted', 'approved'].includes(status);
+    }
+
+    // Store B (To Store): can only act on Shipped
+    if (transferStockDetail_isToStore.value) {
+      return status === 'shipped';
+    }
+
+    return false;
+  });
+
+  /**
    * @description Check if cancel button should be shown
-   * Can cancel at: Draft/Drafted/Approved (before shipped)
+   * Only Store A (from) can cancel, and only before shipped
    */
   const transferStockDetail_shouldShowCancelButton = computed(() => {
     const status = transferStock_data.value?.status?.toLowerCase() || '';
+
+    // Only from store can cancel
+    if (!transferStockDetail_isFromStore.value) {
+      return false;
+    }
+
+    // Can cancel at: Draft/Drafted/Approved (before shipped)
     return ['draft', 'drafted', 'approved'].includes(status);
   });
 
@@ -592,6 +724,7 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
     transferStockDetail_dynamicButtonLabel,
     transferStockDetail_fetchApprove,
     transferStockDetail_fetchCancel,
+    transferStockDetail_fetchCheckProductDestination,
     transferStockDetail_fetchDetails,
     transferStockDetail_fetchReceive,
     transferStockDetail_fetchShip,
@@ -603,6 +736,7 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
     transferStockDetail_formValidationsOfCancel,
     transferStockDetail_formValidationsOfReceive,
     transferStockDetail_formValidationsOfShip,
+    transferStockDetail_formatStatusText,
     transferStockDetail_getStatusClass,
     transferStockDetail_isLoading: transferStock_isLoading,
     transferStockDetail_onApprove,
@@ -622,6 +756,7 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
     transferStockDetail_onSubmitCancel,
     transferStockDetail_onSubmitReceive,
     transferStockDetail_onSubmitShip,
+    transferStockDetail_shouldShowActionButton,
     transferStockDetail_shouldShowCancelButton,
     // PDF export functionality data
     shippingDocumentData,

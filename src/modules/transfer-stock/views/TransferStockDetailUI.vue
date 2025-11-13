@@ -1,7 +1,7 @@
 ﻿<script setup lang="ts">
 // Components
-import { 
-  TransferStockDetailButtonActions, 
+import {
+  TransferStockDetailButtonActions,
   TransferStockDetailForm,
   TransferStockDetailApproveDialog,
   TransferStockDetailCancelDialog,
@@ -32,6 +32,7 @@ const {
   transferStockDetail_formValidationsOfCancel,
   transferStockDetail_formValidationsOfReceive,
   transferStockDetail_formValidationsOfShip,
+  transferStockDetail_formatStatusText,
   transferStockDetail_getStatusClass,
   transferStockDetail_isLoading,
   transferStockDetail_onApprove,
@@ -51,6 +52,7 @@ const {
   transferStockDetail_onSubmitCancel,
   transferStockDetail_onSubmitReceive,
   transferStockDetail_onSubmitShip,
+  transferStockDetail_shouldShowActionButton,
   transferStockDetail_shouldShowCancelButton,
   shippingDocumentData,
 } = useTransferStockDetailService();
@@ -85,6 +87,7 @@ provide('transferStockDetail', {
   transferStockDetail_formValidationsOfCancel,
   transferStockDetail_formValidationsOfReceive,
   transferStockDetail_formValidationsOfShip,
+  transferStockDetail_formatStatusText,
   transferStockDetail_getStatusClass,
   transferStockDetail_isLoading,
   transferStockDetail_onApprove,
@@ -104,6 +107,7 @@ provide('transferStockDetail', {
   transferStockDetail_onSubmitCancel,
   transferStockDetail_onSubmitReceive,
   transferStockDetail_onSubmitShip,
+  transferStockDetail_shouldShowActionButton,
   transferStockDetail_shouldShowCancelButton,
   // PDF export functionality data
   shippingDocumentData,
