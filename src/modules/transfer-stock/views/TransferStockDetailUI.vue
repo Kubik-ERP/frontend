@@ -1,7 +1,7 @@
 ﻿<script setup lang="ts">
 // Components
-import { 
-  TransferStockDetailButtonActions, 
+import {
+  TransferStockDetailButtonActions,
   TransferStockDetailForm,
   TransferStockDetailApproveDialog,
   TransferStockDetailCancelDialog,

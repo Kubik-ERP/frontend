@@ -123,7 +123,9 @@ watch(searchValue, newValue => {
         </span>
       </template>
 
-      <template v-else-if="column.value === 'draftedAt' || column.value === 'shippedAt' || column.value === 'receivedAt'">
+      <template
+        v-else-if="column.value === 'draftedAt' || column.value === 'shippedAt' || column.value === 'receivedAt'"
+      >
         <template v-if="data[column.value]">
           <span class="font-normal text-sm text-text-primary">
             {{ useFormatDate(data[column.value], 'dd/mm/yyyy') }}

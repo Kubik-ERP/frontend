@@ -19,12 +19,12 @@ const {
 const updateQtyReceived = (index: number, value: number) => {
   if (transferStockDetail_formDataOfReceive.value.items[index]) {
     transferStockDetail_formDataOfReceive.value.items[index].qty_received = value;
-    
+
     // Auto-detect if there's any issue (qty_received !== qty_shipped)
     const hasIssue = transferStockDetail_formDataOfReceive.value.items.some(
-      item => item.qty_received !== item.qty_shipped
+      item => item.qty_received !== item.qty_shipped,
     );
-    
+
     transferStockDetail_formDataOfReceive.value.status = hasIssue ? 'received_with_issue' : 'received';
   }
 };
@@ -69,13 +69,19 @@ const updateNotes = (index: number, notes: string | undefined) => {
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50 sticky top-0 z-10">
                 <tr>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-2/5">
+                  <th
+                    class="px-3 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider w-2/5"
+                  >
                     Item
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]">
+                  <th
+                    class="px-3 py-2 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[100px]"
+                  >
                     Shipped
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[140px]">
+                  <th
+                    class="px-3 py-2 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-[140px]"
+                  >
                     Received
                   </th>
                   <th class="px-3 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
@@ -103,7 +109,9 @@ const updateNotes = (index: number, notes: string | undefined) => {
 
                   <!-- Qty Shipped -->
                   <td class="px-3 py-2.5 text-center">
-                    <span class="inline-flex items-center justify-center px-2 py-1 text-sm font-semibold text-gray-700 bg-gray-100 rounded">
+                    <span
+                      class="inline-flex items-center justify-center px-2 py-1 text-sm font-semibold text-gray-700 bg-gray-100 rounded"
+                    >
                       {{ item.qty_shipped }}
                     </span>
                   </td>
@@ -165,7 +173,12 @@ const updateNotes = (index: number, notes: string | undefined) => {
 
         <!-- Summary info -->
         <div class="flex items-center justify-between px-3 py-2 bg-gray-50 rounded-lg text-xs">
-          <span class="text-gray-600">Total Items: <span class="font-semibold text-gray-900">{{ transferStockDetail_formDataOfReceive.items.length }}</span></span>
+          <span class="text-gray-600"
+            >Total Items:
+            <span class="font-semibold text-gray-900">{{
+              transferStockDetail_formDataOfReceive.items.length
+            }}</span></span
+          >
           <span class="text-gray-600">
             Status:
             <span
@@ -175,7 +188,9 @@ const updateNotes = (index: number, notes: string | undefined) => {
                   : 'font-semibold text-green-700'
               "
             >
-              {{ transferStockDetail_formDataOfReceive.status === 'received_with_issue' ? 'With Issues' : 'Complete' }}
+              {{
+                transferStockDetail_formDataOfReceive.status === 'received_with_issue' ? 'With Issues' : 'Complete'
+              }}
             </span>
           </span>
         </div>

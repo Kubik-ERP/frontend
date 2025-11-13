@@ -60,24 +60,17 @@ const {
           />
         </AppBaseFormGroup>
 
-        <AppBaseFormGroup
-          v-slot="{ classes }"
-          class-label="font-normal text-sm text-text-secondary w-full"
-          is-name-as-label
-          label-for="delivery_note"
-          name="Delivery Notes"
-          :validators="transferStockDetail_formValidationsOfShip.delivery_note"
-        >
+        <section id="delivery-note" class="flex flex-col gap-1 w-full">
+          <label class="font-normal text-sm text-text-secondary w-full"> Delivery Notes </label>
+
           <PrimeVueTextarea
             v-model="transferStockDetail_formDataOfShip.delivery_note"
             name="delivery_note"
             placeholder="Enter delivery notes..."
-            :class="{ ...classes }"
             class="text-sm w-full"
             rows="3"
-            v-on="useListenerForm(transferStockDetail_formValidationsOfShip, 'delivery_note')"
           />
-        </AppBaseFormGroup>
+        </section>
       </form>
     </template>
 

@@ -28,7 +28,7 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
   const route = useRoute();
   const store = useTransferStockStore(); // Instance of the store
   const { transferStock_data, transferStock_isLoading } = storeToRefs(store);
-  
+
   // Get current store ID from outlet store
   const outletStore = useOutletStore();
   const { outlet_currentOutlet } = storeToRefs(outletStore);
@@ -140,7 +140,7 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
    */
   const transferStockDetail_dynamicButtonAction = (status: string): void => {
     const statusLower = status.toLowerCase();
-    
+
     // Store A (From Store) actions
     if (transferStockDetail_isFromStore.value) {
       switch (statusLower) {
@@ -156,7 +156,7 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
           break;
       }
     }
-    
+
     // Store B (To Store) actions
     if (transferStockDetail_isToStore.value) {
       if (statusLower === 'shipped') {
@@ -172,7 +172,7 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
    */
   const transferStockDetail_dynamicButtonLabel = (status: string): string => {
     const statusLower = status.toLowerCase();
-    
+
     // Store A (From Store) labels
     if (transferStockDetail_isFromStore.value) {
       switch (statusLower) {
@@ -185,14 +185,14 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
           return '';
       }
     }
-    
+
     // Store B (To Store) labels
     if (transferStockDetail_isToStore.value) {
       if (statusLower === 'shipped') {
         return 'Receive Transfer';
       }
     }
-    
+
     return '';
   };
 
@@ -235,9 +235,7 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
   /**
    * @description Handle fetch api transfer stock - check product destination
    */
-  const transferStockDetail_fetchCheckProductDestination = async (
-    id: string,
-  ): Promise<unknown> => {
+  const transferStockDetail_fetchCheckProductDestination = async (id: string): Promise<unknown> => {
     try {
       return await store.transferStock_checkProductDestination(id);
     } catch (error: unknown) {
@@ -325,7 +323,7 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
    */
   const transferStockDetail_formatStatusText = (status: string): string => {
     if (!status) return '';
-    
+
     // Replace underscores with spaces and capitalize each word
     return status
       .toLowerCase()
@@ -543,12 +541,13 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
    */
   const transferStockDetail_onShowDialogReceive = (): void => {
     // Populate items from transfer stock items
-    const items = transferStock_data.value?.transferStockItems.map(item => ({
-      itemId: item.masterInventoryItemId,
-      qty_shipped: item.qtyReserved,
-      qty_received: item.qtyReserved, // Default to same as shipped
-      notes: '',
-    })) || [];
+    const items =
+      transferStock_data.value?.transferStockItems.map(item => ({
+        itemId: item.masterInventoryItemId,
+        qty_shipped: item.qtyReserved,
+        qty_received: item.qtyReserved, // Default to same as shipped
+        notes: '',
+      })) || [];
 
     transferStockDetail_formDataOfReceive.value = {
       status: 'received',
@@ -684,22 +683,22 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
    */
   const transferStockDetail_shouldShowActionButton = computed(() => {
     const status = transferStock_data.value?.status?.toLowerCase() || '';
-    
+
     // Hide for final statuses
     if (['received', 'cancelled', 'canceled', 'closed'].includes(status)) {
       return false;
     }
-    
+
     // Store A (From Store): can act on Draft, Drafted, Approved
     if (transferStockDetail_isFromStore.value) {
       return ['draft', 'drafted', 'approved'].includes(status);
     }
-    
+
     // Store B (To Store): can only act on Shipped
     if (transferStockDetail_isToStore.value) {
       return status === 'shipped';
     }
-    
+
     return false;
   });
 
@@ -709,12 +708,12 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
    */
   const transferStockDetail_shouldShowCancelButton = computed(() => {
     const status = transferStock_data.value?.status?.toLowerCase() || '';
-    
+
     // Only from store can cancel
     if (!transferStockDetail_isFromStore.value) {
       return false;
     }
-    
+
     // Can cancel at: Draft/Drafted/Approved (before shipped)
     return ['draft', 'drafted', 'approved'].includes(status);
   });

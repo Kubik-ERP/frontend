@@ -252,11 +252,7 @@ export interface ITransferStockRejectPayload {
 }
 
 // Response for check product destination
-export interface ITransferStockCheckProductDestinationResponse {
-  success: boolean;
-  message?: string;
-  data?: any;
-}
+export type ITransferStockCheckProductDestinationResponse = IDefaultResponseFetch;
 
 // Request query params
 export interface ITransferStockListRequestQuery {
