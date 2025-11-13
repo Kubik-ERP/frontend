@@ -1,4 +1,4 @@
-import { IStafPermission } from './staff-member-create-edit.interface'
+import { IStafPermission } from './staff-member-create-edit.interface';
 
 export * from './staff-member-create-edit.interface';
 export * from './staff-member-list.interface';
@@ -11,14 +11,14 @@ export interface IStaffMeta {
   totalPages: number;
 }
 
-export interface IStaffMemberEmployeesShift{
+export interface IStaffMemberEmployeesShift {
   id: string;
   days: string | null;
   startTime: string | null;
   endTime: string | null;
 }
 
-export interface IStaffMemberSocialMedia{
+export interface IStaffMemberSocialMedia {
   mediaName: string | null;
   accountName: string | null;
 }
@@ -39,6 +39,17 @@ export interface IStaffMember {
   employeesHasSocialMedia: IStaffMemberSocialMedia[] | [];
   productCommissions: productCommissions[];
   voucherCommissions: voucherCommissions[];
+  invoices?: {
+    data: unknown[];
+    meta: {
+      pageSize: number;
+      totalData: number;
+      page: number;
+      totalPages: number;
+    };
+  };
+  paid?: number;
+  unpaid?: number;
 }
 
 export interface IStaffCommission {
@@ -63,7 +74,7 @@ export interface IStaffCommissionsResponse {
   };
 }
 
-export interface productCommissions{
+export interface productCommissions {
   id: string;
   productsId: string;
   employeesId: string;
@@ -73,7 +84,7 @@ export interface productCommissions{
   createdAt: string;
 }
 
-export interface voucherCommissions{
+export interface voucherCommissions {
   id: string;
   voucherId: string;
   employeesId: string;
@@ -83,15 +94,15 @@ export interface voucherCommissions{
   createdAt: string;
 }
 
-export interface IStaffMemberList{
+export interface IStaffMemberList {
   employees: IStaffMember[] | [];
   meta: IStaffMeta;
 }
 
-export interface IStaffMemberPermissionResponse{
+export interface IStaffMemberPermissionResponse {
   statusCode: number;
   message: string;
-  data: IStafPermission[]
+  data: IStafPermission[];
 }
 
 export interface IStaffMemberStore {

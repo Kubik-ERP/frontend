@@ -1,5 +1,13 @@
 export { default as TransferStockCreateEditForm } from './TransferStockCreateEditForm.vue';
 export { default as TransferStockCreateEditButtonActions } from './TransferStockCreateEditButtonActions.vue';
 export { default as TransferStockCreateEditAddProductDialog } from './TransferStockCreateEditAddProductDialog.vue';
+export { default as TransferStockDetailButtonActions } from './TransferStockDetailButtonActions.vue';
+export { default as TransferStockDetailForm } from './TransferStockDetailForm.vue';
+export { default as TransferStockDetailApproveDialog } from './TransferStockDetailApproveDialog.vue';
+export { default as TransferStockDetailCancelDialog } from './TransferStockDetailCancelDialog.vue';
+export { default as TransferStockDetailShipDialog } from './TransferStockDetailShipDialog.vue';
+export { default as TransferStockDetailReceiveDialog } from './TransferStockDetailReceiveDialog.vue';
+export { default as TransferStockShippingDocumentContent } from './TransferStockShippingDocumentContent.vue';
+export { default as TransferStockShippingDocumentPdfTemplate } from './TransferStockShippingDocumentPdfTemplate.vue';
 export { default as TransferStockEditQuantityDialog } from './TransferStockEditQuantityDialog.vue';
 export { default as TransferStockListTable } from './TransferStockListTable.vue';

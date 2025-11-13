@@ -60,6 +60,19 @@ export interface IInventoryItem {
   updated_at: Date;
   store_id: string;
   price_grosir: number;
+  master_inventory_item_conversions?: IUnitConversion[];
+  markup?: number;
+  margin?: number;
+}
+
+export interface IUnitConversion {
+  id: string;
+  itemId: string;
+  unitName: string;
+  unitSymbol: string;
+  conversionValue: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IProducts {

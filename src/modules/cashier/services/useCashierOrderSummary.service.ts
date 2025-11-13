@@ -6,6 +6,7 @@ import {
   CASHIER_DUMMY_LIST_TABLE,
   CASHIER_DUMMY_PARAMS_SIMULATE_PAYMENT,
 } from '../constants';
+import { CASH_DRAWER_DETAILS_REQUEST } from '@/modules/cash-drawer/constants';
 
 // Helpers
 import { debounce } from '@/app/helpers/debounce.helper';
@@ -60,6 +61,7 @@ import { ILoyaltyPointBenefit, IDiscount, IFreeItems } from '@/modules/point-con
 
 // Composables
 import { useRbac } from '@/app/composables/useRbac';
+import { useHttpAbort } from '@/app/composables/useHttpAbort';
 import useVuelidate from '@vuelidate/core';
 import { minValue, numeric, required } from '@vuelidate/validators';
 import { useVoucherStore } from '@/modules/voucher/store';
@@ -76,10 +78,10 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   /**
    * @description Destructure all the data and methods what we need
    */
-  const { cashDrawerCashRegister_fetchCashDrawerDetails, cashDrawerCashRegister_fetchTrasanctions } =
-    useCashDrawerCashRegisterService();
+  const { cashDrawerCashRegister_fetchTrasanctions } = useCashDrawerCashRegisterService();
   const { cashDrawerList_todayStatus } = useCashDrawerListService();
   const { dailySalesList_fetchListInvoices, dailySalesList_queryParams } = useDailySalesListService();
+  const { httpAbort_registerAbort } = useHttpAbort();
 
   // Router
   const router = useRouter();
@@ -1172,12 +1174,45 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   };
 
   /**
+   * @description Fetch cash drawer details specifically for cashier overview
+   * This is a wrapper function that allows passing the cash drawer ID
+   * @param {string} cashDrawerId - The ID of the cash drawer to fetch details for
+   */
+  const cashierOrderSummary_fetchCashDrawerDetailsForOverview = async (cashDrawerId?: string): Promise<void> => {
+    try {
+      const { useCashDrawerStore } = await import('@/modules/cash-drawer/store');
+      const cashDrawerStore = useCashDrawerStore();
+      
+      if (!cashDrawerId) {
+        throw new Error('Cash drawer ID is required');
+      }
+
+      await cashDrawerStore.cashDrawer_details(cashDrawerId, {
+        ...httpAbort_registerAbort(CASH_DRAWER_DETAILS_REQUEST),
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
    * @description Handle business logic for showing dialog cash drawer overview
    */
   const cashierOrderSummary_onOpenDialogCashDrawerOverview = async () => {
+    const cashDrawerId = cashDrawerList_todayStatus.value?.id;
+    
+    if (!cashDrawerId) {
+      console.error('No active cash drawer found');
+      return;
+    }
+
     await Promise.all([
-      cashDrawerCashRegister_fetchCashDrawerDetails(cashDrawerList_todayStatus.value?.id),
-      cashDrawerCashRegister_fetchTrasanctions(cashDrawerList_todayStatus.value?.id),
+      cashierOrderSummary_fetchCashDrawerDetailsForOverview(cashDrawerId),
+      cashDrawerCashRegister_fetchTrasanctions(cashDrawerId),
     ]);
 
     const argsEventEmitter: IPropsDialog = {

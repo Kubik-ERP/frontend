@@ -2,7 +2,7 @@
 import type { DataTableSortEvent } from 'primevue';
 import type { Validation } from '@vuelidate/core';
 import type { IInventoryItems } from '@/modules/items/interfaces';
-import type { IWasteLog, IWasteLogCreateEditFormPayload, WasteLogItem } from './waste-log-store.interface';
+import type { IWasteLog, IWasteLogCreateEditFormPayload, IWasteLogItem as IWasteLogItemStore } from './waste-log-store.interface';
 
 export interface IBatchMenuRecipes {
   recipe_id: string;
@@ -49,7 +49,7 @@ export interface IWasteLogItem {
   uom: string | null;
 }
 
-export interface IWasteLogFlattenedItem extends WasteLogItem {
+export interface IWasteLogFlattenedItem extends IWasteLogItemStore {
   wasteLogId: string;
   batchId: string;
   storeName: string;
