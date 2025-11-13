@@ -11,7 +11,30 @@ const {
   staffMember_commissions,
 } = useStaffMemberDetailService();
 
-console.log('staffMember_commissions', staffMember_commissions.value);
+const formatToDDMMYYYY = (date: Date): string => {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
+const onDateRangeChange = (value: Date | Date[] | (Date | null)[] | null | undefined) => {
+  if (Array.isArray(value) && value.length === 2 && value[0] && value[1]) {
+    commission_queryParams.startDate = formatToDDMMYYYY(value[0]);
+    commission_queryParams.endDate = formatToDDMMYYYY(value[1]);
+  } else {
+    commission_queryParams.startDate = null;
+    commission_queryParams.endDate = null;
+  }
+};
+
+// Optional: otomatis refetch ketika date berubah
+watch(
+  () => [commission_queryParams.startDate, commission_queryParams.endDate],
+  () => {
+    commission_onChangePage(1); // refresh data ke page 1
+  }
+);
 </script>
 <template>
   <section id="staff-member-commissions" class="flex flex-col relative inset-0 z-0">
@@ -32,21 +55,25 @@ console.log('staffMember_commissions', staffMember_commissions.value);
         <section class="flex flex-col items-center gap-2 py-4">
           <span class="font-semibold text-xl">Commissions</span>
         </section>
+
         <section class="p-4 border border-solid border-grayscale-10">
-          <div class="flex items-center gap-4 w-full">
+          <div class="flex flex-wrap items-center gap-4 w-full">
             <span class="font-semibold inline-block text-gray-900 text-base">Filter by</span>
-            <!-- <PrimeVueDatePicker
-              v-model="commission_queryParams.startDate"
-              class="text-sm text-text-disabled placeholder:text-sm placeholder:text-text-disabled w-full max-w-80"
-              placeholder="Start Date"
-              show-on-focus
-              show-icon
-              fluid
-              show-clear
+
+            <!-- Filter by Date Range -->
+            <PrimeVueDatePicker
+              v-model="commission_queryParams.dateRange"
               selection-mode="range"
-              :hide-on-range-selection="true"
+              show-icon
+              show-clear
+              date-format="dd/mm/yy"
+              placeholder="Select date range"
+              class="w-72 text-sm"
               @clear-click="commission_queryParams.startDate = null"
-            /> -->
+              @update:model-value="onDateRangeChange"
+            />
+
+            <!-- Filter by Commission Type -->
             <PrimeVueSelect
               v-model="commission_queryParams.sourceType"
               display="chip"

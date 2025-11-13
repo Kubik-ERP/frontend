@@ -40,9 +40,10 @@ export interface IStaffMemberListProvided {
 }
 
 export interface IStaffCommissionsRequestQuery{
-  startDate: string | null;
-  endDate: string | null;
+  startDate: Date | string | null;
+  endDate: Date | string | null;
   page: number;
   pageSize: number;
   sourceType?: 'product' | 'voucher' | null;
+  dateRange: Date | null;
 }

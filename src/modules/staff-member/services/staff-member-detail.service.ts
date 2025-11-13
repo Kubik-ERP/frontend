@@ -20,6 +20,7 @@ export const useStaffMemberDetailService = () => {
     sourceType: null,
     pageSize: 10,
     page: 1,
+    dateRange: null,
   });
 
   const staffMemberDetails_fetchInformation = async () => {
