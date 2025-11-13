@@ -13,6 +13,11 @@ const {
   staffMemberDetails_queryParams,
   staffMemberDetails_onChangePage,
   staffMemberDetails,
+<<<<<<< HEAD
+=======
+  orderStatusClass,
+  orderTypeClass,
+>>>>>>> 886f121ce2c49cc924e369fbf97bde7174f18d98
 } = useStaffMemberDetailService();
 
 /**

@@ -17,7 +17,7 @@ import type { DataTableSortEvent } from 'primevue';
 import type { IBatch, IWasteLogFormData, IWasteLogListProvided, IWasteLogListQueryParams } from '../interfaces';
 import type {
   IWasteLog,
-  WasteLogItem as IWasteLogItemStore,
+  IWasteLogItem as IWasteLogItemStore,
   IWasteLogCreateEditFormPayload,
 } from '../interfaces/waste-log-store.interface';
 import type { IInventoryItems } from '@/modules/items/interfaces';
@@ -105,8 +105,13 @@ export const useWasteLogListService = (): IWasteLogListProvided => {
    * Each waste log contains multiple items, we flatten them for table display
    */
   const wasteLogList_flattenedItems = computed(() => {
-    return wasteLog_lists.value.items.flatMap((wasteLog) =>
-      wasteLog.wasteLogItems.map((item) => ({
+    // Check if wasteLog_lists.value and items exist
+    if (!wasteLog_lists.value?.items || !Array.isArray(wasteLog_lists.value.items)) {
+      return [];
+    }
+
+    return wasteLog_lists.value.items.flatMap(wasteLog =>
+      wasteLog.wasteLogItems.map(item => ({
         ...item,
         wasteLogId: wasteLog.wasteLogId,
         batchId: wasteLog.batchId,
@@ -121,7 +126,7 @@ export const useWasteLogListService = (): IWasteLogListProvided => {
    */
   const wasteLogList_mapApiResponseToFormData = (apiData: IWasteLog): void => {
     // Find batch object from options using batchId
-    const batchObject = wasteLogList_batchOptions.value.find((batch) => batch.id === apiData.batchId);
+    const batchObject = wasteLogList_batchOptions.value.find(batch => batch.id === apiData.batchId);
 
     wasteLogList_formData.value = {
       batchId: batchObject || apiData.batchId,

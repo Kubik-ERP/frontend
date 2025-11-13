@@ -66,5 +66,6 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
     staffMemberList_dropdownItemTitles: staffMember_listDropdownItemTitles,
     staffMemberList_deleteStaffMember: async () => {},
     staffMemberList_onChangePage: () => {},
+    staffMemberList_onDetail: () => {},
   };
 };

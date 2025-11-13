@@ -23,7 +23,7 @@ const {
   menuRecipeCreateEdit_listColumns,
   menuRecipeCreateEdit_listIngredientItemsOnDialog,
   menuRecipeCreateEdit_listInventoryItems,
-  menuRecipeCreateEdit_listOutputUnitOptions,
+  menuRecipeCreateEdit_availableUomOptions,
   menuRecipeCreateEdit_onShowDialogCancelAddIngredient,
   menuRecipeCreateEdit_onAddIngredientItem,
   menuRecipeCreateEdit_onEditIngredientItem,
@@ -108,10 +108,11 @@ const {
                   id="unit"
                   v-model="menuRecipeCreateEdit_formDataOfIngredientItem.uom"
                   filter
-                  :options="menuRecipeCreateEdit_listOutputUnitOptions"
+                  :options="menuRecipeCreateEdit_availableUomOptions"
                   option-label="label"
                   option-value="value"
                   placeholder="Select Unit"
+                  :disabled="!menuRecipeCreateEdit_formDataOfIngredientItem.itemId"
                   class="[&>span]:text-sm text-black w-full"
                   :class="{ ...classes }"
                   :pt="{
@@ -143,7 +144,7 @@ const {
               {{
                 useCurrencyFormat({
                   data: menuRecipeCreateEdit_listIngredientItemsOnDialog.reduce(
-                    (total, item) => total + (item.itemId?.pricePerUnit ?? 0) * item.quantity,
+                    (total, item) => total + (item.cost ?? 0),
                     0,
                   ),
                 })
@@ -219,7 +220,7 @@ const {
                 <span class="font-normal text-black text-sm">
                   {{
                     useCurrencyFormat({
-                      data: data.itemId?.pricePerUnit * data.quantity || 0,
+                      data: data.cost || 0,
                     })
                   }}
                 </span>
