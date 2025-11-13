@@ -40,6 +40,7 @@ export const useMenuRecipeDetailService = (): IMenuRecipeDetailProvided => {
    * @param ingredient - Menu recipe ingredient data
    * @returns Calculated cost based on UOM conversion
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const calculateIngredientCost = (ingredient: any): number => {
     if (!ingredient?.inventory_item) return 0;
 
@@ -54,6 +55,7 @@ export const useMenuRecipeDetailService = (): IMenuRecipeDetailProvided => {
 
     // Find the matching conversion for the selected UOM
     const conversion = item.conversions.find(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (conv: any) => conv.unit_symbol === selectedUom || conv.unit_name === selectedUom,
     );
 

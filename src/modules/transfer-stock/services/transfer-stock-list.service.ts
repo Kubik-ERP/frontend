@@ -67,7 +67,8 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
   });
 
   const transferStockList_formDataOfReceive = ref<ITransferStockReceivePayload>({
-    status: 'receive',
+    status: 'received',
+    items: [],
   });
 
   const transferStockList_formDataOfShip = ref<ITransferStockShipPayload>({
@@ -323,7 +324,8 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
   const transferStockList_onShowDialogReceive = (id: string): void => {
     transferStockList_selectedTransferStockId.value = id;
     transferStockList_formDataOfReceive.value = {
-      status: 'receive',
+      status: 'received',
+      items: [],
     };
 
     const argsEventEmitter: IPropsDialog = {
@@ -394,7 +396,7 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
 
     eventBus.emit('AppBaseDialog', argsEventEmitter);
     transferStockList_selectedTransferStockId.value = '';
-    transferStockList_formDataOfReceive.value = { status: 'receive' };
+    transferStockList_formDataOfReceive.value = { status: 'received', items: [] };
   };
 
   /**
@@ -504,7 +506,10 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
     }
 
     try {
-      await store.transferStock_receive(transferStockList_selectedTransferStockId.value);
+      await store.transferStock_receive(
+        transferStockList_selectedTransferStockId.value,
+        transferStockList_formDataOfReceive.value,
+      );
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,

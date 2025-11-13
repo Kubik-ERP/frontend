@@ -10,17 +10,14 @@ const {
   transferStockDetail_dynamicButtonAction,
   transferStockDetail_dynamicButtonLabel,
   transferStockDetail_onCancel,
+  transferStockDetail_shouldShowActionButton,
   transferStockDetail_shouldShowCancelButton,
 } = inject<ITransferStockDetailProvided>('transferStockDetail')!;
 </script>
 
 <template>
   <section
-    v-if="
-      transferStockDetail_data?.status?.toLowerCase() !== 'cancelled' &&
-      transferStockDetail_data?.status?.toLowerCase() !== 'canceled' &&
-      transferStockDetail_data?.status?.toLowerCase() !== 'closed'
-    "
+    v-if="transferStockDetail_shouldShowActionButton"
     id="transfer-stock-detail-button-actions"
     class="flex items-center justify-between w-full"
   >

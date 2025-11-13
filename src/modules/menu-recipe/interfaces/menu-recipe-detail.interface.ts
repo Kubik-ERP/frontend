@@ -4,7 +4,7 @@ import type { IMenuRecipe, IMenuRecipeListVersion } from './menu-recipe-store.in
 export interface IMenuRecipeDetailProvided {
   menuRecipeDetail_calculatedMarginPercent: globalThis.ComputedRef<number>;
   menuRecipeDetail_calculatedMarginRp: globalThis.ComputedRef<number>;
-  menuRecipeDetail_calculateIngredientCost: (ingredient: any) => number;
+  menuRecipeDetail_calculateIngredientCost: (ingredient: unknown) => number;
   menuRecipeDetail_data: globalThis.Ref<IMenuRecipe | null>;
   menuRecipeDetail_fetchDetails: () => Promise<unknown>;
   menuRecipeDetail_fetchDelete: () => Promise<unknown>;

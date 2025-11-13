@@ -237,12 +237,25 @@ export interface ITransferStockShipPayload {
 }
 
 export interface ITransferStockReceivePayload {
-  status: 'receive';
+  status: 'received' | 'received_with_issue';
+  items: Array<{
+    itemId: string;
+    qty_shipped: number;
+    qty_received: number;
+    notes?: string;
+  }>;
 }
 
 export interface ITransferStockRejectPayload {
   status: 'reject';
   note: string;
+}
+
+// Response for check product destination
+export interface ITransferStockCheckProductDestinationResponse {
+  success: boolean;
+  message?: string;
+  data?: any;
 }
 
 // Request query params

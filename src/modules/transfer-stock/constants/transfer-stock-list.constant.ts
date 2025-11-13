@@ -3,51 +3,61 @@ export const TRANSFER_STOCK_LIST_COLUMNS: IColumnDataTable[] = [
     label: 'Transaction Code',
     sortable: true,
     value: 'transactionCode',
+    width: '260px',
   },
   {
     label: 'From Store',
     sortable: true,
     value: 'storeFrom',
+    width: '260px',
   },
   {
     label: 'To Store',
     sortable: true,
     value: 'storeTo',
+    width: '260px',
   },
   {
     label: 'Status',
     sortable: true,
     value: 'status',
+    width: '400px',
   },
   {
     label: 'Total Items',
     sortable: false,
     value: 'totalItems',
+    width: '120px',
   },
   {
     label: 'Total Qty',
     sortable: false,
     value: 'totalQty',
+    width: '120px',
   },
   {
     label: 'Total Value',
     sortable: false,
     value: 'totalValue',
+    width: '240px',
   },
   {
     label: 'Drafted At',
     sortable: true,
     value: 'draftedAt',
+    width: '200px',
   },
   {
     label: 'Shipped At',
     sortable: true,
     value: 'shippedAt',
+    width: '200px',
   },
   {
     label: '',
     sortable: false,
     value: 'action',
+    width: '100px',
   },
 ];
 

@@ -15,6 +15,7 @@ export interface ITransferStockDetailProvided {
   transferStockDetail_dynamicButtonLabel: (status: string) => string;
   transferStockDetail_fetchApprove: () => Promise<unknown>;
   transferStockDetail_fetchCancel: () => Promise<unknown>;
+  transferStockDetail_fetchCheckProductDestination: (id: string) => Promise<unknown>;
   transferStockDetail_fetchDetails: (id: string) => Promise<unknown>;
   transferStockDetail_fetchReceive: () => Promise<unknown>;
   transferStockDetail_fetchShip: () => Promise<unknown>;
@@ -26,6 +27,7 @@ export interface ITransferStockDetailProvided {
   transferStockDetail_formValidationsOfCancel: globalThis.Ref<Validation>;
   transferStockDetail_formValidationsOfShip: globalThis.Ref<Validation>;
   transferStockDetail_formValidationsOfReceive: globalThis.Ref<Validation>;
+  transferStockDetail_formatStatusText: (status: string) => string;
   transferStockDetail_getStatusClass: (status: string) => string;
   transferStockDetail_isLoading: globalThis.Ref<boolean>;
   transferStockDetail_onApprove: () => Promise<void>;
@@ -43,8 +45,9 @@ export interface ITransferStockDetailProvided {
   transferStockDetail_onShowDialogReceive: () => void;
   transferStockDetail_onSubmitApprove: () => Promise<void>;
   transferStockDetail_onSubmitCancel: () => Promise<void>;
-  transferStockDetail_onSubmitShip: () => Promise<void>;
   transferStockDetail_onSubmitReceive: () => Promise<void>;
+  transferStockDetail_onSubmitShip: () => Promise<void>;
+  transferStockDetail_shouldShowActionButton: globalThis.Ref<boolean>;
   transferStockDetail_shouldShowCancelButton: globalThis.Ref<boolean>;
   // PDF export functionality data
   shippingDocumentData: globalThis.Ref<TransferStockShippingDocumentPdfData | null>;

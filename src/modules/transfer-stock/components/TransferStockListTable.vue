@@ -90,7 +90,13 @@ watch(searchValue, newValue => {
         <PrimeVueChip
           :class="[transferStockList_getClassOfStatus(data[column.value]), 'text-xs font-normal']"
           :label="
-            data[column.value] ? data[column.value].charAt(0).toUpperCase() + data[column.value].slice(1) : ''
+            data[column.value]
+              ? data[column.value]
+                  .toLowerCase()
+                  .split('_')
+                  .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ')
+              : ''
           "
         />
       </template>

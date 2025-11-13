@@ -14,8 +14,8 @@ import eventBus from '@/plugins/mitt';
 /**
  * @description Inject all the data and methods what we need
  */
-const { transferStockDetail_data, transferStockDetail_getStatusClass, shippingDocumentData } =
-  inject<ITransferStockDetailProvided>('transferStockDetail')!;
+const { transferStockDetail_data, transferStockDetail_formatStatusText, transferStockDetail_getStatusClass, shippingDocumentData } =
+  inject<ITransferStockDetailProvided>('transferStockDetail')!
 
 /**
  * @description Create ref for PDF template element
@@ -271,10 +271,7 @@ const transferStockListColumns = [
               class="font-normal text-xs px-2 py-1 rounded-full w-fit"
               :class="[transferStockDetail_getStatusClass(transferStockDetail_data?.status ?? '')]"
             >
-              {{
-                (transferStockDetail_data?.status?.charAt(0)?.toUpperCase() ?? '') +
-                (transferStockDetail_data?.status?.slice(1) ?? '')
-              }}
+              {{ transferStockDetail_formatStatusText(transferStockDetail_data?.status ?? '') }}
             </span>
           </section>
 
