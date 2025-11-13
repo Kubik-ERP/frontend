@@ -20,6 +20,40 @@ const {
   transferStockCreateEdit_totalQuantity,
   transferStockCreateEdit_totalValue,
 } = inject('transferStockCreateEdit') as ITransferStockCreateEditProvided;
+
+/**
+ * @description Helper function to format currency from Decimal.js or number
+ */
+const formatCurrency = (value: unknown): string => {
+  if (!value) return useCurrencyFormat({ data: 0, hidePrefix: false, addSuffix: false });
+
+  // Handle Decimal.js format from backend
+  if (typeof value === 'object' && value !== null && 's' in value && 'e' in value && 'd' in value) {
+    const decimalValue = value as { s: number; e: number; d: number[] };
+    const sign = decimalValue.s || 1;
+    const digits = decimalValue.d || [0];
+    const exponent = decimalValue.e || 0;
+
+    // Convert Decimal.js format to number
+    let numValue = 0;
+    
+    // Combine all digits
+    for (let i = 0; i < digits.length; i++) {
+      const digitValue = digits[i];
+      const digitLength = digitValue.toString().length;
+      numValue = numValue * Math.pow(10, digitLength) + digitValue;
+    }
+    
+    // Apply exponent adjustment
+    const totalDigits = digits.reduce((acc: number, d: number) => acc + d.toString().length, 0);
+    const adjustment = exponent - totalDigits + 1;
+    numValue = numValue * Math.pow(10, adjustment) * sign;
+
+    return useCurrencyFormat({ data: numValue, hidePrefix: false, addSuffix: false });
+  }
+
+  return useCurrencyFormat({ data: typeof value === 'number' ? value : 0, hidePrefix: false, addSuffix: false });
+};
 </script>
 
 <template>
@@ -178,27 +212,15 @@ const {
               </template>
 
               <template v-else-if="field === 'unitPrice'">
-                <span v-if="data.unitPrice">
-                  {{
-                    useCurrencyFormat({
-                      data: data.unitPrice,
-                      hidePrefix: false,
-                      addSuffix: false,
-                    })
-                  }}
+                <span v-if="data.unitPrice" class="font-medium">
+                  {{ formatCurrency(data.unitPrice) }}
                 </span>
                 <span v-else class="text-gray-400">-</span>
               </template>
 
               <template v-else-if="field === 'totalPrice'">
                 <span v-if="data.totalPrice" class="font-medium">
-                  {{
-                    useCurrencyFormat({
-                      data: data.totalPrice,
-                      hidePrefix: false,
-                      addSuffix: false,
-                    })
-                  }}
+                  {{ formatCurrency(data.totalPrice) }}
                 </span>
                 <span v-else class="text-gray-400">-</span>
               </template>

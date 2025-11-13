@@ -231,8 +231,8 @@ export interface ITransferStockCancelPayload {
 
 export interface ITransferStockShipPayload {
   status: 'ship';
-  logistic_provider?: string;
-  tracking_number?: string;
+  logistic_provider: string;
+  tracking_number: string;
   delivery_note?: string;
 }
 

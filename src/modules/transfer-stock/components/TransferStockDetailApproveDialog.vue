@@ -13,14 +13,14 @@ const {
 </script>
 
 <template>
-  <AppBaseDialog
-    id="transfer-stock-detail-approve"
-    title="Approve Transfer Stock"
-    custom-body-class="px-6"
-    custom-footer-class="px-6 pb-6"
-    custom-header-class="px-6 pt-6"
-  >
-    <template #body>
+  <AppBaseDialog id="transfer-stock-detail-approve">
+    <template #header>
+      <header class="flex flex-col gap-2 w-full">
+        <h6 class="font-semibold text-black text-lg">Approve Transfer Stock</h6>
+      </header>
+    </template>
+
+    <template #content>
       <div class="space-y-4">
         <p class="text-sm text-gray-600">
           Are you sure you want to approve this transfer stock?
@@ -29,20 +29,23 @@ const {
     </template>
 
     <template #footer>
-      <div class="flex items-center justify-end gap-4">
+      <footer class="flex items-center justify-end w-full gap-4">
         <PrimeVueButton
-          class="border border-gray-300 text-gray-700 px-4 py-2"
+          class="font-semibold text-base text-primary w-full max-w-40 border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10"
           label="Cancel"
+          severity="secondary"
           variant="outlined"
           @click="transferStockDetail_onCloseDialogApprove"
         />
+
         <PrimeVueButton
-          class="bg-blue-600 text-white px-4 py-2"
+          class="bg-primary border-none text-base py-3 w-full max-w-40"
           label="Approve"
+          type="button"
           :loading="transferStockDetail_isLoading"
           @click="transferStockDetail_onSubmitApprove"
         />
-      </div>
+      </footer>
     </template>
   </AppBaseDialog>
 </template>

@@ -10,6 +10,7 @@ const {
   transferStockDetail_dynamicButtonAction,
   transferStockDetail_dynamicButtonLabel,
   transferStockDetail_onCancel,
+  transferStockDetail_shouldShowCancelButton,
 } = inject<ITransferStockDetailProvided>('transferStockDetail')!;
 </script>
 
@@ -31,6 +32,7 @@ const {
     />
 
     <PrimeVueButton
+      v-if="transferStockDetail_shouldShowCancelButton"
       class="w-fit px-4 py-3"
       variant="text"
       @click="transferStockDetail_onCancel()"

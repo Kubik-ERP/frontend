@@ -1,12 +1,3 @@
-// Constants
-// import {
-//   TRANSFER_STOCK_DETAIL_REQUEST,
-//   TRANSFER_STOCK_DETAIL_APPROVE_REQUEST,
-//   TRANSFER_STOCK_DETAIL_CANCEL_REQUEST,
-//   TRANSFER_STOCK_DETAIL_SHIP_REQUEST,
-//   TRANSFER_STOCK_DETAIL_RECEIVE_REQUEST,
-// } from '../constants';
-
 // Interfaces
 import type {
   ITransferStockDetailProvided,
@@ -36,7 +27,6 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
   const route = useRoute();
   const store = useTransferStockStore(); // Instance of the store
   const { transferStock_data, transferStock_isLoading } = storeToRefs(store);
-  // const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
    * @description Computed properties for business logic
@@ -86,6 +76,8 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
 
   const transferStockDetail_formRulesOfShip = computed(() => ({
     status: { required },
+    logistic_provider: { required },
+    tracking_number: { required },
   }));
 
   const transferStockDetail_formValidationsOfApprove = useVuelidate(
@@ -158,6 +150,42 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
   };
 
   /**
+   * @description Handle fetch api transfer stock - approve
+   */
+  const transferStockDetail_fetchApprove = async (): Promise<unknown> => {
+    try {
+      return await store.transferStock_approve(
+        transferStockDetail_routeParamsId.value,
+        transferStockDetail_formDataOfApprove.value,
+      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api transfer stock - cancel
+   */
+  const transferStockDetail_fetchCancel = async (): Promise<unknown> => {
+    try {
+      return await store.transferStock_cancel(
+        transferStockDetail_routeParamsId.value,
+        transferStockDetail_formDataOfCancel.value,
+      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
    * @description Handle fetch api transfer stock - details
    */
   const transferStockDetail_fetchDetails = async (id: string): Promise<unknown> => {
@@ -173,14 +201,63 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
   };
 
   /**
+   * @description Handle fetch api transfer stock - receive
+   */
+  const transferStockDetail_fetchReceive = async (): Promise<unknown> => {
+    try {
+      return await store.transferStock_receive(transferStockDetail_routeParamsId.value);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle fetch api transfer stock - ship
+   */
+  const transferStockDetail_fetchShip = async (): Promise<unknown> => {
+    try {
+      return await store.transferStock_ship(
+        transferStockDetail_routeParamsId.value,
+        transferStockDetail_formDataOfShip.value,
+      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    }
+  };
+
+  /**
+   * @description Handle business logic to render dynamic class of status
+   */
+  const transferStockDetail_getStatusClass = (status: string): string => {
+    const statusClasses = {
+      draft: 'text-gray-600 bg-gray-100',
+      drafted: 'text-gray-600 bg-gray-100',
+      pending: 'text-yellow-600 bg-yellow-100',
+      approved: 'text-blue-600 bg-blue-100',
+      shipped: 'text-orange-600 bg-orange-100',
+      received: 'text-green-600 bg-green-100',
+      closed: 'text-purple-600 bg-purple-100',
+      canceled: 'text-red-600 bg-red-100',
+      cancelled: 'text-red-600 bg-red-100',
+    };
+
+    return statusClasses[status.toLowerCase() as keyof typeof statusClasses] || 'text-gray-600 bg-gray-100';
+  };
+
+  /**
    * @description Handle business logic for approve transfer stock
    */
   const transferStockDetail_onApprove = async (): Promise<void> => {
     try {
-      await store.transferStock_approve(
-        transferStockDetail_routeParamsId.value,
-        transferStockDetail_formDataOfApprove.value,
-      );
+      await transferStockDetail_fetchApprove();
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
@@ -293,7 +370,7 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
    */
   const transferStockDetail_onReceive = async (): Promise<void> => {
     try {
-      await store.transferStock_receive(transferStockDetail_routeParamsId.value);
+      await transferStockDetail_fetchReceive();
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
@@ -316,10 +393,7 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
    */
   const transferStockDetail_onShip = async (): Promise<void> => {
     try {
-      await store.transferStock_ship(
-        transferStockDetail_routeParamsId.value,
-        transferStockDetail_formDataOfShip.value,
-      );
+      await transferStockDetail_fetchShip();
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
@@ -433,10 +507,7 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
     }
 
     try {
-      await store.transferStock_cancel(
-        transferStockDetail_routeParamsId.value,
-        transferStockDetail_formDataOfCancel.value,
-      );
+      await transferStockDetail_fetchCancel();
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
@@ -507,19 +578,23 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
   });
 
   /**
-   * @description Handle export shipping document to PDF
-   * Note: This function is placeholder and will be implemented at component level
+   * @description Check if cancel button should be shown
+   * Can cancel at: Draft/Drafted/Approved (before shipped)
    */
-  const handleExportShippingDocumentToPdf = (): void => {
-    // This function will be properly implemented in the component where html2pdf is available
-    console.warn('PDF export should be handled at component level with html2pdf library');
-  };
+  const transferStockDetail_shouldShowCancelButton = computed(() => {
+    const status = transferStock_data.value?.status?.toLowerCase() || '';
+    return ['draft', 'drafted', 'approved'].includes(status);
+  });
 
   return {
     transferStockDetail_data: transferStock_data,
     transferStockDetail_dynamicButtonAction,
     transferStockDetail_dynamicButtonLabel,
+    transferStockDetail_fetchApprove,
+    transferStockDetail_fetchCancel,
     transferStockDetail_fetchDetails,
+    transferStockDetail_fetchReceive,
+    transferStockDetail_fetchShip,
     transferStockDetail_formDataOfApprove,
     transferStockDetail_formDataOfCancel,
     transferStockDetail_formDataOfReceive,
@@ -528,6 +603,7 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
     transferStockDetail_formValidationsOfCancel,
     transferStockDetail_formValidationsOfReceive,
     transferStockDetail_formValidationsOfShip,
+    transferStockDetail_getStatusClass,
     transferStockDetail_isLoading: transferStock_isLoading,
     transferStockDetail_onApprove,
     transferStockDetail_onCancel,
@@ -546,8 +622,8 @@ export const useTransferStockDetailService = (): ITransferStockDetailProvided =>
     transferStockDetail_onSubmitCancel,
     transferStockDetail_onSubmitReceive,
     transferStockDetail_onSubmitShip,
-    // PDF export functionality
-    handleExportShippingDocumentToPdf,
+    transferStockDetail_shouldShowCancelButton,
+    // PDF export functionality data
     shippingDocumentData,
   };
 };

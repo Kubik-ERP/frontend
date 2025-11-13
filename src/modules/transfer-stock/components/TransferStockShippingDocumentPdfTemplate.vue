@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Constants
+import { APP_LOGO_BASE64 } from '@/app/constants';
+
 // Interfaces
 interface TransferStockShippingDocumentPdfData {
   transactionCode: string;
@@ -43,7 +46,7 @@ defineProps<{
  * @description Helper functions for currency formatting
  */
 const formatCurrency = (value: unknown): string => {
-  if (!value) return useCurrencyFormat({ data: 0 });
+  if (!value) return useCurrencyFormat({ data: 0, hidePrefix: true, addSuffix: true });
   
   // Handle Decimal.js format
   if (typeof value === 'object' && value !== null && 's' in value && 'e' in value && 'd' in value) {
@@ -58,123 +61,252 @@ const formatCurrency = (value: unknown): string => {
     }
     numValue = numValue * sign * Math.pow(10, exponent - digits.length + 1);
     
-    return useCurrencyFormat({ data: numValue });
+    return useCurrencyFormat({ data: numValue, hidePrefix: true, addSuffix: true });
   }
   
-  return useCurrencyFormat({ data: typeof value === 'number' ? value : 0 });
+  return useCurrencyFormat({ data: typeof value === 'number' ? value : 0, hidePrefix: true, addSuffix: true });
 };
 </script>
 
 <template>
-  <div id="transfer-stock-shipping-document-pdf" class="bg-white p-8 max-w-4xl mx-auto">
-    <!-- Header -->
-    <header class="text-center mb-8 border-b pb-6">
-      <h1 class="text-3xl font-bold text-gray-800 mb-2">TRANSFER SHIPPING DOCUMENT</h1>
-      <h2 class="text-xl font-semibold text-gray-600">{{ shippingDocumentData.transactionCode }}</h2>
-    </header>
-
-    <!-- Shipping Information -->
-    <div class="grid grid-cols-2 gap-8 mb-8">
-      <div>
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">FROM STORE</h3>
-        <div class="bg-gray-50 p-4 rounded">
-          <p class="font-medium text-gray-800">{{ shippingDocumentData.storeFrom.name }}</p>
-          <p class="text-gray-600">{{ shippingDocumentData.storeFrom.address }}</p>
-          <p class="text-gray-600">{{ shippingDocumentData.storeFrom.city }} {{ shippingDocumentData.storeFrom.postalCode }}</p>
-        </div>
-      </div>
-      <div>
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">TO STORE</h3>
-        <div class="bg-gray-50 p-4 rounded">
-          <p class="font-medium text-gray-800">{{ shippingDocumentData.storeTo.name }}</p>
-          <p class="text-gray-600">{{ shippingDocumentData.storeTo.address }}</p>
-          <p class="text-gray-600">{{ shippingDocumentData.storeTo.city }} {{ shippingDocumentData.storeTo.postalCode }}</p>
-        </div>
-      </div>
+  <div
+    id="transfer-stock-shipping-document-pdf"
+    style="
+      font-family: 'Inter', Helvetica, sans-serif;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #333333;
+      background-color: #ffffff;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0;
+      box-sizing: border-box;
+    "
+  >
+    <div id="navbar" style="background-color: #18618b; padding: 24px 32px">
+      <img :src="APP_LOGO_BASE64" alt="KUBIXPOS Logo" style="width: 200px" />
     </div>
 
-    <!-- Shipping Details -->
-    <div class="grid grid-cols-2 gap-8 mb-8">
-      <div>
-        <h4 class="font-semibold text-gray-700 mb-2">Shipped Date:</h4>
-        <p class="text-gray-600">
-          {{ shippingDocumentData.shippedAt ? useFormatDate(String(shippingDocumentData.shippedAt), 'dd/mm/yyyy') : '-' }}
-        </p>
+    <div
+      id="content"
+      style="
+        color: #333333;
+        background-color: #ffffff;
+        width: 100%;
+        margin: 0 auto;
+        padding: 32px;
+        box-sizing: border-box;
+      "
+    >
+      <!-- Header Section -->
+      <div style="text-align: center; margin-bottom: 32px">
+        <h1 style="font-size: 24px; font-weight: bold; margin: 0 0 8px 0; color: #333333">Transfer Shipping Document</h1>
+        <h2 style="font-size: 16px; font-weight: 600; margin: 0; color: #333333">
+          {{ shippingDocumentData.transactionCode }}
+        </h2>
       </div>
-      <div>
-        <h4 class="font-semibold text-gray-700 mb-2">Tracking Number:</h4>
-        <p class="text-gray-600">{{ shippingDocumentData.trackingNumber || '-' }}</p>
-      </div>
-      <div>
-        <h4 class="font-semibold text-gray-700 mb-2">Logistic Provider:</h4>
-        <p class="text-gray-600">{{ shippingDocumentData.logisticProvider || '-' }}</p>
-      </div>
-      <div>
-        <h4 class="font-semibold text-gray-700 mb-2">Delivery Notes:</h4>
-        <p class="text-gray-600">{{ shippingDocumentData.deliveryNote || '-' }}</p>
-      </div>
-    </div>
 
-    <!-- Items Table -->
-    <div class="mb-8">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">TRANSFER ITEMS</h3>
-      <div class="overflow-hidden border border-gray-300 rounded-lg">
-        <table class="w-full">
-          <thead class="bg-gray-100">
+      <!-- Store Information -->
+      <div style="margin-bottom: 32px">
+        <table style="width: 100%; border-collapse: collapse">
+          <tbody>
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Name</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Price</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+              <td style="width: 50%; vertical-align: top; padding-right: 16px">
+                <div
+                  style="
+                    border: 1px solid #8cc8eb;
+                    border-radius: 4px;
+                    padding: 16px;
+                    background-color: #ffffff;
+                  "
+                >
+                  <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0; color: #333333">From Store</h3>
+                  <div style="font-size: 13px">
+                    <div style="font-weight: 600; margin-bottom: 4px">{{ shippingDocumentData.storeFrom.name }}</div>
+                    <div style="color: #6b7280; margin-bottom: 2px">{{ shippingDocumentData.storeFrom.address }}</div>
+                    <div style="color: #6b7280">
+                      {{ shippingDocumentData.storeFrom.city }} {{ shippingDocumentData.storeFrom.postalCode }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td style="width: 50%; vertical-align: top; padding-left: 16px">
+                <div
+                  style="
+                    border: 1px solid #8cc8eb;
+                    border-radius: 4px;
+                    padding: 16px;
+                    background-color: #ffffff;
+                  "
+                >
+                  <h3 style="font-size: 14px; font-weight: 600; margin: 0 0 12px 0; color: #333333">To Store</h3>
+                  <div style="font-size: 13px">
+                    <div style="font-weight: 600; margin-bottom: 4px">{{ shippingDocumentData.storeTo.name }}</div>
+                    <div style="color: #6b7280; margin-bottom: 2px">{{ shippingDocumentData.storeTo.address }}</div>
+                    <div style="color: #6b7280">
+                      {{ shippingDocumentData.storeTo.city }} {{ shippingDocumentData.storeTo.postalCode }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Shipping Details -->
+      <div
+        style="
+          border: 1px solid #8cc8eb;
+          border-radius: 4px;
+          padding: 24px;
+          margin-bottom: 32px;
+          background-color: #ffffff;
+        "
+      >
+        <h3 style="font-size: 16px; font-weight: 600; margin: 0 0 16px 0; color: #333333">Shipping Information</h3>
+
+        <table style="width: 100%; font-size: 14px; border-collapse: collapse">
+          <tbody>
+            <tr>
+              <td style="width: 25%; font-weight: normal; padding: 4px 0">Shipped Date</td>
+              <td style="width: 5%; text-align: center; padding: 4px 0">:</td>
+              <td style="font-weight: normal; padding: 4px 0">
+                {{
+                  shippingDocumentData.shippedAt
+                    ? useFormatDate(String(shippingDocumentData.shippedAt), 'dd/mm/yyyy')
+                    : '-'
+                }}
+              </td>
+            </tr>
+            <tr>
+              <td style="font-weight: normal; padding: 4px 0">Tracking Number</td>
+              <td style="text-align: center; padding: 4px 0">:</td>
+              <td style="padding: 4px 0">{{ shippingDocumentData.trackingNumber || '-' }}</td>
+            </tr>
+            <tr>
+              <td style="font-weight: normal; padding: 4px 0">Logistic Provider</td>
+              <td style="text-align: center; padding: 4px 0">:</td>
+              <td style="padding: 4px 0">{{ shippingDocumentData.logisticProvider || '-' }}</td>
+            </tr>
+            <tr>
+              <td style="font-weight: normal; padding: 4px 0">Delivery Notes</td>
+              <td style="text-align: center; padding: 4px 0">:</td>
+              <td style="padding: 4px 0">{{ shippingDocumentData.deliveryNote || '-' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Items Table -->
+      <div
+        style="
+          border: 1px solid #8cc8eb;
+          border-radius: 4px;
+          padding: 24px;
+          margin-bottom: 32px;
+          background-color: #ffffff;
+        "
+      >
+        <h3 style="font-size: 16px; font-weight: 600; margin: 0 0 16px 0; color: #333333">Transfer Items</h3>
+
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px">
+          <thead>
+            <tr style="border-bottom: 2px solid #e5e7eb">
+              <th style="text-align: left; padding: 8px 4px; font-weight: 600; color: #374151">SKU</th>
+              <th style="text-align: left; padding: 8px 4px; font-weight: 600; color: #374151">Item Name</th>
+              <th style="text-align: left; padding: 8px 4px; font-weight: 600; color: #374151">Unit</th>
+              <th style="text-align: right; padding: 8px 4px; font-weight: 600; color: #374151">Qty</th>
+              <th style="text-align: right; padding: 8px 4px; font-weight: 600; color: #374151">Unit Price</th>
+              <th style="text-align: right; padding: 8px 4px; font-weight: 600; color: #374151">Subtotal</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-200">
-            <tr v-for="item in shippingDocumentData.transferStockItems" :key="item.id" class="hover:bg-gray-50">
-              <td class="px-4 py-3 text-sm text-gray-900">{{ item.masterInventoryItems.sku }}</td>
-              <td class="px-4 py-3 text-sm text-gray-900">{{ item.masterInventoryItems.name }}</td>
-              <td class="px-4 py-3 text-sm text-gray-900">{{ item.masterInventoryItems.unit }}</td>
-              <td class="px-4 py-3 text-sm text-gray-900">{{ item.qtyReserved }}</td>
-              <td class="px-4 py-3 text-sm text-gray-900">{{ formatCurrency(item.unitPrice) }}</td>
-              <td class="px-4 py-3 text-sm text-gray-900">{{ formatCurrency(item.subtotal) }}</td>
+          <tbody>
+            <tr
+              v-for="item in shippingDocumentData.transferStockItems"
+              :key="item.id"
+              style="border-bottom: 1px solid #f3f4f6"
+            >
+              <td style="padding: 8px 4px; color: #374151">{{ item.masterInventoryItems.sku || '-' }}</td>
+              <td style="padding: 8px 4px; color: #374151">{{ item.masterInventoryItems.name || '-' }}</td>
+              <td style="padding: 8px 4px; color: #374151">{{ item.masterInventoryItems.unit || '-' }}</td>
+              <td style="padding: 8px 4px; text-align: right; color: #374151">{{ item.qtyReserved || 0 }}</td>
+              <td style="padding: 8px 4px; text-align: right; color: #374151; font-family: 'Inter', monospace">
+                {{ formatCurrency(item.unitPrice) }}
+              </td>
+              <td style="padding: 8px 4px; text-align: right; color: #374151; font-family: 'Inter', monospace">
+                {{ formatCurrency(item.subtotal) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Notes Section -->
+      <div
+        v-if="shippingDocumentData.note"
+        style="
+          border: 1px solid #8cc8eb;
+          border-radius: 4px;
+          padding: 24px;
+          margin-bottom: 32px;
+          background-color: #ffffff;
+        "
+      >
+        <h3 style="font-size: 16px; font-weight: 600; margin: 0 0 12px 0; color: #333333">Notes</h3>
+        <p style="margin: 0; color: #6b7280; font-size: 13px">{{ shippingDocumentData.note }}</p>
+      </div>
+
+      <!-- Signatures Section -->
+      <div style="margin-top: 48px">
+        <table style="width: 100%; border-collapse: collapse">
+          <tbody>
+            <tr>
+              <td style="width: 33%; text-align: center; vertical-align: top">
+                <div style="margin-bottom: 80px">
+                  <div style="font-weight: 600; margin-bottom: 4px">Prepared by:</div>
+                  <div style="font-size: 12px; color: #6b7280">Staff</div>
+                </div>
+                <div style="border-top: 1px solid #333; width: 150px; margin: 0 auto; padding-top: 8px">
+                  <div style="font-size: 12px">Name & Signature</div>
+                </div>
+              </td>
+              <td style="width: 33%; text-align: center; vertical-align: top">
+                <div style="margin-bottom: 80px">
+                  <div style="font-weight: 600; margin-bottom: 4px">Delivered by:</div>
+                  <div style="font-size: 12px; color: #6b7280">Courier</div>
+                </div>
+                <div style="border-top: 1px solid #333; width: 150px; margin: 0 auto; padding-top: 8px">
+                  <div style="font-size: 12px">Name & Signature</div>
+                </div>
+              </td>
+              <td style="width: 33%; text-align: center; vertical-align: top">
+                <div style="margin-bottom: 80px">
+                  <div style="font-weight: 600; margin-bottom: 4px">Received by:</div>
+                  <div style="font-size: 12px; color: #6b7280">Receiver</div>
+                </div>
+                <div style="border-top: 1px solid #333; width: 150px; margin: 0 auto; padding-top: 8px">
+                  <div style="font-size: 12px">Name & Signature</div>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- Notes -->
-    <div v-if="shippingDocumentData.note" class="mb-8">
-      <h3 class="text-lg font-semibold text-gray-800 mb-2">NOTES</h3>
-      <p class="text-gray-600 bg-gray-50 p-4 rounded">{{ shippingDocumentData.note }}</p>
-    </div>
-
     <!-- Footer -->
-    <footer class="text-center text-gray-500 text-sm border-t pt-4">
-      <p>Generated on {{ useFormatDate(new Date(), 'dd/mm/yyyy HH:mm') }}</p>
-    </footer>
+    <div
+      style="
+        text-align: center;
+        padding: 16px 32px;
+        font-size: 12px;
+        color: #6b7280;
+        border-top: 1px solid #e5e7eb;
+      "
+    >
+      <div>Thank you for using KUBIK</div>
+      <div style="margin-top: 4px">Generated on {{ useFormatDate(new Date(), 'dd/mm/yyyy HH:mm') }}</div>
+    </div>
   </div>
 </template>
-
-<style scoped>
-/* PDF-specific styles */
-@media print {
-  body {
-    background: white;
-  }
-  
-  #transfer-stock-shipping-document-pdf {
-    box-shadow: none;
-    margin: 0;
-    padding: 20px;
-  }
-}
-
-/* Ensure proper sizing for PDF generation */
-#transfer-stock-shipping-document-pdf {
-  width: 210mm; /* A4 width */
-  min-height: 297mm; /* A4 height */
-  font-family: Arial, sans-serif;
-}
-</style>

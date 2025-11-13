@@ -110,18 +110,41 @@ const {
         </PrimeVuePopover>
       </template>
 
-      <template v-else-if="column.value === 'batch'">
-        <div class="flex flex-col gap-1">
-          <span class="font-normal text-sm text-grayscale-70">{{ data.batchId }}</span>
-          <span v-if="data.updatedAt" class="font-normal text-xs text-grayscale-60">
-            {{ new Date(data.updatedAt).toLocaleDateString() }}
-          </span>
-        </div>
+      <template v-else-if="column.value === 'inventoryItemName'">
+        <span class="font-medium text-sm text-grayscale-70">{{ data.inventoryItemName || '-' }}</span>
+      </template>
+
+      <template v-else-if="column.value === 'batchId'">
+        <span class="font-normal text-sm text-grayscale-70">{{ data.batchId || '-' }}</span>
+      </template>
+
+      <template v-else-if="column.value === 'storeName'">
+        <span class="font-normal text-sm text-grayscale-70">{{ data.storeName || '-' }}</span>
+      </template>
+
+      <template v-else-if="column.value === 'quantity'">
+        <span class="font-normal text-sm text-grayscale-70">{{ data.quantity ?? 0 }}</span>
+      </template>
+
+      <template v-else-if="column.value === 'uom'">
+        <span class="font-normal text-sm text-grayscale-70">{{ data.uom || '-' }}</span>
+      </template>
+
+      <template v-else-if="column.value === 'category'">
+        <span class="font-normal text-sm text-grayscale-70">{{ data.category || '-' }}</span>
+      </template>
+
+      <template v-else-if="column.value === 'notes'">
+        <span class="font-normal text-sm text-grayscale-70">{{ data.notes || '-' }}</span>
       </template>
 
       <template v-else-if="column.value === 'updatedAt'">
         <span class="font-normal text-sm text-grayscale-70">
-          {{ data[column.value] ? new Date(data[column.value]).toLocaleDateString() : '-' }}
+          {{ data.updatedAt ? new Date(data.updatedAt).toLocaleDateString('id-ID', { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric' 
+          }) : '-' }}
         </span>
       </template>
 

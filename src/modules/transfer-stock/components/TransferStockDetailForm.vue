@@ -1,81 +1,183 @@
 <script setup lang="ts">
+// Components
+import TransferStockShippingDocumentPdfTemplate from './TransferStockShippingDocumentPdfTemplate.vue';
+
+// Html2Pdf
+import html2pdf from 'html2pdf.js';
+
 // Interfaces
 import type { ITransferStockDetailProvided } from '../interfaces';
+
+// Plugins
+import eventBus from '@/plugins/mitt';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { 
-  transferStockDetail_data, 
-  handleExportShippingDocumentToPdf 
-} = inject<ITransferStockDetailProvided>('transferStockDetail')!;
+const { transferStockDetail_data, transferStockDetail_getStatusClass, shippingDocumentData } =
+  inject<ITransferStockDetailProvided>('transferStockDetail')!;
+
+/**
+ * @description Create ref for PDF template element
+ */
+const pdfTemplateRef = ref<InstanceType<typeof TransferStockShippingDocumentPdfTemplate> | null>(null);
+
+/**
+ * @description Loading state for PDF generation
+ */
+const isGeneratingPdf = ref(false);
+
+/**
+ * @description Handle export shipping document to PDF
+ */
+async function handleExportShippingDocumentToPdf() {
+  // Check if data is ready
+  if (!shippingDocumentData.value) {
+    console.error('Shipping document data is not available');
+    return;
+  }
+
+  if (!pdfTemplateRef.value?.$el) {
+    console.error('PDF template element not found');
+    return;
+  }
+
+  if (!transferStockDetail_data.value) {
+    console.error('Transfer stock data is not available');
+    return;
+  }
+
+  try {
+    // Set loading state
+    isGeneratingPdf.value = true;
+
+    const transactionCode = transferStockDetail_data.value.transactionCode ?? 'shipping-document';
+    const filename = `${transactionCode.replace(/[^a-zA-Z0-9]/g, '_')}_SHIPPING_DOCUMENT.pdf`;
+
+    const options = {
+      margin: 0,
+      filename,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        letterRendering: true,
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait',
+      },
+    };
+
+    // Use await to ensure PDF generation completes before clearing loading state
+    await html2pdf().set(options).from(pdfTemplateRef.value.$el).save();
+
+    // Success toast
+    const argsEventEmitter: IPropsToast = {
+      isOpen: true,
+      type: EToastType.SUCCESS,
+      message: 'Shipping document downloaded successfully',
+      position: EToastPosition.TOP_RIGHT,
+    };
+
+    eventBus.emit('AppBaseToast', argsEventEmitter);
+  } catch (error) {
+    console.error('Error exporting to PDF:', error);
+    
+    // Error toast
+    const argsEventEmitter: IPropsToast = {
+      isOpen: true,
+      type: EToastType.DANGER,
+      message: 'Failed to download shipping document',
+      position: EToastPosition.TOP_RIGHT,
+    };
+
+    eventBus.emit('AppBaseToast', argsEventEmitter);
+  } finally {
+    // Always clear loading state
+    isGeneratingPdf.value = false;
+  }
+}
 
 /**
  * @description Helper functions
  */
 const formatCurrency = (value: unknown): string => {
   if (!value) return useCurrencyFormat({ data: 0 });
-  
-  // Handle Decimal.js format
+
+  // Handle Decimal.js format from backend
   if (typeof value === 'object' && value !== null && 's' in value && 'e' in value && 'd' in value) {
     const decimalValue = value as { s: number; e: number; d: number[] };
     const sign = decimalValue.s || 1;
     const digits = decimalValue.d || [0];
     const exponent = decimalValue.e || 0;
-    
+
+    // Convert Decimal.js format to number
+    // For example: {s: 1, e: 4, d: [17500]} means 17500 (where e is the exponent position)
+    // {s: 1, e: 3, d: [3500]} means 3500
     let numValue = 0;
-    for (let i = 0; i < digits.length; i++) {
-      numValue = numValue * 10 + digits[i];
-    }
-    numValue = numValue * sign * Math.pow(10, exponent - digits.length + 1);
     
+    // Combine all digits
+    for (let i = 0; i < digits.length; i++) {
+      const digitValue = digits[i];
+      const digitLength = digitValue.toString().length;
+      numValue = numValue * Math.pow(10, digitLength) + digitValue;
+    }
+    
+    // Apply exponent adjustment
+    const totalDigits = digits.reduce((acc, d) => acc + d.toString().length, 0);
+    const adjustment = exponent - totalDigits + 1;
+    numValue = numValue * Math.pow(10, adjustment) * sign;
+
     return useCurrencyFormat({ data: numValue });
   }
-  
-  return useCurrencyFormat({ data: typeof value === 'number' ? value : 0 });
-};
 
-const getStatusClass = (status: string): string => {
-  const statusClasses = {
-    draft: 'text-gray-600 bg-gray-100',
-    drafted: 'text-gray-600 bg-gray-100',
-    pending: 'text-yellow-600 bg-yellow-100',
-    approved: 'text-blue-600 bg-blue-100',
-    shipped: 'text-orange-600 bg-orange-100',
-    received: 'text-green-600 bg-green-100',
-    received_with_issue: 'text-yellow-700 bg-yellow-200',
-    closed: 'text-purple-600 bg-purple-100',
-    rejected: 'text-red-600 bg-red-100',
-    canceled: 'text-red-600 bg-red-100',
-    cancelled: 'text-red-600 bg-red-100',
-  };
-  
-  return statusClasses[status as keyof typeof statusClasses] || 'text-gray-600 bg-gray-100';
+  return useCurrencyFormat({ data: typeof value === 'number' ? value : 0 });
 };
 
 const getTotalValue = (): string => {
   if (!transferStockDetail_data.value?.transferStockItems) return formatCurrency(0);
-  
-  const total = transferStockDetail_data.value.transferStockItems.reduce((sum: number, item: { subtotal: unknown }) => {
-    const subtotal = item.subtotal;
-    if (typeof subtotal === 'object' && subtotal !== null && 's' in subtotal && 'e' in subtotal && 'd' in subtotal) {
-      const decimalValue = subtotal as { s: number; e: number; d: number[] };
-      const sign = decimalValue.s || 1;
-      const digits = decimalValue.d || [0];
-      const exponent = decimalValue.e || 0;
-      
-      let numValue = 0;
-      for (let i = 0; i < digits.length; i++) {
-        numValue = numValue * 10 + digits[i];
+
+  const total = transferStockDetail_data.value.transferStockItems.reduce(
+    (sum: number, item: { subtotal: unknown }) => {
+      const subtotal = item.subtotal;
+      if (
+        typeof subtotal === 'object' &&
+        subtotal !== null &&
+        's' in subtotal &&
+        'e' in subtotal &&
+        'd' in subtotal
+      ) {
+        const decimalValue = subtotal as { s: number; e: number; d: number[] };
+        const sign = decimalValue.s || 1;
+        const digits = decimalValue.d || [0];
+        const exponent = decimalValue.e || 0;
+
+        // Convert Decimal.js format to number
+        let numValue = 0;
+        
+        // Combine all digits
+        for (let i = 0; i < digits.length; i++) {
+          const digitValue = digits[i];
+          const digitLength = digitValue.toString().length;
+          numValue = numValue * Math.pow(10, digitLength) + digitValue;
+        }
+        
+        // Apply exponent adjustment
+        const totalDigits = digits.reduce((acc: number, d: number) => acc + d.toString().length, 0);
+        const adjustment = exponent - totalDigits + 1;
+        numValue = numValue * Math.pow(10, adjustment) * sign;
+
+        return sum + numValue;
       }
-      numValue = numValue * sign * Math.pow(10, exponent - digits.length + 1);
-      
-      return sum + numValue;
-    }
-    
-    return sum + (typeof subtotal === 'number' ? subtotal : 0);
-  }, 0);
-  
+
+      return sum + (typeof subtotal === 'number' ? subtotal : 0);
+    },
+    0,
+  );
+
   return formatCurrency(total);
 };
 
@@ -128,16 +230,17 @@ const transferStockListColumns = [
         </h6>
 
         <router-link
-          v-if="transferStockDetail_data?.status?.toLowerCase() !== 'cancelled' && transferStockDetail_data?.status?.toLowerCase() !== 'closed'"
+          v-if="
+            transferStockDetail_data?.status?.toLowerCase() !== 'cancelled' &&
+            transferStockDetail_data?.status?.toLowerCase() !== 'closed'
+          "
           id="edit-transfer-stock"
           :to="{ name: 'transfer-stock.edit', params: { id: transferStockDetail_data?.id } }"
           class="inline-flex items-center gap-2 basic-smooth-animation hover:bg-grayscale-10 max-h-10 p-4 rounded-lg"
         >
           <AppBaseSvg name="edit" class="w-4 h-4 filter-primary-color" />
 
-          <span class="font-semibold text-primary text-sm">
-            Edit Transfer Detail
-          </span>
+          <span class="font-semibold text-primary text-sm"> Edit Transfer Detail </span>
         </router-link>
       </div>
 
@@ -166,7 +269,7 @@ const transferStockListColumns = [
 
             <span
               class="font-normal text-xs px-2 py-1 rounded-full w-fit"
-              :class="[getStatusClass(transferStockDetail_data?.status ?? '')]"
+              :class="[transferStockDetail_getStatusClass(transferStockDetail_data?.status ?? '')]"
             >
               {{
                 (transferStockDetail_data?.status?.charAt(0)?.toUpperCase() ?? '') +
@@ -205,6 +308,7 @@ const transferStockListColumns = [
         <section id="right-content" class="flex items-center gap-4">
           <PrimeVueButton
             class="bg-primary border-none w-fit py-3 px-5 rounded-lg"
+            :loading="isGeneratingPdf"
             @click="handleExportShippingDocumentToPdf()"
           >
             <template #default>
@@ -220,6 +324,7 @@ const transferStockListColumns = [
             label="View Shipping Document"
             severity="secondary"
             variant="outlined"
+            :disabled="isGeneratingPdf"
             @click="
               $router.push({
                 name: 'transfer-stock.shipping-document',
@@ -308,5 +413,14 @@ const transferStockListColumns = [
         </div>
       </template>
     </AppBaseDataTable>
+
+    <!-- Hidden PDF Template for Export -->
+    <div style="position: absolute; left: -9999px; top: -9999px">
+      <TransferStockShippingDocumentPdfTemplate
+        v-if="shippingDocumentData"
+        ref="pdfTemplateRef"
+        :shipping-document-data="shippingDocumentData"
+      />
+    </div>
   </section>
 </template>

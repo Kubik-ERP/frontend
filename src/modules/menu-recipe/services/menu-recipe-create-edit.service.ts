@@ -135,15 +135,94 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
   // const menuReciperCreateEdit_menuRecipeId = computed(() => (route.params.id ? String(route.params.id) : ''));
 
   /**
+   * @description Helper function to calculate price based on UOM conversion
+   * @param item - Inventory item with conversions
+   * @param selectedUom - Selected UOM by user
+   * @param quantity - Quantity of the item
+   * @returns Calculated cost based on UOM conversion
+   */
+  const calculateCostByUom = (
+    item: IInventoryItems | null,
+    selectedUom: string | null,
+    quantity: number,
+  ): number => {
+    if (!item || !selectedUom || quantity === 0) return 0;
+
+    const basePrice = item.pricePerUnit ?? 0;
+    const baseUnit = item.unit;
+
+    // If selected UOM is the same as base unit, use base price directly
+    if (selectedUom === baseUnit) {
+      return basePrice * quantity;
+    }
+
+    // Find conversion for selected UOM from masterInventoryItemConversions
+    const conversion = item.masterInventoryItemConversions?.find(
+      conv => conv.unitSymbol === selectedUom || conv.unitName === selectedUom,
+    );
+
+    if (!conversion) {
+      // If no conversion found, fallback to base price
+      console.warn(`No conversion found for UOM: ${selectedUom}, using base price`);
+      return basePrice * quantity;
+    }
+
+    // Calculate price per selected unit
+    // conversion.conversionValue represents the price for 1 selected unit
+    // Example: if base unit is "pcs" with price 4000, and conversion is "kg" with conversionValue 30200
+    // Then price per kg = 30200
+    const pricePerSelectedUnit = conversion.conversionValue;
+    
+    return pricePerSelectedUnit * quantity;
+  };
+
+  /**
+   * @description Computed property for available UOM options based on selected item
+   * Returns UOMs from conversions
+   */
+  const menuRecipeCreateEdit_availableUomOptions = computed(() => {
+    const selectedItem = menuRecipeCreateEdit_formDataOfIngredientItem.value.itemId;
+    
+    console.log('🔍 Selected Item:', selectedItem);
+    console.log('🔍 Conversions:', selectedItem?.masterInventoryItemConversions);
+    
+    if (!selectedItem) {
+      return [];
+    }
+
+    const options: IDropdownItem[] = [];
+
+    // masterInventoryItemConversions already includes base unit + all conversions
+    if (selectedItem.masterInventoryItemConversions && selectedItem.masterInventoryItemConversions.length > 0) {
+      selectedItem.masterInventoryItemConversions.forEach(conversion => {
+        options.push({
+          label: `${conversion.unitName} (${conversion.unitSymbol})`,
+          value: conversion.unitSymbol,
+        });
+      });
+    } else if (selectedItem.unit) {
+      // Fallback to base unit if no conversions available
+      options.push({
+        label: selectedItem.unit,
+        value: selectedItem.unit,
+      });
+    }
+
+    console.log('🔍 UOM Options:', options);
+    
+    return options;
+  });
+
+  /**
    * @description Computed property for total cost per portion
    */
   const menuRecipeCreateEdit_totalCostPortion = computed(() => {
     if (!menuRecipeCreateEdit_formData.value.ingredients) return 0;
 
-    return menuRecipeCreateEdit_formData.value.ingredients.reduce(
-      (total, item) => total + (item.itemId?.pricePerUnit ?? 0) * item.quantity,
-      0,
-    );
+    return menuRecipeCreateEdit_formData.value.ingredients.reduce((total, item) => {
+      const cost = calculateCostByUom(item.itemId, item.uom, item.quantity);
+      return total + cost;
+    }, 0);
   });
 
   /**
@@ -191,6 +270,23 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
   watch(menuRecipeCreateEdit_calculatedMarginPercent, newMarginPercent => {
     menuRecipeCreateEdit_formData.value.marginPerSellingPricePercent = newMarginPercent;
   });
+
+  /**
+   * @description Watch ingredient item changes to auto-calculate cost based on UOM
+   */
+  watch(
+    () => ({
+      itemId: menuRecipeCreateEdit_formDataOfIngredientItem.value.itemId,
+      quantity: menuRecipeCreateEdit_formDataOfIngredientItem.value.quantity,
+      uom: menuRecipeCreateEdit_formDataOfIngredientItem.value.uom,
+    }),
+    ({ itemId, quantity, uom }) => {
+      // Auto-calculate cost when item, quantity, or uom changes
+      const calculatedCost = calculateCostByUom(itemId, uom, quantity);
+      menuRecipeCreateEdit_formDataOfIngredientItem.value.cost = calculatedCost;
+    },
+    { deep: true },
+  );
 
   /**
    * @description Helper function to create payload from form data
@@ -249,6 +345,10 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
           createdAt: ingredient.inventory_item.created_at.toString(),
           updatedAt: ingredient.inventory_item.updated_at.toString(),
           priceGrosir: ingredient.inventory_item.price_grosir,
+          // Include masterInventoryItemConversions if available
+          masterInventoryItemConversions: ingredient.inventory_item.master_inventory_item_conversions || [],
+          markup: ingredient.inventory_item.markup || 0,
+          margin: ingredient.inventory_item.margin || 0,
           // Add missing required fields with fallback values
           brand: '', // Will be populated when we have brand data
           category: '', // Will be populated when we have category data
@@ -929,6 +1029,7 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
     menuRecipeCreateEdit_listColumns: MENU_RECIPE_CREATE_EDIT_LIST_INGREDIENTS_COLUMNS,
     menuRecipeCreateEdit_listIngredientItemsOnDialog,
     menuRecipeCreateEdit_listOutputUnitOptions: MENU_RECIPE_CREATE_EDIT_LIST_OUTPUT_UNITS,
+    menuRecipeCreateEdit_availableUomOptions,
     menuRecipeCreateEdit_onAddIngredientItem,
     menuRecipeCreateEdit_onEditIngredientItem,
     menuRecipeCreateEdit_onDeleteIngredientItem,

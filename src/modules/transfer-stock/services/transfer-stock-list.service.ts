@@ -72,6 +72,9 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
 
   const transferStockList_formDataOfShip = ref<ITransferStockShipPayload>({
     status: 'ship',
+    logistic_provider: '',
+    tracking_number: '',
+    delivery_note: '',
   });
 
   const transferStockList_selectedTransferStockId = ref<string>('');
@@ -95,6 +98,8 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
 
   const transferStockList_formRulesOfShip = computed(() => ({
     status: { required },
+    logistic_provider: { required },
+    tracking_number: { required },
   }));
 
   const transferStockList_formValidationsOfApprove = useVuelidate(
@@ -297,6 +302,9 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
     transferStockList_selectedTransferStockId.value = id;
     transferStockList_formDataOfShip.value = {
       status: 'ship',
+      logistic_provider: '',
+      tracking_number: '',
+      delivery_note: '',
     };
 
     const argsEventEmitter: IPropsDialog = {
@@ -367,7 +375,12 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
 
     eventBus.emit('AppBaseDialog', argsEventEmitter);
     transferStockList_selectedTransferStockId.value = '';
-    transferStockList_formDataOfShip.value = { status: 'ship' };
+    transferStockList_formDataOfShip.value = {
+      status: 'ship',
+      logistic_provider: '',
+      tracking_number: '',
+      delivery_note: '',
+    };
   };
 
   /**

@@ -3,7 +3,12 @@ import { WASTE_LOG_BASE_ENDPOINT } from '../constants';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import type { IWasteLogListQueryParams, IWasteLogStateStore, IWasteLog } from '../interfaces';
+import type {
+  IWasteLogListQueryParams,
+  IWasteLogStateStore,
+  IWasteLog,
+  IWasteLogListResponse,
+} from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
@@ -107,34 +112,27 @@ export const useWasteLogStore = defineStore('waste-log', {
     async wasteLog_list(
       params: IWasteLogListQueryParams,
       requestConfigurations: AxiosRequestConfig,
-    ): Promise<unknown> {
+    ): Promise<IWasteLogListResponse> {
       this.wasteLog_isLoading = true;
 
       try {
-        const response = await httpClient.get<{
-          data: {
-            data: IWasteLog[];
-            meta: {
-              page: number;
-              limit: number;
-              total: number;
-              totalPages: number;
-            };
-          };
-        }>(WASTE_LOG_BASE_ENDPOINT, {
+        const response = await httpClient.get<IWasteLogListResponse>(WASTE_LOG_BASE_ENDPOINT, {
           params,
           ...requestConfigurations,
         });
 
         // Update store state dengan response yang diterima
         if (response.data && response.data.data) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const apiMeta = response.data.data.meta as any; // API returns 'limit', we need 'pageSize'
+
           this.wasteLog_lists = {
-            items: response.data.data.data,
+            items: response.data.data.items || [],
             meta: {
-              page: response.data.data.meta.page,
-              pageSize: response.data.data.meta.limit,
-              total: response.data.data.meta.total,
-              totalPages: response.data.data.meta.totalPages,
+              page: apiMeta?.page || 1,
+              pageSize: apiMeta?.limit || apiMeta?.pageSize || 10,
+              total: apiMeta?.total || 0,
+              totalPages: apiMeta?.totalPages || 0,
             },
           };
         }

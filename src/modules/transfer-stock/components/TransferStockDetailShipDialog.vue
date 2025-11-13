@@ -15,93 +15,90 @@ const {
 </script>
 
 <template>
-  <AppBaseDialog
-    id="transfer-stock-detail-ship"
-    title="Ship Transfer Stock"
-    custom-body-class="px-6"
-    custom-footer-class="px-6 pb-6"
-    custom-header-class="px-6 pt-6"
-  >
-    <template #body>
-      <div class="space-y-4">
-        <div>
-          <AppBaseFormGroup
-            v-slot="{ classes }"
-            class-label="font-normal text-sm text-text-secondary w-full"
-            is-name-as-label
-            label-for="logistic_provider"
-            name="Logistic Provider"
-            :validators="transferStockDetail_formValidationsOfShip.logistic_provider"
-          >
-            <PrimeVueInputText
-              v-model="transferStockDetail_formDataOfShip.logistic_provider"
-              name="logistic_provider"
-              placeholder="Enter logistic provider..."
-              :class="{ ...classes }"
-              class="text-sm w-full"
-              v-on="useListenerForm(transferStockDetail_formValidationsOfShip, 'logistic_provider')"
-            />
-          </AppBaseFormGroup>
-        </div>
-        
-        <div>
-          <AppBaseFormGroup
-            v-slot="{ classes }"
-            class-label="font-normal text-sm text-text-secondary w-full"
-            is-name-as-label
-            label-for="tracking_number"
-            name="Tracking Number"
-            :validators="transferStockDetail_formValidationsOfShip.tracking_number"
-          >
-            <PrimeVueInputText
-              v-model="transferStockDetail_formDataOfShip.tracking_number"
-              name="tracking_number"
-              placeholder="Enter tracking number..."
-              :class="{ ...classes }"
-              class="text-sm w-full"
-              v-on="useListenerForm(transferStockDetail_formValidationsOfShip, 'tracking_number')"
-            />
-          </AppBaseFormGroup>
-        </div>
-        
-        <div>
-          <AppBaseFormGroup
-            v-slot="{ classes }"
-            class-label="font-normal text-sm text-text-secondary w-full"
-            is-name-as-label
-            label-for="delivery_note"
-            name="Delivery Notes"
-            :validators="transferStockDetail_formValidationsOfShip.delivery_note"
-          >
-            <PrimeVueTextarea
-              v-model="transferStockDetail_formDataOfShip.delivery_note"
-              name="delivery_note"
-              placeholder="Enter delivery notes..."
-              :class="{ ...classes }"
-              class="text-sm w-full"
-              rows="3"
-              v-on="useListenerForm(transferStockDetail_formValidationsOfShip, 'delivery_note')"
-            />
-          </AppBaseFormGroup>
-        </div>
-      </div>
+  <AppBaseDialog id="transfer-stock-detail-ship">
+    <template #header>
+      <header class="flex flex-col gap-2 w-full">
+        <h6 class="font-semibold text-black text-lg">Ship Transfer Stock</h6>
+      </header>
+    </template>
+
+    <template #content>
+      <form action="" class="flex flex-col w-full">
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class-label="font-normal text-sm text-text-secondary w-full"
+          is-name-as-label
+          label-for="logistic_provider"
+          name="Logistic Provider"
+          :validators="transferStockDetail_formValidationsOfShip.logistic_provider"
+        >
+          <PrimeVueInputText
+            v-model="transferStockDetail_formDataOfShip.logistic_provider"
+            name="logistic_provider"
+            placeholder="Enter logistic provider..."
+            :class="{ ...classes }"
+            class="text-sm w-full"
+            v-on="useListenerForm(transferStockDetail_formValidationsOfShip, 'logistic_provider')"
+          />
+        </AppBaseFormGroup>
+
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class-label="font-normal text-sm text-text-secondary w-full"
+          is-name-as-label
+          label-for="tracking_number"
+          name="Tracking Number"
+          :validators="transferStockDetail_formValidationsOfShip.tracking_number"
+        >
+          <PrimeVueInputText
+            v-model="transferStockDetail_formDataOfShip.tracking_number"
+            name="tracking_number"
+            placeholder="Enter tracking number..."
+            :class="{ ...classes }"
+            class="text-sm w-full"
+            v-on="useListenerForm(transferStockDetail_formValidationsOfShip, 'tracking_number')"
+          />
+        </AppBaseFormGroup>
+
+        <AppBaseFormGroup
+          v-slot="{ classes }"
+          class-label="font-normal text-sm text-text-secondary w-full"
+          is-name-as-label
+          label-for="delivery_note"
+          name="Delivery Notes"
+          :validators="transferStockDetail_formValidationsOfShip.delivery_note"
+        >
+          <PrimeVueTextarea
+            v-model="transferStockDetail_formDataOfShip.delivery_note"
+            name="delivery_note"
+            placeholder="Enter delivery notes..."
+            :class="{ ...classes }"
+            class="text-sm w-full"
+            rows="3"
+            v-on="useListenerForm(transferStockDetail_formValidationsOfShip, 'delivery_note')"
+          />
+        </AppBaseFormGroup>
+      </form>
     </template>
 
     <template #footer>
-      <div class="flex items-center justify-end gap-4">
+      <footer class="flex items-center justify-end w-full gap-4">
         <PrimeVueButton
-          class="border border-gray-300 text-gray-700 px-4 py-2"
+          class="font-semibold text-base text-primary w-full max-w-40 border border-solid border-primary basic-smooth-animation hover:bg-grayscale-10 py-3"
           label="Cancel"
+          severity="secondary"
           variant="outlined"
           @click="transferStockDetail_onCloseDialogShip"
         />
+
         <PrimeVueButton
-          class="bg-blue-600 text-white px-4 py-2"
+          class="bg-primary border-none text-base py-3 w-full max-w-40"
           label="Ship"
+          type="button"
           :loading="transferStockDetail_isLoading"
           @click="transferStockDetail_onSubmitShip"
         />
-      </div>
+      </footer>
     </template>
   </AppBaseDialog>
 </template>
