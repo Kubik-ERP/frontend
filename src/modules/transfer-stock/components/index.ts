@@ -3,3 +3,4 @@ export { default as TransferStockCreateEditButtonActions } from './TransferStock
 export { default as TransferStockCreateEditAddProductDialog } from './TransferStockCreateEditAddProductDialog.vue';
 export { default as TransferStockEditQuantityDialog } from './TransferStockEditQuantityDialog.vue';
 export { default as TransferStockListTable } from './TransferStockListTable.vue';
+export { default as TransferStockPdfTemplate } from './TransferStockPdfTemplate.vue';
