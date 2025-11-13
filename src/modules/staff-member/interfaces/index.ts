@@ -1,9 +1,10 @@
-import { IStafPermission } from './staff-member-create-edit.interface';
+import { IStafPermission } from './staff-member-create-edit.interface'
 
 export * from './staff-member-create-edit.interface';
 export * from './staff-member-list.interface';
 
 export interface IStaffMeta {
+  pageSize?: number;
   limit: number;
   page: number;
   total: number;
@@ -26,6 +27,7 @@ export interface IStaffMember {
   id: string;
   name: string;
   email: string;
+  phoneCode: string;
   phoneNumber: string;
   profileUrl?: string | null;
   startDate?: Date | null;
@@ -36,7 +38,29 @@ export interface IStaffMember {
   employeesShift: IStaffMemberEmployeesShift[] | [];
   employeesHasSocialMedia: IStaffMemberSocialMedia[] | [];
   productCommissions: productCommissions[];
-  voucherCommissions: voucherCommissions[]
+  voucherCommissions: voucherCommissions[];
+}
+
+export interface IStaffCommission {
+  invoiceNumber: string;
+  paidAt: string;
+  name: string;
+  sourceType: 'product' | 'voucher';
+  commissionAmount: number;
+}
+
+export interface IStaffCommissionsResponse {
+  message: string;
+  statusCode: number;
+  data: {
+    items: IStaffCommission[];
+    meta: {
+      page: number;
+      pageSize: number;
+      total: number;
+      totalPages: number;
+    };
+  };
 }
 
 export interface productCommissions{
@@ -45,6 +69,8 @@ export interface productCommissions{
   employeesId: string;
   isPercent: boolean;
   amount: number;
+  invoiceId: string;
+  createdAt: string;
 }
 
 export interface voucherCommissions{
@@ -53,6 +79,8 @@ export interface voucherCommissions{
   employeesId: string;
   isPercent: boolean;
   amount: number;
+  invoiceId: string;
+  createdAt: string;
 }
 
 export interface IStaffMemberList{
@@ -69,4 +97,6 @@ export interface IStaffMemberPermissionResponse{
 export interface IStaffMemberStore {
   staffMember_isLoading: boolean;
   staffMember_lists: IStaffMemberList;
+  staffMember_details: IStaffMember;
+  staffMember_commissions: IStaffCommissionsResponse;
 }

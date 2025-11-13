@@ -18,6 +18,7 @@ const {
   staffMemberList_typesOfUserPermissions,
   staffMemberList_deleteStaffMember,
   staffMemberList_onChangePage,
+  staffMemberList_onDetail
 } = useStaffMemberListService();
 
 /**
@@ -32,6 +33,7 @@ provide('staffMemberList', {
   staffMemberList_typesOfUserPermissions,
   staffMemberList_deleteStaffMember,
   staffMemberList_onChangePage,
+  staffMemberList_onDetail
 });
 
 /**

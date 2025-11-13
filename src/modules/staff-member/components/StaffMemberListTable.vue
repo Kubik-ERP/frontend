@@ -31,6 +31,7 @@ const {
   staffMemberList_typesOfUserPermissions,
   staffMemberList_deleteStaffMember,
   staffMemberList_onChangePage,
+  staffMemberList_onDetail
 } = inject('staffMemberList') as IStaffMemberListProvided;
 
 import { useRbac } from '@/app/composables/useRbac';
@@ -131,6 +132,20 @@ const hasPermission = rbac.hasPermission('manage_staff_member');
           }"
         >
           <section v-if="selectedData" id="popover-content" class="flex flex-col">
+             <PrimeVueButton
+                variant="text"
+                label="Preview"
+                class="text-black w-full"
+                @click="staffMemberList_onDetail(selectedData.id || '')"
+              >
+                <template #default>
+                  <section class="flex items-center gap-2 w-full">
+                    <AppBaseSvg name="eye-visible" class="!w-4 !h-4" />
+                    <span class="font-normal text-text-primary">Preview</span>
+                  </section>
+                </template>
+              </PrimeVueButton>
+
             <PrimeVueButton
               v-if="hasPermission"
               class="w-full px-4 py-3"
