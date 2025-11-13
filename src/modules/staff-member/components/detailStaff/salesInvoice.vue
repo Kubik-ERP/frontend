@@ -13,6 +13,8 @@ const {
   staffMemberDetails_queryParams,
   staffMemberDetails_onChangePage,
   staffMemberDetails,
+  orderStatusClass,
+  orderTypeClass,
 } = useStaffMemberDetailService();
 
 /**

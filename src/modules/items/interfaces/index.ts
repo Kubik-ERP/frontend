@@ -8,6 +8,12 @@ export interface IUnitConversion {
   updatedAt: string;
 }
 
+export interface IUnitConversionForm {
+  unitName: string;
+  unitSymbol: string;
+  value: number;
+}
+
 export interface IInventoryItems {
   id: string;
   name: string;
@@ -34,6 +40,7 @@ export interface IInventoryItems {
   itemName: string;
   imageUrl?: string | null;
   masterInventoryItemConversions?: IUnitConversion[];
+  conversions?: IUnitConversionForm[];
   markup: number;
   margin: number;
 }
@@ -81,6 +88,7 @@ export interface IInventoryItemsPayload {
   priceGrosir: number;
   imagePreview: string | null;
   imageFile?: File | null;
+  conversions?: IUnitConversionForm[];
   masterInventoryItemConversions?: IUnitConversion[];
 }
 

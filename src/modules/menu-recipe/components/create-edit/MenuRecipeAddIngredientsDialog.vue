@@ -95,10 +95,6 @@ const {
               </AppBaseFormGroup>
             </section>
 
-            <pre>
-              {{ menuRecipeCreateEdit_availableUomOptions }}
-            </pre>
-
             <section id="unit-of-measurement" class="w-full">
               <AppBaseFormGroup
                 v-slot="{ classes }"

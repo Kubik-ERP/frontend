@@ -172,7 +172,7 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
     // Example: if base unit is "pcs" with price 4000, and conversion is "kg" with conversionValue 30200
     // Then price per kg = 30200
     const pricePerSelectedUnit = conversion.conversionValue;
-    
+
     return pricePerSelectedUnit * quantity;
   };
 
@@ -182,10 +182,7 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
    */
   const menuRecipeCreateEdit_availableUomOptions = computed(() => {
     const selectedItem = menuRecipeCreateEdit_formDataOfIngredientItem.value.itemId;
-    
-    console.log('🔍 Selected Item:', selectedItem);
-    console.log('🔍 Conversions:', selectedItem?.masterInventoryItemConversions);
-    
+
     if (!selectedItem) {
       return [];
     }
@@ -196,7 +193,7 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
     if (selectedItem.masterInventoryItemConversions && selectedItem.masterInventoryItemConversions.length > 0) {
       selectedItem.masterInventoryItemConversions.forEach(conversion => {
         options.push({
-          label: `${conversion.unitName} (${conversion.unitSymbol})`,
+          label: `${conversion.unitName}`,
           value: conversion.unitSymbol,
         });
       });
@@ -209,20 +206,29 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
     }
 
     console.log('🔍 UOM Options:', options);
-    
+
     return options;
   });
 
   /**
    * @description Computed property for total cost per portion
+   * Calculates the cost per portion by dividing total ingredient cost by target yield
    */
   const menuRecipeCreateEdit_totalCostPortion = computed(() => {
     if (!menuRecipeCreateEdit_formData.value.ingredients) return 0;
 
-    return menuRecipeCreateEdit_formData.value.ingredients.reduce((total, item) => {
+    const totalCost = menuRecipeCreateEdit_formData.value.ingredients.reduce((total, item) => {
       const cost = calculateCostByUom(item.itemId, item.uom, item.quantity);
       return total + cost;
     }, 0);
+
+    // Divide by target yield to get cost per portion
+    const targetYield = menuRecipeCreateEdit_formData.value.targetYield || 1;
+    
+    // Prevent division by zero or invalid yield
+    if (targetYield <= 0 || isNaN(targetYield) || !isFinite(targetYield)) return totalCost;
+
+    return totalCost / targetYield;
   });
 
   /**

@@ -44,7 +44,7 @@ const selectedMonthAsDate = computed({
 /**
  * @description Handle adding a new shift (opens dialog)
  */
-const handleAddShift = (staffId: number, columnValue: string) => {
+const handleAddShift = (staffId: string, columnValue: string) => {
   let targetDate: string;
 
   if (workingHoursList_selectedViewType.value === 'Week') {
@@ -61,14 +61,14 @@ const handleAddShift = (staffId: number, columnValue: string) => {
     targetDate = `${year}-${targetMonth}-${targetDay}`;
   }
 
-  // Open dialog with pre-filled data using userId instead of staff id
+  // Open dialog with pre-filled data using id (UUID) instead of userId
   workingHoursList_onOpenDialog('create', staffId, targetDate);
 };
 
 /**
  * @description Handle clicking on absent cell (opens dialog for month view)
  */
-const handleAbsentClick = (staffId: number, columnValue: string) => {
+const handleAbsentClick = (staffId: string, columnValue: string) => {
   if (workingHoursList_selectedViewType.value === 'Month') {
     handleAddShift(staffId, columnValue);
   }
@@ -183,7 +183,7 @@ const handleAbsentClick = (staffId: number, columnValue: string) => {
                 >
                   <template #default>
                     <section id="content" class="flex items-center gap-2">
-                      <AppBaseSvg name="plus-line" class="w-4 h-4" />
+                      <AppBaseSvg name="plus-line" class="filter-primary-color w-4 h-4" />
                       <span class="font-semibold text-xs text-primary">Add Shift</span>
                     </section>
                   </template>
