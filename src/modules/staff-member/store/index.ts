@@ -9,6 +9,9 @@ import type {
   IStaffMemberStore,
   IStaffMemberListRequestQuery,
   IStaffMemberGetWithOwnerResponse,
+  IStaffCommissionsResponse,
+  IStaffCommissionsRequestQuery,
+  IStaffMember,
 } from '../interfaces';
 
 // Plugins
@@ -28,6 +31,20 @@ export const useStaffMemberStore = defineStore('staff-member', {
         totalPages: 0,
       },
     },
+    staffMember_details: {} as IStaffMember,
+    staffMember_commissions: {
+      message: '',
+      statusCode: 0,
+      data: {
+        items: [],
+        meta: {
+          page: 1,
+          pageSize: 10,
+          total: 0,
+          totalPages: 0,
+        },
+      },
+    } as IStaffCommissionsResponse,
   }),
   getters: {
     /**
@@ -157,7 +174,38 @@ export const useStaffMemberStore = defineStore('staff-member', {
             ...requestConfigurations,
           },
         );
+        this.staffMember_details = response.data.data;
         // console.log('Fetched staff member details:', response.data); // Debugging log
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.staffMember_isLoading = false;
+      }
+    },
+
+    async staffMember_fetchCommissions(
+      staffMemberId: string,
+      params: IStaffCommissionsRequestQuery,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IStaffCommissionsResponse> {
+      this.staffMember_isLoading = true;
+      try {
+        const response = await httpClient.get<IStaffCommissionsResponse>(
+          `${STAFF_MEMBER_BASE_ENDPOINT}/${staffMemberId}/commissions`,
+          {
+            params,
+            ...requestConfigurations,
+          },
+        );
+
+        console.log('Fetched staff member commissions:', response); // Debugging log
+
+        this.staffMember_commissions = response.data;
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

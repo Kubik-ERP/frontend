@@ -21,6 +21,7 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
    * @description Injected variables
    */
   const store = useStaffMemberStore(); // Instance of the store
+  const router = useRouter()
   const route = useRoute();
   const {
     staffMember_isLoading,
@@ -166,6 +167,10 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
     staffMemberCreateEdit_getRoles()
   })
 
+  const staffMemberList_onDetail = (staffMemberId: string): void => {
+    router.push({ name: 'staff-member.detail', params: { id: staffMemberId } });
+  }
+
   return {
     staffMemberList_columns: STAFF_MEMBER_LIST_COLUMNS,
     staffMemberList_dropdownItemStaff: staffMember_listDropdownItemStaff,
@@ -180,5 +185,6 @@ export const useStaffMemberListService = (): IStaffMemberListProvided => {
     staffMemberList_queryParams, // Expose the query params for potential use in the component
 
     staffMemberList_onChangePage,
+    staffMemberList_onDetail,
   };
 };
