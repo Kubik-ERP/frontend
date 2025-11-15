@@ -67,7 +67,8 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
   });
 
   const transferStockList_formDataOfReceive = ref<ITransferStockReceivePayload>({
-    status: 'receive',
+    status: 'received',
+    items: [],
   });
 
   const transferStockList_formDataOfShip = ref<ITransferStockShipPayload>({
@@ -153,29 +154,31 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
   };
 
   const transferStockList_getTotalValue = (transferStockItems: ITransferStockItem[]): number => {
-    return transferStockItems?.reduce((total, item) => {
-      // Handle Subtotal interface with { s, e, d } structure (decimal.js format)
-      const subtotal = item.subtotal;
-      if (subtotal && typeof subtotal === 'object' && 's' in subtotal && 'e' in subtotal && 'd' in subtotal) {
-        // Simple conversion for decimal.js-like objects
-        // s: sign (1 for positive, -1 for negative)
-        // e: exponent 
-        // d: digits array
-        const sign = subtotal.s || 1;
-        const digits = subtotal.d || [0];
-        const exponent = subtotal.e || 0;
-        
-        // Convert to number (simplified approach)
-        let value = 0;
-        for (let i = 0; i < digits.length; i++) {
-          value = value * 10 + digits[i];
+    return (
+      transferStockItems?.reduce((total, item) => {
+        // Handle Subtotal interface with { s, e, d } structure (decimal.js format)
+        const subtotal = item.subtotal;
+        if (subtotal && typeof subtotal === 'object' && 's' in subtotal && 'e' in subtotal && 'd' in subtotal) {
+          // Simple conversion for decimal.js-like objects
+          // s: sign (1 for positive, -1 for negative)
+          // e: exponent
+          // d: digits array
+          const sign = subtotal.s || 1;
+          const digits = subtotal.d || [0];
+          const exponent = subtotal.e || 0;
+
+          // Convert to number (simplified approach)
+          let value = 0;
+          for (let i = 0; i < digits.length; i++) {
+            value = value * 10 + digits[i];
+          }
+          value = value * sign * Math.pow(10, exponent - digits.length + 1);
+
+          return total + value;
         }
-        value = value * sign * Math.pow(10, exponent - digits.length + 1);
-        
-        return total + value;
-      }
-      return total + (typeof subtotal === 'number' ? subtotal : 0);
-    }, 0) || 0;
+        return total + (typeof subtotal === 'number' ? subtotal : 0);
+      }, 0) || 0
+    );
   };
 
   const transferStockList_getStoreName = (store: Store): string => {
@@ -323,7 +326,8 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
   const transferStockList_onShowDialogReceive = (id: string): void => {
     transferStockList_selectedTransferStockId.value = id;
     transferStockList_formDataOfReceive.value = {
-      status: 'receive',
+      status: 'received',
+      items: [],
     };
 
     const argsEventEmitter: IPropsDialog = {
@@ -394,7 +398,7 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
 
     eventBus.emit('AppBaseDialog', argsEventEmitter);
     transferStockList_selectedTransferStockId.value = '';
-    transferStockList_formDataOfReceive.value = { status: 'receive' };
+    transferStockList_formDataOfReceive.value = { status: 'received', items: [] };
   };
 
   /**
@@ -504,7 +508,10 @@ export const useTransferStockListService = (): ITransferStockListProvided => {
     }
 
     try {
-      await store.transferStock_receive(transferStockList_selectedTransferStockId.value);
+      await store.transferStock_receive(
+        transferStockList_selectedTransferStockId.value,
+        transferStockList_formDataOfReceive.value,
+      );
 
       const argsEventEmitter: IPropsToast = {
         isOpen: true,
