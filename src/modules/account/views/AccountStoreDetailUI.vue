@@ -45,6 +45,7 @@ const {
   accoutnStoreDetail_onSubmitDialogCreateEdit,
   accountStoreDetail_onDeleteDialogConfirmation,
   accountStoreDetail_onDownloadTableQRCode,
+  accountStoreDetail_onDownloadGlobalQRCode,
 
   accountStoreDetail_onAddStaff,
   accountStoreDetail_onCloseAddStaff,
@@ -90,6 +91,7 @@ provide('accountStoreDetail', {
   accoutnStoreDetail_onSubmitDialogCreateEdit,
   accountStoreDetail_onDeleteDialogConfirmation,
   accountStoreDetail_onDownloadTableQRCode,
+  accountStoreDetail_onDownloadGlobalQRCode,
 
   accountStoreDetail_onAddStaff,
   accountStoreDetail_onCloseAddStaff,
