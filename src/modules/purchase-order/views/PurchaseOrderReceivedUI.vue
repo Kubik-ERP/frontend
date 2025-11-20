@@ -32,7 +32,7 @@ const handleBarcodeScan = () => {
   if (!barcode) return;
 
   const foundItem = purchaseOrderReceived_formData.value.productItems.find(
-    item => item.barcode === barcode || item.sku === barcode
+    item => item.barcode === barcode || item.sku === barcode,
   );
 
   if (foundItem) {
@@ -62,6 +62,24 @@ const filteredItems = computed(() => {
     return sku.includes(searchTerm) || name.includes(searchTerm) || barcode.includes(searchTerm);
   });
 });
+
+function formatOrderDate(dateString: string | undefined): string {
+  if (!dateString) return "-";
+  const d = new Date(dateString);
+
+  // konversi manual ke WIB
+  d.setHours(d.getHours() + 7);
+
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+
+  const hh = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+
+  return `${dd}-${mm}-${yyyy} ${hh}:${min} WIB`;
+}
+
 </script>
 
 <template>
@@ -76,10 +94,10 @@ const filteredItems = computed(() => {
           <h3 class="font-semibold">Supplier</h3>
           <p>{{ purchaseOrderReceived_data?.supplierInfo.supplierName }}</p>
         </div>
-        <div class="flex flex-col">
-          <h3 class="font-semibold">Order Date</h3>
-          <p>{{ useFormatDate(purchaseOrderReceived_data?.orderDate || '') }}</p>
-        </div>
+       <div class="flex flex-col">
+        <h3 class="font-semibold">Order Date</h3>
+        <p>{{ formatOrderDate(purchaseOrderReceived_data?.orderDate) }}</p>
+      </div>
       </section>
     </div>
 
@@ -129,7 +147,11 @@ const filteredItems = computed(() => {
             <PrimeVueInputIcon>
               <AppBaseSvg name="search" class="!w-4 !h-4" />
             </PrimeVueInputIcon>
-            <PrimeVueInputText v-model="search" placeholder="Search by SKU/Item Name or Scan Barcode" @keydown.enter.prevent="handleBarcodeScan" />
+            <PrimeVueInputText
+              v-model="search"
+              placeholder="Search by SKU/Item Name or Scan Barcode"
+              @keydown.enter.prevent="handleBarcodeScan"
+            />
           </PrimeVueIconField>
         </div>
       </template>
@@ -138,22 +160,22 @@ const filteredItems = computed(() => {
           {{ data.orderedQuantity }}
         </template>
         <template v-else-if="column.value === 'actualQuantity'">
-       <span class="font-normal text-sm text-text-primary">
-          <PrimeVueInputNumber
-            v-model="data.actualQuantity"
-            mode="decimal"
-            class="text-sm max-h-9"
-            show-buttons
-            button-layout="horizontal"
-          >
-            <template #decrementicon>
-              <AppBaseSvg name="minus" class="!w-4 !h-4" />
-            </template>
-            <template #incrementicon>
-              <AppBaseSvg name="plus-line" class="!w-4 !h-4" />
-            </template>
-          </PrimeVueInputNumber>
-        </span>
+          <span class="font-normal text-sm text-text-primary">
+            <PrimeVueInputNumber
+              v-model="data.actualQuantity"
+              mode="decimal"
+              class="text-sm max-h-9"
+              show-buttons
+              button-layout="horizontal"
+            >
+              <template #decrementicon>
+                <AppBaseSvg name="minus" class="!w-4 !h-4" />
+              </template>
+              <template #incrementicon>
+                <AppBaseSvg name="plus-line" class="!w-4 !h-4" />
+              </template>
+            </PrimeVueInputNumber>
+          </span>
         </template>
         <template v-else-if="column.value === 'difference'">
           <div class="flex items-center gap-1">
@@ -193,8 +215,12 @@ const filteredItems = computed(() => {
             </span>
           </div>
         </template>
+        <template v-else-if="column.value === 'expiredAt'">
+          <PrimeVueDatePicker v-model="data.expiredAt" date-format="dd/mm/yy" show-icon class="text-sm w-full" />
+        </template>
         <template v-else-if="column.value === 'notes'">
           <PrimeVueButton
+            class="text-primary hover:text-white"
             :label="data.notes ? 'View Notes' : 'Add Notes'"
             text
             @click="purchaseOrderReceived_onShowNotesDialog(data)"
@@ -208,8 +234,17 @@ const filteredItems = computed(() => {
 
     <footer class="flex items-center justify-between py-8">
       <div class="flex items-center gap-2">
-        <PrimeVueButton label="Receive PO" @click="purchaseOrderReceived_onSubmit" />
-        <PrimeVueButton label="Cancel" variant="text" @click="purchaseOrderReceived_onBack" />
+        <PrimeVueButton
+          label="Receive PO"
+          class="bg-primary text-white border-none"
+          @click="purchaseOrderReceived_onSubmit"
+        />
+        <PrimeVueButton
+          label="Cancel"
+          class="text-primary border border-solid border-primary"
+          variant="text"
+          @click="purchaseOrderReceived_onBack"
+        />
       </div>
     </footer>
 

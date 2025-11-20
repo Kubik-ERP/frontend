@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Components
+import PurchaseOrderLogActifity from './PurchaseOrderLogActifity.vue';
+
 // Interfaces
 import type { IPurchaseOrderDetailProvided } from '../interfaces';
 
@@ -81,7 +84,7 @@ const {
 
             <span class="font-normal text-text-primary text-base">
               <template v-if="purchaseOrderDetail_data?.receivedAt">
-                {{  purchaseOrderDetail_data.receiver.fullname }}
+                {{  purchaseOrderDetail_data.receiver?.fullname  }}
               </template>
             </span>
           </section>
@@ -89,6 +92,8 @@ const {
         </div>
       </section>
     </header>
+
+    <PurchaseOrderLogActifity v-if="purchaseOrderDetail_data" />
 
     <section
       v-if="
@@ -100,7 +105,7 @@ const {
     >
       <section id="content" class="flex items-center justify-between w-full">
         <section id="left-content" class="flex items-center gap-4">
-          <AppBaseSvg name="document-solid-circle" class="w-10 h-10" />
+          <AppBaseSvg name="document" class="w-10 h-10 filter-primary-color " />
 
           <h6 class="font-semibold text-lg text-text-primary">Delivery Order Document</h6>
         </section>
@@ -219,23 +224,3 @@ const {
     </AppBaseDataTable>
   </section>
 </template>
-
-<style scoped>
-.purchase-order-detail-form {
-  width: 100%;
-}
-
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
-}
-
-.empty-state {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
-}
-</style>

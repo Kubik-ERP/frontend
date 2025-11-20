@@ -62,8 +62,6 @@ export const useStaffMemberDetailService = () => {
     if (type === 'voucher') return 'bg-success-background text-success-main';
   };
 
-<<<<<<< HEAD
-=======
   const salesInvoice_columns = [
     { label: 'Invoice ID', value: 'invoiceID', sortable: true },
     { label: 'Purchase Date', value: 'purchaseDate', sortable: true },
@@ -113,7 +111,6 @@ export const useStaffMemberDetailService = () => {
     return '';
   };
 
->>>>>>> 886f121ce2c49cc924e369fbf97bde7174f18d98
   watch(
     () => commission_queryParams,
     debounce(async () => {
@@ -139,8 +136,6 @@ export const useStaffMemberDetailService = () => {
     commission_onChangePage,
     commissionTypeClass,
     staffMember_commissions,
-<<<<<<< HEAD
-=======
 
     salesInvoice_columns,
     salesInvoice_paymentStatus,
@@ -149,6 +144,5 @@ export const useStaffMemberDetailService = () => {
     staffMemberDetails_onChangePage,
     orderStatusClass,
     orderTypeClass,
->>>>>>> 886f121ce2c49cc924e369fbf97bde7174f18d98
   };
 };
