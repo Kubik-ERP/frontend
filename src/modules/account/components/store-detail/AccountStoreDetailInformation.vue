@@ -111,7 +111,7 @@ const generateUrl = computed(() => {
           </section>
         </section>
 
-        <section id="form-input" class="col-span-full md:col-span-6 lg:col-span-4 flex flex-col gap-2" v-if="accountStoreDetail_selectedOutlet?.businessType === 'Retail'">
+        <section v-if="accountStoreDetail_selectedOutlet?.businessType === 'Retail'" id="form-input" class="col-span-full md:col-span-6 lg:col-span-4 flex flex-col gap-2">
           <span class="font-normal text-grayscale-70 text-xs">{{ useLocalization('app.self-order-qr-code') }}</span>
 
           <div class="flex items-center gap-2">
