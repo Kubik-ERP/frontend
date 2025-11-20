@@ -96,7 +96,8 @@
     "street-address": "Alamat Jalan",
     "stores": "Toko",
     "submit": "Kirim",
-
+    "self-order-qr-code": "Global Self-Order QR",
+    "download-button": "Unduh QR Code",
     "subscription-alert": {
       "message": "Langganan Anda akan berakhir pada [Expiry Date]. Perpanjang sekarang agar tetap bisa menggunakan semua fitur tanpa gangguan.",
       "renew-now": "Perpanjang Sekarang",
