@@ -40,7 +40,7 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    path: '/static/invoice/:invoiceId',
+    path: '/static/invoice/:orderId',
     component: AppBaseWrapper,
     children: [
       {
