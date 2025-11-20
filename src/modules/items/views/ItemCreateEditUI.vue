@@ -300,16 +300,6 @@ const removePhoto = () => {
             v-slot="{ classes }"
             class-label="block text-sm font-medium text-gray-700 mb-1"
             is-name-as-label
-            :name="useLocalization('items.form.stockQuantity')"
-            :validators="itemFormValidation.stockQuantity"
-          >
-            <PrimeVueInputNumber v-model="form.stockQuantity" class="w-full" :class="{ ...classes }" />
-          </AppBaseFormGroup>
-
-          <AppBaseFormGroup
-            v-slot="{ classes }"
-            class-label="block text-sm font-medium text-gray-700 mb-1"
-            is-name-as-label
             :name="useLocalization('items.form.minStockQuantity')"
             :validators="itemFormValidation.minimumStockQuantity"
           >
@@ -324,25 +314,6 @@ const removePhoto = () => {
             :validators="itemFormValidation.reorderLevel"
           >
             <PrimeVueInputNumber v-model="form.reorderLevel" class="w-full" :class="{ ...classes }" />
-          </AppBaseFormGroup>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <AppBaseFormGroup
-            v-slot="{ classes }"
-            class-label="block text-sm font-medium text-gray-700 mb-1"
-            is-name-as-label
-            :name="useLocalization('items.form.expiryDate')"
-            :validators="itemFormValidation.expiryDate"
-          >
-            <div class="p-input-icon-right w-full">
-              <PrimeVueCalendar
-                v-model="form.expiryDate as unknown as Date"
-                date-format="yy-mm-dd"
-                class="w-full"
-                :class="{ ...classes }"
-              />
-            </div>
           </AppBaseFormGroup>
 
           <AppBaseFormGroup
@@ -367,6 +338,34 @@ const removePhoto = () => {
               class="w-full"
               :class="{ ...classes }"
             />
+          </AppBaseFormGroup>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 hidden">
+           <AppBaseFormGroup
+            v-slot="{ classes }"
+            class-label="block text-sm font-medium text-gray-700 mb-1 hidden"
+            is-name-as-label
+            :name="useLocalization('items.form.expiryDate')"
+            :validators="itemFormValidation.expiryDate"
+          >
+            <div class="p-input-icon-right w-full">
+              <PrimeVueCalendar
+                v-model="form.expiryDate as unknown as Date"
+                date-format="yy-mm-dd"
+                class="w-full hidden"
+                :class="{ ...classes }"
+              />
+            </div>
+          </AppBaseFormGroup>
+           <AppBaseFormGroup
+            v-slot="{ classes }"
+            class-label="block text-sm font-medium text-gray-700 mb-1 hidden"
+            is-name-as-label
+            :name="useLocalization('items.form.stockQuantity')"
+            :validators="itemFormValidation.stockQuantity"
+          >
+            <PrimeVueInputNumber v-model="form.stockQuantity" class="w-full hidden" :class="{ ...classes }" />
           </AppBaseFormGroup>
         </div>
       </section>

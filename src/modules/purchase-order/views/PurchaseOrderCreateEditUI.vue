@@ -29,7 +29,6 @@ const {
   purchaseOrderCreateEdit_onDecrementQuantity,
   purchaseOrderCreateEdit_onDeleteProductItem,
   purchaseOrderCreateEdit_onIncrementQuantity,
-  purchaseOrderCreateEdit_onLoadInitialData,
   purchaseOrderCreateEdit_onResetForm,
   purchaseOrderCreateEdit_onShowDialogAddProductItem,
   purchaseOrderCreateEdit_onShowDialogEditQuantity,
@@ -40,13 +39,6 @@ const {
   purchaseOrderCreateEdit_selectedProductItems,
   purchaseOrderCreateEdit_totalPrice,
 } = usePurchaseOrderCreateEditService();
-
-/**
- * @description Load initial data on component mount
- */
-onMounted(async () => {
-  await purchaseOrderCreateEdit_onLoadInitialData();
-});
 
 /**
  * @description Provide all the data and methods what we need
@@ -69,7 +61,6 @@ provide('purchaseOrderCreateEdit', {
   purchaseOrderCreateEdit_onDecrementQuantity,
   purchaseOrderCreateEdit_onDeleteProductItem,
   purchaseOrderCreateEdit_onIncrementQuantity,
-  purchaseOrderCreateEdit_onLoadInitialData,
   purchaseOrderCreateEdit_onResetForm,
   purchaseOrderCreateEdit_onShowDialogAddProductItem,
   purchaseOrderCreateEdit_onShowDialogEditQuantity,

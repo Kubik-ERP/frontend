@@ -286,6 +286,11 @@ export const ITEM_STOCK_ADJUSTMENT_LIST_COLUMNS: IColumnDataTable[] = [
     value: 'newQuantity',
   },
   {
+    label: 'Expired Date',
+    sortable: false,
+    value: 'expiredDate',
+  },
+  {
     label: 'Notes',
     sortable: false,
     value: 'notes',

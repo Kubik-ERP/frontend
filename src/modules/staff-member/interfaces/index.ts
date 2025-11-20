@@ -1,4 +1,4 @@
-import { IStafPermission } from './staff-member-create-edit.interface';
+import { IStafPermission } from './staff-member-create-edit.interface'
 
 export * from './staff-member-create-edit.interface';
 export * from './staff-member-list.interface';

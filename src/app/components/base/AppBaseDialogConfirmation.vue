@@ -130,7 +130,7 @@ eventBus.on('AppBaseDialogConfirmation', (params: unknown) => {
   <AppBaseDialog v-bind="dialog">
     <template #header>
       <header class="flex flex-col items-center gap-2 w-full">
-        <AppBaseSvg :name="dialogConfirmation.iconName" class="!w-14 !h-14" />
+        <AppBaseSvg :name="dialogConfirmation.iconName" class="!w-14 !h-14 filter-primary-color" />
       </header>
     </template>
 
