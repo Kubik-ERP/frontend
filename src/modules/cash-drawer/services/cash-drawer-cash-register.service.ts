@@ -60,7 +60,6 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
       endDate: null,
     });
   const cashDrawerCashRegister_routeParamsId = route.params?.id ? String(route.params.id) : '';
-  const cashDrawerCashRegister_selectedCashDrawerId = ref<string | null>(null);
   const cashDrawerCashRegister_typeOfTransaction = ref<'in' | 'out'>('in');
 
   /**
@@ -104,6 +103,8 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
           ...httpAbort_registerAbort(CASH_DRAWER_TRANSACTION_REQUEST),
         },
       );
+
+      await cashDrawerCashRegister_fetchCashDrawerDetails();
     } catch (error: unknown) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -137,20 +138,11 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
   /**
    * @description Handle fetch api cash drawer. We call the cashDrawer_list function from the store to handle the request.
    */
-  const cashDrawerCashRegister_fetchCashDrawerDetails = async (id?: string): Promise<unknown> => {
-    if (id) {
-      if (cashDrawerCashRegister_selectedCashDrawerId.value === id) return;
-
-      cashDrawerCashRegister_selectedCashDrawerId.value = id;
-    }
-
+  const cashDrawerCashRegister_fetchCashDrawerDetails = async (): Promise<unknown> => {
     try {
-      await store.cashDrawer_details(
-        cashDrawerCashRegister_selectedCashDrawerId.value ?? cashDrawerCashRegister_routeParamsId,
-        {
-          ...httpAbort_registerAbort(CASH_DRAWER_DETAILS_REQUEST),
-        },
-      );
+      await store.cashDrawer_details(cashDrawer_detail.value?.id ?? cashDrawerCashRegister_routeParamsId, {
+        ...httpAbort_registerAbort(CASH_DRAWER_DETAILS_REQUEST),
+      });
 
       if (cashDrawer_detail.value?.actualBalance) {
         cashDrawerCashRegister_differenceBalance.value =
@@ -336,9 +328,6 @@ export const useCashDrawerCashRegisterService = (): ICashDrawerCashRegisterProvi
 
     try {
       await cashDrawerCashRegister_fetchAddTransaction();
-      await cashDrawerCashRegister_fetchCashDrawerDetails(
-        cashDrawer_detail.value?.id ?? cashDrawerCashRegister_routeParamsId,
-      );
       await cashDrawerCashRegister_fetchTrasanctions(
         cashDrawer_detail.value?.id ?? cashDrawerCashRegister_routeParamsId,
       );

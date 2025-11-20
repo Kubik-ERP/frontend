@@ -2,6 +2,7 @@
 // Interfaces
 import { IOutletOperationalHour } from '@/modules/outlet/interfaces';
 import type { IAccountStoreDetailProvided } from '../../interfaces';
+import Qrcode from 'qrcode.vue';
 
 /**
  * @description Inject all the data and methods what we need
@@ -10,11 +11,17 @@ const {
   accountStoreDetail_listColumnsOfOperationalHours,
   accountStoreDetail_operationalHours,
   accountStoreDetail_selectedOutlet,
+  accountStoreDetail_onDownloadGlobalQRCode
 } = inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
 
 const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) => {
   return operationalHours.hours.every(slot => slot.openTime === 'Closed' && slot.closeTime === 'Closed');
 };
+
+const generateUrl = computed(() => {
+  const storeId = encodeURIComponent(accountStoreDetail_selectedOutlet.value!.id);
+  return `${APP_BASE_URL}/self-order/login?storeId=${storeId}`;
+});
 </script>
 
 <template>
@@ -61,45 +68,71 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
         </div>
       </section>
 
-      <section id="store-information" class="grid grid-rows-1 grid-cols-12 max-w-3xl gap-4">
-        <section id="business-type" class="col-span-full lg:col-span-6 flex flex-col gap-1">
-          <span class="font-normal text-grayscale-70 text-sm">
-            {{ useLocalization('app.business-type') }}
-          </span>
+      <section id="store-information" class="grid grid-rows-1 grid-cols-12 gap-4">
+        <section class="col-span-full md:col-span-6 lg:col-span-4">
+          <section id="business-type" class="col-span-12 flex flex-col gap-1">
+            <span class="font-normal text-grayscale-70 text-sm">
+              {{ useLocalization('app.business-type') }}
+            </span>
 
-          <span class="font-normal text-text-primary text-sm lg:text-base">
-            {{ accountStoreDetail_selectedOutlet?.businessType }}
-          </span>
+            <span class="font-normal text-text-primary text-sm lg:text-base">
+              {{ accountStoreDetail_selectedOutlet?.businessType }}
+            </span>
+          </section>
+          <section id="phone-number" class="col-span-12 flex flex-col gap-1 mt-2">
+            <span class="font-normal text-grayscale-70 text-sm">
+              {{ useLocalization('app.phone-number') }}
+            </span>
+
+            <span class="font-normal text-text-primary text-sm lg:text-base">
+              {{ accountStoreDetail_selectedOutlet?.phoneNumber }}
+            </span>
+          </section>
+        </section>
+        <section class="col-span-full md:col-span-6 lg:col-span-4">
+          <section id="email-address" class="col-span-12 flex flex-col gap-1">
+            <span class="font-normal text-grayscale-70 text-sm">
+              {{ useLocalization('app.email-address') }}
+            </span>
+
+            <span class="font-normal text-text-primary text-sm lg:text-base">
+              {{ accountStoreDetail_selectedOutlet?.email }}
+            </span>
+          </section>
+
+          <section id="street-address" class="col-span-12 flex flex-col gap-1 mt-2">
+            <span class="font-normal text-grayscale-70 text-sm">
+              {{ useLocalization('app.street-address') }}
+            </span>
+
+            <span class="font-normal text-text-primary text-sm lg:text-base">
+              {{ accountStoreDetail_selectedOutlet?.address }}
+            </span>
+          </section>
         </section>
 
-        <section id="business-type" class="col-span-full lg:col-span-6 flex flex-col gap-1">
-          <span class="font-normal text-grayscale-70 text-sm">
-            {{ useLocalization('app.email-address') }}
-          </span>
+        <section v-if="accountStoreDetail_selectedOutlet?.businessType === 'Retail'" id="form-input" class="col-span-full md:col-span-6 lg:col-span-4 flex flex-col gap-2">
+          <span class="font-normal text-grayscale-70 text-xs">{{ useLocalization('app.self-order-qr-code') }}</span>
 
-          <span class="font-normal text-text-primary text-sm lg:text-base">
-            {{ accountStoreDetail_selectedOutlet?.email }}
-          </span>
-        </section>
+          <div class="flex items-center gap-2">
+            <Qrcode id="account-store-qr-code" :value="generateUrl" />
 
-        <section id="business-type" class="col-span-full lg:col-span-6 flex flex-col gap-1">
-          <span class="font-normal text-grayscale-70 text-sm">
-            {{ useLocalization('app.phone-number') }}
-          </span>
-
-          <span class="font-normal text-text-primary text-sm lg:text-base">
-            {{ accountStoreDetail_selectedOutlet?.phoneNumber }}
-          </span>
-        </section>
-
-        <section id="business-type" class="col-span-full lg:col-span-6 flex flex-col gap-1">
-          <span class="font-normal text-grayscale-70 text-sm">
-            {{ useLocalization('app.street-address') }}
-          </span>
-
-          <span class="font-normal text-text-primary text-sm lg:text-base">
-            {{ accountStoreDetail_selectedOutlet?.address }}
-          </span>
+            <PrimeVueButton
+              class="bg-transparent border-none basic-smooth-animation w-fit p-4"
+              severity="secondary"
+              variant="outlined"
+              @click="accountStoreDetail_onDownloadGlobalQRCode"
+            >
+              <template #default>
+                <section id="content" class="flex items-center justify-center gap-2">
+                  <AppBaseSvg name="download" class="!w-6 !h-6" />
+                  <span class="font-semibold text-primary text-sm">{{
+                    useLocalization('app.download-button')
+                  }}</span>
+                </section>
+              </template>
+            </PrimeVueButton>
+          </div>
         </section>
       </section>
 

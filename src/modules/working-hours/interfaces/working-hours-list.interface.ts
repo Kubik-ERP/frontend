@@ -31,8 +31,8 @@ export interface IWorkingHoursData {
 
 // ===== FORM INTERFACES =====
 export interface IWorkingHoursFormDataTimeSlot {
-  openTime: Date | string;
-  closeTime: Date | string;
+  openTime: Date | null;
+  closeTime: Date | null;
 }
 
 export interface ICustomRecurrence {
@@ -44,7 +44,7 @@ export interface ICustomRecurrence {
 }
 
 export interface IWorkingHoursFormData {
-  staffId: number | null;
+  staffId: string | null; // UUID
   date: string; // Format: "YYYY-MM-DD"
   timeSlots: IWorkingHoursFormDataTimeSlot[];
   notes: string;
@@ -55,7 +55,7 @@ export interface IWorkingHoursFormData {
 // ===== SERVICE INTERFACE =====
 export interface IWorkingHoursListProvided {
   workingHoursList_addTimeSlot: (
-    staffId: number,
+    staffId: string, // UUID
     year: number,
     month: number,
     day: number,
@@ -76,7 +76,7 @@ export interface IWorkingHoursListProvided {
   workingHoursList_formValidations: globalThis.Ref<Validation>;
   workingHoursList_formattedDate: globalThis.ComputedRef<string>;
   workingHoursList_getCurrentWeekDateString: (dayOfWeek: number) => string;
-  workingHoursList_getStaffData: (staffId: number) => IStaffMember | undefined;
+  workingHoursList_getStaffData: (staffId: string) => IStaffMember | undefined; // UUID
   workingHoursList_getWeekDateRange: globalThis.ComputedRef<string>;
   workingHoursList_hasValidHeaderData: globalThis.ComputedRef<boolean>;
   workingHoursList_isLoading: globalThis.Ref<boolean>;
@@ -90,7 +90,7 @@ export interface IWorkingHoursListProvided {
   workingHoursList_onNavigatePrevious: () => void;
   workingHoursList_onOpenDialog: (
     mode: 'create' | 'edit',
-    staffId?: number,
+    staffId?: string, // UUID
     date?: string,
     workingHoursId?: string,
   ) => void;
@@ -98,7 +98,7 @@ export interface IWorkingHoursListProvided {
   workingHoursList_onReset: () => void;
   workingHoursList_onSave: () => Promise<void>;
   workingHoursList_removeTimeSlot: (
-    staffId: number,
+    staffId: string, // UUID
     year: number,
     month: number,
     day: number,

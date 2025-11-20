@@ -3,19 +3,19 @@ import { defineStore } from 'pinia';
 import type { AxiosRequestConfig } from 'axios';
 
 // Constants
-import {
-  TRANSFER_STOCK_API,
-} from '../constants';
+import { TRANSFER_STOCK_API } from '../constants';
 
 // Interfaces
 import type {
   ITransferStockActionResponse,
   ITransferStockApprovePayload,
   ITransferStockCancelPayload,
+  ITransferStockCheckProductDestinationResponse,
   ITransferStockCreatePayload,
   ITransferStockDetailResponse,
   ITransferStockListRequestQuery,
   ITransferStockListResponse,
+  ITransferStockReceivePayload,
   ITransferStockRejectPayload,
   ITransferStockShipPayload,
   ITransferStockStateStore,
@@ -88,6 +88,36 @@ export const useTransferStockStore = defineStore('transfer-stock', {
         const response = await httpClient.post<ITransferStockActionResponse>(
           `${TRANSFER_STOCK_API.CHANGE_STATUS}/${transferStockId}`,
           payload,
+          requestConfigurations,
+        );
+
+        return response.data;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.transferStock_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api transfer stock - check product destination
+     * @url /transfer-stock/check-product-destination/{id}
+     * @method GET
+     * @access private
+     */
+    async transferStock_checkProductDestination(
+      transferStockId: string,
+      requestConfigurations?: AxiosRequestConfig,
+    ): Promise<ITransferStockCheckProductDestinationResponse> {
+      this.transferStock_isLoading = true;
+
+      try {
+        const response = await httpClient.get<ITransferStockCheckProductDestinationResponse>(
+          `${TRANSFER_STOCK_API.CHECK_PRODUCT_DESTINATION}/${transferStockId}`,
           requestConfigurations,
         );
 
@@ -209,13 +239,10 @@ export const useTransferStockStore = defineStore('transfer-stock', {
       this.transferStock_isLoading = true;
 
       try {
-        const response = await httpClient.get<ITransferStockListResponse>(
-          TRANSFER_STOCK_API.LIST,
-          {
-            params,
-            ...requestConfigurations,
-          },
-        );
+        const response = await httpClient.get<ITransferStockListResponse>(TRANSFER_STOCK_API.LIST, {
+          params,
+          ...requestConfigurations,
+        });
 
         this.transferStock_lists = response.data.data;
 
@@ -265,20 +292,21 @@ export const useTransferStockStore = defineStore('transfer-stock', {
 
     /**
      * @description Handle fetch api transfer stock - receive (receiver side)
-     * @url /transfer-stock/receiver/change-status/{id}
+     * @url /transfer-stock/receive/{id}
      * @method POST
      * @access private
      */
     async transferStock_receive(
       transferStockId: string,
+      payload: ITransferStockReceivePayload,
       requestConfigurations?: AxiosRequestConfig,
     ): Promise<ITransferStockActionResponse> {
       this.transferStock_isLoading = true;
 
       try {
         const response = await httpClient.post<ITransferStockActionResponse>(
-          `/transfer-stock/receiver/change-status/${transferStockId}`,
-          { status: 'receive' },
+          `${TRANSFER_STOCK_API.LIST}/receive/${transferStockId}`,
+          payload,
           requestConfigurations,
         );
 
@@ -333,6 +361,7 @@ export const useTransferStockStore = defineStore('transfer-stock', {
      * @access private
      */
     async transferStock_update(
+      id: string,
       payload: ITransferStockUpdatePayload,
       requestConfigurations?: AxiosRequestConfig,
     ): Promise<ITransferStockDetailResponse> {
@@ -340,7 +369,7 @@ export const useTransferStockStore = defineStore('transfer-stock', {
 
       try {
         const response = await httpClient.put<ITransferStockDetailResponse>(
-          TRANSFER_STOCK_API.UPDATE,
+          `${TRANSFER_STOCK_API.UPDATE}/${id}`,
           payload,
           requestConfigurations,
         );

@@ -125,8 +125,8 @@ export const useWorkingHoursStore = defineStore('working-hours', {
           ...requestConfigurations,
         });
 
-        if (Array.isArray(response.data.data)) {
-          this.workingHours_lists = response.data.data;
+        if (Array.isArray(response.data.data.items)) {
+          this.workingHours_lists = response.data.data.items;
         }
 
         return Promise.resolve(response.data);

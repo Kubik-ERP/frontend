@@ -9,6 +9,9 @@ import { useMenuRecipeDetailService } from '../services/menu-recipe-detail.servi
  * @description Destructure all the data and methods what we need
  */
 const {
+  menuRecipeDetail_calculatedMarginPercent,
+  menuRecipeDetail_calculatedMarginRp,
+  menuRecipeDetail_calculateIngredientCost,
   menuRecipeDetail_data,
   menuRecipeDetail_fetchDetails,
   menuRecipeDetail_fetchDelete,
@@ -24,6 +27,7 @@ const {
   menuRecipeDetail_onSelectVersion,
   menuRecipeDetail_onShowDialogDeleteConfirmation,
   menuRecipeDetail_selectedVersionId,
+  menuRecipeDetail_totalCostPortion,
   menuRecipeDetail_versions,
 } = useMenuRecipeDetailService();
 
@@ -31,6 +35,9 @@ const {
  * @description Provide all the data and methods what we need
  */
 provide('menuRecipeDetail', {
+  menuRecipeDetail_calculatedMarginPercent,
+  menuRecipeDetail_calculatedMarginRp,
+  menuRecipeDetail_calculateIngredientCost,
   menuRecipeDetail_data,
   menuRecipeDetail_fetchDetails,
   menuRecipeDetail_fetchDelete,
@@ -46,6 +53,7 @@ provide('menuRecipeDetail', {
   menuRecipeDetail_onSelectVersion,
   menuRecipeDetail_onShowDialogDeleteConfirmation,
   menuRecipeDetail_selectedVersionId,
+  menuRecipeDetail_totalCostPortion,
   menuRecipeDetail_versions,
 });
 

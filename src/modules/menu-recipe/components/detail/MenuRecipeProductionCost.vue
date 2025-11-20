@@ -5,7 +5,11 @@ import type { IMenuRecipeDetailProvided } from '../../interfaces';
 /**
  * @description Inject all the data and methods what we need
  */
-const { menuRecipeDetail_data } = inject('menuRecipeDetail') as IMenuRecipeDetailProvided;
+const {
+  menuRecipeDetail_totalCostPortion,
+  menuRecipeDetail_calculatedMarginRp,
+  menuRecipeDetail_calculatedMarginPercent,
+} = inject('menuRecipeDetail') as IMenuRecipeDetailProvided;
 </script>
 
 <template>
@@ -19,7 +23,7 @@ const { menuRecipeDetail_data } = inject('menuRecipeDetail') as IMenuRecipeDetai
         <span class="font-normal text-black text-sm">
           {{
             useCurrencyFormat({
-              data: menuRecipeDetail_data?.cost_portion || 0,
+              data: menuRecipeDetail_totalCostPortion,
             })
           }}
         </span>
@@ -29,9 +33,9 @@ const { menuRecipeDetail_data } = inject('menuRecipeDetail') as IMenuRecipeDetai
         <span class="font-normal text-text-disabled text-sm"> Margin per Selling Price </span>
 
         <span class="font-normal text-black text-sm">
-          {{ useCurrencyFormat({ data: menuRecipeDetail_data?.margin_per_selling_price_rp || 0 }) }}
+          {{ useCurrencyFormat({ data: menuRecipeDetail_calculatedMarginRp }) }}
           (<span class="font-semibold text-primary text-sm">
-            {{ (menuRecipeDetail_data?.margin_per_selling_price_percent || 0).toFixed(2) }}% </span
+            {{ menuRecipeDetail_calculatedMarginPercent.toFixed(2) }}% </span
           >)
         </span>
       </section>

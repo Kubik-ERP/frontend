@@ -1,4 +1,14 @@
 export interface IUnitConversion {
+  id: string;
+  itemId: string;
+  unitName: string;
+  unitSymbol: string;
+  conversionValue: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IUnitConversionForm {
   unitName: string;
   unitSymbol: string;
   value: number;
@@ -29,7 +39,8 @@ export interface IInventoryItems {
   supplier: string;
   itemName: string;
   imageUrl?: string | null;
-  conversions?: IUnitConversion[];
+  masterInventoryItemConversions?: IUnitConversion[];
+  conversions?: IUnitConversionForm[];
   markup: number;
   margin: number;
 }
@@ -51,12 +62,14 @@ export interface IInventoryItemsStockAdjustment {
   }
   createdAt: string;
   updatedAt: string;
+  expiryDate?: string;
 }
 
 export interface IInventoryItemsStockAdjustmentPayload {
   action: string;
   adjustmentQuantity: number;
   notes: string;
+  expiryDate?: string | Date;
 }
 
 export interface IInventoryItemsPayload {
@@ -77,7 +90,8 @@ export interface IInventoryItemsPayload {
   priceGrosir: number;
   imagePreview: string | null;
   imageFile?: File | null;
-  conversions?: IUnitConversion[];
+  conversions?: IUnitConversionForm[];
+  masterInventoryItemConversions?: IUnitConversion[];
 }
 
 

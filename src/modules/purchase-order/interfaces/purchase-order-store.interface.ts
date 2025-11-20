@@ -27,6 +27,7 @@ export interface IPurchaseOrderDetail {
   masterSupplierId: string;
   cancelReason?: string;
   cancelledAt?: string;
+  confirmedAt?: string;
   orderDate: string;
   orderStatus: string;
   storeId: string;
@@ -59,10 +60,17 @@ export interface IPurchaseOrderDetail {
       barcode?: string;
     };
   }>;
-  receiver: {
-    id: string;
-    fullname: string;
-  }
+  confirmed?: UserRelations;
+  created?: UserRelations;
+  cancelled?: UserRelations;
+  receiver?: UserRelations;
+  shipped?: UserRelations;
+  paid?: UserRelations;
+}
+
+interface UserRelations {
+  id: string;
+  fullname: string;
 }
 
 // Response interfaces

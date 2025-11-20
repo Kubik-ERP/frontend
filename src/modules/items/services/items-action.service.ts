@@ -96,7 +96,11 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
           priceGrosir: item.priceGrosir,
           imagePreview: item.imageUrl ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${item.imageUrl}` : null,
           imageFile: item.imageUrl ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${item.imageUrl}` : null,
-          conversions: item.conversions || [],
+          conversions: item.masterInventoryItemConversions?.map(c => ({
+            unitName: c.unitName,
+            unitSymbol: c.unitSymbol,
+            value: c.conversionValue,
+          })) || [],
         });
       } else if (route.params.id) {
         inventoryItemsFormMode.value = 'edit';

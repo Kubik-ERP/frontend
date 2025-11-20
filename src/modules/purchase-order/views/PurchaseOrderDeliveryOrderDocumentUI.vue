@@ -5,6 +5,8 @@ import PurchaseOrderDeliveryOrderDocumentContent from '../components/PurchaseOrd
 // Services
 import { usePurchaseOrderDeliveryOrderDocumentService } from '../services/purchase-order-delivery-order-document.service';
 
+// Stores
+
 /**
  * @description Destructure all the data and methods what we need
  */
@@ -34,6 +36,7 @@ onMounted(async () => {
 
 <template>
   <section id="purchase-order-delivery-order-document" class="default-wrapper-fullscreen container py-16">
+
     <PurchaseOrderDeliveryOrderDocumentContent />
   </section>
 </template>

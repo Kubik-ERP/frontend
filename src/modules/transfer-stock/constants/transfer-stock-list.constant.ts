@@ -1,53 +1,63 @@
 export const TRANSFER_STOCK_LIST_COLUMNS: IColumnDataTable[] = [
   {
-    label: 'Transfer Number',
+    label: 'Transaction Code',
     sortable: true,
-    value: 'transferNumber',
+    value: 'transactionCode',
+    width: '260px',
   },
   {
     label: 'From Store',
     sortable: true,
-    value: 'fromStoreName',
+    value: 'storeFrom',
+    width: '260px',
   },
   {
     label: 'To Store',
     sortable: true,
-    value: 'toStoreName',
-  },
-  {
-    label: 'Transfer Date',
-    sortable: true,
-    value: 'transferDate',
+    value: 'storeTo',
+    width: '260px',
   },
   {
     label: 'Status',
     sortable: true,
     value: 'status',
+    width: '400px',
   },
   {
     label: 'Total Items',
-    sortable: true,
+    sortable: false,
     value: 'totalItems',
+    width: '120px',
   },
   {
     label: 'Total Qty',
-    sortable: true,
-    value: 'totalQuantity',
+    sortable: false,
+    value: 'totalQty',
+    width: '120px',
   },
   {
     label: 'Total Value',
-    sortable: true,
+    sortable: false,
     value: 'totalValue',
+    width: '240px',
   },
   {
-    label: 'Created At',
+    label: 'Drafted At',
     sortable: true,
-    value: 'createdAt',
+    value: 'draftedAt',
+    width: '200px',
+  },
+  {
+    label: 'Shipped At',
+    sortable: true,
+    value: 'shippedAt',
+    width: '200px',
   },
   {
     label: '',
     sortable: false,
     value: 'action',
+    width: '100px',
   },
 ];
 
@@ -131,10 +141,14 @@ export const TRANSFER_STOCK_LIST_MOCK_DATA = {
 // Status class mapping for UI styling
 export const TRANSFER_STOCK_STATUS_CLASSES = {
   draft: 'text-gray-600 bg-gray-100',
+  drafted: 'text-gray-600 bg-gray-100',
+  pending: 'text-yellow-600 bg-yellow-100',
   approved: 'text-blue-600 bg-blue-100',
   shipped: 'text-orange-600 bg-orange-100',
   received: 'text-green-600 bg-green-100',
-  received_with_issue: 'text-yellow-600 bg-yellow-100',
+  received_with_issue: 'text-yellow-700 bg-yellow-200',
   closed: 'text-purple-600 bg-purple-100',
+  rejected: 'text-red-600 bg-red-100',
+  canceled: 'text-red-600 bg-red-100',
   cancelled: 'text-red-600 bg-red-100',
 } as const;

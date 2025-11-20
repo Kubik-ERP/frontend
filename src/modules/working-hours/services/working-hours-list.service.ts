@@ -14,7 +14,11 @@ import {
 import { DAY_NAMES_SHORT } from '@/app/constants';
 
 // Interfaces
-import type { IWorkingHoursListProvided, IWorkingHoursFormData } from '../interfaces';
+import type {
+  IWorkingHoursListProvided,
+  IWorkingHoursFormData,
+  IWorkingHoursFormDataTimeSlot,
+} from '../interfaces';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -74,7 +78,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
   const workingHoursList_createEditStaffList = computed(() => {
     return staffMember_lists.value.employees.map(staff => ({
       label: staff.name,
-      value: staff.userId,
+      value: staff.id, // Use UUID id instead of userId
     }));
   });
 
@@ -129,17 +133,25 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    */
   const workingHoursList_fetchCreate = async (): Promise<void> => {
     try {
+      // Filter out time slots with null values and convert Date to string
+      const validTimeSlots = workingHoursList_formData.timeSlots
+        .filter(slot => slot.openTime && slot.closeTime)
+        .map(slot => ({
+          openTime: slot.openTime as Date,
+          closeTime: slot.closeTime as Date,
+        }));
+
       const payload: IWorkingHoursFormData = {
         ...workingHoursList_formData,
-        timeSlots: workingHoursList_formData.timeSlots.map(slot => ({
-          // Convert Date objects to string format like this HH:mm for API
+        timeSlots: validTimeSlots.map(slot => ({
+          // Convert Date objects to string format HH:mm for API
           openTime: Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }).format(
-            new Date(slot.openTime),
+            slot.openTime,
           ),
           closeTime: Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }).format(
-            new Date(slot.closeTime),
+            slot.closeTime,
           ),
-        })),
+        })) as unknown as IWorkingHoursFormDataTimeSlot[],
       };
 
       await workingHoursStore.workingHours_create(payload, {
@@ -273,7 +285,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
     // Create a mapping structure based on staff members instead of working hours
     return staffMember_lists.value.employees.map(staffMember => {
       const tableRow: Record<string, string | number> = {
-        id: staffMember.userId, // Use userId to match with working hours staff_id
+        id: staffMember.id, // Use UUID id to match with working hours staff_id
         staff: staffMember.name,
       };
 
@@ -282,7 +294,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
 
         // Find all working hours for this staff member
         const staffWorkingHours = workingHours_lists.value.filter(
-          workingHour => workingHour.staff_id === staffMember.userId,
+          workingHour => workingHour.staff_id === staffMember.id,
         );
 
         if (workingHoursList_selectedViewType.value === 'Week') {
@@ -358,7 +370,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    * @description Add a new time slot to a staff member's working hours (API integration needed)
    */
   const workingHoursList_addTimeSlot = (
-    staffId: number,
+    staffId: string, // UUID
     year: number,
     month: number,
     day: number,
@@ -381,8 +393,8 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
   /**
    * @description Get staff member data from staff member store
    */
-  const workingHoursList_getStaffData = (staffId: number) => {
-    return staffMember_lists.value.employees.find(staff => staff.userId === staffId);
+  const workingHoursList_getStaffData = (staffId: string) => {
+    return staffMember_lists.value.employees.find(staff => staff.id === staffId);
   };
 
   /**
@@ -411,7 +423,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    * @description Remove a time slot from a staff member's working hours (API integration needed)
    */
   const workingHoursList_removeTimeSlot = (
-    staffId: number,
+    staffId: string, // UUID
     year: number,
     month: number,
     day: number,
@@ -491,7 +503,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    */
   const workingHoursList_onOpenDialog = async (
     mode: 'create' | 'edit',
-    staffId?: number,
+    staffId?: string, // UUID
     date?: string,
     workingHoursId?: string,
   ) => {
@@ -571,8 +583,6 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    */
   const workingHoursList_onSave = async (): Promise<void> => {
     workingHoursList_formValidations.value.$touch();
-
-    console.log('Form Validations:', workingHoursList_formValidations.value);
 
     if (workingHoursList_formValidations.value.$invalid) {
       return;

@@ -565,6 +565,7 @@ export const usePurchaseOrderDetailService = (): IPurchaseOrderDetailProvided =>
       const argsEventEmitter: IPropsDialogConfirmation = {
         id: 'purchase-order-detail-confirmation-dialog',
         iconName: 'confirmation',
+
         title: 'Are you sure want to update this purchase order status to Confirmed?',
         description: `<span class="font-normal text-center text-sm text-grayscale-70">
             Order status will changed to <strong>Confirmed</strong> and system will automatically generate Delivery Order document
@@ -572,7 +573,7 @@ export const usePurchaseOrderDetailService = (): IPurchaseOrderDetailProvided =>
         type: 'info',
         isOpen: true,
         isUsingButtonSecondary: true,
-        isUsingHtmlTagOnDescription: true,
+         isUsingHtmlTagOnDescription: true,
         textButtonPrimary: 'Confirm PO',
         textButtonSecondary: 'Cancel',
         width: '472px',

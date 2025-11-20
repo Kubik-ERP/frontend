@@ -21,6 +21,10 @@ const searchValue = ref('');
 const {
   transferStockList_columns,
   transferStockList_getClassOfStatus,
+  transferStockList_getStoreName,
+  transferStockList_getTotalItems,
+  transferStockList_getTotalQty,
+  transferStockList_getTotalValue,
   transferStockList_handleOnSortChange,
   transferStockList_isLoading,
   transferStockList_onChangePage,
@@ -62,7 +66,7 @@ watch(searchValue, newValue => {
         ? (transferStockList_values.meta.page - 1) * transferStockList_values.meta.pageSize
         : 0
     "
-    search-placeholder="Search by Transfer Number"
+    search-placeholder="Search by Transaction Code"
     :sort-field="transferStockList_queryParams.orderBy"
     :sort-order="
       transferStockList_queryParams.orderDirection === 'asc'
@@ -76,9 +80,9 @@ watch(searchValue, newValue => {
     @update:sort="transferStockList_handleOnSortChange"
   >
     <template #body="{ column, data }">
-      <template v-if="column.value === 'fromOutletName' || column.value === 'toOutletName'">
+      <template v-if="column.value === 'storeFrom' || column.value === 'storeTo'">
         <span class="font-normal text-sm text-text-primary">
-          {{ data[column.value] }}
+          {{ transferStockList_getStoreName(data[column.value]) }}
         </span>
       </template>
 
@@ -86,22 +90,42 @@ watch(searchValue, newValue => {
         <PrimeVueChip
           :class="[transferStockList_getClassOfStatus(data[column.value]), 'text-xs font-normal']"
           :label="
-            data[column.value] ? data[column.value].charAt(0).toUpperCase() + data[column.value].slice(1) : ''
+            data[column.value]
+              ? data[column.value]
+                  .toLowerCase()
+                  .split('_')
+                  .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ')
+              : ''
           "
         />
+      </template>
+
+      <template v-else-if="column.value === 'totalItems'">
+        <span class="font-normal text-sm text-text-primary">
+          {{ transferStockList_getTotalItems(data.transferStockItems || []) }}
+        </span>
+      </template>
+
+      <template v-else-if="column.value === 'totalQty'">
+        <span class="font-normal text-sm text-text-primary">
+          {{ transferStockList_getTotalQty(data.transferStockItems || []) }}
+        </span>
       </template>
 
       <template v-else-if="column.value === 'totalValue'">
         <span class="font-normal text-sm text-text-primary">
           {{
             useCurrencyFormat({
-              data: data[column.value],
+              data: transferStockList_getTotalValue(data.transferStockItems || []),
             })
           }}
         </span>
       </template>
 
-      <template v-else-if="column.value === 'transferDate' || column.value === 'shippedDate' || column.value === 'receivedDate'">
+      <template
+        v-else-if="column.value === 'draftedAt' || column.value === 'shippedAt' || column.value === 'receivedAt'"
+      >
         <template v-if="data[column.value]">
           <span class="font-normal text-sm text-text-primary">
             {{ useFormatDate(data[column.value], 'dd/mm/yyyy') }}
@@ -113,12 +137,18 @@ watch(searchValue, newValue => {
         </template>
       </template>
 
+      <template v-else-if="column.value === 'transactionCode'">
+        <span class="font-medium text-sm text-text-primary">
+          {{ data[column.value] || '-' }}
+        </span>
+      </template>
+
       <template v-else-if="column.value === 'action'">
         <PrimeVueButton
           variant="text"
           rounded
           aria-label="detail"
-          @click="(event: Event) => togglePopover(data.transferNumber, event)"
+          @click="(event: Event) => togglePopover(data.transactionCode, event)"
         >
           <template #icon>
             <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
@@ -128,7 +158,7 @@ watch(searchValue, newValue => {
         <PrimeVuePopover
           :ref="
             (el: unknown) => {
-              if (el) popovers[`popover-${data.transferNumber}`] = el;
+              if (el) popovers[`popover-${data.transactionCode}`] = el;
             }
           "
           :pt="{
@@ -149,9 +179,9 @@ watch(searchValue, newValue => {
               </template>
             </PrimeVueButton>
 
-            <!-- Edit Transfer (Only for draft status) -->
+            <!-- Edit Transfer (Only for draft/drafted status) -->
             <PrimeVueButton
-              v-if="data.status === 'draft'"
+              v-if="['draft', 'drafted'].includes(data.status?.toLowerCase())"
               class="w-full px-4 py-3"
               variant="text"
               @click="$router.push({ name: 'transfer-stock.edit', params: { id: data.id } })"

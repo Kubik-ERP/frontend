@@ -1,16 +1,18 @@
 // API endpoint object
 export const TRANSFER_STOCK_API = {
-  CHANGE_STATUS: '/transfer-stock/transfer/change-status',
-  CREATE: '/transfer-stock/transfer',
-  DELETE: '/transfer-stock/transfer/delete',
-  DETAIL: '/transfer-stock/detail',
-  LIST: '/transfer-stock/transfer',
-  UPDATE: '/transfer-stock/transfer',
+  CHANGE_STATUS: '/transfer-stock/change-status',
+  CHECK_PRODUCT_DESTINATION: '/transfer-stock/check-product-destination',
+  CREATE: '/transfer-stock',
+  DELETE: '/transfer-stock',
+  DETAIL: '/transfer-stock',
+  LIST: '/transfer-stock',
+  UPDATE: '/transfer-stock',
 };
 
 // Key Http Request (for tracking)
 export const TRANSFER_STOCK_APPROVE_REQUEST = 'TRANSFER_STOCK_APPROVE_REQUEST';
 export const TRANSFER_STOCK_CANCEL_REQUEST = 'TRANSFER_STOCK_CANCEL_REQUEST';
+export const TRANSFER_STOCK_CHECK_PRODUCT_DESTINATION_REQUEST = 'TRANSFER_STOCK_CHECK_PRODUCT_DESTINATION_REQUEST';
 export const TRANSFER_STOCK_CREATE_REQUEST = 'TRANSFER_STOCK_CREATE_REQUEST';
 export const TRANSFER_STOCK_DELETE_REQUEST = 'TRANSFER_STOCK_DELETE_REQUEST';
 export const TRANSFER_STOCK_DETAILS_REQUEST = 'TRANSFER_STOCK_DETAILS_REQUEST';
