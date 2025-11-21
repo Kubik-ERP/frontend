@@ -9,35 +9,25 @@ import { useInvoiceService } from '../services/useInvoice.service';
  * @description Destructure all the data and methods what we need
  */
 const {
-  invoice_activeInvoice,
   invoice_invoiceData,
-  invoice_modalPay,
-  invoice_otherOptions,
-  invoice_invoiceDataValidation,
 
-  invoice_handleDownload,
-  invoice_handlePrint,
-  invoice_handleOtherOptions,
-  invoice_handlePayInvoice,
-  invoice_handleSimulatePayment,
+  invoice_handleFetchInvoiceByOrderId,
 } = useInvoiceService();
 
 provide('invoice', {
-  invoice_activeInvoice,
   invoice_invoiceData,
-  invoice_modalPay,
-  invoice_otherOptions,
-  invoice_invoiceDataValidation,
-  invoice_handleDownload,
-  invoice_handlePrint,
-  invoice_handleOtherOptions,
-  invoice_handlePayInvoice,
-  invoice_handleSimulatePayment,
+
+  invoice_handleFetchInvoiceByOrderId,
+});
+
+const route = useRoute();
+onMounted(async () => {
+  await invoice_handleFetchInvoiceByOrderId(route.params.orderId as string);
 });
 </script>
 
 <template>
-  <section id="invoice" class="mx-auto w-full">
+  <section id="invoice" class="flex items-center justify-center bg-grayscale-10 min-h-screen">
     <InvoicePaperCashierInvoice />
   </section>
 </template>

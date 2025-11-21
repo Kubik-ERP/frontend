@@ -109,7 +109,8 @@
     "street-address": "Street Address",
     "stores": "Stores",
     "submit": "Submit",
-
+    "self-order-qr-code": "Global Self-Order QR",
+    "download-button": "Download QR Code",
     "subscription-alert": {
       "message": "Your subscription will expire on [Expiry Date]. Renew now to keep using all features without interruption.",
       "renew-now": "Renew Now",
