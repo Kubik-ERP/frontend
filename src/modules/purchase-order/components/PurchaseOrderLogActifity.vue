@@ -29,7 +29,8 @@ const events = computed(() => {
 
     return `${tanggal}, ${waktu}`;
   };
-  const allEvents = [
+
+  const baseEvents = [
     {
       status: 'Pending',
       date: format(data.createdAt ?? ''),
@@ -68,14 +69,31 @@ const events = computed(() => {
     },
   ];
 
-  const completed = allEvents.filter(e => e.date !== null);
-  if (completed.length < allEvents.length) {
-    completed.push({
-      ...allEvents[completed.length],
+  const isCancelled = !!data.cancelledAt;
+
+  if (isCancelled) {
+    const timeline = [];
+    const pending = baseEvents.find(e => e.status === 'Pending' && e.date);
+    if (pending) timeline.push(pending);
+
+    const cancelled = baseEvents.find(e => e.status === 'Cancelled' && e.date);
+    if (cancelled) timeline.push(cancelled);
+
+    return timeline;
+  }
+
+  const timelineEvents = baseEvents.filter(e => e.status !== 'Cancelled');
+  const completedEvents = timelineEvents.filter(e => e.date !== null);
+
+  if (completedEvents.length < timelineEvents.length) {
+    const nextEvent = timelineEvents[completedEvents.length];
+    completedEvents.push({
+      ...nextEvent,
       date: 'Not yet started',
     });
   }
-  return completed;
+
+  return completedEvents;
 });
 </script>
 
@@ -119,8 +137,9 @@ const events = computed(() => {
         </template>
       </PrimeVueTimeline>
 
-      <!-- Custom line sejajar marker -->
-      <!-- <div class="absolute left-0 right-0 top-[34px] h-[3px] bg-gray-200 rounded-full z-0"></div> -->
+      <div v-if="events.find(f => f.status === 'Cancelled' && f.date !== '')">
+
+      </div>
     </div>
   </section>
 </template>
