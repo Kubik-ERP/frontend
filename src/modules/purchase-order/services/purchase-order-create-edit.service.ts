@@ -638,10 +638,9 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
   watch(
     () => purchaseOrderCreateEdit_formDataOfEditQuantity.value.quantity,
     newQuantity => {
-      if (newQuantity && purchaseOrderCreateEdit_formDataOfEditQuantity.value.unitPrice) {
-        purchaseOrderCreateEdit_formDataOfEditQuantity.value.totalPrice =
-          newQuantity * purchaseOrderCreateEdit_formDataOfEditQuantity.value.unitPrice;
-      }
+      const unitPrice = Number(purchaseOrderCreateEdit_formDataOfEditQuantity.value.unitPrice) || 0;
+      const quantity = Number(newQuantity) || 0;
+      purchaseOrderCreateEdit_formDataOfEditQuantity.value.totalPrice = quantity * unitPrice;
     },
     { immediate: true },
   );
@@ -654,9 +653,9 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
     productItems => {
       if (productItems && productItems.length > 0) {
         productItems.forEach(item => {
-          if (item.quantity && item.unitPrice) {
-            item.totalPrice = item.quantity * item.unitPrice;
-          }
+          const unitPrice = Number(item.unitPrice) || 0;
+          const quantity = Number(item.quantity) || 0;
+          item.totalPrice = quantity * unitPrice;
         });
       }
     },
