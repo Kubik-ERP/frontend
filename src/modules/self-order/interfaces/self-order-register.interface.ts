@@ -4,6 +4,7 @@
 export interface ISelfOrderRegisterFormData {
   code: string;
   name: string;
+  email: string;
   number: string;
 }
 
@@ -13,6 +14,7 @@ export interface ISelfOrderRegisterFormData {
 export interface ISelfOrderRegisterPayload {
   code: string;
   name: string;
+  email: string;
   number: string;
   storeId: string | null;
 }

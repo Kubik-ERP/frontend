@@ -1,12 +1,12 @@
 // Interfaces
-import type { ISelfOrderRegisterProvided } from '../interfaces';
+import type { ISelfOrderRegisterProvided, ISelfOrderRegisterFormData } from '../interfaces';
 
 // Stores
 import { useSelfOrderStore } from '../store';
 
 // Vuelidate
 import useVuelidate from '@vuelidate/core';
-import { maxLength, minLength, numeric, required } from '@vuelidate/validators';
+import { maxLength, minLength, numeric, required, email } from '@vuelidate/validators';
 
 // Vue Router
 import { useRoute, useRouter } from 'vue-router';
@@ -26,9 +26,10 @@ export const useSelfOrderRegisterService = (): ISelfOrderRegisterProvided => {
   /**
    * @description Reactive data binding
    */
-  const selfOrderRegister_formData = reactive({
+  const selfOrderRegister_formData = reactive<ISelfOrderRegisterFormData>({
     code: '+62',
     name: '',
+    email: '',
     number: '',
   });
 
@@ -42,6 +43,7 @@ export const useSelfOrderRegisterService = (): ISelfOrderRegisterProvided => {
   const selfOrderRegister_formRules = computed(() => ({
     code: { required },
     name: { required },
+    email: { required, email },
     number: { maxLength: maxLength(15), minLength: minLength(10), numeric, required },
   }));
 
@@ -77,6 +79,7 @@ export const useSelfOrderRegisterService = (): ISelfOrderRegisterProvided => {
       const response = await store.selfOrderRegister_handleSignUp({
         code: selfOrderRegister_formData.code,
         name: selfOrderRegister_formData.name,
+        email: selfOrderRegister_formData.email,
         number: selfOrderRegister_formData.number,
         storeId: selfOrderRegister_getStoreId(),
       });

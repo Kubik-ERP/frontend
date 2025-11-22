@@ -39,11 +39,11 @@ const getCountryOptionLabel = (value: CountryInformation): string => {
     <div class="flex py-3 px-4 border-y border-[#ededed] gap-2 w-full items-center">
       <router-link
         :to="{
-          name: 'login-self-order',
+          name: 'self-order-login',
           query: { redirect: route.query.redirect || '' },
         }"
       >
-        <app-base-svg name="chevron-left-grey" />
+        <AppBaseSvg class="w-4 h-4" name="chevron-left-grey" />
       </router-link>
       <span>Create Account</span>
     </div>
@@ -72,6 +72,28 @@ const getCountryOptionLabel = (value: CountryInformation): string => {
               class="w-full"
               :class="classes"
               v-on="useListenerForm(selfOrderRegister_formValidations, 'name')"
+            />
+          </AppBaseFormGroup>
+        </div>
+
+        <div class="flex flex-col">
+          <label for="email" class="text-xs">Email</label>
+
+          <AppBaseFormGroup
+            v-slot="{ classes }"
+            class-label="flex flex-col w-full text-sm font-medium leading-6 text-gray-900 w-full"
+            label-for="email"
+            name="email"
+            :validators="selfOrderRegister_formValidations.email"
+          >
+            <PrimeVueInputText
+              v-model="selfOrderRegister_formData.email"
+              size="small"
+              type="email"
+              aria-describedby="email-help"
+              class="w-full"
+              :class="classes"
+              v-on="useListenerForm(selfOrderRegister_formValidations, 'email')"
             />
           </AppBaseFormGroup>
         </div>

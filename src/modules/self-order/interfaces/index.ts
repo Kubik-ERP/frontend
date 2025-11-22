@@ -1,3 +1,4 @@
+// Export all interfaces from centralized files
 export * from './self-order-invalid.interface';
 export * from './self-order-login.interface';
 export * from './self-order-register.interface';
@@ -5,40 +6,30 @@ export * from './self-order-store.interface';
 export * from './self-order.interface';
 
 // Vue
-import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
+import type { Ref } from 'vue';
 
 // Vuelidate
 import type { Validation } from '@vuelidate/core';
 
-// Cashier interfaces
-import type { 
-  ICashierProductState,
-  ICashierModalAddProduct,
-  ICashierModalAddProductItem,
-  ICashierSelected,
-} from '@/modules/cashier/interfaces';
-import type { IProductItem } from '@/modules/cashier/interfaces/cashier-response';
+// Re-export specific interfaces for backward compatibility
+import type { ISelfOrderCategoriesResponse } from './self-order-store.interface';
+import type { ISelfOrderSelected } from './self-order.interface';
 
-/**
- * @description Interface for SelfOrderUI provided data and methods
- */
-export interface ISelfOrderProvided {
-  isProductActive: (product: IProductItem) => boolean;
-  isRetailBusinessType: ComputedRef<boolean>;
-  selfOrder_handleBarcodeScanned: (barcode: string) => Promise<void>;
-  selfOrder_handleFetchCategory: () => Promise<void>;
-  selfOrder_handleFetchProductCategory: () => Promise<void>;
-  selfOrder_handleOpenModalAddProduct: (product: IProductItem) => void;
-  selfOrder_handleQuantity: (type: 'increase' | 'decrease') => void;
-  selfOrder_handleSelectCategory: (category: string) => void;
-  selfOrder_handleSelectProduct: (product?: IProductItem, item?: ICashierModalAddProductItem) => void;
-  selfOrder_modalAddEditItem: Ref<ICashierModalAddProduct>;
-  selfOrder_modalCategory: Ref<{ show: boolean }>;
-  selfOrder_onSearchData: () => Promise<void>;
-  selfOrder_productState: Ref<ICashierProductState>;
-  selfOrder_selectedProduct: Ref<ICashierSelected[]>;
-  selfOrder_selectedProductQty: WritableComputedRef<number, number | string>;
-  selfOrder_selectedView: Ref<'image' | 'grid' | 'inline'>;
+export interface ISelfOrderStateStore {
+  selfOrderProduct_selectedProduct: ISelfOrderSelected[];
+  selfOrderSelfOrder_isLoadingSignUp: boolean;
+  selfOrderSelfOrder_isLoadingSignIn: boolean;
+}
+
+export interface ISelfOrderStateCategory {
+  isLoading: boolean;
+  data: ISelfOrderCategoriesResponse;
+}
+
+export interface ISelfOrderOrderType {
+  code: string;
+  label: string;
+  icon?: string;
 }
 
 /**
@@ -65,6 +56,7 @@ export interface ISelfOrderRegisterProvided {
     code: string;
     name: string;
     number: string;
+    email: string;
   };
   selfOrderRegister_formValidations: Ref<Validation>;
   selfOrderRegister_handleSignUp: () => Promise<void>;
@@ -79,4 +71,3 @@ export interface ISelfOrderRegisterProvided {
 export interface ISelfOrderInvalidProvided {
   // Currently empty as the invalid page doesn't need any logic
 }
-

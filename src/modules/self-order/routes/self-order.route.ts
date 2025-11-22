@@ -44,7 +44,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'login',
         name: 'self-order-login',
-        component: () => import('../views/SelfOrderLoginUi.vue'),
+        component: () => import('../views/SelfOrderLoginUI.vue'),
         meta: {
           requiresAuthorization: false,
           layout: LAYOUT_OPTIONS.EMPTY,

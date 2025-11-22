@@ -2,6 +2,10 @@
 // Constants
 import { COUNTRY_INFORMATIONS } from '@/app/constants/country.constant';
 
+// Stores
+import { useOutletStore } from '@/modules/outlet/store';
+import { storeToRefs } from 'pinia';
+
 // Interfaces
 interface CountryInformation {
   code: string;
@@ -14,6 +18,10 @@ interface CountryInformation {
 
 // Services
 import { useSelfOrderLoginService } from '../services/self-order-login.service';
+
+// Outlet Store
+const outletStore = useOutletStore();
+const { outlet_currentOutlet } = storeToRefs(outletStore);
 
 /**
  * @description Destructure all the data and methods
@@ -37,9 +45,19 @@ const getCountryOptionLabel = (value: CountryInformation): string => {
   <section id="self-order-login" class="flex flex-col items-center justify-between min-h-screen w-full p-4">
     <div class="flex flex-col flex-auto justify-center items-center gap-5 h-full w-full px-6">
       <div class="flex flex-col items-center justify-center gap-2">
-        <div class="w-16 h-16 bg-[#d9d9d9] rounded-full"></div>
+        <!-- Store Image -->
+        <div class="w-16 h-16 rounded-full overflow-hidden bg-[#d9d9d9] flex items-center justify-center">
+          <img
+            v-if="outlet_currentOutlet?.photo"
+            :src="APP_BASE_BUCKET_URL + outlet_currentOutlet.photo"
+            :alt="outlet_currentOutlet?.name"
+            class="w-full h-full object-cover"
+          />
+          <AppBaseSvg v-else name="store" class="w-8 h-8 filter-primary-color" />
+        </div>
 
-        <span class="text-xl font-bold">Hi! Welcome Back 👋</span>
+        <!-- Store Name -->
+        <span class="text-xl font-bold">{{ outlet_currentOutlet?.name || 'Welcome' }} 👋</span>
       </div>
 
       <div class="flex flex-col w-full">
