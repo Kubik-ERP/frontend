@@ -15,7 +15,7 @@ const route = useRoute();
           },
         }"
         v-bind="slotProps"
-        class="p-3 w-full border border-primary"
+        class="p-3 w-full border bg-primary border-primary"
       >
         Create New Order
       </RouterLink>
