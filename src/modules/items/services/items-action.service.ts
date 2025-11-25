@@ -218,6 +218,5 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     inventoryItemsAction_values: inventoryItemsAction_formData,
     inventoryItemsAction_formOnMode: inventoryItemsFormMode,
     inventoryItems_editingItem,
-    inventoryItems_handleBarcodeScanner,
   };
 };
