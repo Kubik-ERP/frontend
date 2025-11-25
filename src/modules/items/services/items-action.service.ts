@@ -204,10 +204,6 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     router.push({ name: 'items.list' });
   };
 
-  const inventoryItems_handleBarcodeScanner = () => {
-    alert('handleBarcodeScanner');
-  };
-
   return {
     inventoryItemsAction_isLoading: inventoryItems_isLoading,
     inventoryItemsAction_formData,
@@ -222,6 +218,5 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     inventoryItemsAction_values: inventoryItemsAction_formData,
     inventoryItemsAction_formOnMode: inventoryItemsFormMode,
     inventoryItems_editingItem,
-    inventoryItems_handleBarcodeScanner,
   };
 };
