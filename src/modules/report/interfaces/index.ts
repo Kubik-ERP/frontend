@@ -43,6 +43,14 @@ export interface IReportQueryParams {
   gmt?: number | null;
 }
 
+export * from './staff-report';
+import type {
+  IStaffReport_Commission,
+  IStaffReport_CommissionByItem,
+  IStaffReport_CommissionByVoucher,
+  IStaffReport_Individual,
+} from './staff-report';
+
 import type { IVoucherReport } from './voucher-report';
 export * from './voucher-report';
 
@@ -104,6 +112,11 @@ export interface IReportStore {
   loyaltyPointReport_expiryWarning_values: ILoyaltyPointReport_expiryWarning;
   loyaltyPointReport_productBased_values: ILoyaltyPointReport_productBased;
   loyaltyPointReport_typeAccumulation_values: ILoyaltyPointReport_typeAccumulation;
+  // staff
+  staffReport_Commission_values: IStaffReport_Commission;
+  staffReport_Individual_values: IStaffReport_Individual;
+  staffReport_CommissionByItem_values: IStaffReport_CommissionByItem;
+  staffReport_CommissionByVoucher_values: IStaffReport_CommissionByVoucher;
 }
 
 export interface IReportProvided {
@@ -133,6 +146,10 @@ export interface IReportProvided {
   loyaltyPointReport_expiryWarning_columns: IColumnDataTable[];
   loyaltyPointReport_productBased_columns: IColumnDataTable[];
   loyaltyPointReport_typeAccumulation_columns: IColumnDataTable[];
+  staffReport_commission_columns: IColumnDataTable[];
+  staffReport_individual_columns: IColumnDataTable[];
+  staffReport_commissionByItem_columns: IColumnDataTable[];
+  staffReport_commissionByVoucher_columns: IColumnDataTable[];
   // methods
   fetchStaff_lists: () => Promise<void>;
   fetchOutlet_lists: () => Promise<void>;
@@ -179,6 +196,11 @@ export interface IReportProvided {
   loyaltyPointReport_expiryWarning_values: globalThis.Ref<ILoyaltyPointReport_expiryWarning>;
   loyaltyPointReport_productBased_values: globalThis.Ref<ILoyaltyPointReport_productBased>;
   loyaltyPointReport_typeAccumulation_values: globalThis.Ref<ILoyaltyPointReport_typeAccumulation>;
+  // staff
+  staffReport_Commission_values: globalThis.Ref<IStaffReport_Commission>;
+  staffReport_Individual_values: globalThis.Ref<IStaffReport_Individual>;
+  staffReport_CommissionByItem_values: globalThis.Ref<IStaffReport_CommissionByItem>;
+  staffReport_CommissionByVoucher_values: globalThis.Ref<IStaffReport_CommissionByVoucher>;
   // outlet_list
   outlet_lists_options: globalThis.Ref<IOutletListOptions[]>;
   findOutletDetail: (id: string) => IOutlet | null | undefined;

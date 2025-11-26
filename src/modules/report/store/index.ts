@@ -42,6 +42,11 @@ import type {
   ILoyaltyPointReport_expiryWarning,
   ILoyaltyPointReport_productBased,
   ILoyaltyPointReport_typeAccumulation,
+  // staff
+  IStaffReport_Commission,
+  IStaffReport_Individual,
+  IStaffReport_CommissionByItem,
+  IStaffReport_CommissionByVoucher,
 } from '../interfaces';
 
 export const useReportStore = defineStore('report', {
@@ -82,6 +87,11 @@ export const useReportStore = defineStore('report', {
     loyaltyPointReport_expiryWarning_values: {} as ILoyaltyPointReport_expiryWarning,
     loyaltyPointReport_productBased_values: {} as ILoyaltyPointReport_productBased,
     loyaltyPointReport_typeAccumulation_values: {} as ILoyaltyPointReport_typeAccumulation,
+    // staff
+    staffReport_Commission_values: {} as IStaffReport_Commission,
+    staffReport_Individual_values: {} as IStaffReport_Individual,
+    staffReport_CommissionByItem_values: {} as IStaffReport_CommissionByItem,
+    staffReport_CommissionByVoucher_values: {} as IStaffReport_CommissionByVoucher,
   }),
   actions: {
     /**
@@ -153,15 +163,19 @@ export const useReportStore = defineStore('report', {
         });
         switch (params.type) {
           case 'commission-report': {
+            this.staffReport_Commission_values = response.data.data;
             break;
           }
           case 'individual-report': {
+            this.staffReport_Individual_values = response.data.data;
             break;
           }
           case 'commission-by-items': {
+            this.staffReport_CommissionByItem_values = response.data.data;
             break;
           }
           case 'commission-by-voucher': {
+            this.staffReport_CommissionByVoucher_values = response.data.data;
             break;
           }
           default: {

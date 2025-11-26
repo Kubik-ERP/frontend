@@ -26,6 +26,11 @@ import {
   LOYALTYPOINTREPORT_PRODUCTBASED_COLUMNS,
   LOYALTYPOINTREPORT_SPENDBASED_COLUMNS,
   LOYALTYPOINTREPORT_TYPEACCUMULATION_COLUMNS,
+  // staff report
+  STAFFREPORT_COMMISSION_COLUMNS,
+  STAFFREPORT_INDIVIDUAL_COLUMNS,
+  STAFFREPORT_COMMISSIONBYITEM_COLUMNS,
+  STAFFREPORT_COMMISSIONBYVOUCHER_COLUMNS,
 } from '../constants';
 // type
 import { IReportProvided, IReportQueryParams } from '../interfaces';
@@ -67,6 +72,11 @@ export const useReportService = (): IReportProvided => {
     loyaltyPointReport_expiryWarning_values,
     loyaltyPointReport_productBased_values,
     loyaltyPointReport_typeAccumulation_values,
+    // staff
+    staffReport_Commission_values,
+    staffReport_Individual_values,
+    staffReport_CommissionByItem_values,
+    staffReport_CommissionByVoucher_values,
     // outlet
     outlet_lists_values,
     // staff
@@ -396,6 +406,10 @@ export const useReportService = (): IReportProvided => {
     loyaltyPointReport_benefitUtilization_columns: LOYALTYPOINTREPORT_BENEFITUTILIZATION_COLUMNS,
     loyaltyPointReport_expiryWarning_columns: LOYALTYPOINTREPORT_EXPIRYWARNING_COLUMNS,
     loyaltyPointReport_typeAccumulation_columns: LOYALTYPOINTREPORT_TYPEACCUMULATION_COLUMNS,
+    staffReport_commission_columns: STAFFREPORT_COMMISSION_COLUMNS,
+    staffReport_individual_columns: STAFFREPORT_INDIVIDUAL_COLUMNS,
+    staffReport_commissionByItem_columns: STAFFREPORT_COMMISSIONBYITEM_COLUMNS,
+    staffReport_commissionByVoucher_columns: STAFFREPORT_COMMISSIONBYVOUCHER_COLUMNS,
     // params
     report_queryParams,
     // methods
@@ -442,6 +456,11 @@ export const useReportService = (): IReportProvided => {
     loyaltyPointReport_expiryWarning_values,
     loyaltyPointReport_productBased_values,
     loyaltyPointReport_typeAccumulation_values,
+    // staff
+    staffReport_Commission_values,
+    staffReport_Individual_values,
+    staffReport_CommissionByItem_values,
+    staffReport_CommissionByVoucher_values,
     // outlet
     outlet_lists_options,
     findOutletDetail,
