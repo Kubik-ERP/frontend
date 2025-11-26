@@ -39,52 +39,7 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  {
-    path: '/self-order',
-    component: AppBaseWrapper,
-    children: [
-      {
-        path: '',
-        name: 'self-order',
-        component: () => import('../views/SelfOrderUI.vue'),
-        meta: {
-          requiresAuthorization: false,
-          layout: LAYOUT_OPTIONS.EMPTY,
-          title: 'Self Order',
-        },
-      },
-      {
-        path: 'not-valid',
-        name: 'self-order.not-valid',
-        component: () => import('../views/self-order/SelfOrderNotValid.vue'),
-        meta: {
-          requiresAuthorization: false,
-          layout: LAYOUT_OPTIONS.EMPTY,
-          title: 'Self Order Not Valid',
-        },
-      },
-      {
-        path: 'login',
-        name: 'login-self-order',
-        component: () => import('../views/self-order/SelfOrderLogin.vue'),
-        meta: {
-          requiresAuthorization: false,
-          layout: LAYOUT_OPTIONS.EMPTY,
-          title: 'Self Order Login',
-        },
-      },
-      {
-        path: 'create',
-        name: 'create-self-order',
-        component: () => import('../views/self-order/SelfOrderCreateAccount.vue'),
-        meta: {
-          requiresAuthorization: false,
-          layout: LAYOUT_OPTIONS.EMPTY,
-          title: 'Self Order Create',
-        },
-      },
-    ],
-  },
 ];
 
 export default routes;
+

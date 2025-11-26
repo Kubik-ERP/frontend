@@ -1,17 +1,17 @@
 <script setup lang="ts">
 // Interface
-import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import type { ICashierPaymentProvided } from '@/modules/cashier/interfaces/cashier-payment.interface';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalPaymentMethod, cashierOrderSummary_handlePaymentMethod } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierPayment_modalPaymentMethod, cashierPayment_handlePaymentMethod } =
+  inject<ICashierPaymentProvided>('cashierPayment')!;
 </script>
 <template>
   <section id="cashier-summary-modal-payment-method">
     <PrimeVueDialog
-      v-model:visible="cashierOrderSummary_modalPaymentMethod.show"
+      v-model:visible="cashierPayment_modalPaymentMethod.show"
       modal
       :style="{ width: '32rem' }"
       :position="useIsMobile() || useIsTablet() ? 'bottom' : 'center'"
@@ -29,7 +29,7 @@ const { cashierOrderSummary_modalPaymentMethod, cashierOrderSummary_handlePaymen
               </span>
             </div>
 
-            <template v-if="cashierOrderSummary_modalPaymentMethod.isLoading">
+            <template v-if="cashierPayment_modalPaymentMethod.isLoading">
               <section
                 id="cashier-summary-modal-payment-method-loading"
                 class="flex items-center justify-center w-full"
@@ -41,34 +41,34 @@ const { cashierOrderSummary_modalPaymentMethod, cashierOrderSummary_handlePaymen
             </template>
             <template v-else>
               <div
-                v-for="category in cashierOrderSummary_modalPaymentMethod.data"
+                v-for="category in cashierPayment_modalPaymentMethod.data"
                 :key="category.id"
                 class="flex items-center gap-2 rounded-xs px-3 py-4"
                 :class="{
                   'cursor-pointer': category.isAvailable,
                   'border border-primary-border bg-primary-background drop-shadow-sm':
-                    cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod === category.id,
+                    cashierPayment_modalPaymentMethod.selectedPaymentMethod === category.id,
                   'hover:bg-grayscale-10/25 border border-grayscale-20':
-                    cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod !== category.id &&
+                    cashierPayment_modalPaymentMethod.selectedPaymentMethod !== category.id &&
                     category.isAvailable,
                   'cursor-not-allowed bg-grayscale-20 text-text-disabled': category.isAvailable === false,
                 }"
                 @click="
                   category.isAvailable
-                    ? (cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod = category.id)
+                    ? (cashierPayment_modalPaymentMethod.selectedPaymentMethod = category.id)
                     : null
                 "
               >
                 <PrimeVueRadioButton
-                  v-model="cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod"
-                  :input-id="category.name"
-                  name="dynamic"
+                  v-model="cashierPayment_modalPaymentMethod.selectedPaymentMethod"
+                  :input-id="category.id"
+                  name="paymentMethod"
                   :disabled="category.isAvailable === false"
                   :value="category.id"
                 />
                 <section id="cashier-summary-modal-order-type" class="flex gap-2 items-center">
                   <AppBaseSvg :name="category.iconName" class="!h-6 !w-6" />
-                  <label class="font-semibold" :for="category.name">{{ category.name }}</label>
+                  <label class="font-semibold" :for="category.id">{{ category.name }}</label>
                   <span v-if="!category.isAvailable" class="text-xs">{{
                     useLocalization('cashier.unavailable')
                   }}</span>
@@ -90,10 +90,10 @@ const { cashierOrderSummary_modalPaymentMethod, cashierOrderSummary_handlePaymen
               class="bg-primary border-none text-white py-2.5 px-8"
               type="button"
               :label="useLocalization('cashier.orderSummary.payment.selectMethod')"
-              :disabled="!cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod"
+              :disabled="!cashierPayment_modalPaymentMethod.selectedPaymentMethod"
               @click="
-                cashierOrderSummary_modalPaymentMethod.show = false;
-                cashierOrderSummary_handlePaymentMethod();
+                cashierPayment_handlePaymentMethod();
+                closeCallback();
               "
             ></PrimeVueButton>
           </div>

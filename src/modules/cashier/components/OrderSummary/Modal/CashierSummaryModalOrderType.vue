@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // Interface
-import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import type { ICashierOrderProvided } from '@/modules/cashier/interfaces/cashier-order.interface';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalOrderType } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierOrder_modalOrderType } = inject<ICashierOrderProvided>('cashierOrder')!;
 
 // Composables
 import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
@@ -13,7 +13,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 <template>
   <section id="cashier-summary-modal-order-type">
     <PrimeVueDialog
-      v-model:visible="cashierOrderSummary_modalOrderType.show"
+      v-model:visible="cashierOrder_modalOrderType.show"
       modal
       :style="{ width: '34rem' }"
       :position="useIsMobile() || useIsTablet() ? 'bottom' : 'center'"
@@ -32,23 +32,23 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
             </section>
 
             <div
-              v-for="category in cashierOrderSummary_modalOrderType.data"
+              v-for="category in cashierOrder_modalOrderType.data"
               :key="category.code"
               class="flex items-center gap-2 rounded-xs px-3 py-4"
               :class="{
                 'cursor-pointer': category.available,
                 'border border-primary-border bg-primary-background drop-shadow-sm':
-                  cashierOrderSummary_modalOrderType.selectedOrderType === category.code,
+                  cashierOrder_modalOrderType.selectedOrderType === category.code,
                 'hover:bg-grayscale-10/25 border border-grayscale-20':
-                  cashierOrderSummary_modalOrderType.selectedOrderType !== category.code && category.available,
+                  cashierOrder_modalOrderType.selectedOrderType !== category.code && category.available,
                 'cursor-not-allowed bg-grayscale-20 text-text-disabled': category.available === false,
               }"
               @click="
-                category.available ? (cashierOrderSummary_modalOrderType.selectedOrderType = category.code) : null
+                category.available ? (cashierOrder_modalOrderType.selectedOrderType = category.code) : null
               "
             >
               <PrimeVueRadioButton
-                v-model="cashierOrderSummary_modalOrderType.selectedOrderType"
+                v-model="cashierOrder_modalOrderType.selectedOrderType"
                 :input-id="category.label"
                 name="dynamic"
                 :disabled="category.available === false"
@@ -76,8 +76,8 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               class="bg-primary border-none text-white py-2.5 px-14"
               type="button"
               :label="useLocalization('cashier.apply')"
-              :disabled="!cashierOrderSummary_modalOrderType.selectedOrderType"
-              @click="cashierOrderSummary_modalOrderType.show = false"
+              :disabled="!cashierOrder_modalOrderType.selectedOrderType"
+              @click="cashierOrder_modalOrderType.show = false"
             ></PrimeVueButton>
           </div>
         </section>

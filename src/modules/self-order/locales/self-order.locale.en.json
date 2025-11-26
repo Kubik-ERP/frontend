@@ -1,0 +1,29 @@
+{
+  "self-order": {
+    "title": "Self Order",
+    "welcome": "Hi! Welcome Back 👋",
+    "powered-by": "Powered By KUBIK POS"
+  },
+  "self-order-login": {
+    "title": "Login",
+    "username": "Username",
+    "email": "Email",
+    "phone-number": "Phone Number",
+    "phone-number-hint": "Please login with the number you used during registration to access your loyalty points",
+    "sign-in": "Sign In",
+    "sign-in-as-guest": "Sign In as Guest",
+    "create-account": "Create Account"
+  },
+  "self-order-register": {
+    "title": "Create Account",
+    "description": "Create your account to continue order",
+    "username": "Username",
+    "phone-number": "Phone Number",
+    "submit": "Create Account"
+  },
+  "self-order-invalid": {
+    "title": "Invalid URL",
+    "message": "The URL you accessed is not valid",
+    "description": "Please scan the QR code again. If you still see this page, kindly inform the restaurant staff."
+  }
+}
