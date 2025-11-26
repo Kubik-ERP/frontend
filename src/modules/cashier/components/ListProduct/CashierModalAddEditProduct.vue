@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Interfaces
-import { ICashierProductProvided } from '../../interfaces/cashier-product-service';
+import { ICashierProductProvided } from '../../interfaces/cashier-product-service.interface';
 
 /**
  * @description Inject all the data and methods what we need

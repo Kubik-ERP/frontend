@@ -203,7 +203,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
   const cashierOrderSummary_modalOrderType = ref<ICashierOrderSummaryModalOrderType>({
     show: false,
     selectedOrderType: 'dine_in',
-    data: CASHIER_ORDER_TYPE.filter(item => (route.name === 'self-order' ? true : item.code !== 'self_order')),
+    data: CASHIER_ORDER_TYPE.filter(item => item.code !== 'self_order'),
   });
 
   const cashierProduct_customerState = ref<ICashierCustomerState>({
@@ -352,7 +352,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_modalPaymentMethod.value.isLoading = true;
 
     try {
-      const response = await store.cashierProduct_fetchPaymentMethod(route.name === 'self-order', route, {});
+      const response = await store.cashierProduct_fetchPaymentMethod(false, route, {});
 
       cashierOrderSummary_modalPaymentMethod.value.data = response.data;
     } catch (error: unknown) {
@@ -647,14 +647,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
   // const cashierOrderSummary_storeId = ref('');
 
-  /**
-   * @description Initialize self-order setup (deprecated - moved to SelfOrderUI)
-   * @deprecated This function is no longer used as self-order now has its own component
-   */
-  const cashierOrderSummary_initializeSelfOrder = async () => {
-    // This function is deprecated - self-order logic moved to SelfOrderUI.vue
-    console.warn('cashierOrderSummary_initializeSelfOrder is deprecated. Use SelfOrderUI.vue instead.');
-  };
 
   /**
    * @description Check if the "Place Order" button should be disabled
@@ -846,7 +838,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
       if (getSelectedPaymentMethod?.toUpperCase() === 'CASH') {
         router.push({
-          name: route.name === 'cashier' || route.name === 'cashier-order-edit' ? 'invoice' : 'self-order-invoice',
+          name: 'invoice',
           params: {
             invoiceId: response.data?.invoiceId ?? null,
           },
@@ -924,26 +916,12 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
 
       store.cashierProduct_selectedProduct = [];
 
-      if (route.name === 'cashier' || route.name === 'cashier-order-edit') {
-        router.push({
-          name: 'invoice',
-          params: {
-            invoiceId: response.data?.orderId ?? null,
-          },
-        });
-      } else {
-        router.push({
-          name: 'self-order-invoice',
-          params: {
-            invoiceId: response.data?.orderId ?? null,
-          },
-          query: {
-            ...route.query,
-          },
-        });
-
-        localStorage.removeItem('shoppingCart');
-      }
+      router.push({
+        name: 'invoice',
+        params: {
+          invoiceId: response.data?.orderId ?? null,
+        },
+      });
     } catch (error) {
       if (error instanceof Error) {
         return Promise.reject(error);
@@ -1013,28 +991,15 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       localStorage.removeItem('shoppingCart');
 
       if (data.orderId === orderId) {
-        if (route.name === 'cashier' || route.name === 'cashier-order-edit') {
-          router.replace({ name: 'invoice', params: { invoiceId: data?.orderId ?? null } });
-        } else {
-          router.replace({
-            name: 'self-order-invoice',
-            params: { invoiceId: data?.orderId ?? null },
-            query: { ...route.query },
-          });
-        }
+        router.replace({ name: 'invoice', params: { invoiceId: data?.orderId ?? null } });
       }
     });
 
     socket.on('payment-failed', data => {
       localStorage.removeItem('shoppingCart');
 
-      if (route.name === 'self-order') {
-        router.push({ name: 'self-order' });
-      }
-      if (route.name === 'cashier' || route.name === 'cashier-order-edit') {
-        if (data.orderId === orderId) {
-          router.replace({ name: 'invoice', params: { invoiceId: data?.orderId ?? null } });
-        }
+      if (data.orderId === orderId) {
+        router.replace({ name: 'invoice', params: { invoiceId: data?.orderId ?? null } });
       }
     });
   };
@@ -1310,7 +1275,7 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
       } else {
         console.error('No invoice ID provided in route parameters');
       }
-    } else if (route.name !== 'self-order') {
+    } else {
       cashierProduct_selectedProduct.value = [];
       cashierOrderSummary_modalOrderType.value.selectedOrderType = 'dine_in';
       cashierOrderSummary_modalSelectTable.value.selectedTable = [];
@@ -1421,7 +1386,6 @@ export const useCashierOrderSummaryService = (): ICashierOrderSummaryProvided =>
     cashierOrderSummary_onCloseDialogStockOverview,
 
     // Initialize functions
-    cashierOrderSummary_initializeSelfOrder,
     cashierOrderSummary_initializeRoute,
   };
 };

@@ -4,7 +4,8 @@ import CashierSearchProductCategory from './CashierSearchProductCategory.vue';
 
 // Interface
 import type { ICashDrawerListProvided } from '@/modules/cash-drawer/interfaces';
-import type { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import type { ICashierOrderProvided } from '@/modules/cashier/interfaces/cashier-order.interface';
+import type { ICashierCustomerProvided } from '@/modules/cashier/interfaces/cashier-customer.interface';
 import type { IDailySalesListProvided } from '@/modules/daily-sales/interfaces/daily-sales-list.interface';
 
 /**
@@ -13,13 +14,15 @@ import type { IDailySalesListProvided } from '@/modules/daily-sales/interfaces/d
 const { cashDrawerList_todayStatus, cashDrawerList_onShowOpenRegisterDialog } =
   inject<ICashDrawerListProvided>('cashDrawerList')!;
 const {
-  cashierOrderSummary_isRetailBusinessType,
-  cashierOrderSummary_isShowQuickOverview,
-  cashierOrderSummary_onOpenDialogCashDrawerOverview,
-  cashierOrderSummary_onOpenDialogQueueOverview,
-  cashierOrderSummary_onOpenDialogTableOverview,
-  cashierOrderSummary_onOpenDialogStockOverview,
-} = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+  cashierOrder_isRetailBusinessType,
+  cashierOrder_isShowQuickOverview,
+} = inject<ICashierOrderProvided>('cashierOrder')!;
+const {
+  cashierCustomer_onOpenDialogCashDrawerOverview,
+  cashierCustomer_onOpenDialogQueueOverview,
+  cashierCustomer_onOpenDialogTableOverview,
+  cashierCustomer_onOpenDialogStockOverview,
+} = inject<ICashierCustomerProvided>('cashierCustomer')!;
 const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesList')!;
 </script>
 
@@ -52,18 +55,18 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
             variant="text"
             @click="
               () => {
-                cashierOrderSummary_isShowQuickOverview = !cashierOrderSummary_isShowQuickOverview;
+                cashierOrder_isShowQuickOverview = !cashierOrder_isShowQuickOverview;
               }
             "
           >
             <template #default>
               <section id="content" class="flex items-center gap-2 w-full">
                 <AppBaseSvg
-                  :name="cashierOrderSummary_isShowQuickOverview ? 'eye-invisible-primary' : 'eye-visible-primary'"
+                  :name="cashierOrder_isShowQuickOverview ? 'eye-invisible-primary' : 'eye-visible-primary'"
                   class="w-5 h-5 filter-primary-color"
                 />
                 <span class="font-semibold text-sm text-primary">
-                  {{ cashierOrderSummary_isShowQuickOverview ? 'Hide' : 'Show' }} Quick Overview
+                  {{ cashierOrder_isShowQuickOverview ? 'Hide' : 'Show' }} Quick Overview
                 </span>
               </section>
             </template>
@@ -72,12 +75,12 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
       </header>
 
       <section
-        v-show="cashierOrderSummary_isShowQuickOverview"
+        v-show="cashierOrder_isShowQuickOverview"
         id="overviews"
         class="grid grid-rows-1 grid-cols-12 gap-4"
       >
         <section
-          v-if="!cashierOrderSummary_isRetailBusinessType"
+          v-if="!cashierOrder_isRetailBusinessType"
           id="customer-queue"
           class="border border-solid border-grayscale-10 col-span-full lg:col-span-4 flex flex-col gap-4 p-4 rounded-2xl"
         >
@@ -91,7 +94,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
               <PrimeVueButton
                 class="w-full p-0 bg-transparent hover:!bg-transparent"
                 variant="text"
-                @click="cashierOrderSummary_onOpenDialogQueueOverview"
+                @click="cashierCustomer_onOpenDialogQueueOverview"
               >
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
@@ -115,7 +118,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
         <section
           id="cash-drawer"
           class="border border-solid border-grayscale-10 col-span-full flex flex-col gap-4 p-4 rounded-2xl"
-          :class="[cashierOrderSummary_isRetailBusinessType ? 'lg:col-span-6' : 'lg:col-span-4']"
+          :class="[cashierOrder_isRetailBusinessType ? 'lg:col-span-6' : 'lg:col-span-4']"
         >
           <header class="flex items-center justify-between">
             <section id="left-content" class="flex items-center gap-2">
@@ -128,7 +131,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
                 v-if="!!cashDrawerList_todayStatus"
                 class="w-full p-0 bg-transparent hover:!bg-transparent"
                 variant="text"
-                @click="cashierOrderSummary_onOpenDialogCashDrawerOverview"
+                @click="cashierCustomer_onOpenDialogCashDrawerOverview"
               >
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
@@ -173,7 +176,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
         </section>
 
         <section
-          v-if="cashierOrderSummary_isRetailBusinessType"
+          v-if="cashierOrder_isRetailBusinessType"
           id="current-stock"
           class="border border-solid border-grayscale-10 col-span-full lg:col-span-6 flex flex-col gap-4 p-4 rounded-2xl"
         >
@@ -187,7 +190,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
           <section id="content" class="flex items-center gap-1">
             <PrimeVueButton
               class="flex items-center gap-2 font-semibold text-primary bg-white border border-solid border-primary py-2 rounded-md text-sm hover:bg-gray-50 w-full"
-              @click="cashierOrderSummary_onOpenDialogStockOverview"
+              @click="cashierCustomer_onOpenDialogStockOverview"
             >
               <AppBaseSvg name="eye-visible" class="w-4 h-4 filter-primary-color" color="primary" />
               View Stock Items
@@ -196,7 +199,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
         </section>
 
         <section
-          v-if="!cashierOrderSummary_isRetailBusinessType"
+          v-if="!cashierOrder_isRetailBusinessType"
           id="table-summary"
           class="border border-solid border-grayscale-10 col-span-full lg:col-span-4 flex flex-col gap-4 p-4 rounded-2xl"
         >
@@ -210,7 +213,7 @@ const { dailySalesList_values } = inject<IDailySalesListProvided>('dailySalesLis
           <section id="content" class="flex items-center gap-1">
             <PrimeVueButton
               class="flex items-center gap-2 font-semibold text-primary bg-white border border-solid border-primary py-2 rounded-md text-sm hover:bg-gray-50 w-full"
-              @click="cashierOrderSummary_onOpenDialogTableOverview"
+              @click="cashierCustomer_onOpenDialogTableOverview"
             >
               <AppBaseSvg name="eye-visible" class="w-4 h-4 filter-primary-color" color="primary" />
               View Table Summary

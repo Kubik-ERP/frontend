@@ -1,6 +1,8 @@
+import { ComputedRef, Ref, WritableComputedRef } from 'vue';
+import type { VirtualScrollerLazyEvent } from 'primevue/virtualscroller';
 import { ICashierCategoriesData, ICashierCategoriesHasProductResponse, IProductItem } from './cashier-response';
 
-import { ICashierSelected, ICashierModalAddProductItem, ICashierModalAddProduct } from './index';
+import { ICashierSelected, ICashierModalAddProductItem, ICashierModalAddProduct, ICashierCustomerState } from './index';
 
 export interface ICashierProductState {
   isLoadingProduct: boolean;
@@ -12,7 +14,8 @@ export interface ICashierProductState {
   listProductCategory: ICashierCategoriesHasProductResponse[];
 }
 
-export interface ICashierProductProvided {
+// Service returns this subset
+export interface ICashierProductService {
   cashierProduct_productState: Ref<ICashierProductState>;
 
   cashierProduct_modalAddEditItem: Ref<ICashierModalAddProduct>;
@@ -37,4 +40,11 @@ export interface ICashierProductProvided {
 
   // Business type validation for barcode scanning
   isRetailBusinessType: ComputedRef<boolean>;
+}
+
+// Provided includes additional properties from other services
+export interface ICashierProductProvided extends ICashierProductService {
+  cashierProduct_customerState: Ref<ICashierCustomerState>;
+  cashierProduct_onScrollFetchMoreCustomers: (event: VirtualScrollerLazyEvent) => void;
+  cashierProduct_onSearchCustomer: (search: string) => void;
 }

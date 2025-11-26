@@ -19,6 +19,7 @@ import eventBus from './plugins/mitt';
 // Primevue
 import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
+import FocusTrap from 'primevue/focustrap';
 
 // Stylesheets
 import 'primeicons/primeicons.css';
@@ -91,6 +92,9 @@ const initialize = async () => {
   // Register RBAC directive
   installRbacDirective(app);
   loadingStore.setInitializationProgress(98);
+
+  // Register FocusTrap directive
+  app.directive('focustrap', FocusTrap);
 
   // Mount app
   app.mount('#main-content');

@@ -1,19 +1,19 @@
 <script setup lang="ts">
 // Interfaces
-import { ICashierOrderSummaryProvided } from '../../../interfaces/cashier-order-summary';
-import { ICashierProductProvided } from '../../../interfaces/cashier-product-service';
+import type { ICashierOrderProvided } from '../../../interfaces/cashier-order.interface';
+import { ICashierProductProvided } from '../../../interfaces/cashier-product-service.interface';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalAddEditNotes } = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierOrder_modalAddEditNotes } = inject<ICashierOrderProvided>('cashierOrder')!;
 const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cashierProduct')!;
 </script>
 
 <template>
   <PrimeVueDialog
-    v-if="cashierOrderSummary_modalAddEditNotes.item !== null"
-    v-model:visible="cashierOrderSummary_modalAddEditNotes.show"
+    v-if="cashierOrder_modalAddEditNotes.item !== null"
+    v-model:visible="cashierOrder_modalAddEditNotes.show"
     modal
     :style="{ width: '34rem' }"
   >
@@ -23,7 +23,7 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
           <label class="font-semibold"> {{ useLocalization('cashier.mainSection.notes') }} </label>
 
           <PrimeVueTextarea
-            v-model="cashierOrderSummary_modalAddEditNotes.tempValue"
+            v-model="cashierOrder_modalAddEditNotes.tempValue"
             placeholder="Describe order notes here"
             rows="4"
           />
@@ -43,9 +43,9 @@ const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cash
             type="button"
             label="Save"
             @click="
-              cashierOrderSummary_modalAddEditNotes.show = false;
-              cashierProduct_selectedProduct[cashierOrderSummary_modalAddEditNotes.item].notes =
-                cashierOrderSummary_modalAddEditNotes.tempValue;
+              cashierOrder_modalAddEditNotes.show = false;
+              cashierProduct_selectedProduct[cashierOrder_modalAddEditNotes.item].notes =
+                cashierOrder_modalAddEditNotes.tempValue;
             "
           ></PrimeVueButton>
         </div>

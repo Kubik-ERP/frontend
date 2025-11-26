@@ -36,7 +36,7 @@ import type {
   ICashierVoucher,
 } from '@/modules/cashier/interfaces/cashier-order-summary';
 import type { ICashierCustomer, ICashierResponseWebsocketMessage } from '@/modules/cashier/interfaces/cashier-response';
-import type { ICashierProductState } from '@/modules/cashier/interfaces/cashier-product-service';
+import type { ICashierProductState } from '@/modules/cashier/interfaces/cashier-product-service.interface';
 import type { IProductItem } from '@/modules/cashier/interfaces/cashier-response';
 import type { ILoyaltyPointBenefit } from '@/modules/point-configuration/interfaces';
 import type { IVoucher } from '@/modules/voucher/interfaces';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // interfaces
-import type { ICashierProductProvided } from '../../interfaces/cashier-product-service';
+import type { ICashierProductProvided } from '../../interfaces/cashier-product-service.interface';
 
 // Variables
 const listView: { name: string; value: 'image' | 'grid' | 'inline' }[] = [

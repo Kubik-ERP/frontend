@@ -10,7 +10,40 @@ const {
   selfOrder_onSearchData,
   selfOrder_handleBarcodeScanned,
   selfOrder_isRetailBusinessType,
-} = inject<ISelfOrderProvided>('selfOrder')!;
+} = inject<ISelfOrderProvided>('selfOrder')!
+
+/**
+ * @description Ref for search input element
+ */
+const searchInputRef = ref<{ $el: HTMLElement } | null>(null);
+
+/**
+ * @description Handle spacebar keypress to focus search input
+ */
+const handleSpacebarFocus = (event: KeyboardEvent) => {
+  // Only trigger if spacebar is pressed and target is not an input/textarea
+  if (event.code === 'Space' && 
+      event.target instanceof HTMLElement && 
+      !['INPUT', 'TEXTAREA'].includes(event.target.tagName)) {
+    event.preventDefault();
+    // Use direct DOM query for more reliable access
+    const inputElement = document.querySelector('#self-order-search-product-category input') as HTMLInputElement;
+    if (inputElement) {
+      inputElement.focus();
+    }
+  }
+};
+
+/**
+ * @description Setup and cleanup event listeners
+ */
+onMounted(() => {
+  window.addEventListener('keydown', handleSpacebarFocus);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleSpacebarFocus);
+});
 
 /**
  * @description Handle form submission (when Enter is pressed in search field)
@@ -56,7 +89,7 @@ const debouncedBarcodeHandler = debounce((barcode: string) => {
 
 <template>
   <section id="self-order-search-product-category">
-    <form @submit="handleFormSubmit">
+    <form v-focustrap @submit="handleFormSubmit">
       <PrimeVueIconField>
         <PrimeVueInputIcon>
           <template #default>
@@ -65,6 +98,7 @@ const debouncedBarcodeHandler = debounce((barcode: string) => {
         </PrimeVueInputIcon>
 
         <PrimeVueInputText
+          ref="searchInputRef"
           v-model="selfOrder_productState.searchProduct"
           :loading="selfOrder_productState.isLoadingProduct"
           :placeholder="useLocalization('cashier.mainSection.searchProductPlaceholder')"
