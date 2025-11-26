@@ -32,7 +32,7 @@ const {
 } = inject<IAccountStoreTableConfigurationProvided>('accountStoreTableConfiguration')!;
 
 const generateUrl = computed(() => {
-  return `${APP_BASE_URL}/self-order/login?storeId=${encodeURIComponent(outlet_selectedOutletOnAccountPage.value!.id)}&floorName=${encodeURIComponent(accountStoreTableConfiguration_formDataOfAddTable.floorName)}&tablesName=${encodeURIComponent(accountStoreTableConfiguration_formDataOfAddTable.name)}`;
+  return `${APP_BASE_URL}/self-order?storeId=${encodeURIComponent(outlet_selectedOutletOnAccountPage.value!.id)}&floorName=${encodeURIComponent(accountStoreTableConfiguration_formDataOfAddTable.floorName)}&tablesName=${encodeURIComponent(accountStoreTableConfiguration_formDataOfAddTable.name)}`;
 });
 </script>
 

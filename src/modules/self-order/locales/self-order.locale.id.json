@@ -1,0 +1,29 @@
+{
+  "self-order": {
+    "title": "Pesan Sendiri",
+    "welcome": "Halo! Selamat Datang Kembali 👋",
+    "powered-by": "Didukung Oleh KUBIK POS"
+  },
+  "self-order-login": {
+    "title": "Masuk",
+    "username": "Nama Pengguna",
+    "email": "Email",
+    "phone-number": "Nomor Telepon",
+    "phone-number-hint": "Silakan masuk dengan nomor yang Anda gunakan saat pendaftaran untuk mengakses poin loyalitas Anda",
+    "sign-in": "Masuk",
+    "sign-in-as-guest": "Masuk Sebagai Tamu",
+    "create-account": "Buat Akun"
+  },
+  "self-order-register": {
+    "title": "Buat Akun",
+    "description": "Buat akun Anda untuk melanjutkan pesanan",
+    "username": "Nama Pengguna",
+    "phone-number": "Nomor Telepon",
+    "submit": "Buat Akun"
+  },
+  "self-order-invalid": {
+    "title": "URL Tidak Valid",
+    "message": "URL yang Anda akses tidak valid",
+    "description": "Silakan pindai kode QR lagi. Jika Anda masih melihat halaman ini, mohon informasikan kepada staf restoran."
+  }
+}

@@ -50,3 +50,8 @@ export interface ICashierOrderType {
   label: string;
   available: boolean;
 }
+
+// Export new service interfaces
+export * from './cashier-order.interface';
+export * from './cashier-payment.interface';
+export * from './cashier-customer.interface';

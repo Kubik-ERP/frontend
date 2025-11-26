@@ -3,15 +3,15 @@
 import CashierSummaryModalAddEditNotes from './Modal/CashierSummaryModalAddEditNotes.vue';
 
 // Interfaces
-import { ICashierProductProvided } from '../../interfaces/cashier-product-service';
-import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-summary';
+import { ICashierProductProvided } from '../../interfaces/cashier-product-service.interface';
+import { ICashierOrderProvided } from '../../interfaces/cashier-order.interface';
 
 /**
  * @description Inject all the data and methods what we need
  */
 const { cashierProduct_selectedProduct } = inject<ICashierProductProvided>('cashierProduct')!;
-const { cashierOrderSummary_modalAddEditNotes, cashierOrderSummary_calculateEstimation } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierOrder_modalAddEditNotes, cashierOrder_calculateEstimation } =
+  inject<ICashierOrderProvided>('cashierOrder')!;
 
 const showImageUrl = (picture: string | null) => {
   return APP_BASE_BUCKET_URL + picture;
@@ -38,7 +38,7 @@ const showImageUrl = (picture: string | null) => {
             <!-- Delete Button -->
             <button
               class="flex-shrink-0 w-8 h-8 p-2 rounded-full bg-error-background hover:opacity-80 transition-opacity"
-              :disabled="cashierOrderSummary_calculateEstimation.isLoading"
+              :disabled="cashierOrder_calculateEstimation.isLoading"
               @click="cashierProduct_selectedProduct.splice(key, 1)"
             >
               <AppBaseSvg name="trash" class="!h-4 !w-4" />
@@ -80,7 +80,7 @@ const showImageUrl = (picture: string | null) => {
                 class="border border-primary text-primary px-3 h-8"
                 variant="outlined"
                 label="-"
-                :disabled="cashierOrderSummary_calculateEstimation.isLoading"
+                :disabled="cashierOrder_calculateEstimation.isLoading"
                 @click="item.quantity > 1 ? (item.quantity -= 1) : (item.quantity = 1)"
               />
               <PrimeVueInputNumber
@@ -88,14 +88,14 @@ const showImageUrl = (picture: string | null) => {
                 class="!w-12"
                 input-class="!w-12 !text-center text-sm"
                 :min="1"
-                :disabled="cashierOrderSummary_calculateEstimation.isLoading"
+                :disabled="cashierOrder_calculateEstimation.isLoading"
               />
               <PrimeVueButton
                 type="button"
                 class="border border-primary text-primary px-3 h-8"
                 variant="outlined"
                 label="+"
-                :disabled="cashierOrderSummary_calculateEstimation.isLoading"
+                :disabled="cashierOrder_calculateEstimation.isLoading"
                 @click="item.quantity += 1"
               />
             </div>
@@ -155,9 +155,9 @@ const showImageUrl = (picture: string | null) => {
               variant="text"
               class="w-fit px-0 hover:opacity-80"
               @click="
-                cashierOrderSummary_modalAddEditNotes.show = true;
-                cashierOrderSummary_modalAddEditNotes.item = key;
-                cashierOrderSummary_modalAddEditNotes.tempValue = item.notes;
+                cashierOrder_modalAddEditNotes.show = true;
+                cashierOrder_modalAddEditNotes.item = key;
+                cashierOrder_modalAddEditNotes.tempValue = item.notes;
               "
             >
               <div class="flex items-center gap-2">

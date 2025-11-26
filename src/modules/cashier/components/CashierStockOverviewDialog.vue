@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Interfaces
 import type { ICashierInventoryItemsProvided } from '../interfaces/cashier-inventory-items';
-import type { ICashierOrderSummaryProvided } from '../interfaces/cashier-order-summary';
+import type { ICashierCustomerProvided } from '../interfaces/cashier-customer.interface';
 import type { IInventoryItems } from '@/modules/items/interfaces';
 
 /**
@@ -10,8 +10,8 @@ import type { IInventoryItems } from '@/modules/items/interfaces';
 const { inventoryItems_values, inventoryItems_isLoading, inventoryItems_queryParams, inventoryItems_fetchData } =
   inject<ICashierInventoryItemsProvided>('cashierInventoryItems')!;
 
-const { cashierOrderSummary_onCloseDialogStockOverview } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierCustomer_onCloseDialogStockOverview } =
+  inject<ICashierCustomerProvided>('cashierCustomer')!;
 
 /**
  * @description Handle refresh stock data
@@ -176,7 +176,7 @@ const retailInventoryColumns = computed(() => [
             label="Close"
             severity="secondary"
             variant="outlined"
-            @click="cashierOrderSummary_onCloseDialogStockOverview"
+            @click="cashierCustomer_onCloseDialogStockOverview"
           />
         </footer>
       </template>

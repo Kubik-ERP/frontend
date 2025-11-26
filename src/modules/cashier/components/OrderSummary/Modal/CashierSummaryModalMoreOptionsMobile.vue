@@ -1,20 +1,21 @@
 <script setup lang="ts">
 // Interface
-import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import type { ICashierOrderProvided } from '@/modules/cashier/interfaces/cashier-order.interface';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalMenuOrderItem, cashierOrderSummary_modalCancelOrder } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierOrder_modalCancelOrder, cashierOrder_modalMenuOrderItem } =
+  inject<ICashierOrderProvided>('cashierOrder')!;
 </script>
 <template>
-  <section id="cashier-summary-modal-more-options-mobile">
+  <!-- Mobile and tablet bottom drawer, hidden on desktop -->
+  <section id="cashier-summary-modal-more-options">
     <PrimeVueDrawer
-      v-model:visible="cashierOrderSummary_modalMenuOrderItem.show"
+      v-model:visible="cashierOrder_modalMenuOrderItem.show"
       position="bottom"
       close-icon="h"
-      class="rounded-t-4xl"
+      class="lg:hidden rounded-t-4xl"
       style="height: auto"
     >
       <template #container>
@@ -23,7 +24,7 @@ const { cashierOrderSummary_modalMenuOrderItem, cashierOrderSummary_modalCancelO
             variant="text"
             class="flex justify-start text-start"
             severity="danger"
-            @click="cashierOrderSummary_modalCancelOrder.show = true"
+            @click="cashierOrder_modalCancelOrder.show = true"
           >
             {{ useLocalization('cashier.cancelOrder') }}
           </PrimeVueButton>

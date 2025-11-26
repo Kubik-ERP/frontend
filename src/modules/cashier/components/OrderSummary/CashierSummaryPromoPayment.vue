@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Interface
-import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import type { ICashierCustomerProvided } from '@/modules/cashier/interfaces/cashier-customer.interface';
+import type { ICashierPaymentProvided } from '@/modules/cashier/interfaces/cashier-payment.interface';
 
 // Route
 import { useRoute } from 'vue-router';
@@ -10,19 +11,22 @@ const route = useRoute();
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalVoucher, cashierOrderSummary_modalPaymentMethod } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierCustomer_modalVoucher } =
+  inject<ICashierCustomerProvided>('cashierCustomer')!;
+
+const { cashierPayment_modalPaymentMethod } =
+  inject<ICashierPaymentProvided>('cashierPayment')!;
 
 const selectedVoucherLabel = computed(() => {
-  const selected = cashierOrderSummary_modalVoucher.value.data.find(
-    f => f.code === cashierOrderSummary_modalVoucher.value.form.voucher_code,
+  const selected = cashierCustomer_modalVoucher.value.data.find(
+    f => f.code === cashierCustomer_modalVoucher.value.form.voucher_code,
   );
   return selected?.label || useLocalization('cashier.orderSummary.promoVoucher');
 });
 
 const selectedPaymentMethod = computed(() =>
-  cashierOrderSummary_modalPaymentMethod.value.data.find(
-    f => f.id === cashierOrderSummary_modalPaymentMethod.value.selectedPaymentMethod,
+  cashierPayment_modalPaymentMethod.value.data.find(
+    f => f.id === cashierPayment_modalPaymentMethod.value.selectedPaymentMethod,
   ),
 );
 
@@ -42,14 +46,14 @@ const voucherPermission = rbac.hasPermission('voucher');
       <PrimeVueButton
         v-if="voucherPermission"
         class="w-full lg:w-1/2 py-2 border border-primary-border text-primary "
-        :class="cashierOrderSummary_modalVoucher.form.voucher_code ? 'bg-white' : ''"
+        :class="cashierCustomer_modalVoucher.form.voucher_code ? 'bg-white' : ''"
         outlined
         :disabled="route.name === 'cashier-order-edit'"
-        @click="cashierOrderSummary_modalVoucher.show = true"
+        @click="cashierCustomer_modalVoucher.show = true"
       >
         <template #default>
           <section class="flex justify-between px-5 w-full items-center">
-            <div v-if="cashierOrderSummary_modalVoucher.form.voucher_code" class="flex gap-2 items-center">
+            <div v-if="cashierCustomer_modalVoucher.form.voucher_code" class="flex gap-2 items-center">
               <AppBaseSvg name="tag" class="h-5 w-5 filter-primary-color" />
 
               <span class="font-semibold text-sm truncate">
@@ -68,15 +72,15 @@ const voucherPermission = rbac.hasPermission('voucher');
       </PrimeVueButton>
       <PrimeVueButton
         class="w-full lg:w-1/2 py-2 border border-primary-border text-sm text-primary"
-        :class="cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod ? 'bg-white' : ''"
+        :class="cashierPayment_modalPaymentMethod.selectedPaymentMethod ? 'bg-white' : ''"
         outlined
         :disabled="route.name === 'cashier-order-edit'"
-        @click="cashierOrderSummary_modalPaymentMethod.show = true"
+        @click="cashierPayment_modalPaymentMethod.show = true"
       >
         <template #default>
           <section class="flex justify-between px-5 w-full items-center">
             <div
-              v-if="cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod"
+              v-if="cashierPayment_modalPaymentMethod.selectedPaymentMethod"
               class="flex gap-2 items-center"
             >
               <AppBaseSvg :name="selectedPaymentIcon" class="h-5 w-5 filter-primary-color" />

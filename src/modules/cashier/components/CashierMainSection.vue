@@ -3,12 +3,14 @@
 import CashierFilterByCategory from './CashierFilterByCategory.vue';
 import CashierModalAddEditProduct from './ListProduct/CashierModalAddEditProduct.vue';
 import CashierChangeView from './ListProduct/CashierChangeView.vue';
-import CashierMobileButtonCategory from './OrderSummary/CashierMobileButtonCategory.vue';
-import CashierMobileButtonCheckout from './OrderSummary/CashierMobileButtonCheckout.vue';
+import CashierSummaryButtonAction from './OrderSummary/CashierSummaryButtonAction.vue';
 import CashierModalCategory from './ListProduct/CashierModalCategory.vue';
 import CashierSummaryModalOrderSummary from './OrderSummary/Modal/CashierSummaryModalOrderSummary.vue';
 import CashierListProduct from './ListProduct/CashierListProduct.vue';
 import CashierQuickOverview from './CashierQuickOverview.vue';
+
+// Composable
+import { useIsDesktop } from '@/app/composables/useBreakpoint';
 </script>
 
 <template>
@@ -19,7 +21,8 @@ import CashierQuickOverview from './CashierQuickOverview.vue';
     <CashierQuickOverview />
 
     <section id="content-container" class="px-6 lg:px-10 pb-6">
-      <CashierFilterByCategory />
+      <!-- Hide on mobile -->
+      <CashierFilterByCategory v-if="useIsDesktop()" />
       <CashierChangeView />
 
       <section id="cashier-main-section-list-product" class="flex flex-col overflow-y-auto flex-grow gap-4">
@@ -31,8 +34,8 @@ import CashierQuickOverview from './CashierQuickOverview.vue';
       <CashierSummaryModalOrderSummary />
     </section>
 
-    <CashierMobileButtonCategory />
-    <CashierMobileButtonCheckout />
+    <CashierFilterByCategory v-if="useIsMobile()" />
+    <CashierSummaryButtonAction v-if="useIsMobile()" />
   </section>
 </template>
 
