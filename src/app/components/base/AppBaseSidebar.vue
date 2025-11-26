@@ -37,16 +37,6 @@ const filteredSidebarMenus = computed(() => {
   );
 });
 
-console.log('filteredSidebarMenus', filteredSidebarMenus.value);
-// ? Since Additional menus are not used currently, we will comment this out for now
-// const filteredAdditionalMenus = computed(() => {
-//   const filtered = filterMenusByPermissions(
-//     [{ name: 'Additional', menus: LIST_ADDITIONAL_MENUS }],
-//     authentication_permissions.value,
-//   );
-//   return filtered[0]?.menus || [];
-// });
-
 // Compute which submenus should be open based on the current route
 const autoExpandMenus = () => {
   const newExpanded: ExpandedState = {};
@@ -206,6 +196,7 @@ const handleLogout = async () => {
 
       <section
         id="outlet"
+        v-rbac="{ permission: 'access_all_store' }"
         class="flex items-center p-2 rounded-md bg-white border border-solid border-grayscale-10 cursor-pointer basic-smooth-animation hover:bg-grayscale-10 overflow-hidden"
         :class="[isCollapsed && !isCurrentlyMobile ? 'justify-center' : 'gap-2']"
         @click="() => $router.push({ name: 'outlet.list' })"

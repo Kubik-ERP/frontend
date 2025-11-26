@@ -36,7 +36,7 @@ onMounted(async () => {
   <section id="self-order" class="grid grid-cols-12 bg-background h-full min-h-dvh default-wrapper-fullscreen relative">
     <SelfOrderMainSection />
     <SelfOrderSummary />
-    
+
     <!-- Mobile Button - Shows only on mobile, sticky at bottom -->
     <SelfOrderSummaryButtonAction />
   </section>

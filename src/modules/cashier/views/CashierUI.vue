@@ -347,7 +347,7 @@ provide<ICashierOrderProvided>('cashierOrder', {
 provide<ICashierPaymentProvided>('cashierPayment', {
   cashierPayment_handleFetchPaymentMethod,
   cashierPayment_handlePaymentMethod,
-  cashierPayment_handleSaveUnpaidOrder: () => 
+  cashierPayment_handleSaveUnpaidOrder: () =>
     cashierOrder_handleSaveUnpaidOrder(
       cashierPayment_modalPaymentMethod,
       cashierCustomer_modalVoucher,
