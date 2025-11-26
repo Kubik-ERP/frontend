@@ -22,8 +22,8 @@ const searchInputRef = ref<{ $el: HTMLElement } | null>(null);
  */
 const handleSpacebarFocus = (event: KeyboardEvent) => {
   // Only trigger if spacebar is pressed and target is not an input/textarea
-  if (event.code === 'Space' && 
-      event.target instanceof HTMLElement && 
+  if (event.code === 'Space' &&
+      event.target instanceof HTMLElement &&
       !['INPUT', 'TEXTAREA'].includes(event.target.tagName)) {
     event.preventDefault();
     // Use direct DOM query for more reliable access
