@@ -12,8 +12,6 @@ const {
 } = inject<IProductDetailsProvided>('productDetails')!;
 </script>
 <template>
-  <!-- add portion stock adjustment button -->
-
   <AppBaseDataTable
     :columns="productDetails_portionStock_columns"
     :data="productDetails.portionStock"
@@ -49,6 +47,14 @@ const {
       </template>
       <template v-else-if="column.value === 'users'">
         <span class="font-base text-sm text-text-primary">{{ data[column.value]?.fullname ?? '-' }} </span>
+      </template>
+      <template v-else-if="column.value === 'edit'">
+        <PrimeVueButton
+          class="p-button-text text-gray-500 hover:text-primary"
+          @click="portionStock_onShowAdjustment(data)"
+        >
+          <AppBaseSvg name="edit" class="!w-4 !h-4 filter-primary-color" />
+        </PrimeVueButton>
       </template>
       <template v-else>
         <span class="font-base text-sm text-text-primary">{{ data[column.value] }}</span>

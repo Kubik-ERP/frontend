@@ -28,7 +28,7 @@ type IProductVariant = {
   additionalPrice: number;
 };
 
-type IProductPortionStock = {
+export type IProductPortionStock = {
   // batchName: string;
   // batchDate: Date;
   // batchActualPortion: number;
@@ -37,7 +37,7 @@ type IProductPortionStock = {
   id: string;
   productId: string;
   storesId: string;
-  action: string;
+  action: 'INCREASE' | 'DECREASE';
   adjustmentQuantity: number;
   notes: string;
   previousQuantity: number;
@@ -58,7 +58,9 @@ type IProductPortionStock = {
 };
 
 export type IPortionStock_formData = {
-  type: 'increase' | 'decrease';
+  product_id?: string | null;
+  adjustment_id?: string | null;
+  action: 'INCREASE' | 'DECREASE';
   quantity: number;
   notes: string;
 };
@@ -72,12 +74,14 @@ export type IProductDetailsProvided = {
   productDetails_isLoading: globalThis.Ref<boolean>;
   // methods
   productDetails_fetchProductDetails: (id: string) => Promise<void>;
+  portionStock_create: (id: string) => Promise<void>;
+  portionStock_update: (id: string, adjustmentId: string) => Promise<void>;
   // form
   portionStock_formData: IPortionStock_formData;
   portionStock_formValidations: globalThis.Ref<Validation>;
   resetPortionStockFormData: () => void;
   // dialog
-  portionStock_onShowAdjustment: () => void;
+  portionStock_onShowAdjustment: (data?: IProductPortionStock | null) => void;
   portionStock_onCloseAdjustment: () => void;
   portionStock_onSubmitAdjustment: () => Promise<void>;
 };

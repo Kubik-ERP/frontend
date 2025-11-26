@@ -11,7 +11,7 @@ const {
 } = useProductDetailsService();
 const isQuantityPositive = ref<boolean>(true);
 const validateQuantity = () => {
-  if (portionStock_formData.type === 'decrease') {
+  if (portionStock_formData.action === 'DECREASE') {
     if (productDetails.value.stockQuantity - portionStock_formData.quantity < 0) {
       isQuantityPositive.value = false;
     } else {
@@ -21,8 +21,9 @@ const validateQuantity = () => {
 };
 
 watch(
-  [() => portionStock_formData.quantity, () => portionStock_formData.type],
+  [() => portionStock_formData.quantity, () => portionStock_formData.action],
   () => {
+    console.log('quantity', portionStock_formData.quantity);
     validateQuantity();
   },
   { immediate: true },
@@ -35,23 +36,23 @@ watch(
     </template>
     <template #content>
       <section class="flex flex-col gap-4">
-        <!-- type -->
+        <!-- action -->
         <AppBaseFormGroup
           v-slot="{ classes }"
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
           label-for="type"
           :name="'Type'"
-          :validators="portionStock_formValidations.type"
+          :validators="portionStock_formValidations.action"
         >
-          <PrimeVueDropdown
-            v-model="portionStock_formData.type"
-            :options="['increase', 'decrease']"
+          <PrimeVueSelect
+            v-model="portionStock_formData.action"
+            :options="['INCREASE', 'DECREASE']"
             placeholder="Type"
             class="text-sm w-full"
             :class="{ ...classes }"
           >
-          </PrimeVueDropdown>
+          </PrimeVueSelect>
         </AppBaseFormGroup>
 
         <!-- quantity -->
@@ -75,7 +76,7 @@ watch(
         </AppBaseFormGroup>
 
         <div class="w-full">
-          <span v-if="portionStock_formData.type === 'increase'"
+          <span v-if="portionStock_formData.action === 'INCREASE'"
             >New Portion Stock : {{ productDetails.stockQuantity + portionStock_formData.quantity }}</span
           >
           <span v-else
