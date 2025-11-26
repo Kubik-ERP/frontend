@@ -37,6 +37,15 @@ provide('outletList', {
  * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
  */
 onMounted(async () => {
+  const rbac = useRbac()
+  const router = useRouter()
+
+  if (rbac.hasPermission('access_all_store') === false) {
+    router.push({ name: 'dashboard' })
+
+    return
+  }
+
   await outletList_fetchOutletLists();
 });
 </script>
