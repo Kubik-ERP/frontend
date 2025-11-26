@@ -81,7 +81,9 @@ export const useInvoiceService = (): IInvoiceProvided => {
     }
   };
 
-  invoice_handleFetchPaymentMethod();
+  if (route.name !== 'static-invoice') {
+    invoice_handleFetchPaymentMethod();
+  }
 
   /**
    * @description Handle printing of the invoice
@@ -263,7 +265,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
     switch (type) {
       case 'copy':
         try {
-          navigator.clipboard.writeText(window.location.host + '/static/invoice/' + route.params.invoiceId);
+          navigator.clipboard.writeText(window.location.host + '/static/invoice/' + invoice_invoiceData.value.data!.invoiceNumber);
           alert('Invoice link copied to clipboard!');
         } catch (error) {
           console.error('Failed to copy text: ', error);
@@ -302,7 +304,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
           const whatsappNumber =
             invoice_invoiceData.value.data?.customer.code.toString() +
             invoice_invoiceData.value.data?.customer.number.toString();
-          const whatsappMessage = `Please find the invoice details at: ${window.location.host + '/static/invoice/' + route.params.invoiceId}`;
+          const whatsappMessage = `Please find the invoice details at: ${window.location.host + '/static/invoice/' + invoice_invoiceData.value.data!.invoiceNumber}`;
           window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
         } else {
           console.error('Customer code or number not found');
@@ -501,7 +503,34 @@ export const useInvoiceService = (): IInvoiceProvided => {
     }
   };
 
-  if (route.name !== 'cashier') {
+  const invoice_handleFetchInvoiceByOrderId = async (orderId: string): Promise<void> => {
+    invoice_invoiceData.value.isLoading = true;
+
+    try {
+      const response = await store.invoice_fetchInvoiceByOrderId(orderId);
+
+      invoice_invoiceData.value.data = response.data;
+      if (route.name !== 'self-order-invoice') {
+        await storeSetting.fetchSetting_detailInvoiceSetting(
+          invoice_invoiceData.value.currentOutlet?.id || '',
+          {},
+        );
+      }
+
+      invoice_invoiceData.value.configInvoice = setting_invoice.value;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return Promise.reject(error);
+      } else {
+        return Promise.reject(new Error(String(error)));
+      }
+    } finally {
+      invoice_invoiceData.value.isLoading = false;
+    }
+  }
+
+
+  if (route.name !== 'cashier' && route.name !== 'static-invoice') {
     invoice_handleFetchInvoiceById(route.params.invoiceId as string);
   }
 
@@ -533,7 +562,11 @@ export const useInvoiceService = (): IInvoiceProvided => {
     }
   };
 
-  if (route.name !== 'self-order-invoice' && route.name !== 'cashier') {
+  if (
+    route.name !== 'self-order-invoice' && 
+    route.name !== 'cashier' && 
+    route.name !== 'static-invoice'
+  ) {
     invoice_handleFetchKitchenTableTicket(route.params.invoiceId as string);
   }
 
@@ -610,6 +643,7 @@ export const useInvoiceService = (): IInvoiceProvided => {
   return {
     invoice_activeInvoice,
     invoice_handleFetchInvoiceById,
+    invoice_handleFetchInvoiceByOrderId,
     invoice_invoiceData,
     invoice_modalPay,
     invoice_otherOptions,

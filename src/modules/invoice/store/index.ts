@@ -10,6 +10,20 @@ import { RouteLocationNormalizedLoadedGeneric } from 'vue-router';
 export const useInvoiceStore = defineStore('invoice', {
   state: () => ({}),
   actions: {
+    invoice_fetchInvoiceByOrderId: async (orderId: string): Promise<IInvoiceResponseInvoice> => {
+      try {
+        const response = await httpClient.get<IInvoiceResponseInvoice>(
+          INVOICE_BASE_ENDPOINT + '/share/' + orderId,
+        );
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      }
+    },
     invoice_fetchInvoiceById: async (
       invoiceId: string,
       route: RouteLocationNormalizedLoadedGeneric,

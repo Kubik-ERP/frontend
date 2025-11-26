@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import { useOutletStore } from '@/modules/outlet/store';
+import { storeToRefs } from 'pinia';
+
 // Constants
-import { APP_LOGO_BASE64 } from '@/app/constants';
+import { APP_BASE_BUCKET_URL } from '@/app/constants';
+const { outlet_currentOutlet } = storeToRefs(useOutletStore());
 
 // Interfaces
 interface IDeliveryOrderData {
@@ -65,10 +69,16 @@ withDefaults(defineProps<IProps>(), {
       box-sizing: border-box;
     "
   >
-    <div id="navbar" style="background-color: #18618b; padding: 24px 32px">
-      <img :src="APP_LOGO_BASE64" alt="KUBIXPOS Logo" style="width: 200px" />
+    <div id="navbar" style="background-color: #f3631d; padding: 24px 32px; display: flex; align-items: center">
+      <img
+        :src="outlet_currentOutlet && outlet_currentOutlet.photo ? APP_BASE_BUCKET_URL + outlet_currentOutlet.photo : ''"
+        :alt="outlet_currentOutlet?.name"
+        style="width: 48px; height: 48px; object-fit: cover; margin-right: 16px; border-radius: 0px;"
+      />
+      <h1 style="font-size: 20px; font-weight: bold; margin: 0; color: #ffffff">{{ outlet_currentOutlet?.name }}</h1>
     </div>
-
+    <p style="font-size: large; padding: 10px; margin-top: 10px; margin-bottom: 10px; text-align: center; font-weight: bold; color: #333333">
+    </p>
     <div
       id="content"
       style="
@@ -255,7 +265,6 @@ withDefaults(defineProps<IProps>(), {
         border-top: 1px solid #e5e7eb;
       "
     >
-      <div>Thank you for using KUBIK</div>
       <div style="margin-top: 4px">Generated on {{ useFormatDate(new Date(), 'dd/mm/yyyy HH:mm') }}</div>
     </div>
   </div>

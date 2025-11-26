@@ -70,8 +70,8 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
         quantity: 1, // Default quantity
         sku: item.sku,
         unit: item.unit,
-        unitPrice: item.pricePerUnit,
-        totalPrice: item.pricePerUnit, // Default to unit price * 1
+        unitPrice: item.priceGrosir,
+        totalPrice: item.priceGrosir, // Default to unit price * 1
         category: item.category,
         stockQuantity: item.stockQuantity,
         reorderLevel: item.reorderLevel,
@@ -347,22 +347,33 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
   };
 
   /**
-   * @description Handle business logic for loading initial data (for edit mode)
+   * @description Watch for changes in route parameters to handle data loading and form state.
    */
-  const purchaseOrderCreateEdit_onLoadInitialData = async (): Promise<void> => {
-    await Promise.all([
-      purchaseOrderCreateEdit_fetchInventoryItemsList(),
-      purchaseOrderCreateEdit_fetchSupplierList(),
-    ]);
+  watch(
+    () => route.params.id,
+    async newId => {
+      // Always fetch common data
+      await Promise.all([
+        purchaseOrderCreateEdit_fetchInventoryItemsList(),
+        purchaseOrderCreateEdit_fetchSupplierList(),
+      ]);
 
-    if (purchaseOrderCreateEdit_isEditMode.value && purchaseOrderCreateEdit_purchaseOrderId.value) {
-      try {
-        await purchaseOrderCreateEdit_fetchDetails(purchaseOrderCreateEdit_purchaseOrderId.value);
-      } catch (error) {
-        console.error('Error loading purchase order details:', error);
+      if (newId) {
+        // EDIT MODE
+        try {
+          await purchaseOrderCreateEdit_fetchDetails(String(newId));
+          // Data population from detail is handled by another watcher
+        } catch (error) {
+          console.error('Error loading purchase order details:', error);
+        }
+      } else {
+        // CREATE MODE
+        purchaseOrderCreateEdit_onResetForm();
+        store.purchaseOrder_detail = null;
       }
-    }
-  };
+    },
+    { immediate: true },
+  );
 
   /**
    * @description Watcher to populate form when detail is loaded (for edit mode)
@@ -370,17 +381,17 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
   watch(
     () => purchaseOrder_detail.value,
     newDetail => {
-      if (newDetail) {
+      if (newDetail && purchaseOrderCreateEdit_isEditMode.value) {
         purchaseOrderCreateEdit_formData.value = {
-          supplierId: newDetail.supplierInfo.supplierName,
-          orderDate: new Date(newDetail.orderDate),
-          productItems: [],
+          supplierId: newDetail.masterSupplierId,
+          orderDate: newDetail.orderDate ? new Date(newDetail.orderDate) : null,
+          productItems: [], // This is for the staging area in the dialog, not the main list
         };
 
         // Transform product items to the create-edit format
         purchaseOrderCreateEdit_selectedProductItems.value = newDetail.purchaseOrderItems.map(item => ({
           id: item.id,
-          masterItemId: item.masterInventoryItemId, // Use productId as masterItemId
+          masterItemId: item.masterInventoryItemId,
           name: item.itemInfo.name,
           brandName: item.itemInfo.brandName,
           quantity: item.quantity,
@@ -389,9 +400,11 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
           unitPrice: item.unitPrice,
           totalPrice: item.totalPrice,
         }));
+      } else {
+        // When navigating from edit to create, newDetail becomes null, reset the form
+        purchaseOrderCreateEdit_onResetForm();
       }
     },
-    { immediate: true },
   );
 
   /**
@@ -533,8 +546,15 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
    */
   const purchaseOrderCreateEdit_onSubmitEditQuantity = () => {
     try {
-      // Update the selected product item in both lists
-      purchaseOrderCreateEdit_onAddProductItem(purchaseOrderCreateEdit_formDataOfEditQuantity.value);
+      const editedItem = purchaseOrderCreateEdit_formDataOfEditQuantity.value;
+      const index = purchaseOrderCreateEdit_selectedProductItems.value.findIndex(
+        item => item.id === editedItem.id,
+      );
+
+      if (index !== -1) {
+        purchaseOrderCreateEdit_selectedProductItems.value[index] = { ...editedItem };
+      }
+
       purchaseOrderCreateEdit_onCloseDialogEditQuantity();
     } catch (error) {
       console.error('Error submitting edit quantity:', error);
@@ -618,10 +638,9 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
   watch(
     () => purchaseOrderCreateEdit_formDataOfEditQuantity.value.quantity,
     newQuantity => {
-      if (newQuantity && purchaseOrderCreateEdit_formDataOfEditQuantity.value.unitPrice) {
-        purchaseOrderCreateEdit_formDataOfEditQuantity.value.totalPrice =
-          newQuantity * purchaseOrderCreateEdit_formDataOfEditQuantity.value.unitPrice;
-      }
+      const unitPrice = Number(purchaseOrderCreateEdit_formDataOfEditQuantity.value.unitPrice) || 0;
+      const quantity = Number(newQuantity) || 0;
+      purchaseOrderCreateEdit_formDataOfEditQuantity.value.totalPrice = quantity * unitPrice;
     },
     { immediate: true },
   );
@@ -634,9 +653,9 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
     productItems => {
       if (productItems && productItems.length > 0) {
         productItems.forEach(item => {
-          if (item.quantity && item.unitPrice) {
-            item.totalPrice = item.quantity * item.unitPrice;
-          }
+          const unitPrice = Number(item.unitPrice) || 0;
+          const quantity = Number(item.quantity) || 0;
+          item.totalPrice = quantity * unitPrice;
         });
       }
     },
@@ -662,7 +681,6 @@ export const usePurchaseOrderCreateEditService = (): IPurchaseOrderCreateEditPro
     purchaseOrderCreateEdit_onDecrementQuantity,
     purchaseOrderCreateEdit_onDeleteProductItem,
     purchaseOrderCreateEdit_onIncrementQuantity,
-    purchaseOrderCreateEdit_onLoadInitialData,
     purchaseOrderCreateEdit_onResetForm,
     purchaseOrderCreateEdit_onShowDialogAddProductItem,
     purchaseOrderCreateEdit_onShowDialogEditQuantity,

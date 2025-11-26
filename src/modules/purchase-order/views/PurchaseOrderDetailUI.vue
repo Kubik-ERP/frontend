@@ -10,7 +10,6 @@ import html2pdf from 'html2pdf.js';
 
 // Services
 import { usePurchaseOrderDetailService } from '../services/purchase-order-detail.service';
-
 /**
  * @description Destructure all the data and methods what we need
  */

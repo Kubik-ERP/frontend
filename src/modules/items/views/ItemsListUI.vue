@@ -172,11 +172,13 @@ const rbac = useRbac();
           <template v-else-if="column.value === 'expiryDate'">
             <span class="text-gray-700">
               {{
-                new Date(data.expiryDate).toLocaleDateString('id-ID', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                })
+                data.expiryDate
+                  ? useFormatDate(data.expiryDate, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: '2-digit'
+                    })
+                  : '-'
               }}
             </span>
           </template>
