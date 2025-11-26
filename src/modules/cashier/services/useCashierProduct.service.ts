@@ -1,5 +1,5 @@
 // Interfaces
-import type { ICashierProductProvided, ICashierProductState } from '../interfaces/cashier-product-service';
+import type { ICashierProductProvided, ICashierProductState } from '../interfaces/cashier-product-service.interface';
 import type { ICashierModalAddProduct, ICashierModalAddProductItem } from '../interfaces';
 import type { IProductItem } from '../interfaces/cashier-response';
 
@@ -10,6 +10,13 @@ import { useOutletStore } from '@/modules/outlet/store';
 
 // Toast
 import eventBus from '@/plugins/mitt';
+
+// Vue
+import { computed, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+
+// Helpers
+import { debounce } from '@/app/helpers/debounce.helper';
 
 import { useProductBundlingService } from '@/modules/product-bundling/services/product-bundling.service';
 
@@ -511,5 +518,5 @@ export const useCashierProductService = (): ICashierProductProvided => {
     cashierProduct_handleOpenModalAddProduct,
 
     isRetailBusinessType,
-  };
+  } as unknown as ICashierProductProvided;
 };

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 // Interface
-import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import { ICashierOrderProvided } from '@/modules/cashier/interfaces/cashier-order.interface';
+import { ICashierPaymentProvided } from '@/modules/cashier/interfaces/cashier-payment.interface';
+import { ICashierCustomerProvided } from '@/modules/cashier/interfaces/cashier-customer.interface';
 
 import { minValue, numeric, required } from '@vuelidate/validators';
 
@@ -9,12 +11,20 @@ import { CASH_DRAWER_LIST_SUGGESTION_REGISTER_BALANCE } from '@/modules/cash-dra
 /**
  * @description Inject all the data and methods what we need
  */
+const cashierOrder = inject<ICashierOrderProvided>('cashierOrder')!;
+const cashierPayment = inject<ICashierPaymentProvided>('cashierPayment')!;
+const cashierCustomer = inject<ICashierCustomerProvided>('cashierCustomer')!;
+
+// Destructure non-ref values for cleaner usage
 const {
-  cashierOrderSummary_handlePlaceOrderDetail,
-  cashierOrderSummary_modalPlaceOrderDetail,
-  cashierOrderSummary_calculateEstimation,
-  cashierOrderSummary_paymentForm,
-} = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+  cashierOrder_handlePlaceOrderDetail,
+  cashierOrder_modalPlaceOrderDetail,
+  cashierOrder_calculateEstimation,
+} = cashierOrder;
+
+const {
+  cashierPayment_paymentForm,
+} = cashierPayment;
 
 // Composables
 import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
@@ -24,11 +34,11 @@ const rules = computed(() => ({
   paymentAmount: {
     required,
     numeric,
-    minValue: minValue(computed(() => cashierOrderSummary_calculateEstimation.value.data.grandTotal)),
+    minValue: minValue(computed(() => cashierOrder_calculateEstimation.value.data.grandTotal)),
   },
 }));
 
-const v$ = useVuelidate(rules, cashierOrderSummary_paymentForm, {
+const v$ = useVuelidate(rules, cashierPayment_paymentForm, {
   $autoDirty: true,
 });
 
@@ -43,8 +53,8 @@ const changeAmount = ref(0);
  * Negative = customer still owes money
  */
 const calculateChangeAmount = () => {
-  const paymentAmount = cashierOrderSummary_paymentForm.paymentAmount || 0;
-  const totalPrice = cashierOrderSummary_calculateEstimation.value.data.grandTotal || 0;
+  const paymentAmount = cashierPayment_paymentForm.paymentAmount || 0;
+  const totalPrice = cashierOrder_calculateEstimation.value.data.grandTotal || 0;
   changeAmount.value = +paymentAmount - +totalPrice;
 };
 
@@ -54,7 +64,7 @@ const calculateChangeAmount = () => {
 const handlePaymentInput = (event: { value: string | number | undefined }) => {
   // Update the model value immediately
   const numericValue = typeof event.value === 'string' ? parseFloat(event.value) || 0 : event.value || 0;
-  cashierOrderSummary_paymentForm.paymentAmount = numericValue;
+  cashierPayment_paymentForm.paymentAmount = numericValue;
   // Trigger calculation immediately
   calculateChangeAmount();
 };
@@ -63,7 +73,7 @@ const handlePaymentInput = (event: { value: string | number | undefined }) => {
  * @description Watch for changes in payment amount and auto-calculate change
  */
 watch(
-  () => cashierOrderSummary_paymentForm.paymentAmount,
+  () => cashierPayment_paymentForm.paymentAmount,
   () => {
     calculateChangeAmount();
   },
@@ -74,7 +84,7 @@ watch(
  * @description Watch for changes in total price and auto-calculate change
  */
 watch(
-  () => cashierOrderSummary_calculateEstimation.value.data.grandTotal,
+  () => cashierOrder_calculateEstimation.value.data.grandTotal,
   () => {
     calculateChangeAmount();
   },
@@ -85,13 +95,18 @@ const handleSubmit = () => {
   v$.value.$touch();
   if (v$.value.$invalid) return;
 
-  cashierOrderSummary_handlePlaceOrderDetail();
+  cashierOrder_handlePlaceOrderDetail(
+    cashierPayment.cashierPayment_modalPaymentMethod,
+    cashierPayment.cashierPayment_paymentForm,
+    cashierCustomer.cashierCustomer_modalVoucher,
+    cashierCustomer.cashierCustomer_customerState,
+  );
 };
 </script>
 <template>
   <section id="cashier-summary-modal-place-order-detail">
     <PrimeVueDialog
-      v-model:visible="cashierOrderSummary_modalPlaceOrderDetail.show"
+      v-model:visible="cashierOrder_modalPlaceOrderDetail.show"
       modal
       class="rounded-t-4xl lg:rounded-lg p-0 m-0"
       :position="useIsMobile() || useIsTablet() ? 'bottom' : 'center'"
@@ -143,7 +158,7 @@ const handleSubmit = () => {
                 </PrimeVueInputIcon>
                 <PrimeVueInputNumber
                   id="payment-amount"
-                  v-model="cashierOrderSummary_paymentForm.paymentAmount"
+                  v-model="cashierPayment_paymentForm.paymentAmount"
                   :class="[classes, 'w-full']"
                   :placeholder="useLocalization('cashier.orderSummary.placeOrderDetail.paymentAmountPlaceholder')"
                   @input="handlePaymentInput"
@@ -156,8 +171,8 @@ const handleSubmit = () => {
               <PrimeVueChip
                 class="bg-secondary/10 cursor-pointer hover:bg-secondary basic-smooth-animation"
                 @click="
-                  cashierOrderSummary_paymentForm.paymentAmount =
-                    cashierOrderSummary_calculateEstimation?.data?.grandTotal;
+                  cashierPayment_paymentForm.paymentAmount =
+                    cashierOrder_calculateEstimation?.data?.grandTotal;
                   calculateChangeAmount();
                 "
               >
@@ -168,7 +183,7 @@ const handleSubmit = () => {
                     <span class="font-semibold text-black text-xs">
                       {{
                         useCurrencyFormat({
-                          data: cashierOrderSummary_calculateEstimation?.data?.grandTotal,
+                          data: cashierOrder_calculateEstimation?.data?.grandTotal,
                           addSuffix: true,
                         })
                       }}
@@ -181,7 +196,7 @@ const handleSubmit = () => {
                 :key="suggestionPrice"
                 class="bg-secondary/10 cursor-pointer hover:bg-secondary basic-smooth-animation"
                 @click="
-                  cashierOrderSummary_paymentForm.paymentAmount = suggestionPrice;
+                  cashierPayment_paymentForm.paymentAmount = suggestionPrice;
                   calculateChangeAmount();
                 "
               >
@@ -209,7 +224,7 @@ const handleSubmit = () => {
                 }}</span>
                 <span class="text-sm lg:text-base font-semibold">{{
                   useCurrencyFormat({
-                    data: cashierOrderSummary_paymentForm.paymentAmount,
+                    data: cashierPayment_paymentForm.paymentAmount,
                   })
                 }}</span>
               </div>
@@ -219,7 +234,7 @@ const handleSubmit = () => {
                 }}</span>
                 <span class="text-sm lg:text-base font-semibold">{{
                   useCurrencyFormat({
-                    data: cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0,
+                    data: cashierOrder_calculateEstimation?.data?.grandTotal || 0,
                   })
                 }}</span>
               </div>
@@ -251,7 +266,7 @@ const handleSubmit = () => {
               type="button"
               :label="useLocalization('cashier.cancel')"
               outlined
-              :disabled="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
+              :disabled="cashierOrder_modalPlaceOrderDetail.isLoading"
               @click="closeCallback"
             ></PrimeVueButton>
 
@@ -259,8 +274,8 @@ const handleSubmit = () => {
               class="bg-primary border-none text-white py-2.5 w-1/2"
               type="button"
               :label="useLocalization('cashier.orderSummary.placeOrderDetail.placeOrder')"
-              :disabled="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
-              :loading="cashierOrderSummary_modalPlaceOrderDetail.isLoading"
+              :disabled="cashierOrder_modalPlaceOrderDetail.isLoading"
+              :loading="cashierOrder_modalPlaceOrderDetail.isLoading"
               @click="handleSubmit()"
             ></PrimeVueButton>
           </div>

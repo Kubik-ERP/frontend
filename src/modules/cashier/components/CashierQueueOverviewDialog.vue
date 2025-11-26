@@ -4,15 +4,15 @@ import InvoicePaperCashierInvoice from '@/modules/invoice/components/paper/Invoi
 
 // Interfaces
 import type { IDailySalesListProvided } from '@/modules/daily-sales/interfaces/daily-sales-list.interface';
-import type { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import type { ICashierCustomerProvided } from '@/modules/cashier/interfaces/cashier-customer.interface';
 import type { IInvoiceProvided } from '@/modules/invoice/interfaces';
 import type { IDailySales } from '@/modules/daily-sales/interfaces';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_onCloseDialogQueueOverview } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierCustomer_onCloseDialogQueueOverview } =
+  inject<ICashierCustomerProvided>('cashierCustomer')!;
 const {
   dailySalesList_columns,
   dailySalesList_getClassOfOrderStatus,
@@ -171,7 +171,7 @@ const selectedDataQueue = ref<IDailySales | null>(null);
             label="Close"
             severity="secondary"
             variant="outlined"
-            @click="cashierOrderSummary_onCloseDialogQueueOverview"
+            @click="cashierCustomer_onCloseDialogQueueOverview"
           />
         </footer>
       </template>

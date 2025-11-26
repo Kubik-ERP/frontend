@@ -7,7 +7,8 @@ import CashierSummaryButtonOrderTable from './CashierSummaryButtonOrderTable.vue
 
 // Interfaces
 import { AutoCompleteCompleteEvent } from 'primevue';
-import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-summary';
+import type { ICashierOrderProvided } from '../../interfaces/cashier-order.interface';
+import type { ICashierCustomerProvided } from '../../interfaces/cashier-customer.interface';
 import { ICashierOrderType } from '../../interfaces';
 
 // Route
@@ -27,21 +28,24 @@ const router = useRouter();
  * @description Inject all the data and methods what we need
  */
 const {
-  cashierOrderSummary_menuOrderItem,
-  cashierOrderSummary_data,
-  cashierOrderSummary_menuOrder,
-  cashierOrderSummary_modalOrderType,
-  cashierOrderSummary_modalSelectTable,
-  cashierProduct_customerState,
-  cashierOrderSummary_selectedLoyaltyBenefitId,
-  cashierOrderSummary_selectedLoyaltyBenefit,
-  cashierProduct_onScrollFetchMoreCustomers,
-  cashierProduct_onSearchCustomer,
-  cashierOrderSummary_handleIsExpandedToggle,
-  hasCustomerManagementPermission,
-  cashierOrderSummary_handleModalAddCustomer,
-  cashierOrderSummary_setSelectedLoyaltyBenefit,
-} = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+  cashierOrder_modalOrderType,
+  cashierOrder_modalSelectTable,
+  cashierOrder_selectedLoyaltyBenefitId,
+  cashierOrder_selectedLoyaltyBenefit,
+  cashierOrder_handleIsExpandedToggle,
+  cashierOrder_setSelectedLoyaltyBenefit,
+  cashierOrder_data,
+} = inject<ICashierOrderProvided>('cashierOrder')!;
+
+const {
+  cashierCustomer_menuOrderItem,
+  cashierCustomer_menuOrder,
+  cashierCustomer_customerState,
+  cashierCustomer_onScrollFetchMoreCustomers,
+  cashierCustomer_onSearchCustomer,
+  cashierCustomer_hasManagementPermission,
+  cashierCustomer_handleModalAddCustomer,
+} = inject<ICashierCustomerProvided>('cashierCustomer')!;
 
 const { loyaltyPointBenefit_fetchList, loyaltyPointBenefit_list } = useLoyaltyPointBenefitService();
 
@@ -100,8 +104,8 @@ const setDisplayUserFromCustomer = (customer: ICashierCustomer) => {
     isGuest: false,
   };
 
-  if (cashierProduct_customerState.value.selectedCustomer?.id !== customer.id) {
-    cashierProduct_customerState.value.selectedCustomer = customer;
+  if (cashierCustomer_customerState.value.selectedCustomer?.id !== customer.id) {
+    cashierCustomer_customerState.value.selectedCustomer = customer;
   }
 };
 
@@ -122,7 +126,7 @@ const syncSelfOrderUserFromStorage = () => {
 
     if (parsed?.isGuest) {
       setDisplayUserAsGuest(parsed.name ?? defaultSelfOrderDisplayUser.name);
-      cashierProduct_customerState.value.selectedCustomer = null;
+      cashierCustomer_customerState.value.selectedCustomer = null;
       return;
     }
 
@@ -148,7 +152,7 @@ const handleSignInAsGuest = () => {
     JSON.stringify({ isGuest: true, name: defaultSelfOrderDisplayUser.name }),
   );
   window.localStorage.setItem('shoppingCart', JSON.stringify({}));
-  cashierProduct_customerState.value.selectedCustomer = null;
+  cashierCustomer_customerState.value.selectedCustomer = null;
   setDisplayUserAsGuest();
 };
 
@@ -207,7 +211,7 @@ const requestCustomerLoyaltyPoint = (customerId: string) => {
 const openLoyaltyModal = async () => {
   await loyaltyPointSettingsDetail();
   loyaltyPointBenefit_fetchList();
-  requestCustomerLoyaltyPoint(cashierProduct_customerState.value.selectedCustomer!.id);
+  requestCustomerLoyaltyPoint(cashierCustomer_customerState.value.selectedCustomer!.id);
 
   showLoyaltyModal.value = true;
 };
@@ -224,8 +228,8 @@ onMounted(() => {
   loyaltyPointSettingsDetail();
   loyaltyPointBenefit_fetchList();
 
-  if (cashierProduct_customerState.value.selectedCustomer?.id) {
-    requestCustomerLoyaltyPoint(cashierProduct_customerState.value.selectedCustomer!.id);
+  if (cashierCustomer_customerState.value.selectedCustomer?.id) {
+    requestCustomerLoyaltyPoint(cashierCustomer_customerState.value.selectedCustomer!.id);
   }
 });
 
@@ -239,10 +243,10 @@ watch(
 );
 
 watch(
-  () => cashierProduct_customerState.value.selectedCustomer?.id,
+  () => cashierCustomer_customerState.value.selectedCustomer?.id,
   newCustomerId => {
     if (!newCustomerId) {
-      cashierOrderSummary_setSelectedLoyaltyBenefit(null);
+      cashierOrder_setSelectedLoyaltyBenefit(null);
       selectedBenefit.value = null;
       return;
     }
@@ -259,7 +263,7 @@ watch(
 );
 
 watch(
-  () => cashierProduct_customerState.value.selectedCustomer,
+  () => cashierCustomer_customerState.value.selectedCustomer,
   newCustomer => {
     if (!isSelfOrderRoute.value) {
       return;
@@ -303,21 +307,21 @@ watch(
 watch(
   () => selectedBenefit.value,
   benefit => {
-    cashierOrderSummary_setSelectedLoyaltyBenefit(benefit ?? null);
+    cashierOrder_setSelectedLoyaltyBenefit(benefit ?? null);
   },
   { immediate: true },
 );
 
 watch(
-  () => cashierOrderSummary_selectedLoyaltyBenefitId.value,
+  () => cashierOrder_selectedLoyaltyBenefitId.value,
   benefitId => {
     if (!benefitId) {
       selectedBenefit.value = null;
       return;
     }
 
-    if (cashierOrderSummary_selectedLoyaltyBenefit?.value?.id === benefitId) {
-      selectedBenefit.value = cashierOrderSummary_selectedLoyaltyBenefit.value;
+    if (cashierOrder_selectedLoyaltyBenefit?.value?.id === benefitId) {
+      selectedBenefit.value = cashierOrder_selectedLoyaltyBenefit.value;
     }
   },
 );
@@ -346,7 +350,7 @@ const redeemPoints = () => {
         text
         aria-haspopup="true"
         aria-controls="overlay_menu_summary_order"
-        @click="cashierOrderSummary_menuOrder.toggle($event)"
+        @click="cashierCustomer_menuOrder?.toggle($event)"
       >
         <i class="pi pi-ellipsis-h text-primary"></i>
 
@@ -355,20 +359,20 @@ const redeemPoints = () => {
 
       <PrimeVueMenu
         id="overlay_menu_summary_order"
-        ref="cashierOrderSummary_menuOrder"
+        ref="cashierCustomer_menuOrder"
         append-to="body"
         :popup="true"
-        :model="cashierOrderSummary_menuOrderItem"
+        :model="cashierCustomer_menuOrderItem"
       >
       </PrimeVueMenu>
     </section>
 
     <section
-      v-if="cashierOrderSummary_data.isExpanded"
+      v-if="cashierOrder_data.isExpanded"
       id="cashier-summary-section-order-item"
       class="flex flex-col gap-2"
     >
-      <template v-if="hasCustomerManagementPermission">
+      <template v-if="cashierCustomer_hasManagementPermission">
         <div class="flex flex-col gap-2 w-full">
           <label for="username" class="text-sm">
             {{ useLocalization('cashier.mainSection.username') }}
@@ -379,32 +383,32 @@ const redeemPoints = () => {
             <PrimeVueInputIcon class="pi pi-user" />
 
             <PrimeVueAutoComplete
-              v-model="cashierProduct_customerState.selectedCustomer"
-              :suggestions="cashierProduct_customerState.customerList"
-              :options="cashierProduct_customerState.customerList"
+              v-model="cashierCustomer_customerState.selectedCustomer"
+              :suggestions="cashierCustomer_customerState.customerList"
+              :options="cashierCustomer_customerState.customerList"
               :field="'name'"
               :option-value="'id'"
               :option-value-key="'id'"
               option-label="name"
               :min-length="1"
-              :loading="cashierProduct_customerState.isLoading"
+              :loading="cashierCustomer_customerState.isLoading"
               :dropdown="true"
               class="w-full text-sm placeholder:text-sm"
               :placeholder="'Select Customer Name (Optional)'"
               :disabled="route.name === 'cashier-order-edit'"
               :virtual-scroller-options="{
                 itemSize: 50,
-                step: cashierProduct_customerState.limit,
+                step: cashierCustomer_customerState.limit,
                 lazy: true,
                 delay: 300,
-                loading: cashierProduct_customerState.isLoading,
-                onLazyLoad: cashierProduct_onScrollFetchMoreCustomers,
+                loading: cashierCustomer_customerState.isLoading,
+                onLazyLoad: cashierCustomer_onScrollFetchMoreCustomers,
               }"
               :pt="{
                 pcInputText: 'text-sm placeholder:text-sm',
                 option: 'text-sm',
               }"
-              @complete="(event: AutoCompleteCompleteEvent) => cashierProduct_onSearchCustomer(event.query)"
+              @complete="(event: AutoCompleteCompleteEvent) => cashierCustomer_onSearchCustomer(event.query)"
             >
               <template #value="slotProps">
                 <div v-if="slotProps.value" class="flex items-center gap-2">
@@ -447,7 +451,7 @@ const redeemPoints = () => {
                     class="text-sm"
                     @click="
                       async () => {
-                        cashierOrderSummary_handleModalAddCustomer(null);
+                        cashierCustomer_handleModalAddCustomer(null);
                       }
                     "
                   />
@@ -502,7 +506,7 @@ const redeemPoints = () => {
       </template>
 
       <button
-        v-if="cashierProduct_customerState.selectedCustomer != null"
+        v-if="cashierCustomer_customerState.selectedCustomer != null"
         type="button"
         class="flex items-center justify-between w-full h-10 px-4 rounded-lg shadow-sm transition"
         :class="[
@@ -561,16 +565,16 @@ const redeemPoints = () => {
           <!-- Customer Info Card -->
           <div class="flex flex-col items-center border border-primary-border rounded-lg p-4 w-full">
             <span class="text-lg font-semibold text-[#070707]">{{
-              cashierProduct_customerState.selectedCustomer?.name
+              cashierCustomer_customerState.selectedCustomer?.name
             }}</span>
             <div class="flex items-center gap-1 text-primary text-xs font-semibold">
               <i class="pi pi-star-fill text-primary"></i>
               {{ loyaltyPoints_list?.total }} pts
             </div>
             <span class="text-[#323232] text-sm mt-1">{{
-              cashierProduct_customerState.selectedCustomer?.code +
+              cashierCustomer_customerState.selectedCustomer?.code +
               ' ' +
-              cashierProduct_customerState.selectedCustomer?.number
+              cashierCustomer_customerState.selectedCustomer?.number
             }}</span>
           </div>
 
@@ -739,7 +743,7 @@ const redeemPoints = () => {
     </section>
 
     <div
-      v-if="!cashierOrderSummary_data.isExpandedVisible"
+      v-if="!cashierOrder_data.isExpandedVisible"
       class="border-b-0 lg:border-b-2 border-b-grayscale-10"
     ></div>
     <div v-else>
@@ -750,31 +754,31 @@ const redeemPoints = () => {
           <span class="text-primary text-sm font-semibold">
             {{
               CASHIER_ORDER_TYPE.find(
-                (f: ICashierOrderType) => f.code === cashierOrderSummary_modalOrderType.selectedOrderType,
+                (f: ICashierOrderType) => f.code === cashierOrder_modalOrderType.selectedOrderType,
               )?.label || 'Order Type'
             }}
           </span>
         </div>
 
-        <div v-if="hasCustomerManagementPermission" class="flex items-center gap-1">
+        <div v-if="cashierCustomer_hasManagementPermission" class="flex items-center gap-1">
           <AppBaseSvg name="table-primary" class="h-4 w-4 text-primary filter-primary-color" />
 
           <span
-            v-if="cashierOrderSummary_modalSelectTable.selectedTable.length > 0"
+            v-if="cashierOrder_modalSelectTable.selectedTable.length > 0"
             class="text-primary text-sm font-semibold"
           >
-            {{ cashierOrderSummary_modalSelectTable.selectedTable.toString() }}
+            {{ cashierOrder_modalSelectTable.selectedTable.toString() }}
           </span>
         </div>
       </div>
 
       <div
         class="relative flex justify-center items-center w-full border-b-2 border-b-grayscale-10 cursor-pointer"
-        @click="cashierOrderSummary_handleIsExpandedToggle"
+        @click="cashierOrder_handleIsExpandedToggle"
       >
         <div class="absolute top-full rounded-full p-1 bg-white -translate-y-1/2 px-1">
           <AppBaseSvg
-            :name="cashierOrderSummary_data.isExpanded ? 'chevron-up' : 'chevron-down'"
+            :name="cashierOrder_data.isExpanded ? 'chevron-up' : 'chevron-down'"
             class="h-4 w-4 filter-primary-color"
           />
         </div>
