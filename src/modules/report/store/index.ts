@@ -7,6 +7,7 @@ import {
   REPORT_LOYALTY_POINT_ENDPOINT,
   REPORT_INVENTORY_ENDPOINT,
   STAFF_MEMBER_BASE_ENDPOINT,
+  REPORT_STAFF_ENDPOINT,
   REPORT_DOWNLOAD_PDF_ENDPOINT,
 } from '../constants';
 import { OUTLET_BASE_ENDPOINT } from '@/modules/outlet/constants';
@@ -131,6 +132,42 @@ export const useReportStore = defineStore('report', {
           name: staffMember.fullname,
         }));
 
+        return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.report_isLoading = false;
+      }
+    },
+
+    async getStaffReport(params: IReportQueryParams, requestConfigurations: AxiosRequestConfig) {
+      this.report_isLoading = true;
+      try {
+        const response = await httpClient.get(`${REPORT_STAFF_ENDPOINT}`, {
+          params,
+          ...requestConfigurations,
+        });
+        switch (params.type) {
+          case 'commission-report': {
+            break;
+          }
+          case 'individual-report': {
+            break;
+          }
+          case 'commission-by-items': {
+            break;
+          }
+          case 'commission-by-voucher': {
+            break;
+          }
+          default: {
+            console.warn(`Unknown type: ${params.type}`);
+          }
+        }
         return Promise.resolve(response.data);
       } catch (error: unknown) {
         if (error instanceof Error) {

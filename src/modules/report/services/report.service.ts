@@ -301,6 +301,24 @@ export const useReportService = (): IReportProvided => {
     }
   };
 
+  const report_getStaffReport = async (type?: string) => {
+    try {
+      Promise.all([
+        fetchOutlet_lists(),
+        fetchStaff_lists(),
+        await store.getStaffReport(formatQueryParamsDate(report_queryParams, type), {
+          ...httpAbort_registerAbort('STAFFREPORT_REQUEST'),
+        }),
+      ]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
+
   const findOutletDetail = (id: string) => {
     return outlet_lists_values.value.find(item => item.id === id);
   };
@@ -389,6 +407,7 @@ export const useReportService = (): IReportProvided => {
     report_getVoucherReport,
     report_getCustomerReport,
     report_getLoyaltyPointReport,
+    report_getStaffReport,
     // store
     report_isLoading,
     // financial

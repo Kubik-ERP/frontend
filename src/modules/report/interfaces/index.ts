@@ -142,6 +142,7 @@ export interface IReportProvided {
   report_getVoucherReport: () => Promise<void>;
   report_getCustomerReport: () => Promise<void>;
   report_getLoyaltyPointReport: (type: string) => Promise<void>;
+  report_getStaffReport: (type: string) => Promise<void>;
   // params
   report_queryParams: IReportQueryParams;
   // store
