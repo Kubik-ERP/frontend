@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Interfaces
-import type { ICashierProductProvided } from '../interfaces/cashier-product-service';
+import type { ICashierProductProvided } from '../interfaces/cashier-product-service.interface';
 
 // Vue
 import { ref } from 'vue';
@@ -49,9 +49,15 @@ const moveDragging = (e: PointerEvent) => {
 const imageUrl = (image: string) => {
   return APP_BASE_BUCKET_URL + image;
 };
+
+/**
+ * @description Get modal category from product service
+ */
+const { cashierProduct_modalCategory } = inject<ICashierProductProvided>('cashierProduct')!;
 </script>
 
 <template>
+  <!-- Desktop category filter (horizontal scrolling) -->
   <section id="cashier-filter-by-category" class="hidden lg:flex flex-col gap-4 mb-6 mt-2">
     <h2 class="font-normal text-xs text-text-disabled">
       {{ useLocalization('cashier.mainSection.filterByCategory') }}
@@ -95,34 +101,54 @@ const imageUrl = (image: string) => {
         </template>
       </PrimeVueCard>
 
-      <!-- 🆕 Product Bundles Card -->
-<PrimeVueCard
-  :unstyled="true"
-  :pt="{
-    body: 'bg-white border border-grayscale-10 shadow-none drop-shadow-none p-4 rounded-2xl hover:border-grayscale-20 active:bg-grayscale-10/5',
-  }"
-  class="flex-shrink-0 w-[calc(100%/4)] xl:w-[calc(100%/7)] cursor-pointer"
-  :class="{
-    'border-primary-border border rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]':
-      cashierProduct_productState.selectedCategory === 'bundle'
-  }"
-  @click="cashierProduct_handleSelectCategory( 'bundle')"
->
-  <template #content>
-    <section id="cashier-card-content" class="flex flex-col gap-3 items-center">
-      <AppBaseImage
-        src="/images/icons/package.svg"
-        alt="Product Bundles"
-        class="h-8 w-8 rounded-full object-cover pointer-events-none"
-      />
-      <p class="font-semibold text-sm text-grayscale-70 line-clamp-2 text-center">
-        Product Bundles
-      </p>
+      <!-- Product Bundles Card -->
+      <PrimeVueCard
+        :unstyled="true"
+        :pt="{
+          body: 'bg-white border border-grayscale-10 shadow-none drop-shadow-none p-4 rounded-2xl hover:border-grayscale-20 active:bg-grayscale-10/5',
+        }"
+        class="flex-shrink-0 w-[calc(100%/4)] xl:w-[calc(100%/7)] cursor-pointer"
+        :class="{
+          'border-primary-border border rounded-sm shadow-[0px_0px_10px_2px_rgba(24,97,139,0.1)]':
+            cashierProduct_productState.selectedCategory === 'bundle',
+        }"
+        @click="cashierProduct_handleSelectCategory('bundle')"
+      >
+        <template #content>
+          <section id="cashier-card-content" class="flex flex-col gap-3 items-center">
+            <AppBaseImage
+              src="/images/icons/package.svg"
+              alt="Product Bundles"
+              class="h-8 w-8 rounded-full object-cover pointer-events-none"
+            />
+            <p class="font-semibold text-sm text-grayscale-70 line-clamp-2 text-center">
+              Product Bundles
+            </p>
+          </section>
+        </template>
+      </PrimeVueCard>
     </section>
-  </template>
-</PrimeVueCard>
+  </section>
 
-    </section>
+  <!-- Mobile category button (sticky) -->
+  <section
+    id="cashier-mobile-button-category"
+    class="lg:hidden sticky z-10 inset-x-0 bottom-20 -my-6 flex items-center justify-center"
+  >
+    <PrimeVueButton
+      variant="outlined"
+      severity="primary"
+      class="bg-white rounded-full border-primary"
+      @click="cashierProduct_modalCategory.show = true"
+    >
+      <div class="flex gap-2 items-center">
+        <AppBaseSvg name="catalog" class="filter-primary-color h-4 w-5" />
+
+        <span class="font-semibold text-sm text-primary">{{
+          useLocalization('cashier.categoryOrShowBundles')
+        }}</span>
+      </div>
+    </PrimeVueButton>
   </section>
 </template>
 

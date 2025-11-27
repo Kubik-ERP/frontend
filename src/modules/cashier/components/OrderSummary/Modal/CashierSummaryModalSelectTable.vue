@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Interface
-import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import type { ICashierOrderProvided } from '@/modules/cashier/interfaces/cashier-order.interface';
 
 import type { IOutletTable } from '@/modules/outlet/interfaces';
 /**
@@ -51,11 +51,11 @@ onMounted(() => {
  * @description Inject all the data and methods what we need
  */
 const {
-  cashierOrderSummary_modalSelectTable,
-  cashierOrderSummary_getListActiveFloor,
-  cashierOrderSummary_handleSelectTable,
-  cashierOrderSummary_handleToggleSelectTable,
-} = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+  cashierOrder_modalSelectTable,
+  cashierOrder_getListActiveFloor,
+  cashierOrder_handleSelectTable,
+  cashierOrder_handleToggleSelectTable,
+} = inject<ICashierOrderProvided>('cashierOrder')!;
 
 // Composables
 import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
@@ -65,7 +65,7 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
 <template>
   <section id="cashier-summary-modal-select-table">
     <PrimeVueDialog
-      v-model:visible="cashierOrderSummary_modalSelectTable.show"
+      v-model:visible="cashierOrder_modalSelectTable.show"
       modal
       :style="{
         width: useIsMobile() || useIsTablet() ? '100dvw' : '85%',
@@ -119,7 +119,7 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
                   option-label="label"
                   option-value="value"
                   class="w-full"
-                  :disabled="!cashierOrderSummary_modalSelectTable.listFloor.length"
+                  :disabled="!cashierOrder_modalSelectTable.listFloor.length"
                 />
               </div>
 
@@ -128,7 +128,7 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
                 class="flex-1 overflow-auto border border-grayscale-10 rounded-lg p-4"
                 :class="{
                   'flex items-center justify-center h-full w-full ':
-                    !cashierOrderSummary_getListActiveFloor.length,
+                    !cashierOrder_getListActiveFloor.length,
                 }"
               >
                 <template v-if="accountStoreDetail_storeTables?.length">
@@ -141,7 +141,7 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
                     :key="`store-table-${storeTableIndex}`"
                   >
                     <AccountStoreTableLayout
-                      v-model="cashierOrderSummary_modalSelectTable.selectedTable"
+                      v-model="cashierOrder_modalSelectTable.selectedTable"
                       :store-table="storeTable"
                       cashier-preview
                     />
@@ -178,23 +178,23 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
                         'flex gap-2 px-3 py-4 rounded-xl',
                         {
                           'cursor-pointer bg-primary-background border-primary-border border drop-shadow-xl drop-shadow-primary-background':
-                            cashierOrderSummary_modalSelectTable.selectedTable.includes(childItem.name),
+                            cashierOrder_modalSelectTable.selectedTable.includes(childItem.name),
 
 'cursor-not-allowed bg-grayscale-20 text-text-disabled border border-grayscale-20': childItem.statusTable === 'occupied',
 
                           'cursor-pointer hover:bg-grayscale-10/25 border border-grayscale-10 hover:border-primary-border':
-                            false && !cashierOrderSummary_modalSelectTable.selectedTable.includes(childItem.name),
+                            false && !cashierOrder_modalSelectTable.selectedTable.includes(childItem.name),
                         },
                       ]"
                       @click="() => {
                                if(childItem.statusTable === 'occupied') {
                               return;
                                }
-                        cashierOrderSummary_handleToggleSelectTable(childItem.name)
+                        cashierOrder_handleToggleSelectTable(childItem.name)
                       }"
                     >
                       <PrimeVueCheckbox
-                        :model-value="cashierOrderSummary_modalSelectTable.selectedTable.includes(childItem.name)"
+                        :model-value="cashierOrder_modalSelectTable.selectedTable.includes(childItem.name)"
                         binary
                         :readonly="true"
                       ></PrimeVueCheckbox>
@@ -211,7 +211,7 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
               </template>
 
               <section
-                v-if="cashierOrderSummary_modalSelectTable.selectedTable.length > 1"
+                v-if="cashierOrder_modalSelectTable.selectedTable.length > 1"
                 id="alert-table-will-merge"
                 class="flex gap-2 bg-secondary p-2 rounded-xl drop-shadow-lg drop-shadow-secondary/60"
               >
@@ -238,10 +238,10 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
               class="bg-primary w-full lg:w-fit border-none text-white py-2.5 px-14"
               type="button"
               :label="useLocalization('cashier.orderSummary.table.selectTable')"
-              :disabled="!cashierOrderSummary_modalSelectTable.selectedTable"
+              :disabled="!cashierOrder_modalSelectTable.selectedTable"
               @click="
-                cashierOrderSummary_modalSelectTable.show = false;
-                cashierOrderSummary_handleSelectTable();
+                cashierOrder_modalSelectTable.show = false;
+                cashierOrder_handleSelectTable();
               "
             ></PrimeVueButton>
           </div>

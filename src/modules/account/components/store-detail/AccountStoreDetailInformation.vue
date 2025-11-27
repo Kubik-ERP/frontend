@@ -20,7 +20,7 @@ const isOperationalHoursAllClosed = (operationalHours: IOutletOperationalHour) =
 
 const generateUrl = computed(() => {
   const storeId = encodeURIComponent(accountStoreDetail_selectedOutlet.value!.id);
-  return `${APP_BASE_URL}/self-order/login?storeId=${storeId}`;
+  return `${APP_BASE_URL}/self-order?storeId=${storeId}`;
 });
 </script>
 

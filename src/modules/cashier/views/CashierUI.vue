@@ -10,15 +10,22 @@ import CashierQueueOverviewDialog from '../components/CashierQueueOverviewDialog
 import CashierStockOverviewDialog from '../components/CashierStockOverviewDialog.vue';
 import CashierTableOverviewDialog from '../components/CashierTableOverviewDialog.vue';
 
+// Helpers
+import { debounce } from '@/app/helpers/debounce.helper';
+
 // Interfaces
-import type { ICashierProductProvided } from '../interfaces/cashier-product-service';
-import type { ICashierOrderSummaryProvided } from '../interfaces/cashier-order-summary';
+import type { ICashierProductProvided } from '../interfaces/cashier-product-service.interface';
+import type { ICashierOrderProvided } from '../interfaces/cashier-order.interface';
+import type { ICashierPaymentProvided } from '../interfaces/cashier-payment.interface';
+import type { ICashierCustomerProvided } from '../interfaces/cashier-customer.interface';
 import type { ICashierInventoryItemsProvided } from '../interfaces/cashier-inventory-items';
 
 // Services
 import { useAccountStoreDetailsService } from '@/modules/account/services/account-store-detail.service';
 import { useCashierProductService } from '../services/useCashierProduct.service';
-import { useCashierOrderSummaryService } from '../services/useCashierOrderSummary.service';
+import { useCashierOrderService } from '../services/useCashierOrder.service';
+import { useCashierPaymentService } from '../services/useCashierPayment.service';
+import { useCashierCustomerService } from '../services/useCashierCustomer.service';
 
 import { useCashDrawerCashRegisterService } from '@/modules/cash-drawer/services/cash-drawer-cash-register.service';
 import { useDailySalesListService } from '@/modules/daily-sales/services/daily-sales-list.service';
@@ -105,64 +112,84 @@ const {
 } = useCashierProductService();
 
 const {
-  cashierOrderSummary_menuOrder,
-  cashierOrderSummary_menuOrderItem,
-  cashierOrderSummary_data,
-  cashierOrderSummary_modalAddCustomer,
-  cashierOrderSummary_modalMenuOrderItem,
-  cashierOrderSummary_modalOrderSummary,
-  cashierOrderSummary_modalAddEditNotes,
-  cashierOrderSummary_modalPaymentMethod,
-  cashierOrderSummary_modalSelectTable,
-  cashierOrderSummary_modalOrderType,
-  cashierOrderSummary_modalVoucher,
-  cashierOrderSummary_modalInvoiceDetail,
-  cashierOrderSummary_modalPlaceOrderConfirmation,
-  cashierOrderSummary_modalPlaceOrderDetail,
-  cashierOrderSummary_modalCancelOrder,
-  cashierOrderSummary_paymentForm,
-  cashierOrderSummary_getListActiveFloor,
-  cashierOrderSummary_calculateEstimation,
-  cashierOrderSummary_summary,
-  cashierOrderSummary_isButtonPlaceOrderDisabled,
-  cashierOrderSummary_isLoadingUnpaidOrder,
-  cashierProduct_customerState,
-  hasCustomerManagementPermission,
-  cashierOrderSummary_isRetailBusinessType,
-  cashierOrderSummary_paymentAmountFormValidation,
-  cashierOrderSummary_handleModalAddCustomer,
-  cashierOrderSummary_handleIsExpandedToggle,
-  cashierOrderSummary_handleSaveUnpaidOrder,
-  cashierOrderSummary_handleInvoiceDetail,
-  cashierOrderSummary_handleCancelOrder,
-  cashierOrderSummary_handleFetchPaymentMethod,
-  cashierOrderSummary_handlePaymentMethod,
-  cashierOrderSummary_handlePlaceOrderConfirmation,
-  cashierOrderSummary_handlePlaceOrderDetail,
-  cashierOrderSummary_handleSelectTable,
-  cashierOrderSummary_handleVoucher,
-  cashierOrderSummary_handleToggleSelectTable,
-  cashierOrderSummary_handleSimulatePayment,
-  cashierProduct_onSearchCustomer,
-  cashierProduct_onScrollFetchMoreCustomers,
-  cashierOrderSummary_handleEditOrder,
+  cashierOrder_calculateEstimation,
+  cashierOrder_data,
+  cashierOrder_getListActiveFloor,
+  cashierOrder_handleCalculateEstimation,
+  cashierOrder_handleCancelOrder,
+  cashierOrder_handleEditOrder,
+  cashierOrder_handleIsExpandedToggle,
+  cashierOrder_handlePlaceOrderConfirmation,
+  cashierOrder_handlePlaceOrderDetail,
+  cashierOrder_handleSaveUnpaidOrder,
+  cashierOrder_handleSelectTable,
+  cashierOrder_handleToggleSelectTable,
+  cashierOrder_initializeRoute,
+  cashierOrder_isButtonPlaceOrderDisabled,
+  cashierOrder_isLoadingUnpaidOrder,
+  cashierOrder_isRetailBusinessType,
+  cashierOrder_isShowQuickOverview,
+  cashierOrder_menuOrder,
+  cashierOrder_menuOrderItem,
+  cashierOrder_modalAddEditNotes,
+  cashierOrder_modalCancelOrder,
+  cashierOrder_modalInvoiceDetail,
+  cashierOrder_modalOrderSummary,
+  cashierOrder_modalOrderType,
+  cashierOrder_modalPlaceOrderConfirmation,
+  cashierOrder_modalPlaceOrderDetail,
+  cashierOrder_modalSelectTable,
+  cashierOrder_selectedLoyaltyBenefit,
+  cashierOrder_selectedLoyaltyBenefitId,
+  cashierOrder_setSelectedLoyaltyBenefit,
+  cashierOrder_summary,
+} = useCashierOrderService();
 
-  cashierOrderSummary_isShowQuickOverview,
-  cashierOrderSummary_onCloseDialogCashDrawerOverview,
-  cashierOrderSummary_onCloseDialogQueueOverview,
-  cashierOrderSummary_onCloseDialogTableOverview,
-  cashierOrderSummary_onOpenDialogCashDrawerOverview,
-  cashierOrderSummary_onOpenDialogQueueOverview,
-  cashierOrderSummary_onOpenDialogTableOverview,
-  cashierOrderSummary_onOpenDialogStockOverview,
-  cashierOrderSummary_onCloseDialogStockOverview,
+/**
+ * @description Create a debounced version of calculateEstimation for customer service
+ */
+const debouncedCalculateEstimation = debounce(() => {
+  cashierOrder_handleCalculateEstimation();
+}, 500);
 
-  // Initialize functions
-  cashierOrderSummary_initializeRoute,
-  cashierOrderSummary_setSelectedLoyaltyBenefit,
-  cashierOrderSummary_selectedLoyaltyBenefitId,
-  cashierOrderSummary_selectedLoyaltyBenefit,
-} = useCashierOrderSummaryService();
+const {
+  cashierPayment_handleFetchPaymentMethod,
+  cashierPayment_handlePaymentMethod,
+  cashierPayment_handleSimulatePayment,
+  cashierPayment_modalPaymentMethod,
+  cashierPayment_paymentAmountFormValidation,
+  cashierPayment_paymentForm,
+  cashierPayment_subscribe,
+  cashierPayment_unsubscribe,
+} = useCashierPaymentService(cashierOrder_calculateEstimation, cashierOrder_modalPlaceOrderDetail);
+
+const {
+  cashierCustomer_customerState,
+  cashierCustomer_fetchCustomerList,
+  cashierCustomer_getVoucherActive,
+  cashierCustomer_handleModalAddCustomer,
+  cashierCustomer_handleVoucher,
+  cashierCustomer_hasCustomerManagementPermission,
+  cashierCustomer_menuOrderItem,
+  cashierCustomer_modalAddCustomer,
+  cashierCustomer_modalMenuOrderItem,
+  cashierCustomer_modalVoucher,
+  cashierCustomer_onCloseDialogCashDrawerOverview,
+  cashierCustomer_onCloseDialogQueueOverview,
+  cashierCustomer_onCloseDialogStockOverview,
+  cashierCustomer_onCloseDialogTableOverview,
+  cashierCustomer_onOpenDialogCashDrawerOverview,
+  cashierCustomer_onOpenDialogQueueOverview,
+  cashierCustomer_onOpenDialogStockOverview,
+  cashierCustomer_onOpenDialogTableOverview,
+  cashierCustomer_onScrollFetchMoreCustomers,
+  cashierCustomer_onSearchCustomer,
+  cashierCustomer_voucherData,
+} = useCashierCustomerService(
+  cashierProduct_selectedProduct,
+  cashierOrder_calculateEstimation,
+  debouncedCalculateEstimation,
+);
 
 const {
   dailySalesList_columns,
@@ -255,6 +282,7 @@ provide('staffMemberList', {
 
 provide<ICashierProductProvided>('cashierProduct', {
   cashierProduct_productState,
+  cashierProduct_customerState: cashierCustomer_customerState,
 
   cashierProduct_modalAddEditItem,
   cashierProduct_modalCategory,
@@ -271,6 +299,8 @@ provide<ICashierProductProvided>('cashierProduct', {
   cashierProduct_handleBarcodeScanned,
   cashierProduct_handleFetchCategory,
   cashierProduct_handleFetchProductCategory,
+  cashierProduct_onScrollFetchMoreCustomers: cashierCustomer_onScrollFetchMoreCustomers,
+  cashierProduct_onSearchCustomer: cashierCustomer_onSearchCustomer,
 
   isProductActive,
   cashierProduct_handleQuantity,
@@ -279,65 +309,86 @@ provide<ICashierProductProvided>('cashierProduct', {
   isRetailBusinessType,
 });
 
-provide<ICashierOrderSummaryProvided>('cashierOrderSummary', {
-  cashierOrderSummary_menuOrder,
-  cashierOrderSummary_menuOrderItem,
-  cashierOrderSummary_data,
-  cashierOrderSummary_modalAddCustomer,
-  cashierOrderSummary_modalMenuOrderItem,
-  cashierOrderSummary_modalOrderSummary,
-  cashierOrderSummary_modalAddEditNotes,
-  cashierOrderSummary_modalPaymentMethod,
-  cashierOrderSummary_modalSelectTable,
-  cashierOrderSummary_modalOrderType,
-  cashierOrderSummary_modalVoucher,
-  cashierOrderSummary_modalInvoiceDetail,
-  cashierOrderSummary_modalPlaceOrderConfirmation,
-  cashierOrderSummary_modalPlaceOrderDetail,
-  cashierOrderSummary_paymentForm,
-  cashierOrderSummary_modalCancelOrder,
-  cashierOrderSummary_getListActiveFloor,
-  cashierOrderSummary_calculateEstimation,
-  cashierOrderSummary_summary,
-  cashierOrderSummary_isButtonPlaceOrderDisabled,
-  cashierOrderSummary_isLoadingUnpaidOrder,
-  cashierProduct_customerState,
-  hasCustomerManagementPermission,
-  cashierOrderSummary_isRetailBusinessType,
-  cashierOrderSummary_paymentAmountFormValidation,
-  cashierOrderSummary_handleModalAddCustomer,
-  cashierOrderSummary_handleIsExpandedToggle,
-  cashierOrderSummary_handleSaveUnpaidOrder,
-  cashierOrderSummary_handleInvoiceDetail,
-  cashierOrderSummary_handleCancelOrder,
-  cashierOrderSummary_handleFetchPaymentMethod,
-  cashierOrderSummary_handlePaymentMethod,
-  cashierOrderSummary_handlePlaceOrderConfirmation,
-  cashierOrderSummary_handlePlaceOrderDetail,
-  cashierOrderSummary_handleSelectTable,
-  cashierOrderSummary_handleVoucher,
-  cashierOrderSummary_handleToggleSelectTable,
-  cashierOrderSummary_handleSimulatePayment,
-  cashierProduct_onSearchCustomer,
-  cashierProduct_onScrollFetchMoreCustomers,
-  cashierOrderSummary_handleEditOrder,
+provide<ICashierOrderProvided>('cashierOrder', {
+  cashierOrder_calculateEstimation,
+  cashierOrder_data,
+  cashierOrder_getListActiveFloor,
+  cashierOrder_handleCalculateEstimation,
+  cashierOrder_handleCancelOrder,
+  cashierOrder_handleEditOrder,
+  cashierOrder_handleIsExpandedToggle,
+  cashierOrder_handlePlaceOrderConfirmation,
+  cashierOrder_handlePlaceOrderDetail,
+  cashierOrder_handleSaveUnpaidOrder,
+  cashierOrder_handleSelectTable,
+  cashierOrder_handleToggleSelectTable,
+  cashierOrder_initializeRoute,
+  cashierOrder_isButtonPlaceOrderDisabled,
+  cashierOrder_isLoadingUnpaidOrder,
+  cashierOrder_isRetailBusinessType,
+  cashierOrder_isShowQuickOverview,
+  cashierOrder_menuOrder,
+  cashierOrder_menuOrderItem,
+  cashierOrder_modalAddEditNotes,
+  cashierOrder_modalCancelOrder,
+  cashierOrder_modalInvoiceDetail,
+  cashierOrder_modalMenuOrderItem: cashierCustomer_modalMenuOrderItem,
+  cashierOrder_modalOrderSummary,
+  cashierOrder_modalOrderType,
+  cashierOrder_modalPlaceOrderConfirmation,
+  cashierOrder_modalPlaceOrderDetail,
+  cashierOrder_modalSelectTable,
+  cashierOrder_selectedLoyaltyBenefit,
+  cashierOrder_selectedLoyaltyBenefitId,
+  cashierOrder_setSelectedLoyaltyBenefit,
+  cashierOrder_summary,
+});
 
-  cashierOrderSummary_isShowQuickOverview,
-  cashierOrderSummary_onCloseDialogCashDrawerOverview,
-  cashierOrderSummary_onCloseDialogQueueOverview,
-  cashierOrderSummary_onCloseDialogTableOverview,
-  cashierOrderSummary_onOpenDialogCashDrawerOverview,
-  cashierOrderSummary_onOpenDialogTableOverview,
-  cashierOrderSummary_onOpenDialogQueueOverview,
-  cashierOrderSummary_onOpenDialogStockOverview,
-  cashierOrderSummary_onCloseDialogStockOverview,
+provide<ICashierPaymentProvided>('cashierPayment', {
+  cashierPayment_handleFetchPaymentMethod,
+  cashierPayment_handlePaymentMethod,
+  cashierPayment_handleSaveUnpaidOrder: () =>
+    cashierOrder_handleSaveUnpaidOrder(
+      cashierPayment_modalPaymentMethod,
+      cashierCustomer_modalVoucher,
+      cashierCustomer_customerState
+    ),
+  cashierPayment_handleSimulatePayment,
+  cashierPayment_modalPaymentMethod,
+  cashierPayment_paymentAmountFormValidation,
+  cashierPayment_paymentForm,
+  cashierPayment_subscribe,
+  cashierPayment_unsubscribe,
+});
 
-  // Initialize functions
-  cashierOrderSummary_initializeSelfOrder: () => Promise.resolve(), // Empty implementation for cashier
-  cashierOrderSummary_initializeRoute,
-  cashierOrderSummary_setSelectedLoyaltyBenefit,
-  cashierOrderSummary_selectedLoyaltyBenefitId,
-  cashierOrderSummary_selectedLoyaltyBenefit,
+provide<ICashierCustomerProvided>('cashierCustomer', {
+  cashierCustomer_customerState,
+  cashierCustomer_fetchCustomerList,
+  cashierCustomer_getVoucherActive,
+  cashierCustomer_handleInvoiceDetail: async (invoiceId: string) => {
+    await invoice_handleFetchInvoiceById(invoiceId);
+  },
+  cashierCustomer_handleModalAddCustomer,
+  cashierCustomer_handleVoucher,
+  cashierCustomer_hasCustomerManagementPermission,
+  cashierCustomer_hasManagementPermission: cashierCustomer_hasCustomerManagementPermission,
+  cashierCustomer_menuOrder: cashierOrder_menuOrder,
+  cashierCustomer_menuOrderItem,
+  cashierCustomer_modalAddCustomer,
+  cashierCustomer_modalInvoiceDetail: cashierOrder_modalInvoiceDetail,
+  cashierCustomer_modalMenuOrderItem,
+  cashierCustomer_modalVoucher,
+  cashierCustomer_onCloseDialogCashDrawerOverview,
+  cashierCustomer_onCloseDialogQueueOverview,
+  cashierCustomer_onCloseDialogStockOverview,
+  cashierCustomer_onCloseDialogTableOverview,
+  cashierCustomer_onOpenDialogCashDrawerOverview,
+  cashierCustomer_onOpenDialogQueueOverview,
+  cashierCustomer_onOpenDialogStockOverview,
+  cashierCustomer_onOpenDialogTableOverview,
+  cashierCustomer_onScrollFetchMoreCustomers,
+  cashierCustomer_onSearchCustomer,
+  cashierCustomer_voucherData,
 });
 
 provide('dailySalesList', {
@@ -370,6 +421,28 @@ provide<ICashierInventoryItemsProvided>('cashierInventoryItems', {
 
 // Route is not needed in cashier since self-order is handled separately
 
+/**
+ * @description Watch for changes in selected products and trigger estimation calculation
+ * This ensures the subtotal and total price are updated whenever items are added or modified
+ */
+watch(
+  () => cashierProduct_selectedProduct.value,
+  (newValue) => {
+    // Only trigger calculation if there are products selected
+    if (newValue && newValue.length > 0) {
+      cashierOrder_handleCalculateEstimation(
+        false,
+        cashierCustomer_modalVoucher.value.form.voucherId,
+        cashierCustomer_customerState.value.selectedCustomer?.id,
+        async () => await cashierCustomer_getVoucherActive('', []),
+        cashierCustomer_voucherData,
+        cashierCustomer_modalVoucher,
+      );
+    }
+  },
+  { deep: true },
+);
+
 onMounted(async () => {
   // Initialize product data (only for cashier, not self-order)
   await cashierProduct_handleFetchCategory();
@@ -377,10 +450,14 @@ onMounted(async () => {
   await cashierCashDrawer_fetchTodayStatus();
 
   // Initialize order summary based on route (cashier only)
-  cashierOrderSummary_initializeRoute();
+  cashierOrder_initializeRoute(
+    cashierCustomer_customerState,
+    cashierPayment_modalPaymentMethod,
+    cashierPayment_handleFetchPaymentMethod,
+  );
 
   // Initialize daily sales data
-  if (cashierOrderSummary_isRetailBusinessType) {
+  if (cashierOrder_isRetailBusinessType) {
     // Fetch inventory items data for retail business type
     await inventoryItems_fetchData();
   } else {

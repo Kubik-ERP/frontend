@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Interfaces
 import type { ICashDrawerCashRegisterProvide } from '@/modules/cash-drawer/interfaces';
-import type { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import type { ICashierCustomerProvided } from '@/modules/cashier/interfaces/cashier-customer.interface';
 
 /**
  * @description Inject all the data and methods what we need
@@ -18,8 +18,8 @@ const {
   cashDrawerCashRegister_queryParamsOfTransaction,
 } = inject('cashDrawerCashRegister') as ICashDrawerCashRegisterProvide;
 
-const { cashierOrderSummary_onCloseDialogCashDrawerOverview } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierCustomer_onCloseDialogCashDrawerOverview } =
+  inject<ICashierCustomerProvided>('cashierCustomer')!;
 </script>
 
 <template>
@@ -229,7 +229,7 @@ const { cashierOrderSummary_onCloseDialogCashDrawerOverview } =
           label="Close"
           severity="secondary"
           variant="outlined"
-          @click="cashierOrderSummary_onCloseDialogCashDrawerOverview"
+          @click="cashierCustomer_onCloseDialogCashDrawerOverview"
         />
       </footer>
     </template>
