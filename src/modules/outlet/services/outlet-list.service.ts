@@ -22,6 +22,7 @@ export const useOutletListService = (): IOutletListProvided => {
   /**
    * @description Injected variables
    */
+  const rbac = useRbac()
   const router = useRouter();
   const store = useOutletStore(); // Instance of the store
   const authStore = useAuthenticationStore(); // Instance of the authentication store
@@ -64,6 +65,19 @@ export const useOutletListService = (): IOutletListProvided => {
       }
     }
   };
+
+  /**
+   * @description Handle business logic for checking if user have access to access all store permission
+   */
+  const outletList_hasAccessToAllStores = (): void => {
+    if (outlet_currentOutlet.value || Object.keys(outlet_currentOutlet.value || {}).length > 0) {
+      if (rbac.hasPermission('access_all_store') == false) {
+        router.push({ name: 'dashboard' });
+
+        return;
+      }
+    }
+  }
 
   /**
    * @description Handle business logic for event click button continue
@@ -126,6 +140,7 @@ export const useOutletListService = (): IOutletListProvided => {
   return {
     outletList_dynamicClassOfSelectedOutlet,
     outletList_fetchOutletLists,
+    outletList_hasAccessToAllStores,
     outletList_isLoading: outlet_isLoading,
     outletList_lists: outlet_lists,
     outletList_onContinue,

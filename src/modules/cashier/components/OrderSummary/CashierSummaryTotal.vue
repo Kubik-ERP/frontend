@@ -3,17 +3,17 @@
 import { computed, inject } from 'vue';
 
 // Interfaces
-import { ICashierOrderSummaryProvided } from '../../interfaces/cashier-order-summary';
+import { ICashierOrderProvided } from '../../interfaces/cashier-order.interface';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_calculateEstimation, cashierOrderSummary_selectedLoyaltyBenefit } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierOrder_calculateEstimation, cashierOrder_selectedLoyaltyBenefit } =
+  inject<ICashierOrderProvided>('cashierOrder')!;
 
-const loyaltyRedeemAmount = computed(() => cashierOrderSummary_calculateEstimation.value?.data?.totalRedeemDiscount ?? 0);
+const loyaltyRedeemAmount = computed(() => cashierOrder_calculateEstimation.value?.data?.totalRedeemDiscount ?? 0);
 
-const loyaltyPointUsage = computed(() => cashierOrderSummary_selectedLoyaltyBenefit.value?.pointNeeds ?? 0);
+const loyaltyPointUsage = computed(() => cashierOrder_selectedLoyaltyBenefit.value?.pointNeeds ?? 0);
 </script>
 
 <template>
@@ -21,26 +21,26 @@ const loyaltyPointUsage = computed(() => cashierOrderSummary_selectedLoyaltyBene
     <div class="flex flex-col gap-1 pb-2 border-b-2 border-b-grayscale-10">
       <div class="flex justify-between text-sm font-semibold">
         <span>{{ useLocalization('cashier.orderSummary.subTotal') }}</span>
-        <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">{{
+        <span v-if="!cashierOrder_calculateEstimation.isLoading">{{
           useCurrencyFormat({
-            data: cashierOrderSummary_calculateEstimation?.data?.subTotal || 0,
+            data: cashierOrder_calculateEstimation?.data?.subTotal || 0,
           })
         }}</span>
         <PrimeVueSkeleton v-else width="6rem" />
       </div>
 
       <div
-        v-if="cashierOrderSummary_calculateEstimation?.data?.discountTotal > 0"
+        v-if="cashierOrder_calculateEstimation?.data?.discountTotal > 0"
         class="flex justify-between text-sm font-semibold"
       >
         <span>Discount Product</span>
-        <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
+        <span v-if="!cashierOrder_calculateEstimation.isLoading">
           {{
             useCurrencyFormat({
               data:
-                cashierOrderSummary_calculateEstimation?.data?.discountTotal > 0
-                  ? -cashierOrderSummary_calculateEstimation?.data?.discountTotal
-                  : cashierOrderSummary_calculateEstimation?.data?.discountTotal || 0,
+                cashierOrder_calculateEstimation?.data?.discountTotal > 0
+                  ? -cashierOrder_calculateEstimation?.data?.discountTotal
+                  : cashierOrder_calculateEstimation?.data?.discountTotal || 0,
             })
           }}
         </span>
@@ -48,7 +48,7 @@ const loyaltyPointUsage = computed(() => cashierOrderSummary_selectedLoyaltyBene
       </div>
 
       <div
-        v-if="cashierOrderSummary_calculateEstimation.data.voucherAmount"
+        v-if="cashierOrder_calculateEstimation.data.voucherAmount"
         class="flex justify-between text-sm text-text-disabled"
       >
         <span
@@ -57,11 +57,11 @@ const loyaltyPointUsage = computed(() => cashierOrderSummary_selectedLoyaltyBene
           <span>({{ useLocalization('cashier.orderSummary.included') }})</span></span
         >
 
-        <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
+        <span v-if="!cashierOrder_calculateEstimation.isLoading">
           -
           {{
             useCurrencyFormat({
-              data: cashierOrderSummary_calculateEstimation.data.voucherAmount,
+              data: cashierOrder_calculateEstimation.data.voucherAmount,
             })
           }}</span
         >
@@ -69,69 +69,69 @@ const loyaltyPointUsage = computed(() => cashierOrderSummary_selectedLoyaltyBene
       </div>
 
       <div
-        v-if="cashierOrderSummary_calculateEstimation.data.tax"
+        v-if="cashierOrder_calculateEstimation.data.tax"
         class="flex justify-between text-sm text-text-disabled"
       >
         <span
           >{{ useLocalization('cashier.orderSummary.tax') }}
-          <span v-if="cashierOrderSummary_calculateEstimation.data.taxInclude"
+          <span v-if="cashierOrder_calculateEstimation.data.taxInclude"
             >({{ useLocalization('cashier.orderSummary.included') }})</span
           >
           <span v-else>({{ useLocalization('cashier.orderSummary.excluded') }})</span></span
         >
 
-        <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">{{
+        <span v-if="!cashierOrder_calculateEstimation.isLoading">{{
           useCurrencyFormat({
-            data: cashierOrderSummary_calculateEstimation.data.tax,
+            data: cashierOrder_calculateEstimation.data.tax,
           })
         }}</span>
         <PrimeVueSkeleton v-else width="6rem" />
       </div>
       <div
-        v-if="cashierOrderSummary_calculateEstimation.data.serviceCharge"
+        v-if="cashierOrder_calculateEstimation.data.serviceCharge"
         class="flex justify-between text-sm text-text-disabled"
       >
         <span
           >{{ useLocalization('cashier.orderSummary.service') }}
 
-          <span v-if="cashierOrderSummary_calculateEstimation.data.serviceChargeInclude"
+          <span v-if="cashierOrder_calculateEstimation.data.serviceChargeInclude"
             >({{ useLocalization('cashier.orderSummary.included') }})</span
           >
           <span v-else>({{ useLocalization('cashier.orderSummary.excluded') }})</span></span
         >
 
-        <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
+        <span v-if="!cashierOrder_calculateEstimation.isLoading">
           {{
             useCurrencyFormat({
-              data: cashierOrderSummary_calculateEstimation.data.serviceCharge,
+              data: cashierOrder_calculateEstimation.data.serviceCharge,
             })
           }}</span
         >
         <PrimeVueSkeleton v-else width="6rem" />
       </div>
       <div
-        v-if="cashierOrderSummary_calculateEstimation.data.roundingAdjustment"
+        v-if="cashierOrder_calculateEstimation.data.roundingAdjustment"
         class="flex justify-between text-sm text-text-disabled"
       >
         <span> Rounding </span>
 
-        <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
+        <span v-if="!cashierOrder_calculateEstimation.isLoading">
           {{
             useCurrencyFormat({
-              data: cashierOrderSummary_calculateEstimation.data.roundingAdjustment,
+              data: cashierOrder_calculateEstimation.data.roundingAdjustment,
             })
           }}</span
         >
         <PrimeVueSkeleton v-else width="6rem" />
       </div>
-      
+
       <!-- Loyalty Point Discount -->
       <div
         v-if="loyaltyRedeemAmount > 0"
         class="flex justify-between text-sm text-text-disabled"
       >
         <span>Loyalty Point Discount</span>
-        <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">
+        <span v-if="!cashierOrder_calculateEstimation.isLoading">
           -
           {{
             useCurrencyFormat({
@@ -154,9 +154,9 @@ const loyaltyPointUsage = computed(() => cashierOrderSummary_selectedLoyaltyBene
 
     <div class="flex justify-between font-semibold pt-2">
       <span>{{ useLocalization('cashier.orderSummary.total') }}</span>
-      <span v-if="!cashierOrderSummary_calculateEstimation.isLoading">{{
+      <span v-if="!cashierOrder_calculateEstimation.isLoading">{{
         useCurrencyFormat({
-          data: cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0,
+          data: cashierOrder_calculateEstimation?.data?.grandTotal || 0,
         })
       }}</span>
       <PrimeVueSkeleton v-else width="6rem" />

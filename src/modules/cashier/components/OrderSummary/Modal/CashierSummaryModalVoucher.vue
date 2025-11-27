@@ -1,22 +1,22 @@
 <script setup lang="ts">
 // Interface
-import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import type { ICashierCustomerProvided } from '@/modules/cashier/interfaces/cashier-customer.interface';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalVoucher, cashierOrderSummary_handleVoucher } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierCustomer_modalVoucher, cashierCustomer_handleVoucher } =
+  inject<ICashierCustomerProvided>('cashierCustomer')!;
 
 const localSearch = ref('');
 // const localId = ref('');
 
 watch(
-  () => cashierOrderSummary_modalVoucher.value.data,
+  () => cashierCustomer_modalVoucher.value.data,
   (newVal) => {
     if (newVal && newVal.length > 0) {
       const isSelectedVoucherStillAvailable = newVal.find(
-        (f) => f.id === cashierOrderSummary_modalVoucher.value.form.voucherId && f.available,
+        (f) => f.id === cashierCustomer_modalVoucher.value.form.voucherId && f.available,
       );
 
       if (isSelectedVoucherStillAvailable) {
@@ -25,12 +25,12 @@ watch(
 
       const first = newVal.find((f) => f.available === true);
       if (first) {
-        cashierOrderSummary_modalVoucher.value.form.voucher_code = first.code;
-        cashierOrderSummary_modalVoucher.value.form.voucherId = first.id;
+        cashierCustomer_modalVoucher.value.form.voucher_code = first.code;
+        cashierCustomer_modalVoucher.value.form.voucherId = first.id;
       } else {
         // kalau tidak ada voucher yang available, reset
-        cashierOrderSummary_modalVoucher.value.form.voucher_code = '';
-        cashierOrderSummary_modalVoucher.value.form.voucherId = '';
+        cashierCustomer_modalVoucher.value.form.voucher_code = '';
+        cashierCustomer_modalVoucher.value.form.voucherId = '';
       }
     }
   },
@@ -45,7 +45,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 <template>
   <section v-if="voucherPermission" id="cashier-summary-modal-voucher" >
     <PrimeVueDialog
-      v-model:visible="cashierOrderSummary_modalVoucher.show"
+      v-model:visible="cashierCustomer_modalVoucher.show"
       modal
       :position="useIsMobile() || useIsTablet() ? 'bottom' : 'center'"
       :style="{
@@ -99,14 +99,14 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
 
             <section
               class="flex-grow flex flex-col overflow-y-auto border border-grayscale-10 rounded-md p-2"
-              :class="{ 'justify-center items-center': !cashierOrderSummary_modalVoucher.data.length }"
+              :class="{ 'justify-center items-center': !cashierCustomer_modalVoucher.data.length }"
             >
-              <span v-if="!cashierOrderSummary_modalVoucher.data.length" class="text-text-disabled">{{
+              <span v-if="!cashierCustomer_modalVoucher.data.length" class="text-text-disabled">{{
                 useLocalization('cashier.orderSummary.voucher.noDataVoucher')
               }}</span>
 
               <div
-                v-for="(item, index) in cashierOrderSummary_modalVoucher.data"
+                v-for="(item, index) in cashierCustomer_modalVoucher.data"
                 v-else
                 :key="index"
                 class="p-3 border border-disabled mb-4 rounded-md"
@@ -114,22 +114,22 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
                   'bg-grayscale-10 text-text-disabled cursor-not-allowed': item.available === false,
                   ' text-text-main cursor-pointer ': item.available === true,
                   'border border-primary-border bg-primary-background':
-                    cashierOrderSummary_modalVoucher.form.voucher_code === item.code,
+                    cashierCustomer_modalVoucher.form.voucher_code === item.code,
                 }"
                 @click="
                   () => {
                     if (!item.available) {
-                      cashierOrderSummary_modalVoucher.form.voucher_code = ''
-                      cashierOrderSummary_modalVoucher.form.voucherId = ''
+                      cashierCustomer_modalVoucher.form.voucher_code = ''
+                      cashierCustomer_modalVoucher.form.voucherId = ''
                       return
                     }
 
-                    if (cashierOrderSummary_modalVoucher.form.voucher_code === item.code) {
-                      cashierOrderSummary_modalVoucher.form.voucher_code = ''
-                      cashierOrderSummary_modalVoucher.form.voucherId = ''
+                    if (cashierCustomer_modalVoucher.form.voucher_code === item.code) {
+                      cashierCustomer_modalVoucher.form.voucher_code = ''
+                      cashierCustomer_modalVoucher.form.voucherId = ''
                     } else {
-                      cashierOrderSummary_modalVoucher.form.voucher_code = item.code
-                      cashierOrderSummary_modalVoucher.form.voucherId = item.id
+                      cashierCustomer_modalVoucher.form.voucher_code = item.code
+                      cashierCustomer_modalVoucher.form.voucherId = item.id
                     }
                   }
                 "
@@ -217,7 +217,7 @@ import { useIsMobile, useIsTablet } from '@/app/composables/useBreakpoint';
               type="button"
               :label="useLocalization('cashier.orderSummary.voucher.applyPromo')"
               @click="
-                cashierOrderSummary_handleVoucher(cashierOrderSummary_modalVoucher.form.voucherId);
+                cashierCustomer_handleVoucher(cashierCustomer_modalVoucher.form.voucherId);
               "
             ></PrimeVueButton>
           </div>

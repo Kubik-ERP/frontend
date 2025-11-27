@@ -31,7 +31,7 @@ const generateUrl = computed(() => {
   const storeId = encodeURIComponent(outlet_selectedOutletOnAccountPage.value!.id);
   const floorName = encodeURIComponent(accountStoreDetail_selectedTable?.value?.floorName ?? '');
   const tablesName = encodeURIComponent(accountStoreDetail_selectedTable?.value?.name ?? '');
-  return `${APP_BASE_URL}/self-order/login?storeId=${storeId}&floorName=${floorName}&tablesName=${tablesName}`;
+  return `${APP_BASE_URL}/self-order?storeId=${storeId}&floorName=${floorName}&tablesName=${tablesName}`;
 });
 </script>
 

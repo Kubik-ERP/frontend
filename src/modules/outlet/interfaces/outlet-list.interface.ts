@@ -22,6 +22,7 @@ export interface IOutletListProvided {
   outletList_onContinue: () => void;
   outletList_dynamicClassOfSelectedOutlet: (outlet: IOutlet) => string;
   outletList_fetchOutletLists: () => Promise<IOutletListResponse>;
+  outletList_hasAccessToAllStores: () => void;
   outletList_isLoading: globalThis.Ref<boolean>;
   outletList_lists: Ref<IOutletListData>;
   outletList_onNavigateToCreateStore: () => void;

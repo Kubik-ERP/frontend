@@ -13,6 +13,7 @@ const {
   outletList_onContinue,
   outletList_dynamicClassOfSelectedOutlet,
   outletList_fetchOutletLists,
+  outletList_hasAccessToAllStores,
   outletList_isLoading,
   outletList_lists,
   outletList_onNavigateToCreateStore,
@@ -37,6 +38,7 @@ provide('outletList', {
  * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
  */
 onMounted(async () => {
+  outletList_hasAccessToAllStores()
   await outletList_fetchOutletLists();
 });
 </script>
