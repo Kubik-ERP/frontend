@@ -36,6 +36,9 @@ watch(
     </template>
     <template #content>
       <section class="flex flex-col gap-4">
+      <div v-if="portionStock_formData.updatedAt">
+        <h3>Last Updated At : {{ useFormatDate(portionStock_formData.updatedAt!, 'dd/MMM/yyyy') }}</h3>
+      </div>
         <!-- action -->
         <AppBaseFormGroup
           v-slot="{ classes }"

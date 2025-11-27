@@ -42,7 +42,7 @@ const {
     <template #body="{ column, data }">
       <template v-if="column.value === 'createdAt'">
         <span class="font-base text-sm text-text-primary whitespace-nowrap">{{
-          useFormatDate(data[column.value], 'dd/MMM/yyyy')
+          useFormatDate(data['updatedAt'], 'dd/MMM/yyyy')
         }}</span>
       </template>
       <template v-else-if="column.value === 'users'">

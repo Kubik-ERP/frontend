@@ -38,6 +38,7 @@ export const useProductDetailsService = (): IProductDetailsProvided => {
   const { productDetails, productDetails_isLoading } = storeToRefs(store);
 
   function resetPortionStockFormData() {
+    portionStock_formData.updatedAt = null;
     portionStock_formData.product_id = null;
     portionStock_formData.adjustment_id = null;
     portionStock_formData.action = 'INCREASE';
@@ -49,6 +50,7 @@ export const useProductDetailsService = (): IProductDetailsProvided => {
 
   const portionStock_onShowAdjustment = (data?: IProductPortionStock | null): void => {
     if (data) {
+      portionStock_formData.updatedAt = data.updatedAt;
       portionStock_formData.product_id = data.productId;
       portionStock_formData.adjustment_id = data.id;
       portionStock_formData.action = data.action;
@@ -112,6 +114,7 @@ export const useProductDetailsService = (): IProductDetailsProvided => {
       }
     } finally {
       portionStock_onCloseAdjustment();
+      await productDetails_fetchProductDetails(productDetails.value.id);
     }
   };
 

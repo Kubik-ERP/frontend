@@ -58,6 +58,7 @@ export type IProductPortionStock = {
 };
 
 export type IPortionStock_formData = {
+  updatedAt?: string | null;
   product_id?: string | null;
   adjustment_id?: string | null;
   action: 'INCREASE' | 'DECREASE';
