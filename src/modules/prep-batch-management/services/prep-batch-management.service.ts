@@ -171,8 +171,6 @@ export const useBatchService = (): IBatchListProvided => {
     }
   };
 
-  
-
   const menuRecipeList_fetchList = async (): Promise<unknown> => {
     try {
       await store.menuRecipe_list(menuRecipeList_queryParams, {
@@ -604,6 +602,9 @@ export const useBatchService = (): IBatchListProvided => {
   };
 
   const batchDetails_onCompleteBatch = async () => {
+    batch_wasteLog_formData.batchWaste =
+      batchDetail_values.value.batch_target_yield - batch_wasteLog_formData.batchWaste;
+
     try {
       await store.batch_complete(batchDetail_values.value.id, batch_wasteLog_formData, {
         ...httpAbort_registerAbort('BATCH_COMPLETE_REQUEST'),

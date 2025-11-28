@@ -73,6 +73,7 @@ const {
           <PrimeVueInputNumber
             v-model="batch_wasteLog_formData.batchWaste"
             class="w-full"
+            :max="batchDetail_values?.batch_target_yield"
             :class="{ ...classes }"
           />
         </AppBaseFormGroup>
