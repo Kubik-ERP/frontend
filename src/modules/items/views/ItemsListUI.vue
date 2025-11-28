@@ -156,11 +156,11 @@ const rbac = useRbac();
           </template> -->
 
           <template v-else-if="column.value === 'markup'">
-            <span class="text-gray-700">{{ data.markup == null ? '-' : `${data.markup} %` }}</span>
+            <span class="text-gray-700">{{ data.markup == null ? '-' : `${data.markup * 100} %` }}</span>
           </template>
 
           <template v-else-if="column.value === 'margin'">
-            <span class="text-gray-700">{{ data.margin == null ? '-' : `${data.margin} %` }}</span>
+            <span class="text-gray-700">{{ data.margin == null ? '-' : `${data.margin * 100} %` }}</span>
           </template>
 
           <!-- Price Per Unit -->

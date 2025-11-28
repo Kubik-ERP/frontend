@@ -36,6 +36,10 @@ provide('batchDetails', {
 
 onMounted(async () => {
   await batch_fetchDetails(route?.params?.id as string);
+
+  batch_wasteLog_formData.batchWaste =
+    batchDetail_values?.value?.batch_waste -
+    (batchDetail_values.value?.batch_target_yield * batchDetail_values?.value?.batch_waste) / 100;
 });
 </script>
 <template>

@@ -1,14 +1,17 @@
 <script setup lang="ts">
 // components
+import CustomDatePicker from '../../components/CustomDatePicker.vue';
 import DownloadingDialog from '../DownloadingDialog.vue';
 // service
 import { useReportService } from '../../services/report.service';
 const {
-  loyaltyPointReport_productBased_columns,
+  staffReport_commission_columns,
   report_queryParams,
-  report_getLoyaltyPointReport,
-  loyaltyPointReport_productBased_values,
+  report_getStaffReport,
+  // hasManageStaffMemberPermission,
+  staffReport_Commission_values,
   outlet_lists_options,
+  // staff_lists_options,
   findOutletDetail,
   findStaffDetail,
   hasAccessAllStorePermission,
@@ -20,14 +23,13 @@ const {
   report_downloadPDF,
   dialogDownload_onClose,
 } = useReportService();
+const popover = ref();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
-const { exportToCsv, export_isloading } = useReportExporter();
-const popover = ref();
-
+const { exportToCsv } = useReportExporter();
 const handleExportToCsv = () => {
   exportToCsv({
-    reportName: 'Loyalty Point Report - Product Based',
+    reportName: 'Staff Report - Commission Report',
     storeName: hasAccessAllStorePermission
       ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
       : outlet_currentOutlet.value!.name,
@@ -36,79 +38,77 @@ const handleExportToCsv = () => {
       : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: loyaltyPointReport_productBased_columns,
+    columns: staffReport_commission_columns,
     tableData: formattedDataTable(),
   });
 };
 
 const formattedDataTable = () => {
-  const newData =
-    loyaltyPointReport_productBased_values?.value?.table?.map(item => {
-      return {
-        productName: item.productName,
-        productPrice: useCurrencyFormat({ data: item.productPrice }),
-        pointsToIDR: useCurrencyFormat({ data: item.pointsToIDR, hidePrefix: true }),
-        sumOfPointsGivenToCust: item.sumOfPointsGivenToCust,
-        totalCust: item.totalCust,
-      };
-    }) || [];
-  return newData;
-};
+  const newData = staffReport_Commission_values.value?.table?.map(item => ({
+    staffName: item.staffName,
+    totalInvoices: item.totalInvoices,
+    totalItemsSold: item.totalItemsSold,
+    totalRevenue: useCurrencyFormat({ data: item.totalRevenue }),
+    totalVouchersUsed: item.totalVouchersUsed,
+    totalItemCommission: useCurrencyFormat({ data: item.totalItemCommission }),
+    totalVoucherCommission: item.totalVoucherCommission,
+    grandTotalCommission: useCurrencyFormat({ data: item.grandTotalCommission }),
+  }));
 
-const page = ref<number>(1);
-const limit = ref<number>(10);
-const onChangePage = (newPage: number) => {
-  page.value = newPage;
+  return newData;
 };
 </script>
 <template>
-  <DownloadingDialog :visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
   <section class="flex flex-col gap-4">
     <PrimeVueCard>
       <template #content>
         <table class="w-full">
           <tbody>
-            <tr class="bg-secondary/10">
-              <th class="text-left p-1.5">Sum of All Points</th>
+            <tr class="odd:bg-secondary/10">
+              <th class="text-left p-1.5">Total Staff</th>
+              <td class="text-right p-1.5">
+                {{ staffReport_Commission_values.dashboard?.totalStaff || 0 }}
+              </td>
+            </tr>
+            <tr>
+              <th class="text-left p-1.5">Total Invoices</th>
+              <td class="text-right p-1.5">
+                {{ staffReport_Commission_values.dashboard?.totalInvoices || 0 }}
+              </td>
+            </tr>
+            <tr class="odd:bg-secondary/10">
+              <th class="text-left p-1.5">Total Revenue</th>
+              <td class="text-right p-1.5">
+                {{ useCurrencyFormat({ data: staffReport_Commission_values.dashboard?.totalRevenue || 0 }) }}
+              </td>
+            </tr>
+            <tr>
+              <th class="text-left p-1.5">Total Item Commission</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
-                    data: loyaltyPointReport_productBased_values?.dashboard?.sumOfAllPoints || 0,
+                    data: staffReport_Commission_values.dashboard?.totalItemCommission || 0,
+                    hidePrefix: true,
+                  })
+                }}
+              </td>
+            </tr>
+            <tr class="odd:bg-secondary/10">
+              <th class="text-left p-1.5">Total Voucher Commission</th>
+              <td class="text-right p-1.5">
+                {{
+                  useCurrencyFormat({
+                    data: staffReport_Commission_values.dashboard?.totalVoucherCommission || 0,
                     hidePrefix: true,
                   })
                 }}
               </td>
             </tr>
             <tr>
-              <th class="text-left p-1.5">Sum of All points Expired</th>
+              <th class="text-left p-1.5">Grand Total Commission</th>
               <td class="text-right p-1.5">
                 {{
-                  useCurrencyFormat({
-                    data: loyaltyPointReport_productBased_values?.dashboard?.sumOfAllPointsExpired || 0,
-                    hidePrefix: true,
-                  })
-                }}
-              </td>
-            </tr>
-            <tr class="bg-secondary/10">
-              <th class="text-left p-1.5">Total Customer</th>
-              <td class="text-right p-1.5">
-                {{
-                  useCurrencyFormat({
-                    data: loyaltyPointReport_productBased_values?.dashboard?.totalCustomers || 0,
-                    hidePrefix: true,
-                  })
-                }}
-              </td>
-            </tr>
-            <tr>
-              <th class="text-left p-1.5">Total Products For Earning Benefit</th>
-              <td class="text-right p-1.5">
-                {{
-                  useCurrencyFormat({
-                    data: loyaltyPointReport_productBased_values?.dashboard?.totalProductsForEarningBenefit || 0,
-                    hidePrefix: true,
-                  })
+                  useCurrencyFormat({ data: staffReport_Commission_values.dashboard?.grandTotalCommission || 0 })
                 }}
               </td>
             </tr>
@@ -116,19 +116,22 @@ const onChangePage = (newPage: number) => {
         </table>
       </template>
     </PrimeVueCard>
+    <DownloadingDialog
+      v-model:visible="isDialogVisible"
+      :status="downloadStatus"
+      @reset="dialogDownload_onClose"
+    />
     <AppBaseDataTable
       :data="formattedDataTable()"
-      :columns="loyaltyPointReport_productBased_columns"
+      :columns="staffReport_commission_columns"
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-custom-filter
-      :first="(page - 1) * limit"
-      :rows-per-page="limit"
-      :total-records="formattedDataTable().length"
-      @update:currentPage="onChangePage"
+      is-using-custom-body
+      is-using-custom-footer
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Product Based</h1>
+        <h1 class="font-bold text-2xl text-text-primary">Staff Commission Report</h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
@@ -153,13 +156,12 @@ const onChangePage = (newPage: number) => {
               variant="text"
               label="Export to .pdf"
               :loading="isDownloading"
-              @click="report_downloadPDF('loyalty-report', 'product-based')"
+              @click="report_downloadPDF('staff-report', 'commission-report')"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .csv"
-              :loading="export_isloading"
               @click="handleExportToCsv"
             />
           </section>
@@ -168,6 +170,13 @@ const onChangePage = (newPage: number) => {
 
       <template #filter>
         <section class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4 pt-4">
+          <CustomDatePicker
+            v-model:start-date="report_queryParams.startDate"
+            v-model:end-date="report_queryParams.endDate"
+            :should-update-type="false"
+            class="col-span-1 xl:col-span-2 2xl:col-span-1"
+            @update:end-date="report_getStaffReport('commission-report')"
+          />
           <PrimeVueSelect
             v-if="hasAccessAllStorePermission"
             v-model="report_queryParams.store_ids"
@@ -177,13 +186,35 @@ const onChangePage = (newPage: number) => {
             placeholder="Select Outlet"
             class="col-span-1 w-full"
             filter
-            @change="report_getLoyaltyPointReport('product-based')"
+            @change="report_getStaffReport('commission-report')"
           >
             <template #dropdownicon>
               <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
+          <!-- <PrimeVueSelect
+            v-if="hasManageStaffMemberPermission"
+            v-model="report_queryParams.staff_ids"
+            :options="staff_lists_options"
+            option-label="label"
+            option-value="value"
+            placeholder="Select Staff"
+            filter
+            class="col-span-1 w-full"
+            @change="report_getStaffReport('commission-report')"
+            ><template #dropdownicon>
+              <AppBaseSvg name="staff" class="w-5 h-5 filter-primary-color" />
+            </template>
+          </PrimeVueSelect> -->
         </section>
+      </template>
+      <template #body="{ data, column }">
+        <template v-if="column.value === 'description'">
+          <span class="font-semibold text-sm text-text-primary">{{ data[column.value] }}</span>
+        </template>
+        <template v-else>
+          <span class="text-sm text-text-primary">{{ data[column.value] }}</span>
+        </template>
       </template>
     </AppBaseDataTable>
   </section>
