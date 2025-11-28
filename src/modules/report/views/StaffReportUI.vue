@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // components
 import CommissionReport from '../components/StaffReport/CommissionReport.vue';
-// import IndividualReport from '../components/StaffReport/IndividualReport.vue';
+import IndividualReport from '../components/StaffReport/IndividualReport.vue';
 import CommissionByItemsReport from '../components/StaffReport/CommissionByItemsReport.vue';
 import CommissionByVoucherReport from '../components/StaffReport/CommissionByVoucherReport.vue';
 // types
@@ -12,11 +12,11 @@ const staffReport_listTabs = ref<ITabs[]>([
     label: 'Commission Report',
     value: 'commission-report',
   },
-  // {
-  //   component: markRaw(IndividualReport),
-  //   label: 'Individual Report',
-  //   value: 'individual-report',
-  // },
+  {
+    component: markRaw(IndividualReport),
+    label: 'Individual Report',
+    value: 'individual-report',
+  },
   {
     component: markRaw(CommissionByItemsReport),
     label: 'Commission By Items',
@@ -41,11 +41,10 @@ watch(
         await report_getStaffReport('commission-report');
         break;
       }
-      // case 'INDIVIDUAL-REPORT': {
-      //   report_queryParams.staff_ids = '91';
-      //   await report_getStaffReport('individual-report');
-      //   break;
-      // }
+      case 'INDIVIDUAL-REPORT': {
+        await report_getStaffReport('individual-report');
+        break;
+      }
       case 'COMMISSION-BY-ITEMS': {
         await report_getStaffReport('commission-by-items');
         break;

@@ -205,6 +205,7 @@ export interface IReportProvided {
   outlet_lists_options: globalThis.Ref<IOutletListOptions[]>;
   findOutletDetail: (id: string) => IOutlet | null | undefined;
   // staff_list
+  staff_lists_values: globalThis.Ref<IStaffMember[]>;
   staff_lists_options: globalThis.Ref<IStaffMemberListOptions[]>;
   findStaffDetail: (id: string) => IStaffMember | null | undefined;
   // misc

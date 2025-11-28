@@ -465,6 +465,7 @@ export const useReportService = (): IReportProvided => {
     outlet_lists_options,
     findOutletDetail,
     // staff
+    staff_lists_values,
     staff_lists_options,
     findStaffDetail,
     // misc
