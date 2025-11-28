@@ -110,10 +110,10 @@ export const LIST_SIDEBAR_MENUS = [
             translationKey: 'app.menus.voucher-report',
             path: '/report/voucher-report',
           },
-          // {
-          //   name: 'Staff Report',
-          //   path: '/report/staff-report',
-          // },
+          {
+            name: 'Staff Report',
+            path: '/report/staff-report',
+          },
           {
             name: 'Customer Report',
             path: '/report/customer-report',

@@ -78,6 +78,7 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
     '/report/voucher-report',
     '/report/customer-report',
     '/report/loyalty-point-report',
+    '/report/staff-report',
   ],
   invoice_templates: ['/pos-setting', '/pos-setting/invoice'],
 
