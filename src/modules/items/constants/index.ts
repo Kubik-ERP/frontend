@@ -69,12 +69,6 @@ export const ITEMS_LIST_COLUMS: IColumnDataTable[] = [
     translationKey: businessType === 'Restaurant' ? 'items.form.pricePerUnit' : 'items.form.priceRetail',
   },
   {
-    label: 'Price Grosir',
-    sortable: true,
-    value: 'priceGrosir',
-    translationKey: 'items.form.priceGrosir',
-  },
-  {
     label: 'Expiry Date',
     sortable: true,
     value: 'expiryDate',

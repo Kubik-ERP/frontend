@@ -179,6 +179,20 @@ const handleSubmit = async () => {
           <span class="font-semibold ml-1">{{ newStockQuantity }}</span>
         </div>
 
+        <!-- Expiry Date -->
+        <AppBaseFormGroup
+          is-name-as-label
+          label-for="expiryDate"
+          :name="useLocalization('items.form.expiryDate')"
+        >
+          <PrimeVueDatePicker
+            v-model="itemStockAdjustmentAction_formData.expiredAt as Date"
+            date-format="yy-mm-dd"
+            show-icon
+            class="w-full"
+          />
+        </AppBaseFormGroup>
+
         <!-- Notes -->
         <AppBaseFormGroup
           is-name-as-label
