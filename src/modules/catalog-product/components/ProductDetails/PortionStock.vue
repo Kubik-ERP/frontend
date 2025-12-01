@@ -8,7 +8,7 @@ const {
   productDetails_portionStock_columns,
   productDetails,
   productDetails_isLoading,
-  portionStock_onShowAdjustment,
+  // portionStock_onShowAdjustment,
 } = inject<IProductDetailsProvided>('productDetails')!;
 </script>
 <template>
@@ -25,7 +25,7 @@ const {
     is-using-custom-body
   >
     <template #header-suffix>
-      <PrimeVueButton
+      <!-- <PrimeVueButton
         class="mb-4 bg-primary border-primary"
         label="Add portion stock adjustment"
         severity="primary"
@@ -34,7 +34,7 @@ const {
         <template #icon>
           <AppBaseSvg name="plus-line-white" class="!w-4 !h-4" />
         </template>
-      </PrimeVueButton>
+      </PrimeVueButton> -->
     </template>
     <template #header-prefix>
       <h1 class="font-semibold text-2xl text-text-primary">Portion Stock</h1>
@@ -49,12 +49,12 @@ const {
         <span class="font-base text-sm text-text-primary">{{ data[column.value]?.fullname ?? '-' }} </span>
       </template>
       <template v-else-if="column.value === 'edit'">
-        <PrimeVueButton
+        <!-- <PrimeVueButton
           class="p-button-text text-gray-500 hover:text-primary"
           @click="portionStock_onShowAdjustment(data)"
         >
           <AppBaseSvg name="edit" class="!w-4 !h-4 filter-primary-color" />
-        </PrimeVueButton>
+        </PrimeVueButton> -->
       </template>
       <template v-else>
         <span class="font-base text-sm text-text-primary">{{ data[column.value] }}</span>

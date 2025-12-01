@@ -44,7 +44,7 @@ export const PRODUCT_DETAILS_PORTION_STOCK_COLUMNS = [
   },
   {
     sortable: false,
-    label: 'Action',
+    label: '',
     value: 'edit',
   }
 ];
