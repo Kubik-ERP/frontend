@@ -121,6 +121,18 @@ const routes: RouteRecordRaw[] = [
           breadcrumb: 'Loyalty Point Report',
         },
       },
+      // staff-report
+      {
+        path: '/report/staff-report',
+        name: 'report.staff-report',
+        component: () => import('../views/StaffReportUI.vue'),
+        meta: {
+          layout: LAYOUT_OPTIONS.DEFAULT,
+          requiresAuthorization: true,
+          title: 'Staff Report',
+          breadcrumb: 'Staff Report',
+        },
+      }
     ],
     meta: {
       breadcrumb: 'Report',

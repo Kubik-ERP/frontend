@@ -69,7 +69,7 @@ export interface IInventoryItemsStockAdjustmentPayload {
   action: string;
   adjustmentQuantity: number;
   notes: string;
-  expiryDate?: string | Date;
+  expiredAt?:  Date | string;
 }
 
 export interface IInventoryItemsPayload {
