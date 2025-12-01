@@ -171,7 +171,10 @@ export const useBatchService = (): IBatchListProvided => {
     }
   };
 
-  const menuRecipeList_fetchList = async (): Promise<unknown> => {
+  const menuRecipeList_fetchList = async (query?: string): Promise<unknown> => {
+    if (typeof query === 'string') {
+      menuRecipeList_queryParams.search = query;
+    }
     try {
       await store.menuRecipe_list(menuRecipeList_queryParams, {
         ...httpAbort_registerAbort('MENU_RECIPE_LIST_REQUEST'),

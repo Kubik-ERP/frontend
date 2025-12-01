@@ -12,6 +12,7 @@ const {
   productDetails,
   productDetails_isLoading,
   productDetails_fetchProductDetails,
+  portionStock_onShowAdjustment
 } = useProductDetailsService();
 
 provide('productDetails', {
@@ -19,6 +20,7 @@ provide('productDetails', {
   productDetails_productVariants_columns,
   productDetails,
   productDetails_isLoading,
+  portionStock_onShowAdjustment
 });
 
 const salesReport_activeTab = ref<string>('product-variant');

@@ -81,8 +81,6 @@ const batch_editMode = async () => {
 
 // ... your other code (menuRecipeList_fetchList, etc.) ...
 
-
-
 onMounted(async () => {
   await menuRecipeList_fetchList();
   if (route.name === 'prep-batch-management.edit') {
@@ -133,37 +131,30 @@ onMounted(async () => {
           spacing-bottom="mb-0"
           :validators="batch_formValidation.recipeId"
         >
-          <PrimeVueIconField>
-            <PrimeVueAutoComplete
-              v-model="menuRecipeList_queryParams.search"
-              :suggestions="menuRecipe_lists.items"
-              :loading="menuRecipeList_isLoading"
-              option-label="recipeName"
-              field="recipeName"
-              class="text-sm w-full [&>input]:text-sm [&>input]:w-full"
-              :class="{ ...classes }"
-              :min-length="0"
-              dropdown
-              @complete="menuRecipeList_fetchList()"
-              @option-select="(event: any) => menuRecipeList_onSelectedRecipe(event.value)"
-            >
-              <template #option="{ option }">
-                <div class="flex items-center justify-between gap-3 p-2 w-full">
-                  <div class="flex flex-col flex-1">
-                    <span class="font-medium text-sm text-black">{{ option.recipeName }}</span>
-                  </div>
+          <PrimeVueSelect
+            v-model="menuRecipeList_queryParams.search"
+            :options="menuRecipe_lists.items"
+            :loading="menuRecipeList_isLoading"
+            option-label="recipeName"
+            placeholder="Select a recipe"
+            class="text-sm w-full"
+            :class="{ ...classes }"
+            filter
+            @filter="(e: any) => menuRecipeList_fetchList(e.value)"
+            @change="(e: any) => menuRecipeList_onSelectedRecipe(e.value)"
+          >
+            <template #option="{ option }">
+              <div class="flex items-center justify-between gap-3 p-2 w-full">
+                <div class="flex flex-col flex-1">
+                  <span class="font-medium text-sm text-black">{{ option.recipeName }}</span>
                 </div>
-              </template>
-              <template #dropdownicon>
-                <AppBaseSvg name="search" class="w-4 h-4" />
-              </template>
-            </PrimeVueAutoComplete>
-            <!-- <PrimeVueInputIcon>
-              <template #default>
-                <AppBaseSvg name="search" class="w-4 h-4" />
-              </template>
-            </PrimeVueInputIcon> -->
-          </PrimeVueIconField>
+              </div>
+            </template>
+
+            <template #dropdownicon>
+              <AppBaseSvg name="search" class="w-4 h-4" />
+            </template>
+          </PrimeVueSelect>
 
           <PrimeVueButton
             v-if="batch_formData.recipeId !== null"

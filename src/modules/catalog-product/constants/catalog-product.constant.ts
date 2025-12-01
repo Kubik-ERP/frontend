@@ -42,4 +42,9 @@ export const PRODUCT_DETAILS_PORTION_STOCK_COLUMNS = [
     label: 'Adjusted By',
     value: 'users',
   },
+  {
+    sortable: false,
+    label: '',
+    value: 'edit',
+  }
 ];
