@@ -15,7 +15,7 @@ const { purchaseOrderDeliveryOrderDocument_data, purchaseOrderDeliveryOrderDocum
       <h1 class="font-bold text-4xl text-black">Delivery Order</h1>
 
       <h5 class="font-semibold text-base text-black">
-        {{ purchaseOrderDeliveryOrderDocument_data?.orderNumber }}
+        {{ purchaseOrderDeliveryOrderDocument_data?.deliveryNumber ?? '-' }}
       </h5>
     </header>
 

@@ -6,6 +6,7 @@ import {
   PURCHASE_ORDER_DETAIL_CANCEL_REQUEST,
   PURCHASE_ORDER_DETAIL_SHIP_REQUEST,
   PURCHASE_ORDER_DETAIL_PAY_REQUEST,
+  PURCHASE_ORDER_DETAIL_PDF_REQUEST,
 } from '../constants';
 
 // Interfaces
@@ -409,7 +410,7 @@ export const usePurchaseOrderDetailService = (): IPurchaseOrderDetailProvided =>
     if (!currentId) return;
 
     router.push({ name: 'purchase-order.received', params: { id: currentId } });
-  }
+  };
 
   /**
    * @description Handle business logic for pay action
@@ -573,7 +574,7 @@ export const usePurchaseOrderDetailService = (): IPurchaseOrderDetailProvided =>
         type: 'info',
         isOpen: true,
         isUsingButtonSecondary: true,
-         isUsingHtmlTagOnDescription: true,
+        isUsingHtmlTagOnDescription: true,
         textButtonPrimary: 'Confirm PO',
         textButtonSecondary: 'Cancel',
         width: '472px',
@@ -610,6 +611,21 @@ export const usePurchaseOrderDetailService = (): IPurchaseOrderDetailProvided =>
     eventBus.emit('AppBaseDialog', argsEventEmitter);
   };
 
+  /**
+   * @description Handle business logic for exporting delivery order to PDF
+   */
+  const purchaseOrderDetail_onExportDeliveryOrderToPdf = async (): Promise<void> => {
+    try {
+      if (purchaseOrderDetail_routeParamsId.value) {
+        await store.purchaseOrder_downloadPdf(purchaseOrderDetail_routeParamsId.value, {
+          ...httpAbort_registerAbort(PURCHASE_ORDER_DETAIL_PDF_REQUEST),
+        });
+      }
+    } catch (error) {
+      console.error('Error exporting to PDF:', error);
+    }
+  };
+
   return {
     purchaseOrderDetail_data: purchaseOrder_detail,
     purchaseOrderDetail_dynamicButtonAction,
@@ -629,5 +645,7 @@ export const usePurchaseOrderDetailService = (): IPurchaseOrderDetailProvided =>
     purchaseOrderDetail_onEdit,
     purchaseOrderDetail_onBack,
     purchaseOrderDetail_getStatusClass,
+    purchaseOrderDetail_onExportDeliveryOrderToPdf,
   };
 };
+

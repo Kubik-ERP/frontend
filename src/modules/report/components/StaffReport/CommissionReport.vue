@@ -1,18 +1,17 @@
 <script setup lang="ts">
 // components
-import DownloadingDialog from '../DownloadingDialog.vue';
 import CustomDatePicker from '../../components/CustomDatePicker.vue';
-import SummaryReport from '../SummaryReport.vue';
+import DownloadingDialog from '../DownloadingDialog.vue';
 // service
 import { useReportService } from '../../services/report.service';
 const {
-  salesReport_columns,
+  staffReport_commission_columns,
   report_queryParams,
-  report_getSalesReport,
-  hasManageStaffMemberPermission,
-  salesReport_salesByCategory_values,
-  staff_lists_options,
+  report_getStaffReport,
+  // hasManageStaffMemberPermission,
+  staffReport_Commission_values,
   outlet_lists_options,
+  // staff_lists_options,
   findOutletDetail,
   findStaffDetail,
   hasAccessAllStorePermission,
@@ -24,13 +23,13 @@ const {
   report_downloadPDF,
   dialogDownload_onClose,
 } = useReportService();
+const popover = ref();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
-const { exportToCsv, export_isloading } = useReportExporter();
-const popover = ref();
+const { exportToCsv } = useReportExporter();
 const handleExportToCsv = () => {
   exportToCsv({
-    reportName: 'Sales Report - Sales By Category Report',
+    reportName: 'Staff Report - Commission Report',
     storeName: hasAccessAllStorePermission
       ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
       : outlet_currentOutlet.value!.name,
@@ -39,27 +38,24 @@ const handleExportToCsv = () => {
       : outlet_currentOutlet.value!.address,
     staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
-    columns: salesReport_columns,
+    columns: staffReport_commission_columns,
     tableData: formattedDataTable(),
   });
 };
 
 const formattedDataTable = () => {
-  const newData =
-    salesReport_salesByCategory_values.value?.groupedSummary?.map(item => {
-      return {
-        group: item.group,
-        jumlahTerjual: item.jumlahTerjual,
-        kotor: useCurrencyFormat({ data: item.kotor }),
-        diskonItem: useCurrencyFormat({ data: item.diskonItem }),
-        refund: useCurrencyFormat({ data: item.refund }),
-        pajak: useCurrencyFormat({ data: item.pajak }),
-        totalPenjualan: useCurrencyFormat({ data: item.totalPenjualan }),
-        countPenggunaanVoucher: item.countPenggunaanVoucher,
-      };
-    }) || [];
+  const newData = staffReport_Commission_values.value?.table?.map(item => ({
+    staffName: item.staffName,
+    totalInvoices: item.totalInvoices,
+    totalItemsSold: item.totalItemsSold,
+    totalRevenue: useCurrencyFormat({ data: item.totalRevenue }),
+    totalVouchersUsed: item.totalVouchersUsed,
+    totalItemCommission: useCurrencyFormat({ data: item.totalItemCommission }),
+    totalVoucherCommission: item.totalVoucherCommission,
+    grandTotalCommission: useCurrencyFormat({ data: item.grandTotalCommission }),
+  }));
 
-  return newData || [];
+  return newData;
 };
 
 const page = ref<number>(1);
@@ -69,26 +65,86 @@ const onChangePage = (newPage: number) => {
 };
 </script>
 <template>
-  <DownloadingDialog :visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
   <section class="flex flex-col gap-4">
-    <SummaryReport :summary="salesReport_salesByCategory_values?.overallSummary" />
+    <PrimeVueCard>
+      <template #content>
+        <table class="w-full">
+          <tbody>
+            <tr class="odd:bg-secondary/10">
+              <th class="text-left p-1.5">Total Staff</th>
+              <td class="text-right p-1.5">
+                {{ staffReport_Commission_values.dashboard?.totalStaff || 0 }}
+              </td>
+            </tr>
+            <tr>
+              <th class="text-left p-1.5">Total Invoices</th>
+              <td class="text-right p-1.5">
+                {{ staffReport_Commission_values.dashboard?.totalInvoices || 0 }}
+              </td>
+            </tr>
+            <tr class="odd:bg-secondary/10">
+              <th class="text-left p-1.5">Total Revenue</th>
+              <td class="text-right p-1.5">
+                {{ useCurrencyFormat({ data: staffReport_Commission_values.dashboard?.totalRevenue || 0 }) }}
+              </td>
+            </tr>
+            <tr>
+              <th class="text-left p-1.5">Total Item Commission</th>
+              <td class="text-right p-1.5">
+                {{
+                  useCurrencyFormat({
+                    data: staffReport_Commission_values.dashboard?.totalItemCommission || 0,
+                    hidePrefix: true,
+                  })
+                }}
+              </td>
+            </tr>
+            <tr class="odd:bg-secondary/10">
+              <th class="text-left p-1.5">Total Voucher Commission</th>
+              <td class="text-right p-1.5">
+                {{
+                  useCurrencyFormat({
+                    data: staffReport_Commission_values.dashboard?.totalVoucherCommission || 0,
+                    hidePrefix: true,
+                  })
+                }}
+              </td>
+            </tr>
+            <tr>
+              <th class="text-left p-1.5">Grand Total Commission</th>
+              <td class="text-right p-1.5">
+                {{
+                  useCurrencyFormat({ data: staffReport_Commission_values.dashboard?.grandTotalCommission || 0 })
+                }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
+    </PrimeVueCard>
+    <DownloadingDialog
+      v-model:visible="isDialogVisible"
+      :status="downloadStatus"
+      @reset="dialogDownload_onClose"
+    />
     <AppBaseDataTable
       :data="formattedDataTable()"
-      :columns="salesReport_columns"
+      :columns="staffReport_commission_columns"
+      is-using-custom-header-prefix
+      is-using-custom-header-suffix
       :first="(page - 1) * limit"
       :rows-per-page="limit"
       :total-records="formattedDataTable().length"
-      is-using-custom-header-prefix
-      is-using-custom-header-suffix
       is-using-custom-filter
+      is-using-custom-body
+      is-using-custom-footer
       @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Sales By Category</h1>
+        <h1 class="font-bold text-2xl text-text-primary">Staff Commission Report</h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
-          :disabled="formattedDataTable().length === 0"
           variant="outlined"
           label="Export"
           class="border border-primary-border text-primary"
@@ -110,13 +166,12 @@ const onChangePage = (newPage: number) => {
               variant="text"
               label="Export to .pdf"
               :loading="isDownloading"
-              @click="report_downloadPDF('advanced-sales-report', 'category')"
+              @click="report_downloadPDF('staff-report', 'commission-report')"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
               label="Export to .csv"
-              :loading="export_isloading"
               @click="handleExportToCsv"
             />
           </section>
@@ -130,7 +185,7 @@ const onChangePage = (newPage: number) => {
             v-model:end-date="report_queryParams.endDate"
             :should-update-type="false"
             class="col-span-1 xl:col-span-2 2xl:col-span-1"
-            @update:end-date="report_getSalesReport('category')"
+            @update:end-date="report_getStaffReport('commission-report')"
           />
           <PrimeVueSelect
             v-if="hasAccessAllStorePermission"
@@ -139,15 +194,15 @@ const onChangePage = (newPage: number) => {
             option-label="label"
             option-value="value"
             placeholder="Select Outlet"
-            filter
             class="col-span-1 w-full"
-            @change="report_getSalesReport('category')"
+            filter
+            @change="report_getStaffReport('commission-report')"
           >
             <template #dropdownicon>
               <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
-          <PrimeVueSelect
+          <!-- <PrimeVueSelect
             v-if="hasManageStaffMemberPermission"
             v-model="report_queryParams.staff_ids"
             :options="staff_lists_options"
@@ -156,12 +211,20 @@ const onChangePage = (newPage: number) => {
             placeholder="Select Staff"
             filter
             class="col-span-1 w-full"
-            @change="report_getSalesReport('category')"
+            @change="report_getStaffReport('commission-report')"
             ><template #dropdownicon>
               <AppBaseSvg name="staff" class="w-5 h-5 filter-primary-color" />
             </template>
-          </PrimeVueSelect>
+          </PrimeVueSelect> -->
         </section>
+      </template>
+      <template #body="{ data, column }">
+        <template v-if="column.value === 'description'">
+          <span class="font-semibold text-sm text-text-primary">{{ data[column.value] }}</span>
+        </template>
+        <template v-else>
+          <span class="text-sm text-text-primary">{{ data[column.value] }}</span>
+        </template>
       </template>
     </AppBaseDataTable>
   </section>

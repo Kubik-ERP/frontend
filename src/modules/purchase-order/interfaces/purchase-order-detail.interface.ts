@@ -62,6 +62,7 @@ export interface IPurchaseOrderDetailProvided {
   purchaseOrderDetail_onConfirm: () => void;
   purchaseOrderDetail_onCloseDialogConfirm: () => void;
   purchaseOrderDetail_onEdit: (id: string) => void;
+  purchaseOrderDetail_onExportDeliveryOrderToPdf: () => void;
   purchaseOrderDetail_onPay: () => void;
   purchaseOrderDetail_onReceive: () => void;
   purchaseOrderDetail_onShip: () => void;

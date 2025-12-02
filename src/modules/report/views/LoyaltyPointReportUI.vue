@@ -10,7 +10,7 @@ import typeAccumulation from '../components/LoyaltyPointReport/typeAccumulation.
 import { useReportService } from '../services/report.service';
 const { report_getLoyaltyPointReport } = useReportService();
 
-const loyaltyPointReport_activeTab = ref<string>('benefit-utilization-report');
+const loyaltyPointReport_activeTab = ref<string>('spend-based-report');
 const loyaltyPointReport_listTabs = ref<ITabs[]>([
   {
     component: markRaw(spendBased),
