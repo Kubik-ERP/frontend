@@ -8,13 +8,18 @@
     "facility": "Facility",
     "occupied": "Occupied",
     "form": {
+      "addresss": "Address",
       "bank-account-number": "Account Number",
       "bank-account-name": "Account Name",
       "bank-name": "Bank Name",
+      "city": "City",
+      "close-time": "Close Time",
+      "drop-image-here": "Drop Image Here",
       "full-name": "Full Name",
       "email": "Email",
       "phone-number": "Phone Number",
       "phone-code": "Phone Code",
+      "postal-code": "Postal Code",
       "business-type": "Business Type",
       "store-name": "Store Name",
       "street-address": "Street Address",
@@ -25,9 +30,12 @@
       "floor-name": "Floor Name",
       "building": "Building",
       "name": "Name",
-      "table-name": "Table Name",
+      "open-time": "Open Time",
+      "or": "or",
       "seat-count": "Seat Count",
+      "select-image": "Select Image",
       "table-shape": "Table Shape",
+      "table-name": "Table Name",
 
       "placeholder": {
         "bank-name": "Select Bank",
@@ -156,6 +164,8 @@
     "day": "Day",
     "basicInformation": "Basic Information",
     "assignedStaff": "Assigned Staff",
+    "business-hours": "Business Hours",
+    "operational": "Operational",
     "operationalHours": "Operational Hours",
 
     "buttons": {

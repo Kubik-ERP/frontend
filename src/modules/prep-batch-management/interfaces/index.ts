@@ -193,7 +193,7 @@ export type IBatchListProvided = {
   // method
   batchList_getClassOfBatchStatus: (batchStatus: string) => string;
   menuRecipeList_onShowDialogCancel: (id: string) => void;
-  menuRecipeList_fetchList: () => Promise<unknown>;
+  menuRecipeList_fetchList: (query?: string) => Promise<unknown>;
   // menuRecipeList_onSelectedRecipe: (recipe: IMenuRecipe) => void;
   menuRecipe_fetchIngridients: (id: string) => Promise<unknown>;
   batch_fetchList: () => Promise<unknown>;

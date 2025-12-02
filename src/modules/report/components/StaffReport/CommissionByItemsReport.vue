@@ -55,6 +55,11 @@ const formattedDataTable = () => {
 
   return newData || [];
 };
+const page = ref<number>(1);
+const limit = ref<number>(10);
+const onChangePage = (newPage: number) => {
+  page.value = newPage;
+};
 </script>
 <template>
   <section class="flex flex-col gap-4">
@@ -66,11 +71,15 @@ const formattedDataTable = () => {
     <AppBaseDataTable
       :data="formattedDataTable()"
       :columns="staffReport_commissionByItem_columns"
+      :first="(page - 1) * limit"
+      :rows-per-page="limit"
+      :total-records="formattedDataTable().length"
       is-using-custom-header-prefix
       is-using-custom-header-suffix
       is-using-custom-filter
       is-using-custom-body
       is-using-custom-footer
+      @update:currentPage="onChangePage"
     >
       <template #header-prefix>
         <h1 class="font-bold text-2xl text-text-primary">Staff Commission By Items Report</h1>

@@ -7,7 +7,7 @@ import type { ComponentPublicInstance } from 'vue';
 
 // Interfaces
 import type { IAttendanceListProvided } from '../interfaces';
-import type { IAttendanceShift } from '../interfaces/attendance-data.interface';
+import type { IAttendanceDataShift } from '../interfaces/attendance-data.interface';
 
 /**
  * @description Reactive data binding
@@ -165,14 +165,14 @@ const isRowExpanded = (rowId: number) => {
 /**
  * @description Get primary shift (first shift) for main row display
  */
-const getPrimaryShift = (shifts: IAttendanceShift[]) => {
+const getPrimaryShift = (shifts: IAttendanceDataShift[]) => {
   return shifts.length > 0 ? shifts[0] : null;
 };
 
 /**
  * @description Get additional shifts (excluding first) for expanded rows
  */
-const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
+const getAdditionalShifts = (shifts: IAttendanceDataShift[]) => {
   return shifts.slice(1);
 };
 </script>
@@ -259,7 +259,7 @@ const getAdditionalShifts = (shifts: IAttendanceShift[]) => {
                     class="font-normal text-sm"
                     :class="getPrimaryShift(record.shifts)?.clockIn ? 'text-text-primary' : 'text-gray-400'"
                   >
-                    {{ attendanceList_formatTime(getPrimaryShift(record.shifts)?.clockIn || null) }}
+                    {{ getPrimaryShift(record.shifts)?.clockIn || null }}
                   </span>
                 </td>
 

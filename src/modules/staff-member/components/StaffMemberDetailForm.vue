@@ -76,7 +76,7 @@ const findSocialMediaOption = (value: string | null) => {
               >
                 <template #default>
                   <section id="content" class="flex items-center gap-2">
-                    <AppBaseSvg name="image" class="!w-4 !h-4" />
+                    <AppBaseSvg name="image" class="filter-primary-color w-4 h-4" />
                     <span class="font-normal text-sm">Change Image</span>
                   </section>
                 </template>
@@ -369,7 +369,7 @@ const findSocialMediaOption = (value: string | null) => {
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
+              <AppBaseSvg name="plus-line" class="filter-primary-color w-4 h-4" />
               <span class="font-semibold text-xs text-primary">Add Social Media</span>
             </section>
           </template>

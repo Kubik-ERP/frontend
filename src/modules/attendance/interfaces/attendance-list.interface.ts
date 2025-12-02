@@ -1,6 +1,6 @@
 // Interfaces
 import type { Validation } from '@vuelidate/core';
-import type { IAttendanceListData } from './attendance-data.interface';
+import type { IAttendanceData } from './attendance-data.interface';
 
 // Base interfaces
 interface IDropdownItem {
@@ -23,53 +23,92 @@ export interface IAttendanceListRequestQuery {
   sortOrder: 'asc' | 'desc';
   startDate: string | null;
   endDate: string | null;
-  staffId: number | null;
+  staffId: string | null; // UUID
   search?: string;
 }
 
+
 // ===== FORM INTERFACES =====
 export interface IAttendanceListFormData {
-  id: number | null;
+  staffId: string | null; // UUID
+  date: string; // Format: "YYYY-MM-DD"
+  staffName?: string;
+  createdBy?: string;
+  shifts: IAttendanceListShiftFormData[];
+}
+
+export interface IAttendanceListShiftFormData {
+  shiftStart: Date | null;
+  shiftEnd:   Date | null;
+  clockIn:    Date | null;
+  clockOut:   Date | null;
+  notes:      string;
+}
+
+// ===== API PAYLOAD INTERFACES =====
+export interface IAttendanceCreatePayload {
+  staffId: string | null;
   date: string;
-  staffId: number | null;
-  shift: string;
-  shiftStart: string;
-  shiftEnd: string;
-  clockIn: string;
-  clockOut: string;
+  staffName: string;
+  createdBy: string;
+  shifts: IAttendanceShiftPayload[];
+}
+
+export interface IAttendanceShiftPayload {
+  shiftStart: string; // Format: "HH:mm"
+  shiftEnd: string;   // Format: "HH:mm"
+  clockIn: string;    // Format: "HH:mm"
+  clockOut: string;   // Format: "HH:mm"
+  duration: string;   // Format: "Xh Ym"
+  early: string;      // Format: "Xm"
+  late: string;       // Format: "Xm"
+  overtime: string;   // Format: "Xm"
   notes: string;
 }
 
-// ===== SERVICE INTERFACE =====
+
+// ===== SERVICE INTERFACE =======
 export interface IAttendanceListProvided {
-  attendanceList_addShift: (staffId: number, date: string) => void;
-  attendanceList_availableShifts: globalThis.Ref<IDropdownItem[]>;
+  attendanceList_addShift: () => void;
+  attendanceList_availableShifts: globalThis.ComputedRef<IDropdownItem[]>;
+  attendanceList_calendarDate: globalThis.WritableComputedRef<Date | null>;
+  attendanceList_clockInTime: globalThis.WritableComputedRef<Date | null>;
+  attendanceList_clockOutTime: globalThis.WritableComputedRef<Date | null>;
   attendanceList_columns: globalThis.Ref<IColumnDataTable[]>;
   attendanceList_createEditFormMode: globalThis.Ref<'create' | 'edit'>;
+  attendanceList_createEditMaxDate: globalThis.Ref<string>;
+  attendanceList_createEditMinDate: globalThis.Ref<string>;
   attendanceList_currentAttendanceId: globalThis.Ref<string>;
+  attendanceList_currentShift: globalThis.ComputedRef<IAttendanceListShiftFormData | null>;
   attendanceList_fetchList: () => Promise<void>;
   attendanceList_formData: IAttendanceListFormData;
-  attendanceList_formMode: globalThis.Ref<'create' | 'edit'>;
+  attendanceList_formMode: globalThis.ComputedRef<'create' | 'edit'>;
   attendanceList_formValidations: globalThis.Ref<Validation>;
-  attendanceList_formattedEndTime: globalThis.ComputedRef<string>;
-  attendanceList_formattedStartTime: globalThis.ComputedRef<string>;
-  attendanceList_formatTime: (time: string | null) => string;
+  attendanceList_formattedShiftEnd: globalThis.ComputedRef<string>;
+  attendanceList_formattedShiftStart: globalThis.ComputedRef<string>;
+  attendanceList_formatDuration: (clockIn: Date | null, clockOut: Date | null) => string;
+  attendanceList_formatTime: (time: Date | string | null) => string;
+  attendanceList_getAvailableShifts: globalThis.ComputedRef<IDropdownItem[]>;
   attendanceList_getStatusColor: (value: string, type: 'early' | 'late' | 'overtime') => string;
   attendanceList_handleDelete: (recordId: number) => void;
+  attendanceList_hasValidHeaderData: globalThis.ComputedRef<boolean>;
   attendanceList_isLoading: globalThis.Ref<boolean>;
-  attendanceList_listData: globalThis.Ref<IAttendanceListData>;
+  attendanceList_isLoadingShifts: globalThis.Ref<boolean>;
+  attendanceList_listData: globalThis.ComputedRef<{ items: IAttendanceData[]; meta: { total: number; perPage: number; currentPage: number; lastPage: number } }>;
+  attendanceList_listValues: globalThis.ComputedRef<Record<string, string | number>[]>;
   attendanceList_maxDate: globalThis.ComputedRef<string>;
   attendanceList_minDate: globalThis.ComputedRef<string>;
   attendanceList_onCloseDialog: () => void;
   attendanceList_onCreate: () => void;
   attendanceList_onDelete: (attendanceId: string) => Promise<void>;
   attendanceList_onEdit: (id: number) => void;
-  attendanceList_onFilter: (query: IAttendanceListRequestQuery) => void;
   attendanceList_onOpenDialog: (mode: 'create' | 'edit', attendanceId?: string) => void;
+  attendanceList_onRemoveShift: (index: number) => void;
   attendanceList_onReset: () => void;
   attendanceList_onSave: () => Promise<void>;
-  attendanceList_onShiftChange: () => void;
-  attendanceList_popover: globalThis.Ref<unknown>;
-  attendanceList_updateAvailableShifts: () => void;
-  attendanceList_v$: globalThis.Ref<Validation>;
+  attendanceList_onShiftChange: (selectedValue: string) => void;
+  attendanceList_selectedShiftValue: globalThis.WritableComputedRef<string | null>;
+  attendanceList_selectedStaffName: globalThis.ComputedRef<string>;
+  attendanceList_staffList: globalThis.ComputedRef<IDropdownItem[]>;
+  attendanceList_updateAvailableShifts: () => Promise<void>;
 }

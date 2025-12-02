@@ -274,3 +274,27 @@ span.p-datatable-column-title {
 .p-datepicker-day-selected-range {
   @apply bg-secondary;
 }
+
+button.p-button:has(.text-primary) {
+  span:hover {
+    color: text-white;
+  }
+}
+
+/* Override untuk button dengan border primary dan background white */
+button.p-button.border-primary {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+button.p-button.border-primary:hover {
+  @apply bg-primary text-white;
+}
+
+button.p-button:hover .filter-primary-color {
+  filter: brightness(0) invert(1);
+}
+
+button.p-button:hover span {
+  color: white;
+}
+
