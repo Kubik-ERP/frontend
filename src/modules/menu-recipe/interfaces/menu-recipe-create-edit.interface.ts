@@ -58,12 +58,18 @@ export interface IMenuRecipeCreateEditProvided {
   // Ingredient edit state
   menuRecipeCreateEdit_isEditingIngredientItem: Ref<boolean>;
   menuRecipeCreateEdit_editingIngredientItemIndex: Ref<number>;
-  // Product search properties
+  // Edit ingredient from main list
+  menuRecipeCreateEdit_onShowDialogEditIngredient: (
+    data: IMenuRecipeCreateEditIngredientItem,
+    index: number,
+  ) => void;
+  menuRecipeCreateEdit_onShowDialogCancelEditIngredient: () => void;
+  menuRecipeCreateEdit_onShowDialogSaveEditIngredient: () => void;
+  // Product properties
   menuRecipeCreateEdit_listProducts: Ref<IProductItem[]>;
-  menuRecipeCreateEdit_onSearchProduct: () => Promise<void>;
-  menuRecipeCreateEdit_productSearchValue: Ref<string>;
+  menuRecipeCreateEdit_fetchProducts: () => Promise<void>;
   menuRecipeCreateEdit_selectedProduct: Ref<IProductItem | null>;
-  menuRecipeCreateEdit_onSelectProduct: (product: IProductItem) => void;
+  menuRecipeCreateEdit_onSelectProduct: (productId: string) => void;
   menuRecipeCreateEdit_onResetProductSearch: () => void;
   menuRecipeCreateEdit_isLoadingProducts: Ref<boolean>;
   // Inventory items properties

@@ -44,12 +44,12 @@ const productPermission = rbac.hasPermission('product_management');
                 v-if="staffMemberCreateEdit_formData.defaultCommissionProduct !== null"
                 class="flex items-center gap-2"
               >
-                <AppBaseSvg name="edit" class="!w-5 !h-5" />
+                <AppBaseSvg name="edit" class="filter-primary-color w-5 h-5" />
                 <span class="font-semibold text-sm text-primary">Change</span>
               </div>
 
               <div v-else class="flex items-center gap-2">
-                <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
+                <AppBaseSvg name="plus-line" class="filter-primary-color w-5 h-5" />
                 <span class="font-semibold text-sm text-primary">Set Comission</span>
               </div>
             </section>
@@ -86,12 +86,12 @@ const productPermission = rbac.hasPermission('product_management');
                 v-if="staffMemberCreateEdit_formData.defaultCommissionVoucher !== null"
                 class="flex items-center gap-2"
               >
-                <AppBaseSvg name="edit" class="!w-5 !h-5" />
+                <AppBaseSvg name="edit" class="filter-primary-color w-5 h-5" />
                 <span class="font-semibold text-sm text-primary">Change</span>
               </div>
 
               <div v-else class="flex items-center gap-2">
-                <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
+                <AppBaseSvg name="plus-line" class="filter-primary-color w-5 h-5" />
                 <span class="font-semibold text-sm text-primary">Set Comission</span>
               </div>
             </section>
