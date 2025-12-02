@@ -1,4 +1,4 @@
-export interface IAttendanceShift {
+export interface IAttendanceDataShift {
   id: string;
   shiftStart: string;
   shiftEnd: string;
@@ -16,7 +16,7 @@ export interface IAttendanceData {
   date: string;
   staffId: number;
   staffName: string;
-  shifts: IAttendanceShift[];
+  shifts: IAttendanceDataShift[];
   createdAt: string;
   createdBy: string;
 }

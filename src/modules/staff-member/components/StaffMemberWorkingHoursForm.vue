@@ -35,7 +35,7 @@ const { staffMemberCreateEdit_formData } = inject<IStaffMemberCreateEditProvided
           >
             <template #default>
               <section id="content" class="flex items-center gap-2">
-                <AppBaseSvg name="plus-line" class="!w-5 !h-5" />
+                <AppBaseSvg name="plus-line" class="filter-primary-color w-4 h-4" />
               </section>
             </template>
           </PrimeVueButton>
