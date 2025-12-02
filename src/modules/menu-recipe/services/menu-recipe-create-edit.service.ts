@@ -224,7 +224,7 @@ export const useMenuRecipeCreateEditService = (): IMenuRecipeCreateEditProvided 
 
     // Divide by target yield to get cost per portion
     const targetYield = menuRecipeCreateEdit_formData.value.targetYield || 1;
-    
+
     // Prevent division by zero or invalid yield
     if (targetYield <= 0 || isNaN(targetYield) || !isFinite(targetYield)) return totalCost;
 
