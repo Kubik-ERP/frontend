@@ -1,17 +1,20 @@
 <script setup lang="ts">
 // Interface
-import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import type { ICashierOrderProvided } from '@/modules/cashier/interfaces/cashier-order.interface';
+import type { ICashierPaymentProvided } from '@/modules/cashier/interfaces/cashier-payment.interface';
+import type { ICashierCustomerProvided } from '@/modules/cashier/interfaces/cashier-customer.interface';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_handleCancelOrder, cashierOrderSummary_modalCancelOrder } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const cashierOrder = inject<ICashierOrderProvided>('cashierOrder')!;
+const cashierPayment = inject<ICashierPaymentProvided>('cashierPayment')!;
+const cashierCustomer = inject<ICashierCustomerProvided>('cashierCustomer')!;
 </script>
 <template>
   <section id="cashier-summary-modal-cancel-order">
     <PrimeVueDialog
-      v-model:visible="cashierOrderSummary_modalCancelOrder.show"
+      v-model:visible="cashierOrder.cashierOrder_modalCancelOrder.value.show"
       modal
       :style="{ width: '32rem' }"
       class="m-2"
@@ -39,7 +42,14 @@ const { cashierOrderSummary_handleCancelOrder, cashierOrderSummary_modalCancelOr
               variant="text"
               severity="danger"
               text
-              @click="cashierOrderSummary_handleCancelOrder()"
+              @click="
+                cashierOrder.cashierOrder_handleCancelOrder(
+                  cashierPayment.cashierPayment_modalPaymentMethod,
+                  cashierCustomer.cashierCustomer_customerState,
+                  cashierOrder.cashierOrder_modalSelectTable,
+                  cashierCustomer.cashierCustomer_modalVoucher,
+                )
+              "
             ></PrimeVueButton>
 
             <PrimeVueButton

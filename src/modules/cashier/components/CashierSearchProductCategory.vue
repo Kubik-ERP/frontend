@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Interfaces
-import type { ICashierProductProvided } from '../interfaces/cashier-product-service';
+import type { ICashierProductProvided } from '../interfaces/cashier-product-service.interface';
 
 /**
  * @description Inject all the data and methods what we need
@@ -10,7 +10,40 @@ const {
   cashierProduct_onSearchData,
   cashierProduct_handleBarcodeScanned,
   isRetailBusinessType,
-} = inject<ICashierProductProvided>('cashierProduct')!;
+} = inject<ICashierProductProvided>('cashierProduct')!
+
+/**
+ * @description Ref for search input element
+ */
+const searchInputRef = ref<{ $el: HTMLElement } | null>(null);
+
+/**
+ * @description Handle spacebar keypress to focus search input
+ */
+const handleSpacebarFocus = (event: KeyboardEvent) => {
+  // Only trigger if spacebar is pressed and target is not an input/textarea
+  if (event.code === 'Space' &&
+      event.target instanceof HTMLElement &&
+      !['INPUT', 'TEXTAREA'].includes(event.target.tagName)) {
+    event.preventDefault();
+    // Use direct DOM query for more reliable access
+    const inputElement = document.querySelector('#cashier-search-product-category input') as HTMLInputElement;
+    if (inputElement) {
+      inputElement.focus();
+    }
+  }
+};
+
+/**
+ * @description Setup and cleanup event listeners
+ */
+onMounted(() => {
+  window.addEventListener('keydown', handleSpacebarFocus);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleSpacebarFocus);
+});
 
 /**
  * @description Handle form submission (when Enter is pressed in search field)
@@ -69,26 +102,11 @@ const debouncedBarcodeHandler = debounce((barcode: string) => {
   console.log('debouncedBarcodeHandler called with barcode:', barcode); // Debug log
   cashierProduct_handleBarcodeScanned(barcode);
 }, 100); // Reduced debounce time for faster response
-
-onMounted(() => {
-  console.log('CashierSearchProductCategory mounted');
-  console.log('isRetailBusinessType on mount:', isRetailBusinessType.value);
-  console.log('cashierProduct_handleBarcodeScanned function:', typeof cashierProduct_handleBarcodeScanned);
-
-  // Test the business type detection
-  setTimeout(() => {
-    console.log('isRetailBusinessType after timeout:', isRetailBusinessType.value);
-  }, 1000);
-});
-
-onUnmounted(() => {
-  console.log('CashierSearchProductCategory unmounted');
-});
 </script>
 
 <template>
   <section id="cashier-search-product-category">
-    <form @submit="handleFormSubmit">
+    <form v-focustrap @submit="handleFormSubmit">
       <PrimeVueIconField>
         <PrimeVueInputIcon>
           <template #default>
@@ -97,10 +115,12 @@ onUnmounted(() => {
         </PrimeVueInputIcon>
 
         <PrimeVueInputText
+          ref="searchInputRef"
           v-model="cashierProduct_productState.searchProduct"
           :loading="cashierProduct_productState.isLoadingProduct"
           :placeholder="useLocalization('cashier.mainSection.searchProductPlaceholder')"
-          class="text-sm w-full placeholder:text-sm placeholder:text-text-disabled"
+          class="text-sm w-full placeholder:text-sm placeholder:text-text-disabled focus:!border-primary"
+          :autofocus="true"
           @keydown="handleSearchInputKeydown"
         />
 

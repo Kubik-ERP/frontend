@@ -3,7 +3,10 @@ export const REPORT_SALES_ENDPOINT = `${REPORT_BASE_ENDPOINT}/advanced-sales-rep
 export const REPORT_FINANCIAL_ENDPOINT = `${REPORT_BASE_ENDPOINT}/financial-report`;
 export const REPORT_VOUCHER_ENDPOINT = `${REPORT_BASE_ENDPOINT}/voucher-status-report`;
 export const REPORT_CUSTOMER_ENDPOINT = `${REPORT_BASE_ENDPOINT}/customer-report`;
+export const REPORT_LOYALTY_POINT_ENDPOINT = `${REPORT_BASE_ENDPOINT}/loyalty-report`;
 // export const REPORT_BASE_FINANCIAL_ENDPOINT = `${REPORT_BASE_ENDPOINT}/financial`;
 export const REPORT_INVENTORY_ENDPOINT = `${REPORT_BASE_ENDPOINT}/inventory-valuation`;
+export const REPORT_STAFF_ENDPOINT = `${REPORT_BASE_ENDPOINT}/staff-report`;
 
 export const STAFF_MEMBER_BASE_ENDPOINT = '/users/staffs';
+export const REPORT_DOWNLOAD_PDF_ENDPOINT = `/generate/pdf`

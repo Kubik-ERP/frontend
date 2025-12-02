@@ -8,7 +8,7 @@ import type { IProductItem } from '@/modules/cashier/interfaces/cashier-response
 export interface IMenuRecipeCreateEditIngredientItem {
   itemId: IInventoryItems | null;
   quantity: number;
-  uom: string;
+  uom: string | null;
   notes: string | null;
   cost: number;
 }
@@ -38,6 +38,7 @@ export interface IMenuRecipeCreateEditProvided {
   menuRecipeCreateEdit_listColumns: IColumnDataTable[];
   menuRecipeCreateEdit_listIngredientItemsOnDialog: Ref<IMenuRecipeCreateEditIngredientItem[]>;
   menuRecipeCreateEdit_listOutputUnitOptions: IDropdownItem[];
+  menuRecipeCreateEdit_availableUomOptions: ComputedRef<IDropdownItem[]>;
   menuRecipeCreateEdit_onAddIngredientItem: () => void;
   menuRecipeCreateEdit_onEditIngredientItem: (index: number) => void;
   menuRecipeCreateEdit_onDeleteIngredientItem: (index: number) => void;
@@ -50,15 +51,25 @@ export interface IMenuRecipeCreateEditProvided {
   menuRecipeCreateEdit_onShowDialogAddIngredient: () => void;
   menuRecipeCreateEdit_onShowDialogCancelAddIngredient: () => void;
   menuRecipeCreateEdit_onShowDialogSaveIngredients: () => void;
+  menuRecipeCreateEdit_onShowDialogDeleteIngredient: (index: number) => void;
+  menuRecipeCreateEdit_onConfirmDeleteIngredient: () => void;
+  menuRecipeCreateEdit_onCancelDeleteIngredient: () => void;
+  menuRecipeCreateEdit_selectedIngredientIndex: Ref<number>;
   // Ingredient edit state
   menuRecipeCreateEdit_isEditingIngredientItem: Ref<boolean>;
   menuRecipeCreateEdit_editingIngredientItemIndex: Ref<number>;
-  // Product search properties
+  // Edit ingredient from main list
+  menuRecipeCreateEdit_onShowDialogEditIngredient: (
+    data: IMenuRecipeCreateEditIngredientItem,
+    index: number,
+  ) => void;
+  menuRecipeCreateEdit_onShowDialogCancelEditIngredient: () => void;
+  menuRecipeCreateEdit_onShowDialogSaveEditIngredient: () => void;
+  // Product properties
   menuRecipeCreateEdit_listProducts: Ref<IProductItem[]>;
-  menuRecipeCreateEdit_onSearchProduct: () => Promise<void>;
-  menuRecipeCreateEdit_productSearchValue: Ref<string>;
+  menuRecipeCreateEdit_fetchProducts: () => Promise<void>;
   menuRecipeCreateEdit_selectedProduct: Ref<IProductItem | null>;
-  menuRecipeCreateEdit_onSelectProduct: (product: IProductItem) => void;
+  menuRecipeCreateEdit_onSelectProduct: (productId: string) => void;
   menuRecipeCreateEdit_onResetProductSearch: () => void;
   menuRecipeCreateEdit_isLoadingProducts: Ref<boolean>;
   // Inventory items properties

@@ -11,8 +11,16 @@ import deletePolygonSVG from '@/app/assets/icons/delete-polygon.svg';
 const route = useRoute();
 const loading = ref(false);
 const { getAllCategories } = useCategoryService();
-const { getProductById, updateProduct, deleteProduct, product_formData, product_formValidations } =
-  useProductService();
+const {
+  getProductById,
+  updateProduct,
+  deleteProduct,
+  product_formData,
+  product_formValidations,
+  recipeList_values,
+  catalogProduct_fetchRecipeList,
+  recipeList_params,
+} = useProductService();
 
 const toggleVariant = ref(false);
 const categories = ref([]);
@@ -27,6 +35,7 @@ function clearForm() {
   product_formData.variants = [];
   product_formData.categories = [];
   product_formData.imagePreview = '';
+  // product_formData.stock_quantity = 0;
 
   toggleVariant.value = false;
   product_formValidations.value.$reset();
@@ -50,7 +59,7 @@ const loadProduct = async () => {
   try {
     loading.value = true;
     const response = await getProductById(route.params.id);
-
+    console.log('response : ', response);
     product_formData.name = response.name;
     product_formData.price = response.price;
     product_formData.discount_price = response.discountPrice;
@@ -59,6 +68,13 @@ const loadProduct = async () => {
     product_formData.is_percent = response.isPercent;
     product_formData.imagePreview = response.picture_url;
     product_formData.isDiscount = response.discountPrice !== response.price;
+    // product_formData.stock_quantity = response.stockQuantity;
+
+    if (response.menuRecipes.length > 0) {
+      product_formData.recipeId = response.menuRecipes[0].recipeId || null;
+      recipeList_params.search = response.menuRecipes[0].recipeName || '';
+      recipeList_values.value = [response.menuRecipes[0]];
+    }
 
     if (product_formData.isDiscount) {
       if (response.isPercent) {
@@ -175,9 +191,18 @@ const confirmLeave = () => {
   }
 };
 
+const handleSelectRecipe = value => {
+  product_formData.recipeId = value.id;
+};
+
+const handleClearRecipe = () => {
+  recipeList_params.search = '';
+  recipeList_values.value = [];
+  product_formData.recipeId = null;
+};
+
 onMounted(async () => {
-  loadCategories();
-  loadProduct();
+  Promise.all([loadCategories(), loadProduct(), catalogProduct_fetchRecipeList()]);
 });
 
 const cancelLeave = () => {
@@ -317,6 +342,38 @@ const cancelUpdate = () => {
               </PrimeVueMultiSelect>
             </AppBaseFormGroup>
           </div>
+
+          <div class="flex flex-col col-span-2 w-1/2 pr-4">
+            <label for="recipeId" class="flex gap-1 text-sm font-medium leading-6 text-gray-900 w-full">
+              Link to Recipe
+              <p class="text-text-disabled">(optional)</p>
+            </label>
+            <PrimeVueAutoComplete
+              v-model="recipeList_params.search"
+              :suggestions="recipeList_values"
+              :loading="false"
+              option-label="recipeName"
+              placeholder="Search Recipe"
+              class="text-sm w-full [&>input]:text-sm [&>input]:w-full"
+              @option-select="event => handleSelectRecipe(event.value)"
+            >
+              <template #option="{ option }">
+                <div class="flex items-center justify-between gap-3 p-2 w-full">
+                  <div class="flex flex-col flex-1">
+                    <span class="font-medium text-sm text-black">{{ option.recipeName }}</span>
+                  </div>
+                </div>
+              </template>
+            </PrimeVueAutoComplete>
+
+            <div v-if="product_formData.recipeId" class="pt-4">
+              <PrimeVueButton type="button" severity="secondary" size="small" @click="handleClearRecipe()">
+                <AppBaseSvg name="close" class="w-3 h-3 mr-2" />
+                Clear Selection
+              </PrimeVueButton>
+            </div>
+          </div>
+
           <div class="flex flex-col">
             <AppBaseFormGroup
               v-slot="{ classes }"
@@ -338,6 +395,26 @@ const cancelUpdate = () => {
               />
             </AppBaseFormGroup>
           </div>
+
+          <!-- <div>
+            <AppBaseFormGroup
+              v-slot="{ classes }"
+              class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
+              is-name-as-label
+              label-for="stock"
+              :name="useLocalization('productDetail.form.stock.label')"
+              :validators="product_formValidations.stock_quantity"
+            >
+              <PrimeVueInputNumber
+                v-model="product_formData.stock_quantity"
+                name="stock"
+                fluid
+                class="border shadow-xs border-grayscale-30 rounded-lg"
+                :class="{ ...classes }"
+                v-on="useListenerForm(product_formValidations, 'stock_quantity')"
+              />
+            </AppBaseFormGroup>
+          </div> -->
         </div>
         <div class="grid grid-cols-2 h-fit w-full gap-x-8 mt-8">
           <div class="flex items-center gap-2 col-span-2">

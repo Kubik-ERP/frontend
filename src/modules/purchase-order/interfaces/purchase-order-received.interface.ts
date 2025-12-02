@@ -33,6 +33,7 @@ export interface IPurchaseOrderReceivedProductItem {
   actualQuantity: number;
   notes?: string;
   barcode?: string;
+  expiredAt?: string;
 }
 
 export interface IPurchaseOrderReceivedPaylaod {
@@ -41,6 +42,7 @@ export interface IPurchaseOrderReceivedPaylaod {
     id: string;
     actualQuantity: number;
     notes?: string;
+    expiredAt?: string;
   }[];
 }
 

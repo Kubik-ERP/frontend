@@ -3,7 +3,12 @@ import { WASTE_LOG_BASE_ENDPOINT } from '../constants';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import type { IWasteLogListQueryParams, IWasteLogStateStore, IWasteLog } from '../interfaces';
+import type {
+  IWasteLogListQueryParams,
+  IWasteLogStateStore,
+  IWasteLog,
+  IWasteLogListResponse,
+} from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
@@ -107,23 +112,29 @@ export const useWasteLogStore = defineStore('waste-log', {
     async wasteLog_list(
       params: IWasteLogListQueryParams,
       requestConfigurations: AxiosRequestConfig,
-    ): Promise<unknown> {
+    ): Promise<IWasteLogListResponse> {
       this.wasteLog_isLoading = true;
 
       try {
-        const response = await httpClient.get<{
-          data: {
-            meta: IPageMeta;
-            items: IWasteLog[];
-          };
-        }>(WASTE_LOG_BASE_ENDPOINT, {
+        const response = await httpClient.get<IWasteLogListResponse>(WASTE_LOG_BASE_ENDPOINT, {
           params,
           ...requestConfigurations,
         });
 
         // Update store state dengan response yang diterima
         if (response.data && response.data.data) {
-          this.wasteLog_lists = response.data.data;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const apiMeta = response.data.data.meta as any; // API returns 'limit', we need 'pageSize'
+
+          this.wasteLog_lists = {
+            items: response.data.data.items || [],
+            meta: {
+              page: apiMeta?.page || 1,
+              pageSize: apiMeta?.limit || apiMeta?.pageSize || 10,
+              total: apiMeta?.total || 0,
+              totalPages: apiMeta?.totalPages || 0,
+            },
+          };
         }
 
         return Promise.resolve(response.data);

@@ -214,7 +214,7 @@ const hasPermission = rbac.hasPermission('edit_invoice');
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="download" class="!w-6 !h-6" />
+              <AppBaseSvg name="download" class="filter-primary-color w-6 h-6" />
               <span class="font-semibold text-primary text-sm">Download</span>
             </section>
           </template>
@@ -251,7 +251,12 @@ const hasPermission = rbac.hasPermission('edit_invoice');
             <section id="content" class="flex items-center gap-2">
               <AppBaseSvg
                 :name="invoice_invoiceData.data.paymentStatus !== 'unpaid' ? 'printer' : 'printer-primary'"
-                class="filter-primary-color w-6 h-6"
+                class="w-6 h-6"
+                :class="[
+                  invoice_invoiceData.data.paymentStatus !== 'unpaid'
+                    ? 'filter-white-color'
+                    : 'filter-primary-color',
+                ]"
                 color="primary"
               />
               <span
@@ -278,7 +283,7 @@ const hasPermission = rbac.hasPermission('edit_invoice');
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="printer-primary" class="!w-6 !h-6" color="primary" />
+              <AppBaseSvg name="printer-primary" class="filter-primary-color w-6 h-6" />
               <span class="font-semibold text-sm text-primary">Print Kitchen Ticket</span>
             </section>
           </template>
@@ -292,7 +297,7 @@ const hasPermission = rbac.hasPermission('edit_invoice');
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="printer-primary" class="!w-6 !h-6" color="primary" />
+              <AppBaseSvg name="printer-primary" class="filter-primary-color w-6 h-6" />
               <span class="font-semibold text-sm text-primary">Print Table Ticket</span>
             </section>
           </template>

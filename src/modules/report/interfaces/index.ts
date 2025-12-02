@@ -6,6 +6,15 @@ import type {
 } from './financial-report';
 export * from './financial-report';
 
+import type {
+  ILoyaltyPointReport_spendBased,
+  ILoyaltyPointReport_benefitUtilization,
+  ILoyaltyPointReport_expiryWarning,
+  ILoyaltyPointReport_productBased,
+  ILoyaltyPointReport_typeAccumulation,
+} from './loyalty-point-report';
+export * from './loyalty-point-report';
+
 import type { ISalesReport } from './sales-report';
 export * from './sales-report';
 
@@ -31,7 +40,16 @@ export interface IReportQueryParams {
   type?: string | null;
   store_ids?: string | null;
   staff_ids?: string | null;
+  gmt?: number | null;
 }
+
+export * from './staff-report';
+import type {
+  IStaffReport_Commission,
+  IStaffReport_CommissionByItem,
+  IStaffReport_CommissionByVoucher,
+  IStaffReport_Individual,
+} from './staff-report';
 
 import type { IVoucherReport } from './voucher-report';
 export * from './voucher-report';
@@ -88,6 +106,17 @@ export interface IReportStore {
   voucherReport_values: IVoucherReport[];
   // customer report
   customerReport_values: ICustomerReport[];
+  // loyalty point report
+  loyaltyPointReport_spendBased_values: ILoyaltyPointReport_spendBased;
+  loyaltyPointReport_benefitUtilization_values: ILoyaltyPointReport_benefitUtilization;
+  loyaltyPointReport_expiryWarning_values: ILoyaltyPointReport_expiryWarning;
+  loyaltyPointReport_productBased_values: ILoyaltyPointReport_productBased;
+  loyaltyPointReport_typeAccumulation_values: ILoyaltyPointReport_typeAccumulation;
+  // staff
+  staffReport_Commission_values: IStaffReport_Commission;
+  staffReport_Individual_values: IStaffReport_Individual;
+  staffReport_CommissionByItem_values: IStaffReport_CommissionByItem;
+  staffReport_CommissionByVoucher_values: IStaffReport_CommissionByVoucher;
 }
 
 export interface IReportProvided {
@@ -112,6 +141,15 @@ export interface IReportProvided {
   inventoryReport_itemPerformanceByBrand_columns: IColumnDataTable[];
   voucherReport_columns: IColumnDataTable[];
   customerReport_columns: IColumnDataTable[];
+  loyaltyPointReport_spendBased_columns: IColumnDataTable[];
+  loyaltyPointReport_benefitUtilization_columns: IColumnDataTable[];
+  loyaltyPointReport_expiryWarning_columns: IColumnDataTable[];
+  loyaltyPointReport_productBased_columns: IColumnDataTable[];
+  loyaltyPointReport_typeAccumulation_columns: IColumnDataTable[];
+  staffReport_commission_columns: IColumnDataTable[];
+  staffReport_individual_columns: IColumnDataTable[];
+  staffReport_commissionByItem_columns: IColumnDataTable[];
+  staffReport_commissionByVoucher_columns: IColumnDataTable[];
   // methods
   fetchStaff_lists: () => Promise<void>;
   fetchOutlet_lists: () => Promise<void>;
@@ -120,6 +158,8 @@ export interface IReportProvided {
   report_getInventoryReport: (type: string) => Promise<void>;
   report_getVoucherReport: () => Promise<void>;
   report_getCustomerReport: () => Promise<void>;
+  report_getLoyaltyPointReport: (type: string) => Promise<void>;
+  report_getStaffReport: (type: string) => Promise<void>;
   // params
   report_queryParams: IReportQueryParams;
   // store
@@ -150,12 +190,41 @@ export interface IReportProvided {
   voucherReport_values: globalThis.Ref<IVoucherReport[]>;
   // customer report
   customerReport_values: globalThis.Ref<ICustomerReport[]>;
+  // loyalty point report
+  loyaltyPointReport_spendBased_values: globalThis.Ref<ILoyaltyPointReport_spendBased>;
+  loyaltyPointReport_benefitUtilization_values: globalThis.Ref<ILoyaltyPointReport_benefitUtilization>;
+  loyaltyPointReport_expiryWarning_values: globalThis.Ref<ILoyaltyPointReport_expiryWarning>;
+  loyaltyPointReport_productBased_values: globalThis.Ref<ILoyaltyPointReport_productBased>;
+  loyaltyPointReport_typeAccumulation_values: globalThis.Ref<ILoyaltyPointReport_typeAccumulation>;
+  // staff
+  staffReport_Commission_values: globalThis.Ref<IStaffReport_Commission>;
+  staffReport_Individual_values: globalThis.Ref<IStaffReport_Individual>;
+  staffReport_CommissionByItem_values: globalThis.Ref<IStaffReport_CommissionByItem>;
+  staffReport_CommissionByVoucher_values: globalThis.Ref<IStaffReport_CommissionByVoucher>;
   // outlet_list
   outlet_lists_options: globalThis.Ref<IOutletListOptions[]>;
   findOutletDetail: (id: string) => IOutlet | null | undefined;
   // staff_list
+  staff_lists_values: globalThis.Ref<IStaffMember[]>;
   staff_lists_options: globalThis.Ref<IStaffMemberListOptions[]>;
   findStaffDetail: (id: string) => IStaffMember | null | undefined;
   // misc
   outlet_currentOutlet: globalThis.Ref<IOutlet | null>;
+  // download dialog
+  isDialogVisible: globalThis.Ref<boolean>;
+  downloadStatus: globalThis.Ref<'downloading' | 'success' | 'error'>;
+  dialogDownload_onClose: () => void;
+  // export pdf
+  isDownloading: globalThis.Ref<boolean>;
+  report_downloadPDF: (
+    path:
+      | 'financial-report'
+      | 'advanced-sales-report'
+      | 'inventory-report'
+      | 'voucher-report'
+      | 'staff-report'
+      | 'loyalty-report'
+      | 'customer-report',
+    type: string,
+  ) => Promise<void>;
 }

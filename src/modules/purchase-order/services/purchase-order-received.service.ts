@@ -27,6 +27,15 @@ export const usePurchaseOrderReceivedService = (): IPurchaseOrderReceivedProvide
 
   const purchaseOrderId = computed(() => route.params.id as string);
 
+  const formatDateForPayload = (date: Date | string | undefined): string | undefined => {
+    if (!date) return undefined;
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = (`0${d.getMonth() + 1}`).slice(-2);
+    const day = (`0${d.getDate()}`).slice(-2);
+    return `${year}-${month}-${day}`;
+  };
+
   const purchaseOrderReceived_formData = ref<IPurchaseOrderReceivedFormData>({
     userId: null,
     productItems: [],
@@ -74,6 +83,7 @@ export const usePurchaseOrderReceivedService = (): IPurchaseOrderReceivedProvide
           actualQuantity: item.quantity,
           notes: '',
           barcode: item.itemInfo.barcode,
+          expiredAt: undefined,
         }));
       }
     },
@@ -124,6 +134,7 @@ export const usePurchaseOrderReceivedService = (): IPurchaseOrderReceivedProvide
             id: item.purchaseOrderItemId ?? '',
             actualQuantity: item.actualQuantity,
             notes: item.notes,
+            expiredAt: formatDateForPayload(item.expiredAt),
           })),
         };
 
@@ -195,6 +206,7 @@ export const usePurchaseOrderReceivedService = (): IPurchaseOrderReceivedProvide
     { sortable: false, label: 'Ordered Qty', value: 'orderedQuantity' },
     { sortable: false, label: 'Received Qty', value: 'actualQuantity' },
     { sortable: false, label: 'Difference', value: 'difference' },
+    { sortable:false, label: 'Expired At', value: 'expiredAt' },
     { sortable: false, label: 'Notes', value: 'notes' },
   ];
 

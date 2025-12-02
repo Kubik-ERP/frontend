@@ -4,7 +4,8 @@ import AccountStoreTableLayout from '@/modules/account/components/store-detail/A
 
 // Interface
 import type { IAccountStoreDetailProvided } from '@/modules/account/interfaces';
-import type { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import type { ICashierOrderProvided } from '@/modules/cashier/interfaces/cashier-order.interface';
+import type { ICashierCustomerProvided } from '@/modules/cashier/interfaces/cashier-customer.interface';
 // import type { IOutletTable } from '@/modules/outlet/interfaces';
 
 /**
@@ -14,10 +15,11 @@ const { accountStoreDetail_listAvailableFloor, accountStoreDetail_selectedFloor,
   inject<IAccountStoreDetailProvided>('accountStoreDetail')!;
 
 const {
-  cashierOrderSummary_modalSelectTable,
-  cashierOrderSummary_getListActiveFloor,
-  cashierOrderSummary_onCloseDialogTableOverview,
-} = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+  cashierOrder_modalSelectTable,
+  cashierOrder_getListActiveFloor,
+} = inject<ICashierOrderProvided>('cashierOrder')!;
+
+const { cashierCustomer_onCloseDialogTableOverview } = inject<ICashierCustomerProvided>('cashierCustomer')!;
 </script>
 
 <template>
@@ -44,7 +46,7 @@ const {
             option-label="label"
             option-value="value"
             class="w-full max-w-60"
-            :disabled="!cashierOrderSummary_modalSelectTable.listFloor.length"
+            :disabled="!cashierOrder_modalSelectTable.listFloor.length"
           />
         </div>
 
@@ -53,7 +55,7 @@ const {
           id="table-overview-container"
           class="flex-1 overflow-auto border border-grayscale-10 rounded-lg p-4"
           :class="{
-            'flex items-center justify-center h-full w-full ': !cashierOrderSummary_getListActiveFloor.length,
+            'flex items-center justify-center h-full w-full ': !cashierOrder_getListActiveFloor.length,
           }"
         >
           <template v-if="accountStoreDetail_storeTables?.length">
@@ -62,7 +64,7 @@ const {
               :key="`store-table-${storeTableIndex}`"
             >
               <AccountStoreTableLayout
-                v-model="cashierOrderSummary_modalSelectTable.selectedTable"
+                v-model="cashierOrder_modalSelectTable.selectedTable"
                 :store-table="storeTable"
                                is-table-summary
 
@@ -81,7 +83,7 @@ const {
           label="Close"
           severity="secondary"
           variant="outlined"
-          @click="cashierOrderSummary_onCloseDialogTableOverview"
+          @click="cashierCustomer_onCloseDialogTableOverview"
         />
       </footer>
     </template>

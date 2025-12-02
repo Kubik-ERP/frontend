@@ -18,6 +18,7 @@ const togglePopover = (id: string, event: Event) => {
  */
 const {
   wasteLogList_columns,
+  wasteLogList_flattenedItems,
   wasteLogList_handleOnSortChange,
   wasteLogList_isLoading,
   wasteLogList_onChangePage,
@@ -32,7 +33,7 @@ const {
   <AppBaseDataTable
     btn-cta-create-title="Add Waste Record"
     :columns="wasteLogList_columns"
-    :data="wasteLogList_values.items"
+    :data="wasteLogList_flattenedItems"
     header-title="Waste List"
     :is-using-btn-cta-create="true"
     is-using-custom-body
@@ -65,7 +66,7 @@ const {
           @click="(event: Event) => togglePopover(data.wasteLogId, event)"
         >
           <template #icon>
-            <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
+            <AppBaseSvg name="three-dots" class="w-5! h-5!" />
           </template>
         </PrimeVueButton>
 
@@ -109,15 +110,41 @@ const {
         </PrimeVuePopover>
       </template>
 
-      <template v-else-if="column.value === 'itemsCount'">
-        <span class="font-normal text-sm text-grayscale-70">
-          {{ data.wasteLogItems?.length || 0 }} items
-        </span>
+      <template v-else-if="column.value === 'inventoryItemName'">
+        <span class="font-medium text-sm text-grayscale-70">{{ data.inventoryItemName || '-' }}</span>
       </template>
 
-      <template v-else-if="column.value === 'createdAt' || column.value === 'updatedAt'">
+      <template v-else-if="column.value === 'batchId'">
+        <span class="font-normal text-sm text-grayscale-70">{{ data.batchId || '-' }}</span>
+      </template>
+
+      <template v-else-if="column.value === 'storeName'">
+        <span class="font-normal text-sm text-grayscale-70">{{ data.storeName || '-' }}</span>
+      </template>
+
+      <template v-else-if="column.value === 'quantity'">
+        <span class="font-normal text-sm text-grayscale-70">{{ data.quantity ?? 0 }}</span>
+      </template>
+
+      <template v-else-if="column.value === 'uom'">
+        <span class="font-normal text-sm text-grayscale-70">{{ data.uom || '-' }}</span>
+      </template>
+
+      <template v-else-if="column.value === 'category'">
+        <span class="font-normal text-sm text-grayscale-70">{{ data.category || '-' }}</span>
+      </template>
+
+      <template v-else-if="column.value === 'notes'">
+        <span class="font-normal text-sm text-grayscale-70">{{ data.notes || '-' }}</span>
+      </template>
+
+      <template v-else-if="column.value === 'updatedAt'">
         <span class="font-normal text-sm text-grayscale-70">
-          {{ data[column.value] ? new Date(data[column.value]).toLocaleDateString() : '-' }}
+          {{ data.updatedAt ? new Date(data.updatedAt).toLocaleDateString('id-ID', { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric' 
+          }) : '-' }}
         </span>
       </template>
 

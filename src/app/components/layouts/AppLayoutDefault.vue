@@ -51,7 +51,7 @@ const mainLayoutClasses = computed(() => {
     return `${baseClasses} w-full h-full flex flex-col`;
   }
 
-  return `${baseClasses} flex-1 flex flex-col`;
+  return `${baseClasses} flex-1 flex flex-col max-w-[calc(100%-250px)]`;
 });
 </script>
 
@@ -59,10 +59,10 @@ const mainLayoutClasses = computed(() => {
   <section id="default-layout" class="default-wrapper-fullscreen relative inset-0 z-0">
     <!-- Subscription Alert - Global sticky alert -->
     <AppBaseSubscriptionAlert />
-    
+
     <!-- Mobile Sidebar - positioned absolutely outside of flex layout -->
     <AppBaseSidebar v-if="isCurrentlyMobile" />
-    
+
     <!-- Desktop Layout with Sidebar -->
     <div v-if="!isCurrentlyMobile" class="flex h-full">
       <AppBaseSidebar />
@@ -70,20 +70,20 @@ const mainLayoutClasses = computed(() => {
         <AppBaseNavbar />
         <AppBaseBreadcrumb />
 
-        <section id="main-content" class="w-full h-fit p-4 sm:p-6 lg:p-10">
+        <section id="main-content" class="w-full h-fit p-4 sm:p-6">
           <AppBaseSkeletonWrapper variant="card" :rows="4">
             <RouterView />
           </AppBaseSkeletonWrapper>
         </section>
       </section>
     </div>
-    
+
     <!-- Mobile Layout without Sidebar in flex -->
     <section v-else id="main-layout" :class="mainLayoutClasses">
       <AppBaseNavbar />
       <AppBaseBreadcrumb />
 
-      <section id="main-content" class="w-full h-fit p-4 sm:p-6 lg:p-10">
+      <section id="main-content" class="w-full h-fit p-4 sm:p-6">
         <AppBaseSkeletonWrapper variant="card" :rows="4">
           <RouterView />
         </AppBaseSkeletonWrapper>

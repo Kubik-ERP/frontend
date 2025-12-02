@@ -246,6 +246,74 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     }
   };
 
+  const accountStoreDetail_onDownloadGlobalQRCode = (): void => {
+    try {
+      // Find the existing QR code canvas element in the dialog
+      const qrCodeElement = document.querySelector('canvas#account-store-qr-code');
+
+      if (qrCodeElement instanceof HTMLCanvasElement) {
+        // Use the existing QR code canvas to create image
+        qrCodeElement.toBlob(blob => {
+          if (!blob) {
+            const argsEventEmitter: IPropsToast = {
+              isOpen: true,
+              type: EToastType.DANGER,
+              message: 'Failed to generate QR code image.',
+              position: EToastPosition.TOP_RIGHT,
+            };
+
+            eventBus.emit('AppBaseToast', argsEventEmitter);
+            return;
+          }
+
+          // Create download link
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `global-self-order-qr.png`;
+
+          // Trigger download
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          // Clean up
+          URL.revokeObjectURL(url);
+
+          // Show success message
+          const argsEventEmitter: IPropsToast = {
+            isOpen: true,
+            type: EToastType.SUCCESS,
+            message: 'QR code downloaded successfully.',
+            position: EToastPosition.TOP_RIGHT,
+          };
+
+          eventBus.emit('AppBaseToast', argsEventEmitter);
+        }, 'image/png');
+      } else {
+        // If canvas not found, show error message
+        const argsEventEmitter: IPropsToast = {
+          isOpen: true,
+          type: EToastType.DANGER,
+          message: 'QR code not found. Please make sure the dialog is open.',
+          position: EToastPosition.TOP_RIGHT,
+        };
+
+        eventBus.emit('AppBaseToast', argsEventEmitter);
+      }
+    } catch (error: unknown) {
+      console.error('Download QR code error:', error);
+      const argsEventEmitter: IPropsToast = {
+        isOpen: true,
+        type: EToastType.DANGER,
+        message: 'Failed to download QR code.',
+        position: EToastPosition.TOP_RIGHT,
+      };
+
+      eventBus.emit('AppBaseToast', argsEventEmitter);
+    }
+  };
+
   /**
    * @description Watch active tab changes
    */
@@ -606,6 +674,7 @@ export const useAccountStoreDetailsService = (): IAccountStoreDetailProvided => 
     accoutnStoreDetail_onSubmitDialogCreateEdit,
     accountStoreDetail_onDeleteDialogConfirmation,
     accountStoreDetail_onDownloadTableQRCode,
+    accountStoreDetail_onDownloadGlobalQRCode,
 
     accountStoreDetail_onAddStaff,
     accountStoreDetail_onCloseAddStaff,

@@ -1,4 +1,5 @@
 import type { Validation } from '@vuelidate/core';
+import type { IStaffMember } from '@/modules/staff-member/interfaces';
 
 // ===== DATA INTERFACES =====
 export interface ITimeSlot {
@@ -43,7 +44,7 @@ export interface ICustomRecurrence {
 }
 
 export interface IWorkingHoursFormData {
-  staffId: number | null;
+  staffId: string | null; // UUID
   date: string; // Format: "YYYY-MM-DD"
   timeSlots: IWorkingHoursFormDataTimeSlot[];
   notes: string;
@@ -54,7 +55,7 @@ export interface IWorkingHoursFormData {
 // ===== SERVICE INTERFACE =====
 export interface IWorkingHoursListProvided {
   workingHoursList_addTimeSlot: (
-    staffId: number,
+    staffId: string, // UUID
     year: number,
     month: number,
     day: number,
@@ -67,7 +68,7 @@ export interface IWorkingHoursListProvided {
   workingHoursList_createEditMaxDate: globalThis.Ref<string>;
   workingHoursList_createEditMinDate: globalThis.Ref<string>;
   workingHoursList_createEditRepeatOptions: IDropdownItem[];
-  workingHoursList_createEditStaffList: globalThis.Ref<IDropdownItem[]>;
+  workingHoursList_createEditStaffList: globalThis.ComputedRef<IDropdownItem[]>;
   workingHoursList_customRecurrenceEndDate: globalThis.ComputedRef<Date | null>;
   workingHoursList_customRecurrenceFrequencyOptions: IDropdownItem[];
   workingHoursList_fetchList: () => Promise<void>;
@@ -75,7 +76,7 @@ export interface IWorkingHoursListProvided {
   workingHoursList_formValidations: globalThis.Ref<Validation>;
   workingHoursList_formattedDate: globalThis.ComputedRef<string>;
   workingHoursList_getCurrentWeekDateString: (dayOfWeek: number) => string;
-  workingHoursList_getStaffData: (staffId: number) => IStaffWorkingHours | undefined;
+  workingHoursList_getStaffData: (staffId: string) => IStaffMember | undefined; // UUID
   workingHoursList_getWeekDateRange: globalThis.ComputedRef<string>;
   workingHoursList_hasValidHeaderData: globalThis.ComputedRef<boolean>;
   workingHoursList_isLoading: globalThis.Ref<boolean>;
@@ -89,7 +90,7 @@ export interface IWorkingHoursListProvided {
   workingHoursList_onNavigatePrevious: () => void;
   workingHoursList_onOpenDialog: (
     mode: 'create' | 'edit',
-    staffId?: number,
+    staffId?: string, // UUID
     date?: string,
     workingHoursId?: string,
   ) => void;
@@ -97,7 +98,7 @@ export interface IWorkingHoursListProvided {
   workingHoursList_onReset: () => void;
   workingHoursList_onSave: () => Promise<void>;
   workingHoursList_removeTimeSlot: (
-    staffId: number,
+    staffId: string, // UUID
     year: number,
     month: number,
     day: number,

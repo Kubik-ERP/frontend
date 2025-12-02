@@ -10,7 +10,7 @@
 // } = useReportService();
 // // composables for export pdf
 // import { useReportExporter } from '../../composables/useReportExporter';
-// const { exportToPdf, exportToCsv, export_isloading } = useReportExporter();
+// const {  exportToCsv, export_isloading } = useReportExporter();
 // const popover = ref();
 // const handleExportToPdf = () => {
 //   exportToPdf({

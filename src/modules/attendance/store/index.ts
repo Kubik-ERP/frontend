@@ -3,7 +3,7 @@ import { ATTENDANCE_BASE_ENDPOINT } from '../constants/attendance-api.constant';
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import type { IAttendanceListFormData, IAttendanceStateStore } from '../interfaces';
+import type { IAttendanceCreatePayload, IAttendanceListFormData, IAttendanceListResponse, IAttendanceStateStore } from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
@@ -12,7 +12,7 @@ export const useAttendanceStore = defineStore('attendance', {
   state: (): IAttendanceStateStore => ({
     attendance_detail: null,
     attendance_isLoading: false,
-    attendance_lists: null,
+    attendance_lists: [],
   }),
   getters: {
     /**
@@ -27,7 +27,7 @@ export const useAttendanceStore = defineStore('attendance', {
      * @access private
      */
     async attendance_create(
-      payload: IAttendanceListFormData,
+      payload: IAttendanceListFormData | IAttendanceCreatePayload,
       requestConfigurations: AxiosRequestConfig,
     ): Promise<unknown> {
       this.attendance_isLoading = true;
@@ -109,13 +109,17 @@ export const useAttendanceStore = defineStore('attendance', {
      * @method GET
      * @access private
      */
-    async attendance_list(requestConfigurations: AxiosRequestConfig): Promise<unknown> {
+    async attendance_list(requestConfigurations: AxiosRequestConfig): Promise<IAttendanceListResponse> {
       this.attendance_isLoading = true;
 
       try {
-        const response = await httpClient.get<unknown>(ATTENDANCE_BASE_ENDPOINT, {
+        const response = await httpClient.get<IAttendanceListResponse>(ATTENDANCE_BASE_ENDPOINT, {
           ...requestConfigurations,
         });
+
+        if (Array.isArray(response.data.data.items)) {
+          this.attendance_lists = response.data.data.items;
+        }
 
         return Promise.resolve(response.data);
       } catch (error: unknown) {

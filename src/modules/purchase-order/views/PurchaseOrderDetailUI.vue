@@ -3,14 +3,9 @@
 import PurchaseOrderDetailForm from '../components/PurchaseOrderDetailForm.vue';
 import PurchaseOrderDetailConfirmPODialog from '../components/PurchaseOrderDetailConfirmPODialog.vue';
 import PurchaseOrderDetailButtonActions from '../components/PurchaseOrderDetailButtonActions.vue';
-import PurchaseOrderDeliveryOrderPdfTemplate from '../components/PurchaseOrderDeliveryOrderPdfTemplate.vue';
-
-// Html2Pdf
-import html2pdf from 'html2pdf.js';
 
 // Services
 import { usePurchaseOrderDetailService } from '../services/purchase-order-detail.service';
-
 /**
  * @description Destructure all the data and methods what we need
  */
@@ -31,6 +26,7 @@ const {
   purchaseOrderDetail_onReceive,
   purchaseOrderDetail_onPay,
   purchaseOrderDetail_onEdit,
+  purchaseOrderDetail_onExportDeliveryOrderToPdf,
 } = usePurchaseOrderDetailService();
 
 /**
@@ -50,7 +46,7 @@ provide('purchaseOrderDetail', {
   purchaseOrderDetail_onCloseDialogConfirm,
   purchaseOrderDetail_onConfirm,
   purchaseOrderDetail_onEdit,
-  purchaseOrderDetail_onExportDeliveryOrderToPdf: handleExportDeliveryOrderToPdf,
+  purchaseOrderDetail_onExportDeliveryOrderToPdf,
   purchaseOrderDetail_onPay,
   purchaseOrderDetail_onReceive,
   purchaseOrderDetail_onShip,
@@ -62,63 +58,6 @@ provide('purchaseOrderDetail', {
 onMounted(async () => {
   await purchaseOrderDetail_fetchDetails();
 });
-
-/**
- * @description Create ref for PDF template element
- */
-const pdfTemplateRef = ref<InstanceType<typeof PurchaseOrderDeliveryOrderPdfTemplate> | null>(null);
-
-/**
- * @description Computed property for delivery order data formatted for PDF
- */
-const deliveryOrderData = computed(() => {
-  const detail = purchaseOrderDetail_data.value;
-  if (!detail) return null;
-
-  return {
-    orderNumber: detail.orderNumber || '',
-    supplierInfo: {
-      supplierName: detail.supplierInfo?.supplierName || '',
-      address: detail.supplierInfo?.address || '-',
-    },
-    orderDate: detail.orderDate || '',
-    deliveryDate: detail.deliveryDate || '',
-    purchaseOrderItems: detail.purchaseOrderItems || [],
-    totalPrice: detail.totalPrice || 0,
-    receiver: detail.receiver || { id: '', fullname: '' },
-  };
-});
-
-/**
- * @description Handle export to PDF
- */
-function handleExportDeliveryOrderToPdf() {
-  if (pdfTemplateRef.value?.$el && purchaseOrderDetail_data.value) {
-    const orderNumber = purchaseOrderDetail_data.value.orderNumber ?? 'delivery-order';
-    const filename = `${orderNumber.replace(/[^a-zA-Z0-9]/g, '_')}_delivery_order.pdf`;
-
-    const options = {
-      margin: 0,
-      filename,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        letterRendering: true,
-      },
-      jsPDF: {
-        unit: 'mm',
-        format: 'a4',
-        orientation: 'portrait',
-      },
-    };
-
-    html2pdf().set(options).from(pdfTemplateRef.value.$el).save();
-  } else {
-    console.error('PDF template element not found or no data available.');
-  }
-}
 </script>
 
 <template>
@@ -132,14 +71,5 @@ function handleExportDeliveryOrderToPdf() {
       custom-footer-class="px-6 pb-6"
       custom-header-class="px-6 pt-6"
     />
-
-    <!-- Hidden PDF Template for Export -->
-    <div class="absolute -top-[9999px] -left-[9999px]">
-      <PurchaseOrderDeliveryOrderPdfTemplate
-        v-if="deliveryOrderData"
-        ref="pdfTemplateRef"
-        :delivery-order-data="deliveryOrderData"
-      />
-    </div>
   </section>
 </template>

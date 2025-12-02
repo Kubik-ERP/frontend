@@ -23,12 +23,11 @@ const {
   inventoryItems_onEdit,
   inventoryItems_onDelete,
   inventoryItem_onAdjustment,
-  inventoryItem_onImport
+  inventoryItem_onImport,
 } = useInventoryItemsListService();
 
 const rbac = useRbac();
 </script>
-
 
 <template>
   <section id="inventory-items-list-ui" class="flex flex-col">
@@ -61,7 +60,7 @@ const rbac = useRbac();
             </PrimeVueInputIcon>
             <PrimeVueInputText
               v-model="inventoryItems_queryParams.search"
-                            :placeholder="useLocalization('items.list.searchPlaceholder')"
+              :placeholder="useLocalization('items.list.searchPlaceholder')"
               class="w-full sm:w-64 md:w-80 h-10 pl-10 pr-4 border border-gray-300 rounded-md"
             />
           </PrimeVueIconField>
@@ -75,7 +74,7 @@ const rbac = useRbac();
             >
               <i class="pi pi-upload text-sm"></i>
 
-                            {{ useLocalization('items.list.import') }}
+              {{ useLocalization('items.list.import') }}
             </PrimeVueButton>
 
             <!-- Import -->
@@ -84,7 +83,7 @@ const rbac = useRbac();
               @click="inventoryItems_onCreate"
             >
               <i class="pi pi-plus text-sm"></i>
-                            {{ useLocalization('items.list.create') }}
+              {{ useLocalization('items.list.create') }}
             </PrimeVueButton>
           </div>
         </div>
@@ -127,6 +126,9 @@ const rbac = useRbac();
           <template v-else-if="column.value === 'categoryName'">
             <span class="text-gray-700">{{ data.category || '-' }}</span>
           </template>
+          <template v-else-if="column.value === 'priceGrosir'">
+            <span class="text-gray-700">Rp{{ data.priceGrosir?.toLocaleString('id-ID') ?? 0 }}</span>
+          </template>
 
           <!-- Brand -->
           <template v-else-if="column.value === 'brandName'">
@@ -144,13 +146,21 @@ const rbac = useRbac();
           </template>
 
           <!-- Reorder Level -->
-          <template v-else-if="column.value === 'reorderLevel'">
+          <!-- <template v-else-if="column.value === 'reorderLevel'">
             <span class="text-gray-700">{{ data.reorderLevel ?? 0 }}</span>
-          </template>
+          </template> -->
 
           <!-- Minimum Stock Quantity -->
-          <template v-else-if="column.value === 'minimumStockQuantity'">
+          <!-- <template v-else-if="column.value === 'minimumStockQuantity'">
             <span class="text-gray-700">{{ data.minimumStockQuantity ?? 0 }}</span>
+          </template> -->
+
+          <template v-else-if="column.value === 'markup'">
+            <span class="text-gray-700">{{ data.markup == null ? '-' : `${data.markup * 100} %` }}</span>
+          </template>
+
+          <template v-else-if="column.value === 'margin'">
+            <span class="text-gray-700">{{ data.margin == null ? '-' : `${data.margin * 100} %` }}</span>
           </template>
 
           <!-- Price Per Unit -->
@@ -162,11 +172,13 @@ const rbac = useRbac();
           <template v-else-if="column.value === 'expiryDate'">
             <span class="text-gray-700">
               {{
-                new Date(data.expiryDate).toLocaleDateString('id-ID', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                })
+                data.expiryDate
+                  ? useFormatDate(data.expiryDate, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: '2-digit'
+                    })
+                  : '-'
               }}
             </span>
           </template>
@@ -185,7 +197,7 @@ const rbac = useRbac();
           <template v-else-if="column.value === 'action'">
             <PrimeVueButton variant="text" rounded aria-label="Actions" @click="openActionsMenu($event, data)">
               <template #icon>
-                <AppBaseSvg name="three-dots" class="!w-5 !h-5"  />
+                <AppBaseSvg name="three-dots" class="!w-5 !h-5" />
               </template>
             </PrimeVueButton>
 
@@ -199,7 +211,9 @@ const rbac = useRbac();
                 >
                   <section class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="edit" class="!w-4 !h-4" />
-                    <span class="font-normal text-sm text-text-primary">{{ useLocalization('items.list.actions.edit') }}</span>
+                    <span class="font-normal text-sm text-text-primary">{{
+                      useLocalization('items.list.actions.edit')
+                    }}</span>
                   </section>
                 </PrimeVueButton>
 
@@ -211,7 +225,9 @@ const rbac = useRbac();
                 >
                   <section class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="settings" class="!w-4 !h-4" />
-                    <span class="font-normal text-sm text-text-primary">{{ useLocalization('items.list.actions.stockAdjustment') }}</span>
+                    <span class="font-normal text-sm text-text-primary">{{
+                      useLocalization('items.list.actions.stockAdjustment')
+                    }}</span>
                   </section>
                 </PrimeVueButton>
 
@@ -223,7 +239,9 @@ const rbac = useRbac();
                 >
                   <section class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="delete" class="!w-4 !h-4" />
-                    <span class="font-normal text-sm text-text-primary">{{ useLocalization('items.list.actions.delete') }}</span>
+                    <span class="font-normal text-sm text-text-primary">{{
+                      useLocalization('items.list.actions.delete')
+                    }}</span>
                   </section>
                 </PrimeVueButton>
               </section>

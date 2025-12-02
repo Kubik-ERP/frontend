@@ -23,26 +23,13 @@ const {
   menuRecipeCreateEdit_listColumns,
   menuRecipeCreateEdit_listProducts,
   menuRecipeCreateEdit_listOutputUnitOptions,
+  menuRecipeCreateEdit_onShowDialogDeleteIngredient,
   menuRecipeCreateEdit_onShowDialogAddIngredient,
+  menuRecipeCreateEdit_onShowDialogEditIngredient,
   menuRecipeCreateEdit_onSave,
-  menuRecipeCreateEdit_onSearchProduct,
   menuRecipeCreateEdit_onSelectProduct,
-  menuRecipeCreateEdit_onResetProductSearch,
-  menuRecipeCreateEdit_productSearchValue,
   menuRecipeCreateEdit_selectedProduct,
 } = inject('menuRecipeCreateEdit') as IMenuRecipeCreateEditProvided;
-
-/**
- * @description Debounced search to prevent too many API calls
- */
-const debouncedSearch = debounce(() => menuRecipeCreateEdit_onSearchProduct(), 500);
-
-/**
- * @description Watch search value changes and trigger debounced search
- */
-watch(menuRecipeCreateEdit_productSearchValue, () => {
-  debouncedSearch();
-});
 </script>
 
 <template>
@@ -106,43 +93,23 @@ watch(menuRecipeCreateEdit_productSearchValue, () => {
             name="Link to Product"
             :validators="menuRecipeCreateEdit_formValidations.productId"
           >
-            <PrimeVueAutoComplete
-              v-model="menuRecipeCreateEdit_productSearchValue"
-              :suggestions="menuRecipeCreateEdit_listProducts"
+            <PrimeVueSelect
+              id="productId"
+              v-model="menuRecipeCreateEdit_formData.productId"
+              filter
               :loading="menuRecipeCreateEdit_isLoadingProducts"
+              :options="menuRecipeCreateEdit_listProducts"
               option-label="name"
-              placeholder="Search product by name or barcode"
-              class="text-sm w-full [&>input]:text-sm [&>input]:w-full"
+              option-value="id"
+              placeholder="Select Product"
+              class="text-sm text-black w-full"
               :class="{ ...classes }"
-              @option-select="(event: any) => menuRecipeCreateEdit_onSelectProduct(event.value)"
-            >
-              <template #option="{ option }">
-                <div class="flex items-center justify-between gap-3 p-2 w-full">
-                  <div class="flex flex-col flex-1">
-                    <span class="font-medium text-sm text-black">{{ option.name }}</span>
-                    <span v-if="option.barcode" class="text-xs text-gray-400">Barcode: {{ option.barcode }}</span>
-                  </div>
-                  <div class="text-right">
-                    <div class="font-medium text-sm text-primary">
-                      {{ useCurrencyFormat({ data: option.price || 0 }) }}
-                    </div>
-                  </div>
-                </div>
-              </template>
-            </PrimeVueAutoComplete>
-
-            <!-- Reset button if product is selected -->
-            <div v-if="menuRecipeCreateEdit_selectedProduct" class="mt-2">
-              <PrimeVueButton
-                type="button"
-                severity="secondary"
-                size="small"
-                @click="menuRecipeCreateEdit_onResetProductSearch"
-              >
-                <AppBaseSvg name="close" class="w-3 h-3 mr-2" />
-                Clear Selection
-              </PrimeVueButton>
-            </div>
+              :pt="{
+                optionLabel: 'text-sm',
+              }"
+              @change="(event: any) => { if (event.value) menuRecipeCreateEdit_onSelectProduct(event.value); }"
+              v-on="useListenerForm(menuRecipeCreateEdit_formValidations, 'productId')"
+            />
           </AppBaseFormGroup>
         </section>
 
@@ -237,7 +204,7 @@ watch(menuRecipeCreateEdit_productSearchValue, () => {
         </header>
       </template>
 
-      <template #body="{ column, data }">
+      <template #body="{ column, data, index }">
         <template v-if="column.value === 'item'">
           <div class="flex flex-col gap-1">
             <span class="font-normal text-black text-sm">
@@ -250,7 +217,7 @@ watch(menuRecipeCreateEdit_productSearchValue, () => {
           <span class="font-normal text-black text-sm">
             {{
               useCurrencyFormat({
-                data: data.itemId?.pricePerUnit * data.quantity || 0,
+                data: data.cost || 0,
               })
             }}
           </span>
@@ -261,7 +228,7 @@ watch(menuRecipeCreateEdit_productSearchValue, () => {
             variant="text"
             rounded
             aria-label="detail"
-            @click="(event: Event) => togglePopover(data.id, event)"
+            @click="(event: Event) => togglePopover(`ingredient-${index}`, event)"
           >
             <template #icon>
               <AppBaseSvg name="three-dots" class="w-5 h-5" />
@@ -271,7 +238,7 @@ watch(menuRecipeCreateEdit_productSearchValue, () => {
           <PrimeVuePopover
             :ref="
               (el: unknown) => {
-                if (el) popovers[`popover-${data.id}`] = el;
+                if (el) popovers[`popover-ingredient-${index}`] = el;
               }
             "
             :pt="{
@@ -280,22 +247,9 @@ watch(menuRecipeCreateEdit_productSearchValue, () => {
           >
             <section id="popover-content" class="flex flex-col">
               <PrimeVueButton
-                class="w-full px-4 py-3"
+                class="bg-transparent border-none w-full px-4 py-3"
                 variant="text"
-                @click="$router.push({ name: 'menu-recipe.detail', params: { id: data.id } })"
-              >
-                <template #default>
-                  <section id="content" class="flex items-center gap-2 w-full">
-                    <AppBaseSvg name="eye-visible" class="w-4 h-4" />
-                    <span class="font-normal text-sm text-black">Detail</span>
-                  </section>
-                </template>
-              </PrimeVueButton>
-
-              <PrimeVueButton
-                class="w-full px-4 py-3"
-                variant="text"
-                @click="$router.push({ name: 'menu-recipe.edit', params: { id: data.id } })"
+                @click="menuRecipeCreateEdit_onShowDialogEditIngredient(data, index)"
               >
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
@@ -305,7 +259,11 @@ watch(menuRecipeCreateEdit_productSearchValue, () => {
                 </template>
               </PrimeVueButton>
 
-              <PrimeVueButton class="w-full px-4 py-3">
+              <PrimeVueButton
+                class="bg-transparent border-none w-full px-4 py-3"
+                variant="text"
+                @click="menuRecipeCreateEdit_onShowDialogDeleteIngredient(index)"
+              >
                 <template #default>
                   <section id="content" class="flex items-center gap-2 w-full">
                     <AppBaseSvg name="delete" class="w-4 h-4" />

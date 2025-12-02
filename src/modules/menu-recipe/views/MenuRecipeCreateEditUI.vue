@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Components
 import MenuRecipeAddIngredientsDialog from '../components/create-edit/MenuRecipeAddIngredientsDialog.vue';
+import MenuRecipeEditIngredientDialog from '../components/create-edit/MenuRecipeEditIngredientDialog.vue';
 import MenuRecipeContent from '../components/create-edit/MenuRecipeContent.vue';
 
 // Services
@@ -18,6 +19,7 @@ const {
   menuRecipeCreateEdit_listColumns,
   menuRecipeCreateEdit_listIngredientItemsOnDialog,
   menuRecipeCreateEdit_listOutputUnitOptions,
+  menuRecipeCreateEdit_availableUomOptions,
   menuRecipeCreateEdit_onAddIngredientItem,
   menuRecipeCreateEdit_onCancel,
   menuRecipeCreateEdit_onDeleteIngredientItem,
@@ -27,14 +29,18 @@ const {
   menuRecipeCreateEdit_onShowDialogAddIngredient,
   menuRecipeCreateEdit_onShowDialogCancelAddIngredient,
   menuRecipeCreateEdit_onShowDialogSaveIngredients,
-  // Product search functionality
+  menuRecipeCreateEdit_onShowDialogDeleteIngredient,
+  menuRecipeCreateEdit_onConfirmDeleteIngredient,
+  menuRecipeCreateEdit_onCancelDeleteIngredient,
+  menuRecipeCreateEdit_selectedIngredientIndex,
+  menuRecipeCreateEdit_onShowDialogEditIngredient,
+  menuRecipeCreateEdit_onShowDialogCancelEditIngredient,
+  menuRecipeCreateEdit_onShowDialogSaveEditIngredient,
+  // Product functionality
   menuRecipeCreateEdit_listProducts,
-  menuRecipeCreateEdit_onSearchProduct,
-  menuRecipeCreateEdit_productSearchValue,
   menuRecipeCreateEdit_selectedProduct,
   menuRecipeCreateEdit_onLoadInitialData,
   menuRecipeCreateEdit_onSelectProduct,
-  menuRecipeCreateEdit_onResetProductSearch,
   menuRecipeCreateEdit_isLoadingProducts,
   // Inventory items functionality
   menuRecipeCreateEdit_listInventoryItems,
@@ -57,6 +63,7 @@ provide('menuRecipeCreateEdit', {
   menuRecipeCreateEdit_listColumns,
   menuRecipeCreateEdit_listIngredientItemsOnDialog,
   menuRecipeCreateEdit_listOutputUnitOptions,
+  menuRecipeCreateEdit_availableUomOptions,
   menuRecipeCreateEdit_onAddIngredientItem,
   menuRecipeCreateEdit_onCancel,
   menuRecipeCreateEdit_onDeleteIngredientItem,
@@ -66,13 +73,18 @@ provide('menuRecipeCreateEdit', {
   menuRecipeCreateEdit_onShowDialogAddIngredient,
   menuRecipeCreateEdit_onShowDialogCancelAddIngredient,
   menuRecipeCreateEdit_onShowDialogSaveIngredients,
-  // Product search
+  menuRecipeCreateEdit_onShowDialogDeleteIngredient,
+  menuRecipeCreateEdit_onConfirmDeleteIngredient,
+  menuRecipeCreateEdit_onCancelDeleteIngredient,
+  menuRecipeCreateEdit_selectedIngredientIndex,
+  // Edit ingredient from main list
+  menuRecipeCreateEdit_onShowDialogEditIngredient,
+  menuRecipeCreateEdit_onShowDialogCancelEditIngredient,
+  menuRecipeCreateEdit_onShowDialogSaveEditIngredient,
+  // Product
   menuRecipeCreateEdit_listProducts,
-  menuRecipeCreateEdit_onSearchProduct,
-  menuRecipeCreateEdit_productSearchValue,
   menuRecipeCreateEdit_selectedProduct,
   menuRecipeCreateEdit_onSelectProduct,
-  menuRecipeCreateEdit_onResetProductSearch,
   menuRecipeCreateEdit_isLoadingProducts,
   // Inventory items
   menuRecipeCreateEdit_listInventoryItems,
@@ -96,7 +108,7 @@ onMounted(async () => {
     <MenuRecipeContent />
 
     <AppBaseDialogConfirmation id="menu-recipe-create-edit-dialog-confirmation" />
-    <AppBaseDialogConfirmation id="menu-recipe-save-ingredients-dialog-confirmation" />
     <MenuRecipeAddIngredientsDialog />
+    <MenuRecipeEditIngredientDialog />
   </section>
 </template>

@@ -20,10 +20,18 @@ export interface IPurchaseOrderCreateEditProductItem {
   expiryDate?: string;
   supplier?: string;
   storageLocation?: string;
-  receiver?: {
-    id: string;
-    name: string;
-  };
+  receiver?: UserRelations;
+  confirmed?: UserRelations;
+  created?: UserRelations;
+  cancelled?: UserRelations;
+  received?: UserRelations;
+  shipped?: UserRelations;
+  paid?: UserRelations;
+}
+
+interface UserRelations {
+  id: string;
+  name: string;
 }
 
 // Interface for API payload (minimal structure)
@@ -58,7 +66,6 @@ export interface IPurchaseOrderCreateEditProvided {
   purchaseOrderCreateEdit_onDecrementQuantity: () => void;
   purchaseOrderCreateEdit_onDeleteProductItem: (productItem: IPurchaseOrderCreateEditProductItem | string) => void;
   purchaseOrderCreateEdit_onIncrementQuantity: () => void;
-  purchaseOrderCreateEdit_onLoadInitialData: () => Promise<void>;
   purchaseOrderCreateEdit_onResetForm: () => void;
   purchaseOrderCreateEdit_onShowDialogAddProductItem: () => void;
   purchaseOrderCreateEdit_onShowDialogEditQuantity: (productItem: IPurchaseOrderCreateEditProductItem) => void;

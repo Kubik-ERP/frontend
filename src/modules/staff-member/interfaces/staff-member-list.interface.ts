@@ -36,4 +36,14 @@ export interface IStaffMemberListProvided {
   staffMemberList_values: globalThis.Ref<IStaffMemberList>;
   staffMemberList_queryParams: IStaffMemberListRequestQuery;
   staffMemberList_onChangePage: (page: number) => void;
+  staffMemberList_onDetail: (staffMemberId: string) => void;
+}
+
+export interface IStaffCommissionsRequestQuery{
+  startDate: Date | string | null;
+  endDate: Date | string | null;
+  page: number;
+  pageSize: number;
+  sourceType?: 'product' | 'voucher' | null;
+  dateRange: Date | null;
 }

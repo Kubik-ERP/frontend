@@ -10,6 +10,9 @@ import {
 import { Validation } from '@vuelidate/core';
 import { Reactive, ComputedRef, Ref } from 'vue';
 
+// Re-export ICashierCustomerState so it can be imported from this module
+export type { ICashierCustomerState };
+
 export interface ICashierOrderType {
   code: string;
   label: string;

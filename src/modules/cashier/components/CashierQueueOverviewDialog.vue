@@ -4,15 +4,15 @@ import InvoicePaperCashierInvoice from '@/modules/invoice/components/paper/Invoi
 
 // Interfaces
 import type { IDailySalesListProvided } from '@/modules/daily-sales/interfaces/daily-sales-list.interface';
-import type { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import type { ICashierCustomerProvided } from '@/modules/cashier/interfaces/cashier-customer.interface';
 import type { IInvoiceProvided } from '@/modules/invoice/interfaces';
 import type { IDailySales } from '@/modules/daily-sales/interfaces';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_onCloseDialogQueueOverview } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierCustomer_onCloseDialogQueueOverview } =
+  inject<ICashierCustomerProvided>('cashierCustomer')!;
 const {
   dailySalesList_columns,
   dailySalesList_getClassOfOrderStatus,
@@ -64,8 +64,14 @@ const selectedDataQueue = ref<IDailySales | null>(null);
           @update:currentPage="dailySalesList_onChangePage"
           @update:sort="dailySales_handleOnSortChange"
         >
-          <template #body="{ column, data }">
-            <template v-if="column.value === 'createdAt'">
+          <template #body="{ column, data, index }">
+            <template v-if="column.value === 'index'">
+              <span class="font-normal text-sm text-text-primary">{{
+                (dailySalesList_values.data.meta.page - 1) * dailySalesList_values.data.meta.pageSize + index + 1
+              }}</span>
+            </template>
+
+            <template v-else-if="column.value === 'createdAt'">
               <span class="font-normal text-sm text-text-primary">{{
                 useFormatDate(new Date(data[column.value]))
               }}</span>
@@ -75,10 +81,6 @@ const selectedDataQueue = ref<IDailySales | null>(null);
               <router-link :to="`/invoice/${data.id}`">
                 <span class="font-normal text-sm text-sky-600 cursor-pointer"> #{{ data[column.value] }} </span>
               </router-link>
-            </template>
-
-            <template v-else-if="column.value === 'customer'">
-              <span class="font-normal text-sm text-text-primary">{{ data[column.value].name }}</span>
             </template>
 
             <template v-else-if="column.value === 'grandTotal'">
@@ -156,7 +158,7 @@ const selectedDataQueue = ref<IDailySales | null>(null);
             </template>
 
             <template v-else>
-              <span class="font-normal text-sm text-text-primary">{{ data[column.value] }}</span>
+              <span class="font-normal text-sm text-text-primary">{{ data[column.value] ?? '-' }}</span>
             </template>
           </template>
         </AppBaseDataTable>
@@ -169,7 +171,7 @@ const selectedDataQueue = ref<IDailySales | null>(null);
             label="Close"
             severity="secondary"
             variant="outlined"
-            @click="cashierOrderSummary_onCloseDialogQueueOverview"
+            @click="cashierCustomer_onCloseDialogQueueOverview"
           />
         </footer>
       </template>

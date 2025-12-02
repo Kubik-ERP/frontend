@@ -4,6 +4,7 @@ import {
   PURCHASE_ORDER_CANCEL_ENDPOINT,
   PURCHASE_ORDER_CONFIRM_ENDPOINT,
   PURCHASE_ORDER_PAY_ENDPOINT,
+  PURCHASE_ORDER_PDF_ENDPOINT,
   PURCHASE_ORDER_RECEIVE_ENDPOINT,
   PURCHASE_ORDER_SHIP_ENDPOINT,
 } from '../constants';
@@ -24,7 +25,7 @@ import type {
 
 // Plugins
 import httpClient from '@/plugins/axios';
-import {  IPurchaseOrderReceivedPaylaod } from '../interfaces/purchase-order-received.interface';
+import { IPurchaseOrderReceivedPaylaod } from '../interfaces/purchase-order-received.interface';
 
 export const usePurchaseOrderStore = defineStore('purchase-order', {
   state: (): IPurchaseOrderStateStore => ({
@@ -162,6 +163,50 @@ export const usePurchaseOrderStore = defineStore('purchase-order', {
         this.purchaseOrder_detail = response.data.data;
 
         return Promise.resolve(response.data);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.purchaseOrder_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api purchase order - download pdf
+     * @url /purchase-orders/{id}/pdf
+     * @method GET
+     * @access private
+     */
+    async purchaseOrder_downloadPdf(
+      purchaseOrderId: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<void> {
+      this.purchaseOrder_isLoading = true;
+
+      try {
+        const response = await httpClient.get<Blob>(
+          PURCHASE_ORDER_PDF_ENDPOINT.replace('{id}', purchaseOrderId),
+          {
+            ...requestConfigurations,
+            responseType: 'blob',
+          },
+        );
+
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        const orderNumber = this.purchaseOrder_detail?.orderNumber || 'purchase-order';
+        link.setAttribute('download', `${orderNumber}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+
+        // Clean up
+        link.parentNode?.removeChild(link);
+        window.URL.revokeObjectURL(url);
       } catch (error: unknown) {
         if (error instanceof Error) {
           return Promise.reject(error);

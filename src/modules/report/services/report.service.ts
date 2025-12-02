@@ -20,6 +20,17 @@ import {
   SALESREPORT_SALESBYORDERTYPE_COLUMNS,
   SALESREPORT_COLUMNS,
   CUSTOMERREPORT_COLUMNS,
+  // loyalty point
+  LOYALTYPOINTREPORT_EXPIRYWARNING_COLUMNS,
+  LOYALTYPOINTREPORT_BENEFITUTILIZATION_COLUMNS,
+  LOYALTYPOINTREPORT_PRODUCTBASED_COLUMNS,
+  LOYALTYPOINTREPORT_SPENDBASED_COLUMNS,
+  LOYALTYPOINTREPORT_TYPEACCUMULATION_COLUMNS,
+  // staff report
+  STAFFREPORT_COMMISSION_COLUMNS,
+  STAFFREPORT_INDIVIDUAL_COLUMNS,
+  STAFFREPORT_COMMISSIONBYITEM_COLUMNS,
+  STAFFREPORT_COMMISSIONBYVOUCHER_COLUMNS,
 } from '../constants';
 // type
 import { IReportProvided, IReportQueryParams } from '../interfaces';
@@ -55,6 +66,17 @@ export const useReportService = (): IReportProvided => {
     voucherReport_values,
     // customer
     customerReport_values,
+    // loyalty point
+    loyaltyPointReport_spendBased_values,
+    loyaltyPointReport_benefitUtilization_values,
+    loyaltyPointReport_expiryWarning_values,
+    loyaltyPointReport_productBased_values,
+    loyaltyPointReport_typeAccumulation_values,
+    // staff
+    staffReport_Commission_values,
+    staffReport_Individual_values,
+    staffReport_CommissionByItem_values,
+    staffReport_CommissionByVoucher_values,
     // outlet
     outlet_lists_values,
     // staff
@@ -96,7 +118,17 @@ export const useReportService = (): IReportProvided => {
     999,
   );
 
+  const getLocalGMTString = (): number => {
+    const offsetInMinutes = new Date().getTimezoneOffset();
+
+    // 2. We invert the sign and divide by 60 to get the offset in hours.
+    const offsetInHours = -offsetInMinutes / 60;
+
+    return offsetInHours;
+  };
+
   const report_queryParams = reactive<IReportQueryParams>({
+    gmt: getLocalGMTString(),
     startDate: initialStartDate,
     endDate: initialEndDate,
     store_ids: outlet_currentOutlet.value?.id,
@@ -105,12 +137,14 @@ export const useReportService = (): IReportProvided => {
 
   const formatQueryParamsDate = (params: IReportQueryParams, type?: string): IReportQueryParams => {
     Object.assign(report_queryParams, {
+      gmt: params.gmt,
       startDate: params.startDate,
       endDate: params.endDate,
       store_ids: params.store_ids,
       staff_ids: params.staff_ids,
     });
     const newParams = {
+      gmt: params.gmt,
       startDate: useFormatDateLocal(params.startDate, true) as unknown as Date,
       endDate: useFormatDateLocal(params.endDate, true) as unknown as Date,
       type: type,
@@ -259,6 +293,42 @@ export const useReportService = (): IReportProvided => {
     }
   };
 
+  const report_getLoyaltyPointReport = async (type?: string) => {
+    try {
+      Promise.all([
+        fetchOutlet_lists(),
+        // fetchStaff_lists(),
+        await store.getLoyaltyPointReport(formatQueryParamsDate(report_queryParams, type), {
+          ...httpAbort_registerAbort('LOYALTYPOINTREPORT_REQUEST'),
+        }),
+      ]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
+
+  const report_getStaffReport = async (type?: string) => {
+    try {
+      Promise.all([
+        fetchOutlet_lists(),
+        fetchStaff_lists(),
+        await store.getStaffReport(formatQueryParamsDate(report_queryParams, type), {
+          ...httpAbort_registerAbort('STAFFREPORT_REQUEST'),
+        }),
+      ]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+      } else {
+        console.error(new Error(String(error)));
+      }
+    }
+  };
+
   const findOutletDetail = (id: string) => {
     return outlet_lists_values.value.find(item => item.id === id);
   };
@@ -271,6 +341,42 @@ export const useReportService = (): IReportProvided => {
   const hasAccessAllStorePermission = rbac.hasPermission('access_all_store');
   const hasStoreManagementPermission = rbac.hasPermission('store_management');
   const hasManageStaffMemberPermission = rbac.hasPermission('manage_staff_member');
+
+  /**
+   * @description Handle export pdf report for financial report
+   * @param {string} [type] - type of report to be exported
+   * @returns {Promise<void>}
+   */
+
+  const isDownloading = ref<boolean>(false);
+  const isDialogVisible = ref(false);
+  const downloadStatus = ref<'downloading' | 'success' | 'error'>('downloading');
+
+  const dialogDownload_onClose = () => {
+    downloadStatus.value = 'downloading';
+  };
+
+  const report_downloadPDF = async (path: string, type?: string) => {
+    isDownloading.value = true;
+
+    downloadStatus.value = 'downloading';
+    isDialogVisible.value = true;
+    try {
+      await store.report_downloadPDF(path, formatQueryParamsDate(report_queryParams, type), {
+        ...httpAbort_registerAbort('FINANCIALREPORT_EXPORT_PDF_REQUEST'),
+      });
+      downloadStatus.value = 'success';
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error);
+        downloadStatus.value = 'error';
+      } else {
+        console.error(new Error(String(error)));
+      }
+    } finally {
+      isDownloading.value = false;
+    }
+  };
 
   return {
     // rbac
@@ -295,6 +401,15 @@ export const useReportService = (): IReportProvided => {
     inventoryReport_itemPerformanceByBrand_columns: INVENTORYREPORT_ITEMPERFORMANCEBYBRAND_COLUMNS,
     voucherReport_columns: MARKETINGREPORT_COLUMNS,
     customerReport_columns: CUSTOMERREPORT_COLUMNS,
+    loyaltyPointReport_spendBased_columns: LOYALTYPOINTREPORT_SPENDBASED_COLUMNS,
+    loyaltyPointReport_productBased_columns: LOYALTYPOINTREPORT_PRODUCTBASED_COLUMNS,
+    loyaltyPointReport_benefitUtilization_columns: LOYALTYPOINTREPORT_BENEFITUTILIZATION_COLUMNS,
+    loyaltyPointReport_expiryWarning_columns: LOYALTYPOINTREPORT_EXPIRYWARNING_COLUMNS,
+    loyaltyPointReport_typeAccumulation_columns: LOYALTYPOINTREPORT_TYPEACCUMULATION_COLUMNS,
+    staffReport_commission_columns: STAFFREPORT_COMMISSION_COLUMNS,
+    staffReport_individual_columns: STAFFREPORT_INDIVIDUAL_COLUMNS,
+    staffReport_commissionByItem_columns: STAFFREPORT_COMMISSIONBYITEM_COLUMNS,
+    staffReport_commissionByVoucher_columns: STAFFREPORT_COMMISSIONBYVOUCHER_COLUMNS,
     // params
     report_queryParams,
     // methods
@@ -305,6 +420,8 @@ export const useReportService = (): IReportProvided => {
     report_getInventoryReport,
     report_getVoucherReport,
     report_getCustomerReport,
+    report_getLoyaltyPointReport,
+    report_getStaffReport,
     // store
     report_isLoading,
     // financial
@@ -333,13 +450,32 @@ export const useReportService = (): IReportProvided => {
     voucherReport_values,
     // customer
     customerReport_values,
+    // loyalty point
+    loyaltyPointReport_spendBased_values,
+    loyaltyPointReport_benefitUtilization_values,
+    loyaltyPointReport_expiryWarning_values,
+    loyaltyPointReport_productBased_values,
+    loyaltyPointReport_typeAccumulation_values,
+    // staff
+    staffReport_Commission_values,
+    staffReport_Individual_values,
+    staffReport_CommissionByItem_values,
+    staffReport_CommissionByVoucher_values,
     // outlet
     outlet_lists_options,
     findOutletDetail,
     // staff
+    staff_lists_values,
     staff_lists_options,
     findStaffDetail,
     // misc
     outlet_currentOutlet,
+    // download dialog
+    isDialogVisible,
+    downloadStatus,
+    dialogDownload_onClose,
+    // export pdf
+    isDownloading,
+    report_downloadPDF,
   };
 };

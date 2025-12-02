@@ -21,14 +21,6 @@ const {
 } = inject('workingHoursList') as IWorkingHoursListProvided;
 
 /**
- * @description Format column label to add superscript for ordinal suffixes
- */
-const formatColumnLabelWithSuperscript = (label: string): string => {
-  // Match patterns like "Mon (2nd)", "Tue (3rd)", etc.
-  return label.replace(/(\d+)(st|nd|rd|th)/, '$1<sup>$2</sup>');
-};
-
-/**
  * @description Convert month string to Date object for DatePicker
  */
 const selectedMonthAsDate = computed({
@@ -52,7 +44,7 @@ const selectedMonthAsDate = computed({
 /**
  * @description Handle adding a new shift (opens dialog)
  */
-const handleAddShift = (staffId: number, columnValue: string) => {
+const handleAddShift = (staffId: string, columnValue: string) => {
   let targetDate: string;
 
   if (workingHoursList_selectedViewType.value === 'Week') {
@@ -69,14 +61,14 @@ const handleAddShift = (staffId: number, columnValue: string) => {
     targetDate = `${year}-${targetMonth}-${targetDay}`;
   }
 
-  // Open dialog with pre-filled data
+  // Open dialog with pre-filled data using id (UUID) instead of userId
   workingHoursList_onOpenDialog('create', staffId, targetDate);
 };
 
 /**
  * @description Handle clicking on absent cell (opens dialog for month view)
  */
-const handleAbsentClick = (staffId: number, columnValue: string) => {
+const handleAbsentClick = (staffId: string, columnValue: string) => {
   if (workingHoursList_selectedViewType.value === 'Month') {
     handleAddShift(staffId, columnValue);
   }
@@ -92,9 +84,8 @@ const handleAbsentClick = (staffId: number, columnValue: string) => {
         :data="workingHoursList_listValues"
         header-title="Working Hours"
         is-using-custom-body
-        is-using-custom-column-headers
         is-using-custom-filter
-        is-using-search-on-header
+        is-using-custom-table
         search-placeholder="Search by Employee ID or Name"
       >
         <template #filter>
@@ -155,30 +146,6 @@ const handleAbsentClick = (staffId: number, columnValue: string) => {
           </div>
         </template>
 
-        <template #columnHeader="{ column }">
-          <template v-if="column.value === 'staff'">
-            <span class="text-sm font-normal text-grayscale-70">{{ column.label }}</span>
-          </template>
-          <template v-else-if="workingHoursList_selectedViewType === 'Week'">
-            <!-- Week view: Show day name and date on separate lines -->
-            <div class="text-center">
-              <div class="text-sm font-medium text-grayscale-70">
-                {{ column.label.split('|')[0] }}
-              </div>
-              <div class="text-xs text-grayscale-60 mt-1">
-                {{ column.label.split('|')[1] }}
-              </div>
-            </div>
-          </template>
-          <template v-else>
-            <!-- Month view: Show day with superscript -->
-            <span
-              class="text-sm font-normal text-grayscale-70"
-              v-html="formatColumnLabelWithSuperscript(column.label)"
-            ></span>
-          </template>
-        </template>
-
         <template #body="{ column, data }">
           <template v-if="column.value === 'staff'">
             <div class="flex items-center justify-between w-full">
@@ -216,7 +183,7 @@ const handleAbsentClick = (staffId: number, columnValue: string) => {
                 >
                   <template #default>
                     <section id="content" class="flex items-center gap-2">
-                      <AppBaseSvg name="plus-line" class="w-4 h-4" />
+                      <AppBaseSvg name="plus-line" class="filter-primary-color w-4 h-4" />
                       <span class="font-semibold text-xs text-primary">Add Shift</span>
                     </section>
                   </template>
@@ -246,7 +213,7 @@ const handleAbsentClick = (staffId: number, columnValue: string) => {
                 v-else
                 class="w-10 h-10 bg-gray-100 rounded flex items-center justify-center hover:bg-gray-200 transition-colors cursor-pointer"
                 title="Click to add working hours"
-                @click="handleAbsentClick(1, column.value)"
+                @click="handleAbsentClick(data.id, column.value)"
               >
                 <span class="text-xs text-gray-400">-</span>
               </button>

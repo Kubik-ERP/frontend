@@ -1,6 +1,9 @@
 <script setup lang="ts">
 // Interface
-import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import { ICashierOrderProvided } from '@/modules/cashier/interfaces/cashier-order.interface';
+import { ICashierPaymentProvided } from '@/modules/cashier/interfaces/cashier-payment.interface';
+import { ICashierCustomerProvided } from '@/modules/cashier/interfaces/cashier-customer.interface';
+import { ICashierProductProvided } from '@/modules/cashier/interfaces/cashier-product-service.interface';
 
 // Components
 import CashierSummaryProductList from '../CashierSummaryProductList.vue';
@@ -17,24 +20,27 @@ const route = useRoute();
  * @description Inject all the data and methods what we need
  */
 const {
-  cashierOrderSummary_modalOrderSummary,
-  cashierOrderSummary_handleModalAddCustomer,
-  cashierProduct_customerState,
-  cashierOrderSummary_modalMenuOrderItem,
-  cashierOrderSummary_modalPlaceOrderConfirmation,
-  cashierOrderSummary_calculateEstimation,
-  cashierProduct_onScrollFetchMoreCustomers,
-  cashierProduct_onSearchCustomer,
-  cashierOrderSummary_isButtonPlaceOrderDisabled,
-  cashierOrderSummary_modalPaymentMethod,
-  cashierOrderSummary_isLoadingUnpaidOrder,
-  cashierOrderSummary_modalSelectTable,
-} = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+  cashierOrder_modalOrderSummary,
+  cashierOrder_modalMenuOrderItem,
+  cashierOrder_modalPlaceOrderConfirmation,
+  cashierOrder_calculateEstimation,
+  cashierOrder_isButtonPlaceOrderDisabled,
+  cashierOrder_modalSelectTable,
+  cashierOrder_isLoadingUnpaidOrder,
+} = inject<ICashierOrderProvided>('cashierOrder')!;
+
+const { cashierPayment_handleSaveUnpaidOrder, cashierPayment_modalPaymentMethod } =
+  inject<ICashierPaymentProvided>('cashierPayment')!;
+
+const { cashierCustomer_handleModalAddCustomer } = inject<ICashierCustomerProvided>('cashierCustomer')!;
+
+const { cashierProduct_customerState, cashierProduct_onScrollFetchMoreCustomers, cashierProduct_onSearchCustomer } =
+  inject<ICashierProductProvided>('cashierProduct')!;
 </script>
 <template>
   <section id="cashier-summary-modal-order-summary">
     <PrimeVueDialog
-      v-model:visible="cashierOrderSummary_modalOrderSummary.show"
+      v-model:visible="cashierOrder_modalOrderSummary.show"
       :dismissable-mask="true"
       modal
       class="w-screen h-screen rounded-none relative p-0 m-0 max-h-dvh overflow-y-auto"
@@ -45,7 +51,7 @@ const {
             id="cashier-summary-modal-order-summary-header"
             class="p-4 bg-white flex items-center justify-between"
           >
-            <div class="flex items-center gap-2" @click="cashierOrderSummary_modalOrderSummary.show = false">
+            <div class="flex items-center gap-2" @click="cashierOrder_modalOrderSummary.show = false">
               <AppBaseSvg name="chevron-left" class="!h-4 !w-4 cursor-pointer" @click="closeCallback" />
               <span class="text-lg font-semibold">{{ useLocalization('cashier.mainSection.cart') }}</span>
             </div>
@@ -71,7 +77,7 @@ const {
                 useLocalization('cashier.mainSection.tableNo')
               }}</span>
 
-              <span>{{ cashierOrderSummary_modalSelectTable.selectedTable.toString() }}</span>
+              <span>{{ cashierOrder_modalSelectTable.selectedTable.toString() }}</span>
             </div>
 
             <div class="flex flex-col gap-2 w-full">
@@ -123,7 +129,7 @@ const {
                         severity="secondary"
                         size="small"
                         icon="pi pi-plus"
-                        @click="cashierOrderSummary_handleModalAddCustomer(null)"
+                        @click="cashierCustomer_handleModalAddCustomer(null)"
                       />
                     </div>
                   </template>
@@ -168,9 +174,9 @@ const {
           <div class="flex justify-between items-center">
             <div class="flex gap-2 items-center">
               <AppBaseSvg name="cash" class="!h-6 !w-6" />
-              <span v-if="!cashierOrderSummary_calculateEstimation.isLoading" class="font-semibold text-sm">{{
+              <span v-if="!cashierOrder_calculateEstimation.isLoading" class="font-semibold text-sm">{{
                 useCurrencyFormat({
-                  data: cashierOrderSummary_calculateEstimation?.data?.grandTotal || 0,
+                  data: cashierOrder_calculateEstimation?.data?.grandTotal || 0,
                 })
               }}</span>
             </div>
@@ -179,7 +185,7 @@ const {
               text
               aria-haspopup="true"
               aria-controls="overlay_menu_summary_order"
-              @click="cashierOrderSummary_modalMenuOrderItem.show = true"
+              @click="cashierOrder_modalMenuOrderItem.show = true"
             >
               <i class="pi pi-ellipsis-h text-primary"></i>
             </PrimeVueButton>
@@ -187,31 +193,30 @@ const {
 
           <PrimeVueButton
             v-if="route.name === 'cashier' || route.name === 'cashier-order-edit'"
-            v-slot="slotProps"
-            as-child
             outlined
-            class="w-full"
+            class="w-full border-primary p-3"
+            :disabled="cashierOrder_isButtonPlaceOrderDisabled || cashierOrder_isLoadingUnpaidOrder"
+            :loading="cashierOrder_isLoadingUnpaidOrder"
+            @click="cashierPayment_handleSaveUnpaidOrder"
           >
-            <RouterLink :to="{ name: 'invoice' }" v-bind="slotProps" class="p-3 w-full border border-primary">
-              <section class="flex gap-2 justify-center w-full items-center">
-                <AppBaseSvg name="order-primary" class="!h-5 !w-5" />
-                <span class="font-semibold text-primary truncate">{{
-                  useLocalization('cashier.mainSection.saveUnpaidOrder')
-                }}</span>
-              </section>
-            </RouterLink>
+            <section class="flex gap-2 justify-center w-full items-center">
+              <AppBaseSvg name="order-primary" class="filter-primary-color h-5 w-5" />
+              <span class="font-semibold text-primary truncate">{{
+                useLocalization('cashier.mainSection.saveUnpaidOrder')
+              }}</span>
+            </section>
           </PrimeVueButton>
 
           <PrimeVueButton
             :disabled="
-              cashierOrderSummary_isButtonPlaceOrderDisabled ||
-              cashierOrderSummary_modalPaymentMethod.selectedPaymentMethod === '' ||
-              cashierOrderSummary_isLoadingUnpaidOrder
+              cashierOrder_isButtonPlaceOrderDisabled ||
+              cashierPayment_modalPaymentMethod.selectedPaymentMethod === '' ||
+              cashierOrder_isLoadingUnpaidOrder
             "
-            class="py-2.5 px-14"
+            class="bg-primary border-none py-2.5 px-14"
             type="button"
             label="Place Order"
-            @click="cashierOrderSummary_modalPlaceOrderConfirmation.show = true"
+            @click="cashierOrder_modalPlaceOrderConfirmation.show = true"
           ></PrimeVueButton>
         </section>
       </template>

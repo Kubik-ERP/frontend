@@ -26,5 +26,4 @@ export interface IInventoryItemsActionProvided{
     inventoryItemAction_supplierList: globalThis.Ref<ISupplierItem[]>;
     inventoryItemsAction_formOnMode: globalThis.Ref<'create' | 'edit'>
     inventoryItems_editingItem: globalThis.Ref<IInventoryItems | null>
-    inventoryItems_handleBarcodeScanner: () => void;
 }

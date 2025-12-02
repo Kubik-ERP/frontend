@@ -6,6 +6,7 @@ import {
   PURCHASE_ORDER_DETAIL_CANCEL_REQUEST,
   PURCHASE_ORDER_DETAIL_SHIP_REQUEST,
   PURCHASE_ORDER_DETAIL_PAY_REQUEST,
+  PURCHASE_ORDER_DETAIL_PDF_REQUEST,
 } from '../constants';
 
 // Interfaces
@@ -409,7 +410,7 @@ export const usePurchaseOrderDetailService = (): IPurchaseOrderDetailProvided =>
     if (!currentId) return;
 
     router.push({ name: 'purchase-order.received', params: { id: currentId } });
-  }
+  };
 
   /**
    * @description Handle business logic for pay action
@@ -565,6 +566,7 @@ export const usePurchaseOrderDetailService = (): IPurchaseOrderDetailProvided =>
       const argsEventEmitter: IPropsDialogConfirmation = {
         id: 'purchase-order-detail-confirmation-dialog',
         iconName: 'confirmation',
+
         title: 'Are you sure want to update this purchase order status to Confirmed?',
         description: `<span class="font-normal text-center text-sm text-grayscale-70">
             Order status will changed to <strong>Confirmed</strong> and system will automatically generate Delivery Order document
@@ -609,6 +611,21 @@ export const usePurchaseOrderDetailService = (): IPurchaseOrderDetailProvided =>
     eventBus.emit('AppBaseDialog', argsEventEmitter);
   };
 
+  /**
+   * @description Handle business logic for exporting delivery order to PDF
+   */
+  const purchaseOrderDetail_onExportDeliveryOrderToPdf = async (): Promise<void> => {
+    try {
+      if (purchaseOrderDetail_routeParamsId.value) {
+        await store.purchaseOrder_downloadPdf(purchaseOrderDetail_routeParamsId.value, {
+          ...httpAbort_registerAbort(PURCHASE_ORDER_DETAIL_PDF_REQUEST),
+        });
+      }
+    } catch (error) {
+      console.error('Error exporting to PDF:', error);
+    }
+  };
+
   return {
     purchaseOrderDetail_data: purchaseOrder_detail,
     purchaseOrderDetail_dynamicButtonAction,
@@ -628,5 +645,7 @@ export const usePurchaseOrderDetailService = (): IPurchaseOrderDetailProvided =>
     purchaseOrderDetail_onEdit,
     purchaseOrderDetail_onBack,
     purchaseOrderDetail_getStatusClass,
+    purchaseOrderDetail_onExportDeliveryOrderToPdf,
   };
 };
+

@@ -19,16 +19,18 @@ import CashierSummaryModalSelectTable from './OrderSummary/Modal/CashierSummaryM
 import CashierSummaryModalVoucher from './OrderSummary/Modal/CashierSummaryModalVoucher.vue';
 
 // Interface
-import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import { ICashierOrderProvided } from '@/modules/cashier/interfaces/cashier-order.interface';
+import { ICashierPaymentProvided } from '@/modules/cashier/interfaces/cashier-payment.interface';
 
 /**
  * @description Inject all the data and methods what we need
  */
 const {
-  cashierOrderSummary_modalPlaceOrderDetail,
-  cashierOrderSummary_handleSimulatePayment,
-  cashierOrderSummary_isRetailBusinessType,
-} = inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+  cashierOrder_modalPlaceOrderDetail,
+  cashierOrder_isRetailBusinessType,
+} = inject<ICashierOrderProvided>('cashierOrder')!;
+
+const { cashierPayment_handleSimulatePayment } = inject<ICashierPaymentProvided>('cashierPayment')!;
 
 import { useRoute } from 'vue-router';
 
@@ -52,9 +54,9 @@ const voucherPermission = rbac.hasPermission('voucher');
       <CashierSummaryModalCancelOrder />
       <CashierSummaryModalInvoiceDetail />
 
-      <CashierSummaryModalOrderType v-if="!cashierOrderSummary_isRetailBusinessType" />
+      <CashierSummaryModalOrderType v-if="!cashierOrder_isRetailBusinessType" />
       <CashierSummaryModalSelectTable
-        v-if="route.name !== 'self-order' && !cashierOrderSummary_isRetailBusinessType"
+        v-if="route.name !== 'self-order' && !cashierOrder_isRetailBusinessType"
       />
 
       <CashierSummaryModalMoreOptionsMobile />
@@ -65,10 +67,10 @@ const voucherPermission = rbac.hasPermission('voucher');
       <CashierSummaryModalPlaceOrderConfirmation />
       <CashierSummaryModalPaymentQRIS
         :modal-place-order-detail="{
-          showModalPayment: cashierOrderSummary_modalPlaceOrderDetail.showModalPayment,
-          data: cashierOrderSummary_modalPlaceOrderDetail.data,
+          showModalPayment: cashierOrder_modalPlaceOrderDetail.showModalPayment,
+          data: cashierOrder_modalPlaceOrderDetail.data,
         }"
-        @simulate-payment="cashierOrderSummary_handleSimulatePayment"
+        @simulate-payment="cashierPayment_handleSimulatePayment"
       />
       <CashierSummaryModalAddCustomer />
     </section>

@@ -244,8 +244,9 @@ export interface IInvoiceResponseTableKitchenTicket {
 }
 
 export interface IInvoiceProvided {
-  invoice_activeInvoice: Ref<number>;
+  invoice_activeInvoice: Ref<string>;
   invoice_handleFetchInvoiceById: (invoiceId: string) => Promise<void>;
+  invoice_handleFetchInvoiceByOrderId: (orderId: string) => Promise<void>;
   invoice_invoiceData: Ref<IInvoiceInvoiceData>;
   invoice_modalPay: Ref<IInvoiceModalPayData>;
   invoice_otherOptions: Ref<IInvoiceOtherOptionsData>;
@@ -265,4 +266,5 @@ export interface IInvoiceProvided {
   invoice_handleOtherOptions: (type: 'copy' | 'email' | 'whatsapp') => void;
   invoice_handlePayInvoice: () => void;
   invoice_handleSimulatePayment: (invoiceId: string) => void;
+  invoice_listTabs: ITabs[];
 }

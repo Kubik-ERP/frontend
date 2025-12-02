@@ -1,17 +1,18 @@
 <script setup lang="ts">
 // Interface
-import { ICashierOrderSummaryProvided } from '@/modules/cashier/interfaces/cashier-order-summary';
+import type { ICashierCustomerProvided } from '@/modules/cashier/interfaces/cashier-customer.interface';
 
 /**
  * @description Inject all the data and methods what we need
  */
-const { cashierOrderSummary_modalInvoiceDetail, cashierOrderSummary_handleInvoiceDetail } =
-  inject<ICashierOrderSummaryProvided>('cashierOrderSummary')!;
+const { cashierCustomer_modalInvoiceDetail } = inject<ICashierCustomerProvided>(
+  'cashierCustomer'
+)!;
 </script>
 <template>
   <section id="cashier-summary-modal-place-order-detail">
     <PrimeVueDialog
-      v-model:visible="cashierOrderSummary_modalInvoiceDetail.show"
+      v-model:visible="cashierCustomer_modalInvoiceDetail.show"
       modal
       :style="{ width: '34rem' }"
     >
@@ -31,7 +32,7 @@ const { cashierOrderSummary_modalInvoiceDetail, cashierOrderSummary_handleInvoic
               }}</label>
               <PrimeVueInputText
                 id="received-by"
-                v-model="cashierOrderSummary_modalInvoiceDetail.form.received_by"
+                v-model="cashierCustomer_modalInvoiceDetail.form.received_by"
                 class="w-full"
                 placeholder="Select"
               />
@@ -41,7 +42,7 @@ const { cashierOrderSummary_modalInvoiceDetail, cashierOrderSummary_handleInvoic
               <label for="username" class="text-sm">{{ useLocalization('cashier.mainSection.notes') }}</label>
               <PrimeVueTextarea
                 id="notes"
-                v-model="cashierOrderSummary_modalInvoiceDetail.form.notes"
+                v-model="cashierCustomer_modalInvoiceDetail.form.notes"
                 class="w-full"
                 rows="4"
                 placeholder="Describe order notes here"
@@ -62,10 +63,7 @@ const { cashierOrderSummary_modalInvoiceDetail, cashierOrderSummary_handleInvoic
               class="bg-primary border-none text-white py-2.5 px-8"
               type="button"
               :label="useLocalization('cashier.add')"
-              @click="
-                cashierOrderSummary_modalInvoiceDetail.show = false;
-                cashierOrderSummary_handleInvoiceDetail();
-              "
+              @click="cashierCustomer_modalInvoiceDetail.show = false"
             ></PrimeVueButton>
           </div>
         </section>

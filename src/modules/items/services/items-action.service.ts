@@ -96,7 +96,11 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
           priceGrosir: item.priceGrosir,
           imagePreview: item.imageUrl ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${item.imageUrl}` : null,
           imageFile: item.imageUrl ? `${import.meta.env.VITE_APP_BASE_BUCKET_URL}${item.imageUrl}` : null,
-          conversions: item.conversions || [],
+          conversions: item.masterInventoryItemConversions?.map(c => ({
+            unitName: c.unitName,
+            unitSymbol: c.unitSymbol,
+            value: c.conversionValue,
+          })) || [],
         });
       } else if (route.params.id) {
         inventoryItemsFormMode.value = 'edit';
@@ -200,10 +204,6 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     router.push({ name: 'items.list' });
   };
 
-  const inventoryItems_handleBarcodeScanner = () => {
-    alert('handleBarcodeScanner');
-  };
-
   return {
     inventoryItemsAction_isLoading: inventoryItems_isLoading,
     inventoryItemsAction_formData,
@@ -218,6 +218,5 @@ export const useInvetoryItemsActionService = (): IInventoryItemsActionProvided =
     inventoryItemsAction_values: inventoryItemsAction_formData,
     inventoryItemsAction_formOnMode: inventoryItemsFormMode,
     inventoryItems_editingItem,
-    inventoryItems_handleBarcodeScanner,
   };
 };

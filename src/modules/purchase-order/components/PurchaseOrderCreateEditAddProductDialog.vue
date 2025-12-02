@@ -110,7 +110,7 @@ const {
 
                 <section
                   id="plus-min"
-                  class="basic-smooth-animation bg-blue-secondary-background flex items-center justify-center font-medium text-sm text-primary w-9 h-9 rounded-lg cursor-pointer transition-all duration-300 ease-in-out hover:bg-primary hover:text-white transform hover:scale-105 active:scale-95"
+                  class="basic-smooth-animation bg-primary text-white flex items-center justify-center font-medium text-sm w-9 h-9 rounded-lg cursor-pointer transition-all duration-300 ease-in-out hover:bg-primary hover:text-white transform hover:scale-105 active:scale-95"
                   @click="
                     purchaseOrderCreateEdit_formData.productItems[index].quantity =
                       purchaseOrderCreateEdit_formData.productItems[index].quantity + 1

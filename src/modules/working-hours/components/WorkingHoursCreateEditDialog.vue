@@ -68,12 +68,17 @@ const {
               option-value="value"
               placeholder="Select staff member"
               input-id="staffId"
+              :editable="false"
+              show-clear
               class="text-sm w-full h-9"
               :class="{ ...classes }"
               v-on="useListenerForm(workingHoursList_formValidations, 'staffId')"
             >
               <template #option="{ option }">
-                <span>{{ option.label }}</span>
+                <div class="flex items-center gap-2">
+                  <span>{{ option.label }}</span>
+                  <span class="text-xs text-gray-400">({{ option.value }})</span>
+                </div>
               </template>
 
               <template #value="{ value }">
@@ -130,8 +135,8 @@ const {
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
-                  <AppBaseSvg name="plus-line" class="w-4 h-4" />
-                  <span class="font-medium text-sm">Add another shift</span>
+                  <AppBaseSvg name="plus-line" class="filter-primary-color w-4 h-4" />
+                  <span class="font-medium text-sm text-primary">Add another shift</span>
                 </section>
               </template>
             </PrimeVueButton>
@@ -386,9 +391,7 @@ const {
 
         <!-- Notes -->
         <section id="notes" class="flex flex-col gap-1">
-          <span class="font-medium text-sm text-gray-900">
-            Notes
-          </span>
+          <span class="font-medium text-sm text-gray-900"> Notes </span>
 
           <PrimeVueTextarea
             v-model="workingHoursList_formData.notes"
@@ -410,7 +413,6 @@ const {
           variant="outlined"
           @click="workingHoursList_onCloseDialog"
         />
-
 
         <PrimeVueButton
           class="bg-primary border-none text-base py-[10px] w-full max-w-40"

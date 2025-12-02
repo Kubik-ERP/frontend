@@ -31,7 +31,7 @@ function formatDate(date: string) {
   <AppBaseDataTable
     :columns="stockadjustment_listColumns"
     :data="stockadjustment_list.data.items"
-        :header-title="useLocalization('items.stockAdjustment.title')"
+    :header-title="useLocalization('items.stockAdjustment.title')"
     :rows-per-page="stockadjustment_queryParams.pageSize"
     :total-records="stockadjustment_list.data.items.length"
     :first="(stockadjustment_queryParams.page - 1) * stockadjustment_queryParams.pageSize"
@@ -52,7 +52,7 @@ function formatDate(date: string) {
           @click="stockadjustment_onCreate"
         >
           <i class="pi pi-plus text-sm"></i>
-                    {{ useLocalization('items.stockAdjustment.create') }}
+          {{ useLocalization('items.stockAdjustment.create') }}
         </PrimeVueButton>
       </div>
     </template>
@@ -60,7 +60,9 @@ function formatDate(date: string) {
     <!-- header Filter -->
     <template #filter>
       <section class="flex items-center gap-3">
-        <span class="font-semibold text-sm text-gray-800">{{ useLocalization('items.stockAdjustment.filterBy') }}</span>
+        <span class="font-semibold text-sm text-gray-800">{{
+          useLocalization('items.stockAdjustment.filterBy')
+        }}</span>
         <PrimeVueDropdown
           v-model="stockadjustment_queryParams.action"
           :options="[
@@ -102,6 +104,10 @@ function formatDate(date: string) {
         {{ data.newQuantity }}
       </template>
 
+      <template v-else-if="column.value === 'expiredDate'">
+        {{ formatDate(data.expiryDate) }}
+      </template>
+
       <!-- Notes -->
       <template v-else-if="column.value === 'notes'">
         {{ data.notes || '-' }}
@@ -110,7 +116,6 @@ function formatDate(date: string) {
       <!-- Adjusted By -->
       <template v-else-if="column.value === 'username'">
         {{ data.users?.fullname || '-' }}
-
       </template>
 
       <!-- Action -->

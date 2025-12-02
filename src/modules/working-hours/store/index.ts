@@ -3,7 +3,7 @@ import { WORKING_HOURS_BASE_ENDPOINT } from '../constants/working-hours-api.cons
 
 // Interfaces
 import type { AxiosRequestConfig } from 'axios';
-import type { IWorkingHoursFormData, IWorkingHoursListResponse, IWorkingHoursStateStore } from '../interfaces';
+import type { IWorkingHoursDetailByStaffResponse, IWorkingHoursDetailResponse, IWorkingHoursFormData, IWorkingHoursListResponse, IWorkingHoursStateStore } from '../interfaces';
 
 // Plugins
 import httpClient from '@/plugins/axios';
@@ -89,11 +89,42 @@ export const useWorkingHoursStore = defineStore('working-hours', {
     async workingHours_detail(
       workingHoursId: string,
       requestConfigurations: AxiosRequestConfig,
-    ): Promise<unknown> {
+    ): Promise<IWorkingHoursDetailResponse> {
       this.workingHours_isLoading = true;
 
       try {
-        const response = await httpClient.get<unknown>(`${WORKING_HOURS_BASE_ENDPOINT}/${workingHoursId}`, {
+        const response = await httpClient.get<IWorkingHoursDetailResponse>(`${WORKING_HOURS_BASE_ENDPOINT}/${workingHoursId}`, {
+          ...requestConfigurations,
+        });
+
+        this.workingHours_isLoading = false;
+
+        return response.data;
+      } catch (error) {
+        if (error instanceof Error) {
+          return Promise.reject(error);
+        } else {
+          return Promise.reject(new Error(String(error)));
+        }
+      } finally {
+        this.workingHours_isLoading = false;
+      }
+    },
+
+    /**
+     * @description Handle fetch api working hours - detail by staff id
+     * @url /working-hours/staff/{staffId}
+     * @method GET
+     * @access private
+     */
+    async workingHours_detailByStaffId(
+      staffId: string,
+      requestConfigurations: AxiosRequestConfig,
+    ): Promise<IWorkingHoursDetailByStaffResponse> {
+      this.workingHours_isLoading = true;
+
+      try {
+        const response = await httpClient.get<IWorkingHoursDetailByStaffResponse>(`${WORKING_HOURS_BASE_ENDPOINT}/staff/${staffId}`, {
           ...requestConfigurations,
         });
 
@@ -125,8 +156,8 @@ export const useWorkingHoursStore = defineStore('working-hours', {
           ...requestConfigurations,
         });
 
-        if (Array.isArray(response.data.data)) {
-          this.workingHours_lists = response.data.data;
+        if (Array.isArray(response.data.data.items)) {
+          this.workingHours_lists = response.data.data.items;
         }
 
         return Promise.resolve(response.data);

@@ -13,16 +13,20 @@ import { useWasteLogListService } from '../services/waste-log-list.service';
  * @description Destructure all the data and methods what we need
  */
 const {
+  wasteLogList_batchOptions,
   wasteLogList_categoryOptions,
   wasteLogList_columns,
+  wasteLogList_fetchBatchList,
   wasteLogList_fetchDetail,
   wasteLogList_fetchInventoryItems,
   wasteLogList_fetchList,
+  wasteLogList_flattenedItems,
   wasteLogList_formData,
   wasteLogList_formValidations,
   wasteLogList_handleOnSortChange,
   wasteLogList_inventoryItems,
   wasteLogList_isLoading,
+  wasteLogList_isLoadingBatchOptions,
   wasteLogList_isLoadingInventoryItems,
   wasteLogList_mapApiResponseToFormData,
   wasteLogList_mapFormDataToApiPayload,
@@ -47,16 +51,20 @@ const {
  * @description Provide all the data and methods what we need
  */
 provide('wasteLogList', {
+  wasteLogList_batchOptions,
   wasteLogList_categoryOptions,
   wasteLogList_columns,
+  wasteLogList_fetchBatchList,
   wasteLogList_fetchDetail,
   wasteLogList_fetchInventoryItems,
   wasteLogList_fetchList,
+  wasteLogList_flattenedItems,
   wasteLogList_formData,
   wasteLogList_formValidations,
   wasteLogList_handleOnSortChange,
   wasteLogList_inventoryItems,
   wasteLogList_isLoading,
+  wasteLogList_isLoadingBatchOptions,
   wasteLogList_isLoadingInventoryItems,
   wasteLogList_mapApiResponseToFormData,
   wasteLogList_mapFormDataToApiPayload,
@@ -81,6 +89,7 @@ provide('wasteLogList', {
  * @description Lifecycle hooks
  */
 onMounted(() => {
+  wasteLogList_fetchBatchList();
   wasteLogList_fetchInventoryItems();
   wasteLogList_fetchList();
 });

@@ -14,16 +14,18 @@ import {
 import { DAY_NAMES_SHORT } from '@/app/constants';
 
 // Interfaces
-import type { IWorkingHoursListProvided, IStaffWorkingHours, IWorkingHoursFormData, IWorkingHour } from '../interfaces';
-
-// Helpers
-import { WorkingHoursDataHelper } from '../helpers';
+import type {
+  IWorkingHoursListProvided,
+  IWorkingHoursFormData,
+  IWorkingHoursFormDataTimeSlot,
+} from '../interfaces';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
 
 // Stores
 import { useWorkingHoursStore } from '../store';
+import { useStaffMemberStore } from '@/modules/staff-member/store';
 
 // Vuelidate
 import { helpers, required, minValue, requiredIf } from '@vuelidate/validators';
@@ -38,6 +40,8 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    */
   const workingHoursStore = useWorkingHoursStore();
   const { workingHours_isLoading, workingHours_lists } = storeToRefs(workingHoursStore);
+  const staffMemberStore = useStaffMemberStore();
+  const { staffMember_lists } = storeToRefs(staffMemberStore);
   const { httpAbort_registerAbort } = useHttpAbort();
 
   /**
@@ -50,128 +54,33 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
   const workingHoursList_createEditFormMode = ref<'create' | 'edit'>('create');
   const workingHoursList_createEditMinDate = ref<string>('');
   const workingHoursList_createEditMaxDate = ref<string>('');
-  const workingHoursList_selectedMonth = ref<string>('');
+
+  // Initialize selected month with current month immediately
+  const currentDate = new Date();
+  const currentMonth = currentDate.toISOString().slice(0, 7); // Format: YYYY-MM
+  const workingHoursList_selectedMonth = ref<string>(currentMonth);
+
   const workingHoursList_selectedViewType = ref<string>('Month');
-  const workingHoursList_currentWeekStart = ref<Date>(new Date());
+
+  // Initialize current week start immediately
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // If Sunday, go back 6 days to Monday
+  const mondayOfCurrentWeek = new Date(today);
+  mondayOfCurrentWeek.setDate(today.getDate() + mondayOffset);
+  const workingHoursList_currentWeekStart = ref<Date>(mondayOfCurrentWeek);
+
   const workingHoursList_currentWorkingHoursId = ref<string>('');
 
   /**
-   * @description Staff list for dropdown
+   * @description Staff list for dropdown will be provided from staffMember store
    */
-  const workingHoursList_createEditStaffList = ref<IDropdownItem[]>([
-    { label: 'Bessie Cooper #001', value: 1 },
-    { label: 'Esther Howard #002', value: 2 },
-    { label: 'John Doe #003', value: 3 },
-    { label: 'Jane Smith #004', value: 4 },
-    { label: 'Mike Johnson #005', value: 5 },
-  ]);
-
-  /**
-   * @description Sample working hours data using the new structure
-   */
-  const workingHoursList_rawData = ref<IStaffWorkingHours[]>([
-    {
-      id: 1,
-      staff: 'Bessie Cooper #001',
-      monthlyData: [
-        {
-          year: 2025,
-          month: 8,
-          workingHours: [
-            {
-              day: 1,
-              timeSlots: [
-                { id: 'ts1', startTime: '07:00', endTime: '12:00' },
-                { id: 'ts2', startTime: '18:00', endTime: '23:00' },
-              ],
-            },
-            {
-              day: 3,
-              timeSlots: [
-                { id: 'ts3', startTime: '07:00', endTime: '12:00' },
-                { id: 'ts4', startTime: '18:00', endTime: '23:00' },
-              ],
-            },
-            {
-              day: 4,
-              timeSlots: [
-                { id: 'ts5', startTime: '07:00', endTime: '12:00' },
-                { id: 'ts6', startTime: '18:00', endTime: '23:00' },
-              ],
-            },
-            {
-              day: 6,
-              timeSlots: [
-                { id: 'ts7', startTime: '07:00', endTime: '12:00' },
-                { id: 'ts8', startTime: '18:00', endTime: '23:00' },
-              ],
-            },
-            {
-              day: 7,
-              timeSlots: [
-                { id: 'ts9', startTime: '07:00', endTime: '12:00' },
-                { id: 'ts10', startTime: '18:00', endTime: '23:00' },
-              ],
-            },
-            {
-              day: 8,
-              timeSlots: [
-                { id: 'ts11', startTime: '07:00', endTime: '12:00' },
-                { id: 'ts12', startTime: '18:00', endTime: '23:00' },
-              ],
-            },
-            {
-              day: 10,
-              timeSlots: [
-                { id: 'ts13', startTime: '07:00', endTime: '12:00' },
-                { id: 'ts14', startTime: '18:00', endTime: '23:00' },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 2,
-      staff: 'Esther Howard #002',
-      monthlyData: [
-        {
-          year: 2025,
-          month: 8,
-          workingHours: [
-            {
-              day: 1,
-              timeSlots: [
-                { id: 'ts21', startTime: '08:00', endTime: '13:00' },
-                { id: 'ts22', startTime: '19:00', endTime: '24:00' },
-              ],
-            },
-            {
-              day: 2,
-              timeSlots: [
-                { id: 'ts23', startTime: '08:00', endTime: '13:00' },
-                { id: 'ts24', startTime: '19:00', endTime: '24:00' },
-              ],
-            },
-            {
-              day: 4,
-              timeSlots: [
-                { id: 'ts25', startTime: '08:00', endTime: '13:00' },
-                { id: 'ts26', startTime: '19:00', endTime: '24:00' },
-              ],
-            },
-            {
-              day: 5,
-              timeSlots: [
-                { id: 'ts27', startTime: '08:00', endTime: '13:00' },
-                { id: 'ts28', startTime: '19:00', endTime: '24:00' },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ]);
+  const workingHoursList_createEditStaffList = computed(() => {
+    return staffMember_lists.value.employees.map(staff => ({
+      label: staff.name,
+      value: staff.id, // Use UUID id instead of userId
+    }));
+  });
 
   /**
    * @description Form validations
@@ -183,7 +92,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
       $each: helpers.forEach({
         openTime: { required },
         closeTime: { required },
-      })
+      }),
     },
     repeatType: { required },
     customRecurrence: {
@@ -224,7 +133,28 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    */
   const workingHoursList_fetchCreate = async (): Promise<void> => {
     try {
-      await workingHoursStore.workingHours_create(workingHoursList_formData, {
+      // Filter out time slots with null values and convert Date to string
+      const validTimeSlots = workingHoursList_formData.timeSlots
+        .filter(slot => slot.openTime && slot.closeTime)
+        .map(slot => ({
+          openTime: slot.openTime as Date,
+          closeTime: slot.closeTime as Date,
+        }));
+
+      const payload: IWorkingHoursFormData = {
+        ...workingHoursList_formData,
+        timeSlots: validTimeSlots.map(slot => ({
+          // Convert Date objects to string format HH:mm for API
+          openTime: Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }).format(
+            slot.openTime,
+          ),
+          closeTime: Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }).format(
+            slot.closeTime,
+          ),
+        })) as unknown as IWorkingHoursFormDataTimeSlot[],
+      };
+
+      await workingHoursStore.workingHours_create(payload, {
         ...httpAbort_registerAbort(WORKING_HOURS_CREATE_REQUEST),
       });
 
@@ -352,17 +282,20 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    * @description Computed property that transforms raw data into table format
    */
   const workingHoursList_listValues = computed(() => {
-    console.log(workingHours_lists, 'lists state')
-
-    return workingHours_lists.value.map((workingHour: IWorkingHour) => {
-      // Map working hour details to the desired format
+    // Create a mapping structure based on staff members instead of working hours
+    return staffMember_lists.value.employees.map(staffMember => {
       const tableRow: Record<string, string | number> = {
-        id: workingHour.id,
-        staff: `Staff #${workingHour.staff_id}`, // Placeholder, replace with actual staff name if available
+        id: staffMember.id, // Use UUID id to match with working hours staff_id
+        staff: staffMember.name,
       };
 
       if (workingHoursList_selectedMonth.value) {
         const [year, month] = workingHoursList_selectedMonth.value.split('-').map(Number);
+
+        // Find all working hours for this staff member
+        const staffWorkingHours = workingHours_lists.value.filter(
+          workingHour => workingHour.staff_id === staffMember.id,
+        );
 
         if (workingHoursList_selectedViewType.value === 'Week') {
           // Week view: show time slots for each day of the current week
@@ -372,106 +305,81 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
             const currentMonth = currentDate.getMonth() + 1;
             const currentYear = currentDate.getFullYear();
 
-            if (currentYear === year && currentMonth === month) {
-              const dayData = workingHour.working_hour_time_slots.filter(slot => {
-                const slotDate = new Date(slot.open_time);
-                return slotDate.getDate() === currentDay && slotDate.getMonth() + 1 === currentMonth && slotDate.getFullYear() === currentYear;
+            // Find working hours for this specific date
+            const dayWorkingHours = staffWorkingHours.filter(workingHour => {
+              const workingHourDate = new Date(workingHour.date);
+              return (
+                workingHourDate.getDate() === currentDay &&
+                workingHourDate.getMonth() + 1 === currentMonth &&
+                workingHourDate.getFullYear() === currentYear
+              );
+            });
+
+            if (dayWorkingHours.length > 0) {
+              // Collect all time slots for this day
+              const allTimeSlots: string[] = [];
+              dayWorkingHours.forEach(workingHour => {
+                workingHour.working_hour_time_slots.forEach(slot => {
+                  const startTime = new Date(slot.open_time);
+                  const endTime = new Date(slot.close_time);
+
+                  const startHour = String(startTime.getHours()).padStart(2, '0');
+                  const startMinute = String(startTime.getMinutes()).padStart(2, '0');
+                  const endHour = String(endTime.getHours()).padStart(2, '0');
+                  const endMinute = String(endTime.getMinutes()).padStart(2, '0');
+
+                  allTimeSlots.push(`${startHour}:${startMinute}-${endHour}:${endMinute}`);
+                });
               });
 
-              if (dayData.length > 0) {
-                const timeSlots = dayData.map(slot => {
-                  const slotStart = new Date(slot.open_time);
-                  const slotEnd = new Date(slot.close_time);
-                  return `${slotStart.getHours()}:${slotStart.getMinutes()} - ${slotEnd.getHours()}:${slotEnd.getMinutes()}`;
-                });
-
-                tableRow[`week_day_${dayOfWeek}`] = timeSlots.join('\n');
-              } else {
-                tableRow[`week_day_${dayOfWeek}`] = '';
-              }
+              tableRow[`week_day_${dayOfWeek}`] = allTimeSlots.join('\n');
+            } else {
+              tableRow[`week_day_${dayOfWeek}`] = '';
             }
           }
         } else {
           // Month view: show Present/Absent for each day
           const daysInMonth = new Date(year, month, 0).getDate();
+
           for (let day = 1; day <= daysInMonth; day++) {
-            const dayData = workingHour.working_hour_time_slots.filter(slot => {
-              const slotDate = new Date(slot.open_time);
-              return slotDate.getDate() === day && slotDate.getMonth() + 1 === month && slotDate.getFullYear() === year;
+            // Find working hours for this specific date
+            const dayWorkingHours = staffWorkingHours.filter(workingHour => {
+              const workingHourDate = new Date(workingHour.date);
+              return (
+                workingHourDate.getDate() === day &&
+                workingHourDate.getMonth() + 1 === month &&
+                workingHourDate.getFullYear() === year
+              );
             });
 
-            tableRow[`day_${day}`] = dayData.length > 0 ? 'Present' : 'Absent';
+            // Check if there are any time slots for this day
+            const hasTimeSlots = dayWorkingHours.some(
+              workingHour => workingHour.working_hour_time_slots.length > 0,
+            );
+
+            tableRow[`day_${day}`] = hasTimeSlots ? 'Present' : 'Absent';
           }
         }
       }
 
       return tableRow;
-    })
-
-    // return workingHoursList_rawData.value.map(staffMember => {
-    //   const tableRow: Record<string, string | number> = {
-    //     id: staffMember.id,
-    //     staff: staffMember.staff,
-    //   };
-
-    //   if (workingHoursList_selectedMonth.value) {
-    //     const [year, month] = workingHoursList_selectedMonth.value.split('-').map(Number);
-
-    //     if (workingHoursList_selectedViewType.value === 'Week') {
-    //       // Week view: show time slots for each day of the current week
-    //       for (let dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
-    //         const currentDate = getCurrentWeekDate(dayOfWeek);
-    //         const currentDay = currentDate.getDate();
-    //         const currentMonth = currentDate.getMonth() + 1;
-    //         const currentYear = currentDate.getFullYear();
-
-    //         const monthData = staffMember.monthlyData.find(
-    //           m => m.year === currentYear && m.month === currentMonth,
-    //         );
-    //         const dayData = monthData?.workingHours.find(wh => wh.day === currentDay);
-
-    //         if (dayData && dayData.timeSlots.length > 0) {
-    //           const timeSlots = dayData.timeSlots.map(slot => `${slot.startTime}-${slot.endTime}`).join('\n');
-    //           tableRow[`week_day_${dayOfWeek}`] = timeSlots;
-    //         } else {
-    //           tableRow[`week_day_${dayOfWeek}`] = '';
-    //         }
-    //       }
-    //     } else {
-    //       // Month view: show Present/Absent for each day
-    //       const daysInMonth = new Date(year, month, 0).getDate();
-    //       const monthData = staffMember.monthlyData.find(m => m.year === year && m.month === month);
-
-    //       for (let day = 1; day <= daysInMonth; day++) {
-    //         const dayData = monthData?.workingHours.find(wh => wh.day === day);
-    //         tableRow[`day_${day}`] = dayData && dayData.timeSlots.length > 0 ? 'Present' : 'Absent';
-    //       }
-    //     }
-    //   }
-
-    //   return tableRow;
-    // });
+    });
   });
 
   /**
-   * @description Add a new time slot to a staff member's working hours
+   * @description Add a new time slot to a staff member's working hours (API integration needed)
    */
   const workingHoursList_addTimeSlot = (
-    staffId: number,
+    staffId: string, // UUID
     year: number,
     month: number,
     day: number,
     startTime: string,
     endTime: string,
   ) => {
-    const staffData = workingHoursList_rawData.value.find(staff => staff.id === staffId);
-    if (staffData) {
-      WorkingHoursDataHelper.addTimeSlot(staffData, year, month, day, {
-        id: `ts_${Date.now()}`,
-        startTime,
-        endTime,
-      });
-    }
+    // TODO: Implement API call to add time slot
+    console.log('Add time slot:', { staffId, year, month, day, startTime, endTime });
+    // This will be implemented when creating/updating working hours through the API
   };
 
   /**
@@ -483,10 +391,10 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
   };
 
   /**
-   * @description Get raw working hours data for a specific staff member
+   * @description Get staff member data from staff member store
    */
-  const workingHoursList_getStaffData = (staffId: number): IStaffWorkingHours | undefined => {
-    return workingHoursList_rawData.value.find(staff => staff.id === staffId);
+  const workingHoursList_getStaffData = (staffId: string) => {
+    return staffMember_lists.value.employees.find(staff => staff.id === staffId);
   };
 
   /**
@@ -512,19 +420,18 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
   });
 
   /**
-   * @description Remove a time slot from a staff member's working hours
+   * @description Remove a time slot from a staff member's working hours (API integration needed)
    */
   const workingHoursList_removeTimeSlot = (
-    staffId: number,
+    staffId: string, // UUID
     year: number,
     month: number,
     day: number,
     timeSlotId: string,
   ) => {
-    const staffData = workingHoursList_rawData.value.find(staff => staff.id === staffId);
-    if (staffData) {
-      WorkingHoursDataHelper.removeTimeSlot(staffData, year, month, day, timeSlotId);
-    }
+    // TODO: Implement API call to remove time slot
+    console.log('Remove time slot:', { staffId, year, month, day, timeSlotId });
+    // This will be implemented when deleting working hours through the API
   };
 
   /**
@@ -596,7 +503,7 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    */
   const workingHoursList_onOpenDialog = async (
     mode: 'create' | 'edit',
-    staffId?: number,
+    staffId?: string, // UUID
     date?: string,
     workingHoursId?: string,
   ) => {
@@ -676,8 +583,6 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
    */
   const workingHoursList_onSave = async (): Promise<void> => {
     workingHoursList_formValidations.value.$touch();
-
-    console.log('Form Validations:', workingHoursList_formValidations.value);
 
     if (workingHoursList_formValidations.value.$invalid) {
       return;
@@ -799,14 +704,15 @@ export const useWorkingHoursListService = (): IWorkingHoursListProvided => {
   };
 
   /**
-   * @description Initialize selected month with current month and current week
+   * @description Initialize selected month with current month and current week (already done at initialization)
    */
   const workingHoursList_initializeSelectedMonth = () => {
+    // Already initialized above, but we can re-initialize if needed
     const currentDate = new Date();
     const currentMonth = currentDate.toISOString().slice(0, 7); // Format: YYYY-MM
     workingHoursList_selectedMonth.value = currentMonth;
 
-    // Initialize current week start (find the Monday of current week)
+    // Re-initialize current week start (find the Monday of current week)
     const today = new Date();
     const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
     const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // If Sunday, go back 6 days to Monday
