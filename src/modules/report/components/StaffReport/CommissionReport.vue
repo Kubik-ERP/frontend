@@ -28,6 +28,7 @@ const popover = ref();
 import { useReportExporter } from '../../composables/useReportExporter';
 const { exportToCsv } = useReportExporter();
 const handleExportToCsv = () => {
+  // RULE APPLIED: No localization inside exportToCsv parameters
   exportToCsv({
     reportName: 'Staff Report - Commission Report',
     storeName: hasAccessAllStorePermission
@@ -55,7 +56,7 @@ const formattedDataTable = () => {
     grandTotalCommission: useCurrencyFormat({ data: item.grandTotalCommission }),
   }));
 
-  return newData;
+  return newData || [];
 };
 
 const page = ref<number>(1);
@@ -64,6 +65,7 @@ const onChangePage = (newPage: number) => {
   page.value = newPage;
 };
 </script>
+
 <template>
   <section class="flex flex-col gap-4">
     <PrimeVueCard>
@@ -71,25 +73,25 @@ const onChangePage = (newPage: number) => {
         <table class="w-full">
           <tbody>
             <tr class="odd:bg-secondary/10">
-              <th class="text-left p-1.5">Total Staff</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.staff.commission.dashboard.total_staff') }}</th>
               <td class="text-right p-1.5">
                 {{ staffReport_Commission_values.dashboard?.totalStaff || 0 }}
               </td>
             </tr>
             <tr>
-              <th class="text-left p-1.5">Total Invoices</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.staff.commission.dashboard.total_invoices') }}</th>
               <td class="text-right p-1.5">
                 {{ staffReport_Commission_values.dashboard?.totalInvoices || 0 }}
               </td>
             </tr>
             <tr class="odd:bg-secondary/10">
-              <th class="text-left p-1.5">Total Revenue</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.staff.commission.dashboard.total_revenue') }}</th>
               <td class="text-right p-1.5">
                 {{ useCurrencyFormat({ data: staffReport_Commission_values.dashboard?.totalRevenue || 0 }) }}
               </td>
             </tr>
             <tr>
-              <th class="text-left p-1.5">Total Item Commission</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.staff.commission.dashboard.total_item_commission') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
@@ -100,7 +102,7 @@ const onChangePage = (newPage: number) => {
               </td>
             </tr>
             <tr class="odd:bg-secondary/10">
-              <th class="text-left p-1.5">Total Voucher Commission</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.staff.commission.dashboard.total_voucher_commission') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
@@ -111,7 +113,7 @@ const onChangePage = (newPage: number) => {
               </td>
             </tr>
             <tr>
-              <th class="text-left p-1.5">Grand Total Commission</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.staff.commission.dashboard.grand_total_commission') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({ data: staffReport_Commission_values.dashboard?.grandTotalCommission || 0 })
@@ -141,12 +143,14 @@ const onChangePage = (newPage: number) => {
       @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Staff Commission Report</h1>
+        <h1 class="font-bold text-2xl text-text-primary">
+          {{ useLocalization('reports.staff.commission.title') }}
+        </h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
           variant="outlined"
-          label="Export"
+          :label="useLocalization('reports._common.actions.export')"
           class="border border-primary-border text-primary"
           @click="popover.toggle($event)"
         >
@@ -164,14 +168,14 @@ const onChangePage = (newPage: number) => {
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .pdf"
+              :label="useLocalization('reports._common.actions.export_pdf')"
               :loading="isDownloading"
               @click="report_downloadPDF('staff-report', 'commission-report')"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .csv"
+              :label="useLocalization('reports._common.actions.export_csv')"
               @click="handleExportToCsv"
             />
           </section>
@@ -193,7 +197,7 @@ const onChangePage = (newPage: number) => {
             :options="outlet_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Outlet"
+            :placeholder="useLocalization('reports._common.filters.select_outlet')"
             class="col-span-1 w-full"
             filter
             @change="report_getStaffReport('commission-report')"
@@ -202,20 +206,6 @@ const onChangePage = (newPage: number) => {
               <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
-          <!-- <PrimeVueSelect
-            v-if="hasManageStaffMemberPermission"
-            v-model="report_queryParams.staff_ids"
-            :options="staff_lists_options"
-            option-label="label"
-            option-value="value"
-            placeholder="Select Staff"
-            filter
-            class="col-span-1 w-full"
-            @change="report_getStaffReport('commission-report')"
-            ><template #dropdownicon>
-              <AppBaseSvg name="staff" class="w-5 h-5 filter-primary-color" />
-            </template>
-          </PrimeVueSelect> -->
         </section>
       </template>
       <template #body="{ data, column }">

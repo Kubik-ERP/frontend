@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref, computed, watch, markRaw } from 'vue';
+
 // components
 import SalesByItem from '../components/SalesReport/SalesByItem.vue';
 import SalesByCategory from '../components/SalesReport/SalesByCategory.vue';
@@ -14,57 +16,56 @@ import { useReportService } from '../services/report.service';
 const { report_getSalesReport, hasManageStaffMemberPermission } = useReportService();
 
 const salesReport_activeTab = ref<string>('item');
+
 const salesReport_listTabs = computed(() => {
   const allTabs = [
     {
       component: markRaw(SalesByItem),
-      label: 'Item',
+      label: useLocalization('reports.sales.tabs.item'), // "Item" / "Barang"
       value: 'item',
     },
     {
       component: markRaw(SalesByCategory),
-      label: 'Category',
+      label: useLocalization('reports.sales.tabs.category'), // "Category" / "Kategori"
       value: 'category',
     },
     {
       component: markRaw(SalesByCustomer),
-      label: 'Customer',
+      label: useLocalization('reports.sales.tabs.customer'), // "Customer" / "Pelanggan"
       value: 'customer',
     },
     {
       component: markRaw(SalesByStaff),
-      label: 'Staff',
+      label: useLocalization('reports.sales.tabs.staff'), // "Staff" / "Staf"
       value: 'staff',
     },
     {
       component: markRaw(SalesByDay),
-      label: 'Day',
+      label: useLocalization('reports.sales.tabs.day'), // "Day" / "Hari"
       value: 'day',
     },
     {
       component: markRaw(SalesByMonth),
-      label: 'Month',
+      label: useLocalization('reports.sales.tabs.month'), // "Month" / "Bulan"
       value: 'month',
     },
     {
       component: markRaw(SalesByQuarter),
-      label: 'Quarter',
+      label: useLocalization('reports.sales.tabs.quarter'), // "Quarter" / "Kuartal"
       value: 'quarter',
     },
     {
       component: markRaw(SalesByYear),
-      label: 'Year',
+      label: useLocalization('reports.sales.tabs.year'), // "Year" / "Tahun"
       value: 'year',
     },
   ];
 
-  // 4. Filter array berdasarkan izin
+  // Filter based on permission
   return allTabs.filter(tab => {
-    // Jika tab adalah 'staff', hanya sertakan jika pengguna memiliki izin.
     if (tab.value === 'staff') {
       return hasManageStaffMemberPermission;
     }
-    // Untuk semua tab lainnya, selalu sertakan.
     return true;
   });
 });
@@ -115,8 +116,9 @@ watch(
   },
 );
 </script>
+
 <template>
-  <section id="point-configuration" class="flex flex-col relative inset-0 z-0">
+  <section id="sales-report" class="flex flex-col relative inset-0 z-0 gap-4">
     <AppBaseTabs v-model:value="salesReport_activeTab" :items="salesReport_listTabs" />
   </section>
 </template>

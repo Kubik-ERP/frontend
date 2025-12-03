@@ -21,7 +21,7 @@ const { kitchenQueue_invoices, kitchenQueue_listTabs } = inject<IKitchenQueuePro
       </router-link>
 
       <PrimeVueButton class="bg-white border-none basic-smooth-animation rounded-lg p-2" @click="$router.back()">
-        <AppBaseSvg name="chevron-left" class="!w-4 !h-4" />
+        <AppBaseSvg name="chevron-left" class="!w-4 !h-4 filter-primary-color" />
       </PrimeVueButton>
     </section>
 

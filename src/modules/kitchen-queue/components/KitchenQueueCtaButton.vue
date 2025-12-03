@@ -11,7 +11,7 @@ const { kitchenQueue_invoices, kitchenQueue_meterValue, kitchenQueue_handleScrol
     id="kitchen-queue-nav-control"
     class="flex w-full p-2 items-center justify-center border-t border-t-grayscale-10 border-b border-b-grayscale-10 gap-6"
   >
-    <PrimeVueButton @click="kitchenQueue_handleScrollHorizontal('left')">
+    <PrimeVueButton class="bg-primary border-primary" @click="kitchenQueue_handleScrollHorizontal('left')">
       <AppBaseSvg name="chevron-left-white" class="h-4 w-4" />
     </PrimeVueButton>
     <PrimeVueMeterGroup
@@ -22,7 +22,7 @@ const { kitchenQueue_invoices, kitchenQueue_meterValue, kitchenQueue_handleScrol
       <template #label>
         <div class="pr-72">
           <div class="flex text-xs gap-2.5">
-            <AppBaseSvg name="order-primary" class="h-4 w-4" />
+            <AppBaseSvg name="order-primary" class="h-4 w-4 filter-primary-color" />
 
             <span
               >Showing <span class="font-semibold">{{ kitchenQueue_invoices.length }} Invoices</span></span
@@ -31,7 +31,7 @@ const { kitchenQueue_invoices, kitchenQueue_meterValue, kitchenQueue_handleScrol
         </div>
       </template>
     </PrimeVueMeterGroup>
-    <PrimeVueButton @click="kitchenQueue_handleScrollHorizontal('right')">
+    <PrimeVueButton class="bg-primary border-primary" @click="kitchenQueue_handleScrollHorizontal('right')">
       <AppBaseSvg name="chevron-right-white" class="h-4 w-4" />
     </PrimeVueButton>
   </section>

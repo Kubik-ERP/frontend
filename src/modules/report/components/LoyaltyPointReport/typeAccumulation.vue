@@ -26,6 +26,7 @@ const { exportToCsv, export_isloading } = useReportExporter();
 const popover = ref();
 
 const handleExportToCsv = () => {
+  // RULE APPLIED: No localization inside exportToCsv parameters
   exportToCsv({
     reportName: 'Loyalty Point Report - Type Accumulation',
     storeName: hasAccessAllStorePermission
@@ -59,6 +60,7 @@ const onChangePage = (newPage: number) => {
   page.value = newPage;
 };
 </script>
+
 <template>
   <DownloadingDialog :visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
   <section class="flex flex-col gap-4">
@@ -67,7 +69,7 @@ const onChangePage = (newPage: number) => {
         <table class="w-full">
           <tbody>
             <tr class="bg-secondary/10">
-              <th class="text-left p-1.5">Sum of All Points</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.loyalty_point.type_accumulation.dashboard.sum_all_points') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
@@ -78,7 +80,7 @@ const onChangePage = (newPage: number) => {
               </td>
             </tr>
             <tr>
-              <th class="text-left p-1.5">Sum of All points Expired</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.loyalty_point.type_accumulation.dashboard.sum_points_expired') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
@@ -89,7 +91,7 @@ const onChangePage = (newPage: number) => {
               </td>
             </tr>
             <tr class="bg-secondary/10">
-              <th class="text-left p-1.5">Total Customer</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.loyalty_point.type_accumulation.dashboard.total_customer') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
@@ -115,12 +117,14 @@ const onChangePage = (newPage: number) => {
       @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Type Accumulation</h1>
+        <h1 class="font-bold text-2xl text-text-primary">
+          {{ useLocalization('reports.loyalty_point.type_accumulation.title') }}
+        </h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
           variant="outlined"
-          label="Export"
+          :label="useLocalization('reports._common.actions.export')"
           class="border border-primary-border text-primary"
           @click="popover.toggle($event)"
         >
@@ -138,14 +142,14 @@ const onChangePage = (newPage: number) => {
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .pdf"
+              :label="useLocalization('reports._common.actions.export_pdf')"
               :loading="isDownloading"
               @click="report_downloadPDF('loyalty-report', 'type-accumulation')"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .csv"
+              :label="useLocalization('reports._common.actions.export_csv')"
               :loading="export_isloading"
               @click="handleExportToCsv"
             />
@@ -155,20 +159,13 @@ const onChangePage = (newPage: number) => {
 
       <template #filter>
         <section class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4 pt-4">
-          <!-- <CustomDatePicker
-            v-model:start-date="report_queryParams.startDate"
-            v-model:end-date="report_queryParams.endDate"
-            :should-update-type="false"
-            class="col-span-1 xl:col-span-2 2xl:col-span-1"
-            @update:end-date="report_getLoyaltyPointReport('type-accumulation')"
-          /> -->
           <PrimeVueSelect
             v-if="hasAccessAllStorePermission"
             v-model="report_queryParams.store_ids"
             :options="outlet_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Outlet"
+            :placeholder="useLocalization('reports._common.filters.select_outlet')"
             class="col-span-1 w-full"
             filter
             @change="report_getLoyaltyPointReport('type-accumulation')"
@@ -177,20 +174,6 @@ const onChangePage = (newPage: number) => {
               <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
-          <!-- <PrimeVueSelect
-            v-if="hasManageStaffMemberPermission"
-            v-model="report_queryParams.staff_ids"
-            :options="staff_lists_options"
-            option-label="label"
-            option-value="value"
-            placeholder="Select Staff"
-            filter
-            class="col-span-1 w-full"
-            @change="report_getLoyaltyPointReport('type-accumulation')"
-            ><template #dropdownicon>
-              <AppBaseSvg name="staff" class="w-5 h-5 filter-primary-color" />
-            </template>
-          </PrimeVueSelect> -->
         </section>
       </template>
     </AppBaseDataTable>
