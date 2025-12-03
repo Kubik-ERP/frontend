@@ -349,6 +349,71 @@
         "total_quota": "Total Quota",
         "remaining_quota": "Remaining Quota"
       }
+    },
+    "staff": {
+      "title": "Staff Report",
+      "tabs": {
+        "commission": "Commission Report",
+        "individual": "Individual Report",
+        "commission_by_items": "Commission By Items",
+        "commission_by_voucher": "Commission By Voucher"
+      },
+      "commission": {
+        "title": "Staff Commission Report",
+        "dashboard": {
+          "total_staff": "Total Staff",
+          "total_invoices": "Total Invoices",
+          "total_revenue": "Total Revenue",
+          "total_item_commission": "Total Item Commission",
+          "total_voucher_commission": "Total Voucher Commission",
+          "grand_total_commission": "Grand Total Commission"
+        },
+        "columns": {
+          "staff_name": "Staff Name",
+          "total_invoices": "Total Invoices",
+          "total_items_sold": "Total Items Sold",
+          "total_revenue": "Total Revenue",
+          "total_vouchers_used": "Total Vouchers Used",
+          "total_item_commission": "Total Item Commission",
+          "total_voucher_commission": "Total Voucher Commission",
+          "grand_total_commission": "Grand Total Commission"
+        }
+      },
+      "individual": {
+        "title": "Staff Individual Report",
+        "dashboard": {
+          "total_invoices_served": "Total Invoices Served",
+          "total_items_sold": "Total Items Sold",
+          "total_vouchers_used": "Total Vouchers Used",
+          "total_item_commission": "Total Item Commission",
+          "total_voucher_commission": "Total Voucher Commission",
+          "grand_total_commission": "Grand Total Commission"
+        },
+        "columns": {
+          "invoice_number": "Invoice Number",
+          "date": "Date",
+          "customer": "Customer",
+          "grand_total": "Grand Total",
+          "items_count": "Items Count",
+          "total_commission": "Total Commission"
+        }
+      },
+      "commission_by_items": {
+        "title": "Staff Commission By Items Report",
+        "columns": {
+          "item_name": "Item Name",
+          "item_price": "Item Price",
+          "total_commission_accumulated": "Total Commission Accumulated",
+          "average_commission_ratio": "Average Commission Ratio"
+        }
+      },
+      "commission_by_voucher": {
+        "title": "Staff Commission By Voucher Report",
+        "columns": {
+          "voucher_name": "Voucher Name",
+          "total_commission": "Total Commission"
+        }
+      }
     }
   }
 }

@@ -349,6 +349,71 @@
         "total_quota": "Total Kuota",
         "remaining_quota": "Sisa Kuota"
       }
+    },
+    "staff": {
+      "title": "Laporan Staf",
+      "tabs": {
+        "commission": "Laporan Komisi",
+        "individual": "Laporan Individu",
+        "commission_by_items": "Komisi Berdasarkan Barang",
+        "commission_by_voucher": "Komisi Berdasarkan Voucher"
+      },
+      "commission": {
+        "title": "Laporan Komisi Staf",
+        "dashboard": {
+          "total_staff": "Total Staf",
+          "total_invoices": "Total Faktur",
+          "total_revenue": "Total Pendapatan",
+          "total_item_commission": "Total Komisi Barang",
+          "total_voucher_commission": "Total Komisi Voucher",
+          "grand_total_commission": "Total Keseluruhan Komisi"
+        },
+        "columns": {
+          "staff_name": "Nama Staf",
+          "total_invoices": "Total Faktur",
+          "total_items_sold": "Total Barang Terjual",
+          "total_revenue": "Total Pendapatan",
+          "total_vouchers_used": "Total Voucher Digunakan",
+          "total_item_commission": "Total Komisi Barang",
+          "total_voucher_commission": "Total Komisi Voucher",
+          "grand_total_commission": "Total Keseluruhan Komisi"
+        }
+      },
+      "individual": {
+        "title": "Laporan Individu Staf",
+        "dashboard": {
+          "total_invoices_served": "Total Faktur Dilayani",
+          "total_items_sold": "Total Barang Terjual",
+          "total_vouchers_used": "Total Voucher Digunakan",
+          "total_item_commission": "Total Komisi Barang",
+          "total_voucher_commission": "Total Komisi Voucher",
+          "grand_total_commission": "Total Keseluruhan Komisi"
+        },
+        "columns": {
+          "invoice_number": "Nomor Faktur",
+          "date": "Tanggal",
+          "customer": "Pelanggan",
+          "grand_total": "Total Keseluruhan",
+          "items_count": "Jumlah Barang",
+          "total_commission": "Total Komisi"
+        }
+      },
+      "commission_by_items": {
+        "title": "Laporan Komisi Staf Berdasarkan Barang",
+        "columns": {
+          "item_name": "Nama Barang",
+          "item_price": "Harga Barang",
+          "total_commission_accumulated": "Total Akumulasi Komisi",
+          "average_commission_ratio": "Rata-rata Rasio Komisi"
+        }
+      },
+      "commission_by_voucher": {
+        "title": "Laporan Komisi Staf Berdasarkan Voucher",
+        "columns": {
+          "voucher_name": "Nama Voucher",
+          "total_commission": "Total Komisi"
+        }
+      }
     }
   }
 }

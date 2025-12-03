@@ -6,12 +6,10 @@ import DownloadingDialog from '../DownloadingDialog.vue';
 import { useReportService } from '../../services/report.service';
 const {
   staffReport_commissionByVoucher_columns,
-
   report_queryParams,
   report_getStaffReport,
   // hasManageStaffMemberPermission,
   staffReport_CommissionByVoucher_values,
-
   outlet_lists_options,
   // staff_lists_options,
   findOutletDetail,
@@ -30,6 +28,7 @@ const popover = ref();
 import { useReportExporter } from '../../composables/useReportExporter';
 const { exportToCsv } = useReportExporter();
 const handleExportToCsv = () => {
+  // RULE APPLIED: No localization inside exportToCsv parameters
   exportToCsv({
     reportName: 'Staff Report - Commission By Vouchers Report',
     storeName: hasAccessAllStorePermission
@@ -59,6 +58,7 @@ const onChangePage = (newPage: number) => {
   page.value = newPage;
 };
 </script>
+
 <template>
   <section class="flex flex-col gap-4">
     <DownloadingDialog
@@ -80,7 +80,9 @@ const onChangePage = (newPage: number) => {
       @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Staff Commission By Items Report</h1>
+        <h1 class="font-bold text-2xl text-text-primary">
+          {{ useLocalization('reports.staff.commission_by_voucher.title') }}
+        </h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
@@ -132,7 +134,7 @@ const onChangePage = (newPage: number) => {
             :options="outlet_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Outlet"
+            :placeholder="useLocalization('reports._common.filters.select_outlet')"
             class="col-span-1 w-full"
             filter
             @change="report_getStaffReport('commission-by-voucher')"
@@ -141,20 +143,6 @@ const onChangePage = (newPage: number) => {
               <AppBaseSvg name="store" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>
-          <!-- <PrimeVueSelect
-            v-if="hasManageStaffMemberPermission"
-            v-model="report_queryParams.staff_ids"
-            :options="staff_lists_options"
-            option-label="label"
-            option-value="value"
-            placeholder="Select Staff"
-            filter
-            class="col-span-1 w-full"
-            @change="report_getStaffReport('commission-by-voucher')"
-            ><template #dropdownicon>
-              <AppBaseSvg name="staff" class="w-5 h-5 filter-primary-color" />
-            </template>
-          </PrimeVueSelect> -->
         </section>
       </template>
       <template #body="{ data, column }">

@@ -1,37 +1,42 @@
 <script setup lang="ts">
+import { ref, computed, watch, markRaw } from 'vue';
+
 // components
 import CommissionReport from '../components/StaffReport/CommissionReport.vue';
 import IndividualReport from '../components/StaffReport/IndividualReport.vue';
 import CommissionByItemsReport from '../components/StaffReport/CommissionByItemsReport.vue';
 import CommissionByVoucherReport from '../components/StaffReport/CommissionByVoucherReport.vue';
-// types
-const staffReport_activeTab = ref<string>('commission-report');
-const staffReport_listTabs = ref<ITabs[]>([
-  {
-    component: markRaw(CommissionReport),
-    label: 'Commission Report',
-    value: 'commission-report',
-  },
-  {
-    component: markRaw(IndividualReport),
-    label: 'Individual Report',
-    value: 'individual-report',
-  },
-  {
-    component: markRaw(CommissionByItemsReport),
-    label: 'Commission By Items',
-    value: 'commission-by-items',
-  },
-  {
-    component: markRaw(CommissionByVoucherReport),
-    label: 'Commission By Voucher',
-    value: 'commission-by-voucher',
-  },
-]);
 
 // service
 import { useReportService } from '../services/report.service';
 const { report_getStaffReport } = useReportService();
+
+// types
+const staffReport_activeTab = ref<string>('commission-report');
+
+// 1. Changed to 'computed' for instant translation updates
+const staffReport_listTabs = computed<ITabs[]>(() => [
+  {
+    component: markRaw(CommissionReport),
+    label: useLocalization('reports.staff.tabs.commission'),
+    value: 'commission-report',
+  },
+  {
+    component: markRaw(IndividualReport),
+    label: useLocalization('reports.staff.tabs.individual'),
+    value: 'individual-report',
+  },
+  {
+    component: markRaw(CommissionByItemsReport),
+    label: useLocalization('reports.staff.tabs.commission_by_items'),
+    value: 'commission-by-items',
+  },
+  {
+    component: markRaw(CommissionByVoucherReport),
+    label: useLocalization('reports.staff.tabs.commission_by_voucher'),
+    value: 'commission-by-voucher',
+  },
+]);
 
 watch(
   staffReport_activeTab,
@@ -63,6 +68,7 @@ watch(
   },
 );
 </script>
+
 <template>
   <section id="staff-report" class="flex flex-col relative inset-0 z-0">
     <AppBaseTabs v-model:value="staffReport_activeTab" :items="staffReport_listTabs" />
