@@ -257,10 +257,85 @@
     },
     "inventory": {
       "title": "Laporan Inventaris",
-      "tabs": null,
-      "columns": {
-        "sku": "SKU",
-        "stock": "Stok Saat Ini"
+      "tabs": {
+        "movement_ledger": "Buku Besar Pergerakan",
+        "current_stock": "Ringkasan Stok Saat Ini",
+        "po_variance": "Variansi Penerimaan PO",
+        "slow_dead_stock": "Stok Lambat & Mati",
+        "item_performance": "Performa Barang",
+        "item_performance_category": "Performa Barang per Kategori",
+        "item_performance_brand": "Performa Barang per Brand"
+      },
+      "movement_ledger": {
+        "title": "Laporan Buku Besar Pergerakan",
+        "columns": {
+          "date": "Tanggal",
+          "item_name": "Nama Barang",
+          "adjustment_type": "Jenis Penyesuaian",
+          "adjustment_qty": "Jml Penyesuaian",
+          "new_stock_qty": "Jml Stok Baru",
+          "notes": "Catatan"
+        }
+      },
+      "current_stock": {
+        "title": "Laporan Ringkasan Stok Saat Ini",
+        "rows": {
+          "total_on_hand": "Total Di Tangan",
+          "total_stock_cost": "Total Biaya Stok",
+          "average_stock_cost": "Rata-rata Biaya Stok",
+          "total_retail_price": "Total Harga Eceran"
+        }
+      },
+      "po_variance": {
+        "title": "Laporan Variansi Penerimaan PO",
+        "columns": {
+          "po_id": "ID PO",
+          "item": "Barang",
+          "qty_po": "Jml PO",
+          "qty_actual": "Jml Aktual",
+          "qty_diff": "Selisih Jml",
+          "item_price": "Harga Barang",
+          "var_price": "Harga Var"
+        }
+      },
+      "slow_dead_stock": {
+        "title": "Laporan Stok Lambat & Mati",
+        "columns": {
+          "item": "Barang",
+          "on_hand": "Di Tangan",
+          "last_stock_updated": "Stok Terakhir Diperbarui",
+          "days_idle": "Hari Menganggur"
+        }
+      },
+      "item_performance": {
+        "title": "Laporan Performa Barang",
+        "columns": {
+          "item_name": "Nama Barang",
+          "stock_qty": "Jml Stok",
+          "total_stock_value": "Total Nilai Stok",
+          "total_movements_count": "Total Pergerakan",
+          "total_qty_out": "Total Jml Keluar"
+        }
+      },
+      "item_performance_category": {
+        "title": "Performa Barang Berdasarkan Kategori",
+        "columns": {
+          "category": "Kategori",
+          "item_count": "Jumlah Barang",
+          "total_stock_value": "Total Nilai Stok",
+          "total_movements_count": "Total Pergerakan",
+          "total_qty_out": "Total Jml Keluar"
+        }
+      },
+      "item_performance_brand": {
+        "title": "Performa Barang Berdasarkan Merek",
+        "columns": {
+          "brand": "Merek",
+          "item_count": "Jumlah Barang",
+          "total_stock_value": "Total Nilai Stok",
+          "total_movements_count": "Total Pergerakan",
+          "total_qty_out": "Total Jml Keluar"
+        }
       }
     }
   }

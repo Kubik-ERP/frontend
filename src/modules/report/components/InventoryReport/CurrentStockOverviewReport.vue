@@ -31,19 +31,19 @@ const popover = ref();
 const formattedDataTable = () => {
   return [
     {
-      description: 'Total On Hand',
+      description: useLocalization('reports.inventory.current_stock.rows.total_on_hand'),
       value: useCurrencyFormat({ data: inventoryReport_currentStockOverview_values.value.totalOnHand }),
     },
     {
-      description: 'Total Stock Cost',
+      description: useLocalization('reports.inventory.current_stock.rows.total_stock_cost'),
       value: useCurrencyFormat({ data: inventoryReport_currentStockOverview_values.value.totalStockCost }),
     },
     {
-      description: 'Average Stock Cost',
+      description: useLocalization('reports.inventory.current_stock.rows.average_stock_cost'),
       value: useCurrencyFormat({ data: inventoryReport_currentStockOverview_values.value.averageStockCost }),
     },
     {
-      description: 'Total Retail Price',
+      description: useLocalization('reports.inventory.current_stock.rows.total_retail_price'),
       value: useCurrencyFormat({ data: inventoryReport_currentStockOverview_values.value.totalRetailPrice }),
     },
   ];
@@ -57,6 +57,7 @@ const onChangePage = (newPage: number) => {
 };
 
 const handleExportToCsv = () => {
+  // RULE APPLIED: No localization inside exportToCsv parameters
   exportToCsv({
     reportName: 'Inventory Report - Current Stock Overview Report',
     storeName: hasAccessAllStorePermission
@@ -72,6 +73,7 @@ const handleExportToCsv = () => {
   });
 };
 </script>
+
 <template>
   <DownloadingDialog :visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
   <section>
@@ -87,7 +89,9 @@ const handleExportToCsv = () => {
       @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Current Stock Overview Report</h1>
+        <h1 class="font-bold text-2xl text-text-primary">
+          {{ useLocalization('reports.inventory.current_stock.title') }}
+        </h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
@@ -141,7 +145,7 @@ const handleExportToCsv = () => {
             :options="outlet_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Outlet"
+            :placeholder="useLocalization('reports._common.filters.select_outlet')"
             class=""
             filter
             @change="report_getInventoryReport('current-stock-overview')"

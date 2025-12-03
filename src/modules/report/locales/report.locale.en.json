@@ -257,10 +257,85 @@
     },
     "inventory": {
       "title": "Inventory Report",
-      "tabs": null, 
-      "columns": {
-        "sku": "SKU",
-        "stock": "Current Stock"
+      "tabs": {
+        "movement_ledger": "Movement Ledger",
+        "current_stock": "Current Stock Overview",
+        "po_variance": "PO Receiving Variance",
+        "slow_dead_stock": "Slow Dead Stock",
+        "item_performance": "Item Performance",
+        "item_performance_category": "Item Performance By Category",
+        "item_performance_brand": "Item Performance By Brand"
+      },
+      "movement_ledger": {
+        "title": "Movement Ledger Report",
+        "columns": {
+          "date": "Date",
+          "item_name": "Item Name",
+          "adjustment_type": "Adjustment Type",
+          "adjustment_qty": "Adjustment Qty",
+          "new_stock_qty": "New Stock Qty",
+          "notes": "Notes"
+        }
+      },
+      "current_stock": {
+        "title": "Current Stock Overview Report",
+        "rows": {
+          "total_on_hand": "Total On Hand",
+          "total_stock_cost": "Total Stock Cost",
+          "average_stock_cost": "Average Stock Cost",
+          "total_retail_price": "Total Retail Price"
+        }
+      },
+      "po_variance": {
+        "title": "PO Receiving Variance Report",
+        "columns": {
+          "po_id": "PO ID",
+          "item": "Item",
+          "qty_po": "Qty PO",
+          "qty_actual": "Qty Actual",
+          "qty_diff": "Qty Diff",
+          "item_price": "Item Price",
+          "var_price": "Var Price"
+        }
+      },
+      "slow_dead_stock": {
+        "title": "Slow Dead Stock Report",
+        "columns": {
+          "item": "Item",
+          "on_hand": "On Hand",
+          "last_stock_updated": "Last Stock Updated",
+          "days_idle": "Days Idle"
+        }
+      },
+      "item_performance": {
+        "title": "Item Performance Report",
+        "columns": {
+          "item_name": "Item Name",
+          "stock_qty": "Stock Qty",
+          "total_stock_value": "Total Stock Value",
+          "total_movements_count": "Total Movements Count",
+          "total_qty_out": "Total Qty Out"
+        }
+      },
+      "item_performance_category": {
+        "title": "Item Performance By Category",
+        "columns": {
+          "category": "Category",
+          "item_count": "Item Count",
+          "total_stock_value": "Total Stock Value",
+          "total_movements_count": "Total Movements Count",
+          "total_qty_out": "Total Qty Out"
+        }
+      },
+      "item_performance_brand": {
+        "title": "Item Performance By Brand",
+        "columns": {
+          "brand": "Brand",
+          "item_count": "Item Count",
+          "total_stock_value": "Total Stock Value",
+          "total_movements_count": "Total Movements Count",
+          "total_qty_out": "Total Qty Out"
+        }
       }
     }
   }
