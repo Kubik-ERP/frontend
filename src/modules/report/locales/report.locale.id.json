@@ -337,6 +337,18 @@
           "total_qty_out": "Total Jml Keluar"
         }
       }
+    },
+    "voucher": {
+      "title": "Laporan Voucher",
+      "columns": {
+        "voucher_name": "Nama Voucher",
+        "promo_code": "Kode Promo",
+        "validity_period": "Periode Berlaku",
+        "status": "Status",
+        "total_usage": "Total Penggunaan",
+        "total_quota": "Total Kuota",
+        "remaining_quota": "Sisa Kuota"
+      }
     }
   }
 }

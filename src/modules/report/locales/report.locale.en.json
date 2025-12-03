@@ -337,6 +337,18 @@
           "total_qty_out": "Total Qty Out"
         }
       }
+    },
+    "voucher": {
+      "title": "Voucher Report",
+      "columns": {
+        "voucher_name": "Voucher Name",
+        "promo_code": "Promo Code",
+        "validity_period": "Validity Period",
+        "status": "Status",
+        "total_usage": "Total Usage",
+        "total_quota": "Total Quota",
+        "remaining_quota": "Remaining Quota"
+      }
     }
   }
 }
