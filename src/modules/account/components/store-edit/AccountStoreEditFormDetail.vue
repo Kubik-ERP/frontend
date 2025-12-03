@@ -191,7 +191,7 @@ const {
             >
               <template #default>
                 <section id="content" class="flex items-center gap-2">
-                  <AppBaseSvg name="image" class="!w-4 !h-4" />
+                  <AppBaseSvg name="image" class="filter-primary-color w-4 h-4" />
                   <span class="font-normal text-sm">{{ useLocalization('account.form.select-image') }}</span>
                 </section>
               </template>

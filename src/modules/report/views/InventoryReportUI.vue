@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref, computed, watch, markRaw } from 'vue';
+
 // components
 import MovementLedgerReport from '../components/InventoryReport/MovementLedgerReport.vue';
 import CurrentStockOverviewReport from '../components/InventoryReport/CurrentStockOverviewReport.vue';
@@ -8,48 +10,51 @@ import ItemPerformanceReport from '../components/InventoryReport/ItemPerformance
 import ItemPerformanceByCategoryReport from '../components/InventoryReport/ItemPerformanceByCategoryReport.vue';
 import ItemPerformanceByBrandReport from '../components/InventoryReport/ItemPerformanceByBrandReport.vue';
 
+// service
+import { useReportService } from '../services/report.service';
+const { report_getInventoryReport } = useReportService();
+
 // types
 const inventoryReport_activeTab = ref<string>('movement-ledger');
-const inventoryReport_listTabs = ref<ITabs[]>([
+
+// 1. Changed to 'computed' for instant translation updates
+const inventoryReport_listTabs = computed<ITabs[]>(() => [
   {
     component: markRaw(MovementLedgerReport),
-    label: 'Movement Ledger',
+    label: useLocalization('reports.inventory.tabs.movement_ledger'),
     value: 'movement-ledger',
   },
   {
     component: markRaw(CurrentStockOverviewReport),
-    label: 'Current Stock Overview',
+    label: useLocalization('reports.inventory.tabs.current_stock'),
     value: 'current-stock-overview',
   },
   {
     component: markRaw(PoReceivingVarianceReport),
-    label: 'PO Receiving Variance',
+    label: useLocalization('reports.inventory.tabs.po_variance'),
     value: 'po-receiving-variance',
   },
   {
     component: markRaw(SlowDeadStockReport),
-    label: 'Slow Dead Stock',
+    label: useLocalization('reports.inventory.tabs.slow_dead_stock'),
     value: 'slow-dead-stock',
   },
   {
     component: markRaw(ItemPerformanceReport),
-    label: 'Item Performance',
+    label: useLocalization('reports.inventory.tabs.item_performance'),
     value: 'item-performance',
   },
   {
     component: markRaw(ItemPerformanceByCategoryReport),
-    label: 'Item Performance By Category',
+    label: useLocalization('reports.inventory.tabs.item_performance_category'),
     value: 'item-performance-by-category',
   },
   {
     component: markRaw(ItemPerformanceByBrandReport),
-    label: 'Item Performance By Brand',
+    label: useLocalization('reports.inventory.tabs.item_performance_brand'),
     value: 'item-performance-by-brand',
   },
 ]);
-// service
-import { useReportService } from '../services/report.service';
-const { report_getInventoryReport } = useReportService();
 
 watch(
   inventoryReport_activeTab,
@@ -93,9 +98,9 @@ watch(
   },
 );
 </script>
+
 <template>
-  <section id="point-configuration" class="flex flex-col relative inset-0 z-0">
+  <section id="point-configuration" class="flex flex-col relative inset-0 z-0 gap-4">
     <AppBaseTabs v-model:value="inventoryReport_activeTab" :items="inventoryReport_listTabs" />
-    <!-- <StockReport /> -->
-  </section>
+    </section>
 </template>

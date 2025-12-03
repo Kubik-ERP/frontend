@@ -16,11 +16,19 @@ export const useItemStockAdjustmentActionService = (): ItemsStockAdjustmentActio
   const itemStockAdjustmentAction_isLoading = ref(false);
   // const route = useRoute();
 
+  // Create a type for form data with required expiredAt for validation
+  type FormDataForValidation = {
+    action: string;
+    adjustmentQuantity: number;
+    notes: string;
+    expiredAt: Date | string;
+  };
+
   const itemStockAdjustmentAction_formData = ref<IInventoryItemsStockAdjustmentPayload>({
     action: '',
     adjustmentQuantity: 0,
     notes: '',
-    expiredAt: undefined,
+    expiredAt: '',
   });
 
   watch(
@@ -31,7 +39,7 @@ export const useItemStockAdjustmentActionService = (): ItemsStockAdjustmentActio
           action: '',
           adjustmentQuantity: 0,
           notes: '',
-          expiredAt: undefined,
+          expiredAt: '',
         };
       } else if (mode === 'edit' && item) {
         itemStockAdjustmentAction_formData.value = {
@@ -63,7 +71,7 @@ export const useItemStockAdjustmentActionService = (): ItemsStockAdjustmentActio
 
   const itemStockAdjustmentAction_Validation = useVuelidate(
     itemsStockAdjustmentFormValidationRules,
-    itemStockAdjustmentAction_formData,
+    itemStockAdjustmentAction_formData as Ref<FormDataForValidation>,
     {
       $scope: true,
       $lazy: true,
@@ -152,7 +160,7 @@ export const useItemStockAdjustmentActionService = (): ItemsStockAdjustmentActio
       action: '',
       adjustmentQuantity: 0,
       notes: '',
-      expiredAt: undefined,
+      expiredAt: '',
     };
     eventBus.emit('AppBaseDialog', {
       id: 'stock-adjustment-modal',

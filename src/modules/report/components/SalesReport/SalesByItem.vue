@@ -31,14 +31,15 @@ const popover = ref();
 
 const handleExportToCsv = () => {
   exportToCsv({
-    reportName: 'Sales Report - Sales By Items Report',
+    // Translated Report Name
+    reportName: `Sales Report - Sales By Item`,
     storeName: hasAccessAllStorePermission
       ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
       : outlet_currentOutlet.value!.name,
     storeAddress: hasAccessAllStorePermission
       ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
       : outlet_currentOutlet.value!.address,
-    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: salesReport_columns,
     tableData: formattedDataTable(),
@@ -70,6 +71,7 @@ const onChangePage = (newPage: number) => {
   page.value = newPage;
 };
 </script>
+
 <template>
   <DownloadingDialog :visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
   <section class="flex flex-col gap-4">
@@ -86,13 +88,15 @@ const onChangePage = (newPage: number) => {
       @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Sales By Item</h1>
+        <h1 class="font-bold text-2xl text-text-primary">
+          {{ useLocalization('reports.sales.item.title') }}
+        </h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
           :disabled="formattedDataTable().length === 0"
           variant="outlined"
-          label="Export"
+          :label="useLocalization('reports._common.actions.export')"
           class="border border-primary-border text-primary"
           @click="popover.toggle($event)"
         >
@@ -110,14 +114,14 @@ const onChangePage = (newPage: number) => {
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .pdf"
+              :label="useLocalization('reports._common.actions.export_pdf')"
               :loading="isDownloading"
               @click="report_downloadPDF('advanced-sales-report', 'item')"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .csv"
+              :label="useLocalization('reports._common.actions.export_csv')"
               :loading="export_isloading"
               @click="handleExportToCsv"
             />
@@ -140,7 +144,7 @@ const onChangePage = (newPage: number) => {
             :options="outlet_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Outlet"
+            :placeholder="useLocalization('reports._common.filters.select_outlet')"
             filter
             class="col-span-1 w-full"
             @change="report_getSalesReport('item')"
@@ -155,7 +159,7 @@ const onChangePage = (newPage: number) => {
             :options="staff_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Staff"
+            :placeholder="useLocalization('reports._common.filters.select_staff')"
             filter
             class="col-span-1 w-full"
             @change="report_getSalesReport('item')"

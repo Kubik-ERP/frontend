@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue';
 // Interfaces
 import type { IAttendanceListProvided } from '../interfaces';
 
@@ -7,97 +6,30 @@ import type { IAttendanceListProvided } from '../interfaces';
  * @description Inject all the data and methods what we need
  */
 const {
+  attendanceList_calendarDate,
+  attendanceList_clockInTime,
+  attendanceList_clockOutTime,
+  attendanceList_currentShift,
   attendanceList_formData,
   attendanceList_formMode,
-  attendanceList_availableShifts,
-  attendanceList_minDate,
-  attendanceList_maxDate,
   attendanceList_formValidations,
+  attendanceList_formattedShiftEnd,
+  attendanceList_formattedShiftStart,
+  attendanceList_availableShifts,
+  attendanceList_isLoadingShifts,
+  attendanceList_maxDate,
+  attendanceList_minDate,
   attendanceList_onCloseDialog,
   attendanceList_onSave,
   attendanceList_onShiftChange,
+  attendanceList_selectedShiftValue,
+  attendanceList_staffList,
   attendanceList_updateAvailableShifts,
 } = inject('attendance') as IAttendanceListProvided;
-
-/**
- * @description Staff list for dropdown
- */
-const staffList = [
-  { label: 'Ahmad Rizki', value: 1 },
-  { label: 'Sarah Putri', value: 2 },
-  { label: 'Budi Santoso', value: 3 },
-  { label: 'Dewi Sari', value: 4 },
-  { label: 'Eko Prasetyo', value: 5 },
-];
-
-/**
- * @description Convert date string to Date object for PrimeVue Calendar
- */
-const calendarDate = computed({
-  get: () => {
-    if (!attendanceList_formData.date) return null;
-    return new Date(attendanceList_formData.date);
-  },
-  set: (value: Date | null) => {
-    if (value) {
-      // Convert Date to string format (YYYY-MM-DD)
-      const year = value.getFullYear();
-      const month = String(value.getMonth() + 1).padStart(2, '0');
-      const day = String(value.getDate()).padStart(2, '0');
-      attendanceList_formData.date = `${year}-${month}-${day}`;
-    } else {
-      attendanceList_formData.date = '';
-    }
-  },
-});
-
-/**
- * @description Convert clock in time string to Date object for PrimeVue DatePicker
- */
-const clockInTime = computed({
-  get: () => {
-    if (!attendanceList_formData.clockIn) return null;
-    const [hours, minutes] = attendanceList_formData.clockIn.split(':');
-    const date = new Date();
-    date.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
-    return date;
-  },
-  set: (value: Date | null) => {
-    if (value) {
-      const hours = String(value.getHours()).padStart(2, '0');
-      const minutes = String(value.getMinutes()).padStart(2, '0');
-      attendanceList_formData.clockIn = `${hours}:${minutes}`;
-    } else {
-      attendanceList_formData.clockIn = '';
-    }
-  },
-});
-
-/**
- * @description Convert clock out time string to Date object for PrimeVue DatePicker
- */
-const clockOutTime = computed({
-  get: () => {
-    if (!attendanceList_formData.clockOut) return null;
-    const [hours, minutes] = attendanceList_formData.clockOut.split(':');
-    const date = new Date();
-    date.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
-    return date;
-  },
-  set: (value: Date | null) => {
-    if (value) {
-      const hours = String(value.getHours()).padStart(2, '0');
-      const minutes = String(value.getMinutes()).padStart(2, '0');
-      attendanceList_formData.clockOut = `${hours}:${minutes}`;
-    } else {
-      attendanceList_formData.clockOut = '';
-    }
-  },
-});
 </script>
 
 <template>
-  <AppBaseDialog id="attendance-list-create-dialog">
+  <AppBaseDialog id="attendance-list-create-edit-dialog">
     <template #header>
       <header class="flex flex-col gap-2 w-full">
         <h6 class="font-semibold text-black text-lg">
@@ -119,7 +51,7 @@ const clockOutTime = computed({
           :validators="attendanceList_formValidations.date"
         >
           <PrimeVueCalendar
-            v-model="calendarDate"
+            v-model="attendanceList_calendarDate"
             :min-date="new Date(attendanceList_minDate)"
             :max-date="new Date(attendanceList_maxDate)"
             date-format="dd/mm/yy"
@@ -144,7 +76,7 @@ const clockOutTime = computed({
         >
           <PrimeVueSelect
             v-model="attendanceList_formData.staffId"
-            :options="staffList"
+            :options="attendanceList_staffList"
             option-label="label"
             option-value="value"
             placeholder="Select staff member"
@@ -164,7 +96,7 @@ const clockOutTime = computed({
               <div class="flex items-center gap-3">
                 <AppBaseSvg name="user" class="!w-4 !h-4 text-gray-500" />
                 <span class="font-normal text-sm text-text-primary">
-                  {{ staffList.find(staff => staff.value === value)?.label }}
+                  {{ attendanceList_staffList.find(staff => staff.value === value)?.label }}
                 </span>
               </div>
             </template>
@@ -179,10 +111,9 @@ const clockOutTime = computed({
           label-for="shift"
           name="Shift"
           spacing-bottom="mb-0"
-          :validators="attendanceList_formValidations.shift"
         >
           <PrimeVueSelect
-            v-model="attendanceList_formData.shift"
+            v-model="attendanceList_selectedShiftValue"
             :options="attendanceList_availableShifts"
             option-label="label"
             option-value="value"
@@ -190,8 +121,9 @@ const clockOutTime = computed({
             input-id="shift"
             class="text-sm w-full"
             :class="{ ...classes }"
-            :disabled="!attendanceList_formData.staffId || !attendanceList_formData.date"
-            @change="attendanceList_onShiftChange"
+            :disabled="!attendanceList_formData.staffId || !attendanceList_formData.date || attendanceList_isLoadingShifts"
+            :loading="attendanceList_isLoadingShifts"
+            @change="(event: any) => attendanceList_onShiftChange(event.value)"
           >
             <template #option="{ option }">
               <div class="flex items-center gap-3">
@@ -211,7 +143,7 @@ const clockOutTime = computed({
 
         <!-- Shift Time Display -->
         <div
-          v-if="attendanceList_formData.shiftStart && attendanceList_formData.shiftEnd"
+          v-if="attendanceList_currentShift?.shiftStart && attendanceList_currentShift?.shiftEnd"
           class="grid grid-cols-2 gap-4"
         >
           <AppBaseFormGroup
@@ -222,7 +154,7 @@ const clockOutTime = computed({
             spacing-bottom="mb-0"
           >
             <PrimeVueInputText
-              v-model="attendanceList_formData.shiftStart"
+              :model-value="attendanceList_formattedShiftStart"
               placeholder="Shift start time"
               input-id="shiftStart"
               class="text-sm w-full"
@@ -238,7 +170,7 @@ const clockOutTime = computed({
             spacing-bottom="mb-0"
           >
             <PrimeVueInputText
-              v-model="attendanceList_formData.shiftEnd"
+              :model-value="attendanceList_formattedShiftEnd"
               placeholder="Shift end time"
               input-id="shiftEnd"
               class="text-sm w-full"
@@ -256,12 +188,11 @@ const clockOutTime = computed({
             label-for="clockIn"
             name="Clock In"
             spacing-bottom="mb-0"
-            :validators="attendanceList_formValidations.clockIn"
           >
             <PrimeVueInputGroup>
               <PrimeVueDatePicker
                 id="datepicker-clock-in"
-                v-model="clockInTime"
+                v-model="attendanceList_clockInTime"
                 class="text-sm w-full"
                 :class="{ ...classes }"
                 fluid
@@ -281,12 +212,11 @@ const clockOutTime = computed({
             label-for="clockOut"
             name="Clock Out"
             spacing-bottom="mb-0"
-            :validators="attendanceList_formValidations.clockOut"
           >
             <PrimeVueInputGroup>
               <PrimeVueDatePicker
                 id="datepicker-clock-out"
-                v-model="clockOutTime"
+                v-model="attendanceList_clockOutTime"
                 class="text-sm w-full"
                 :class="{ ...classes }"
                 fluid
@@ -308,18 +238,16 @@ const clockOutTime = computed({
           label-for="notes"
           name="Notes"
           spacing-bottom="mb-0"
-          :validators="attendanceList_formValidations.notes"
         >
-          <PrimeVueIconField>
-            <PrimeVueTextarea
-              v-model="attendanceList_formData.notes"
-              placeholder="Add notes (optional)"
-              input-id="notes"
-              class="text-sm w-full"
-              rows="3"
-              :class="{ ...classes }"
-            />
-          </PrimeVueIconField>
+          <PrimeVueTextarea
+            v-if="attendanceList_currentShift"
+            v-model="attendanceList_currentShift.notes"
+            placeholder="Add notes (optional)"
+            input-id="notes"
+            class="text-sm w-full"
+            rows="3"
+            :class="{ ...classes }"
+          />
         </AppBaseFormGroup>
       </form>
     </template>

@@ -1,1 +1,519 @@
-{}
+{
+  "components": {
+    "download_dialog": {
+      "status": {
+        "downloading": {
+          "title": "Sedang Mengunduh...",
+          "message": "Berkas Anda sedang disiapkan. Harap tunggu."
+        },
+        "success": {
+          "title": "Unduhan Selesai",
+          "message": "Berkas Anda telah berhasil diunduh."
+        },
+        "error": {
+          "title": "Unduhan Gagal",
+          "message": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi."
+        }
+      },
+      "close": "Tutup"
+    },
+    "date_picker": {
+      "title": "Filter Tanggal",
+      "labels": {
+        "start_date": "Tanggal Mulai",
+        "end_date": "Tanggal Selesai",
+        "real_time": "Waktu Nyata"
+      },
+      "buttons": {
+        "cancel": "Batal",
+        "apply": "Terapkan"
+      },
+      "shortcuts": {
+        "today": "Hari Ini",
+        "yesterday": "Kemarin",
+        "this_week": "Minggu Ini",
+        "last_week": "Minggu Lalu",
+        "this_month": "Bulan Ini",
+        "last_month": "Bulan Lalu",
+        "last_7_days": "7 Hari Terakhir",
+        "last_30_days": "30 Hari Terakhir",
+        "this_year": "Tahun Ini",
+        "last_year": "Tahun Lalu"
+      }
+    }
+  },
+  "reports": {
+    "_common": {
+      "actions": {
+        "export": "Ekspor",
+        "export_pdf": "Ekspor PDF",
+        "export_csv": "Ekspor CSV",
+        "filter": "Filter"
+      },
+      "filters": {
+        "date_range": "Rentang Tanggal",
+        "select_outlet": "Pilih Outlet",
+        "select_staff": "Pilih Staf",
+        "all_stores": "Semua Toko",
+        "all_staff": "Semua Staf"
+      },
+      "columns": {
+        "no": "No",
+        "description": "Deskripsi",
+        "nominal": "Nominal",
+        "amount": "Jumlah",
+        "date": "Tanggal",
+        "total": "Total"
+      }
+    },
+    "financial": {
+      "title": "Laporan Keuangan",
+      "tabs": {
+        "summary": "Ringkasan Keuangan",
+        "discount": "Laporan Diskon",
+        "payment_method": "Laporan Metode Pembayaran",
+        "tax_service": "Laporan Pajak & Layanan"
+      },
+      "summary": {
+        "title": "Ringkasan Keuangan",
+        "rows": {
+          "gross_sales": "Penjualan Kotor",
+          "discount": "Diskon",
+          "refund": "Pengembalian Dana",
+          "net_sales": "Penjualan Bersih",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "rounding": "Pembulatan",
+          "voucher_used": "Voucher Digunakan",
+          "net_total": "Total Bersih"
+        }
+      },
+      "discount": {
+        "title": "Laporan Diskon",
+        "summary_cards": {
+          "total_discount": "Total Diskon",
+          "total_price": "Total Harga",
+          "total_discounted_item": "Total Barang Terdiskon"
+        }
+      },
+      "payment_method": {
+        "title": "Laporan Metode Pembayaran",
+        "summary_cards": {
+          "total_transaction": "Total Transaksi",
+          "gross_sales": "Penjualan Kotor",
+          "total_refund": "Total Pengembalian Dana",
+          "voucher_used": "Voucher Digunakan",
+          "net_sales": "Penjualan Bersih"
+        },
+        "columns": {
+          "payment_method": "Metode Pembayaran",
+          "transaction": "Transaksi",
+          "nominal": "Nominal"
+        }
+      },
+      "tax_service": {
+        "title": "Laporan Pajak & Biaya Layanan",
+        "columns": {
+          "type": "Tipe",
+          "rate": "Tarif",
+          "subtotal_applied": "Subtotal Diterapkan",
+          "nominal": "Nominal"
+        }
+      }
+    },
+    "sales": {
+      "title": "Laporan Penjualan",
+      "tabs": {
+        "item": "Barang",
+        "category": "Kategori",
+        "customer": "Pelanggan",
+        "staff": "Staf",
+        "day": "Hari",
+        "month": "Bulan",
+        "quarter": "Kuartal",
+        "year": "Tahun"
+      },
+      "summary_widget": {
+        "qty_sold": "Jumlah Terjual",
+        "gross_sales": "Penjualan Kotor",
+        "tax": "Pajak",
+        "service_charge": "Biaya Layanan",
+        "discount": "Diskon",
+        "net_sales": "Penjualan Bersih",
+        "voucher_used": "Voucher Digunakan"
+      },
+      "item": {
+        "title": "Penjualan Berdasarkan Barang",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      },
+      "category": {
+        "title": "Penjualan Berdasarkan Kategori",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      },
+      "customer": {
+        "title": "Penjualan Berdasarkan Pelanggan",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      },
+      "staff": {
+        "title": "Penjualan Berdasarkan Staf",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      },
+      "day": {
+        "title": "Penjualan Berdasarkan Hari",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      },
+      "month": {
+        "title": "Penjualan Berdasarkan Bulan",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      },
+      "quarter": {
+        "title": "Penjualan Berdasarkan Kuartal",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      },
+      "year": {
+        "title": "Penjualan Berdasarkan Tahun",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      }
+    },
+    "inventory": {
+      "title": "Laporan Inventaris",
+      "tabs": {
+        "movement_ledger": "Buku Besar Pergerakan",
+        "current_stock": "Ringkasan Stok Saat Ini",
+        "po_variance": "Variansi Penerimaan PO",
+        "slow_dead_stock": "Stok Lambat & Mati",
+        "item_performance": "Performa Barang",
+        "item_performance_category": "Performa Barang per Kategori",
+        "item_performance_brand": "Performa Barang per Brand"
+      },
+      "movement_ledger": {
+        "title": "Laporan Buku Besar Pergerakan",
+        "columns": {
+          "date": "Tanggal",
+          "item_name": "Nama Barang",
+          "adjustment_type": "Jenis Penyesuaian",
+          "adjustment_qty": "Jml Penyesuaian",
+          "new_stock_qty": "Jml Stok Baru",
+          "notes": "Catatan"
+        }
+      },
+      "current_stock": {
+        "title": "Laporan Ringkasan Stok Saat Ini",
+        "rows": {
+          "total_on_hand": "Total Di Tangan",
+          "total_stock_cost": "Total Biaya Stok",
+          "average_stock_cost": "Rata-rata Biaya Stok",
+          "total_retail_price": "Total Harga Eceran"
+        }
+      },
+      "po_variance": {
+        "title": "Laporan Variansi Penerimaan PO",
+        "columns": {
+          "po_id": "ID PO",
+          "item": "Barang",
+          "qty_po": "Jml PO",
+          "qty_actual": "Jml Aktual",
+          "qty_diff": "Selisih Jml",
+          "item_price": "Harga Barang",
+          "var_price": "Harga Var"
+        }
+      },
+      "slow_dead_stock": {
+        "title": "Laporan Stok Lambat & Mati",
+        "columns": {
+          "item": "Barang",
+          "on_hand": "Di Tangan",
+          "last_stock_updated": "Stok Terakhir Diperbarui",
+          "days_idle": "Hari Menganggur"
+        }
+      },
+      "item_performance": {
+        "title": "Laporan Performa Barang",
+        "columns": {
+          "item_name": "Nama Barang",
+          "stock_qty": "Jml Stok",
+          "total_stock_value": "Total Nilai Stok",
+          "total_movements_count": "Total Pergerakan",
+          "total_qty_out": "Total Jml Keluar"
+        }
+      },
+      "item_performance_category": {
+        "title": "Performa Barang Berdasarkan Kategori",
+        "columns": {
+          "category": "Kategori",
+          "item_count": "Jumlah Barang",
+          "total_stock_value": "Total Nilai Stok",
+          "total_movements_count": "Total Pergerakan",
+          "total_qty_out": "Total Jml Keluar"
+        }
+      },
+      "item_performance_brand": {
+        "title": "Performa Barang Berdasarkan Merek",
+        "columns": {
+          "brand": "Merek",
+          "item_count": "Jumlah Barang",
+          "total_stock_value": "Total Nilai Stok",
+          "total_movements_count": "Total Pergerakan",
+          "total_qty_out": "Total Jml Keluar"
+        }
+      }
+    },
+    "voucher": {
+      "title": "Laporan Voucher",
+      "columns": {
+        "voucher_name": "Nama Voucher",
+        "promo_code": "Kode Promo",
+        "validity_period": "Periode Berlaku",
+        "status": "Status",
+        "total_usage": "Total Penggunaan",
+        "total_quota": "Total Kuota",
+        "remaining_quota": "Sisa Kuota"
+      }
+    },
+    "staff": {
+      "title": "Laporan Staf",
+      "tabs": {
+        "commission": "Laporan Komisi",
+        "individual": "Laporan Individu",
+        "commission_by_items": "Komisi Berdasarkan Barang",
+        "commission_by_voucher": "Komisi Berdasarkan Voucher"
+      },
+      "commission": {
+        "title": "Laporan Komisi Staf",
+        "dashboard": {
+          "total_staff": "Total Staf",
+          "total_invoices": "Total Faktur",
+          "total_revenue": "Total Pendapatan",
+          "total_item_commission": "Total Komisi Barang",
+          "total_voucher_commission": "Total Komisi Voucher",
+          "grand_total_commission": "Total Keseluruhan Komisi"
+        },
+        "columns": {
+          "staff_name": "Nama Staf",
+          "total_invoices": "Total Faktur",
+          "total_items_sold": "Total Barang Terjual",
+          "total_revenue": "Total Pendapatan",
+          "total_vouchers_used": "Total Voucher Digunakan",
+          "total_item_commission": "Total Komisi Barang",
+          "total_voucher_commission": "Total Komisi Voucher",
+          "grand_total_commission": "Total Keseluruhan Komisi"
+        }
+      },
+      "individual": {
+        "title": "Laporan Individu Staf",
+        "dashboard": {
+          "total_invoices_served": "Total Faktur Dilayani",
+          "total_items_sold": "Total Barang Terjual",
+          "total_vouchers_used": "Total Voucher Digunakan",
+          "total_item_commission": "Total Komisi Barang",
+          "total_voucher_commission": "Total Komisi Voucher",
+          "grand_total_commission": "Total Keseluruhan Komisi"
+        },
+        "columns": {
+          "invoice_number": "Nomor Faktur",
+          "date": "Tanggal",
+          "customer": "Pelanggan",
+          "grand_total": "Total Keseluruhan",
+          "items_count": "Jumlah Barang",
+          "total_commission": "Total Komisi"
+        }
+      },
+      "commission_by_items": {
+        "title": "Laporan Komisi Staf Berdasarkan Barang",
+        "columns": {
+          "item_name": "Nama Barang",
+          "item_price": "Harga Barang",
+          "total_commission_accumulated": "Total Akumulasi Komisi",
+          "average_commission_ratio": "Rata-rata Rasio Komisi"
+        }
+      },
+      "commission_by_voucher": {
+        "title": "Laporan Komisi Staf Berdasarkan Voucher",
+        "columns": {
+          "voucher_name": "Nama Voucher",
+          "total_commission": "Total Komisi"
+        }
+      }
+    },
+    "customer": {
+      "title": "Laporan Pelanggan",
+      "columns": {
+        "name": "Nama",
+        "gender": "Jenis Kelamin",
+        "total_sales": "Total Penjualan",
+        "date_added": "Tanggal Ditambahkan",
+        "outstanding": "Tunggakan",
+        "loyalty_points": "Poin Loyalitas"
+      }
+    },
+    "loyalty_point": {
+      "title": "Laporan Poin Loyalitas",
+      "tabs": {
+        "spend_based": "Berdasarkan Pengeluaran",
+        "product_based": "Berdasarkan Produk",
+        "benefit_utilization": "Penggunaan Manfaat",
+        "expiry_warning": "Peringatan Kadaluarsa",
+        "type_accumulation": "Akumulasi Tipe"
+      },
+      "benefit_utilization": {
+        "title": "Laporan Penggunaan Manfaat",
+        "dashboard": {
+          "sum_all_points": "Jumlah Semua Poin",
+          "total_customer": "Total Pelanggan",
+          "sum_points_free_items": "Jumlah Poin Dipakai (Barang Gratis)",
+          "sum_points_discount": "Jumlah Poin Dipakai (Diskon)",
+          "sum_discount_amount": "Jumlah Nilai Diskon",
+          "sum_free_items": "Jumlah Barang Gratis"
+        },
+        "columns": {
+          "benefit_name": "Nama Manfaat",
+          "type": "Tipe",
+          "count_used": "Jumlah Dipakai",
+          "total_point_used": "Total Poin Dipakai",
+          "amount": "Jumlah"
+        }
+      },
+      "expiry_warning": {
+        "title": "Laporan Peringatan Kadaluarsa",
+        "dashboard": {
+          "sum_all_points": "Jumlah Semua Poin",
+          "total_customer": "Total Pelanggan"
+        },
+        "columns": {
+          "cust_name": "Nama Pelanggan",
+          "invoice": "Faktur",
+          "type": "Tipe",
+          "points": "Poin",
+          "expiry_date": "Tanggal Kadaluarsa"
+        }
+      },
+      "product_based": {
+        "title": "Laporan Berdasarkan Produk",
+        "dashboard": {
+          "sum_all_points": "Jumlah Semua Poin",
+          "sum_points_expired": "Jumlah Poin Kadaluarsa",
+          "total_customer": "Total Pelanggan",
+          "total_products_earning": "Total Produk Penghasil Manfaat"
+        },
+        "columns": {
+          "product_name": "Nama Produk",
+          "product_price": "Harga Produk",
+          "points_to_idr": "Poin ke IDR",
+          "sum_points_given": "Total Poin Diberikan ke Pelanggan",
+          "total_cust": "Total Pelanggan"
+        }
+      },
+      "spend_based": {
+        "title": "Laporan Berdasarkan Pengeluaran",
+        "dashboard": {
+          "sum_all_points": "Jumlah Semua Poin",
+          "sum_points_expired": "Jumlah Poin Kadaluarsa",
+          "total_customer": "Total Pelanggan",
+          "total_invoices": "Total Faktur"
+        },
+        "columns": {
+          "invoice_id": "ID Faktur",
+          "purchase_date": "Tanggal Pembelian",
+          "customer": "Pelanggan",
+          "grand_total": "Total Keseluruhan",
+          "order_type": "Tipe Pesanan",
+          "total_points_earned": "Total Poin Diperoleh",
+          "point_expiry_date": "Tanggal Kadaluarsa Poin"
+        }
+      },
+      "type_accumulation": {
+        "title": "Laporan Akumulasi Tipe",
+        "dashboard": {
+          "sum_all_points": "Jumlah Semua Poin",
+          "sum_points_expired": "Jumlah Poin Kadaluarsa",
+          "total_customer": "Total Pelanggan"
+        },
+        "columns": {
+          "type": "Tipe",
+          "sum_total_points": "Total Poin",
+          "total_customers": "Total Pelanggan"
+        }
+      }
+    }
+  }
+}

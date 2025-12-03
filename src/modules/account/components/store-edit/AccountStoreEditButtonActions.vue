@@ -42,7 +42,7 @@ const {
         >
           <template #default>
             <section id="content" class="flex items-center gap-2">
-              <AppBaseSvg name="account-company-danger" />
+              <AppBaseSvg name="account-company-danger" class="w-4 h-4" />
               <span class="font-semibold text-base text-error-main">{{
                 useLocalization('account.buttons.closeStorePermanent')
               }}</span>
@@ -69,7 +69,7 @@ const {
     >
       <template #default>
         <section id="content" class="flex items-center gap-2">
-          <AppBaseSvg name="delete" />
+          <AppBaseSvg name="delete" class="w-4 h-4" />
           <span class="font-semibold text-base text-error-main">{{
             useLocalization('account.buttons.delete-store')
           }}</span>

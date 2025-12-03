@@ -112,10 +112,12 @@ export const LIST_SIDEBAR_MENUS = [
           },
           {
             name: 'Staff Report',
+            translationKey: 'app.menus.staff-report',
             path: '/report/staff-report',
           },
           {
             name: 'Customer Report',
+            translationKey: 'app.menus.customer-report',
             path: '/report/customer-report',
           },
           // {
@@ -124,6 +126,7 @@ export const LIST_SIDEBAR_MENUS = [
           // },
           {
             name: 'Loyalty Point Report',
+            translationKey: 'app.menus.loyalty-point-report',
             path: '/report/loyalty-point-report',
           }
         ],
@@ -265,16 +268,16 @@ export const LIST_SIDEBAR_MENUS = [
             translationKey: 'app.menus.staff-members',
             path: '/staff/staff-member',
           },
-          // {
-          //   name: 'Working Hours',
-          //   translationKey: 'app.menus.working-hours',
-          //   path: '/staff/working-hours',
-          // },
-          // {
-          //   name: 'Attendance',
-          //   translationKey: 'app.menus.attendance',
-          //   path: '/staff/attendance',
-          // },
+          {
+            name: 'Working Hours',
+            translationKey: 'app.menus.working-hours',
+            path: '/staff/working-hours',
+          },
+          {
+            name: 'Attendance',
+            translationKey: 'app.menus.attendance',
+            path: '/staff/attendance',
+          },
           {
             name: 'User Permission',
             translationKey: 'app.menus.user-permission',

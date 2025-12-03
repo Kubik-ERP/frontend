@@ -9,13 +9,13 @@ const {
   salesReport_columns,
   report_queryParams,
   report_getSalesReport,
-  hasManageStaffMemberPermission,
   salesReport_salesByYear_values,
   staff_lists_options,
   outlet_lists_options,
   findOutletDetail,
   findStaffDetail,
   hasAccessAllStorePermission,
+  hasManageStaffMemberPermission,
   outlet_currentOutlet,
   // download pdf
   isDialogVisible,
@@ -29,6 +29,7 @@ import { useReportExporter } from '../../composables/useReportExporter';
 const { exportToCsv, export_isloading } = useReportExporter();
 const popover = ref();
 const handleExportToCsv = () => {
+  // RULE APPLIED: No localization inside exportToCsv parameters
   exportToCsv({
     reportName: 'Sales Report - Sales By Year Report',
     storeName: hasAccessAllStorePermission
@@ -68,6 +69,7 @@ const onChangePage = (newPage: number) => {
   page.value = newPage;
 };
 </script>
+
 <template>
   <DownloadingDialog :visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
   <section class="flex flex-col gap-4">
@@ -84,13 +86,15 @@ const onChangePage = (newPage: number) => {
       @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Sales By Year</h1>
+        <h1 class="font-bold text-2xl text-text-primary">
+          {{ useLocalization('reports.sales.year.title') }}
+        </h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
           :disabled="formattedDataTable().length === 0"
           variant="outlined"
-          label="Export"
+          :label="useLocalization('reports._common.actions.export')"
           class="border border-primary-border text-primary"
           @click="popover.toggle($event)"
         >
@@ -108,14 +112,14 @@ const onChangePage = (newPage: number) => {
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .pdf"
+              :label="useLocalization('reports._common.actions.export_pdf')"
               :loading="isDownloading"
               @click="report_downloadPDF('advanced-sales-report', 'year')"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .csv"
+              :label="useLocalization('reports._common.actions.export_csv')"
               :loading="export_isloading"
               @click="handleExportToCsv"
             />
@@ -138,7 +142,7 @@ const onChangePage = (newPage: number) => {
             :options="outlet_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Outlet"
+            :placeholder="useLocalization('reports._common.filters.select_outlet')"
             filter
             class="col-span-1 w-full"
             @change="report_getSalesReport('year')"
@@ -153,11 +157,12 @@ const onChangePage = (newPage: number) => {
             :options="staff_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Staff"
+            :placeholder="useLocalization('reports._common.filters.select_staff')"
             filter
             class="col-span-1 w-full"
             @change="report_getSalesReport('year')"
-            ><template #dropdownicon>
+          >
+            <template #dropdownicon>
               <AppBaseSvg name="staff" class="w-5 h-5 filter-primary-color" />
             </template>
           </PrimeVueSelect>

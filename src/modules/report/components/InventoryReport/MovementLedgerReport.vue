@@ -50,6 +50,7 @@ const onChangePage = (newPage: number) => {
 };
 
 const handleExportToCsv = () => {
+  // RULE APPLIED: No localization inside exportToCsv parameters
   exportToCsv({
     reportName: 'Inventory Report - Movement Ledger Report',
     storeName: hasAccessAllStorePermission
@@ -65,6 +66,7 @@ const handleExportToCsv = () => {
   });
 };
 </script>
+
 <template>
   <DownloadingDialog :visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
   <section>
@@ -80,12 +82,14 @@ const handleExportToCsv = () => {
       @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Movement Ledger Report</h1>
+        <h1 class="font-bold text-2xl text-text-primary">
+          {{ useLocalization('reports.inventory.movement_ledger.title') }}
+        </h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
           variant="outlined"
-          label="Export"
+          :label="useLocalization('reports._common.actions.export')"
           :disabled="formattedDataTable()?.length === 0"
           class="border border-primary-border text-primary"
           @click="popover.toggle($event)"
@@ -104,14 +108,14 @@ const handleExportToCsv = () => {
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .pdf"
+              :label="useLocalization('reports._common.actions.export_pdf')"
               :loading="isDownloading"
               @click="report_downloadPDF('inventory-report', 'movement-ledger')"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .csv"
+              :label="useLocalization('reports._common.actions.export_csv')"
               :loading="export_isloading"
               @click="handleExportToCsv"
             />
@@ -134,7 +138,7 @@ const handleExportToCsv = () => {
             :options="outlet_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Outlet"
+            :placeholder="useLocalization('reports._common.filters.select_outlet')"
             class=""
             filter
             @change="report_getInventoryReport('movement-ledger')"
