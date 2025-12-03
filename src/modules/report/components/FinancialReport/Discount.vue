@@ -51,14 +51,14 @@ const onChangePage = (newPage: number) => {
 const handleExportToCsv = () => {
   exportToCsv({
     // Translated Title
-    reportName: `Financial Report - ${useLocalization('reports.financial.discount.title')}`,
+    reportName: `Financial Report - Discount Report`,
     storeName: hasAccessAllStorePermission
-      ? findOutletDetail(report_queryParams.store_ids!)?.name || useLocalization('reports.financial.summary.filters.all_stores')
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
       : outlet_currentOutlet.value!.name,
     storeAddress: hasAccessAllStorePermission
-      ? findOutletDetail(report_queryParams.store_ids!)?.address || useLocalization('reports.financial.summary.filters.all_stores')
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
       : outlet_currentOutlet.value!.address,
-    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || useLocalization('reports.financial.summary.filters.all_staff'),
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_discount_columns,
     tableData: formattedDataTable(),

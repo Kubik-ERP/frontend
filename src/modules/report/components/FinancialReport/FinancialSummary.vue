@@ -32,17 +32,17 @@ const { exportToCsv } = useReportExporter();
 
 const handleExportToCsv = () => {
   exportToCsv({
-    reportName: `Financial Report - ${useLocalization('reports.financial.summary.title')}`,
+    reportName: `Financial Report - Financial Summary Report`,
     storeName: hasAccessAllStorePermission
       // FIX: Use _common
-      ? findOutletDetail(report_queryParams.store_ids!)?.name || useLocalization('reports._common.filters.all_stores')
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
       : outlet_currentOutlet.value!.name,
     storeAddress: hasAccessAllStorePermission
       // FIX: Use _common
-      ? findOutletDetail(report_queryParams.store_ids!)?.address || useLocalization('reports._common.filters.all_stores')
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
       : outlet_currentOutlet.value!.address,
     // FIX: Use _common
-    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || useLocalization('reports._common.filters.all_staff'),
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff',
     
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_profitAndLost_columns,
