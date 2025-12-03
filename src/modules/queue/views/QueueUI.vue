@@ -32,14 +32,14 @@ onMounted(async () => {
   <div class="flex flex-col gap-8">
     <div class="flex gap-2 items-center">
       <router-link :to="{ name: 'customer-waiting-list' }">
-        <PrimeVueButton class="w-fit" :label="useLocalization('queue.customerWaitingList')">
+        <PrimeVueButton class="w-fit bg-primary border-primary" :label="useLocalization('queue.customerWaitingList')">
           <template #icon>
             <AppBaseSvg name="display" class="!w-5 !h-5" />
           </template>
         </PrimeVueButton>
       </router-link>
       <router-link :to="{ name: 'queue-kitchen-display' }">
-        <PrimeVueButton class="w-fit" :label="useLocalization('queue.kitchenDisplay')">
+        <PrimeVueButton class="w-fit bg-primary border-primary" :label="useLocalization('queue.kitchenDisplay')">
           <template #icon>
             <AppBaseSvg name="display" class="!w-5 !h-5" />
           </template>

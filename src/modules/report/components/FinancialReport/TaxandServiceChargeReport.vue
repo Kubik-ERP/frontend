@@ -29,14 +29,15 @@ const { exportToCsv, export_isloading } = useReportExporter();
 
 const handleExportToCsv = () => {
   exportToCsv({
-    reportName: 'Financial Report - Tax & Service Charge Report',
+    // Translated Report Name
+    reportName: `Financial Report - Tax & Service Charge Report`,
     storeName: hasAccessAllStorePermission
       ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
       : outlet_currentOutlet.value!.name,
     storeAddress: hasAccessAllStorePermission
       ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
       : outlet_currentOutlet.value!.address,
-    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff',
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_taxAndServiceCharge_columns,
     tableData: formattedDataTable(),
@@ -57,6 +58,7 @@ const formattedDataTable = () => {
 
 const popover = ref();
 </script>
+
 <template>
   <DownloadingDialog v-model:visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
   <section>
@@ -70,12 +72,14 @@ const popover = ref();
       is-using-custom-footer
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Tax & Service Charge Report</h1>
+        <h1 class="font-bold text-2xl text-text-primary">
+          {{ useLocalization('reports.financial.tax_service.title') }}
+        </h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
           variant="outlined"
-          label="Export"
+          :label="useLocalization('reports._common.actions.export')"
           class="border border-primary-border text-primary"
           @click="popover.toggle($event)"
         >
@@ -93,14 +97,14 @@ const popover = ref();
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .pdf"
+              :label="useLocalization('reports._common.actions.export_pdf')"
               :loading="isDownloading"
               @click="report_downloadPDF('financial-report', 'tax-and-service-summary')"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .csv"
+              :label="useLocalization('reports._common.actions.export_csv')"
               :loading="export_isloading"
               @click="handleExportToCsv"
             />
@@ -123,7 +127,7 @@ const popover = ref();
             :options="outlet_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Outlet"
+            :placeholder="useLocalization('reports._common.filters.select_outlet')"
             class="col-span-1 w-full"
             filter
             @change="report_getFinancialReport('tax-and-service-summary')"
@@ -138,7 +142,7 @@ const popover = ref();
             :options="staff_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Staff"
+            :placeholder="useLocalization('reports._common.filters.select_staff')"
             filter
             class="col-span-1 w-full"
             @change="report_getFinancialReport('tax-and-service-summary')"

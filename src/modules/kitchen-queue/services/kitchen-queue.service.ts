@@ -42,7 +42,7 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
 
   // Meter value to track current page and total pages for horizontal scroll
   const kitchenQueue_meterValue = ref({
-    meter: { value: 1, label: '', color: 'var(--p-primary-hover-color)' },
+    meter: { value: 1, label: '', color: '#f3631d' },
     max: 1,
   });
 
@@ -215,7 +215,7 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
 
       console.log(
         `Chunk ${chunk.invoiceId} at column ${currentCol} with height ${height}, total height now ${colHeights[currentCol]}`,
-      )
+      );
 
       kitchenQueue_columns.value[currentCol].push(chunk);
       colHeights[currentCol] += height;
@@ -320,7 +320,7 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
     columnData: {
       index: number;
       itemIndex: number;
-    }
+    },
   ) => {
     kitchenQueue_handleUpdateStatus(
       queueReferenceId,
@@ -396,7 +396,7 @@ export const useKitchenQueue = (): IKitchenQueueProvided => {
     columnData: {
       index: number;
       itemIndex: number;
-    }
+    },
   ) => {
     try {
       // Find the invoice in the state and update its status

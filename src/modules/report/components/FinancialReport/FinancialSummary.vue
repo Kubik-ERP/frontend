@@ -23,20 +23,27 @@ const {
   report_downloadPDF,
   dialogDownload_onClose,
 } = useReportService();
+
 const popover = ref();
 // composables for export pdf
 import { useReportExporter } from '../../composables/useReportExporter';
+
 const { exportToCsv } = useReportExporter();
+
 const handleExportToCsv = () => {
   exportToCsv({
-    reportName: 'Financial Report - Financial Summary',
+    reportName: `Financial Report - Financial Summary Report`,
     storeName: hasAccessAllStorePermission
+      // FIX: Use _common
       ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
       : outlet_currentOutlet.value!.name,
     storeAddress: hasAccessAllStorePermission
+      // FIX: Use _common
       ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
       : outlet_currentOutlet.value!.address,
-    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
+    // FIX: Use _common
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff',
+    
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_profitAndLost_columns,
     tableData: formattedDataTable(),
@@ -46,47 +53,48 @@ const handleExportToCsv = () => {
 const formattedDataTable = () => {
   return [
     {
-      description: 'Gross Sales',
+      description: useLocalization('reports.financial.summary.rows.gross_sales'),
       nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.penjualanKotor }),
     },
     {
-      description: 'Discount',
+      description: useLocalization('reports.financial.summary.rows.discount'),
       nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.diskon }),
     },
     {
-      description: 'Refund',
+      description: useLocalization('reports.financial.summary.rows.refund'),
       nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.refund }),
     },
     {
-      description: 'Net Sales',
+      description: useLocalization('reports.financial.summary.rows.net_sales'),
       nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.penjualanBersih }),
     },
     {
-      description: 'Tax',
+      description: useLocalization('reports.financial.summary.rows.tax'),
       nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.pajak }),
     },
     {
-      description: 'Service Charge',
+      description: useLocalization('reports.financial.summary.rows.service_charge'),
       nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.biayaLayanan }),
     },
     {
-      description: 'Rounding',
+      description: useLocalization('reports.financial.summary.rows.rounding'),
       nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.pembulatan }),
     },
     {
-      description: 'Voucher Used',
+      description: useLocalization('reports.financial.summary.rows.voucher_used'),
       nominal: useCurrencyFormat({
         data: report_profitAndLost_values.value?.sales?.penggunaanVoucher,
         hidePrefix: true,
       }),
     },
     {
-      description: 'Net Total',
+      description: useLocalization('reports.financial.summary.rows.net_total'),
       nominal: useCurrencyFormat({ data: report_profitAndLost_values.value?.sales?.nettTotal }),
     },
   ];
 };
 </script>
+
 <template>
   <section>
     <DownloadingDialog v-model:visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
@@ -100,12 +108,14 @@ const formattedDataTable = () => {
       is-using-custom-footer
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Financial Summary</h1>
+        <h1 class="font-bold text-2xl text-text-primary">
+          {{ useLocalization('reports.financial.summary.title') }}
+        </h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
           variant="outlined"
-          label="Export"
+          :label="useLocalization('reports._common.actions.export')"
           class="border border-primary-border text-primary"
           @click="popover.toggle($event)"
         >
@@ -123,14 +133,14 @@ const formattedDataTable = () => {
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .pdf"
+              :label="useLocalization('reports._common.actions.export_pdf')"
               :loading="isDownloading"
               @click="report_downloadPDF('financial-report', 'financial-summary')"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .csv"
+              :label="useLocalization('reports._common.actions.export_csv')"
               @click="handleExportToCsv"
             />
           </section>
@@ -152,7 +162,7 @@ const formattedDataTable = () => {
             :options="outlet_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Outlet"
+            :placeholder="useLocalization('reports._common.filters.select_outlet')"
             class="col-span-1 w-full"
             filter
             @change="report_getFinancialReport('financial-summary')"
@@ -167,7 +177,7 @@ const formattedDataTable = () => {
             :options="staff_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Staff"
+            :placeholder="useLocalization('reports._common.filters.select_staff')"
             filter
             class="col-span-1 w-full"
             @change="report_getFinancialReport('financial-summary')"
