@@ -1,38 +1,42 @@
 <script setup lang="ts">
+import { ref, computed, watch, markRaw } from 'vue';
+
 // components
 import FinancialSummary from '../components/FinancialReport/FinancialSummary.vue';
 import DiscountReport from '../components/FinancialReport/Discount.vue';
 import PaymentMethodReport from '../components/FinancialReport/PaymentMethodReport.vue';
 import TaxandServiceChargeReport from '../components/FinancialReport/TaxandServiceChargeReport.vue';
 
+// service
+import { useReportService } from '../services/report.service';
+const { report_getFinancialReport } = useReportService();
+
 // types
 const financialReport_activeTab = ref<string>('financial-summary-report');
-const financialReport_listTabs = ref<ITabs[]>([
+
+// 1. Changed to 'computed' so labels update instantly when language changes
+const financialReport_listTabs = computed<ITabs[]>(() => [
   {
     component: markRaw(FinancialSummary),
-    label: 'Financial Summary',
+    label: useLocalization('reports.financial.tabs.summary'), // "Financial Summary" / "Ringkasan Keuangan"
     value: 'financial-summary-report',
   },
   {
     component: markRaw(DiscountReport),
-    label: 'Discount Report',
+    label: useLocalization('reports.financial.tabs.discount'), // "Discount Report" / "Laporan Diskon"
     value: 'DISCOUNT-REPORT',
   },
   {
     component: markRaw(PaymentMethodReport),
-    label: 'Payment Method Report',
+    label: useLocalization('reports.financial.tabs.payment_method'), // "Payment Method Report" / "Laporan Metode Pembayaran"
     value: 'payment-method-report',
   },
   {
     component: markRaw(TaxandServiceChargeReport),
-    label: 'Tax & Service Charge Report',
+    label: useLocalization('reports.financial.tabs.tax_service'), // "Tax & Service Charge Report" / "Laporan Pajak & Layanan"
     value: 'tax-and-service-charge-report',
   },
 ]);
-
-// service
-import { useReportService } from '../services/report.service';
-const { report_getFinancialReport } = useReportService();
 
 watch(
   financialReport_activeTab,
@@ -64,6 +68,7 @@ watch(
   },
 );
 </script>
+
 <template>
   <section id="point-configuration" class="flex flex-col relative inset-0 z-0">
     <AppBaseTabs v-model:value="financialReport_activeTab" :items="financialReport_listTabs" />

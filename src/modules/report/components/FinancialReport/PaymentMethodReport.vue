@@ -31,14 +31,15 @@ const popover = ref();
 
 const handleExportToCsv = () => {
   exportToCsv({
-    reportName: 'Financial Report - Payment Method Report',
+    // Translated Report Name
+    reportName: `Financial Report - ${useLocalization('reports.financial.payment_method.title')}`,
     storeName: hasAccessAllStorePermission
-      ? findOutletDetail(report_queryParams.store_ids!)?.name || 'All Stores'
+      ? findOutletDetail(report_queryParams.store_ids!)?.name || useLocalization('reports.financial.summary.filters.all_stores')
       : outlet_currentOutlet.value!.name,
     storeAddress: hasAccessAllStorePermission
-      ? findOutletDetail(report_queryParams.store_ids!)?.address || 'All Stores'
+      ? findOutletDetail(report_queryParams.store_ids!)?.address || useLocalization('reports.financial.summary.filters.all_stores')
       : outlet_currentOutlet.value!.address,
-    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || 'All Staff Member',
+    staffMember: findStaffDetail(report_queryParams.staff_ids!)?.name || useLocalization('reports.financial.summary.filters.all_staff'),
     period: `${useFormatDate(report_queryParams.startDate, 'dd/MMM/yyyy')} - ${useFormatDate(report_queryParams.endDate, 'dd/MMM/yyyy')}`,
     columns: financialReport_paymentMethod_columns,
     tableData: formattedDataTable(),
@@ -46,7 +47,6 @@ const handleExportToCsv = () => {
 };
 
 const formattedDataTable = () => {
-  // const newData = {}
   const newData = report_paymentMethod_values.value?.paymentList?.reportData.map(item => {
     return {
       paymentMethod: item.paymentMethod,
@@ -54,8 +54,12 @@ const formattedDataTable = () => {
       nominal: useCurrencyFormat({ data: item.nominal }),
     };
   });
+  
+  // NOTE: 'Total' here is likely a keyword you want to translate, 
+  // but be careful if your backend relies on this string being 'Total'.
+  // If it's just for display:
   newData?.push({
-    paymentMethod: 'Total',
+    paymentMethod: useLocalization('reports._common.columns.total') || 'Total', // Assuming you added "total" to _common
     transaction: useCurrencyFormat({
       data: report_paymentMethod_values.value?.paymentList?.totals?.transaction as number,
       hidePrefix: true,
@@ -66,6 +70,7 @@ const formattedDataTable = () => {
   return newData || [];
 };
 </script>
+
 <template>
   <DownloadingDialog v-model:visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
 
@@ -75,7 +80,7 @@ const formattedDataTable = () => {
         <table class="w-full">
           <tbody>
             <tr class="bg-secondary/10">
-              <th class="text-left p-1.5">Total Transaction</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.financial.payment_method.summary_cards.total_transaction') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
@@ -86,25 +91,25 @@ const formattedDataTable = () => {
               </td>
             </tr>
             <tr>
-              <th class="text-left p-1.5">Gross Sales</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.financial.payment_method.summary_cards.gross_sales') }}</th>
               <td class="text-right p-1.5">
                 {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.pendapatanKotor }) }}
               </td>
             </tr>
             <tr class="bg-secondary/10">
-              <th class="text-left p-1.5">Total Refund</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.financial.payment_method.summary_cards.total_refund') }}</th>
               <td class="text-right p-1.5">
                 {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.totalRefund }) }}
               </td>
             </tr>
             <tr>
-              <th class="text-left p-1.5">Voucher Used</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.financial.payment_method.summary_cards.voucher_used') }}</th>
               <td class="text-right p-1.5">
                 {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.totalPenggunaanVoucher }) }}
               </td>
             </tr>
             <tr class="bg-secondary/10">
-              <th class="text-left p-1.5">Nett Sales</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.financial.payment_method.summary_cards.net_sales') }}</th>
               <td class="text-right p-1.5">
                 {{ useCurrencyFormat({ data: report_paymentMethod_values.simpleWidget?.nettSummary }) }}
               </td>
@@ -113,6 +118,7 @@ const formattedDataTable = () => {
         </table>
       </template>
     </PrimeVueCard>
+
     <AppBaseDataTable
       :data="formattedDataTable()"
       :columns="financialReport_paymentMethod_columns"
@@ -123,12 +129,14 @@ const formattedDataTable = () => {
       is-using-custom-footer
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Payment Method Report</h1>
+        <h1 class="font-bold text-2xl text-text-primary">
+          {{ useLocalization('reports.financial.payment_method.title') }}
+        </h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
           variant="outlined"
-          label="Export"
+          :label="useLocalization('reports._common.actions.export')"
           class="border border-primary-border text-primary"
           @click="popover.toggle($event)"
         >
@@ -146,14 +154,14 @@ const formattedDataTable = () => {
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .pdf"
+              :label="useLocalization('reports._common.actions.export_pdf')"
               :loading="isDownloading"
               @click="report_downloadPDF('financial-report', 'payment-summary')"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .csv"
+              :label="useLocalization('reports._common.actions.export_csv')"
               :loading="export_isloading"
               @click="handleExportToCsv"
             />
@@ -176,7 +184,7 @@ const formattedDataTable = () => {
             :options="outlet_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Outlet"
+            :placeholder="useLocalization('reports._common.filters.select_outlet')"
             class="col-span-1 w-full"
             filter
             @change="report_getFinancialReport('payment-summary')"
@@ -191,7 +199,7 @@ const formattedDataTable = () => {
             :options="staff_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Staff"
+            :placeholder="useLocalization('reports._common.filters.select_staff')"
             filter
             class="col-span-1 w-full"
             @change="report_getFinancialReport('payment-summary')"

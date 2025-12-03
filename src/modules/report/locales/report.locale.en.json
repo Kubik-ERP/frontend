@@ -16,45 +16,117 @@
         }
       },
       "close": "Close"
+    },
+    "date_picker": {
+      "title": "Date Filter",
+      "labels": {
+        "start_date": "Start Date",
+        "end_date": "End Date",
+        "real_time": "Real Time"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "apply": "Apply"
+      },
+      "shortcuts": {
+        "today": "Today",
+        "yesterday": "Yesterday",
+        "this_week": "This Week",
+        "last_week": "Last Week",
+        "this_month": "This Month",
+        "last_month": "Last Month",
+        "last_7_days": "Last 7 Days",
+        "last_30_days": "Last 30 Days",
+        "this_year": "This Year",
+        "last_year": "Last Year"
+      }
     }
   },
   "reports": {
     "_common": {
-      "title_suffix": "Report",
-      "summary_title": "Summary Overview",
       "actions": {
+        "export": "Export",
         "export_pdf": "Export PDF",
-        "export_excel": "Export Excel",
+        "export_csv": "Export CSV",
         "filter": "Filter"
       },
+      "filters": {
+        "date_range": "Date Range",
+        "select_outlet": "Select Outlet",
+        "select_staff": "Select Staff",
+        "all_stores": "All Stores",
+        "all_staff": "All Staff"
+      },
       "columns": {
+        "no": "No",
+        "description": "Description",
+        "nominal": "Nominal",
+        "amount": "Amount",
         "date": "Date",
-        "total": "Total",
-        "status": "Status"
+        "total": "Total"
       }
     },
     "financial": {
-      "title": "Financial",
-      "summary": {
-        "total_revenue": "Total Revenue",
-        "total_expense": "Total Expense",
-        "net_profit": "Net Profit"
+      "title": "Financial Report",
+      "tabs": {
+        "summary": "Financial Summary",
+        "discount": "Discount Report",
+        "payment_method": "Payment Method Report",
+        "tax_service": "Tax & Service Charge Report"
       },
-      "columns": {
-        "trans_id": "Transaction ID",
-        "amount": "Amount"
+      "summary": {
+        "title": "Financial Summary",
+        "rows": {
+          "gross_sales": "Gross Sales",
+          "discount": "Discount",
+          "refund": "Refund",
+          "net_sales": "Net Sales",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "rounding": "Rounding",
+          "voucher_used": "Voucher Used",
+          "net_total": "Net Total"
+        }
+      },
+      "discount": {
+        "title": "Discount Report",
+        "summary_cards": {
+          "total_discount": "Total Discount",
+          "total_price": "Total Price",
+          "total_discounted_item": "Total Discounted Item"
+        }
+      },
+      "payment_method": {
+        "title": "Payment Method Report",
+        "summary_cards": {
+          "total_transaction": "Total Transaction",
+          "gross_sales": "Gross Sales",
+          "total_refund": "Total Refund",
+          "voucher_used": "Voucher Used",
+          "net_sales": "Nett Sales"
+        },
+        "columns": {
+          "payment_method": "Payment Method",
+          "transaction": "Transaction",
+          "nominal": "Nominal"
+        }
+      },
+      "tax_service": {
+        "title": "Tax & Service Charge Report",
+        "columns": {
+          "type": "Type",
+          "rate": "Rate",
+          "subtotal_applied": "Subtotal Applied",
+          "nominal": "Nominal"
+        }
       }
     },
     "inventory": {
-      "title": "Inventory Stock",
-      "summary": {
-        "total_items": "Total Items",
-        "low_stock_count": "Low Stock Alert",
-        "total_valuation": "Total Valuation"
-      },
+      "title": "Inventory Report",
+      "tabs": null, 
       "columns": {
         "sku": "SKU",
-        "product": "Product"
+        "stock": "Current Stock"
       }
     }
   }

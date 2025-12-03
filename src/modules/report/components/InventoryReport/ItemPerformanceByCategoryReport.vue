@@ -84,7 +84,7 @@ const handleExportToCsv = () => {
       <template #header-suffix>
         <PrimeVueButton
           variant="outlined"
-          label="Export"
+          :label="useLocalization('reports._common.actions.export')"
           :disabled="formattedDataTable()?.length === 0"
           class="border border-primary-border text-primary"
           @click="popover.toggle($event)"
@@ -103,14 +103,14 @@ const handleExportToCsv = () => {
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .pdf"
+              :label="useLocalization('reports._common.actions.export_pdf')"
               :loading="isDownloading"
               @click="report_downloadPDF('inventory-report', 'item-performance-by-category')"
             />
             <PrimeVueButton
               class="w-full text-black font-normal px-4 py-3"
               variant="text"
-              label="Export to .csv"
+              :label="useLocalization('reports._common.actions.export_csv')"
               :loading="export_isloading"
               @click="handleExportToCsv"
             />

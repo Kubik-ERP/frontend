@@ -16,45 +16,117 @@
         }
       },
       "close": "Tutup"
+    },
+    "date_picker": {
+      "title": "Filter Tanggal",
+      "labels": {
+        "start_date": "Tanggal Mulai",
+        "end_date": "Tanggal Selesai",
+        "real_time": "Waktu Nyata"
+      },
+      "buttons": {
+        "cancel": "Batal",
+        "apply": "Terapkan"
+      },
+      "shortcuts": {
+        "today": "Hari Ini",
+        "yesterday": "Kemarin",
+        "this_week": "Minggu Ini",
+        "last_week": "Minggu Lalu",
+        "this_month": "Bulan Ini",
+        "last_month": "Bulan Lalu",
+        "last_7_days": "7 Hari Terakhir",
+        "last_30_days": "30 Hari Terakhir",
+        "this_year": "Tahun Ini",
+        "last_year": "Tahun Lalu"
+      }
     }
   },
   "reports": {
     "_common": {
-      "title_suffix": "Laporan",
-      "summary_title": "Ringkasan",
       "actions": {
+        "export": "Ekspor",
         "export_pdf": "Ekspor PDF",
-        "export_excel": "Ekspor Excel",
-        "filter": "Saring"
+        "export_csv": "Ekspor CSV",
+        "filter": "Filter"
+      },
+      "filters": {
+        "date_range": "Rentang Tanggal",
+        "select_outlet": "Pilih Outlet",
+        "select_staff": "Pilih Staf",
+        "all_stores": "Semua Toko",
+        "all_staff": "Semua Staf"
       },
       "columns": {
+        "no": "No",
+        "description": "Deskripsi",
+        "nominal": "Nominal",
+        "amount": "Jumlah",
         "date": "Tanggal",
-        "total": "Total",
-        "status": "Status"
+        "total": "Total"
       }
     },
     "financial": {
-      "title": "Keuangan",
-      "summary": {
-        "total_revenue": "Total Pendapatan",
-        "total_expense": "Total Pengeluaran",
-        "net_profit": "Laba Bersih"
+      "title": "Laporan Keuangan",
+      "tabs": {
+        "summary": "Ringkasan Keuangan",
+        "discount": "Laporan Diskon",
+        "payment_method": "Laporan Metode Pembayaran",
+        "tax_service": "Laporan Pajak & Layanan"
       },
-      "columns": {
-        "trans_id": "ID Transaksi",
-        "amount": "Jumlah"
+      "summary": {
+        "title": "Ringkasan Keuangan",
+        "rows": {
+          "gross_sales": "Penjualan Kotor",
+          "discount": "Diskon",
+          "refund": "Pengembalian Dana",
+          "net_sales": "Penjualan Bersih",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "rounding": "Pembulatan",
+          "voucher_used": "Voucher Digunakan",
+          "net_total": "Total Bersih"
+        }
+      },
+      "discount": {
+        "title": "Laporan Diskon",
+        "summary_cards": {
+          "total_discount": "Total Diskon",
+          "total_price": "Total Harga",
+          "total_discounted_item": "Total Barang Terdiskon"
+        }
+      },
+      "payment_method": {
+        "title": "Laporan Metode Pembayaran",
+        "summary_cards": {
+          "total_transaction": "Total Transaksi",
+          "gross_sales": "Penjualan Kotor",
+          "total_refund": "Total Pengembalian Dana",
+          "voucher_used": "Voucher Digunakan",
+          "net_sales": "Penjualan Bersih"
+        },
+        "columns": {
+          "payment_method": "Metode Pembayaran",
+          "transaction": "Transaksi",
+          "nominal": "Nominal"
+        }
+      },
+      "tax_service": {
+        "title": "Laporan Pajak & Biaya Layanan",
+        "columns": {
+          "type": "Tipe",
+          "rate": "Tarif",
+          "subtotal_applied": "Subtotal Diterapkan",
+          "nominal": "Nominal"
+        }
       }
     },
     "inventory": {
-      "title": "Stok Inventaris",
-      "summary": {
-        "total_items": "Total Barang",
-        "low_stock_count": "Peringatan Stok Rendah",
-        "total_valuation": "Total Valuasi"
-      },
+      "title": "Laporan Inventaris",
+      "tabs": null,
       "columns": {
         "sku": "SKU",
-        "product": "Produk"
+        "stock": "Stok Saat Ini"
       }
     }
   }
