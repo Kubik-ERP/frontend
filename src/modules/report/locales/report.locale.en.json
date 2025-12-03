@@ -414,6 +414,17 @@
           "total_commission": "Total Commission"
         }
       }
+    },
+    "customer": {
+      "title": "Customer Report",
+      "columns": {
+        "name": "Name",
+        "gender": "Gender",
+        "total_sales": "Total Sales",
+        "date_added": "Date Added",
+        "outstanding": "Outstanding",
+        "loyalty_points": "Loyalty Points"
+      }
     }
   }
 }

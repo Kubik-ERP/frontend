@@ -414,6 +414,17 @@
           "total_commission": "Total Komisi"
         }
       }
+    },
+    "customer": {
+      "title": "Laporan Pelanggan",
+      "columns": {
+        "name": "Nama",
+        "gender": "Jenis Kelamin",
+        "total_sales": "Total Penjualan",
+        "date_added": "Tanggal Ditambahkan",
+        "outstanding": "Tunggakan",
+        "loyalty_points": "Poin Loyalitas"
+      }
     }
   }
 }
