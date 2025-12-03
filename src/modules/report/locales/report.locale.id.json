@@ -1,1 +1,61 @@
-{}
+{
+  "components": {
+    "download_dialog": {
+      "status": {
+        "downloading": {
+          "title": "Sedang Mengunduh...",
+          "message": "Berkas Anda sedang disiapkan. Harap tunggu."
+        },
+        "success": {
+          "title": "Unduhan Selesai",
+          "message": "Berkas Anda telah berhasil diunduh."
+        },
+        "error": {
+          "title": "Unduhan Gagal",
+          "message": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi."
+        }
+      },
+      "close": "Tutup"
+    }
+  },
+  "reports": {
+    "_common": {
+      "title_suffix": "Laporan",
+      "summary_title": "Ringkasan",
+      "actions": {
+        "export_pdf": "Ekspor PDF",
+        "export_excel": "Ekspor Excel",
+        "filter": "Saring"
+      },
+      "columns": {
+        "date": "Tanggal",
+        "total": "Total",
+        "status": "Status"
+      }
+    },
+    "financial": {
+      "title": "Keuangan",
+      "summary": {
+        "total_revenue": "Total Pendapatan",
+        "total_expense": "Total Pengeluaran",
+        "net_profit": "Laba Bersih"
+      },
+      "columns": {
+        "trans_id": "ID Transaksi",
+        "amount": "Jumlah"
+      }
+    },
+    "inventory": {
+      "title": "Stok Inventaris",
+      "summary": {
+        "total_items": "Total Barang",
+        "low_stock_count": "Peringatan Stok Rendah",
+        "total_valuation": "Total Valuasi"
+      },
+      "columns": {
+        "sku": "SKU",
+        "product": "Produk"
+      }
+    }
+  }
+}
