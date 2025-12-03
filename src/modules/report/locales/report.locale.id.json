@@ -121,6 +121,140 @@
         }
       }
     },
+    "sales": {
+      "title": "Laporan Penjualan",
+      "tabs": {
+        "item": "Barang",
+        "category": "Kategori",
+        "customer": "Pelanggan",
+        "staff": "Staf",
+        "day": "Hari",
+        "month": "Bulan",
+        "quarter": "Kuartal",
+        "year": "Tahun"
+      },
+      "summary_widget": {
+        "qty_sold": "Jumlah Terjual",
+        "gross_sales": "Penjualan Kotor",
+        "tax": "Pajak",
+        "service_charge": "Biaya Layanan",
+        "discount": "Diskon",
+        "net_sales": "Penjualan Bersih",
+        "voucher_used": "Voucher Digunakan"
+      },
+      "item": {
+        "title": "Penjualan Berdasarkan Barang",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      },
+      "category": {
+        "title": "Penjualan Berdasarkan Kategori",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      },
+      "customer": {
+        "title": "Penjualan Berdasarkan Pelanggan",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      },
+      "staff": {
+        "title": "Penjualan Berdasarkan Staf",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      },
+      "day": {
+        "title": "Penjualan Berdasarkan Hari",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      },
+      "month": {
+        "title": "Penjualan Berdasarkan Bulan",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      },
+      "quarter": {
+        "title": "Penjualan Berdasarkan Kuartal",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      },
+      "year": {
+        "title": "Penjualan Berdasarkan Tahun",
+        "columns": {
+          "group": "Grup",
+          "qty_sold": "Jml Terjual",
+          "gross": "Kotor",
+          "item_discount": "Diskon Barang",
+          "refund": "Pengembalian",
+          "tax": "Pajak",
+          "service_charge": "Biaya Layanan",
+          "total_sales": "Total Penjualan",
+          "voucher_usage": "Penggunaan Voucher"
+        }
+      }
+    },
     "inventory": {
       "title": "Laporan Inventaris",
       "tabs": null,

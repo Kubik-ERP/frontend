@@ -121,6 +121,140 @@
         }
       }
     },
+    "sales": {
+      "title": "Sales Report",
+      "tabs": {
+        "item": "Item",
+        "category": "Category",
+        "customer": "Customer",
+        "staff": "Staff",
+        "day": "Day",
+        "month": "Month",
+        "quarter": "Quarter",
+        "year": "Year"
+      },
+      "summary_widget": {
+        "qty_sold": "Qty Sold",
+        "gross_sales": "Gross Sales",
+        "tax": "Tax",
+        "service_charge": "Service Charge",
+        "discount": "Discount",
+        "net_sales": "Nett Sales",
+        "voucher_used": "Voucher Used"
+      },
+      "item": {
+        "title": "Sales By Item",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      },
+      "category": {
+        "title": "Sales By Category",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      },
+      "customer": {
+        "title": "Sales By Customer",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      },
+      "staff": {
+        "title": "Sales By Staff",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      },
+      "day": {
+        "title": "Sales By Day",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      },
+      "month": {
+        "title": "Sales By Month",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      },
+      "quarter": {
+        "title": "Sales By Quarter",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      },
+      "year": {
+        "title": "Sales By Year",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      }
+    },
     "inventory": {
       "title": "Inventory Report",
       "tabs": null, 
