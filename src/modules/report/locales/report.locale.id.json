@@ -425,6 +425,95 @@
         "outstanding": "Tunggakan",
         "loyalty_points": "Poin Loyalitas"
       }
+    },
+    "loyalty_point": {
+      "title": "Laporan Poin Loyalitas",
+      "tabs": {
+        "spend_based": "Berdasarkan Pengeluaran",
+        "product_based": "Berdasarkan Produk",
+        "benefit_utilization": "Penggunaan Manfaat",
+        "expiry_warning": "Peringatan Kadaluarsa",
+        "type_accumulation": "Akumulasi Tipe"
+      },
+      "benefit_utilization": {
+        "title": "Laporan Penggunaan Manfaat",
+        "dashboard": {
+          "sum_all_points": "Jumlah Semua Poin",
+          "total_customer": "Total Pelanggan",
+          "sum_points_free_items": "Jumlah Poin Dipakai (Barang Gratis)",
+          "sum_points_discount": "Jumlah Poin Dipakai (Diskon)",
+          "sum_discount_amount": "Jumlah Nilai Diskon",
+          "sum_free_items": "Jumlah Barang Gratis"
+        },
+        "columns": {
+          "benefit_name": "Nama Manfaat",
+          "type": "Tipe",
+          "count_used": "Jumlah Dipakai",
+          "total_point_used": "Total Poin Dipakai",
+          "amount": "Jumlah"
+        }
+      },
+      "expiry_warning": {
+        "title": "Laporan Peringatan Kadaluarsa",
+        "dashboard": {
+          "sum_all_points": "Jumlah Semua Poin",
+          "total_customer": "Total Pelanggan"
+        },
+        "columns": {
+          "cust_name": "Nama Pelanggan",
+          "invoice": "Faktur",
+          "type": "Tipe",
+          "points": "Poin",
+          "expiry_date": "Tanggal Kadaluarsa"
+        }
+      },
+      "product_based": {
+        "title": "Laporan Berdasarkan Produk",
+        "dashboard": {
+          "sum_all_points": "Jumlah Semua Poin",
+          "sum_points_expired": "Jumlah Poin Kadaluarsa",
+          "total_customer": "Total Pelanggan",
+          "total_products_earning": "Total Produk Penghasil Manfaat"
+        },
+        "columns": {
+          "product_name": "Nama Produk",
+          "product_price": "Harga Produk",
+          "points_to_idr": "Poin ke IDR",
+          "sum_points_given": "Total Poin Diberikan ke Pelanggan",
+          "total_cust": "Total Pelanggan"
+        }
+      },
+      "spend_based": {
+        "title": "Laporan Berdasarkan Pengeluaran",
+        "dashboard": {
+          "sum_all_points": "Jumlah Semua Poin",
+          "sum_points_expired": "Jumlah Poin Kadaluarsa",
+          "total_customer": "Total Pelanggan",
+          "total_invoices": "Total Faktur"
+        },
+        "columns": {
+          "invoice_id": "ID Faktur",
+          "purchase_date": "Tanggal Pembelian",
+          "customer": "Pelanggan",
+          "grand_total": "Total Keseluruhan",
+          "order_type": "Tipe Pesanan",
+          "total_points_earned": "Total Poin Diperoleh",
+          "point_expiry_date": "Tanggal Kadaluarsa Poin"
+        }
+      },
+      "type_accumulation": {
+        "title": "Laporan Akumulasi Tipe",
+        "dashboard": {
+          "sum_all_points": "Jumlah Semua Poin",
+          "sum_points_expired": "Jumlah Poin Kadaluarsa",
+          "total_customer": "Total Pelanggan"
+        },
+        "columns": {
+          "type": "Tipe",
+          "sum_total_points": "Total Poin",
+          "total_customers": "Total Pelanggan"
+        }
+      }
     }
   }
 }

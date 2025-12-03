@@ -425,6 +425,95 @@
         "outstanding": "Outstanding",
         "loyalty_points": "Loyalty Points"
       }
+    },
+    "loyalty_point": {
+      "title": "Loyalty Point Report",
+      "tabs": {
+        "spend_based": "Spend Based",
+        "product_based": "Product Based",
+        "benefit_utilization": "Benefit Utilization",
+        "expiry_warning": "Expiry Warning",
+        "type_accumulation": "Type Accumulation"
+      },
+      "benefit_utilization": {
+        "title": "Benefit Utilization Report",
+        "dashboard": {
+          "sum_all_points": "Sum of All Points",
+          "total_customer": "Total Customer",
+          "sum_points_free_items": "Sum of Points Used By Free Items",
+          "sum_points_discount": "Sum of Points Used By Discount",
+          "sum_discount_amount": "Sum of Discount Amount",
+          "sum_free_items": "Sum of Free Items"
+        },
+        "columns": {
+          "benefit_name": "Benefit Name",
+          "type": "Type",
+          "count_used": "Count Used",
+          "total_point_used": "Total Point Used",
+          "amount": "Amount"
+        }
+      },
+      "expiry_warning": {
+        "title": "Expiry Warning Report",
+        "dashboard": {
+          "sum_all_points": "Sum of All Points",
+          "total_customer": "Total Customer"
+        },
+        "columns": {
+          "cust_name": "Customer Name",
+          "invoice": "Invoice",
+          "type": "Type",
+          "points": "Points",
+          "expiry_date": "Expiry Date"
+        }
+      },
+      "product_based": {
+        "title": "Product Based Report",
+        "dashboard": {
+          "sum_all_points": "Sum of All Points",
+          "sum_points_expired": "Sum of All points Expired",
+          "total_customer": "Total Customer",
+          "total_products_earning": "Total Products For Earning Benefit"
+        },
+        "columns": {
+          "product_name": "Product Name",
+          "product_price": "Product Price",
+          "points_to_idr": "Points To IDR",
+          "sum_points_given": "Sum of Points Given to Cust",
+          "total_cust": "Total Cust"
+        }
+      },
+      "spend_based": {
+        "title": "Spend Based Report",
+        "dashboard": {
+          "sum_all_points": "Sum of All Points",
+          "sum_points_expired": "Sum of All points Expired",
+          "total_customer": "Total Customer",
+          "total_invoices": "Total Invoices"
+        },
+        "columns": {
+          "invoice_id": "Invoice ID",
+          "purchase_date": "Purchase Date",
+          "customer": "Customer",
+          "grand_total": "Grand Total",
+          "order_type": "Order Type",
+          "total_points_earned": "Total Points Earned",
+          "point_expiry_date": "Point Expiry Date"
+        }
+      },
+      "type_accumulation": {
+        "title": "Type Accumulation Report",
+        "dashboard": {
+          "sum_all_points": "Sum of All Points",
+          "sum_points_expired": "Sum of All points Expired",
+          "total_customer": "Total Customer"
+        },
+        "columns": {
+          "type": "Type",
+          "sum_total_points": "Sum Total Points",
+          "total_customers": "Total Customers"
+        }
+      }
     }
   }
 }

@@ -26,6 +26,7 @@ const { exportToCsv, export_isloading } = useReportExporter();
 const popover = ref();
 
 const handleExportToCsv = () => {
+  // RULE APPLIED: No localization inside exportToCsv parameters
   exportToCsv({
     reportName: 'Loyalty Point Report - Benefit Utilization',
     storeName: hasAccessAllStorePermission
@@ -61,6 +62,7 @@ const onChangePage = (newPage: number) => {
   page.value = newPage;
 };
 </script>
+
 <template>
   <DownloadingDialog :visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
   <section class="flex flex-col gap-4">
@@ -69,7 +71,7 @@ const onChangePage = (newPage: number) => {
         <table class="w-full">
           <tbody>
             <tr class="bg-secondary/10">
-              <th class="text-left p-1.5">Sum of All Points</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.loyalty_point.benefit_utilization.dashboard.sum_all_points') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
@@ -80,7 +82,7 @@ const onChangePage = (newPage: number) => {
               </td>
             </tr>
             <tr>
-              <th class="text-left p-1.5">Total Customer</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.loyalty_point.benefit_utilization.dashboard.total_customer') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
@@ -91,19 +93,19 @@ const onChangePage = (newPage: number) => {
               </td>
             </tr>
             <tr class="bg-secondary/10">
-              <th class="text-left p-1.5">Sum of Points Used By Free Items</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.loyalty_point.benefit_utilization.dashboard.sum_points_free_items') }}</th>
               <td class="text-right p-1.5">
                 {{ loyaltyPointReport_benefitUtilization_values?.dashboard?.sumPointsUsedByType?.free_items || 0 }}
               </td>
             </tr>
             <tr class="">
-              <th class="text-left p-1.5">Sum of Points Used By Discount</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.loyalty_point.benefit_utilization.dashboard.sum_points_discount') }}</th>
               <td class="text-right p-1.5">
                 {{ loyaltyPointReport_benefitUtilization_values?.dashboard?.sumPointsUsedByType?.discount || 0 }}
               </td>
             </tr>
             <tr class="bg-secondary/10">
-              <th class="text-left p-1.5">Sum of Discount Amount</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.loyalty_point.benefit_utilization.dashboard.sum_discount_amount') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
@@ -114,7 +116,7 @@ const onChangePage = (newPage: number) => {
               </td>
             </tr>
             <tr class="">
-              <th class="text-left p-1.5">Sum of Free Items</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.loyalty_point.benefit_utilization.dashboard.sum_free_items') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
@@ -140,7 +142,9 @@ const onChangePage = (newPage: number) => {
       @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Benefit Utilization</h1>
+        <h1 class="font-bold text-2xl text-text-primary">
+          {{ useLocalization('reports.loyalty_point.benefit_utilization.title') }}
+        </h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
@@ -186,7 +190,7 @@ const onChangePage = (newPage: number) => {
             :options="outlet_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Outlet"
+            :placeholder="useLocalization('reports._common.filters.select_outlet')"
             class="col-span-1 w-full"
             filter
             @change="report_getLoyaltyPointReport('benefit-utilization')"

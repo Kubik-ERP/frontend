@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref, computed, watch, markRaw, onMounted } from 'vue';
+
 // components
 import benefitUtilization from '../components/LoyaltyPointReport/benefitUtilization.vue';
 import expiryWarning from '../components/LoyaltyPointReport/expiryWarning.vue';
@@ -11,34 +13,32 @@ import { useReportService } from '../services/report.service';
 const { report_getLoyaltyPointReport } = useReportService();
 
 const loyaltyPointReport_activeTab = ref<string>('spend-based-report');
-const loyaltyPointReport_listTabs = ref<ITabs[]>([
+
+// 1. Changed to 'computed' for instant translation updates
+const loyaltyPointReport_listTabs = computed<ITabs[]>(() => [
   {
     component: markRaw(spendBased),
-    label: 'Spend Based',
+    label: useLocalization('reports.loyalty_point.tabs.spend_based'),
     value: 'spend-based-report',
   },
-  // product-based
   {
     component: markRaw(productBased),
-    label: 'Product Based',
+    label: useLocalization('reports.loyalty_point.tabs.product_based'),
     value: 'product-based-report',
   },
-  // benefit-utilization
   {
     component: markRaw(benefitUtilization),
-    label: 'Benefit Utilization',
+    label: useLocalization('reports.loyalty_point.tabs.benefit_utilization'),
     value: 'benefit-utilization-report',
   },
-  // expiry-warning
   {
     component: markRaw(expiryWarning),
-    label: 'Expiry Warning',
+    label: useLocalization('reports.loyalty_point.tabs.expiry_warning'),
     value: 'expiry-warning-report',
   },
-  // type-accumulation
   {
     component: markRaw(typeAccumulation),
-    label: 'Type Accumulation',
+    label: useLocalization('reports.loyalty_point.tabs.type_accumulation'),
     value: 'type-accumulation-report',
   },
 ]);
@@ -78,6 +78,7 @@ onMounted(async () => {
   await report_getLoyaltyPointReport('spend-based');
 });
 </script>
+
 <template>
   <section id="loyalty-point-report" class="flex flex-col relative inset-0 z-0">
     <AppBaseTabs v-model:value="loyaltyPointReport_activeTab" :items="loyaltyPointReport_listTabs" />

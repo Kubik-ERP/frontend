@@ -25,6 +25,7 @@ import { useReportExporter } from '../../composables/useReportExporter';
 const { exportToCsv, export_isloading } = useReportExporter();
 const popover = ref();
 const handleExportToCsv = () => {
+  // RULE APPLIED: No localization inside exportToCsv parameters
   exportToCsv({
     reportName: 'Loyalty Point Report - Spend Based',
     storeName: hasAccessAllStorePermission
@@ -62,6 +63,7 @@ const onChangePage = (newPage: number) => {
   page.value = newPage;
 };
 </script>
+
 <template>
   <DownloadingDialog :visible="isDialogVisible" :status="downloadStatus" @reset="dialogDownload_onClose" />
   <section class="flex flex-col gap-4">
@@ -70,7 +72,7 @@ const onChangePage = (newPage: number) => {
         <table class="w-full">
           <tbody>
             <tr class="bg-secondary/10">
-              <th class="text-left p-1.5">Sum of All Points</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.loyalty_point.spend_based.dashboard.sum_all_points') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
@@ -81,7 +83,7 @@ const onChangePage = (newPage: number) => {
               </td>
             </tr>
             <tr>
-              <th class="text-left p-1.5">Sum of All points Expired</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.loyalty_point.spend_based.dashboard.sum_points_expired') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
@@ -92,7 +94,7 @@ const onChangePage = (newPage: number) => {
               </td>
             </tr>
             <tr class="bg-secondary/10">
-              <th class="text-left p-1.5">Total Customer</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.loyalty_point.spend_based.dashboard.total_customer') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
@@ -103,7 +105,7 @@ const onChangePage = (newPage: number) => {
               </td>
             </tr>
             <tr>
-              <th class="text-left p-1.5">Total Invoices</th>
+              <th class="text-left p-1.5">{{ useLocalization('reports.loyalty_point.spend_based.dashboard.total_invoices') }}</th>
               <td class="text-right p-1.5">
                 {{
                   useCurrencyFormat({
@@ -129,7 +131,9 @@ const onChangePage = (newPage: number) => {
       @update:currentPage="onChangePage"
     >
       <template #header-prefix>
-        <h1 class="font-bold text-2xl text-text-primary">Spend Based</h1>
+        <h1 class="font-bold text-2xl text-text-primary">
+          {{ useLocalization('reports.loyalty_point.spend_based.title') }}
+        </h1>
       </template>
       <template #header-suffix>
         <PrimeVueButton
@@ -175,7 +179,7 @@ const onChangePage = (newPage: number) => {
             :options="outlet_lists_options"
             option-label="label"
             option-value="value"
-            placeholder="Select Outlet"
+            :placeholder="useLocalization('reports._common.filters.select_outlet')"
             class="col-span-1 w-full"
             filter
             @change="report_getLoyaltyPointReport('spend-based')"
