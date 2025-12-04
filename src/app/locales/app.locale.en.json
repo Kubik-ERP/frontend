@@ -90,7 +90,8 @@
       "loyalty-point": "Loyalty Point",
       "rounding": "Rounding",
       "tax-service-charge": "Tax & Service Charge",
-      "invoice": "Invoice"
+      "invoice": "Invoice",
+      "transfer-stock": "Transfer Stock"
     },
 
     "menu-categories": {

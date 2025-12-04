@@ -51,6 +51,9 @@ const PERMISSION_ROUTES_MAPPING: Record<TPermissions, string[]> = {
   ],
   manage_staff_attendance: ['/staff/attendance', '/staff/working-hours'],
 
+  // Transfer Stock
+  manage_transfer_stock: ['/transfer-stock', '/transfer-stock/create', '/transfer-stock/:id/detail', '/transfer-stock/:id/edit', '/transfer-stock/:id/shipping-document'],
+
   // Cash management
   set_up_cash_drawer: ['/cash-drawer'],
   close_cash_register: ['/cash-drawer'],

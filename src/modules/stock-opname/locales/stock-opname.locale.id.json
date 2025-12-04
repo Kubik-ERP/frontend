@@ -14,7 +14,8 @@
       "itemListTitle": "Daftar Barang",
       "verifiedDateLabel": "Tanggal Diverifikasi",
       "searchPlaceholder": "Cari berdasarkan SKU/Nama Barang atau Pindai Barcode",
-      "issueRecordButton": "Keluarkan Catatan Stok Opname",
+      "recalculateButton": "Hitung Ulang",
+      "issueRecordButton": "Terbitkan Catatan",
       "verifyReportButton": "Verifikasi Laporan",
       "cancelButton": "Batalkan Stok Opname"
     },
@@ -27,7 +28,7 @@
       "searchPlaceholder": "Cari berdasarkan SKU/Nama Barang atau Pindai Barcode",
       "addNotesButton": "Tambah Catatan",
       "saveDraftButton": "Simpan sebagai Draf",
-      "issueButton": "Buat Stok Opname",
+      "issueButton": "Terbitkan Stok Opname",
       "cancelButton": "Batal"
     },
     "notesDialog": {
@@ -36,6 +37,33 @@
       "placeholder": "Masukkan catatan Anda di sini...",
       "cancelButton": "Batal",
       "saveButton": "Simpan Catatan"
+    },
+    "toast": {
+      "createSuccess": "Stok Opname berhasil dibuat.",
+      "updateSuccess": "Stok Opname berhasil diperbarui.",
+      "cancelSuccess": "Stok Opname berhasil dibatalkan.",
+      "verifySuccess": "Stok Opname berhasil diverifikasi.",
+      "invalidBarcode": "Barcode tidak valid dan tidak ada tindakan yang dilakukan"
+    },
+    "dialog": {
+      "delete": {
+        "title": "Apakah Anda yakin ingin membatalkan proses pencatatan stok opname ini?",
+        "description": "Tindakan ini akan menghentikan pencatatan saat ini dan menghapus semua data yang belum disimpan atau draf.",
+        "cancelButton": "Batal",
+        "confirmButton": "Batalkan Stok Opname"
+      },
+      "issue": {
+        "title": "Apakah Anda yakin ingin menerbitkan catatan stok opname ini?",
+        "description": "Tindakan ini akan mengirim catatan untuk tinjauan dan verifikasi lebih lanjut. Pastikan semua jumlah barang dan detail akurat sebelum melanjutkan.",
+        "confirmButton": "Terbitkan Catatan",
+        "cancelButton": "Batal"
+      },
+      "verify": {
+        "title": "Apakah Anda yakin ingin memverifikasi catatan stok opname ini?",
+        "description": "Tindakan ini akan menandakan bahwa semua data stok telah ditinjau dan disetujui. Tindakan ini bersifat final dan tidak dapat diubah setelahnya.",
+        "confirmButton": "Verifikasi Catatan",
+        "cancelButton": "Batal"
+      }
     }
   }
 }

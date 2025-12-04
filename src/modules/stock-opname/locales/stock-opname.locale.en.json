@@ -7,7 +7,7 @@
     },
     "detailPage": {
       "title": "Details",
-      "recordLabel": "Stock Opname record",
+      "recordLabel": "Stock Opname Record",
       "issueDateLabel": "Issue Date",
       "performedByLabel": "Performed By",
       "itemListTitle": "Item List",
@@ -15,7 +15,7 @@
       "statusLabel": "Status",
       "searchPlaceholder": "Search by SKU/Item Name or Scan Barcode",
       "recalculateButton": "Recalculate",
-      "issueRecordButton": "Issue Stock Opname",
+      "issueRecordButton": "Issue Record",
       "verifyReportButton": "Verify Report",
       "cancelButton": "Cancel Stock Opname"
     },
@@ -37,6 +37,33 @@
       "placeholder": "Enter your notes here...",
       "cancelButton": "Cancel",
       "saveButton": "Save Notes"
+    },
+    "toast": {
+      "createSuccess": "Stock Opname has been created successfully.",
+      "updateSuccess": "Stock Opname has been updated successfully.",
+      "cancelSuccess": "Stock Opname has been cancelled successfully.",
+      "verifySuccess": "Stock Opname has been verified successfully.",
+      "invalidBarcode": "Invalid barcode and do nothing"
+    },
+    "dialog": {
+      "delete": {
+        "title": "Are you sure you want to cancel this stock opname record process?",
+        "description": "This action will stop the current recording and discard any unsaved or draft data.",
+        "cancelButton": "Cancel",
+        "confirmButton": "Cancel Stock Opname"
+      },
+      "issue": {
+        "title": "Are you sure you want to issue this stock opname record?",
+        "description": "This action will send the record for further review and verification. Make sure all item counts and details are accurate before proceeding.",
+        "confirmButton": "Issue Record",
+        "cancelButton": "Cancel"
+      },
+      "verify": {
+        "title": "Are you sure you want to verify this stock opname record?",
+        "description": "This action will indicating that all stock data has been reviewed and approved. This action is final and cannot be edited afterward.",
+        "confirmButton": "Verify Record",
+        "cancelButton": "Cancel"
+      }
     }
   }
 }
