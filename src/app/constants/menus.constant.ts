@@ -208,6 +208,11 @@ export const LIST_SIDEBAR_MENUS = [
             translationKey: 'app.menus.storage-location',
             path: '/storage-location',
           },
+          {
+            name: 'Transfer Stock',
+            translationKey: 'app.menus.transfer-stock',
+            path: '/transfer-stock'
+          }
         ],
       },
       {
