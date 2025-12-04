@@ -175,9 +175,10 @@ onMounted(async () => {
   <footer v-if="stockOpname_detail.status !== 'verified'" class="flex items-center justify-between py-8">
     <div class="flex items-center gap-2">
       <router-link :to="{ name: 'stock-opname.create', params: { id: stockOpname_detail.id } }">
-        <PrimeVueButton variant="outlined" :label="useLocalization('stockOpname.detailPage.recalculateButton')" />
+        <PrimeVueButton variant="outlined" class="bg-white text-primary border-primary hover:bg-primary hover:text-white" :label="useLocalization('stockOpname.detailPage.recalculateButton')" />
       </router-link>
       <PrimeVueButton
+        class="bg-primary text-white border-primary hover:bg-primary/50 hover:border-primary-hover"
         :label="
           stockOpname_detail.status === 'draft'
             ? useLocalization('stockOpname.detailPage.issueRecordButton')

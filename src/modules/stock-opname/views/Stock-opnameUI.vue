@@ -56,7 +56,8 @@ const hasPermission = rbac.hasPermission('manage_stock_opname');
     </template>
     <template #header-suffix>
       <router-link v-if="hasPermission" :to="{ name: 'stock-opname.create', params: { id: 'new' } }">
-        <PrimeVueButton class="w-fit" :label="useLocalization('stockOpname.listPage.issueButton')">
+        <PrimeVueButton class="w-fit bg-primary text-white border-primary hover:bg-primary/50 hover:border-primary-hover"
+        :label="useLocalization('stockOpname.listPage.issueButton')">
           <template #icon>
             <AppBaseSvg name="plus-line-white" class="!w-5 !h-5" />
           </template>
