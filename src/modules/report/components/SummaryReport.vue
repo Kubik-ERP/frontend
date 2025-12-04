@@ -16,39 +16,54 @@ const props = defineProps({
   },
 });
 </script>
+
 <template>
   <PrimeVueCard>
     <template #content>
       <table class="w-full">
         <tbody>
           <tr class="bg-secondary/10">
-            <th class="text-left p-1.5">Qty Sold</th>
+            <th class="text-left p-1.5">
+              {{ useLocalization('reports.sales.summary_widget.qty_sold') }}
+            </th>
             <td class="text-right p-1.5">
               {{ useCurrencyFormat({ data: props.summary?.jumlahTerjual, hidePrefix: true }) }}
             </td>
           </tr>
           <tr>
-            <th class="text-left p-1.5">Gross Sales</th>
+            <th class="text-left p-1.5">
+              {{ useLocalization('reports.sales.summary_widget.gross_sales') }}
+            </th>
             <td class="text-right p-1.5">{{ useCurrencyFormat({ data: props.summary?.kotor }) }}</td>
           </tr>
           <tr class="bg-secondary/10">
-            <th class="text-left p-1.5">Tax</th>
+            <th class="text-left p-1.5">
+              {{ useLocalization('reports.sales.summary_widget.tax') }}
+            </th>
             <td class="text-right p-1.5">{{ useCurrencyFormat({ data: props.summary?.pajak }) }}</td>
           </tr>
           <tr>
-            <th class="text-left p-1.5">Service Charge</th>
+            <th class="text-left p-1.5">
+              {{ useLocalization('reports.sales.summary_widget.service_charge') }}
+            </th>
             <td class="text-right p-1.5">{{ useCurrencyFormat({ data: props.summary?.biayaLayanan }) }}</td>
           </tr>
           <tr class="bg-secondary/10">
-            <th class="text-left p-1.5">Discount</th>
+            <th class="text-left p-1.5">
+              {{ useLocalization('reports.sales.summary_widget.discount') }}
+            </th>
             <td class="text-right p-1.5">{{ useCurrencyFormat({ data: props.summary?.diskonItem }) }}</td>
           </tr>
           <tr>
-            <th class="text-left p-1.5">Nett Sales</th>
+            <th class="text-left p-1.5">
+              {{ useLocalization('reports.sales.summary_widget.net_sales') }}
+            </th>
             <td class="text-right p-1.5">{{ useCurrencyFormat({ data: props.summary?.totalPenjualan }) }}</td>
           </tr>
           <tr class="bg-secondary/10">
-            <th class="text-left p-1.5">Voucher Used</th>
+            <th class="text-left p-1.5">
+              {{ useLocalization('reports.sales.summary_widget.voucher_used') }}
+            </th>
             <td class="text-right p-1.5">
               {{ useCurrencyFormat({ data: props.summary?.countPenggunaanVoucher, hidePrefix: true }) }}
             </td>
