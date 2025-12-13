@@ -71,19 +71,29 @@ const { outletCreateEdit_formData } = inject<IOutletCreateEditProvided>('outletC
             <section id="close-time" class="col-span-full lg:col-span-6 flex flex-col items-center gap-2">
               <label for="close-time" class="font-semibold text-black text-sm">Close Time</label>
 
-              <PrimeVueInputGroup>
-                <PrimeVueDatePicker
-                  id="datepicker-close-time"
-                  v-model="timeSlot.closeTime"
-                  class="w-full"
-                  fluid
-                  time-only
-                />
+              <div class="flex items-center gap-2 w-full">
+                <PrimeVueInputGroup>
+                  <PrimeVueDatePicker
+                    id="datepicker-close-time"
+                    v-model="timeSlot.closeTime"
+                    class="w-full"
+                    fluid
+                    time-only
+                  />
 
-                <PrimeVueInputGroupAddon>
-                  <AppBaseSvg name="clock" class="w-5 h-6 filter-primary-color" />
-                </PrimeVueInputGroupAddon>
-              </PrimeVueInputGroup>
+                  <PrimeVueInputGroupAddon>
+                    <AppBaseSvg name="clock" class="w-5 h-6 filter-primary-color" />
+                  </PrimeVueInputGroupAddon>
+                </PrimeVueInputGroup>
+
+                <PrimeVueButton v-if="day.timeSlots.length > 1" variant="text" rounded aria-label="detail" class="!w-12 !h-10" @click="() => {
+                  day.timeSlots.splice(timeSlotIndex, 1)
+                }">
+                  <template #icon>
+                    <AppBaseSvg name="delete" class="w-5 h-5" />
+                  </template>
+                </PrimeVueButton>
+              </div>
             </section>
           </template>
         </section>

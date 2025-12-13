@@ -160,7 +160,8 @@ declare global {
     | 'edit_invoice'
     | 'payment_rounding_setting'
     | 'integration'
-    | 'recipe_management';
+    | 'recipe_management'
+    | 'manage_transfer_stock';
 
   interface IPropsDialog {
     id: string;

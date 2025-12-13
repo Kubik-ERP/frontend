@@ -112,10 +112,12 @@ export const LIST_SIDEBAR_MENUS = [
           },
           {
             name: 'Staff Report',
+            translationKey: 'app.menus.staff-report',
             path: '/report/staff-report',
           },
           {
             name: 'Customer Report',
+            translationKey: 'app.menus.customer-report',
             path: '/report/customer-report',
           },
           // {
@@ -124,6 +126,7 @@ export const LIST_SIDEBAR_MENUS = [
           // },
           {
             name: 'Loyalty Point Report',
+            translationKey: 'app.menus.loyalty-point-report',
             path: '/report/loyalty-point-report',
           }
         ],
@@ -208,6 +211,11 @@ export const LIST_SIDEBAR_MENUS = [
             translationKey: 'app.menus.storage-location',
             path: '/storage-location',
           },
+          {
+            name: 'Transfer Stock',
+            translationKey: 'app.menus.transfer-stock',
+            path: '/transfer-stock'
+          }
         ],
       },
       {

@@ -20,6 +20,9 @@ import { EOutletBusinessType, IOutletCreateEditFormData, IOutletCreateEditProvid
 // Plugins
 import eventBus from '@/plugins/mitt';
 
+// Services
+import { useAuthenticationSignInService } from '@/modules/authentication/services/authentication-sign-in.service';
+
 // Stores
 import { useOutletStore } from '../store';
 
@@ -37,6 +40,7 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
   const route = useRoute(); // Instance of the router
   const router = useRouter(); // Instance of the router
   const store = useOutletStore(); // Instance of the store
+  const { authenticationSignIn_fetchAuthenticationPermissions } = useAuthenticationSignInService();
   const { outlet_detail, outlet_isLoading } = storeToRefs(store);
   const { httpAbort_registerAbort } = useHttpAbort();
 
@@ -427,6 +431,8 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
 
       // Reset form and validations after successful submission
       outletCreateEdit_onResetForm();
+      await authenticationSignIn_fetchAuthenticationPermissions();
+
       router.push({ name: 'outlet.list' });
 
       // Reset PIN data before showing dialog
@@ -464,6 +470,7 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
       // Reset form and validations after successful submission
       outletCreateEdit_onResetForm();
       outletCreateEdit_onCloseDialogVerifyPIN();
+      await authenticationSignIn_fetchAuthenticationPermissions();
       router.push({ name: 'outlet.list' });
     } catch (error: unknown) {
       if (error instanceof Error) {

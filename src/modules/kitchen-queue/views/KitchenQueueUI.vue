@@ -69,7 +69,7 @@ provide<IKitchenQueueProvided>('kitchenQueue', {
             </template>
             <template v-else>
               <div class="flex flex-col items-center justify-center h-full gap-2">
-                <AppBaseSvg name="queue" class="!w-14 !h-14 text-gray-400" />
+                <AppBaseSvg name="queue" class="!w-14 !h-14 text-gray-400 filter-primary-color" />
                 <div class="text-center">
                   <p class="text-lg text-gray-500">No queue available</p>
                   <p class="text-base text-gray-400">Please wait for new orders to be added.</p>

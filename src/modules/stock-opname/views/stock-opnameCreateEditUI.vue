@@ -47,7 +47,7 @@ const handleBarcodeScan = () => {
   if (!barcode) return;
 
   const foundItem = stockOpname_detail.value.stockOpnameItems.find(
-    item => item.masterInventoryItems?.barcode === barcode
+    item => item.masterInventoryItems?.barcode === barcode,
   );
 
   if (foundItem) {
@@ -57,7 +57,7 @@ const handleBarcodeScan = () => {
     eventBus.emit('AppBaseToast', {
       isOpen: true,
       type: EToastType.WARNING,
-      message: 'Invalid barcode and do nothing',
+      message: useLocalization('stockOpname.toast.invalidBarcode'),
       position: EToastPosition.TOP_RIGHT,
     });
   }
@@ -118,7 +118,9 @@ onMounted(async () => {
     is-using-custom-header-suffix
   >
     <template #header-prefix>
-      <h1 class="font-bold text-2xl text-text-primary">{{ useLocalization('stockOpname.createEditPage.itemListTitle') }}</h1>
+      <h1 class="font-bold text-2xl text-text-primary">
+        {{ useLocalization('stockOpname.createEditPage.itemListTitle') }}
+      </h1>
     </template>
     <template #header-suffix>
       <!-- input search -->
@@ -127,7 +129,11 @@ onMounted(async () => {
           <PrimeVueInputIcon>
             <AppBaseSvg name="search" class="!w-4 !h-4" />
           </PrimeVueInputIcon>
-          <PrimeVueInputText v-model="search" :placeholder="useLocalization('stockOpname.createEditPage.searchPlaceholder')" @keydown.enter.prevent="handleBarcodeScan" />
+          <PrimeVueInputText
+            v-model="search"
+            :placeholder="useLocalization('stockOpname.createEditPage.searchPlaceholder')"
+            @keydown.enter.prevent="handleBarcodeScan"
+          />
         </PrimeVueIconField>
       </div>
     </template>
@@ -233,10 +239,15 @@ onMounted(async () => {
     <div class="flex items-center gap-2">
       <PrimeVueButton
         variant="outlined"
+        class="bg-white text-primary border border-primary"
         :label="useLocalization('stockOpname.createEditPage.saveDraftButton')"
         @click="stockOpname_onSubmitCreateEdit(false, stockOpname_id)"
       />
-      <PrimeVueButton :label="useLocalization('stockOpname.createEditPage.issueButton')" @click="stockOpname_onSubmitCreateEdit(true, stockOpname_id)" />
+      <PrimeVueButton
+        :label="useLocalization('stockOpname.createEditPage.issueButton')"
+        class="bg-primary text-white border-primary hover:bg-primary/50 hover:border-primary-hover"
+        @click="stockOpname_onSubmitCreateEdit(true, stockOpname_id)"
+      />
     </div>
     <router-link :to="{ name: 'stock-opname.index' }">
       <PrimeVueButton variant="text" :label="useLocalization('stockOpname.createEditPage.cancelButton')" />

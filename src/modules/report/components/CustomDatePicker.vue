@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
 const props = defineProps({
   startDate: {
     type: Date,
@@ -14,9 +16,8 @@ const props = defineProps({
     default: 'time',
   },
   shouldUpdateType: {
-    // ✅ ADD THIS PROP
     type: Boolean,
-    default: true, // Defaults to 'true' to avoid breaking other pages
+    default: true,
   },
 });
 
@@ -26,18 +27,23 @@ const dialogVisible = ref<boolean>(false);
 
 const gmt = 0;
 
-// ✅ 1. Use a single ref for the date range array
+// 1. Use a single ref for the date range array
 const localDateRange = ref<[Date, Date] | null>([props.startDate, props.endDate]);
 const type = ref<string | null>(props.type);
 
-// Watch props to update the local state
-// watch(
-//   () => [props.startDate, props.endDate],
-//   ([newStart, newEnd]) => {
-//     localDateRange.value = [newStart, newEnd];
-//   },
-//   { immediate: true },
-// );
+// 2. Define the shortcuts with stable Keys and Translation paths
+const shortcuts = [
+  { key: 'today', labelKey: 'components.date_picker.shortcuts.today' },
+  { key: 'yesterday', labelKey: 'components.date_picker.shortcuts.yesterday' },
+  { key: 'this_week', labelKey: 'components.date_picker.shortcuts.this_week' },
+  { key: 'this_month', labelKey: 'components.date_picker.shortcuts.this_month' },
+  { key: 'last_week', labelKey: 'components.date_picker.shortcuts.last_week' },
+  { key: 'last_30_days', labelKey: 'components.date_picker.shortcuts.last_30_days' },
+  { key: 'last_month', labelKey: 'components.date_picker.shortcuts.last_month' },
+  { key: 'last_7_days', labelKey: 'components.date_picker.shortcuts.last_7_days' },
+  { key: 'this_year', labelKey: 'components.date_picker.shortcuts.this_year' },
+  { key: 'last_year', labelKey: 'components.date_picker.shortcuts.last_year' },
+];
 
 // The "Apply" button now emits the changes from the range array
 const applyDateChange = () => {
@@ -71,144 +77,118 @@ const cancelDateChange = () => {
   dialogVisible.value = false;
 };
 
-const onClickShortcut = (label: string) => {
+const onClickShortcut = (key: string) => {
   let today = new Date(Date.now() + gmt * 60 * 60 * 1000);
   let start = new Date(Date.now() + gmt * 60 * 60 * 1000);
   let end = new Date(Date.now() + gmt * 60 * 60 * 1000);
   let newType = '';
 
-  switch (label) {
-    case 'Today': {
+  switch (key) {
+    case 'today': {
       today = new Date(Date.now() + gmt * 60 * 60 * 1000);
       start = today;
-
       end = today;
-
       newType = 'time';
-
       break;
     }
 
-    case 'Yesterday': {
+    case 'yesterday': {
       const yesterday = new Date(Date.now() - (24 - gmt) * 60 * 60 * 1000);
       start = yesterday;
-
       end = yesterday;
-
       newType = 'time';
-
       break;
     }
 
-    case 'This Week': {
+    case 'this_week': {
       today = new Date(Date.now() + gmt * 60 * 60 * 1000);
-
       const firstDayOfWeek = new Date(today);
       // Assuming Sunday is the first day of the week (day 0)
       firstDayOfWeek.setDate(today.getDate() - today.getDay());
-
       start = firstDayOfWeek;
       end = new Date(firstDayOfWeek.getTime() + 6 * 24 * 60 * 60 * 1000);
-
       newType = 'days';
       break;
     }
 
-    case 'This Month': {
+    case 'this_month': {
       today = new Date(Date.now() + gmt * 60 * 60 * 1000);
-
-      // start = new Date(today.getFullYear(), today.getMonth(), 1);
       start = new Date(today.setDate(1));
       end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
       end.setHours(end.getHours() + gmt);
-
       newType = 'days';
       break;
     }
 
-    case 'Last Week': {
+    case 'last_week': {
       today = new Date(Date.now() + gmt * 60 * 60 * 1000);
-
       const firstDayOfWeek = new Date(today);
-      // Assuming Sunday is the first day of the week (day 0)
       firstDayOfWeek.setDate(today.getDate() - today.getDay() - 7);
-
       start = firstDayOfWeek;
       end = new Date(firstDayOfWeek.getTime() + 6 * 24 * 60 * 60 * 1000);
-
       newType = 'days';
       break;
     }
 
-    case 'Last 30 Days': {
+    case 'last_30_days': {
       today = new Date(Date.now() + gmt * 60 * 60 * 1000);
-
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(today.getDate() - 30);
       thirtyDaysAgo.setHours(thirtyDaysAgo.getHours() + gmt);
-
       start = thirtyDaysAgo;
       end = today;
-
       newType = 'days';
       break;
     }
 
-    case 'Last Month': {
+    case 'last_month': {
       today = new Date(Date.now() + gmt * 60 * 60 * 1000);
-
       const firstDayOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
       firstDayOfLastMonth.setHours(firstDayOfLastMonth.getHours() + gmt);
       const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
       lastDayOfLastMonth.setHours(lastDayOfLastMonth.getHours() + gmt);
-
       start = firstDayOfLastMonth;
       end = lastDayOfLastMonth;
       newType = 'days';
       break;
     }
 
-    case 'Last 7 Days': {
+    case 'last_7_days': {
       today = new Date(Date.now() + gmt * 60 * 60 * 1000);
-
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(today.getDate() - 7);
       sevenDaysAgo.setHours(sevenDaysAgo.getHours() + 7);
-
       start = sevenDaysAgo;
       end = today;
       newType = 'days';
       break;
     }
 
-    case 'This Year': {
+    case 'this_year': {
       today = new Date(Date.now() + gmt * 60 * 60 * 1000);
-
       const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
       firstDayOfYear.setHours(firstDayOfYear.getHours() + gmt);
       const lastDayOfYear = new Date(today.getFullYear(), 11, 31);
       lastDayOfYear.setHours(lastDayOfYear.getHours() + gmt);
-
       start = firstDayOfYear;
       end = lastDayOfYear;
       newType = 'month';
       break;
     }
 
-    case 'Last Year': {
+    case 'last_year': {
       today = new Date(Date.now() + gmt * 60 * 60 * 1000);
-
       const firstDayOfLastYear = new Date(today.getFullYear() - 1, 0, 1);
       firstDayOfLastYear.setHours(firstDayOfLastYear.getHours() + gmt);
       const lastDayOfLastYear = new Date(today.getFullYear() - 1, 11, 31);
       lastDayOfLastYear.setHours(lastDayOfLastYear.getHours() + gmt);
-
       start = firstDayOfLastYear;
       end = lastDayOfLastYear;
       newType = 'month';
       break;
     }
   }
+  
   localDateRange.value = [start, end];
   type.value = newType;
 
@@ -225,6 +205,7 @@ const onClickShortcut = (label: string) => {
   dialogVisible.value = false;
 };
 </script>
+
 <template>
   <section class="w-full">
     <PrimeVueButton
@@ -234,16 +215,17 @@ const onClickShortcut = (label: string) => {
     >
       <template #default>
         <section class="flex items-center justify-between gap-2 w-full">
-          <span class="text-text-disabled">Real Time</span>
+          <span class="text-text-disabled">{{ useLocalization('components.date_picker.labels.real_time') }}</span>
           <div class="flex items-center gap-2">
-            <span class="text-text-primary"
-              >{{ useFormatDate(startDate, 'dd/mm/yyyy') }} - {{ useFormatDate(endDate, 'dd/mm/yyyy') }}</span
-            >
+            <span class="text-text-primary">
+              {{ useFormatDate(startDate, 'dd/mm/yyyy') }} - {{ useFormatDate(endDate, 'dd/mm/yyyy') }}
+            </span>
             <span class="text-text-disabled">
               <AppBaseSvg name="calendarBlank" class="!w-5 !h-5 filter-primary-color" />
             </span>
-          </div></section
-      ></template>
+          </div>
+        </section>
+      </template>
     </PrimeVueButton>
 
     <PrimeVueDialog
@@ -253,13 +235,17 @@ const onClickShortcut = (label: string) => {
       class="w-full max-w-2xl"
     >
       <template #header>
-        <h5 class="font-semibold text-black text-xl">Date Filter</h5>
+        <h5 class="font-semibold text-black text-xl">
+          {{ useLocalization('components.date_picker.title') }}
+        </h5>
       </template>
       <template #default>
         <section class="flex flex-col gap-4">
           <section id="date-range" class="flex gap-8 flex-wrap">
             <div class="flex flex-col w-full">
-              <label class="text-sm" for="start-date">Start Date</label>
+              <label class="text-sm" for="start-date">
+                {{ useLocalization('components.date_picker.labels.start_date') }}
+              </label>
               <PrimeVueDatePicker
                 v-model="localDateRange![0]"
                 date-format="dd/mm/yy"
@@ -269,7 +255,9 @@ const onClickShortcut = (label: string) => {
               />
             </div>
             <div class="flex flex-col w-full">
-              <label class="text-sm" for="end-date">End Date</label>
+              <label class="text-sm" for="end-date">
+                {{ useLocalization('components.date_picker.labels.end_date') }}
+              </label>
               <PrimeVueDatePicker
                 v-model="localDateRange![1]"
                 date-format="dd/mm/yy"
@@ -285,23 +273,12 @@ const onClickShortcut = (label: string) => {
           <section id="shortcut-button">
             <div id="shortcut-button" class="grid grid-cols-1 md:grid-cols-2 gap-2">
               <PrimeVueButton
-                v-for="label in [
-                  'Today',
-                  'Yesterday',
-                  'This Month',
-                  'Last Month',
-                  'This Week',
-                  'Last Week',
-                  'This Year',
-                  'Last Year',
-                  'Last 7 Days',
-                  'Last 30 Days',
-                ]"
-                :key="label"
+                v-for="shortcut in shortcuts"
+                :key="shortcut.key"
                 variant="text"
                 class="w-full px-3 py-2 border border-solid border-grayscale-20 text-primary hover:bg-secondary"
-                :label="label"
-                @click="onClickShortcut(label)"
+                :label="useLocalization(shortcut.labelKey)"
+                @click="onClickShortcut(shortcut.key)"
               />
             </div>
           </section>
@@ -309,13 +286,17 @@ const onClickShortcut = (label: string) => {
       </template>
       <template #footer>
         <PrimeVueButton
-          label="Cancel"
+          :label="useLocalization('components.date_picker.buttons.cancel')"
           severity="secondary"
           variant="outlined"
           class="border-primary-border text-primary"
           @click="cancelDateChange"
         />
-        <PrimeVueButton label="Apply" class="bg-primary border-none" @click="applyDateChange" />
+        <PrimeVueButton
+          :label="useLocalization('components.date_picker.buttons.apply')"
+          class="bg-primary border-none"
+          @click="applyDateChange"
+        />
       </template>
     </PrimeVueDialog>
   </section>

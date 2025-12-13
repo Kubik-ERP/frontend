@@ -1,1 +1,519 @@
-{}
+{
+  "components": {
+    "download_dialog": {
+      "status": {
+        "downloading": {
+          "title": "Downloading...",
+          "message": "Your file is being prepared. Please wait."
+        },
+        "success": {
+          "title": "Download Complete",
+          "message": "Your file has been successfully downloaded."
+        },
+        "error": {
+          "title": "Download Failed",
+          "message": "An unexpected error occurred. Please try again."
+        }
+      },
+      "close": "Close"
+    },
+    "date_picker": {
+      "title": "Date Filter",
+      "labels": {
+        "start_date": "Start Date",
+        "end_date": "End Date",
+        "real_time": "Real Time"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "apply": "Apply"
+      },
+      "shortcuts": {
+        "today": "Today",
+        "yesterday": "Yesterday",
+        "this_week": "This Week",
+        "last_week": "Last Week",
+        "this_month": "This Month",
+        "last_month": "Last Month",
+        "last_7_days": "Last 7 Days",
+        "last_30_days": "Last 30 Days",
+        "this_year": "This Year",
+        "last_year": "Last Year"
+      }
+    }
+  },
+  "reports": {
+    "_common": {
+      "actions": {
+        "export": "Export",
+        "export_pdf": "Export PDF",
+        "export_csv": "Export CSV",
+        "filter": "Filter"
+      },
+      "filters": {
+        "date_range": "Date Range",
+        "select_outlet": "Select Outlet",
+        "select_staff": "Select Staff",
+        "all_stores": "All Stores",
+        "all_staff": "All Staff"
+      },
+      "columns": {
+        "no": "No",
+        "description": "Description",
+        "nominal": "Nominal",
+        "amount": "Amount",
+        "date": "Date",
+        "total": "Total"
+      }
+    },
+    "financial": {
+      "title": "Financial Report",
+      "tabs": {
+        "summary": "Financial Summary",
+        "discount": "Discount Report",
+        "payment_method": "Payment Method Report",
+        "tax_service": "Tax & Service Charge Report"
+      },
+      "summary": {
+        "title": "Financial Summary",
+        "rows": {
+          "gross_sales": "Gross Sales",
+          "discount": "Discount",
+          "refund": "Refund",
+          "net_sales": "Net Sales",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "rounding": "Rounding",
+          "voucher_used": "Voucher Used",
+          "net_total": "Net Total"
+        }
+      },
+      "discount": {
+        "title": "Discount Report",
+        "summary_cards": {
+          "total_discount": "Total Discount",
+          "total_price": "Total Price",
+          "total_discounted_item": "Total Discounted Item"
+        }
+      },
+      "payment_method": {
+        "title": "Payment Method Report",
+        "summary_cards": {
+          "total_transaction": "Total Transaction",
+          "gross_sales": "Gross Sales",
+          "total_refund": "Total Refund",
+          "voucher_used": "Voucher Used",
+          "net_sales": "Nett Sales"
+        },
+        "columns": {
+          "payment_method": "Payment Method",
+          "transaction": "Transaction",
+          "nominal": "Nominal"
+        }
+      },
+      "tax_service": {
+        "title": "Tax & Service Charge Report",
+        "columns": {
+          "type": "Type",
+          "rate": "Rate",
+          "subtotal_applied": "Subtotal Applied",
+          "nominal": "Nominal"
+        }
+      }
+    },
+    "sales": {
+      "title": "Sales Report",
+      "tabs": {
+        "item": "Item",
+        "category": "Category",
+        "customer": "Customer",
+        "staff": "Staff",
+        "day": "Day",
+        "month": "Month",
+        "quarter": "Quarter",
+        "year": "Year"
+      },
+      "summary_widget": {
+        "qty_sold": "Qty Sold",
+        "gross_sales": "Gross Sales",
+        "tax": "Tax",
+        "service_charge": "Service Charge",
+        "discount": "Discount",
+        "net_sales": "Nett Sales",
+        "voucher_used": "Voucher Used"
+      },
+      "item": {
+        "title": "Sales By Item",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      },
+      "category": {
+        "title": "Sales By Category",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      },
+      "customer": {
+        "title": "Sales By Customer",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      },
+      "staff": {
+        "title": "Sales By Staff",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      },
+      "day": {
+        "title": "Sales By Day",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      },
+      "month": {
+        "title": "Sales By Month",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      },
+      "quarter": {
+        "title": "Sales By Quarter",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      },
+      "year": {
+        "title": "Sales By Year",
+        "columns": {
+          "group": "Group",
+          "qty_sold": "Qty Sold",
+          "gross": "Gross",
+          "item_discount": "Item Discount",
+          "refund": "Refund",
+          "tax": "Tax",
+          "service_charge": "Service Charge",
+          "total_sales": "Total Sales",
+          "voucher_usage": "Voucher Usage"
+        }
+      }
+    },
+    "inventory": {
+      "title": "Inventory Report",
+      "tabs": {
+        "movement_ledger": "Movement Ledger",
+        "current_stock": "Current Stock Overview",
+        "po_variance": "PO Receiving Variance",
+        "slow_dead_stock": "Slow Dead Stock",
+        "item_performance": "Item Performance",
+        "item_performance_category": "Item Performance By Category",
+        "item_performance_brand": "Item Performance By Brand"
+      },
+      "movement_ledger": {
+        "title": "Movement Ledger Report",
+        "columns": {
+          "date": "Date",
+          "item_name": "Item Name",
+          "adjustment_type": "Adjustment Type",
+          "adjustment_qty": "Adjustment Qty",
+          "new_stock_qty": "New Stock Qty",
+          "notes": "Notes"
+        }
+      },
+      "current_stock": {
+        "title": "Current Stock Overview Report",
+        "rows": {
+          "total_on_hand": "Total On Hand",
+          "total_stock_cost": "Total Stock Cost",
+          "average_stock_cost": "Average Stock Cost",
+          "total_retail_price": "Total Retail Price"
+        }
+      },
+      "po_variance": {
+        "title": "PO Receiving Variance Report",
+        "columns": {
+          "po_id": "PO ID",
+          "item": "Item",
+          "qty_po": "Qty PO",
+          "qty_actual": "Qty Actual",
+          "qty_diff": "Qty Diff",
+          "item_price": "Item Price",
+          "var_price": "Var Price"
+        }
+      },
+      "slow_dead_stock": {
+        "title": "Slow Dead Stock Report",
+        "columns": {
+          "item": "Item",
+          "on_hand": "On Hand",
+          "last_stock_updated": "Last Stock Updated",
+          "days_idle": "Days Idle"
+        }
+      },
+      "item_performance": {
+        "title": "Item Performance Report",
+        "columns": {
+          "item_name": "Item Name",
+          "stock_qty": "Stock Qty",
+          "total_stock_value": "Total Stock Value",
+          "total_movements_count": "Total Movements Count",
+          "total_qty_out": "Total Qty Out"
+        }
+      },
+      "item_performance_category": {
+        "title": "Item Performance By Category",
+        "columns": {
+          "category": "Category",
+          "item_count": "Item Count",
+          "total_stock_value": "Total Stock Value",
+          "total_movements_count": "Total Movements Count",
+          "total_qty_out": "Total Qty Out"
+        }
+      },
+      "item_performance_brand": {
+        "title": "Item Performance By Brand",
+        "columns": {
+          "brand": "Brand",
+          "item_count": "Item Count",
+          "total_stock_value": "Total Stock Value",
+          "total_movements_count": "Total Movements Count",
+          "total_qty_out": "Total Qty Out"
+        }
+      }
+    },
+    "voucher": {
+      "title": "Voucher Report",
+      "columns": {
+        "voucher_name": "Voucher Name",
+        "promo_code": "Promo Code",
+        "validity_period": "Validity Period",
+        "status": "Status",
+        "total_usage": "Total Usage",
+        "total_quota": "Total Quota",
+        "remaining_quota": "Remaining Quota"
+      }
+    },
+    "staff": {
+      "title": "Staff Report",
+      "tabs": {
+        "commission": "Commission Report",
+        "individual": "Individual Report",
+        "commission_by_items": "Commission By Items",
+        "commission_by_voucher": "Commission By Voucher"
+      },
+      "commission": {
+        "title": "Staff Commission Report",
+        "dashboard": {
+          "total_staff": "Total Staff",
+          "total_invoices": "Total Invoices",
+          "total_revenue": "Total Revenue",
+          "total_item_commission": "Total Item Commission",
+          "total_voucher_commission": "Total Voucher Commission",
+          "grand_total_commission": "Grand Total Commission"
+        },
+        "columns": {
+          "staff_name": "Staff Name",
+          "total_invoices": "Total Invoices",
+          "total_items_sold": "Total Items Sold",
+          "total_revenue": "Total Revenue",
+          "total_vouchers_used": "Total Vouchers Used",
+          "total_item_commission": "Total Item Commission",
+          "total_voucher_commission": "Total Voucher Commission",
+          "grand_total_commission": "Grand Total Commission"
+        }
+      },
+      "individual": {
+        "title": "Staff Individual Report",
+        "dashboard": {
+          "total_invoices_served": "Total Invoices Served",
+          "total_items_sold": "Total Items Sold",
+          "total_vouchers_used": "Total Vouchers Used",
+          "total_item_commission": "Total Item Commission",
+          "total_voucher_commission": "Total Voucher Commission",
+          "grand_total_commission": "Grand Total Commission"
+        },
+        "columns": {
+          "invoice_number": "Invoice Number",
+          "date": "Date",
+          "customer": "Customer",
+          "grand_total": "Grand Total",
+          "items_count": "Items Count",
+          "total_commission": "Total Commission"
+        }
+      },
+      "commission_by_items": {
+        "title": "Staff Commission By Items Report",
+        "columns": {
+          "item_name": "Item Name",
+          "item_price": "Item Price",
+          "total_commission_accumulated": "Total Commission Accumulated",
+          "average_commission_ratio": "Average Commission Ratio"
+        }
+      },
+      "commission_by_voucher": {
+        "title": "Staff Commission By Voucher Report",
+        "columns": {
+          "voucher_name": "Voucher Name",
+          "total_commission": "Total Commission"
+        }
+      }
+    },
+    "customer": {
+      "title": "Customer Report",
+      "columns": {
+        "name": "Name",
+        "gender": "Gender",
+        "total_sales": "Total Sales",
+        "date_added": "Date Added",
+        "outstanding": "Outstanding",
+        "loyalty_points": "Loyalty Points"
+      }
+    },
+    "loyalty_point": {
+      "title": "Loyalty Point Report",
+      "tabs": {
+        "spend_based": "Spend Based",
+        "product_based": "Product Based",
+        "benefit_utilization": "Benefit Utilization",
+        "expiry_warning": "Expiry Warning",
+        "type_accumulation": "Type Accumulation"
+      },
+      "benefit_utilization": {
+        "title": "Benefit Utilization Report",
+        "dashboard": {
+          "sum_all_points": "Sum of All Points",
+          "total_customer": "Total Customer",
+          "sum_points_free_items": "Sum of Points Used By Free Items",
+          "sum_points_discount": "Sum of Points Used By Discount",
+          "sum_discount_amount": "Sum of Discount Amount",
+          "sum_free_items": "Sum of Free Items"
+        },
+        "columns": {
+          "benefit_name": "Benefit Name",
+          "type": "Type",
+          "count_used": "Count Used",
+          "total_point_used": "Total Point Used",
+          "amount": "Amount"
+        }
+      },
+      "expiry_warning": {
+        "title": "Expiry Warning Report",
+        "dashboard": {
+          "sum_all_points": "Sum of All Points",
+          "total_customer": "Total Customer"
+        },
+        "columns": {
+          "cust_name": "Customer Name",
+          "invoice": "Invoice",
+          "type": "Type",
+          "points": "Points",
+          "expiry_date": "Expiry Date"
+        }
+      },
+      "product_based": {
+        "title": "Product Based Report",
+        "dashboard": {
+          "sum_all_points": "Sum of All Points",
+          "sum_points_expired": "Sum of All points Expired",
+          "total_customer": "Total Customer",
+          "total_products_earning": "Total Products For Earning Benefit"
+        },
+        "columns": {
+          "product_name": "Product Name",
+          "product_price": "Product Price",
+          "points_to_idr": "Points To IDR",
+          "sum_points_given": "Sum of Points Given to Cust",
+          "total_cust": "Total Cust"
+        }
+      },
+      "spend_based": {
+        "title": "Spend Based Report",
+        "dashboard": {
+          "sum_all_points": "Sum of All Points",
+          "sum_points_expired": "Sum of All points Expired",
+          "total_customer": "Total Customer",
+          "total_invoices": "Total Invoices"
+        },
+        "columns": {
+          "invoice_id": "Invoice ID",
+          "purchase_date": "Purchase Date",
+          "customer": "Customer",
+          "grand_total": "Grand Total",
+          "order_type": "Order Type",
+          "total_points_earned": "Total Points Earned",
+          "point_expiry_date": "Point Expiry Date"
+        }
+      },
+      "type_accumulation": {
+        "title": "Type Accumulation Report",
+        "dashboard": {
+          "sum_all_points": "Sum of All Points",
+          "sum_points_expired": "Sum of All points Expired",
+          "total_customer": "Total Customer"
+        },
+        "columns": {
+          "type": "Type",
+          "sum_total_points": "Sum Total Points",
+          "total_customers": "Total Customers"
+        }
+      }
+    }
+  }
+}

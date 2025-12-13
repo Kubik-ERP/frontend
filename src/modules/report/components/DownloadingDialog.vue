@@ -17,19 +17,16 @@ const emit = defineEmits<{
 // --- THIS IS THE CORRECTED LOGIC ---
 watch(
   () => props.status,
-  (newStatus) => {
+  newStatus => {
     // When the download is finished (either success or error)...
     if (newStatus === 'success' || newStatus === 'error') {
-      
       // Wait for the delay to show the message
       setTimeout(() => {
-        
         // 1. NOW tell the parent to reset its state for the next download
-        emit('reset'); 
-        
+        emit('reset');
+
         // 2. NOW close the dialog
         visible.value = false;
-
       }, 1500); // 1.5 second delay (you can make this longer or shorter)
     }
   },
@@ -48,21 +45,14 @@ watch(
   >
     <template #content>
       <!-- 1. DOWNLOADING STATE -->
-      <div
-        v-if="status === 'downloading'"
-        class="flex flex-col items-center justify-center gap-5 p-8 text-center"
-      >
-        <PrimeVueProgressSpinner
-          style="width: 50px; height: 50px"
-          stroke-width="4"
-          animation-duration="1.5s"
-        />
+      <div v-if="status === 'downloading'" class="flex flex-col items-center justify-center gap-5 p-8 text-center">
+        <PrimeVueProgressSpinner style="width: 50px; height: 50px" stroke-width="4" animation-duration="1.5s" />
         <div class="flex flex-col gap-1">
           <h2 class="text-xl font-semibold text-gray-900">
-            Downloading...
+            {{ useLocalization('components.download_dialog.status.downloading.title') }}
           </h2>
           <p class="text-gray-600">
-            Your file is being prepared. Please wait.
+            {{ useLocalization('components.download_dialog.status.downloading.message') }}
           </p>
         </div>
       </div>
@@ -73,43 +63,28 @@ watch(
         class="flex flex-col items-center justify-center gap-5 p-8 text-center"
       >
         <!-- Success Icon -->
-        <span
-          class="flex items-center justify-center w-16 h-16 rounded-full bg-green-100"
-        >
+        <span class="flex items-center justify-center w-16 h-16 rounded-full bg-green-100">
           <!--  -->
           <i class="pi pi-check text-4xl text-green-600"></i>
         </span>
 
         <div class="flex flex-col gap-1">
-          <h2 class="text-xl font-semibold text-gray-900">
-            Download Complete
-          </h2>
-          <p class="text-gray-600">
-            Your file has been successfully downloaded.
-          </p>
+          <h2 class="text-xl font-semibold text-gray-900">{{ useLocalization('components.download_dialog.status.success.title') }}</h2>
+          <p class="text-gray-600">{{ useLocalization('components.download_dialog.status.success.message') }}</p>
         </div>
       </div>
 
       <!-- 3. ERROR STATE -->
-      <div
-        v-else-if="status === 'error'"
-        class="flex flex-col items-center justify-center gap-5 p-8 text-center"
-      >
+      <div v-else-if="status === 'error'" class="flex flex-col items-center justify-center gap-5 p-8 text-center">
         <!-- Error Icon -->
-        <span
-          class="flex items-center justify-center w-16 h-16 rounded-full bg-red-100"
-        >
+        <span class="flex items-center justify-center w-16 h-16 rounded-full bg-red-100">
           <!--  -->
           <i class="pi pi-times text-4xl text-red-600"></i>
         </span>
 
         <div class="flex flex-col gap-1">
-          <h2 class="text-xl font-semibold text-gray-900">
-            Download Failed
-          </h2>
-          <p class="text-gray-600">
-            An unexpected error occurred. Please try again.
-          </p>
+          <h2 class="text-xl font-semibold text-gray-900">{{ useLocalization('components.download_dialog.status.error.title') }}</h2>
+          <p class="text-gray-600">{{ useLocalization('components.download_dialog.status.error.message') }}</p>
         </div>
       </div>
     </template>
