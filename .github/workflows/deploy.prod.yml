@@ -37,6 +37,7 @@ jobs:
           VITE_APP_BASE_API_URL=https://api.kubikpos.id
           VITE_APP_BASE_BUCKET_URL=https://wkgt-asset.online/
           VITE_APP_BASE_URL=https://pos.kubikpos.id
+          VITE_APP_BASE_URL_RENEW_SUBSCRIPTION=https://kubikpos.id/dashboard
           EOF
 
       - name: Log in to GHCR
