@@ -20,6 +20,8 @@ const {
 
 const { cashierCustomer_onCloseDialogCashDrawerOverview } =
   inject<ICashierCustomerProvided>('cashierCustomer')!;
+
+console.log(cashDrawerCashRegister_detail)
 </script>
 
 <template>
@@ -115,7 +117,7 @@ const { cashierCustomer_onCloseDialogCashDrawerOverview } =
                       <td class="font-normal text-grayscale-70 text-xs p-1">
                         {{ useFormatDate(cashDrawerCashRegister_detail?.createdAt ?? 0) }}
                         by
-                        {{ cashDrawerCashRegister_detail?.employees.name ?? '-' }}
+                        {{ cashDrawerCashRegister_detail?.employees?.name ?? cashDrawerCashRegister_detail?.openedBy ?? '-' }}
                       </td>
                     </tr>
 

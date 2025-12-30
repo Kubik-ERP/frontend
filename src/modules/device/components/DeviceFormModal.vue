@@ -215,11 +215,11 @@ const handleSubmit = async () => {
           <AppBaseSvg name="delete" class="!w-4 !h-4" />
           {{ useLocalization('device.deleteButton') || 'Delete' }}
         </PrimeVueButton>
-        
+
         <!-- Cancel -->
         <PrimeVueButton
           type="button"
-          :class="device_actionResponse.data.code === '' 
+          :class="device_actionResponse.data.code === ''
            ? 'w-full bg-white text-primary border border-primary' : 'bg-white border-primary text-primary text-lg  px-9 py-2 rounded-md'"
           :disabled="device_actionLoading"
           @click="device_actionOnCancel"
@@ -231,7 +231,7 @@ const handleSubmit = async () => {
         <PrimeVueButton
           v-if="device_actionResponse.data.code === '' && device_editingItem?.code !== ''"
           type="submit"
-          class="w-full disabled:bg-gray-400 disabled:text-white disabled:border-none"
+          class="w-full text-white bg-primary border-white  disabled:bg-gray-400 disabled:text-white disabled:border-none"
           :loading="device_actionLoading"
           :disabled="!formIsValid || device_formMode === 'edit'"
           @click="handleSubmit"
