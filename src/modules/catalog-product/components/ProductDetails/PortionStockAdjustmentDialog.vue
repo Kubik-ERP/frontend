@@ -12,7 +12,7 @@ const {
 const isQuantityPositive = ref<boolean>(true);
 const validateQuantity = () => {
   if (portionStock_formData.action === 'DECREASE') {
-    if (productDetails.value.stockQuantity - portionStock_formData.quantity < 0) {
+    if (productDetails.value.stockQuantity - portionStock_formData.adjustmentQuantity < 0) {
       isQuantityPositive.value = false;
     } else {
       isQuantityPositive.value = true;
@@ -21,9 +21,8 @@ const validateQuantity = () => {
 };
 
 watch(
-  [() => portionStock_formData.quantity, () => portionStock_formData.action],
+  [() => portionStock_formData.adjustmentQuantity, () => portionStock_formData.action],
   () => {
-    console.log('quantity', portionStock_formData.quantity);
     validateQuantity();
   },
   { immediate: true },
@@ -63,13 +62,13 @@ watch(
           v-slot="{ classes }"
           class-label="block text-sm font-medium leading-6 text-gray-900 w-full"
           is-name-as-label
-          label-for="quantity"
+          label-for="adjustmentQuantity"
           name="Quantity"
-          :validators="portionStock_formValidations.quantity"
+          :validators="portionStock_formValidations.adjustmentQuantity"
         >
           <PrimeVueInputNumber
-            id="quantity"
-            v-model="portionStock_formData.quantity"
+            id="adjustmentQuantity"
+            v-model="portionStock_formData.adjustmentQuantity"
             :min="1"
             placeholder="Quantity"
             :step="1"
@@ -80,10 +79,10 @@ watch(
 
         <div class="w-full">
           <span v-if="portionStock_formData.action === 'INCREASE'"
-            >New Portion Stock : {{ productDetails.stockQuantity + portionStock_formData.quantity }}</span
+            >New Portion Stock : {{ productDetails.stockQuantity + portionStock_formData.adjustmentQuantity }}</span
           >
           <span v-else
-            >New Portion Stock : {{ productDetails.stockQuantity - portionStock_formData.quantity }}</span
+            >New Portion Stock : {{ productDetails.stockQuantity - portionStock_formData.adjustmentQuantity }}</span
           >
         </div>
 
