@@ -298,7 +298,7 @@ function handleExport() {
                     <td class="font-normal text-grayscale-70 text-xs p-1">
                       {{ useFormatDate(cashDrawerCashRegister_detail?.createdAt ?? 0) }}
                       by
-                      {{ cashDrawerCashRegister_detail?.employees?.name ?? '-' }}
+                      {{ cashDrawerCashRegister_detail?.employees?.name ?? cashDrawerCashRegister_detail?.openedBy ?? '-' }}
                     </td>
                   </tr>
 

@@ -52,7 +52,7 @@ export const useCashierCashDrawerService = () => {
    */
   const cashierCashDrawer_formRulesOfOpenRegister = computed(() => ({
     balance: { required },
-    userId: authentication_isStaff.value ? {} : { required },
+    userId: authentication_isStaff.value ? {} : { },
   }));
   const cashierCashDrawer_formValidationsOfOpenRegister = useVuelidate(
     cashierCashDrawer_formRulesOfOpenRegister,
