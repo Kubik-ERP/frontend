@@ -67,7 +67,7 @@ export const useCashDrawerListService = (): ICashDrawerListProvided => {
    */
   const cashDrawerList_formRulesOfOpenRegister = computed(() => ({
     balance: { required },
-    userId: authentication_isStaff.value ? {} : { required },
+    userId: authentication_isStaff.value ? {} : {},
   }));
   const cashDrawerList_formValidationsOfOpenRegister = useVuelidate(
     cashDrawerList_formRulesOfOpenRegister,

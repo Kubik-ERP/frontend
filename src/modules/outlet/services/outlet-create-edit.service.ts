@@ -428,12 +428,11 @@ export const useOutletCreateEditService = (): IOutletCreateEditProvided => {
       } else {
         await outletCreateEdit_fetchCreateNewOutlet(formData);
       }
-
-      // Reset form and validations after successful submission
       outletCreateEdit_onResetForm();
-      await authenticationSignIn_fetchAuthenticationPermissions();
 
       router.push({ name: 'outlet.list' });
+
+      // Reset form and validations after successful submission
 
       // Reset PIN data before showing dialog
       // outletCreateEdit_formDataOfVerifyPin.pinConfirmation = '';

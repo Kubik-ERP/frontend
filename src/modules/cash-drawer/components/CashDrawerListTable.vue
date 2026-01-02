@@ -53,7 +53,7 @@ const {
 
       <template v-else-if="column.value === 'staffName'">
         <span class="font-normal text-sm text-text-primary">
-          {{ data?.employees?.name ?? '-' }}
+          {{ data?.employees?.name ?? data.openedBy ?? '-' }}
         </span>
       </template>
 

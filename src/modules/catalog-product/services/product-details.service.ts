@@ -4,6 +4,7 @@ import { PRODUCT_DETAILS_PRODUCT_VARIANTS_COLUMNS, PRODUCT_DETAILS_PORTION_STOCK
 import { IProductDetailsProvided, IPortionStock_formData, IProductPortionStock } from '../interfaces';
 // store
 import { useProductDetailsStore } from '../store/productDetails.store';
+import { useOutletStore } from '@/modules/outlet/store';
 
 // Plugins
 import eventBus from '@/plugins/mitt';
@@ -16,15 +17,16 @@ import { storeToRefs } from 'pinia'; // Ensure this is imported
 
 const portionStock_formData = reactive<IPortionStock_formData>({
   product_id: null,
+  store_id: null,
   adjustment_id: null,
   action: 'INCREASE',
-  quantity: 0,
+  adjustmentQuantity: 0,
   notes: '',
 });
 
 const portionStock_formRules = computed(() => ({
   action: { required },
-  quantity: { required },
+  adjustmentQuantity: { required },
 }));
 
 const portionStock_formValidations = useVuelidate(portionStock_formRules, portionStock_formData, {
@@ -33,6 +35,7 @@ const portionStock_formValidations = useVuelidate(portionStock_formRules, portio
 
 export const useProductDetailsService = (): IProductDetailsProvided => {
   const store = useProductDetailsStore();
+  const outletStore = useOutletStore();
   const { httpAbort_registerAbort } = useHttpAbort();
 
   const { productDetails, productDetails_isLoading } = storeToRefs(store);
@@ -40,9 +43,10 @@ export const useProductDetailsService = (): IProductDetailsProvided => {
   function resetPortionStockFormData() {
     portionStock_formData.updatedAt = null;
     portionStock_formData.product_id = null;
+    portionStock_formData.store_id = null;
     portionStock_formData.adjustment_id = null;
     portionStock_formData.action = 'INCREASE';
-    portionStock_formData.quantity = 0;
+    portionStock_formData.adjustmentQuantity = 0;
     portionStock_formData.notes = '';
 
     portionStock_formValidations.value.$reset();
@@ -54,7 +58,7 @@ export const useProductDetailsService = (): IProductDetailsProvided => {
       portionStock_formData.product_id = data.productId;
       portionStock_formData.adjustment_id = data.id;
       portionStock_formData.action = data.action;
-      portionStock_formData.quantity = data.newQuantity;
+      portionStock_formData.adjustmentQuantity = data.adjustmentQuantity;
       portionStock_formData.notes = data.notes;
     } else {
       resetPortionStockFormData();
@@ -88,8 +92,8 @@ export const useProductDetailsService = (): IProductDetailsProvided => {
     }
 
     try {
-      console.log(JSON.stringify(portionStock_formData, null, 2));
-      if (portionStock_formData.product_id && portionStock_formData.adjustment_id) {
+      if (portionStock_formData.adjustment_id) {
+        await portionStock_update(productDetails.value.id, portionStock_formData.adjustment_id);
         const argsEventEmitter: IPropsToast = {
           isOpen: true,
           type: EToastType.SUCCESS,
@@ -98,6 +102,7 @@ export const useProductDetailsService = (): IProductDetailsProvided => {
         };
         eventBus.emit('AppBaseToast', argsEventEmitter);
       } else {
+        await portionStock_create(productDetails.value.id);
         const argsEventEmitter: IPropsToast = {
           isOpen: true,
           type: EToastType.SUCCESS,
@@ -134,7 +139,11 @@ export const useProductDetailsService = (): IProductDetailsProvided => {
 
   const portionStock_create = async (id: string) => {
     try {
-      await store.postProductStockAdjustment(id, portionStock_formData, {
+      const payload = { ...portionStock_formData };
+      payload.product_id = id;
+      payload.store_id = outletStore.outlet_currentOutlet?.id;
+
+      await store.postProductStockAdjustment(id, payload, {
         ...httpAbort_registerAbort('PORTION_STOCK_ADJUSTMENT_CREATE_REQUEST'),
       });
     } catch (error: unknown) {
@@ -148,7 +157,11 @@ export const useProductDetailsService = (): IProductDetailsProvided => {
 
   const portionStock_update = async (id: string, adjustmentId: string) => {
     try {
-      await store.patchProductStockAdjustment(id, adjustmentId, portionStock_formData, {
+      const payload = { ...portionStock_formData };
+      payload.product_id = id;
+      payload.store_id = outletStore.outlet_currentOutlet?.id;
+      
+      await store.patchProductStockAdjustment(id, adjustmentId, payload, {
         ...httpAbort_registerAbort('PORTION_STOCK_ADJUSTMENT_UPDATE_REQUEST'),
       });
     } catch (error: unknown) {

@@ -55,6 +55,7 @@ export interface ICashDrawerItem {
   closedBy: null;
   staffId: string;
   employees: ICashDrawerEmploye;
+  openedBy: string
 }
 
 export interface ICashDrawerTransaction {
