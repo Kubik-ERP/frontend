@@ -35,7 +35,7 @@ export const useAttendanceListService = (): IAttendanceListProvided => {
    * @description Injected variables
    */
   const attendanceStore = useAttendanceStore();
-  const { attendance_isLoading, attendance_lists } = storeToRefs(attendanceStore);
+  const { attendance_isLoading, attendance_lists, attendance_meta } = storeToRefs(attendanceStore);
   const staffMemberStore = useStaffMemberStore();
   const { staffMember_lists } = storeToRefs(staffMemberStore);
   const workingHoursStore = useWorkingHoursStore();
@@ -51,6 +51,15 @@ export const useAttendanceListService = (): IAttendanceListProvided => {
   const attendanceList_currentAttendanceId = ref<string>('');
   const attendanceList_formData = reactive<IAttendanceListFormData>({
     ...ATTENDANCE_LIST_INITIAL_FORM_DATA,
+  });
+  const attendanceList_queryParams: IAttendanceListRequestQuery = reactive({
+    page: 1,
+    limit: 10,
+    sortBy: 'date',
+    sortOrder: 'desc',
+    startDate: null,
+    endDate: null,
+    staffId: null,
   });
   const attendanceList_selectedStaffWorkingHours = ref<IWorkingHour[]>([]);
   const attendanceList_isLoadingShifts = ref<boolean>(false);
@@ -194,8 +203,36 @@ export const useAttendanceListService = (): IAttendanceListProvided => {
 
       // Populate form data with the fetched details for edit mode
       if (response && attendanceList_createEditFormMode.value === 'edit') {
-        // Map response to form data
-        console.log('Fetched attendance detail:', response);
+        const attendanceDetail = response as IAttendance;
+
+        attendanceList_formData.staffId = attendanceDetail.staff_id;
+        attendanceList_formData.date = new Date(attendanceDetail.date).toISOString().split('T')[0];
+
+        attendanceList_formData.shifts = attendanceDetail.attendance_shifts.map(shift => {
+          const shiftStart = new Date(shift.shift_start);
+          const shiftEnd = new Date(shift.shift_end);
+
+          // The time values from API are strings in "HH:mm" format.
+          // We need to create full Date objects for the form.
+          const [clockInHours, clockInMinutes] = shift.clock_in.split(':').map(Number);
+          const clockInDate = new Date(attendanceDetail.date);
+          clockInDate.setHours(clockInHours, clockInMinutes);
+
+          const [clockOutHours, clockOutMinutes] = shift.clock_out.split(':').map(Number);
+          const clockOutDate = new Date(attendanceDetail.date);
+          clockOutDate.setHours(clockOutHours, clockOutMinutes);
+
+          return {
+            shiftStart: shiftStart,
+            shiftEnd: shiftEnd,
+            clockIn: clockInDate,
+            clockOut: clockOutDate,
+            notes: shift.notes,
+          };
+        });
+
+        // After populating data, fetch available shifts for the selected staff
+        await attendanceList_updateAvailableShifts();
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -212,6 +249,7 @@ export const useAttendanceListService = (): IAttendanceListProvided => {
   const attendanceList_fetchList = async (): Promise<void> => {
     try {
       await attendanceStore.attendance_list({
+        params: attendanceList_queryParams,
         ...httpAbort_registerAbort(ATTENDANCE_LIST_REQUEST),
       });
     } catch (error: unknown) {
@@ -334,6 +372,23 @@ export const useAttendanceListService = (): IAttendanceListProvided => {
 
     attendanceList_createEditMinDate.value = minDate.toISOString().split('T')[0];
     attendanceList_createEditMaxDate.value = currentDate.toISOString().split('T')[0];
+  };
+
+  /**
+   * @description Handle page change from data table
+   */
+  const attendanceList_onChangePage = (page: number): void => {
+    attendanceList_queryParams.page = page;
+    attendanceList_fetchList();
+  };
+
+  /**
+   * @description Handle sort from data table
+   */
+  const attendanceList_onSort = (event: { sortField: string; sortOrder: 'asc' | 'desc' }): void => {
+    attendanceList_queryParams.sortBy = event.sortField;
+    attendanceList_queryParams.sortOrder = event.sortOrder;
+    attendanceList_fetchList();
   };
 
   /**
@@ -677,7 +732,7 @@ export const useAttendanceListService = (): IAttendanceListProvided => {
       return {
         id: attendance.id,
         date: new Date(attendance.date).toLocaleDateString('en-GB'),
-        staffId: parseInt(attendance.staff_id, 10),
+        staffId: attendance.staff_id,
         staffName,
         shifts: attendance.attendance_shifts.map(shift => ({
           id: shift.id.toString(),
@@ -699,10 +754,10 @@ export const useAttendanceListService = (): IAttendanceListProvided => {
     return {
       items,
       meta: {
-        currentPage: 1,
-        lastPage: 1,
-        perPage: 10,
-        total: items.length,
+        currentPage: attendance_meta.value?.currentPage || 1,
+        lastPage: attendance_meta.value?.lastPage || 1,
+        perPage: attendance_meta.value?.perPage || 10,
+        total: attendance_meta.value?.total || 0,
       },
     };
   });
@@ -852,6 +907,7 @@ export const useAttendanceListService = (): IAttendanceListProvided => {
     attendanceList_listValues,
     attendanceList_maxDate,
     attendanceList_minDate,
+    attendanceList_onChangePage,
     attendanceList_onCloseDialog,
     attendanceList_onCreate,
     attendanceList_onDelete,
@@ -861,6 +917,8 @@ export const useAttendanceListService = (): IAttendanceListProvided => {
     attendanceList_onReset,
     attendanceList_onSave,
     attendanceList_onShiftChange,
+    attendanceList_onSort,
+    attendanceList_queryParams,
     attendanceList_selectedShiftValue,
     attendanceList_selectedStaffName,
     attendanceList_staffList,

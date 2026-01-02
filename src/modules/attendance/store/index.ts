@@ -13,6 +13,7 @@ export const useAttendanceStore = defineStore('attendance', {
     attendance_detail: null,
     attendance_isLoading: false,
     attendance_lists: [],
+    attendance_meta: null,
   }),
   getters: {
     /**
@@ -119,6 +120,13 @@ export const useAttendanceStore = defineStore('attendance', {
 
         if (Array.isArray(response.data.data.items)) {
           this.attendance_lists = response.data.data.items;
+          const apiMeta = response.data.data.meta;
+          this.attendance_meta = {
+            total: apiMeta.total,
+            perPage: apiMeta.pageSize,
+            currentPage: apiMeta.page,
+            lastPage: apiMeta.totalPages,
+          };
         }
 
         return Promise.resolve(response.data);

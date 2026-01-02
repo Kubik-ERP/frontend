@@ -38,4 +38,10 @@ export interface IAttendanceStateStore {
   attendance_detail: unknown;
   attendance_isLoading: boolean;
   attendance_lists: IAttendance[];
+  attendance_meta: {
+    total: number;
+    perPage: number;
+    currentPage: number;
+    lastPage: number;
+  } | null;
 }

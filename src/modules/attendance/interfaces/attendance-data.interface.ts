@@ -14,7 +14,7 @@ export interface IAttendanceDataShift {
 export interface IAttendanceData {
   id: number;
   date: string;
-  staffId: number;
+  staffId: string;
   staffName: string;
   shifts: IAttendanceDataShift[];
   createdAt: string;

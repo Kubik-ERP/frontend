@@ -84,7 +84,6 @@ const closeExpansionPopover = (recordId: number, shiftId: string) => {
  * @description Handle edit with popover close
  */
 const handleEdit = (recordId: number) => {
-  console.log('Edit clicked for record:', recordId);
   closeMainPopover(recordId);
   attendanceList_onEdit(recordId);
 };
@@ -93,7 +92,6 @@ const handleEdit = (recordId: number) => {
  * @description Handle delete with popover close
  */
 const handleDelete = (recordId: number) => {
-  console.log('Delete clicked for record:', recordId);
   closeMainPopover(recordId);
   attendanceList_handleDelete(recordId);
 };
@@ -125,6 +123,11 @@ const {
   attendanceList_formatTime,
   attendanceList_getStatusColor,
   attendanceList_handleDelete,
+  attendanceList_onChangePage,
+  attendanceList_onSort,
+  attendanceList_queryParams,
+  attendanceList_staffList,
+  attendanceList_fetchList,
 } = inject('attendance') as IAttendanceListProvided;
 </script>
 
@@ -134,7 +137,7 @@ const {
       :columns="attendanceList_columns"
       :data="attendanceList_listData.items"
       :total-records="attendanceList_listData.meta.total"
-      :rows-per-page="attendanceList_listData.meta.perPage"
+      :rows-per-page="attendanceList_queryParams.limit"
       :first="(attendanceList_listData.meta.currentPage - 1) * attendanceList_listData.meta.perPage"
       header-title="Attendance Records"
       btn-cta-create-title="Add Attendance"
@@ -142,11 +145,43 @@ const {
       :is-using-expandable-rows="true"
       :is-using-custom-body="true"
       :is-using-btn-cta-create="true"
-      :is-using-filter="false"
+      :is-using-filter="true"
       expandable-rows-field="shifts"
       expandable-rows-id-field="id"
+      :sort-by="attendanceList_queryParams.sortBy"
+      :sort-order="attendanceList_queryParams.sortOrder"
       @click-btn-cta-create="attendanceList_onCreate"
+      @change-page="attendanceList_onChangePage"
+      @sort="attendanceList_onSort"
     >
+      <template #filter>
+        <div class="flex items-center gap-4">
+          <PrimeVueCalendar
+            v-model="attendanceList_queryParams.startDate"
+            date-format="dd/mm/yy"
+            placeholder="Start Date"
+            show-icon
+            class="text-sm"
+          />
+          <PrimeVueCalendar
+            v-model="attendanceList_queryParams.endDate"
+            date-format="dd/mm/yy"
+            placeholder="End Date"
+            show-icon
+            class="text-sm"
+          />
+          <PrimeVueSelect
+            v-model="attendanceList_queryParams.staffId"
+            :options="attendanceList_staffList"
+            option-label="label"
+            option-value="value"
+            placeholder="Select Staff"
+            class="text-sm"
+          />
+          <PrimeVueButton label="Filter" @click="attendanceList_fetchList" />
+        </div>
+      </template>
+
       <!-- Custom body slot for main rows -->
       <template #body="{ column, data, isExpandable, isExpanded, toggleExpansion, primaryItem }">
         <!-- Date Column -->

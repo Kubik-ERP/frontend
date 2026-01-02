@@ -98,6 +98,7 @@ export interface IAttendanceListProvided {
   attendanceList_listValues: globalThis.ComputedRef<Record<string, string | number>[]>;
   attendanceList_maxDate: globalThis.ComputedRef<string>;
   attendanceList_minDate: globalThis.ComputedRef<string>;
+  attendanceList_onChangePage: (page: number) => void;
   attendanceList_onCloseDialog: () => void;
   attendanceList_onCreate: () => void;
   attendanceList_onDelete: (attendanceId: string) => Promise<void>;
@@ -107,6 +108,8 @@ export interface IAttendanceListProvided {
   attendanceList_onReset: () => void;
   attendanceList_onSave: () => Promise<void>;
   attendanceList_onShiftChange: (selectedValue: string) => void;
+  attendanceList_onSort: (event: { sortField: string; sortOrder: 'asc' | 'desc' }) => void;
+  attendanceList_queryParams: IAttendanceListRequestQuery;
   attendanceList_selectedShiftValue: globalThis.WritableComputedRef<string | null>;
   attendanceList_selectedStaffName: globalThis.ComputedRef<string>;
   attendanceList_staffList: globalThis.ComputedRef<IDropdownItem[]>;
