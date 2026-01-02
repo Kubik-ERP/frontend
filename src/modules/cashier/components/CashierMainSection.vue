@@ -34,8 +34,8 @@ import { useIsDesktop } from '@/app/composables/useBreakpoint';
       <CashierSummaryModalOrderSummary />
     </section>
 
-    <CashierFilterByCategory v-if="useIsMobile()" />
-    <CashierSummaryButtonAction v-if="useIsMobile()" />
+    <CashierFilterByCategory v-if="!useIsDesktop()" />
+    <CashierSummaryButtonAction v-if="!useIsDesktop()" />
   </section>
 </template>
 
