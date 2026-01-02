@@ -1,11 +1,21 @@
+import { ref } from 'vue';
+
+const windowWidth = ref(window.innerWidth);
+
+const onResize = () => {
+  windowWidth.value = window.innerWidth;
+};
+
+window.addEventListener('resize', onResize);
+
 export const useIsMobile = () => {
-  return window.innerWidth <= 768;
+  return windowWidth.value <= 768;
 };
 
 export const useIsTablet = () => {
-  return window.innerWidth > 768 && window.innerWidth <= 1024;
+  return windowWidth.value > 768 && windowWidth.value <= 1024;
 };
 
 export const useIsDesktop = () => {
-  return window.innerWidth > 1024;
+  return windowWidth.value > 1024;
 };
